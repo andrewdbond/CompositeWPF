@@ -1,0 +1,1 @@
+Note: in most of the Silverlight projects you will likely experience a CA0060 warning. This is because the CommonServiceLocator project is not built against SL 5, so it references older SL assemblies. While this issues a warning in ‘release’ builds where Code Analysis is enabled, it shouldn't cause any trouble when running the application.

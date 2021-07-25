@@ -1,0 +1,1 @@
+@call "Quickstarts\View-Switching Navigation\Silverlight\View-Switching Navigation\ViewSwitchingNavigation.Silverlight.sln"

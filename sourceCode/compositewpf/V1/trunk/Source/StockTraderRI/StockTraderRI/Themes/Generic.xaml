@@ -1,0 +1,41 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:StockTraderRI.Controls">
+
+    <Style TargetType="{x:Type local:TearOffItemsControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:TearOffItemsControl}">
+                    <StackPanel>
+                        <Grid x:Name="Header">
+                            <Rectangle Fill="{TemplateBinding local:TearOffItemsControl.HeaderBackground}" Stroke="{x:Null}" RadiusX="8" RadiusY="8" VerticalAlignment="Top" Height="25"/>
+                            <TextBlock Style="{TemplateBinding local:TearOffItemsControl.HeaderTextStyle}" Text="{TemplateBinding local:TearOffItemsControl.HeaderText}" Margin="10,5,0,0" TextAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" />
+			    		    <Path HorizontalAlignment="Right" VerticalAlignment="Top" Width="20.251" Height="18.542" Fill="#FFFFFFFF" Stretch="Fill" Stroke="{x:Null}" Grid.Column="3" Data="M951.00031,55.374676 L960.50024,37.124668 C960.50024,37.124668 971.375,37.25 971.25,47.875 971.125,58.5 970.08348,62.666678 970.08348,62.666678 970.08348,62.666678 964.75016,54.374676 951.00031,55.374676 z"/>
+			    		    <Path x:Name="PART_HeaderButton" HorizontalAlignment="Right" VerticalAlignment="Top" Width="12.938" Height="16.353" Stretch="Fill" Stroke="{x:Null}" StrokeDashOffset="0" StrokeMiterLimit="10" StrokeStartLineCap="Flat" StrokeThickness="5" Data="M968.6875,57.34375 C968.6875,57.34375 965.125,52.75 955.75,52.75 L961.81297,41.003682 C961.81297,41.003682 968.68797,40.410197 968.68797,47.285197 z" OverridesDefaultStyle="True">
+                                <Path.Style>
+                                    <Style TargetType="{x:Type Path}">
+                                        <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:TearOffItemsControl}}, Path= HeaderButtonBackground}"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Fill" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:TearOffItemsControl}}, Path= HeaderButtonRollOverBackground}"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+                        </Grid>
+                        <Border Margin="0,5,0,0" SnapsToDevicePixels="true" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
+                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Border>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsCollapsed" Value="True">
+                            <Setter TargetName="Header" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

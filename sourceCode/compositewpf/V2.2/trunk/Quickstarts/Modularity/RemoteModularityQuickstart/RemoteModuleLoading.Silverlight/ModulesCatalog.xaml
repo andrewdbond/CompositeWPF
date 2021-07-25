@@ -1,0 +1,20 @@
+﻿<Modularity:ModuleCatalog xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                xmlns:sys="clr-namespace:System;assembly=mscorlib"
+               xmlns:Modularity="clr-namespace:Microsoft.Practices.Composite.Modularity;assembly=Microsoft.Practices.Composite">
+    <Modularity:ModuleInfoGroup Ref="ModuleX.xap" InitializationMode="OnDemand">
+        <Modularity:ModuleInfo ModuleName="ModuleX" ModuleType="ModuleX.ModuleX, ModuleX, Version=1.0.0.0" />
+    </Modularity:ModuleInfoGroup>
+    <Modularity:ModuleInfoGroup Ref="ModulesWY.xap" InitializationMode="WhenAvailable">
+        <Modularity:ModuleInfo ModuleName="ModuleY" ModuleType="ModuleY.ModuleY, ModulesWY, Version=1.0.0.0">
+            <Modularity:ModuleInfo.DependsOn>
+                <sys:String>ModuleW</sys:String>
+            </Modularity:ModuleInfo.DependsOn>
+        </Modularity:ModuleInfo>
+        <Modularity:ModuleInfo ModuleName="ModuleW" ModuleType="ModuleW.ModuleW, ModulesWY, Version=1.0.0.0">
+        </Modularity:ModuleInfo>
+    </Modularity:ModuleInfoGroup>
+    <!-- Module info without a group -->
+    <Modularity:ModuleInfo Ref="ModuleZ.xap" ModuleName="ModuleZ" ModuleType="ModuleZ.ModuleZ, ModuleZ, Version=1.0.0.0" />
+</Modularity:ModuleCatalog>
+

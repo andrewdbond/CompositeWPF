@@ -1,0 +1,1 @@
+@call "Quickstarts\Modularity\RemoteModularityQuickstart\RemoteModuleLoading.sln"

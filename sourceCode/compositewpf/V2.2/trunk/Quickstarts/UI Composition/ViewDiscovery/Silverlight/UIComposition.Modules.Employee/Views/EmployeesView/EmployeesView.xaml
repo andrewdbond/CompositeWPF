@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="UIComposition.Modules.Employee.EmployeesView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:cal="clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation" >
+    <StackPanel>
+        <!--In the SelectionPanel, we are pulling an EmployeesListView control. Then we're binding the SelectedEmployee
+        Property on the EmployeesPresentationModel to the RegionContext of this region. This makes the SelectedEmployee
+        value available for any injected views (And that's nwo the EmployeeListView control)
+        
+        When an employee is selected, the EmployeeListView will change the regioncontext. This will update the electedEmployee
+        Property on the EmployeesPresentationModel, because it's 2 way databound. When this value changes, the 
+        EmployeeController will use this value.
+        -->
+        <ContentControl x:Name="SelectionPanel"
+                        cal:RegionManager.RegionName="SelectionRegion"
+                        cal:RegionManager.RegionContext="{Binding Path=SelectedEmployee, Mode=TwoWay}"/>
+        
+        <!--The DetailsRegion will get the EmployeeDetails view pushed in. We are still a push based model here
+        to show the usage of scoped regions. When you select an employee, a new EmployeeDetailsControl will get 
+        created and pushed in here by the EmployeeController
+        -->
+        <ContentControl cal:RegionManager.RegionName="DetailsRegion"/>
+    </StackPanel>
+</UserControl>

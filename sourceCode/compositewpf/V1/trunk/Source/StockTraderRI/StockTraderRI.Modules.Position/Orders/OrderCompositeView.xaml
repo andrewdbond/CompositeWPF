@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="StockTraderRI.Modules.Position.Orders.OrderCompositeView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <Style x:Key="ExpanderHeaderText" TargetType="{x:Type Label}">
+            <Setter Property="FontFamily" Value="Franklin Gothic"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#FF98C61F"/>
+        </Style>
+    </UserControl.Resources>
+    <StackPanel>
+        <Expander x:Name="CompositeExpander" IsExpanded="True" Header="{Binding OrderCommandsView}" Content="{Binding OrderDetailsView}">
+            <Expander.HeaderTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Label x:Name="StockHeader" Margin="5,0,300,0" Style="{StaticResource ExpanderHeaderText}" Content="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Expander}},Path=DataContext.HeaderInfo}"/>
+                        <ContentPresenter HorizontalAlignment="Right" Content="{Binding}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </Expander.HeaderTemplate>
+        </Expander>
+        <Rectangle Margin="0,5,0,0" Fill="#FF939DA5" Stroke="{x:Null}" RadiusX="0" RadiusY="0" VerticalAlignment="Bottom" Height="4" RenderTransformOrigin="0.5,0.5">
+            <Rectangle.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="1" ScaleY="-1"/>
+                    <SkewTransform AngleX="0" AngleY="0"/>
+                    <RotateTransform Angle="0"/>
+                    <TranslateTransform X="0" Y="0"/>
+                </TransformGroup>
+            </Rectangle.RenderTransform>
+        </Rectangle>
+    </StackPanel>
+</UserControl>

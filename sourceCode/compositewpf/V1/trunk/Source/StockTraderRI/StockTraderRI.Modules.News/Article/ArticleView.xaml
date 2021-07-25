@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="StockTraderRI.Modules.News.Article.ArticleView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:inf="clr-namespace:StockTraderRI.Infrastructure;assembly=StockTraderRI.Infrastructure"
+    xmlns:infModels="clr-namespace:StockTraderRI.Infrastructure.Models;assembly=StockTraderRI.Infrastructure">
+    <UserControl.Resources>
+        <LinearGradientBrush x:Key="SelectedListBoxItemBackground" EndPoint="0.494,0.001" StartPoint="0.494,1.002">
+            <GradientStop Color="#FF77B6EB" Offset="0"/>
+            <GradientStop Color="#FFFFFFFF" Offset="1"/>
+            <GradientStop Color="#FFBBD7EF" Offset="0.348"/>
+            <GradientStop Color="#FFCDDFEF" Offset="0.679"/>
+        </LinearGradientBrush>
+        <Style TargetType="{x:Type Label}">
+            <Setter Property="FontFamily" Value="Franklin Gothic"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="Foreground" Value="#FF77B6EB"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+        <Style x:Key="ArticleItemStyle" TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border x:Name="RowSelectionBorder" BorderBrush="Green" CornerRadius="4" Width="{TemplateBinding Width}" BorderThickness="0">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="RowSelectionBorder" Property="BorderThickness" Value="1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!--Labels are used instead of Textblocks due to limitations in UI Automation Testing with DataTemplates. -->
+        <DataTemplate x:Key="ArticleDataTemplate" DataType="{x:Type infModels:NewsArticle}">
+            <StackPanel Margin="2,2,2,2" >
+                <Label x:Name="ArticlePublishedDate" Content="{Binding Path=PublishedDate}"/>
+                <Label x:Name="ArticleTitle" Content="{Binding Path=Title}"/>
+        </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid x:Name="DetailsGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Rectangle Fill="#FF77B6EB" Stroke="{x:Null}" RadiusX="8" RadiusY="8" HorizontalAlignment="Center"  VerticalAlignment="Center" MinWidth="{Binding ElementName=DetailsGrid, Path=ActualWidth}" Height="25"/>
+        <TextBlock Margin="40,7,0,0" FontFamily="Franklin Gothic" FontSize="14" FontWeight="Normal" Foreground="#FFFFFFFF" Text="NEWS ARTICLES" TextAlignment="Left" TextWrapping="Wrap" HorizontalAlignment="Left"  />
+		<Grid HorizontalAlignment="Left" Margin="8.669,4.001,0,0" VerticalAlignment="Top" Width="14.5" Height="16.375">
+			<Path Fill="{x:Null}" Stretch="Fill" Stroke="#FFFFFFFF" StrokeThickness="2" Data="M409.875,447.625 L409.875,433.25 418.625,433.25 422.375,437 422.375,447.625 z"/>
+			<Path Margin="2.75,0,2.625,4.25" VerticalAlignment="Bottom" Height="2" Fill="{x:Null}" Stretch="Fill" Stroke="#FFFFFFFF" StrokeThickness="2" Data="M328.625,443.375 L335.75,443.375"/>
+			<Path Margin="2.75,6.375,2.625,8" Fill="{x:Null}" Stretch="Fill" Stroke="#FFFFFFFF" StrokeThickness="2" Data="M328.625,443.375 L335.75,443.375"/>
+		</Grid>
+        <ListBox x:Name="articlesView" Grid.Row="1" BorderThickness="0" Margin="0,5,0,0"  ItemsSource="{Binding Articles}"
+                 ItemTemplate="{StaticResource ArticleDataTemplate}"
+                 ItemContainerStyle="{StaticResource ArticleItemStyle}"
+                 IsSynchronizedWithCurrentItem="True"
+                 PreviewMouseLeftButtonDown="articlesView_PreviewMouseLeftButtonDown"
+                 >
+    </ListBox>
+    </Grid>
+</UserControl>

@@ -1,0 +1,59 @@
+﻿<Window x:Class="StockTraderRI.Shell"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cal="http://www.codeplex.com/CompositeWPF"
+    xmlns:inf="clr-namespace:StockTraderRI.Infrastructure;assembly=StockTraderRI.Infrastructure"
+    xmlns:Controls="clr-namespace:StockTraderRI.Controls"
+    Title="Shell" Height="630" Width="1024" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+         <DataTemplate DataType="{x:Type inf:ExtendedHeader}">
+            <StackPanel Orientation="Horizontal" ToolTip="{Binding Path=ToolTip}">
+                <Image Source="{Binding Path=IconUri}" Width="16" Height="16" />
+                <TextBlock Text="{Binding Path=Title}" />
+            </StackPanel>
+        </DataTemplate>
+        <Style x:Key="TearOffControlHeaderTextStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontFamily" Value="Franklin Gothic"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="Foreground" Value="#FFFFFFFF"/>
+            <Setter Property="Height" Value="15.5"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="0.645*"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="0.245*"/>
+            <ColumnDefinition Width="20"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="1" FontFamily="Franklin Gothic" FontSize="60" FontWeight="Normal" Foreground="#FF77B6EB" TextAlignment="Left" TextWrapping="Wrap" RenderTransformOrigin="0.482,-1.197"><Run FontSize="50" Foreground="#FF98C61F" Text="CFI "/><Run FontSize="50" Text="STOCK TRADER"/></TextBlock>
+        <ItemsControl Grid.Row="1" Grid.Column="1" x:Name="MainToolbar" cal:RegionManager.RegionName="{x:Static inf:RegionNames.MainToolbarRegion}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+        <StackPanel Grid.Row="1" Grid.RowSpan="2" Grid.Column="3">
+            <Controls:TearOffItemsControl x:Name="TearOffControl" 
+                                          cal:RegionManager.RegionName="{x:Static inf:RegionNames.WatchRegion}" 
+                                          HeaderBackground="#FF77B6EB" 
+                                          HeaderButtonBackground="#FF77B6EB" 
+                                          HeaderButtonRollOverBackground="#7F77B6EB" 
+                                          HeaderText="WATCH LIST" 
+                                          HeaderTextStyle="{StaticResource TearOffControlHeaderTextStyle}"
+                                          WindowHeight="400" WindowWidth="300" />
+          <ItemsControl Margin="0,20,0,0" cal:RegionManager.RegionName="{x:Static inf:RegionNames.NewsRegion}" />
+        </StackPanel>
+        <TabControl x:Name="PositionBuySellTab" Margin="0,10,0,0" Style="{StaticResource ShellTabControlStyle}" ItemContainerStyle="{StaticResource ShellTabItemStyle}" SelectedIndex="0"  Grid.Row="2" Grid.Column="1" cal:RegionManager.RegionName="{x:Static inf:RegionNames.MainRegion}" />
+    </Grid>
+
+</Window>
