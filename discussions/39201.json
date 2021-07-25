@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "130049",
+    "ThreadId": "39201",
+    "Html": "I've been working on creating a test app that uses CSLA business objects, and I've run into some problems.<br>\r\n<br>\r\nI have a DelegateCommand called SaveEditsCommand in my ViewModel that takes in a &quot;Widget&quot; object and provides it two the execute and canexecute methods.<br>\r\nIn the view, I have a button Command that is bound to the SaveEditsCommand, and a CommandParameter that is bound to a &quot;Widget&quot; property in the ViewModel.<br>\r\n<br>\r\nThe code in the SaveEdits method will complete when the command is executed, and I can see at the end of the method that the Widget state has been updated, and has been persisted.<br>\r\nWhat I don't understand is why the command parameter in the CanSaveEdits method doesn't reflect the updated state after the command has been executed.<br>\r\n<br>\r\n<p><span style=\"color:#0000ff\">private</span> <span style=\"color:#0000ff\">bool</span> CanSaveEdits(CSLABusinessObjects.<span style=\"color:#2b91af\">Widget </span>widget)<br>\r\n{<br>\r\n    <span style=\"color:#0000ff\">if</span> (widget== <span style=\"color:#0000ff\">null</span>) <span style=\"color:#0000ff\">return</span> <span style=\"color:#0000ff\">false</span>;<br>\r\n    <span style=\"color:#0000ff\">return</span> widget.IsSavable;<br>\r\n}</p>\r\n<p><span style=\"color:#0000ff\">private</span> <span style=\"color:#0000ff\">void</span> SaveEdits(CSLABusinessObjects.<span style=\"color:#2b91af\">Widget </span>widget)<br>\r\n{<br>\r\n    <span style=\"color:#0000ff\">if</span> (widget == <span style=\"color:#0000ff\">null</span>) <span style=\"color:#0000ff\">return</span>;<br>\r\n    <span style=\"color:#0000ff\">try<br>\r\n    </span>{<br>\r\n        widget.ApplyEdit();<br>\r\n        <span style=\"color:#0000ff\">this.Widget </span>= widget.Save();<br>\r\n        ((Csla.Core.<span style=\"color:#2b91af\">ISavable</span>)widget).SaveComplete(widget);<br>\r\n    }<br>\r\n    <span style=\"color:#0000ff\">catch</span>(<span style=\"color:#2b91af\">Exception</span> ex)<br>\r\n    {<br>\r\n    }<br>\r\n    SaveEditsCommand.RaiseCanExecuteChanged();<br>\r\n}</p>\r\n",
+    "PostedDate": "2008-11-04T13:16:32.093-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "130790",
+    "ThreadId": "39201",
+    "Html": "<br>\r\nIf your WPF window/user control is bound to the Widget property on your ViewModel, you will need to make sure your ViewModel implements INotifyPropertyChanged and the Widget property is raising the property changed event.<br>\r\n<br>\r\nHTH,<br>\r\n<br>\r\n-b\r\n",
+    "PostedDate": "2008-11-07T06:03:18.303-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "130877",
+    "ThreadId": "39201",
+    "Html": "I had tried that earlier, and it doesn't seem to fix the issue.  Here is an example of what I had tried....<br>\r\n<br>\r\npublic event PropertyChangedEventHandler PropertyChanged;<br>\r\n<br>\r\n<span style=\"color:#0000ff\">public </span>WidgetViewModel()<br>\r\n{<br>\r\n    PropertyChanged += new PropertyChangedEventHandler(WidgetViewModel_PropertyChanged);<br>\r\n}<br>\r\n<br>\r\n<p><span style=\"color:#0000ff\">private</span> <span style=\"color:#0000ff\">void</span> SaveEdits(CSLABusinessObjects.<span style=\"color:#2b91af\">Widget </span>widget)<br>\r\n{<br>\r\n    <span style=\"color:#0000ff\">if</span> (widget == <span style=\"color:#0000ff\">null</span>) <span style=\"color:#0000ff\">return</span>;<br>\r\n    <span style=\"color:#0000ff\">try<br>\r\n    </span>{<br>\r\n        widget.ApplyEdit();<br>\r\n        <span style=\"color:#0000ff\">this.Widget </span>= widget.Save();<br>\r\n        ((Csla.Core.<span style=\"color:#2b91af\">ISavable</span>)widget).SaveComplete(widget);<br>\r\n        PropertyChanged(this, new PropertyChangedEventArgs(&quot;Widget&quot;));<br>\r\n        SaveEditsCommand.RaiseCanExecuteChanged();<br>\r\n    }<br>\r\n    <span style=\"color:#0000ff\">catch</span>(<span style=\"color:#2b91af\">Exception</span> ex)<br>\r\n    {<br>\r\n    }<br>\r\n    SaveEditsCommand.RaiseCanExecuteChanged();<br>\r\n}<br>\r\n<br>\r\nI'm concerned that the issue is that in CSLA the save function actually makes a clone of the object it's trying to persist.  So the DataContext is pointing to the original object, then after the save operation, a new widget object is created.  I'm thinking that the DataContext needs to be assigned to the new widget object.  The line that says this.Widget = widget.Save() is not enough.  I tried to add a handler to the PropertyChanged event to set the DataContext again, but that has no effect.</p>\r\n<p><span style=\"color:#0000ff\">void</span> WidgetViewModel_PropertyChanged(<span style=\"color:#0000ff\">object</span> sender, <span style=\"color:#2b91af\">PropertyChangedEventArgs</span> e)<br>\r\n{<br>\r\n    View.Model = <span style=\"color:#0000ff\">this</span>;  // This sets DataContext = to the viewmodel in the View object.<br>\r\n}<br>\r\n<br>\r\nAny thoughts?</p>\r\n<p></p>\r\n",
+    "PostedDate": "2008-11-07T10:26:19.02-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138890",
+    "ThreadId": "39201",
+    "Html": "Did u found a solution?<br>\r\n<br>\r\nIm wondered because we're going to use CSLA and Prism..\r\n",
+    "PostedDate": "2008-12-09T03:12:22.663-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138915",
+    "ThreadId": "39201",
+    "Html": "I did not get it to work the way I wanted, and decided to modify the design and move on.<br>\r\nOver all, I feel like CSLA and Prism can work together, but you have to think about how to marry up the two things.<br>\r\n<br>\r\nI like the save function in winforms, but I havn't got it to work well with Prism.  Perhaps I'm overlooking the obvious.<br>\r\nThe app I'm working on is a pet project to really learn WPF.  It's pretty simple.  If there is enough response, I would be willing to share it.<br>\r\n<br>\r\nJeff\r\n",
+    "PostedDate": "2008-12-09T05:45:16.8-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "139657",
+    "ThreadId": "39201",
+    "Html": "1 response ;)\r\n",
+    "PostedDate": "2008-12-11T04:57:55.863-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "140198",
+    "ThreadId": "39201",
+    "Html": "Me too.&nbsp; Me too.<br>\r\n<br>\r\n--Dave<br>\r\n<a href=\"http://dave.thehorners.com/\">http://dave.thehorners.com/</a>\r\n",
+    "PostedDate": "2008-12-12T16:09:24.05-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "140850",
+    "ThreadId": "39201",
+    "Html": "I've been reading Rocky's new book, and I feel like some stuff is starting to gel.  Rather then posting my old pet project, I've decided to work on implementing PTracker using Prisim.<br>\r\nHopefully people will look at it, and offer suggestions on ways to improve it.<br>\r\nCheck out my blog for updates.  www.codingandcoffee.com<br>\r\n<br>\r\nJeff\r\n",
+    "PostedDate": "2008-12-15T23:02:32.877-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "140978",
+    "ThreadId": "39201",
+    "Html": "Ahhh u started a blog, very very new... just 2 text's ;)\r\n",
+    "PostedDate": "2008-12-16T07:18:37.257-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "141038",
+    "ThreadId": "39201",
+    "Html": "Yea....I spend so much time on it, I must have worn out the password.  : ^ ) I'll have to work on it tonight.<br>\r\n<br>\r\nSo far I've got the login module working.  The one thing that is bugging me is that there are two commands, one for logging in, and one for logging out.  <br>\r\nI've got the enabled/disabled thing working, but I really want to adjust their visibility.  I don't want to put a bunch of code in the PresenterModel every time I need to alter the visibility of a control that is bound to a command, so I need to think about how to handle that.  I think Rocky is using a decorator control to do something similar, so perhaps I'll go down that road.<br>\r\n<br>\r\nJeff<br>\r\n<br>\r\n<a href=\"http://www.codingandcoffee.com/Downloads/CompositePTracker.zip\">http://www.codingandcoffee.com/Downloads/CompositePTracker.zip</a>\r\n",
+    "PostedDate": "2008-12-16T10:07:07.633-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

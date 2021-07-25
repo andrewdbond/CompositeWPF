@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "911740",
+    "ThreadId": "395323",
+    "Html": "\r\n<p>I currently have a Silverlight application using Prism and MEF. I connect to several WCF services in this application but use a &quot;controller&quot; class to hold the instantiated client-generated service proxy objects.</p>\r\n<p>What I want to do is inject the service references into this controller (like I currently do with the IEventAggregator). I'm unsure how to do this. Do I need to make a wrapper class that implements the service contract interface, and holds a reference to\r\n the service proxy object?</p>\r\n<p>What I do now:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;summary&gt;</span>\r\n<span style=\"color:gray\">///</span><span style=\"color:green\"> WCF client used to communitcate with the data WCF service</span>\r\n<span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;/summary&gt;</span>\r\n<span style=\"color:blue\">private</span> DataClient _dataClient;  <span style=\"color:green\">// DataClient is the client generated object from a service reference</span>\r\n\r\n<span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;summary&gt;</span>\r\n<span style=\"color:gray\">///</span><span style=\"color:green\"> Region manager for the application</span>\r\n<span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;/summary&gt;</span>\r\n<span style=\"color:blue\">private</span> IRegionManager _manager;\r\n\r\n<span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;summary&gt;</span>\r\n<span style=\"color:gray\">///</span><span style=\"color:green\"> Application event aggregator</span>\r\n<span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;/summary&gt;</span>\r\n<span style=\"color:blue\">private</span> IEventAggregator _eventAggregator;\r\n\r\n<span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;summary&gt;</span>\r\n<span style=\"color:gray\">///</span><span style=\"color:green\"> Constructor. Initializes the statistics controller, hooks up all services, and initializes all commands.</span>\r\n<span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;/summary&gt;</span>\r\n<span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;param name=&quot;manager&quot;&gt;</span><span style=\"color:gray\">&lt;/param&gt;</span>\r\n[ImportingConstructor]\r\n<span style=\"color:blue\">public</span> ZOpportunityController(IRegionManager manager, IEventAggregator events)\r\n{\r\n    _manager = manager;\r\n    _eventAggregator = events;\r\n\r\n    <span style=\"color:green\">//hookup a WCF service used to retrive GP data</span>\r\n    _dataClient = <span style=\"color:blue\">new</span> ZellerGpDataClient();  \r\n    _dataClient.OpenCompleted &#43;= <span style=\"color:blue\">new</span> EventHandler&lt;AsyncCompletedEventArgs&gt;(_dataClient_openCompleted);\r\n    _dataClient.GetCustomersCompleted &#43;= <span style=\"color:blue\">new</span> EventHandler&lt;GetCustomersCompletedEventArgs&gt;(_dataClient_GetCustomersCompleted);\r\n    _dataClient.OpenAsync();\r\n}\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p><span>As you can see here, I connect to a service in my controller constructor, but I'd like to just inject a new object into the controller like I do with IRegionManager and IEventAggregator, that is already wired for asynchronous communication to the service.</span></p>\r\n<p>Can someone help me achieve this?</p>\r\n",
+    "PostedDate": "2012-09-12T11:28:33.6-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "911802",
+    "ThreadId": "395323",
+    "Html": "<p>Hi,</p>\r\n<p>I believe you could find the following blog post from Guido Maliandi interesting:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/gmaliandi/2011/10/using-wcf-services-in-prism-silverlight-applications/\">Using WCF services in Prism Silverlight applications</a></li>\r\n</ul>\r\n<p>There you could find a sample and information on how to wrap the service functionality in a shared service, which is registered in the container through a common interface mapping, defined in a common project. This way you could consume this service using this interface, for example in your controller class.</p>\r\n<p>Also for another example of this approach (although this uses <strong>Unity </strong>as the container) you could check the \"<strong>WCFServiceWrapperSample</strong>\" also located in Guido Maliandi's <a href=\"https://skydrive.live.com/?cid=12a8b70137345033&amp;sc=documents&amp;id=12A8B70137345033!149\">skydrive account</a>.</p>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-09-12T13:06:22.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "911812",
+    "ThreadId": "395323",
+    "Html": "<p>Thank you so much...this is exactly what I was looking for.</p>",
+    "PostedDate": "2012-09-12T13:25:44.39-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

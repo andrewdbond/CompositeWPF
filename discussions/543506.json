@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1238581",
+    "ThreadId": "543506",
+    "Html": "Hello,\r<br />\n<br />\nHow should I handle an open file dialog? I have created a view that contains a textbox and a button. When the user presses the button, open file dialog is shown. When the user selects a file, the textbox is filled with the full path of the file.\r<br />\n<br />\nShould I place code in the ViewModel or put some logic code behind?\r<br />\n<br />\nThanks,<br />\n",
+    "PostedDate": "2014-04-27T14:04:18.627-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1238939",
+    "ThreadId": "543506",
+    "Html": "Hi,\r<br />\n<br />\nI am afraid I did not get the concrete problem you are asking about. Would like to know how to implement the complete workflow from pressing the button to have the textbox filled automatically? Or do you just need to decide where is the best place to implement that behavior?\r<br />\n<br />\nBased on the MVVM pattern, any logic would be implemented on the ViewModel class, which it would also be tested without the need of instantiating the View class. From the Prism Guide documentation:<br />\n<blockquote>\n<em>The view model implements properties and commands to which the view can data bind and notifies the view of any state changes through change notification events. The properties and commands that the view model provides define the functionality to be offered by the UI, but the view determines how that functionality is to be rendered</em>.<br />\n</blockquote>\n<h1></h1>\nIn addition, you may find a similar popup communication on the <strong>Interactivity QuickStart</strong>, where the result returned from the popup is gathered in the <strong>InteractionRequestViewModel</strong> and then notified.<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg405484(v=pandp.40).aspx#sec2\" rel=\"nofollow\">MVVM Prism Guide chapter</a><br />\n</li>\n</ul>\nRegards.\r<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-04-28T11:12:21.453-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1238983",
+    "ThreadId": "543506",
+    "Html": "Hi Gabriel,\r<br />\n<br />\nThank you very much for your reply. \r<br />\n<br />\nI decided to implement the code, that sets the text of the textbox equal to the selected file, in code behind according to this from the Prism Guide documentation:<br />\n<h1></h1>\n<blockquote>\nThe view's responsibility is to define the structure and appearance of what the user sees on the screen. Ideally, the code-behind of a view contains only a constructor that calls the InitializeComponent method. In some cases, the code-behind may contain UI logic code that implements visual behavior that is difficult or inefficient to express in Extensible Application Markup Language (XAML), such as complex animations, or <strong>when the code needs to directly manipulate visual elements that are part of the view</strong>.<br />\n</blockquote>\n<h1></h1>\nWith this approach, my ViewModel will be full testable without the construction of the View, since I have created a Command to the ViewModel and assigned it to the button that will process the selected file.<br />\n",
+    "PostedDate": "2014-04-28T12:34:51.537-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

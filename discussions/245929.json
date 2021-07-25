@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "565739",
+    "ThreadId": "245929",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I am new to this thread and Prism, so please bare with me if this is an elementy level question. I am trying to get the WCF Service working with the Silverlight chart control. It is using MVVM. The data is comming out of the WCF database async. The problem\r\n (or it seems like) that on the viewmodel to view bind and then vm load the Property which is binding the datacontext of the ChartControl is not getting the collection in time!. I mean it seems to get the data sometime later (being Async call).</p>\r\n<p>I am not sure how to handle this senario. I saw an example in the Prism QuickStarts &gt; View-Switching Navigation. Where in infrastructure it has its own Async mechanism. I have tried to use that example as well as simple senario but it does not seems work.\r\n Any idea?</p>\r\n<p>Thanks,</p>\r\n<p>Preyash</p>\r\n",
+    "PostedDate": "2011-02-14T01:51:05.027-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "565934",
+    "ThreadId": "245929",
+    "Html": "<p>Hi Preyash,</p>\r\n<p>An async method from a WCF service should have a completed event (for example, if the method is called <strong>GetDataAsync</strong>, the event would be called <strong>GetDataCompleted</strong>). You could subscribe to that event and update a property in your ViewModel in the handler (if the method returns data, you should have a Result property in your event args).</p>\r\n<p>Note that your ViewModel must implement <strong>INotifyCollectionChanged</strong> in order for the changes in the collection to be propagated to the view.</p>\r\n<p>You might find the following MSDN articles useful:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ms730059.aspx\">How to: Call WCF Service Operations Asynchronously</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ms731177.aspx\">How to: Implement an Asynchronous Service Operation</a></li>\r\n</ul>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-02-14T08:40:24.74-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "566284",
+    "ThreadId": "245929",
+    "Html": "<p>Dear GuidoMaliandi,</p>\r\n<p>Thanks for the quick reply. That was a very good detailed&nbsp;explanation&nbsp;and it solved the problem.</p>\r\n<p>Here's what I did (just for the guys who has similar problem)</p>\r\n<p>I have inherited NotificationObject (from Prism) in my viewmodel.</p>\r\n<p>The NotificationObject has INotifyCollectionChanged implemented so we dont have to worry about it!</p>\r\n<p>and then on Collection's Setter&nbsp;</p>\r\n<p>this.RaisePropertyChanged(() =&gt; this.Books);</p>\r\n<p>Done.</p>\r\n<p>Thanks,</p>\r\n<p>Preyash</p>\r\n<p><span style=\"font-family: Consolas, 'Courier New', Courier, monospace;\"><span style=\"white-space: pre;\"><br /></span></span></p>\r\n<p><span style=\"font-family: Consolas, 'Courier New', Courier, monospace;\"><span style=\"white-space: pre;\"><br /></span></span></p>",
+    "PostedDate": "2011-02-14T21:39:36.457-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "571637",
+    "ThreadId": "245929",
+    "Html": "<p>Hi Preyash,</p>\r\n<p>Thank you for sharing your insight with the rest of the community, as other users facing similar doubts might benefit from your information.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-02-24T10:12:13.457-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

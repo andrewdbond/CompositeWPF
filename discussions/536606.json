@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1217192",
+    "ThreadId": "536606",
+    "Html": "Hi,\r<br />\n<br />\nI have created a Prism application that contains a single module to manage a list of contacts (<strong>ContactModule</strong>). Each contact contains geographical data (country, postalcode) that are stored in separate lookup tables in my database. The user must be able to add/edit these data. \r<br />\nHow can I handle them? My first thought is to create one module for each lookup table and cache them, so that they are always available in <strong>ContactModule</strong>. Do you have any better idea?\r<br />\n<br />\nThanks,<br />\n",
+    "PostedDate": "2014-03-02T11:47:33.733-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1219925",
+    "ThreadId": "536606",
+    "Html": "Hi,\r<br />\n<br />\nAny ideas about the current issue? \r<br />\nI think the best approach is to add lookup data in the ContactModule and not creating a separate for each one. I could then create separate Views and ViewModels for each lookup entity. \r<br />\nWhat do you think?\r<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2014-03-06T08:36:48.753-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1220004",
+    "ThreadId": "536606",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding, both alternatives you mentioned would work properly, and I believe that design and structure of <strong>Modules</strong> would depend on the solution's complexity and each developer's design likes.\r<br />\n<br />\nNevertheless, you should notice that an extra communication between modules would be needed for the first approach. For example, you would need to use <strong>EventAggregator</strong> service in order to cache the tables in the <strong>ContactModule.</strong> \r<br />\n<br />\nUsing one only module for the lookup data feature instead, it would keep the search and database service tasks centralized, without the need of a loosely coupled communication. You would certainly manage and control the databases separately by defining different <strong>Views/ViewModels</strong> for a more firendly UI experience.\r<br />\n<br />\nAs I mentioned, you should define the module's scope by keeping in mind the reason of why each <strong>Module</strong> was defined and what set of features is packaging.\r<br />\n<br />\nYou can find more related information in the following <strong>MSDN Prism Guide</strong> chapter:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg405479(v=pandp.40).aspx#sec11\" rel=\"nofollow\">4: Modular Application Development</a><br />\n</li>\n</ul>\nI hope this helped you.\r<br />\n<br />\nRegards,\r<br />\nGabriel Ostrowsky.\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-03-06T10:56:34.383-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-03-06T23:57:26.56-08:00"
+  }
+]

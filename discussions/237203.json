@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "531373",
+    "ThreadId": "237203",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I have a view defined in a module that defines a new region. When I navigate to this view or I add this view to the main region, the new&nbsp;region defined in that view is not added to the RegionManager.Regions collection. This is happening because I am\r\n using the MVVM pattern and I am not navigating to a view itself but I navigate to&nbsp;the ViewModel. I am using the DataTemplate approach defing in the RresourceDictionary the view to use when the ViewModel need to be shown (ViewModel First approach&nbsp;with\r\n DataTemplate).</p>\r\n<p>I did a test and, instead of using the above approach, I navigated to&nbsp;the View defining the new region, changing the code behind to inject the ViewModel (ViewFirst approach) and in this case I got the new region being added to the Regions collection.</p>\r\n<p>Is this by design, I mean it is not supported adding new regions when using the ViewModel First approach with DataTemplate?</p>\r\n<p>Thanks</p>\r\n<p>Antonio</p>\r\n",
+    "PostedDate": "2010-12-05T09:07:05.267-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "531966",
+    "ThreadId": "237203",
+    "Html": "\r\n<p>Hi Antonio,</p>\r\n<p>The behavior you are describing is by design. Regions defined inside <strong>DataTemplates</strong> cannot be found by the\r\n<strong>DelayedRegionCreationBehavior</strong> behavior. You can find a more detailed explanation of this in the following\r\n<a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=212150\">thread</a>.</p>\r\n<p>You could, however, apply other of the possible alternatives for the ViewModel First approach.</p>\r\n<p>I hope this information is useful.</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n",
+    "PostedDate": "2010-12-06T13:22:13.113-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "532183",
+    "ThreadId": "237203",
+    "Html": "\r\n<p>Hi Miguel,</p>\r\n<p>so this means that I must move from the ViewModel First approach to the ViewFirst approach, as I read in the documentation that I can only use ViewModel first with DataTemplate if I want to use Prism Navigation feature, correct?</p>\r\n<p>Thanks</p>\r\n<p>Antonio</p>\r\n",
+    "PostedDate": "2010-12-07T02:04:48.873-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "532311",
+    "ThreadId": "237203",
+    "Html": "\r\n<p>Antonio,</p>\r\n<p>If you need to have a region defined in a view that will be navigated to, you can still use the\r\n<strong>ViewModel First</strong> approach (that is, having the view as a dependency to the\r\n<strong>ViewModel</strong>), but when you perform the navigation, you should need to navigate into the view.</p>\r\n<p>Other alternatives that would allow you to keep using the <strong>ViewModel First</strong> with\r\n<strong>DataTemplate</strong> approach would be to:</p>\r\n<ul>\r\n<li>Create a Region Behavior that supports creating regions from inside <strong>DataTemplates</strong>. You can read more about this in\r\n<a href=\"http://msdn.microsoft.com/en-us/library/gg430866(v=PandP.40).aspx\">Appendix E: Extending Prism</a>\r\n</li></ul>\r\n<ul>\r\n<li>Use the <strong>IRegionCollection </strong><a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.prism.regions.regionmanagerextensions.add%28PandP.40%29.aspx\">Add method</a> (which can be found in the\r\n<strong>RegionManagerExtensions </strong>class) to add your <strong>IRegion </strong>\r\ndirectly to the <strong>RegionCollection </strong>of your <strong>RegionManager</strong>\r\n</li></ul>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<a href=\"http://blogs.southworks.net/mbronzovic\"><br>\r\nhttp://blogs.southworks.net/mbronzovic</a></p>\r\n",
+    "PostedDate": "2010-12-07T07:28:37.533-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "532720",
+    "ThreadId": "237203",
+    "Html": "\r\n<p>Miguel,</p>\r\n<p>any hint/sample on how to create the Region Behavior to create regions from inside DataTemplate? I read the appendix but I only got how to implement and register the behavior, I don't have any idea on how to discover regions inside DataTemplate.</p>\r\n<p>Thanks</p>\r\n<p>Antonio</p>\r\n",
+    "PostedDate": "2010-12-08T00:36:43.7-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533662",
+    "ThreadId": "237203",
+    "Html": "\r\n<p>Hi Antonio,</p>\r\n<p>The behavior you need to create for regions inside DataTemplates to be discovered should be similar to the\r\n<strong>DelayedRegionCreationBehavior. </strong>This behavior <em>&quot;(...) creates a new IRegion when the control that will host&nbsp;the IRegion&nbsp;is added to the visual tree(...)&quot;</em>. However, regions defined inside DataTemplates currently cannot be found\r\n by this behavior. A possible cause for this might be that the <strong>DataTemplates\r\n</strong>may not currently being added to the Visual Tree.</p>\r\n<p>I hope this information is useful.</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\"><span style=\"color:#3e62a6\">http://blogs.southworks.net/mbronzovic</span></a></p>\r\n",
+    "PostedDate": "2010-12-09T14:38:04.27-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "534137",
+    "ThreadId": "237203",
+    "Html": "\r\n<p>Hi Antonio,</p>\r\n<p><a href=\"http://public.blu.livefilestore.com/y1pR_h-p-95iv9ESqxKIYR_UDHdqx4BNXhKBlluZqVcx-GyXQGWSCyObKnVNyS6-HKc27nPX-8BErIM5bfnKWHckQ/RegionInsideDataTemplateSample.zip?download&psid=1\">Here</a> you can find a sample which exemplifies how to put regions\r\n inside Data Templates.</p>\r\n<p>This application uses a content control with a region that is populated using&nbsp;view model first approach with a data-template for the view model type. Inside that data template, there is another content control with a region that is populated using the\r\n view model first approach and another data-template for the second view model type. Inside the sample you'll find further explanations.</p>\r\n<p>Also, you might check if you're having an exception that you're not detecting in your code.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://prismtk.codeplex.com/\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-10T13:45:01.53-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "534179",
+    "ThreadId": "237203",
+    "Html": "\r\n<p>Hi Guido,</p>\r\n<p>Thanks for your sample.</p>\r\n<p>I tried it and it works but when I tried changing it using the NavigationService it doesn't work anymore.</p>\r\n<p>I changed the application in this way on the MainWindow code behind:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">namespace</span> WpfApplication1\r\n{\r\n    <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;summary&gt;</span>\r\n    <span style=\"color:gray\">///</span><span style=\"color:green\"> Interaction logic for MainWindow.xaml</span>\r\n    <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;/summary&gt;</span>\r\n    [Export]\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">partial</span> <span style=\"color:blue\">class</span> MainWindow : Window\r\n    {\r\n        <span style=\"color:blue\">public</span> MainWindow()\r\n        {\r\n            InitializeComponent();\r\n\r\n\t\t<span style=\"color:blue\">this</span>.Loaded &#43;= <span style=\"color:blue\">new</span> RoutedEventHandler(MainWindow_Loaded);\r\n        }\r\n\r\n        [Import]\r\n        <span style=\"color:blue\">public</span> IRegionViewRegistry ViewRegistry { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">set</span>; }\r\n\r\n\t[Import]\r\n\t<span style=\"color:blue\">public</span> IRegionManager RegionManager { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">set</span>; }\r\n\r\n        [Import]\r\n        <span style=\"color:blue\">public</span> IRegionBehaviorFactory RegionBehaviorFactory { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">set</span>; }\r\n\r\n        <span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> MainWindow_Loaded(<span style=\"color:blue\">object</span> sender, RoutedEventArgs e)\r\n        {\r\n\t\t\t<span style=\"color:green\">//this.ViewRegistry.RegisterViewWithRegion(&quot;MainRegion&quot;, () =&gt; new MainViewModel());</span>\r\n\t\t\t<span style=\"color:green\">//this.ViewRegistry.RegisterViewWithRegion(&quot;SubRegion&quot;, () =&gt; new SubViewModel()); </span>\r\n\t\t\tRegionManager.RequestNavigate(<span style=\"color:#a31515\">&quot;MainRegion&quot;</span>, <span style=\"color:blue\">new</span> Uri(<span style=\"color:#a31515\">&quot;MainViewModel&quot;</span>, UriKind.Relative));\r\n\t\t\tRegionManager.RequestNavigate(<span style=\"color:#a31515\">&quot;SubRegion&quot;</span>, <span style=\"color:blue\">new</span> Uri(<span style=\"color:#a31515\">&quot;SubViewModel&quot;</span>, UriKind.Relative));\r\n        }\r\n    }\r\n}</pre>\r\n<pre>and I exported the two viewmodels in this way:</pre>\r\n<pre style=\"color:black; background-color:white\"><pre>   [Export(<span style=\"color:#a31515\">&quot;MainViewModel&quot;</span>)]\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> MainViewModel\r\n    {\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">string</span> Message\r\n        {\r\n            <span style=\"color:blue\">get</span>\r\n            {\r\n                <span style=\"color:blue\">return</span> <span style=\"color:#a31515\">&quot;Hello from the MainViewModel.&quot;</span>;\r\n            }\r\n        }\r\n    }\r\n\r\n\r\n    [Export(<span style=\"color:#a31515\">&quot;SubViewModel&quot;</span>)]\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> SubViewModel\r\n    {\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">string</span> Message\r\n        {\r\n            <span style=\"color:blue\">get</span>\r\n            {\r\n                <span style=\"color:blue\">return</span> <span style=\"color:#a31515\">&quot;Hello from the SubViewModel.&quot;</span>;\r\n            }\r\n        }\r\n    }\r\n\r\n</pre>\r\n</pre>\r\n<pre>Hope to have done it correctly, as I don't have experience with Mef.</pre>\r\n<pre>Thanks</pre>\r\n<pre>Antonio</pre>\r\n</div>\r\n",
+    "PostedDate": "2010-12-10T15:07:11.42-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "535106",
+    "ThreadId": "237203",
+    "Html": "\r\n<p>Hi Antonio,</p>\r\n<p>When you navigate to a view or view model using a URI, the view is created through the use of MEF. In order for the SubViewModel to be exported correctly, you need to have added the assembly in which it is contained to the Aggregate Catalog. You could add\r\n something like this to the MainBootstrapper class to achieve what I'm saying:</p>\r\n<pre> <span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> <span style=\"color:blue\">void</span> ConfigureAggregateCatalog()<br> {<br>   <span style=\"color:blue\">base</span>.ConfigureAggregateCatalog();<br>   <span style=\"color:blue\">this</span>.AggregateCatalog.Catalogs.Add(<span style=\"color:blue\">new</span> AssemblyCatalog(<span style=\"color:blue\">typeof</span>(MainBootstrapper).Assembly));<br> }</pre>\r\n<p>Additionally, due to a timing issue, when you call this line:</p>\r\n<pre>RegionManager.RequestNavigate(<span style=\"color:#a31515\">&quot;SubRegion&quot;</span>, <span style=\"color:blue\">new</span> Uri(<span style=\"color:#a31515\">&quot;SubViewModel&quot;</span>, UriKind.Relative));<br></pre>\r\n<p>The SubRegion will not have been created yet. So you could replace that line by this one:</p>\r\n<pre><pre><span style=\"color:blue\">this</span>.ViewRegistry.RegisterViewWithRegion(<span style=\"color:#a31515\">&quot;SubRegion&quot;</span>, () =&gt; ServiceLocator.Current.GetInstance&lt;SubViewModel&gt;(<span style=\"color:#a31515\">&quot;SubViewModel&quot;</span>));<br></pre>\r\n</pre>\r\n<p>That way, the SubViewModel will be added to the SubRegion when the region is actually created.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-13T09:58:44.04-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "551353",
+    "ThreadId": "237203",
+    "Html": "\r\n<p>Hi Antonio,</p>\r\n<p>You might also find the following work item useful to fulfill your requirement:</p>\r\n<p><a href=\"http://compositewpf.codeplex.com/workitem/3612\"><span id=\"x_TitleLabel\">Region Registration Fails w/ Templated Controls</span></a></p>\r\n<p>In that work item an alternative approach is proposed, which implies modifying the\r\n<strong>RegionManagerRegistrationBehavior</strong>'s<strong> FindRegionManager</strong> method.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2011-01-18T09:35:13.46-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

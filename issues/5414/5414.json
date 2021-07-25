@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nI'm closing the issue, as it is likely that this isn't caused by a bug in Prism. For additional support regarding this subject, you could create a thread in the discussions section (http://compositewpf.codeplex.com/discussions), where we will help you with your concerns.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-08-19T10:54:23.86-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Hi\n \nI have created 2 base interfaces: IViewBase which all my views will implement and IPresenterBase<IViewBase> for my presenters. In my controller i want to resolve a presenter instance by name that implements IPresenterBase, something like: \nIPresenterBase<IViewBase> presenter = container.Resolve<IPresenterBase<IViewBase>>(\"LogPresenter\");\n \nHow should this properly be done? \n \nMy Code:\n \n    public interface IViewBase { }\n \n    public interface IPresenterBase<T> where T : IViewBase\n    {\n        T View { get; set; }\n    }\n \n    public interface ILogPresenter : IPresenterBase<ILogView> {  }\n \n    public class LogPresenter : ILogPresenter\n    {\n        public ILogView View { get; set; }\n    }\n \n  - inside LogModule:\n \n    this.container.RegisterType<IViewBase, LogView>();\n    this.container.RegisterType<ILogPresenter, LogPresenter>(\"LogPresenter\");\n \n  - inside LogController:\n \n    IPresenterBase<IViewBase> presenter = this.container.Resolve<IPresenterBase<IViewBase>>(\"LogPresenter\");\n \nCalling the resolve raises an exception:\n \nResolution of the dependency failed, type = \"Presenters.IPresenterBase`1[Views.IViewBase]\", name = \"LogPresenter\". Exception message is: The current build operation (build key Build Key[Presenters.IPresenterBase`1[Views.IViewBase], LogPresenter]) failed: The current type, Presenters.IPresenterBase`1[Views.IViewBase], is an interface and cannot be constructed. Are you missing a type mapping? (Strategy type BuildPlanStrategy, index 3)\n \nAdditional Info:\nThe idea i'm following is: to register presenters that implement interface deriving from a base presenter interface that has a member view deriving from a base view interface. In an abstract controller i'll resolve an instance of the presenter by name e.g. \nIPresenterBase<IViewBase> presenter = container.Resolve<IPresenterBase<IViewBase>>(\"LogPresenter\");",
+    "LastUpdatedDate": "2013-05-16T05:28:55.633-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-11-04T00:24:54.74-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ResolutionFailedException",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 5414
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nIn order to resolve an interface, you must have declared an interface mapping. The exception you're obtaining could be caused by the fact that you haven't registered the type mapping for the IPresenterBase interface.\r\n\r\nYou could try adding the following code in your LogModule:\r\n\r\nthis.container.RegisterType, LogPresenter>(\"LogPresenter\");\r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-04-06T08:10:52.94-07:00",
+      "Id": 156183
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "133213",
+    "ThreadId": "40141",
+    "Html": "<span style=\"font-family:verdana\">Most of the types we typically use from modules are loaded using the IOC mechanism in CAL e.g. JobsViewPresentationModel has a constructor<br>\r\n <br>\r\n        public JobsViewPresentationModel(IJobsView view, IWorkflowController workflowController,<br>\r\n                                         IDocumentRepository documentRepository, IEventAggregator eventAggregator)<br>\r\n        {<br>\r\n<br>\r\n <br>\r\nand e.g. the IDocumentRepository is passed in because the JobsModule which uses this presenter contains<br>\r\n <br>\r\n        protected void RegisterViewsAndServices()<br>\r\n        {<br>\r\n            _container.RegisterType&lt;IJobsView, JobsView&gt;();<br>\r\n            _container.RegisterType&lt;IJobsViewPresentationModel, JobsViewPresentationModel&gt;();<br>\r\n        }<br>\r\n<br>\r\nThis is fine without using WF however as soon as you start using custom activities whiich exist as independant types what's the best way to pass them in to the activities or resolve them directly within the activity? E.g. a JobDeliverActivity would deliver a job activity to a specific user through email. It would need to access the IDocumentRepository for data access.  <br>\r\n <br>\r\nYou could make all the possible repositories or types registered through all the containers in the whole application and modules exist as properties on the workflow object itself and then each activity could presumably access them through the ActivityExectionContext however that doesn't seem ideal.<br>\r\n<br>\r\nAny thoughts?<br>\r\n</span><br>\r\n",
+    "PostedDate": "2008-11-17T11:21:31.903-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "133900",
+    "ThreadId": "40141",
+    "Html": "Any thoughts appreciated :)\r\n",
+    "PostedDate": "2008-11-20T05:15:17.303-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "134053",
+    "ThreadId": "40141",
+    "Html": "<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">I found from my previous research note archive the following link, which should help you forward.  You do need to do some experimental coding and fit that to your need but the idea of one possible solution is there. See the this and Ruurd series of this topic from link below.<br>\r\n<br>\r\n</span><a href=\"http://www.sitechno.com/Blog/MVCWithWFPartVIIIOCOnTheCheap.aspx\"><span style=\"font-family:calibri\">http://www.sitechno.com/Blog/MVCWithWFPartVIIIOCOnTheCheap.aspx</span></a> <br>\r\n<br>\r\nRegards,<br>\r\nAlexander </p>\r\n",
+    "PostedDate": "2008-11-20T14:15:13.367-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "134060",
+    "ThreadId": "40141",
+    "Html": "<p style=\"line-height:145%;margin:0in 0in 0pt;background:white\"><span style=\"line-height:145%;font-family:'verdana','sans-serif';color:#444444;font-size:9.5pt\">I also found another note which I made while I was heavily following Unity code drops. If you are just targeting to WPF then this concept could also be another way to approach. Please note that this only will work on WPF not on Silverlight. </span></p>\r\n<p style=\"line-height:145%;margin:0in 0in 0pt;background:white\"><span style=\"line-height:145%;font-family:'verdana','sans-serif';color:#444444;font-size:9.5pt\"> </span></p>\r\n<p style=\"line-height:145%;margin:0in 0in 0pt;background:white\"><span style=\"line-height:145%;font-family:'verdana','sans-serif';color:#444444;font-size:9.5pt\">Anyhow Denis did a good experimental coding earlier on this subject and he walkthroughs and explains on his series how to do IoC Injection with Unity Application Block by using Markup Extensions. </span></p>\r\n<p style=\"line-height:145%;margin:0in 0in 0pt;background:white\"><span style=\"line-height:145%;font-family:'verdana','sans-serif';color:#444444;font-size:9.5pt\"> </span></p>\r\n<p style=\"line-height:145%;margin:0in 0in 0pt;background:white\"><span style=\"line-height:145%;font-family:'verdana','sans-serif';color:#444444;font-size:9.5pt\">If you want to get more flexibility in lower level this could be one way to solve it in your WF/WPF application. Again, you do need to do some experimental coding here as it’s not str8 forward but hopefully gives you some thoughts and ideas more. <br>\r\n<br>\r\nSee Denis series on link below:</span><span style=\"line-height:145%;font-family:'verdana','sans-serif';color:#444444;font-size:9.5pt\"> </span></p>\r\n<p style=\"line-height:145%;margin:0in 0in 0pt;background:white\"><span style=\"line-height:145%;font-family:'verdana','sans-serif';color:#444444;font-size:9.5pt\"><a href=\"http://dvuyka.spaces.live.com/blog/cns!305B02907E9BE19A!307.entry\">http://dvuyka.spaces.live.com/blog/cns!305B02907E9BE19A!307.entry</a> <br>\r\n<br>\r\nRegards,<br>\r\nAlexander<br>\r\n</span></p>\r\n",
+    "PostedDate": "2008-11-20T14:37:09.02-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

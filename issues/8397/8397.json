@@ -1,0 +1,75 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nWe are closing this work item, as the problem described here is not strictly related to Prism.\r\n\r\nFor those having similar concerns, you might find better support in the following forums:\r\nVisual Studio forum (http://social.msdn.microsoft.com/Forums/en/category/visualstudio).\r\nMSBuild forum (http://social.msdn.microsoft.com/Forums/en/msbuild/threads/).\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+    "ClosedDate": "2011-12-29T09:43:30.363-08:00",
+    "CommentCount": 7,
+    "Custom": "",
+    "Description": "Hello,\nI am developing a WPF rich client application according to PRISM guide. I have divided my application into modules each of which contain separated unit of logic and views. There are modules that depend on other modules which means that the dependent module is statically referencing the module it depends on.\n \nI also have a single host application that is not referencing any modules and know to load the at runtime using information in app.config file.\n \nFrom this single host and multiple modules I am currently building 3 application. Each application has different modules, not all application use all the modules. Also each application has different configuration.\n \nUntil today I use PostBuild event to xcopy all the output of the module projects into the output of the host application. This is no longer enough because I end up with all the modules in my host application output directory. Even though I load only the modules require for the application I am currently working on it is a problem because I'm trying to use the same build procedure in develop and deployment.\n \n*So my first question is how to get only the modules I need for a specific application to build and copy to the output of the host application?*\n \nFor deployment I run the same build script using MSBuild and then I run additional script which prepare the application for ClickOnce deployment. The build script is responsible for building all and only the required modules and the host application. The deployment script is responsible for putting the right config file, any additional files like pictures, text, etc., obfuscate the modules and the host application and create the ClickOnce installation.\n \n*The problem with the reference implementation is that it does not show how to build different application from the set of modules we have. It statically reference all the modules.*\n \nI try to override build targets like AfterBuild, BeforeCompile but fail to get both command line MSBuild and visual studio to produce the same output.\n \nI can upload the scripts I use today if it will help.\n \nThank you,\nIdo",
+    "LastUpdatedDate": "2013-05-16T05:28:42.48-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-06-26T09:02:13.333-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Modular Application Build and Deployment",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 8397
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi Ido,\r\n\r\nAside from statically referencing the modules you will use in the shell application, you could use a configuration file to decide which modules will be loaded. You can read more about that in this section of the Modularity chapter in the Prism MSDN documentation (http://msdn.microsoft.com/en-us/library/gg405479%28PandP.40%29.aspx#sec21).\r\n\r\nThat way, you shouldn't need to have references to the modules in your main application project, and thus, the modules won't be copied unless explicitly specified in the post build event.\r\n\r\nYou might also find this chapter useful, which goes deeper into the different options for deploying Prism applications (http://msdn.microsoft.com/en-us/library/gg430856%28PandP.40%29.aspx).\r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-06-27T11:41:12.673-07:00",
+      "Id": 156466
+    },
+    {
+      "Message": "If you need further support about this, we could continue this conversation on a thread in the discussion boards (http://compositewpf.codeplex.com/discussions).\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-06-27T11:42:12.617-07:00",
+      "Id": 156467
+    },
+    {
+      "Message": "Hi,\r\nFirst I have open this issue as suggested by someone after it was already on the discussion board without solution.\r\nSecond, I do use configuration file to load modules but it does not change the fact that when I build application that needs only module A and B but not C and D there is no reason to build, pack and deploy modules C and D even thought they do not get loaded, I'm sure you agree with this.\r\n\r\nFrom the research I've done so far the solution most likely will not work inside VS very well that is because VS does not support putting condition on ProjectReference or ItemGroup that contains them. MSBuild does support this solution.\r\n\r\nPrism is not completely modular without supporting building different application with different modules. Also using MageUI is not suited for streamline - automated builds.\r\n\r\nSo, I'm looking for a way to build a modular application, be able to build only the required modules, package them with ClickOnce in automated way.\r\n\r\nThank you,\r\nIdo.",
+      "PostedDate": "2011-06-29T11:17:46.177-07:00",
+      "Id": 156468
+    },
+    {
+      "Message": "Hi, I'm glad to see this issue is active. I'll be glad to update what I have done and help",
+      "PostedDate": "2011-07-19T13:14:18.8-07:00",
+      "Id": 156469
+    },
+    {
+      "Message": "Hi,\r\nThis issue turn into active but I didn't see any activity.\r\nDoes anyone have any news about how to build modules into the host application directory in smart way?\r\n\r\nThank you,\r\nIdo.",
+      "PostedDate": "2011-08-17T01:02:07.29-07:00",
+      "Id": 156470
+    },
+    {
+      "Message": "Ido,\r\n\r\nIt would be helpful if you could provide us the scripts you're using as a workaround to fulfill your requirements regarding modular application build and deployment. That way, users experiencing similar situations might be able to benefit from your progress in this area.\r\n\r\nAlso, as the scenario you're mentioning here isn't supported out of the box in Prism, you might obtain better support in alternative forums such as the Visual Studio forum (http://social.msdn.microsoft.com/Forums/en/category/visualstudio) or the MSBuild forum (http://social.msdn.microsoft.com/Forums/en/msbuild/threads/). In such cases, it is not mandatory that they know the concept of Prism modules; since modules are, to this end, simply projects that might or might not be included in your final solution.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi ",
+      "PostedDate": "2011-08-17T07:09:40.333-07:00",
+      "Id": 156471
+    },
+    {
+      "Message": "Hi,\r\nI'll post the scripts here.\r\nI also post messages on MSBuild forum but did not solve the problem yet.\r\nIt become a real problem for us because the workaround script are working, but very slow due to the fact MSBuild does not now the projects are already build so it always build them.\r\n\r\nThank you,\r\nIdo",
+      "PostedDate": "2011-08-17T12:47:55.35-07:00",
+      "Id": 156472
+    }
+  ]
+}

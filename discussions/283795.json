@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "715650",
+    "ThreadId": "283795",
+    "Html": "\r\n<p>I looked at the StockTrader RI solution and noticed that the NewsReaderView exits as a separate window outside the main window.&nbsp; I would like to popup a modal dialog inside (on top of) the current view in my MainRegion.&nbsp; How would I go about implementing\r\n this?</p>\r\n<p>Thanks</p>\r\n",
+    "PostedDate": "2011-12-21T11:13:45.927-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "715705",
+    "ThreadId": "283795",
+    "Html": "<p>Hi,</p>\r\n<p>Take into account that the scenario of locating a <strong>Window </strong>in an specific location of the desktop is not supported by <strong>Prism </strong>or the <strong>WindowDialogActivationBehavior </strong>out of the box.</p>\r\n<p>Based on my understanding of your scenario, as a possible approach you could use a <strong>Shared Service</strong> (for example, a singleton object that could be obtained through the service locator) to define the <strong>Left </strong>and <strong>Top </strong>properties for your dialog before adding a view to the \"dialog region\". Then, you could modify the <strong>WindowWrapper </strong>class to consume this service and ,for example, set the <strong>Left </strong>and <strong>Top </strong>properties of the window in the <strong>Show </strong>method.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-12-21T12:41:07.053-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "715777",
+    "ThreadId": "283795",
+    "Html": "<p>Hi,</p>\r\n<p>This is not the answer I was expecting.&nbsp; Is there a WPF PRISM example that shows the use of a Interaction Request?</p>\r\n<p>Thank You</p>",
+    "PostedDate": "2011-12-21T14:49:15.407-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "716204",
+    "ThreadId": "283795",
+    "Html": "<p>Hi,</p>\r\n<p>It seems that we have missunderstood your scenario, our previous response was based on our understanding of the approach used to create a dialog or modal window with the <strong>WindowDialogActivationBehavior </strong>provided in the <strong>StockStrader RI</strong>.</p>\r\n<p>On the other hand regarding the use of a <strong>InteractionRequest </strong>in WPF, you might find that the samples applications provided by Prism out of the box which implement this approach are targeted only to Silverlight (e.g. <a href=\"http://msdn.microsoft.com/en-us/library/gg405492(v=PandP.40).aspx\">MVVM RI</a>, <a href=\"http://msdn.microsoft.com/en-us/library/gg405495(v=PandP.40).aspx\">StateBased Navigation Quickstart</a> and <a href=\"http://msdn.microsoft.com/en-us/library/gg430881(v=PandP.40).aspx\">ViewSwitching Navigation Quickstart</a>). The implementation mechanism for WPF should be the same, except that in WPF there is no implementation of \"ChildWindow\" and you might have to design a custom dialog window.</p>\r\n<p>You might find that this is also addressed in the following Codeplex <a href=\"http://compositewpf.codeplex.com/discussions/236756\">discussion</a>, where Karl Shifflet posted that he provided a WPF version of the <strong>InteractionRequest </strong>in his <a href=\"http://visualstudiogallery.msdn.microsoft.com/3ab5f02f-0c54-453c-b437-8e8d57eb9942/\">In The Box MVVM Training</a> (specifically in <strong>DialogInteractionRequestView.xaml</strong> of the MVVM Scenarios application).</p>\r\n<p>If you find that this is not useful regarding you scenario, it would be helpful to us if you could provide us with a little more information so we could help you futher with this.﻿</p>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-12-22T09:56:14.703-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "716414",
+    "ThreadId": "283795",
+    "Html": "<p>Thanks for your help.&nbsp; I will look into the references you suggested.&nbsp; I did find an article on Code Project by <a href=\"http://www.codeproject.com/KB/WPF/MVVM_Prism.aspx\">Gerard Castelllo Viader </a>helpful.</p>\r\n<p>John</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-12-22T19:25:16.097-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "716976",
+    "ThreadId": "283795",
+    "Html": "<p>I think you want to check \"MVVM in the BOX\" training -&nbsp;there is example on how to do interaction requests modal to specific view, not whole shell. I implemented it, but it is not 100% - since what you do you overlay view on top of another view and also you can't click on it with mouse - you can TAB into overlayed controls. I solved it by disabling all controls bevore showing dialog and enabling all after hiding dialog.</p>",
+    "PostedDate": "2011-12-24T17:14:58.73-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

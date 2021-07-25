@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "165091",
+    "ThreadId": "49351",
+    "Html": "I'm contemplating loading modules from an application deployed via click once. While the Silverlight implementation supports loading from an XAP file via a URL similar functionality for the desktop is absent.  Is this a bad idea or just a feature which has not been needed yet?  I don't have experience with MEF yet, perhaps it provides the required functionality?<div><br></div><div>Shane Holder</div><div><br></div>",
+    "PostedDate": "2009-03-05T15:42:40.28-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "165381",
+    "ThreadId": "49351",
+    "Html": "We didn't build a remote downloading component for WPF because you can achieve that with ClickOnce.<br>\r\n<br>\r\nThis doc describes how to do that:<br>\r\n<a href=\"http://msdn.microsoft.com/en-us/library/dd458921.aspx\">http://msdn.microsoft.com/en-us/library/dd458921.aspx</a><br>\r\n<br>\r\nIf you don't want to use ClickOnce, you can also easily build your own module downloading component and plug it into prism. <br>\r\n<br>\r\nI don't believe MEF has any remote module loading capabilities, but i'm not sure. <br>\r\n<br>\r\nHope this helps,<br>\r\nErwin\r\n",
+    "PostedDate": "2009-03-06T08:30:46.08-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "165456",
+    "ThreadId": "49351",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi Shane,</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">That <b>Silverlight</b> feature tries to solve bandwidth problems, avoiding downloading modules that your application will not use in that moment. The main requirement for this environment is that all the modules required by your application should be hosted in the Web Server, so your <b>Silverlight</b> application will be able to download them.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">If I understaned correctly, you are trying to know when you are deploying your WPF application (using ClickOnce) the modules that it will be use, to only download/install these. I think that it is not usually possible to define in this step. A possible workaround could be creating different ClickOnce installers based on the modules that the application will use (for example, if you are loading different modules based on Authentication (Roles), you can create an installer for Administrators users and other for Common users). Or perhaps, you can implement a Shared folder on your network and host all the required modules by your application on it. Then, you can configure your module catalog to use a configuration file to define the modules that your application will be use specifying the full path for each module.  </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">In this way, you can simulate a similar environment like the Silverlight remote module loading feature: All the required modules are hosted in a “Server” and your application will “download” only the required modules from it. You should take into account that this solution downloads every time the  different modules from the Shared Folder. If you are thinking on implement something like this, probably, you find useful the following article in the documentation:</span></p>\r\n<p style=\"margin:0cm 0cm 0pt 36pt\"><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458908.aspx\"><span style=\"font-family:calibri\">Populating the Module Catalog from a Configuration File</span></a>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt -1.2pt\"><span style=\"font-family:calibri\">If you are interested in modifying or extending the Composite Application Library (CAL), the best way to do that is creating a custom Module Loader class to implement something similar to the XapModuleTypeLoader class (defined inside the Modularity folder of the Composite.Silverlight project). </span></p>\r\n<p style=\"margin:0cm 0cm 0pt -1.2pt\"><span style=\"font-family:calibri\">First of all, you should package your modules’ Dlls in a zip file or similar (a possible way to implement this is using any command-line zip tool and executing it in the post build event of your modules). </span></p>\r\n<p style=\"margin:0cm 0cm 0pt -1.2pt\"><span style=\"font-family:calibri\">Then you should implement the custom Module Loader class. It should implement the IModuleTypeLoader interface and should be able to:</span></p>\r\n<p style=\"margin:0cm 0cm 0pt 36.9pt\"><span><span style=\"font-family:calibri\">1.</span><span style=\"font:7pt 'times new roman'\">       </span></span><span style=\"font-family:calibri\">Download the Zip file from an specific location.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt 36.9pt\"><span><span style=\"font-family:calibri\">2.</span><span style=\"font:7pt 'times new roman'\">       </span></span><span style=\"font-family:calibri\">Extract the content (you can find a lot of C# class to manage zip files surfing the web).</span></p>\r\n<p style=\"margin:0cm 0cm 0pt 36.9pt\"><span><span style=\"font-family:calibri\">3.</span><span style=\"font:7pt 'times new roman'\">       </span></span><span style=\"font-family:calibri\">Load the packaged assemblies (your modules).</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"color:#1f497d;font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt -1.2pt\"><span style=\"font-family:calibri\">Also perhaps, you may want to read how the Prism-v2’s team recommends deploying WPF applications using ClickOnce:</span></p>\r\n<p style=\"margin:0cm 0cm 0pt 36pt\"><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458908.aspx\"><span style=\"font-family:calibri\">Deploying WPF Applications with ClickOnce</span></a>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Please, let me know if this helps.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Ezequiel Sculli</span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><a href=\"http://blogs.southworks.net/esculli/\"><span style=\"font-family:calibri\">http://blogs.southworks.net/esculli/</span></a> </p>\r\n</span></p>\r\n</span></p>\r\n",
+    "PostedDate": "2009-03-06T10:50:47.123-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "165594",
+    "ThreadId": "49351",
+    "Html": "Erwin, I don't believe that this scenario is easily facilititated via straight up click once.  What I'm thinking is a plugin scenario where plugin's are dropped into a modules directory on the server and loaded.  It is my understanding that for click once all of the files deployed via click once need to be in the original application's manifest.  Which would mean for each plugin deployed the manifest would need to be modified, not really what I was hoping to do.<div><br></div><div>Shane</div>",
+    "PostedDate": "2009-03-06T21:26:59.59-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "165595",
+    "ThreadId": "49351",
+    "Html": "Ezequiel,<div><br></div><div>I think you've understood my scenario correctly except that it's not so much a download only the modules required as an extensability feature.  It doesn't look too difficult to do and since I did not see an implementation already I was concerned that it was a bad idea.</div><div><br></div><div>Shane Holder</div><div><br></div>",
+    "PostedDate": "2009-03-06T21:35:44.653-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "177419",
+    "ThreadId": "49351",
+    "Html": "Hi Shane,<br>\r\n<br>\r\nI believe that I'm trying to achieve the same WPF module loading capability.  Have you been able to make progress on this function?  Did you end up implementing IModuleTypeLoading?<br>\r\n<br>\r\nCheers,<br>\r\nJeff\r\n",
+    "PostedDate": "2009-04-08T18:05:53.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "185695",
+    "ThreadId": "49351",
+    "Html": "Hi, this looks like the right thread for this.<div>I'm currently developing a WPF application, not with prism itself, but with framework I create which resumable some of Prism capabilities, especially dynamic module loading.</div><div>I'm deploying my application using ClickOne and I too have the trouble that Visual Studio regular Publish command does not pick up the dynamic modules project since my main application does not have a reference to them.</div><div>So, I end up publish the application to my computer, use ManifestManagerUtility (which I tweak a little) to add the dynamic modules and repackage everything.<span style=\"border-collapse:collapse;font-family:verdana;font-size:11px;line-height:15px\"></span></div><div><br></div><div>My question is have can I stream-line the process, maybe add a MSBuild task to add the dynamic modules, since I can explain the build system which project output needs to be added, maybe even change the ClickOnce publish task to add the dynamic modules when the regular publish take place and solve the problem in one shot.</div><div><br></div><div>Thank you,</div><div>Ido.</div>",
+    "PostedDate": "2009-04-30T13:18:33.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

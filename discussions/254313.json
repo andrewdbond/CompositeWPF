@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "598947",
+    "ThreadId": "254313",
+    "Html": "\r\n<p>Hi</p>\r\n<p>I am fairly new to both WPF and Prism so forgive me if this question is very basic.</p>\r\n<p>I am binding tool bar buttons using the xaml markup cal:Click.Command as shown below. This is working fine<br>\r\n&nbsp; &lt;ToolBar&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button Name=&quot;_exitButton&quot; ToolTip=&quot;Exit&quot; cal:Click.Command=&quot;{Binding ExitButtonClicked}&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button.Content&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;StaticResource ResourceKey=&quot;exitImage&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Button.Content&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Button&gt;<br>\r\n&nbsp;&nbsp;&nbsp; &lt;/ToolBar&gt;</p>\r\n<p>My issue is that when I try to do the same for menuitems, I get a compilation error in my xaml. The errors is as follows<br>\r\n&quot;Property 'Command' is not attachable to elements of type 'MenuItem'.<br>\r\nMy xaml is as follows<br>\r\n&nbsp;&nbsp;&nbsp; &lt;Menu&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;MenuItem Header=&quot;File&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;MenuItem Header=&quot;Exit&quot; cal:Click.Command=&quot;{Binding ExitButtonClicked}&quot;&nbsp;&nbsp; /&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/MenuItem&gt;<br>\r\n&nbsp;&nbsp;&nbsp; &lt;/Menu&gt;</p>\r\n<p>I can work around this by using the following syntax (where ExitButtonCommand is ICommand)<br>\r\n&nbsp;&nbsp;&nbsp; &lt;Menu&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;MenuItem Header=&quot;File&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;MenuItem Header=&quot;Exit&quot; Command=&quot;{Binding Path=ExitButtonCommand}&quot; /&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/MenuItem&gt;</p>\r\n<p>I just wanted to know why there was a difference. Why is 'Command' not attachable to 'MenuItem'</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>\r\n<p>Liam</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-04-18T02:38:55.98-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "599110",
+    "ThreadId": "254313",
+    "Html": "<p>Well for one the WPF architecture includes Commanding so Buttons/MenuItems etc have the Command DependencyProperty already you don't need to add one. &nbsp;Where as in Silverlight commanding is more or less left out, so you need the&nbsp;interactivity&nbsp;to make click events happen. &nbsp;So what you were trying to doing and the error is sort of&nbsp;convoluted since you using&nbsp;&nbsp;WPF and not Silverlight. &nbsp;In a little bit of irony its surprising actually you didn't get an error on the button you used the property on.</p>\r\n<p>Therefore you don't need the cal:click.Command at all.... &nbsp;This is answer is based off your Topics:&nbsp;Prism v4 - WPF 4</p>",
+    "PostedDate": "2011-04-18T07:29:41.657-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "599124",
+    "ThreadId": "254313",
+    "Html": "<p>Ok - that makes sense. Thanks for the explanation.</p>",
+    "PostedDate": "2011-04-18T07:45:34.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

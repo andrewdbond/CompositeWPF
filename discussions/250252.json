@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "582568",
+    "ThreadId": "250252",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>I have a view which contains a Windows Forms control (hosted by WindowsFormsHost). The winforms control is added to the page programmatically. Now I have to call a method of the winforms control from the ViewModel. I tried to do that using Interaction Request:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">Grid</span><span style=\"color:blue\">&gt;</span>\r\n        <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">i</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">Interaction.Triggers</span><span style=\"color:blue\">&gt;</span>\r\n\r\n            <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">prism</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">InteractionRequestTrigger</span> <span style=\"color:red\">SourceObject</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">{Binding SaveDocumentInteractionRequest}</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">&gt;</span>\r\n                <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">a</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">SaveDocumentAction</span> <span style=\"color:blue\">/&gt;</span>\r\n            <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">prism</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">InteractionRequestTrigger</span><span style=\"color:blue\">&gt;</span>\r\n\r\n        <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">i</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">Interaction.Triggers</span><span style=\"color:blue\">&gt;</span>\r\n        <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">wfi</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">WindowsFormsHost</span> <span style=\"color:red\">HorizontalAlignment</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">Left</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">VerticalAlignment</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">Top</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">Margin</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">0</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">Padding</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">0</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">Grid.Row</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">1</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">x:Name</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">wfh</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">AllowDrop</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">true</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">&gt;</span>\r\n        <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">wfi</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">WindowsFormsHost</span><span style=\"color:blue\">&gt;</span>\r\n<span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">Grid</span><span style=\"color:blue\">&gt;</span>\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>In The SaveDocumentAction (custom action implementation) I then have to call the method of the winform control instance. But therefore I need the view instance inside the action class. How to solve that? Is that generally the right approach for this scenario?<br>\r\nOr would it be better to simply provide an event at the ViewModel to notify the view about when to call the winforms method? The Interaction Request approach seems a bit circular, since it isn't really a UI topic &nbsp;/ user interaction (just want to notify\r\n the view to call a method of the winforms control).. Any guess?&nbsp;</p>\r\n<p>Regards, Andreas</p>\r\n",
+    "PostedDate": "2011-03-18T05:12:25.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "582777",
+    "ThreadId": "250252",
+    "Html": "<p>Hi Andreas,</p>\r\n<p>From the <a href=\"http://msdn.microsoft.com/en-us/library/gg405494%28PandP.40%29.aspx\">Advanced MVVM Scenarios</a> chapter fo the Prism MSDN documentation, interaction requests are useful <em>\"to allow the view model to make interaction requests directly  to the view itself via an interaction request object coupled with a  behavior in the view. ia events. The view subscribes to these events to  initiate the user experience portion of the interaction. The view will  typically encapsulate the user experience of the interaction in a  behavior that is data-bound to the interaction request object provided  by the view model (...)\"</em>.</p>\r\n<p>Since the <em>behaviors </em>mentioned in the description above reside in the view, it shouldn't be wrong to include the method call to the winform contrl instance. From the documentation, <em>\"Because the interaction request object represents a logical  interaction, the exact user experience for the interaction is defined in  the view. Behaviors are often used to encapsulate the user experience  for an interaction; this allows the UI designer to choose an appropriate  behavior and to bind it to the interaction request object on the view  model. The view must be set up to detect an interaction request  event, and then to present the appropriate visual display for the  request. The Microsoft Expression Blend Behaviors Framework supports the  concept of triggers and actions. Triggers are used to initiate actions  whenever a specific event is raised.\"</em></p>\r\n<p>Take into account that interaction requests are useful to separate the logical interaction (in the View Model) from the exact user experience for that interaction. If you don't need to do so (for example, because you need to call a method in the WinForms control that does not necessarily have to do with the user experience), you shouldn't benefit from using Interaction Requests.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-18T11:09:27.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "583594",
+    "ThreadId": "250252",
+    "Html": "<p>Hi Guido,</p>\r\n<p>thanks for your hints. I already read the documentation about Interaction Requests, and my guess is also thats not really the right thing for my scenario. But what's my alternative? How to call a method of a control which resides inside the view from the ViewModel?</p>\r\n<p>The only thing I could imagine would be to raise an event in the ViewModel and attach the view to this event to get notified, but is that MVVM-like? Would it be more appropriate to use the Event Aggregator for that?? Is it intended in PRISM to publish an event in a ViewModel and subscribe to this event in a View?? Should I do that?</p>\r\n<p>&nbsp;</p>\r\n<p>Best Regards<br />Andreas&nbsp;</p>",
+    "PostedDate": "2011-03-21T02:49:51.07-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "583927",
+    "ThreadId": "250252",
+    "Html": "<p>Hi Andreas,</p>\r\n<p>A possible workaround to achieve your requirement would be to use a service, shared between your View and your ViewModel, to communicate those values. You can read more about shared services in the following chapter from the Prism MSDN documentation:</p>\r\n<p><a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28PandP.40%29.aspx\">Chapter 9: Communicating Between Loosely Coupled Components</a></p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-21T12:41:24.183-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "584333",
+    "ThreadId": "250252",
+    "Html": "<p>Hi Guido,</p>\r\n<p>Thanks, but I don't understand:</p>\r\n<p>Why would you prefer a service instead of Event Aggregation?<br /><br /><br />Best Regards,</p>\r\n<p>Andreas&nbsp;</p>",
+    "PostedDate": "2011-03-22T04:59:35.653-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "584416",
+    "ThreadId": "250252",
+    "Html": "<p>Andreas,</p>\r\n<p>The Event Aggregator is usually used to achieve communication between components located in different assemblies. As your requirement for communication is between a View and a ViewModel located in the same assembly, it shouldn't be necessary, although you could use it if you prefer to.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-22T07:50:10.003-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "661542",
+    "ThreadId": "250252",
+    "Html": "<p>Guido--</p>\r\n<p>I keep finding \"help\" to setting up Shared Services that simple points to \"Chapter 9.\" It's useless. I clicked the \"Feedback\" link on the MSDN page for \"Chapter 9,\" and left this feedback.</p>\r\n<ol>\r\n<li>For what I am trying to learn, Shared Services and Event Aggregator, the information in Chapter 9 is almost non-existent.</li>\r\n<li>The Stock Trader RI example code may be complete, but it is way too complex. I'm spending way to much time fishing through it to figure out how it works.</li>\r\n<li>The examples in Chapter 9 refer to non-existent code in the latest Stock Trader RI example. <br />Perform a full Solution search on \"this.eventAggregator.GetEvent&lt;TickerSymbolSelectedEvent&gt;().Subscribe\"<br />or <br />\"_container.RegisterType&lt;IMarketFeedService\"<br />Nothing is returned. <br />The latter text is supposed to be in the file \"MarketModule.cs.\" But in that actual file, you find this in the comments: <br />\"This module is intentionally left empty because views, services, and other types are discovered through declarative attributes. View registration for this module is done through the ViewExportAttribute.\"</li>\r\n</ol>\r\n<p>To summarize, Chapter 9 does not cover the most difficult subject, is out of date, and refers to code that does not exist in a too-complex example.</p>\r\n<p>Our application requirements include shared code for both Silverlight and WPF, and must be built with MVVM architecture. A typical application in our software suite may have 8 modules, 10 ViewModels, and 10 Models. We need the ViewModels to communicate with each other such common information as the user's credentials and the individual product or customer being maintained, so they all stay in sync with each other. So I have to echo \"acenet's\" comment when it comes to using the Stock Trader RI example along with the MSDN documentation: \"I don't understand.\" That should be sad to hear from a Senior .NET developer (since .NET 1.0 beta 1) who already has long experience in WPF and MVVM. I'm just new to Prism. It shouldn't be this hard to learn.</p>",
+    "PostedDate": "2011-08-22T06:58:48.013-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "662220",
+    "ThreadId": "250252",
+    "Html": "<p>Hi,</p>\r\n<p>As of the release of Prism v4, the StockTrader Reference Implementation has been modified to use MEF; therefore, certain changes were made so that it makes better use of the capabilities MEF provides. In the case of the <strong>MarketModule</strong>, a placeholder was left because there was no need to perform any action on its <strong>Initialize </strong>method; this is because, unlike Unity, MEF uses declarative attributes to export types, which are defined in the exported classes themselves, instead of having to register them in the container in the module's <strong>Initialize </strong>method.</p>\r\n<p>On Chapter 9, the example is based on the <a href=\"http://msdn.microsoft.com/en-us/library/ff921074%28PandP.20%29.aspx\">StockTrader Reference Implementation from Prism v2.x</a>, which is the previous version of Prism. As this is outdated and might cause confusion, we've created a <a href=\"http://compositewpf.codeplex.com/workitem/8638\">work item</a> in the issue tracker, so that the produc team takes that into consideration.</p>\r\n<p>Finally, you might also find the <a href=\"http://prismtk.codeplex.com/\">Prism Training Kit</a> useful for your concerns, as an additional piece of guidance on how to use Prism to fulfill your requirements.</p>\r\n<p>If you have further concerns about Prism which aren't clearly explained in the documentation, you could create a separate thread in which we can discuss them, so that you don't experience difficulties when using Prism to develop your application.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-08-23T10:52:35.973-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "662240",
+    "ThreadId": "250252",
+    "Html": "<p>Hi,</p>\n<p>You might also find the following blog post useful, which might be useful to understand why the <strong>MarketModule</strong> is empty in the StockTrader Reference Implementation in Prism v4:</p>\n<p><a href=\"http://blogs.southworks.net/gmaliandi/2011/08/prism-modularity-differences-when-using-mef/\">Prism modularity differences when using MEF</a></p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-08-23T11:16:51.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "685969",
+    "ThreadId": "250252",
+    "Html": "<p>Hi,</p>\r\n<p>As Nelly Delgado mentions in <a href=\"http://compositewpf.codeplex.com/workitem/8638\">the work item I created in response to your comments</a>, the documentation has been updated to address these problems.</p>\r\n<p>Thanks,</p>\r\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-10-18T12:38:42.207-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

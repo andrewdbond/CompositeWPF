@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "955260",
+    "ThreadId": "406569",
+    "Html": "\r\n<p>I'm rewriting an app to be based on Prism. It was based on <a href=\"http://waf.codeplex.com/\">\r\nWAF</a>,&nbsp;and it uses the Entity Framework to access data via the unit of work / repository pattern.</p>\r\n<p>I'm intending to use the event aggregator to inform my view models when a new unit of work is available (eg, after a save). They can then replace the model objects they are presenting with the new equivalents from the new unit of work.</p>\r\n<p>1.) Is this a reasonable idea? How else could I inform my view models that they are showing out of date information?</p>\r\n<p>I only want to have the view models that are visible re-query the database. ViewModels that are not currently shown can delay their refresh until they are shown (I'm planning to do this using the INavigationAware interface).</p>\r\n<p>2.) Again, is this a reasonable way to proceed? How can I distinguish between view models that are currently visible to the user, and those that are not?</p>\r\n<p>As an alternative solution to 2.), I'm considering creating views only as needed, and destroying them immediately when they are hidden. This would solve the &quot;which view models are visible&quot; question, but seems very expensive.</p>\r\n<p>3.)&nbsp;Is Prism intended to be used in this manner?</p>\r\n",
+    "PostedDate": "2012-12-12T11:57:17.507-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "955300",
+    "ThreadId": "406569",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>In my opinion, using the <strong>EventAggregator </strong>to inform your view models of changes seems to be a reasonable approach as you would be able to communicate your view models with your repository in a loosely coupled way without using strong references.\r\n Also, besides the <strong>EventAggregator</strong>, <strong>Prism </strong>provides other approaches to communicate loosely coupled components that you could find interesting:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28v=pandp.40%29.aspx\">Chapter 9 - Communicating Between Loosely Coupled Components</a>\r\n</li></ul>\r\n<p>Regarding the approach of updating only the view models of the views that are visible, I believe it could be an interesting and useful method to increase the performance of the application. However, you will need to add some custom logic to determine when\r\n a view model should update its models or not. For example, if a new unit of work is available but the view is not visible, this means the view model will not be updated and thus, it has to be updated later when the view becomes visible again.</p>\r\n<p>As you mentioned, you could use the <strong>INavigationAware </strong>interface in scenarios where the views are being navigated to and from. However, I believe you could also take advantage of the\r\n<strong>IActiveAware </strong>interface in order to know when a view / view model is active or not. Usually, a view is active when it's visible and inactive when it's not being shown. Hence, this interface could be handy to know when a view is visible or not.</p>\r\n<p>Finally, about destroying the views when they are hidden, this is also a plausible approach. Although this approach is more resource demanding (as you mentioned) how much expensive it's will depend mostly of your application. If in your application the user\r\n will switch through a lot of views (that would be destroyed and re-created each time), the cost of this approach could be even higher than simply updating all view models regardless if they are visible or not. Hence, in my opinion, the previous approach seems\r\n to be a better choice.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n<ul>\r\n</ul>\r\n",
+    "PostedDate": "2012-12-12T13:04:27.423-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "957904",
+    "ThreadId": "406569",
+    "Html": "\r\n<p>Thanks for this Damian - IActiveAware was exactly what I was looking for.</p>\r\n",
+    "PostedDate": "2012-12-18T12:12:57.967-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

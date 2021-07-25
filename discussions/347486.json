@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "806175",
+    "ThreadId": "347486",
+    "Html": "<p>My question @ StackOverflow: <a title=\"http://stackoverflow.com/q/9569542/389966\" href=\"http://stackoverflow.com/q/9569542/389966\">http://stackoverflow.com/q/9569542/389966</a><a title=\"I'm using Prism and my views implement IConfirmNavigationRequest in order to enable them to perform validations and cancel the navigation if required.  My problem is that I have several views which don't use MVVM, and define DataContext = this. Doing so causes Prism to call my view's ConfirmNavigationRequest() twice, which means I ask for the user's response twice.  Basically what's going on is this:      Prism checks if the view implements IConfirmNavigationRequest and calls ConfirmNavigationRequest() on it if it does.     The user is asked whether he'd like to continue.     The user clicks OK and ConfirmNavigationRequest() returns true.     Prism checks if the viewmodel (in my case, it's the view again) implements IConfirmNavigationRequest and calls ConfirmNavigationRequest() on it if it does.     The user is asked again whether he'd like to continue.  As you can see, Prism asks my view for confirmation twice because it queries both the view and the viewmodel.  So my question is, how can I prevent this from happening or how can I detect which call is which so I can ignore one of them? I thought about investigating the continuationCallback parameter, but I don't like this solution so much since it's not unlikely it'll break in the next versions of Prism.\"></a></p>\n<div>\n<p>I'm using Prism and my views implement <code>IConfirmNavigationRequest</code> in order to enable them to perform validations and cancel the navigation if required.</p>\n<p>My problem is that I have several views which don't use MVVM, and define <code> DataContext = this</code>. Doing so causes Prism to call my view's <code>ConfirmNavigationRequest()</code> twice, which means I ask for the user's response twice.</p>\n<p>Basically what's going on is this:</p>\n<ol>\n<li>Prism checks if the view implements <code>IConfirmNavigationRequest</code> and calls <code>ConfirmNavigationRequest()</code> on it if it does. </li>\n<li>The user is asked whether he'd like to continue. </li>\n<li>The user clicks OK and <code>ConfirmNavigationRequest()</code> returns <code> true</code>. </li>\n<li>Prism checks if the viewmodel (in my case, it's the view again) implements <code> IConfirmNavigationRequest</code> and calls <code>ConfirmNavigationRequest()</code> on it if it does. </li>\n<li>The user is asked again whether he'd like to continue. </li>\n</ol>\n<p>As you can see, Prism asks my view for confirmation <strong>twice</strong> because it queries both the view and the viewmodel.</p>\n<p>So my question is, how can I prevent this from happening or how can I detect which call is which so I can ignore one of them? I thought about investigating the <code>continuationCallback</code> parameter, but I don't like this solution so much since it's not unlikely it'll break in the next versions of Prism.</p>\n<p>Any help will be appreciated.</p>\n<p>Thanks</p>\n</div>",
+    "PostedDate": "2012-03-06T05:52:27.18-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "806293",
+    "ThreadId": "347486",
+    "Html": "<p>Hi,</p>\r\n<p>As mentioned in the thread <a href=\"http://compositewpf.codeplex.com/discussions/280670\">INavigationAware issue when DataContext of View is itself</a>, a possible approach could be setting the <strong>DataContext </strong>property of the \"<strong>root</strong>\" visual element of the view instead of the view's <strong>DataContext </strong>property. For example, if you have a <strong>Grid </strong>as the \"root\" visual element of your view:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">UserControl</span> <span style=\"color: red;\">...</span><span style=\"color: blue;\">&gt;</span>\r\n    <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">Grid</span> <span style=\"color: red;\">Name</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">LayoutRoot</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">&gt;</span>\r\n\r\n        ...\r\n\r\n    <span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">Grid</span><span style=\"color: blue;\">&gt;</span>\r\n<span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">UserControl</span><span style=\"color: blue;\">&gt;</span>\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Then, you can set its <strong>DataContext </strong>property like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> MyView : UserControl\r\n{\r\n    <span style=\"color: blue;\">public</span> MyView()\r\n    {\r\n        InitializeComponent();\r\n        <span style=\"color: blue;\">this</span>.LayoutRoot.DataContext = <span style=\"color: blue;\">this</span>;\r\n\r\n        <span style=\"color: green;\">// This is optional and might not be required.</span>\r\n        <span style=\"color: blue;\">this</span>.DataContext = <span style=\"color: blue;\">null</span>;\r\n    }\r\n}\r\n</pre>\r\n</div>\r\nBased on my understanding, your view's <strong>DataContext </strong>will not be the view itself, avoiding the problem of the <strong>ConfirmNavigationRequest </strong>method being invoked twice, while being able to use your view as the <strong>DataContext </strong>for its visual elements.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-03-06T09:00:49.467-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "806311",
+    "ThreadId": "347486",
+    "Html": "<p>Thanks for the helpful reply. This is definitely something I will consider doing.</p>\r\n<p>However, if someone has a solution that doesn't involve making changes to the views, I'd be happy to hear about it.</p>\r\n<p>Thanks again.</p>",
+    "PostedDate": "2012-03-06T09:27:20.27-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "906496",
+    "ThreadId": "347486",
+    "Html": "\r\n<p>Hi! just checking if anyone has found a better solution than this. I am also having same problem. This looks like a&nbsp;bug in PRISM implementation of INavigationAware that needs to be fixed.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-08-30T11:53:08.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "According to the Prism documentation, DelayedRegionCreationBehavior delays creation of regions until the control that will host the IRegion is added to the VisualTree.\n \nHowever, in practice the region is often created long before the control is added to the tree. This means the region adapter is invoked before the control is part of a window, even, possibly if the control will never be added to the visual tree.\n \nThe \"early\" delayed region creation occurs when RegionManager.UpdateRegions() is called, because the behavior monitors the RegionManager.UpdatingRegions event, and uses this as one of its triggers for View creation.\n \nTypically, code like this will cause too early creation:\nvar view = new ViewWithRegionsInIt();\nregionManager.Regions[\"ParentRegion\"].Add( view );\n \nWhereas this code will create the region when the view is actually added to the tree:\nvar rgn = regionManager.Regions[\"ParentRegion\"];\nvar view = new ViewWithRegionsInIt();\nrgn.Add( view );\n \nThe difference in behavior occurs because indexing the Regions collection in the IRegionManager causes RegionManager.UpdateRegions() to be called, and thus create any regions in views that haven't yet been created, whether they are in the visual tree or not.\n \nIt's not documented why the DelayedRegionCreationBehavior behaves like this, but I'm guessing it's a hack to allow Regions to be created for non FrameworkElement objects. \n \nUnfortunately, there's no way to extend it to modify this behavior (only CreateRegion is virtual), so the only way I could find to fix the Prism behavior was to patch the Prism code. My fix for this issue as as follows:\nIn DelayedRegionCreationBehavior.cs:\n        public void OnUpdatingRegions(object sender, EventArgs e)\n        {\n            if( TargetElement != null &&\n                TargetElement is FrameworkElement &&\n                ((FrameworkElement)TargetElement).Parent != null &&\n                Window.GetWindow( TargetElement ) == null )\n                // Looks like we can trust that the Loaded event will work for this element, so wait for that\n                return; \n \n            this.TryCreateRegion();\n        }",
+    "LastUpdatedDate": "2013-02-21T18:38:03.13-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-02-07T01:12:45.317-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "DelayedRegionCreationBehavior creates regions too early",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 9157
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "This behavior causes a problem for me, because some of my extensions to prism rely on accessing the window of a control when the views are added to the control.",
+      "PostedDate": "2012-02-07T01:15:56.443-08:00",
+      "Id": 156581
+    },
+    {
+      "Message": "Hi Mark,\r\n\r\nWe verified the behavior you described. So far we couldn't find another possible reason for this than to allow Regions to be created for non FrameworkElement objects.\r\n\r\nWe also check that your proposed solution seems to avoid this behavior and that all tests in the Prism's Desktop library passed.\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2012-03-02T10:43:42.877-08:00",
+      "Id": 156582
+    },
+    {
+      "Message": "Hi Mark,\r\n\r\nWe verified the behavior you described. We also believe the reason for this might be to allow Regions to be created for non FrameworkElement objects.\r\n\r\nWe also check that your proposed solution seems to avoid this behavior and that all tests in the Prism's Desktop library passed.\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2012-03-02T10:46:39.7-08:00",
+      "Id": 156583
+    }
+  ]
+}

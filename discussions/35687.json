@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "118587",
+    "ThreadId": "35687",
+    "Html": "Hi,<br>\r\n<br>\r\nThe IEventAgregator behavior is very weird. The publishing order seems to be buggy!<br>\r\n<br>\r\nThe following source code subscribes 2 times with 2 differents handlers to the same event.<br>\r\nWith the ThreadOption = UIThread, the published order is: Login1EventHandler then Login2EventHandler.<br>\r\nBut with ThreadOption = PublisherThread, the published order is: Login2EventHandler then Login1EventHandler.<br>\r\n<br>\r\n<span style=\"text-decoration:underline\">\r\nIs there a way to control the publishing order?</span><br>\r\n<br>\r\n<pre>&nbsp;&nbsp;&nbsp; public partial class Window1 : Window<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; IEventAggregator eventAggregator = new EventAggregator();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public Window1()<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; InitializeComponent();</pre>\r\n<pre>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; eventAggregator.GetEvent&lt;LoginEvent&gt;().Subscribe(Login1EventHandler, ThreadOption.UIThread);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; eventAggregator.GetEvent&lt;LoginEvent&gt;().Subscribe(Login2EventHandler, ThreadOption.UIThread);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; private void button1_Click(object sender, RoutedEventArgs e)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; eventAggregator.GetEvent&lt;LoginEvent&gt;().Publish(&quot;Loggin&quot;);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; void Login1EventHandler(string o)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; MessageBox.Show(&quot;Login1&quot;);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; void Login2EventHandler(string o)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; MessageBox.Show(&quot;Login2&quot;);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; public class LoginEvent : CompositeWpfEvent&lt;string&gt;{}</pre>\r\n<br>\r\n<br>\r\nDgis\r\n",
+    "PostedDate": "2008-09-15T09:18:21.02-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "118835",
+    "ThreadId": "35687",
+    "Html": "<p style=\"margin:0in 0in 10pt;line-height:normal\"><span style=\"font-family:Calibri\">The current implementation of the <b>Event Aggregation</b> service uses a <b>List&lt;IEventSubscription&gt; </b>collection to store the event subscriptions. Every time that you add new subscription, this is added to the end of the collection. When the event is published, the <b>Subscriptions</b> collection is iterated from the end to the beginning. So the last event subscription is usually the first to be published.</span></p>\r\n<p style=\"margin:0in 0in 10pt;line-height:normal\"><span style=\"font-family:Calibri\">However the execution order of the subscriptions is <b>not guaranteed</b>. For example is you subscribe to an event in the <b>UIThread</b> you could not be sure when the event will be executed (the event is executed asynchronously using the <b>BeginInvoke</b> method of the <b>Dispatcher</b>).</span></p>\r\n<p style=\"margin:0in 0in 10pt;line-height:normal\"><span style=\"font-family:Calibri\">You should not be dependant of the execution order of the events. If you need to specify a predefined order, you could chain the event subscriptions/publications in different events (i.e. <i>PreLoginEvent</i>, <i>PostLoginEvent</i>). </span></p>\r\n<p style=\"margin:0in 0in 10pt;line-height:normal\"><span style=\"font-family:Calibri\">You should also note that you should not modify the payload and assume that it will be modified when it reaches the next subscriber or when execution returns to the publisher, as the approach of the <b>Event Aggregation</b> service is <b>Fire-and-forget</b> (specifically if you dispatch on something different than the publisher thread, these will be invoked asynchronically).</span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:Calibri\">Please, let me know if it helps.</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:Calibri\">Mariano Converti</span></p>\r\n<span style=\"font-size:11pt;line-height:115%;font-family:'Calibri','sans-serif'\"><a href=\"http://blogs.southworks.net/mconverti\">http://blogs.southworks.net/mconverti</a></span>\r\n",
+    "PostedDate": "2008-09-16T07:19:19.27-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "120883",
+    "ThreadId": "35687",
+    "Html": "I do not understand why the UIDispatcher is not able to dispatch the event in the publishing order since there is only one UIDispatcher (=Application.Current.Dispatcher) in the whole application.<br>\r\nBut thank you very much for your answer.<br>\r\n<br>\r\nDgis<br>\r\n",
+    "PostedDate": "2008-09-25T01:54:34.497-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "234566",
+    "ThreadId": "68935",
+    "Html": "<div>\r\n<p><span style=\"font-size:10pt;color:black\">Hi; I'm trying to use generic events with event aggregator with CAG 1.0. Control is not coming to the event subscription handler where as it work perfectly allright with simple types. I don't see runtime errors either. pl let me know if I&rsquo;m doing something wrong. Code snippet is given below. Thanks in advance.</span></p>\r\n</div>\r\n<div>Event:<br>public class AddSDCCriteriaItem&lt;T&gt; : CompositeWpfEvent&lt;SDCSessionCriteriaItem&lt;T&gt;&gt; where T:DatabaseItem { }</div>\r\n<div>\r\n<p>Publisher:<br>SessionEventAggregator.GetEvent&lt;AddSDCCriteriaItem&gt;().Publish(SDCCriteriaItem);</p>\r\n<p>Subscriber:<br>SessionEventAggregator.GetEvent&lt;AddSDCCriteriaItem&lt;DatabaseItem&gt;&gt;().Subscribe(AddCriteriaHandler&lt;DatabaseItem&gt;,</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Microsoft.Practices.Composite.Wpf.Events.ThreadOption.UIThread, true);</p>\r\n<p>Handler:<br>public void AddCriteriaHandler&lt;T&gt;(SDCSessionCriteriaItem&lt;T&gt; SelecedCriteriaItem) where T : DatabaseItem<br><br>{<br>&nbsp;//do something...&nbsp;&nbsp; <br>}</p>\r\n<p>&nbsp;<br>And the payload is,</p>\r\n<p>public class SDCSessionCriteriaItem &lt;T&gt; where T: DatabaseItem</p>\r\n<p>&nbsp;&nbsp;&nbsp; {</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public MetaData.DataItem SDCDataItem;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private List&lt;T&gt; _selectedValues;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public List&lt;T&gt; SelectedValues<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_selectedValues == null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _selectedValues = new List&lt;T&gt;();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _selectedValues;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _selectedValues = value;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public SDCSessionCriteriaItem() { }<br>&nbsp;&nbsp;&nbsp; }</p>\r\n</div>",
+    "PostedDate": "2009-09-14T20:55:35.707-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "234935",
+    "ThreadId": "68935",
+    "Html": "<p id=d1efac00-8472-012c-2829-12313b00c5d1>Hi</p>\r\n<p id=d1efdd70-8472-012c-282a-12313b00c5d1>I have tried to reproduce your error using the Prism Event Aggregator quickstart with no success as the event did get to the handler. I have uploaded the outcome solution <a href=\"http://cid-09f63fc7ac065e5e.skydrive.live.com/self.aspx/p^0p Samples/GenericEA.zip\">here</a> so you can check the differences to find the issue.</p>\r\n<p id=d1f01bc0-8472-012c-282b-12313b00c5d1>Please let me know if this helps.</p>\r\n<p id=d1f06150-8472-012c-282c-12313b00c5d1>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-09-15T15:51:19.833-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "237794",
+    "ThreadId": "68935",
+    "Html": "<p><span style=\"font-size:10pt;color:black\">Hi Damian; Thanks for your reply and accept my apologies for late response on this. I'm still having same issue at my end, not sure where is the issue </span><span style=\"font-size:10pt;color:black\">L</span><span style=\"font-size:10pt;color:black\">. Appreciate if you can further put any thought were i can I need to have a look, any specific area you can suggest for debugging. </span></p>\r\n<p><span style=\"font-size:10pt;color:black\">Regards,</span></p>\r\n<p><span style=\"font-size:10pt;color:black\">Ram</span></p>\r\n<p><span style=\"font-size:10pt;color:black\">&nbsp;</span></p>",
+    "PostedDate": "2009-09-23T05:40:56.083-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

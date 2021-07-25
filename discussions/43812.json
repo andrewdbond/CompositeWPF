@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "145682",
+    "ThreadId": "43812",
+    "Html": "Hello, <br>\r\n<br>\r\ni have been working on my first Composite Application in Silverlight, and i am now facing this very annoying problem.<br>\r\n<br>\r\nI cannot debug my application when it is running hosted on a Asp.net Web app. When i start debugging, the app stops in the breakpoints, placed in the Bootstrapper and Shell class, and i can also step into the CAL code. <br>\r\nHowever, i cannot step into my modules&nbsp;code ( Silverlight class libraries ) nor infrastructure code. <br>\r\n<br>\r\nI can parcially debug it on the automatically generated test page of the Silverlight app, <br>\r\nhowever i have a WCF service reference in the infrastructure project which gives me Cross Domain Boundaries error, so this is not viable. It has to be done on the web app.<br>\r\n<br>\r\nOn the web project properties i have silverlight enabled debugging, and it is also correctly binded to the Silverlight application.<br>\r\n<br>\r\nCan anyone point me some directions ?<br>\r\n<br>\r\nThank you,<br>\r\nFrancisco<br>\r\n",
+    "PostedDate": "2009-01-09T05:23:37.413-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "145773",
+    "ThreadId": "43812",
+    "Html": "Hi frantic0, <br>\r\n<br>\r\nI think you'll be glad to know that you can easily debug the Silverlight/WCF environment :)  We'll get you through it.<br>\r\n<br>\r\nFirst I'd go to the app.Silverlight.Web (website) project, right-click, and select Web tab.<br>\r\n<br>\r\nI would check ASP.NET, Native Code and Silverlight.    &lt;=======<br>\r\n<br>\r\nTo get into your WCF service what you want to do is run your application in Debug mode and then do the following<br>\r\n   + Click on Debug <br>\r\n   + Click on Attach to process<br>\r\n   + Scroll down until you see ASP.NET Development Server - Port xxxx.  One will be grayed out (it's the Website)<br>\r\n   + Click on the entry that is not grayed out and click &quot;Attach&quot;<br>\r\n<br>\r\nYou'll now be able to step through your WCF service.   Sometimes I have to put breakpoints early in processes and step through it to get to where I want to be - on occassion it just blows by my breakpoint but I've yet to have a problem with an entry point (first lines of method) not breaking when it should.<br>\r\n<br>\r\nNote: I lost half a day when trying to debug Javascript code (which is supported in VS2008). <br>\r\n   +  <a href=\"http://www.global-webnet.net/blogengine/post/2009/01/06/Javascript-debugging-doesnt-work-in-Visual-Studio-2008-or-does-it.aspx\">http://www.global-webnet.net/blogengine/post/2009/01/06/Javascript-debugging-doesnt-work-in-Visual-Studio-2008-or-does-it.aspx</a><br>\r\n<br>\r\n---<br>\r\n<br>\r\nThe following blog should get you through the Cross Domain issue :  <a href=\"http://www.global-webnet.net/blogengine/post/2009/01/01/WCF-Silverlight-An-error-occurred-attempting-to-access-a-service-in-a-cross-domain-way.aspx\">CrossDomain Blog</a>; since learning this I now keep my WCF service as a separate project (reusability).<br>\r\n<br>\r\nYou'll want to review this blog cast for issues I ran into with WCF and Prism - it many save you some debug time<br>\r\n  +  <a href=\"http://www.global-webnet.net/blogengine/post/2009/01/03/PrismWCF-Cannot-find-ServiceReferencesClientConfig-in-xap-application-package.aspx\">Prism/WCF - Cannot find ServiceReferences.ClientConfig in .xap application package</a><br>\r\n<br>\r\n",
+    "PostedDate": "2009-01-09T11:31:47.12-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "186776",
+    "ThreadId": "43812",
+    "Html": "<p>Hi,<br>\r\n<br>\r\nAre your instructions intended for debugging a XAP that is not included in the shell project??  This is what I'm trying to achieve and I'm running into a wall here.  </p>\r\n<p>At this point, I've got two instances of Visual Studio running.  In the first, I've got the project for a Module and I've attached the debugger to a development server process that originated from running the Shell project in another instance of Visual Studio.  <br>\r\n<br>\r\nIs this not the way to go about debugging the module code??<br>\r\n<br>\r\nCheers,<br>\r\nJeff</p>\r\n",
+    "PostedDate": "2009-05-04T19:41:31.23-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

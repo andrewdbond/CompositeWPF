@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nWe are closing this work item, as this is probably not an issue in Prism.\r\n\r\nAs explained by Damian Cherubini, CompositeCommands allow the possibility to define which child commands you don't wish to participate by setting their IsActive property.\r\n\r\nFor those interested in this subject you could find more information, and a sample that portrays different possibilities when using CompositeCommands in the following blog post:\r\n\r\nPrism: Using CompositeCommands, DelegateCommands and IActiveAware\r\nhttp://blogs.southworks.net/aadami/2012/04/24/prism-using-compositecommands-delegatecommands-and-iactiveaware/\r\n\r\nRegards,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+    "ClosedDate": "2012-04-25T13:10:18.77-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "The CompositeCommand works the 'All' way, meaning if one of the sub commands cannot execute, the CompositeCommand returns false for its CanExecute.\nMy suggestion is that there should be a subclass or different type of CompositeCommand that returns true if Any of the commands can execute, and when execution is fired, it should only execute the underlying commands that can execute.",
+    "LastUpdatedDate": "2013-05-16T05:28:39.147-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-01-05T23:53:28.91-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "CompositeCommand should have an 'Any' option",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9093
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nBased on my understanding, the CompositeCommand already supports this scenario out of the box through the usage of the IActiveAware interface. As explained in the chapter of the prism documentation: \r\nChapter 6: Advanced MVVM Scenarios - Executing Commands on Active Child Views (http://msdn.microsoft.com/en-us/library/gg405494%28PandP.40%29.aspx#sec4) if the monitorCommandActivity parameter of the CompositeCommand constructor is set to True, the CompositeCommand class exhibits the following behavior:\r\n\r\n - CanExecute. Returns true only when all active commands can be executed. Child commands that are inactive will not be considered at all.\r\n\r\n - Execute. Executes all active commands. Child commands that are inactive will not be considered at all.\r\n\r\nAlso, you can find the following threads useful where similar scenarios are discussed:\r\n - CompositeCommand for ANY registered DelegateCommand that CanExecute (http://compositewpf.codeplex.com/discussions/224701)\r\n - How to use Command Binding Cross Regions (http://compositewpf.codeplex.com/discussions/271713)\r\n\r\nI hope you find this useful,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-01-06T10:22:45.703-08:00",
+      "Id": 156563
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "892494",
+    "ThreadId": "389363",
+    "Html": "\r\n<p>OK,</p>\r\n<p>I'm wondering how navigate to previously displayed view in PRISM? If i save each\r\n<strong>Uri </strong>in a stack &nbsp;then how i can recognize same opened views?\r\n<strong>Uri</strong>s are same!&nbsp;let me explain it with a sample:</p>\r\n<p>User clicks on &quot;new document&quot; button. view navigates to new document.</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>regionManager.NavigateRequest(<span style=\"color:#a31515\">&quot;MainRegion&quot;</span>, <span style=\"color:#a31515\">&quot;NewDocument&quot;</span>);\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>user types some text on textbox in that view, and then clicks on &quot;new document&quot; button. again this line gets execute:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>regionManager.NavigateRequest(<span style=\"color:#a31515\">&quot;MainRegion&quot;</span>, <span style=\"color:#a31515\">&quot;NewDocument&quot;</span>);\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>by now there are two &quot;NewDocument&quot; views in <strong>TabControl</strong>. but how we can identify each of views?&nbsp;</p>\r\n",
+    "PostedDate": "2012-07-28T00:20:19.323-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "893029",
+    "ThreadId": "389363",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding of your scenario, I believe you could benefit from the use of the the <strong>IsNavigationTarget </strong>method on the <strong>INavigationAware </strong>interface.</p>\r\n<p>The <strong>IsNavigationTarget </strong>method allows an existing (displayed) view or view model to indicate whether it is able to handle the navigation request or not. Hence, it could be useful if you need to determine if an existing view will handle the navigation operation or when navigating to a view that already exists. For example, the implementation of the <strong>IsNavigationTarget </strong>method can use the <strong>NavigationContext </strong>parameter to determine which view you want to navigate.</p>\r\n<p>You can find more information about this in the following sections of the <a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40)\">Navigation chapter</a> in the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40)#sec11\">Navigating to Existing Views</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40)#sec9\">View and View Model Participation in Navigation</a></li>\r\n</ul>\r\n<p>Also, one thing you should consider, is that by default in <strong>Prism</strong>, when registering views in the container with a contract name that differs from the view <strong>type Name </strong>or <strong>FullName</strong>, no matches will be found, and a new instance will be retrieved from the container. Hence, if you want to be able to navigate to an existing view, the view's name in the navigation <strong>URI </strong>should be the same as the actual target type's short type name.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-07-30T06:21:32.193-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

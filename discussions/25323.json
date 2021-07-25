@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "84899",
+    "ThreadId": "25323",
+    "Html": "\r\nThere is also the Execute that leaves be perplex:<br /><br />Existing:<br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\npublic virtual void Execute(object parameter)\r\n{\r\n    Queue&lt;ICommand&gt; commands = new Queue&lt;ICommand&gt;(registeredCommands);\r\n \r\n    while (commands.Count &gt; 0)\r\n    {\r\n        ICommand command = commands.Dequeue();\r\n        if (ShouldExecute(command))\r\n            command.Execute(parameter);\r\n    }\r\n}\r\n</pre><br />Proposed:<br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\npublic virtual void Execute(object parameter)\r\n{\r\n  foreach (var command in registeredCommands.Where(ShouldExecute))\r\n  {\r\n    command.Execute(parameter);\r\n  }\r\n}\r\n</pre><br />What's with the Queue?<br />",
+    "PostedDate": "2008-04-03T16:00:03.687-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "85071",
+    "ThreadId": "25323",
+    "Html": "<br /><div class=\"quote\" style=\"border: dotted .1em #aaa; border-left: none; border-right: none; font-style: italic; margin: 1em 0em 2.5em 3em;padding: .2em;\"><br />francois_tanguay wrote:<br /><br />What's with the Queue?<br /><br /><br /></div><br />Could it be a technique used to support multithreading?   I noted there are static instances of MultiDispatchCommand...<br />",
+    "PostedDate": "2008-04-04T11:48:16.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "85101",
+    "ThreadId": "25323",
+    "Html": "<div class=\"quote\" style=\"border: dotted .1em #aaa; border-left: none; border-right: none; font-style: italic; margin: 1em 0em 2.5em 3em;padding: .2em;\"><br />BillKrat wrote:<br />Could it be a technique used to support multithreading?   I noted there are static instances of MultiDispatchCommand...<br /><br /></div>If so, I think it's still flawed because the Queue&lt;T&gt; ctor doesn't do any locking.<br />",
+    "PostedDate": "2008-04-04T13:53:24.257-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "85120",
+    "ThreadId": "25323",
+    "Html": "\r\nExactly, Queue isn't thread safe and from what I see, I don't see any logical reasons to push the list into a queue and then dequeue it.<br />",
+    "PostedDate": "2008-04-04T15:56:13.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "85126",
+    "ThreadId": "25323",
+    "Html": "<br /><div class=\"quote\" style=\"border: dotted .1em #aaa; border-left: none; border-right: none; font-style: italic; margin: 1em 0em 2.5em 3em;padding: .2em;\"><br />francois_tanguay wrote:<br />Exactly, Queue isn't thread safe and from what I see, I don't see any logical reasons to push the list into a queue and then dequeue it.<br /><br /></div><br />Understood, however not having tried it my assumption was that since they are creating a local instance, and using an enumerator as a parameter (as a result \"the elements are copied into Queue(T) in the same order they are read by the IEnumerator(T) of the collection\") then it's collection won't have a risk of being changed - thus the basis for my question; I have read much on the topic but do not have any experience (yet).<br /><br />",
+    "PostedDate": "2008-04-04T16:27:08.06-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "86565",
+    "ThreadId": "25323",
+    "Html": "\r\nThe idea behind the queue is that we want to have a snapshot of all the registered commands at one point in time (specifically when you call Execute on the dispatcher command). The registered commands' list could be changed as a consequence of executing a particular command, so it's not enough to just iterate through the list of commands and call Execute on each.<br />Anyway, we didn't take into account that the Queue ctor may not be thread safe, so we may need a lock or something of the sort.<br /><br />Thank you for your feedback.<br />Julian Dominguez<br />",
+    "PostedDate": "2008-04-13T12:34:17.633-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1047955",
+    "ThreadId": "444815",
+    "Html": "Hello,\r<br />\nI've been searching high and low to figure out a way for my class library project (containing WPF views) can simply access Styles and other resources from the main application's App.xaml. Everything I've found on the web so far prescribes some explicit technique (e.g. using Pack URIs) to accomplish this. However, I've studied the StockTraderRI app and somehow it accomplishes this without using any of these other techniques. As an example, the Styles.xaml, from the StockTraderRI project, defines a TextBlockSectionTitle style. And seemingly effortlessly, the ArticleView.xaml code (see Text=&quot;NEWS ARTICLES&quot;) in the StockTraderRI.Modules.News project accesses this style. No URIs or other tricks are used (that I can see).\r<br />\n<br />\nI have not been able to reproduce this perfectly ideal scenario in a test application. Does anyone know how PRISM does this?<br />\n\r<br />\nThanks<br />\n",
+    "PostedDate": "2013-05-23T13:49:55.587-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1048354",
+    "ThreadId": "444815",
+    "Html": "Hi,\r<br />\nAs far as I know, this is not an specific feature of <strong>Prism</strong> but of <strong>WPF</strong> itself.\r<br />\n<br />\nBased on my understanding, during run-time, the resources defined in the <strong>App.xaml</strong> file of the main project become available for any component of the application (any resource defined in other <strong>App.xaml</strong> files of other projects will be ignored.) Regardless from where the components are defined (main project, class library, etc...) they form part of the running application and therefore they will use the resources defined in it.\r<br />\n<br />\nHowever, this might differ during design-time when using the designer. Based on my understanding, it seems that if the main project has a reference to the module (like the <strong>StockTraderRI</strong> project to the <strong>StockTraderRI.Modules.News</strong> module) and said module is a class library, visual studio assumes that the main project is the entry point of the application and it loads its resources when using the designer, allowing you to see the effects of the style in design-time. You can check this by removing the reference in the <strong>StockTraderRI</strong> project, cleaning the solution and restarting visual studio. You should see that the <strong>ArticleView</strong> no longer finds the <strong>TextBlockSectionTitle</strong> style.\r<br />\n<br />\nThe result of this is that, if you have a module that is not directly referenced by your main project and is loosely loaded, then you would not be able to see the effects of using a style or resource in it that was defined in the main project during design-time. However, those should be correctly applied during run-time in the components of the module.\r<br />\n<br />\nRegarding this subject, I believe you could find the following article of the <strong>Knowledge Base</strong> useful:<br />\n<ul>\n<li>\n<a href=\"http://compositewpf.codeplex.com/wikipage?title=Using%20resource%20dictionaries%20in%20modules\" rel=\"nofollow\">Using resource dictionaries in modules</a><br />\n</li>\n</ul>\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-05-24T10:53:24.253-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1048358",
+    "ThreadId": "444815",
+    "Html": "Thanks Damian, your suggestion solved my problem: all I needed to do was add the project reference and restart Visual Studio. Thanks also for that link.\r<br />\nCheers,\r<br />\nBruce<br />\n",
+    "PostedDate": "2013-05-24T11:02:32.453-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

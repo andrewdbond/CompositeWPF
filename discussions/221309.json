@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "472262",
+    "ThreadId": "221309",
+    "Html": "<p>Hi</p>\r\n<p>Sort of new to prism and wondering&nbsp; how you get Modulecatalog.</p>\r\n<p>I have installed the latest drop of prism and the following override using CreateFromXaml no longer seems to be there.</p>\r\n<p>How do&nbsp;I achieve the same in the latest drop?</p>\r\n<p>&nbsp;Below method seems deprecated.</p>\r\n<pre style=\"font-family:consolas\"><span style=\"color:green\"><div style=\"color:black;background-color:white\"><pre><span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> IModuleCatalog GetModuleCatalog() </pre>\r\n<pre>{            </pre>\r\n<pre><span style=\"color:blue\">  return</span> ModuleCatalog.CreateFromXaml( <span style=\"color:blue\">new</span> Uri(<span style=\"color:#a31515\">&quot;/Shell;component/ModuleCatalog.xaml&quot;</span>, UriKind.Relative)); </pre>\r\n<pre> }\r\n</pre>\r\n<pre>Thanks for any suggestions</pre>\r\n</div>\r\n</span></pre>",
+    "PostedDate": "2010-07-24T23:05:36.453-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "472363",
+    "ThreadId": "221309",
+    "Html": "<p>GetModuleCatalog has become CreateModuleCatalog. There was a pattern we saw emerging in the bootstrapper classes where there are a number of things you need to create, then configure.&nbsp; This method was renamed for consistency.</p>\r\n<p>Take a look at the modularity quickstarts for an idea of&nbsp;the new naling pattern, or look at one of the two bootstrapers (UnityBootstrapper in the UnityExtensions.dll or MefBootstrapper inthe MefExtensions.Dll) and the Run method to see the&nbsp;basic sequence of method calls.&nbsp;</p>\r\n<p>The next drop will have docs around the bootstrapper which should help with the confusion.</p>\r\n<p>&nbsp;If you are still having issues, let me know,</p>\r\n<p>Michael Puleio</p>",
+    "PostedDate": "2010-07-25T11:12:37.24-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

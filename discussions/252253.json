@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "590662",
+    "ThreadId": "252253",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>I have a region adapting a TabControl. I want to open multiple new views as tabs via Region.RequestNavigate. The first time it creates a new view and activates the new tab. But the following times it only activates the existing tab. My View and my ViewModel\r\n do NOT implement INavigationAware.</p>\r\n<p>When the ViewModel implements INavigationAware and IsNavigationTarget returns false, then additional views and tabs are created as expected.</p>\r\n<p>Is this the correct behavior? This means my ViewModels used in Tab-Regions always must implement INavigationAware just to be able to be showed multiple times.</p>\r\n<p>&nbsp;</p>\r\n<p>Erik</p>\r\n<div id=\"x__mcePaste\" style=\"left:-10000px; top:0px; width:1px; height:1px; overflow:hidden\">\r\n<pre style=\"font-family:Consolas; font-size:13; color:black; background:white\">IsNavigationTarget\r\n</pre>\r\n</div>\r\n",
+    "PostedDate": "2011-04-02T07:47:43.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "591691",
+    "ThreadId": "252253",
+    "Html": "<p><span style=\"font-size: 11pt;\">Hi Erik,</span></p>\r\n<p><span style=\"font-size: 11pt;\">The behavior you are experiencing is the default behavior of Prism&acute;s Navigation Service. When you call the <strong>RequestNavigate</strong> method, the container will try to resolve an instance of the view  you&rsquo;ve specified through the Uri. If you have exported your view through  MEF&rsquo;s Export attribute without specifying a <strong>PartCreationPolicy</strong>, it will be exported as a shared instance by default, therefore making the <strong>RequestNavigate</strong> method retrieve the same instance of the view on each call. You could try specifying the <a href=\"http://msdn.microsoft.com/en-us/library/system.componentmodel.composition.partcreationpolicyattribute.creationpolicy.aspx\" target=\"_blank\">PartCreationPolicy</a> to <a href=\"http://msdn.microsoft.com/en-us/library/system.componentmodel.composition.creationpolicy.aspx\" target=\"_blank\">CreationPolicy.NonShared</a>.</span></p>\r\n<p><span style=\"font-size: 11pt;\">If  that doesn&rsquo;t fix your undesired behavior, it would be helpful if you  could provide us with additional information regarding your application,  or a repro sample if possible.</span></p>\r\n<p><span style=\"font-size: 11pt;\">You might find the following blog post by <a href=\"http://blogs.msdn.com/b/kashiffl\" target=\"_blank\">Karl Shifflet</a> useful to learn more about the region navigation mechanisms:</span></p>\r\n<div class=\"im\">\r\n<p><span style=\"font-size: 11pt;\"><a href=\"http://blogs.msdn.com/b/kashiffl/archive/2010/10/04/prism-v4-region-navigation-pipeline.aspx\" target=\"_blank\">Prism v4 Region Navigation Pipeline</a></span></p>\r\n</div>\r\n<p><span style=\"font-size: 11pt;\">I hope you find this information useful.</span></p>\r\n<p><span style=\"font-size: 11pt;\">Thanks,</span></p>\r\n<p><span style=\"font-size: 11pt;\">Miguel Bronzovic<br />http://blogs.southworks.net/mbronzovic</span></p>\r\n<p><span style=\"font-size: 11pt;\"><br /></span></p>",
+    "PostedDate": "2011-04-04T16:50:16.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "592803",
+    "ThreadId": "252253",
+    "Html": "<p>Hi Miguel,</p>\r\n<p>thanks for your hints, but I'm using the Unity container not MEF, which by default creates everytime a new instance.</p>\r\n<p>I took a closer look in the prism code and found the RegionNavigationContentLoader.LoadContent method. Here the reuse-candidates are checked for the INavigationAware interface. The last step is checking the DataContext and if it does NOT implement the INavigationAware interface the view is reused. And this is in my opinion a bit strange. The view is reused because it does not know anything about the navigation operation, mmmh.</p>\r\n<p>So my workaround is to implement always the INavigationAware interface with IsNavigationTarget returning false.</p>\r\n<p>&nbsp;</p>\r\n<p>Erik</p>",
+    "PostedDate": "2011-04-06T07:38:59.61-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

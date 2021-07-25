@@ -1,0 +1,51 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Fixed in Drop 10",
+    "ClosedDate": "2010-10-14T15:34:13.507-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Prism Version:\nv4 Drop 8 Beta source 2\n \nEnvironment:\nSilverlight 4\nMicrosoft .Net Framework 4.0 \n \nDescription:\nViews that are of type TabItem that are injected into a TabControl region no longer appear in in the Tab Control\n \nSteps to reproduce:\n1. Create a prism project with a shell and a module\n2. In the Shell, create a TabControl with a RegionManager.RegionName=\"TabRegion\"\n3. In the module project, create a user control view of type TabItem (where xaml root element is <sdk:TabItem> and the code-behind inherits TabItem)\n4. Inject the view into the region either using RegionManager or ViewExport attribute\n5. With everything else configured correctly, run the project\n \nProblem:\nThe view injected into the region does not appear.  This works for any other control type in silverlight, it also works for WPF's tab control, and it use to work in Drop 8.  The only difference that I can see that was made was an additional check added to TabControlRegionSyncBehavior.OnViewsChanged:\n...\nif (this.GetContainerForItem(newItem, this.hostControl.Items) == null)\n{\n   ....\n}\nFor views of type TabItem, this check always returns false so the view never gets added to the hostControl.Items collection.  I understand that there is other ways to achieve this, by simply using a ViewModel for DataContext, that sets the HeaderInfo... but for most cases, this is requiring more work than what is needed.\n \nWorkaround:\nUnremarking the check fixes this issue.\n \nPlease revise this check to consider views of type TabItem (which, imo, PrepareContainerForItem already does).  Thanks!",
+    "LastUpdatedDate": "2013-05-16T05:28:47.157-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-10-12T10:35:39.3-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Bug: TabControlRegionSyncBehavior no longer supports Views of type TabItem",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 7367
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897971,
+      "FileName": "Sample Project - Bug 7367.zip",
+      "DownloadUrl": ".\\897971"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Attached sample project to replicate the problem.  Make sure to set startup project to SilverlightApp1.Web and startup page to the aspx file.",
+      "PostedDate": "2010-10-12T11:41:11.99-07:00",
+      "Id": 156328
+    }
+  ]
+}

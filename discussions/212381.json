@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "441890",
+    "ThreadId": "212381",
+    "Html": "<p>Hi,</p>\r\n<p>We wrote a green field project based on Prism Oct 2009 version.&nbsp;One of the&nbsp;module contains two views and get loaded into left hand and right hand region when the shell loads. The right hand view is a selection panel allows users to choose different criteria and by pressing the submit button, through event aggregation, the left hand view will be updated accordingly. We used View Injection and Supervising Presenter pattern.</p>\r\n<p>We recently have a need to plug&nbsp;this module into a legacy application. The legacy application will simply load a wpf usercontrol and display it. We don't want to modify it into Prism.</p>\r\n<p>In terms of modify&nbsp;the module to be used in this legacy application, what is the best approach and steps for doing it?</p>\r\n<p><strong>1. Shall I create a wpf usercontrol in legacy application and load the two views into this new usercontrol?</strong></p>\r\n<p><strong>2. What modification do I need to allow me to use most of the existing prism logic? e.g. IOC, Event Aggregation, View Injection, Supervising Presenter</strong></p>\r\n<p>Thanks</p>",
+    "PostedDate": "2010-05-12T01:25:38.61-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "442150",
+    "ThreadId": "212381",
+    "Html": "<p id=0e6b2530-4007-012d-e7df-12313d013db1>Hi,</p>\r\n<p id=0e6b63a0-4007-012d-e7e0-12313d013db1>If you want to include your  module into a legacy application without adopting Prism in that  application, a possible approach would be to create a &ldquo;Module  Bootstrapper&rdquo;. The <a href=\"http://msdn.microsoft.com/en-us/library/ff649077.aspx\">Bootstrapper</a> would provide the module with the necessary infrastructure to fulfill  its functionality. It could receive the <strong>UserControl </strong>created  by the legacy application as a parameter in the <strong>CreateShell</strong> method, making that control the &ldquo;Shell&rdquo; for your module (you can read  more about that in <a href=\"http://msdn.microsoft.com/en-us/library/ff650658.aspx\">this  article</a>). That will automatically assign it a <strong>RegionManager</strong> making it possible to add views to it.</p>\r\n<p id=0e6c0780-4007-012d-e7e2-12313d013db1>That way the new UserControl  would behave as a Prism application&rsquo;s Shell, but the rest of the  application would stay unrelated to the Prism logic, as it is right now.</p>\r\n<p id=94e39bd0-4012-012d-98bf-12313d013db1>You can probably use the  Unity Bootstrapper as a model for developing your &ldquo;Module Bootstrapper&rdquo;.</p>\r\n<p id=0e6c6c50-4007-012d-e7e3-12313d013db1>I hope you find this  helpful.</p>\r\n<p id=0e6cc9c0-4007-012d-e7e4-12313d013db1>Guido Leandro  Maliandi    <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-05-12T09:57:57.96-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

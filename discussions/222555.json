@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "476775",
+    "ThreadId": "222555",
+    "Html": "<p>I was really hoping to see MVVM RI use PRISM for Modularity-Unity/MEF, Regions, EventAggregator and Commands. It is certainly appreciated that we have MVVM as part of the Prism documentation and the two quickstarts on MVVM specifically. But the community did have a lot of material available on MVVM outside Prism already.</p>\r\n<p>I think the objective of the MVVM RI should have been to use MVVM in a Prism project and tackle some of the challenges while doing that; specifically around view composition into regions (primarily using injection), tackling view transitions from viewmodels/regions, tackling common popup views from viewmodel like confirmation/messagebox that return simple info to the main views and tackling use-case popup views from viewmodel that use regions e.g. search popups, data edit popups that have effect on the main views.</p>\r\n<p>So even though extremely happy with the inclusion of MEF into Prism, and extending prism to use the new SL4 features; slightly disappointed with the MVVM part.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-08-05T03:06:09.99-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "476945",
+    "ThreadId": "222555",
+    "Html": "<p>Thank you for the feedback.&nbsp;</p>\r\n<p>The CTP does not include everything we will be releasing by the time we are done with Prism v4.&nbsp; There are a few things on the backlog that should address most of your feedback.</p>\r\n<p>As far as the MVVM RI goes, the idea was to show a progression from the Basic MVVM quickstart, to the MVVM QS, to the MVVM RI where more complex scenarios were added and shown in isolation from other concepts that can cause confusion.&nbsp; There is quite a bit of content out in the community around this take on the Presentation Model pattern, but there is a lot of content that is contradictory.&nbsp; We have tried to distill all that into something consumable.&nbsp;&nbsp;Is there&nbsp;anything specific you think we are missing with our guidance?&nbsp;</p>\r\n<p>For the more complicated scenarios with view transitions, popups, etc., we are currently working on a whole set of guidance around &quot;Navigation&quot; using MVVM that should handle a good bit of the problems there.&nbsp;</p>\r\n<p>Once we get the navigation guidance figured out, we will probably be re-visiting the Stock Trader RI, making it use MVVM, Regions, Navigation, the rest of Prism, and MEF.</p>\r\n<p>&nbsp;If there is something more specific you want in the guidance, please create an issue tracker item and get people to vote on it.</p>\r\n<p>Thanks,<br>Michael Puleio</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-08-05T08:14:48.917-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "477600",
+    "ThreadId": "222555",
+    "Html": "<p>Michael:</p>\r\n<p>I apologize for jumping to conclusion, I had not read the road map on the msdn blog; the navigation guidance is part of phase 2 which just started.</p>\r\n<p>Here is the list of items that I think should be considered, some of them may already be on the team's list but I will mention them anyways:</p>\r\n<p>1. Application Navigation guidance:</p>\r\n<ul>\r\n<li>Navigation framework that has provisions for dirty tracking or checking whether screen transition at this point is possible or should the user be prompted for unsaved info etc something along the lines of ScreenConductor (a term discussed by John Papa and Ward Bells over several blog posts)</li>\r\n<li>Passing context to the destination screen/views</li>\r\n<li>The screen/views will be hosted in Prism regions</li>\r\n<li>MEF to compose viewmodels/services etc</li>\r\n</ul>\r\n<p>2. ViewModel initiating basic message box style popups, that present Yes/No/Cancel/OK responses</p>\r\n<p>3. ViewModel initiating full use cases that show up as popups, that may or may not require a passed context (e.g. search X business entity popup&nbsp; VS&nbsp; open Y business entity for edit popup). The usecase that initiated these popups may or may not be waiting on and require a response from the popups.</p>\r\n<p>4. Scoped containers and scoped popup regions e.g. consider an outlook style app where the mail and calendar module has separate popup regions that allows the user to open a popup in the mail module, edit some info, switch to calendar module without closing the mail popup, open a new calendar relevant popup here, work on this, close this, go back to mail module where he can still see the popup left open and continue working. OR in case I am on a dashboard where two areas on the screen allow me to open popups within their respective screen boundary. And the user can open one popup in one area, edit and then open second popup in the second area without closing the first one.</p>\r\n<p>5. login/logout showing authorization based module loading and features. This has to do with the fact that I havent found a way to unload/reload/re-initialize Prism modules, so if a user logs out, I have to force an application shut down, because if another user logged in from the &quot;logged out&quot; screen on the same application session, things will go wrong.</p>\r\n<p>&nbsp;</p>\r\n<p>These ones are not in the scope of PRISM per se, but they are part of the presentation tier and need consideration.</p>\r\n<p>1. Using &quot;model&quot; from WCF RIA services in the MVVM</p>\r\n<p>2. Best practices on the asynchronous service call mechanism from ViewModels focusing on code maintainability &amp; run-time performance, should background thread be used, should UI Dispatcher be used, how to handle service call cascading, where response from one service may be required to execute the second service</p>\r\n<p>3. Fully utilizing RX framework. some areas of use maybe around WCF RIA service calling and hiding asynchronous pattern etc</p>\r\n<p>&nbsp;</p>\r\n<p>And once again, want to thank P&amp;P for great frameworks including PRISM.</p>",
+    "PostedDate": "2010-08-07T02:43:54.223-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "479125",
+    "ThreadId": "222555",
+    "Html": "<p>No problem.&nbsp; We do appreciate the feedback, which I have shared with the rest of the team.</p>\r\n<p>Thanks,<br>Michael Puleio</p>",
+    "PostedDate": "2010-08-11T07:15:26.22-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

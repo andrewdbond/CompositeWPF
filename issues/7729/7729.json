@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "We are closing this work item, as this is probably not an issue in Prism. For additional support regarding this subject, you could create a thread in the discussions section, where we will help you with your concerns.\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+    "ClosedDate": "2011-09-16T11:58:13.837-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Hi,\n \nI have build a Prism application that has a shell an two modules. Both modules registers Views wtihin a region. One of the Modules thrwos a ViewRegistrationException. Ich have checked an rechecked all attributes. Ich can not find any fault .\n \nnamespace DP.Vls.Gui.Statusbar\n{\n    [ModuleExport(typeof(StatusbarModul))]\n    public class StatusbarModul : IModule\n    {\n        [Import]\n        public IRegionManager RegionManager;\n \n        public void Initialize()\n        {\n            this.RegionManager.RegisterViewWithRegion(RegionNames.StautsBarRegion, typeof(StatusbarView));  \n        }\n    }\n}\n \n \n \nAn exception has occurred while trying to add a view to region 'StatusBarRegion'. \n    - The most likely causing exception was was: 'Microsoft.Practices.ServiceLocation.ActivationException: Activation error occured while trying to get instance of type StatusbarView, key \"\" ---> Microsoft.Practices.ServiceLocation.ActivationException: Activation error occured while trying to get instance of type StatusbarView, key \"\"\n   at Microsoft.Practices.Prism.MefExtensions.MefServiceLocatorAdapter.DoGetInstance(Type serviceType, String key)\n   at Microsoft.Practices.ServiceLocation.ServiceLocatorImplBase.GetInstance(Type serviceType, String key)\n   --- End of inner exception stack trace ---\n   at Microsoft.Practices.ServiceLocation.ServiceLocatorImplBase.GetInstance(Type serviceType, String key)\n   at Microsoft.Practices.ServiceLocation.ServiceLocatorImplBase.GetInstance(Type serviceType)\n   at Microsoft.Practices.Prism.Regions.RegionViewRegistry.CreateInstance(Type type)\n   at Microsoft.Practices.Prism.Regions.RegionViewRegistry.<>c__DisplayClass1.<RegisterViewWithRegion>b__0()\n   at Microsoft.Practices.Prism.Regions.Behaviors.AutoPopulateRegionBehavior.OnViewRegistered(Object sender, ViewRegisteredEventArgs e)'.\n    But also check the InnerExceptions for more detail or call .GetRootException().",
+    "LastUpdatedDate": "2013-05-16T05:28:44.877-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-12-22T23:48:48.007-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "PrismV4/MEF  RegisterViewWithRegion throws ViewRegistrationException",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 7729
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nThe ViewRegistrationException you're experiencing is because of an exception when trying to get an instance of your view using MEF. You could try debugging your application to see why this exception is being thrown. In order to do so, you might find the suggestions to debug MEF in this blog post from Geoff Cox useful:\r\nhttp://blogs.southworks.net/geoff/2010/09/03/effective-mef-managed-extensibility-framework/\r\n\r\nAdditionally, you might find this thread useful, as it deals with a similar scenario:\r\nhttp://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=239601\r\n\r\nIf you continue experiencing this issue after trying the aforementioned, it could be helpful if you could provide us with a repro sample, so that we can help you find the root of this error.\r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2010-12-27T07:33:29.647-08:00",
+      "Id": 156400
+    }
+  ]
+}

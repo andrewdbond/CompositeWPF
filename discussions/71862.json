@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "245240",
+    "ThreadId": "71862",
+    "Html": "<p>Whilst building my first Composite WPF application I came across the following issue and although I have a wayaround the problem I am not sure if my assumptions are correct.</p>\r\n<p>I have a ListView and I wanted to data bind to&nbsp;fire a Command on&nbsp;the MouseUp event.&nbsp;&nbsp; Realizing this is not possible by default to bind a command to&nbsp;such an event &nbsp;I then simply created a method for my command&nbsp;on the PresenterModel class and Hooked up a standard windows event on the Mouse up which then calls the PresenterModel Method in the Code Behind.&nbsp;&nbsp;</p>\r\n<p>This works fine however I am not happy for the following two reasons.</p>\r\n<p>1.&nbsp;&nbsp; I feel I should be using the CompositeWPF command mechanisms and I really wanted to Databind the commands</p>\r\n<p>2.&nbsp;&nbsp;&nbsp;Usinf the MVVP patterms&nbsp;I try to keep the code behind as minimal as possible (&nbsp;ideally nothign in this file if at all possible ).</p>\r\n<p>Having searched this forum for a possible solution I came across the following implementation of a snippet which if I understand it correctly, will solve my problem but then I need to have one of these classes for each control and event type that I need to handle.</p>\r\n<p><a href=\"http://blogs.southworks.net/dschenkelman/2009/08/13/c-code-snippet-to-create-commands-with-attached-behaviors-using-prism/\">http://blogs.southworks.net/dschenkelman/2009/08/13/c-code-snippet-to-create-commands-with-attached-behaviors-using-prism/</a>&nbsp;</p>\r\n<p>So I go from 5 lines in the code behind file and a&nbsp;method in the PresenterModel to needing two classes and the associated command in the Presenter Model file.</p>\r\n<p>Can someone tell me if I am missing the point here or if there is an better way of addressing this issue?</p>",
+    "PostedDate": "2009-10-13T12:59:16.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "245294",
+    "ThreadId": "71862",
+    "Html": "<p id=25d011b0-9a67-012c-518d-12313b005851>Hi Steve,</p>\r\n<p id=25d02710-9a67-012c-518e-12313b005851>If you want to reduce the code behind of your view, one of the best ways to get this done is Data Binding (whether you bind to commands or ViewModel properties). If you want to execute a specific action in the MouseUp event of the ListView, then the command with the attach behavior will definitely work.</p>\r\n<p id=25d04300-9a67-012c-518f-12313b005851>However, as you said, it adds some classes to your application to attach the behavior. This is when your requirements get into the mix. If you want to handle the MouseUp event because you want to check the recently <strong>SelectedItem</strong> in the <strong>ListView</strong>, another approach could be binding the currently selected item to your View Model and perform the required action in the property setter.</p>\r\n<p id=25d06820-9a67-012c-5190-12313b005851>Although the above example is kind of simple, I hope it helps understand my point.</p>\r\n<p id=25d09140-9a67-012c-5191-12313b005851>Always have in mind that the one of the goals of reducing the code behind is having a &ldquo;more testable&rdquo; view, so you should also put that into the mix when deciding between the XAML command and the code behind. The following blog post talks a bit more about the MVVM pattern, code behind and other things to take into account:</p>\r\n<ul>\r\n<li>\r\n<h4><a href=\"http://blogs.msdn.com/gblock/archive/2009/08/03/the-spirit-of-mvvm-viewmodel-it-s-not-a-code-counting-exercise.aspx\">The spirit of MVVM (ViewModel), it&rsquo;s not a code counting exercise.</a></h4>\r\n</li>\r\n</ul>\r\n<p id=25d0b8b0-9a67-012c-5192-12313b005851>Please let me know if this helps.</p>\r\n<p id=25d0eab0-9a67-012c-5193-12313b005851>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-10-13T14:47:42.98-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "245312",
+    "ThreadId": "71862",
+    "Html": "<p>*** Please ignore this response I see it is the Propery Setter. *****</p>\r\n<p>Thanks for the swift and informative reply.&nbsp;&nbsp;The link is very interesting&nbsp;I have read this before,&nbsp;the comments section on how to handle say multiple selection opens some interesting discussions but these are&nbsp;outside of my current requirements at present.</p>\r\n<p>Like your idea of binding&nbsp;SelectedItem to a property in the ViewModel but I miss then what is observing the property in the ViewModel to then trigger the calling of&nbsp;say an &nbsp;associated&nbsp;command?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-13T15:30:14.28-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "288539",
+    "ThreadId": "84015",
+    "Html": "<p>Hi @all,</p>\r\n<p>&nbsp;</p>\r\n<p>I try to implement a ContainerControlledLifetimeManager like in this example. But when I resolve the ViewModel, an exception will be raised:</p>\r\n<p>Specified element is already the logical child of another element. Disconnect it first.</p>\r\n<p>&nbsp;</p>\r\n<p>private void RegisterViewsAndServices()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.container.RegisterType&lt;IHomeController, HomeController&gt;();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.container.RegisterType&lt;IHomeViewModel, HomeViewModel&gt;(new ContainerControlledLifetimeManager());<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.container.RegisterType&lt;IHomeView, HomeView&gt;(new ContainerControlledLifetimeManager());<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void ShowView()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.regionManager.RegisterViewWithRegion(ShellRegionNames.Main,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; () =&gt; this.container.Resolve&lt;IHomeViewModel&gt;().View);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;</p>\r\n<p>Shell:</p>\r\n<p>&lt;Grid&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Grid.ColumnDefinitions&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ColumnDefinition Width=&quot;{Binding MainMenuWidth}&quot;/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ColumnDefinition /&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Grid.ColumnDefinitions&gt;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Border Grid.Column=&quot;0&quot;&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ContentControl regions:RegionManager.RegionName=&quot;{x:Static inf:ShellRegionNames.MainMenu}&quot;/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Border&gt;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Border Background=&quot;{StaticResource BackgroundBrush}&quot; Grid.Column=&quot;1&quot;&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ContentControl regions:RegionManager.RegionName=&quot;{x:Static inf:ShellRegionNames.Main}&quot;/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Border&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/Grid&gt;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks for your help,</p>\r\n<p>Manullino</p>",
+    "PostedDate": "2010-02-10T18:01:23.72-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "289759",
+    "ThreadId": "84015",
+    "Html": "<p id=33d0c730-f959-012c-596e-123139061101>Hi Manullino,</p>\r\n<p id=33d0e830-f959-012c-596f-123139061101>The <a href=\"http://msdn.microsoft.com/en-us/library/dd203242.aspx\">ContainerControlledLifeTimeManager  is used to register mappings with Singleton lifetime</a>. Therefore, a  possible reason for this to happen is if you already added the view of  the <strong>HomeViewModel</strong> to any other region. As the same instance of the <strong>ViewModel</strong> (and the View) is returned when they are resolved,  you can only add them to a single region at a time.</p>\r\n<p id=33d111f0-f959-012c-5970-123139061101>If the above does not reflect  your scenario, please provide a small sample application so we can look  deeper into this issue.</p>\r\n<p id=33d13fb0-f959-012c-5971-123139061101>Please let me know if this  helps.</p>\r\n<p id=33d16e30-f959-012c-5972-123139061101>Damian  Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-02-11T10:23:01.723-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "363461",
+    "ThreadId": "84015",
+    "Html": "<p>I tried to resolve the Shell. This causes the problem.</p>\r\n<p>How can I fix this? Or doesn't it make sense to resolve the Shell?</p>\r\n<p>&nbsp;</p>\r\n<p>public class Bootstrapper : UnityBootstrapper<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override DependencyObject CreateShell()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IShellView shell = Container.Resolve&lt;IShellView&gt;();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IShellViewModel shellViewModel = Container.Resolve&lt;IShellViewModel&gt;();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; shell.ViewModel = shellViewModel;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; shell.ShowView();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return shell as DependencyObject;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>....</p>\r\n<p>}</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p>Manullino</p>",
+    "PostedDate": "2010-02-23T16:22:36.7-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

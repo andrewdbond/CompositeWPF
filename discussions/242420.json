@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "551959",
+    "ThreadId": "242420",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I have a very strange problem, I am trying to use the event LoadModuleCompleted but it won't fire. For reference, I used the StockTrader Reference Implementation for desktop, I have put the folowing code in the Shell.cs :</p>\r\n<p>[Export]</p>\r\n<p>public partial class Shell: Window, IPartImportsSatisfiedNotification</p>\r\n<p>{</p>\r\n<p>&nbsp;&nbsp; [Import]</p>\r\n<p>&nbsp;&nbsp; ShellViewModel ViewModel { set { this.DataContext = value;}}</p>\r\n<p>&nbsp;&nbsp; [Import(AllowRecomposition = false)]</p>\r\n<p>&nbsp;&nbsp; public IModuleManager ModuleManager;</p>\r\n<p>&nbsp;&nbsp; public Shell() { InitializeComponent(); }</p>\r\n<p>&nbsp;&nbsp; public void OnImportsSatisfied() { this.ModuleManager.LoadModuleCompleted &#43;= new EventHandler&lt;LoadModuleCompletedEventArgs&gt;(ModuleManager_LoadModuleCompleted); }</p>\r\n<p>&nbsp;&nbsp; void ModuleManager_LoadModuleCompleted(object sender, LoadModuleCompletedEventArgs e) { Console.WriteLine(&quot;Module Loaded&quot;); }</p>\r\n<p>}</p>\r\n<p>The OnImportsSatisfied method is called but it seems that I never enter the ModuleManager_LoadModuleCompleted.</p>\r\n<p>It is very strange because the modules are loaded. Is it a problem with MEF, or am I missing something ?</p>\r\n",
+    "PostedDate": "2011-01-19T07:32:23.947-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "552620",
+    "ThreadId": "242420",
+    "Html": "\r\n<p id=\"x_c9f7fdc0-06ce-012e-9d7f-123139154a75\">Hi,</p>\r\n<p id=\"x_c9f80630-06ce-012e-9d80-123139154a75\">The issue you're experiencing could be because of a timing issue. That is to say, at the time your modules are loaded, you possibly haven't subscribed to that event, since the modules could have been loaded before\r\n<strong>OnImportsSatisfied </strong>method is called. One possible workaround in case it is a timing issue could be to make your modules load on demand, and call the\r\n<strong>ModuleManager.LoadModule</strong> method to load them in your <strong>OnImportsSatisfied\r\n</strong>method, explicitly after subscribing to the <strong>ModuleManager.LoadModuleCompleted\r\n</strong>event.</p>\r\n<p id=\"x_c9f81ed0-06ce-012e-9d82-123139154a75\">I hope you find this information useful.</p>\r\n<p id=\"x_c9f82b40-06ce-012e-9d83-123139154a75\">Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-20T07:38:46.573-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

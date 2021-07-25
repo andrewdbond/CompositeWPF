@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1072707",
+    "ThreadId": "451186",
+    "Html": "The ServiceLocator has been used within a class to create a service, as this service has not been passed through in the constructor.\r<br />\n<br />\nThe ServiceLocator is just used statically to create this service (it has not been passed through). Is this Unit Test-able?<br />\n",
+    "PostedDate": "2013-07-25T04:18:51.393-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1072994",
+    "ThreadId": "451186",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding, the <strong>ServiceLocator</strong> was designed so that it could be used in tests. Basically, when you a request an instance to the <strong>ServiceLocator</strong>, it will delegate the request to its <strong><em>locator provider</em></strong> in order to create the corresponding object. Hence, you will only need to create a simple mock locator provider that would return the corresponding mocks for the requested objects. This locator provided can be set using the <strong>SetLocatorProvider</strong> static method. You can find a example of this in the <strong>UnityBootstrapper</strong>:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">protected</span> <span style=\"color:Blue;\">override</span> <span style=\"color:Blue;\">void</span> ConfigureServiceLocator()\n{\n    ServiceLocator.SetLocatorProvider(() =&gt; <span style=\"color:Blue;\">this</span>.Container.Resolve&lt;IServiceLocator&gt;());\n}\r\n</pre></div>You can find more information about configuring the <strong>ServiceLocator</strong> in their codeplex site:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"https://commonservicelocator.codeplex.com/\" rel=\"nofollow\">CommonServiceLocator</a> (in the <strong>Where to go Next</strong> section of the home page.)<br />\n</li>\n</ul>\nThanks,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-07-25T12:03:18.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

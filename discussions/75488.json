@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "258310",
+    "ThreadId": "75488",
+    "Html": "<p>Hi-- I am learning Prism, and I am writing a demo app as part of the process. The demo app will include logging, using the Log4Net library.&nbsp;</p>\r\n<p>At first glance, I can see&nbsp;two ways to set up the logging:</p>\r\n<ul>\r\n<li>Let the Shell project do all of the actual logging. It gets the reference to Log4Net, and other projects fire composite events to let the Shell know that it needs to log something. Those projects fire the events only for levels where logging is turned on in the Shell's app.config file (DEBUG, ERROR, etc), so as not to degrade performance.</li>\r\n<li>Give each project, including modules, a Log4Net reference, and let the project do its own logging to a common log file, instead of sending messages to the Shell for logging.</li>\r\n</ul>\r\n<p>Which is the better approach? Or, is there another approach that I should consider? Thanks for your help.</p>",
+    "PostedDate": "2009-11-18T07:58:58.913-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "258475",
+    "ThreadId": "75488",
+    "Html": "<p>Michaelsync's suggestion (see below) seems like a good one, and that's the approach I am going to use. The only thing that I might add is that the CAL does its own logging, which can be interfaced to a third-party logger like Log4Net by <a href=\"http://msdn.microsoft.com/en-us/library/cc707911.aspx\">providing a custom logger</a>.</p>\r\n<p>I am still open to suggestions on this question, so if you have a better approach, or an improvement to Michaelsync's approach, please feel free to join the conversation.</p>",
+    "PostedDate": "2009-11-18T16:13:29.873-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "258552",
+    "ThreadId": "75488",
+    "Html": "<p>I think you should have a separated project for logging. And put the interface (e.g. ILoggingService )&nbsp; in Infrastructure or Common and put the implementation in that separated project.</p>\r\n<p>So, project structure will be like that.</p>\r\n<ul>\r\n<li>YourProject.Shell</li>\r\n<li>YourProject.Infrastructure</li>\r\n<li>--------ILogService</li>\r\n<li>YourProject.Logging</li>\r\n<li>--------Log4netLogService</li>\r\n</ul>\r\n<p>Then, Register ILogService to Log4netLogService in Shell configuration or code.</p>\r\n<p>From all modules, you don't need to reference any logging dll (e.g. log4net)</p>\r\n<p>You can get the instance of logging service from IoC container (e.g.&nbsp; var logger = container.Resolve&lt;ILogService&gt;() )</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-11-19T00:11:34.947-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "258563",
+    "ThreadId": "75488",
+    "Html": "<p>I am also new to prism and also wanted to use Log4net so I decided to replace the standard logger in Prim with the&nbsp;Log4net logger.&nbsp;&nbsp; Here is what I did if it is of any use.</p>\r\n<p>I created a class as below in the Infrastructure project.</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span> Log4NetLogger : ILoggerFacade\r\n    {\r\n        <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">static</span> ILog logger = LogManager.GetLogger(<span style=\"color:#A31515\">&quot;WPF Application&quot;</span>);\r\n \r\n        <span style=\"color:Blue\">static</span> Log4NetLogger()\r\n        {\r\n            XmlConfigurator.Configure();\r\n        }\r\n\r\n        <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">void</span> Log(<span style=\"color:Blue\">string</span> message, Category category, Priority priority)\r\n        {\r\n            <span style=\"color:Blue\">switch</span>(category)\r\n            {\r\n                <span style=\"color:Blue\">case</span> Category.Debug:\r\n                    logger.Debug(message);\r\n                    <span style=\"color:Blue\">break</span>;\r\n                <span style=\"color:Blue\">case</span> Category.Exception:\r\n                    logger.Error(message);\r\n                    <span style=\"color:Blue\">break</span>;\r\n                <span style=\"color:Blue\">case</span> Category.Warn:\r\n                    logger.Warn(message);\r\n                    <span style=\"color:Blue\">break</span>;\r\n                <span style=\"color:Blue\">case</span> Category.Info:\r\n                    logger.Info(message);\r\n                    <span style=\"color:Blue\">break</span>;\r\n                <span style=\"color:Blue\">default</span>:\r\n                    logger.Info(message);\r\n                    <span style=\"color:Blue\">break</span>;\r\n            }\r\n        }\r\n    }</pre>\r\n<pre>Then in the Bootstrapper I override the Logger Facade with </pre>\r\n<pre>  protected override ILoggerFacade LoggerFacade\r\n  {\r\n            get\r\n            {\r\n                return new Log4NetLogger();\r\n            }\r\n  }</pre>\r\n<pre>I am currently just using a basic logging config for log4net which I have in an App.config file located </pre>\r\n<pre>within the main shell project e.g.</pre>\r\n</div>\r\n<p>&lt;!--l version=&quot;1.0&quot; encoding=&quot;utf-8&quot;--&gt;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre style=\"color:Black;background-color:White\"><pre>&lt;?xml version=<span style=\"color:#A31515\">&quot;1.0&quot;</span> encoding=<span style=\"color:#A31515\">&quot;utf-8&quot;</span> ?&gt;\r\n  &lt;configuration&gt;\r\n    &lt;configSections&gt;\r\n      &lt;section name=<span style=\"color:#A31515\">&quot;log4net&quot;</span> type=<span style=\"color:#A31515\">&quot;log4net.Config.Log4NetConfigurationSectionHandler, log4net&quot;</span>/&gt;\r\n    &lt;/configSections&gt;\r\n\r\n    &lt;log4net&gt;\r\n      &lt;root&gt;\r\n        &lt;level value=<span style=\"color:#A31515\">&quot;ALL&quot;</span> /&gt;\r\n        &lt;appender-<span style=\"color:Blue\">ref</span> <span style=\"color:Blue\">ref</span>=<span style=\"color:#A31515\">&quot;Console&quot;</span> /&gt;\r\n        &lt;appender-<span style=\"color:Blue\">ref</span> <span style=\"color:Blue\">ref</span>=<span style=\"color:#A31515\">&quot;RollingFile&quot;</span> /&gt;\r\n      &lt;/root&gt;\r\n\r\n      &lt;appender name=<span style=\"color:#A31515\">&quot;RollingFile&quot;</span> type=<span style=\"color:#A31515\">&quot;log4net.Appender.RollingFileAppender&quot;</span>&gt;\r\n        &lt;file value=<span style=\"color:#A31515\">&quot;logs/Application.log&quot;</span> /&gt;\r\n        &lt;appendToFile value=<span style=\"color:#A31515\">&quot;false&quot;</span> /&gt;\r\n        &lt;maximumFileSize value=<span style=\"color:#A31515\">&quot;1MB&quot;</span> /&gt;\r\n        &lt;maxSizeRollBackups value=<span style=\"color:#A31515\">&quot;5&quot;</span> /&gt;\r\n        &lt;layout type=<span style=\"color:#A31515\">&quot;log4net.Layout.PatternLayout&quot;</span>&gt;\r\n          &lt;conversionPattern value=<span style=\"color:#A31515\">&quot;[%d][%-5p] %m%n&quot;</span> /&gt;\r\n        &lt;/layout&gt;\r\n      &lt;/appender&gt;\r\n\r\n      &lt;appender name=<span style=\"color:#A31515\">&quot;Console&quot;</span> type=<span style=\"color:#A31515\">&quot;log4net.Appender.ConsoleAppender&quot;</span>&gt;\r\n        &lt;layout type=<span style=\"color:#A31515\">&quot;log4net.Layout.PatternLayout&quot;</span>&gt;\r\n          &lt;conversionPattern value=<span style=\"color:#A31515\">&quot;[%d][%-5p] %m%n&quot;</span> /&gt;\r\n        &lt;/layout&gt;\r\n      &lt;/appender&gt;\r\n    &lt;/log4net&gt;\r\n  &lt;/configuration&gt;\r\n\r\n</pre>\r\n</pre>\r\n</div>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>To gain access to the logger  you can use the Container or what I also do is I have an abstract base class for each of my </pre>\r\n</div>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>presenters which gives access to a logger.  I try to limit my logging to the Presenters where possible and lower level service classes.  </pre>\r\n</div>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>But I also noticed that a library class that I wrote a while back that also uses log4net for logging also worked in this configuration </pre>\r\n</div>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>without any change to the code, guess it just picks up the main app app.config.    The library class just instanciates their own static </pre>\r\n</div>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>loggers as usual for .net e.g. with </pre>\r\n</div>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><p>&nbsp;</p><p>    <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">abstract</span> <span style=\"color:Blue\">class</span> BasePresenterModel&lt;T&gt; : BindableObject\r\n    {\r\n        <span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">readonly</span> IEventAggregator eventAgg;\r\n        <span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">readonly</span> IUnityContainer container;\r\n        <span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">readonly</span> ILoggerFacade logger;\r\n\r\n        <span style=\"color:Blue\">public</span> BasePresenterModel(IEventAggregator eventAggregator, IUnityContainer cont,ILoggerFacade logging )\r\n        {\r\n                eventAgg = eventAggregator;\r\n                container = cont;\r\n                logger = logging;\r\n                \r\n            IView = cont.Resolve&lt;T&gt;();\r\n        }\r\n      \r\n        <span style=\"color:Blue\">public</span> T IView { <span style=\"color:Blue\">get</span>; <span style=\"color:Blue\">set</span>; }\r\n\r\n        }\r\n    }\r\n</p></pre>\r\n</div>\r\n<p>Hope these ramblings help</p>",
+    "PostedDate": "2009-11-19T00:49:23.97-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "258698",
+    "ThreadId": "75488",
+    "Html": "<p><a id=\"ctl00_ctl00_MasterContent_Content_PostRepeater_ctl04_UserNameLink\" href=\"http://www.codeplex.com/site/users/view/michaelsync\">michaelsync</a>&nbsp;and <a id=\"ctl00_ctl00_MasterContent_Content_PostRepeater_ctl06_UserNameLink\" href=\"http://www.codeplex.com/site/users/view/SwissSteve\">SwissSteve</a>-- Both very helpful. Thanks.</p>",
+    "PostedDate": "2009-11-19T07:38:05.443-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "259136",
+    "ThreadId": "75488",
+    "Html": "<p>Sorry to kind of steal this post, but how would you go about logging when using Silverlight?&nbsp; You cannot add a reference to the log4net&nbsp;assembly&nbsp;as it's not supported in Silverlight.</p>\r\n<p>Thanks.</p>",
+    "PostedDate": "2009-11-20T09:53:42.66-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "259143",
+    "ThreadId": "75488",
+    "Html": "<p>No steal at all, and I think I can help you. Use the Model-View-ViewModel pattern to connect your Silverlight UI to a server back-end, and locate all business logic in the back-end. Your logging will be done from there. If you have a complex Silverlight app, use Composite Application Library (Prism) v. 2.x to structure your app. Again, your logging will be in the app back-end, which supports logging.</p>",
+    "PostedDate": "2009-11-20T10:02:26.387-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "259161",
+    "ThreadId": "75488",
+    "Html": "<p>Thanks for the quick response.&nbsp; I'm not sure if I understand exactly as I'm quite new to Silverlight development.&nbsp; We are using MVVM and it is a very complex application (at least it will be when finished).&nbsp; A bit of background, we are taking a large (200 form, 230 table, 300 stored procedure) VB6 Enterprise application and rebuilding it in Silverlight / RIA Services / Prism.</p>\r\n<p>As we have it right now the ViewModels (or PresenterModels) are in Silverlight Class Modules.&nbsp; I don't see any way to move those ViewModels out of the Silverlight projects and put them somewhere else.&nbsp; Do you mean the business logic in the ViewModels, or am I even more confused now.</p>\r\n<p>Sorry, I am fairly new to Silverlight and its certain limitations.</p>",
+    "PostedDate": "2009-11-20T10:26:59.383-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "259231",
+    "ThreadId": "75488",
+    "Html": "<p>Sounds like a job for Prism. You can get up to speed by reading the Composite Application Guidance for WPF, which is quite good.</p>\r\n<p>Bad news on the view models, though. Most architects would agree that view model classes shouldn't be Silverlight classes--they should be POCOs (plain old CLR classes). There are several ways of implementing MVVM, but they are all designed to get business logic out of the View; i.e., your Silverlight classes. A view model serves up the data your view needs, and it acts as a data binding target for the commands (menu items and buttons) in your view. Silverlight classes are used only for the View.&nbsp;The approach resembles the Model-View-Controller or Model-View-Presenter patterns (depending on which flavor of MVVM you implement), and it&nbsp;gets around a lot of Silverlight's limitations.</p>\r\n<p>I can understand your confusion over MVVM--we all started there. One good place to start is with a presentation that Jason Dolinger did about a year ago. If you google his name, the presentation should come out top of the list. Then if you go to CodeProject, you will find a number of articles on MVVM, including a couple that I have written. My articles are strongly oriented toward a domain-driven-design flavor of MVVM, so they may not be directly applicable to your architecture. But there are lots of other articles that should belp.</p>\r\n<p>Definitely dig into Prism. It does a good job of modularizing complex apps (whether WPF or Silverlight), so that you can &quot;eat the elephant one bite at a time&quot;. Particularly if you are working with ADO.NET datasets, it will make your app much easier to develop and maintain.</p>",
+    "PostedDate": "2009-11-20T14:14:59.967-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "260116",
+    "ThreadId": "75488",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>why wrote:</strong><br>\r\n<p>Sorry to kind of steal this post, but how would you go about logging when using Silverlight?&nbsp; You cannot add a reference to the log4net&nbsp;assembly&nbsp;as it's not supported in Silverlight.</p>\r\n<p>Thanks.</p>\r\n</blockquote>\r\n<p>As other suggested, you can do server-side logging. But if you really want to do the logging from Silverlight, you may want to check out Daniel's open source called CLog. I haven't tried using it but I know he is great developer and the feature list of Clog is quite interesting.&nbsp;</p>\r\n<p>&gt;&gt;Most architects would agree that view model classes shouldn't be Silverlight classes</p>\r\n<p>If we are talking about SOA, we used to put the domain model (probably POCO), business logic, complex calculation, algorithm in server-side. And we used to have UI models, ViewModels in Silverlight. Of course, those are Silverlight classes since those are created under Silverlight project. UI Model which is a SIlverlight Class can be POCO.&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-11-23T23:40:07.663-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "527331",
+    "ThreadId": "75488",
+    "Html": "\r\n<p>You can also use http://silverlightlogging.codeplex.com/ which has client side buffering of error messages to support working offline.</p>\r\n",
+    "PostedDate": "2010-11-26T04:40:26.837-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "469716",
+    "ThreadId": "220171",
+    "Html": "<p>I've been looking at the ModularityWithMef.Silverlight Quickstart. I assumed that when a module was downloaded, MEF would discover any Exports within the module and resatisfy any appropriate imports. However, if I do a simple test I can only get this to work on Module A and Module C. These are the modules that referenced by the main bootstrapper project.</p>\r\n<p>I'm assuming that when a dynamic module is downloaded, either by demand on when available, its parts are not added to the aggregate catalog.</p>\r\n<p>Does anyone know where/how I go about doing this?</p>\r\n<p>Thanks</p>\r\n<p>Mark</p>",
+    "PostedDate": "2010-07-20T07:45:42.287-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "469748",
+    "ThreadId": "220171",
+    "Html": "<p>I've discovered where I think the problem lies, but have no idea if this is intentional...</p>\r\n<p>Within the MefXapModuleTypeLoader.DeploymentCatalog_DownloadCompleted method, the DeploymentCatalogue is having its export definitions filtered so that only the export for IModule is being added to the aggregate catalog.</p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> DeploymentCatalog_DownloadCompleted(<span style=\"color:blue\">object</span> sender, System.ComponentModel.AsyncCompletedEventArgs e)\r\n        {\r\n            DeploymentCatalog deploymentCatalog = sender <span style=\"color:blue\">as</span> DeploymentCatalog;\r\n            <span style=\"color:blue\">if</span> (deploymentCatalog != <span style=\"color:blue\">null</span>)\r\n            {\r\n                <span style=\"color:green\">// Because the XAPs loaded will contain assemblies that have references to this assembly, </span>\r\n                <span style=\"color:green\">// and because this assembly exports singletons, I must filter to only modules to prevent DuplicateAssemblyExceptions.</span>\r\n                FilteredCatalog filteredCatalog = <span style=\"color:blue\">new</span> FilteredCatalog(deploymentCatalog,\r\n                       x =&gt; x.ExportDefinitions.Where(def =&gt; def.ContractName == AttributedModelServices.GetContractName(<span style=\"color:blue\">typeof</span>(IModule))).SingleOrDefault() != <span style=\"color:blue\">null</span>);\r\n\r\n                <span style=\"color:blue\">this</span>.aggregateCatalog.Catalogs.Add(filteredCatalog);\r\n\r\n                <span style=\"color:green\">// I lock the registry since the BeginLoadModuleType adds the entry on the foreground thread.</span>\r\n                List&lt;ModuleLoadCallbackInfo&gt; callbackInfos;\r\n                <span style=\"color:blue\">lock</span> (<span style=\"color:blue\">this</span>.callbackRegistry)\r\n                {\r\n                    callbackInfos = <span style=\"color:blue\">this</span>.callbackRegistry[deploymentCatalog.Uri];\r\n                    <span style=\"color:blue\">this</span>.callbackRegistry.Remove(deploymentCatalog.Uri);\r\n                }\r\n\r\n                <span style=\"color:blue\">foreach</span> (ModuleLoadCallbackInfo callbackInfo <span style=\"color:blue\">in</span> callbackInfos)\r\n                {\r\n                    <span style=\"color:green\">// This transitions the the foreground thread.</span>\r\n                    Deployment.Current.Dispatcher.BeginInvoke(callbackInfo.LoadedCallback, <span style=\"color:blue\">new</span> ModuleLoadedEventArgs(callbackInfo.ModuleInfo, e.Error));     \r\n                }                   \r\n            }\r\n        }</pre>\r\n<pre><br></pre>\r\n<pre>I can see why this has been done, but it does look like this implementation can only ever work for exporting modules. I guess it assumes you will use Prism and the module initialised to register regions etc against the unity container.</pre>\r\n<pre><br></pre>\r\n<pre>Does anyone have any suggestions as to how I can use MEF to download the modules, but add any discovered parts to the aggregate catalog.</pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2010-07-20T08:36:07.9-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "469799",
+    "ThreadId": "220171",
+    "Html": "<p>This was actually done intentionally, but we have been looking for a work around.&nbsp; Basically, due to how we are doing the overridable default implementations of the core Prism services (event aggregator, module catalog, etc) and how MEF will import a dll and all its dependencies.&nbsp; If we do not filter the types imported, then MEF will see the module's assembly and the assemblies it references and pull in all the exported types from those other assemblies.&nbsp; This leads to re-importing the Prism core services, overwriting the previously created instances, and basically causing everything to blow up.</p>\r\n<p>I do have a bug filed on this.&nbsp; This morning&nbsp;we had another conversation about possible solutions to this, and may have come up with one or two that will work.</p>\r\n<p>Hopefully you will see a fix to this in one of our future drops.</p>",
+    "PostedDate": "2010-07-20T10:04:10.663-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "479749",
+    "ThreadId": "220171",
+    "Html": "<p>I've upgraded to Prism 4.0 CTP, but I still get an error message. If I change the linq to FirstOrDefault it works.</p>",
+    "PostedDate": "2010-08-12T08:30:21.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "479811",
+    "ThreadId": "220171",
+    "Html": "<p>Can you change the references to the Prism DLLs in your modules projects to have &quot;Copy Local&quot; set to false?&nbsp;</p>\r\n<p>If so, that should stop the multiple imports of the core services.</p>\r\n<p>Also note that this is continuing to change, and our next drop may have a few things working differently to avoid the issue.</p>",
+    "PostedDate": "2010-08-12T10:17:29.1-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

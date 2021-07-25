@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "270328",
+    "ThreadId": "78955",
+    "Html": "<p>Hello,</p>\r\n<p>i have a rather complex CAL Application which &nbsp;is composed of several modules; each one has a dedicated controller, which loads the module's composite view, assembled of several other sub views, into a specific region in the shell.&nbsp;</p>\r\n<p>So whenever a navigation button is clicked, a global event a with the destination view's name is triggered. All module controllers&nbsp;subscribe&nbsp;this event, and the one that controls the destination view, remove the previous view from the region and injects it own. Despite removing the view from the region, it is still referenced by the container. And while navigating back and forward i can notice a decline in performance.</p>\r\n<p>I wonder if i could get advantage in disposing the views (IUnityContainer.Teardown(view)) and resolving them again when needed for perfomance purposes ? Are there any guidelines for optimizing the application performance ?&nbsp;</p>\r\n<p>Thank you,</p>\r\n<p>Francisco</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-23T08:34:09-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "271811",
+    "ThreadId": "78955",
+    "Html": "<p id=9b17a6f0-d5e3-012c-a08d-12313b030175>Hi Francisco,</p>\r\n<p>Without knowing the specifics of your application, if the Unity container is referencing your views it is probably because you are <a href=\"http://msdn.microsoft.com/en-us/library/dd203134.aspx\">registering specific instances of the view</a> in it. This could be avoided by <a href=\"http://msdn.microsoft.com/en-us/library/dd203138.aspx\">resolving the views</a> without registering them in the container. You can read more about this in <a href=\"View.aspx?ThreadId=55728\">this thread</a>.</p>\r\n<p id=9b17cb90-d5e3-012c-a08f-12313b030175>However, your issue might not be related to the views being kept alive. Another possible reason could be that there are too many modules listening to the same event. A possible way I can think of to solve this could be adding specific navigation buttons for each module, so there is no need to publish any events (simply calling Controller methods from the Button&rsquo;s click handler should show the view).</p>\r\n<p id=9b17e600-d5e3-012c-a090-12313b030175>Please let me know if this helps.</p>\r\n<p id=9b180110-d5e3-012c-a091-12313b030175>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-12-30T12:36:06.303-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

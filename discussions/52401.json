@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "176077",
+    "ThreadId": "52401",
+    "Html": "I have been trying to break down one of my views (which has gotten too complicated) into multiple, smaller views. So, in the controller for that module, I have written:<div>IRegionManager scriptsRegionManager = regionManager.Regions[Regions.Main].Add(scriptsView, null, true);<br></div><div><div>scriptsRegionManager.Regions[Regions.ScriptSelection].Add(scriptSelectionView);</div><div>scriptsRegionManager.Regions[Regions.ScriptEditing].Add(scriptEditingView);</div><div>scriptsRegionManager.Regions[Regions.ScriptPreview].Add(scriptPreview);</div><div><br></div><div>This fails with a 'key not found exception', because the nested regions have not been created at the point I try to add the views to them. So, I tried a couple of other approaches:</div><div><div>RegionManager.SetRegionManager(scriptSelectionView, scriptsRegionManager);</div><div>RegionManager.SetRegionName(scriptSelectionView, Regions.ScriptSelection);</div><div><br></div><div>and</div><div><br></div><div>scriptsRegionManager.Regions[Regions.ScriptSelection].Add(scriptSelectionView);<br></div><div><br></div><div>Both of these also fail the same way. My views do not have any code-behind, they are just data templates, so I cannot add the nested views in any Initialize() method, and that would seem wrong anyway - I think they should be being added in the controller.</div><div><br></div><div>Could anyone explain to me where I am going wrong please?</div></div></div>",
+    "PostedDate": "2009-04-06T05:15:18.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "176175",
+    "ThreadId": "52401",
+    "Html": "Hi Glenn,<br>\r\n<br>\r\nWhat you are trying to do should just work. Could you send me a repro in a code sample?<br>\r\n<br>\r\nOne other approach you could take is to use the View Discovery pattern. For example, you register once that the ScriptEditing region needs a view of type ScriptEditingView. And whenever a region with name &quot;ScriptEditing&quot; is displayed, it's automatically populated with the view. <br>\r\n<br>\r\nhope this helps,<br>\r\nErwin\r\n",
+    "PostedDate": "2009-04-06T08:59:27.98-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

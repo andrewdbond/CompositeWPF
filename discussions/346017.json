@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "801445",
+    "ThreadId": "346017",
+    "Html": "\r\n<p>Hi All,</p>\r\n<p>I got 3 modules called A, B, C.</p>\r\n<p>A fires an event x, B fires an event y.</p>\r\n<p>C will be listened these two events x and y.</p>\r\n<p>In case of event x =&gt; event handler called XEventHandler =&gt; Which will generate object A.</p>\r\n<p>In case of event y =&gt; event handler called YEventHandler</p>\r\n<p>In YEventHandler, Object A will be used. So I need some way to handle this so that:</p>\r\n<p>1. If Object A is created =&gt; YEventHanlder will be executed if module C catch y Event</p>\r\n<p>2. If Object A is not created yet (x event haven't been fired yet or the process of creating object A hasn't finished yet) =&gt; YEventHanlder need to wait until object A is ready and continue.</p>\r\n<p>How can I solve this issue?</p>\r\n<p>Thanks for such a cool community.</p>\r\n<p>Truyenle</p>\r\n",
+    "PostedDate": "2012-02-26T21:57:18.943-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "802803",
+    "ThreadId": "346017",
+    "Html": "<p>Hi Truyenle,</p>\r\n<p>If I understood you scenario correctly, a possible approach could be to implement a shared service. This service could:</p>\r\n<ol>\r\n<li>Contain a reference to <strong>Object A</strong>.</li>\r\n<li>Define an event (lets call it <strong>Event A</strong>), which could be raised when <strong>Object A</strong> is set/changed.</li>\r\n</ol>\r\n<p>Following this approach, if <strong>XEventHandler </strong>is called, it should create <strong>Object A</strong> and set it in the shared service.</p>\r\n<p>If <strong>YEventHandler </strong>is called, then it could check if <strong>Object A</strong> was set inside the shared service. If so, then the <strong>Object A</strong> is retrieved and the <strong>YEventHadler </strong>is executed correctly. If <strong>Object A</strong> was not set, then you could subscribe to <strong>Event A</strong> (which will be raised when <strong>Object A</strong> is set in the shared service) using another event handler or the same <strong>YEventHadler</strong> and return. When <strong>Event A</strong> is raised, you can retrieve <strong>Object A</strong> from the service and execute the corresponding logic in <strong>Module C</strong>.</p>\r\n<p>However, as this is not strictly related to Prism, I believe you would find better support in the C# forums:</p>\r\n<ul>\r\n<li><a href=\"http://social.msdn.microsoft.com/Forums/en/category/visualcsharp\">Visual C# Forums on MSDN</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-02-28T12:47:01.87-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "803165",
+    "ThreadId": "346017",
+    "Html": "<p>Thank you DCherubini, I'll give it a try and will update back.</p>",
+    "PostedDate": "2012-02-29T07:10:35.933-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

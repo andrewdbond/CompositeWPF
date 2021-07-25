@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "140810",
+    "ThreadId": "42383",
+    "Html": "I am trying to use a scoped region on a view to reuse some modules.&nbsp; I get the adding of a scoped region etc, and how you get a scoped region manager.<br>\r\n<br>\r\nIs there an easy way to discover this scoped region manager from your global region manager. <br>\r\n<br>\r\nIn essence I want to look up any region managers that are scoped under the global shell region manager.&nbsp; <br>\r\n<br>\r\nAny ideas?&nbsp; Thanks in advance.<br>\r\n",
+    "PostedDate": "2008-12-15T19:05:43.89-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "141842",
+    "ThreadId": "42383",
+    "Html": "<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Hi</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">The current <b>Region Manager</b> implementation does not allow you to discover all the scoped region manager created. A possible way to get what you want could be implementing a service which maintains a reference to all the created region managers.</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">This service could provide an interface like the following one:</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt 35.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">public class IRegionManagerDiscoverService</span></p>\r\n<p style=\"margin:0in 0in 0pt 35.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">{</span></p>\r\n<p style=\"margin:0in 0in 0pt 35.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">    // Register a scoped region manager with a parent region manager.</span></p>\r\n<p style=\"margin:0in 0in 0pt 35.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">    <b>void RegisterRegionManager(IRegionManager parentRegionManager, IRegionManager scopedRegionManager);</b></span></p>\r\n<p style=\"margin:0in 0in 0pt 35.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt 35.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">    // Get a list with all the scoped region managers registered for a parent region manager.</span></p>\r\n<p style=\"margin:0in 0in 0pt 35.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">    <b>IList&lt;IRegionManager&gt; GetScopedRegionManagers(IRegionManager parentRegionManager);</b></span></p>\r\n<p style=\"margin:0in 0in 0pt 35.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">}</span></p>\r\n<p style=\"margin:0in 0in 0pt -0.6pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt -0.6pt\"><span style=\"font-family:calibri\">Every time that you create an scoped region, you should register its region manager in the service using the <b>RegisterRegionManager</b> method.</span></p>\r\n<p style=\"margin:0in 0in 0pt -0.6pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt -0.6pt\"><span style=\"font-family:calibri\">Please let me know if this helps.</span></p>\r\n<p style=\"margin:0in 0in 0pt -0.6pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt -0.6pt\"><span style=\"font-family:calibri\">Mariano Converti</span></p>\r\n<span style=\"font-size:11pt;font-family:'calibri','sans-serif'\"><a href=\"http://blogs.southworks.net/mconverti\">http://blogs.southworks.net/mconverti</a></span>\r\n",
+    "PostedDate": "2008-12-19T06:28:53.537-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "143371",
+    "ThreadId": "42383",
+    "Html": "Thanks for the reply.&nbsp; I figured that this was going to be the case and had to implement something similar in my system.&nbsp; However, I appreciate the help!&nbsp; <br>\r\n",
+    "PostedDate": "2008-12-29T11:34:18.763-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

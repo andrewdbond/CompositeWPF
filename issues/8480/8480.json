@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nYou might find the suggestions in the following work item useful for your second concern, as the problem you're experiencing might be related to the known issue described in it:\r\nhttp://compositewpf.codeplex.com/workitem/7381\r\n\r\nI'm closing this issue so as to centralize the discussion and votes in the other one. If you have further concerns about this, we can continue the discussion there.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-10-27T08:02:34.417-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Following is creating scoped regions provided by reference document.\n \nIRegion detailsRegion = this.regionManager.Regions[\"DetailsRegion\"];\nView view = new View();\nbool createRegionManagerScope = true;\nIRegionManager detailsRegionManager = detailsRegion.Add(view, null, createRegionManagerScope);\n \nQuestions:\n \n1. How about the relationship of this.regionManager and detailsRegionManager ? \n \n2 When using the above code to create regions and add view by code(View Injection),sometime will cause a exception said the region name has exist...\nLike this:\nhttp://compositewpf.codeplex.com/discussions/243693\n \nSuggestion:\n \nCan the development team release internal build that has fixed known issues ?",
+    "LastUpdatedDate": "2013-05-16T05:28:42.05-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Medium",
+      "Severity": 100,
+      "Id": 2
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-07-14T18:51:13.24-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Scoped regions",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8480
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nThe main RegionManager isn't related to the scoped RegionManagers that you might create; in that case, the detailsRegionManager isn't aware of the main region manager, as it is just another instance of the RegionManager class, and has the same responsibility as the main one. The only difference is that it is scoped to the regions created inside the View you added when executing the detailsRegion.Add(view, null, createRegionManagerScope); expression. You can read more about this in the Scoped Regions section of the UI Composition chapter in the Prism MSDN documentation (http://msdn.microsoft.com/en-us/library/ff921098%28PandP.40%29.aspx#sec42).\r\n\r\nAs for the second question, it would be helpful if you could provide us with a repro sample application that portrays that problem, so that we can help you find the cause for such behavior.\r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-08-19T08:02:50.08-07:00",
+      "Id": 156476
+    }
+  ]
+}

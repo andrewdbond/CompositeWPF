@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "113736",
+    "ThreadId": "34275",
+    "Html": "I create a sitemap type module.&nbsp; On first click on a module the module is initialized on demand. However, some the user close the tab where the new view is displayed. I can't reopen the view.&nbsp; Is there a way once a module is loaded to force the module to reinitialized.&nbsp; I need a way to show the view from the on demand loaded module once it's was closed.<br>\r\n",
+    "PostedDate": "2008-08-26T03:50:21.607-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "114342",
+    "ThreadId": "34275",
+    "Html": "Initializing a module twice isn't exactly safe, as most of the stuff that is in the initialize method of the module is common for all the components in the module. Initializing the module again could give you serious problems.<br>\r\nYou will need quite a construction to solve these issues.<br>\r\n<br>\r\nThere is another way to approach this problem. You can create a View menu item and configure as a region. Once a module initializes it could add a menuitem to that menu and attach a Show...View command to it.<br>\r\nInside the commandhandler you can check if the view that belongs to the module is still visible and show it if it isn't (The user closed the tabitem). This is a pretty elegant way to make it possible to reload a view after it has been closed.<br>\r\n",
+    "PostedDate": "2008-08-27T22:31:41.363-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "115255",
+    "ThreadId": "34275",
+    "Html": "martalex,<br>\r\n<br>\r\nI agree with WMeints. Your module can still load on demand, but it should really only manage the requests of views as oppsed to only displaying a view upon initialization. I would encapsulate the logic to display your view and implement some access to request a view from this module, like WMeints mentioned. Your module&nbsp;can then&nbsp;resolve a new instance and place it in a region.&nbsp;I would also ensure that your module handles the teardown off these views when a request to close a view is invoked.<br>\r\n&nbsp;<br>\r\nJust adding my 2 cents,<br>\r\n<br>\r\nAndres Olivares\r\n",
+    "PostedDate": "2008-09-01T17:33:04.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "115501",
+    "ThreadId": "34275",
+    "Html": "I implements something like WMeints recommended but instead of being a menu item I created a collection of command since I don't need a menu.&nbsp; It works fine.&nbsp; The only think I notices is that removing a view from a region does not dispose the view so on the next load the previous instance is used.&nbsp; So not sure what Andres Olivares is talking about when he says to handle the teardown off these views.<br>\r\n",
+    "PostedDate": "2008-09-02T15:56:18.343-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "115674",
+    "ThreadId": "34275",
+    "Html": "martalex,<br>\r\n<br>\r\nIf you created the view through object resolution:<br>\r\n<br>\r\n<em>container.Resolve&lt;MyViewType&gt;();<br>\r\n</em><br>\r\nyou should dispose of the view throught the container as well:<br>\r\n<br>\r\n<strong>container.Teardown(MyViewInstance).</strong><br>\r\n<br>\r\nAndres Olivares\r\n",
+    "PostedDate": "2008-09-03T07:39:15.61-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

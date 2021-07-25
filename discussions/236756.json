@@ -1,0 +1,146 @@
+[
+  {
+    "Id": "529613",
+    "ThreadId": "236756",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I am trying to implement the InteractionRequest pattern in a Prism v4 WPF application following what described in the documentation\r\n<a href=\"http://msdn.microsoft.com/en-us/library/gg405494(v=PandP.40).aspx\">http://msdn.microsoft.com/en-us/library/gg405494(v=PandP.40).aspx</a>&nbsp;but I am not succeeding.</p>\r\n<p>All demo applications are related to Silverlight so my question is: Is this pattern available only in a SL application?</p>\r\n<p>If not, where can I find a sample on how to implement this in WPF?</p>\r\n<p>Thanks</p>\r\n<p>Antonio</p>\r\n",
+    "PostedDate": "2010-12-01T11:44:33.387-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "529664",
+    "ThreadId": "236756",
+    "Html": "\r\n<p>Hi Antonio,</p>\r\n<p>There is not guidance on this topic for WPF in Prism out-of-the-box. But I think that you can find the following blog post in the Brian Noyes' Blog:</p>\r\n<ul>\r\n<li><span><a rel=\"bookmark\" href=\"http://www.softinsight.com/bnoyes/2010/11/15/PromptingTheUserFromAViewModelndashPrism4Gems.aspx\">Prompting the User From a View Model&ndash;Prism 4 Gems,</a></span> from this post:\r\n<em>All of this applies to the WPF side of the house as well other than the PopupChildWindowAction. That is only in Prism for Silverlight, although it would be a simple matter to migrate the code to WPF. I&rsquo;ll save that for a future post.</em>\r\n</li></ul>\r\n<p>If you continue experiencing this in your scenario, could you please provide more information about your situation or if you are receiving an exception?</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n",
+    "PostedDate": "2010-12-01T13:01:02.647-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "529769",
+    "ThreadId": "236756",
+    "Html": "\r\n<p>Hi Fernando,</p>\r\n<p>The issue I am having is related to how to display a child window if the PopupChildWindowAction is not available in WPF.</p>\r\n<p>I am using the following Xaml as per the documentation but I get the error saying that PopupChildWindowAction doesn't exist.</p>\r\n<p>&nbsp;&nbsp;&nbsp; &lt;UserControl.Resources&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;DataTemplate x:Key=&quot;NotifyWindowTemplate&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Grid MinWidth=&quot;250&quot; MinHeight=&quot;100&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextBlock TextWrapping=&quot;Wrap&quot; Grid.Row=&quot;0&quot; Text=&quot;{Binding Message}&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Grid&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/DataTemplate&gt;<br>\r\n&nbsp;&nbsp;&nbsp; &lt;/UserControl.Resources&gt;</p>\r\n<p>&nbsp;&nbsp;&nbsp; &lt;i:Interaction.Triggers&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;prism:InteractionRequestTrigger SourceObject=&quot;{Binding NotifyInteractionRequest}&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;prism:PopupChildWindowAction ContentTemplate=&quot;{StaticResource NotifyWindowTemplate}&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/prism:InteractionRequestTrigger&gt;<br>\r\n&nbsp;&nbsp;&nbsp; &lt;/i:Interaction.Triggers&gt;</p>\r\n<p>How can I adapt it to work with WPF?</p>\r\n<p>Thanks</p>\r\n<p>Antonio</p>\r\n",
+    "PostedDate": "2010-12-01T17:16:15.93-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "529831",
+    "ThreadId": "236756",
+    "Html": "\r\n<p>Antonio,</p>\r\n<p>This is one of those things that you would have to design a dialog window yourself.&nbsp;&nbsp; Since in WPF there is no implementation of &quot;ChildWindow&quot;, precisely why my gripe with some of examples that were developed for this latest release of PRISM alienates\r\n a good portion of the developers to have to go and re-write the wheel to make something that should be in box.&nbsp; Done for one, should be done for the other.&nbsp; Side by side development has been sort of left out in this case.&nbsp;</p>\r\n<p>Now in answer there is a gentleman that put together a library full of goodies for WPFer's, located @\r\n<a href=\"http://wpftoolkit.codeplex.com/\">http://wpftoolkit.codeplex.com/</a> that has some of the stuff you might be looking for.&nbsp; In my honest opinion they guys at P&amp;P have dropped the ball on some of the development tasks that should have been INCLUDED\r\n in the Prism release.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-01T20:50:48.557-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "535172",
+    "ThreadId": "236756",
+    "Html": "\r\n<p>Antonio,</p>\r\n<p>I've written a WPF version of the Interaction Request&nbsp;for my&nbsp;the Box MVVM Training here:</p>\r\n<p><a href=\"http://visualstudiogallery.msdn.microsoft.com/en-us/3ab5f02f-0c54-453c-b437-8e8d57eb9942\">http://visualstudiogallery.msdn.microsoft.com/en-us/3ab5f02f-0c54-453c-b437-8e8d57eb9942</a></p>\r\n<p>Install this Visual Studio Extension.</p>\r\n<p>Create a new project with the MVVM Training Template.</p>\r\n<p>Check out&nbsp;DialogInteractionRequestView.xaml and its implementation.</p>\r\n<p>Cheers,</p>\r\n<p>Karl</p>\r\n",
+    "PostedDate": "2010-12-13T12:39:31.413-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "612406",
+    "ThreadId": "236756",
+    "Html": "<p>Hello everyone,</p>\r\n<p>&nbsp;</p>\r\n<p>I have extracted the required files from Karl's MVVM training kit to raise the Interaction popup from the View Model. &nbsp;It all works perfectly fine, however for some reason the Popup with the message appears on the screen as a non-modal window, despite the background turning grey.</p>\r\n<p>The datagrid rows are still active and the user can move around with the keyboard, only mouse interactions seem to be blocked, which isn't good enough. &nbsp;Is there any way to make the popup truly modal so that nothing works until the user has clicked on OK button?</p>\r\n<p>high appreciated your help on this,</p>\r\n<p>Houman</p>",
+    "PostedDate": "2011-05-13T07:09:55.633-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "724163",
+    "ThreadId": "236756",
+    "Html": "<p>I built my own PopupChildWindowAction for WPF and it works fine. Usage is exactly same as in silverlight.</p>",
+    "PostedDate": "2012-01-12T03:09:13.833-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "828499",
+    "ThreadId": "236756",
+    "Html": "<p>can you share the code your wrote please?</p>",
+    "PostedDate": "2012-04-25T09:51:14.363-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "834018",
+    "ThreadId": "236756",
+    "Html": "<p>Hi,</p>\r\n<p>For those interested in this subject, I believe you could also find the following blog post interesting:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/aadami/2012/05/09/prism-interactionrequest-and-popupmodalwindowaction-for-wpf-applications/\">Prism: InteractionRequest and PopupModalWindowAction for WPF applications</a></li>\r\n</ul>\r\n<p>There you can find a sample with a custom<strong> TriggerAction&lt;FrameworkElement&gt;</strong> similar to the default <strong>PopupChildWindowAction</strong> implementation provided by <strong>Prism, </strong>used in a <strong>WPF </strong>application.</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-05-09T08:07:39.403-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "835740",
+    "ThreadId": "236756",
+    "Html": "<p>Thank you, aadami,&nbsp;for the great&nbsp;posting \"Prism: InteractionRequest and PopupModalWindowAction for WPF applications\". I have a question regarding the popup child window's startup location. Is there a way to&nbsp;place the popup window at the center of the calling window?</p>",
+    "PostedDate": "2012-05-13T08:17:31.997-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "835771",
+    "ThreadId": "236756",
+    "Html": "<p>It is a great post indeed.&nbsp;</p>\r\n<p>Can you share how I need to modify the code if I want to use the popup modal window as add/edit screen for records in my application.&nbsp; Basically, I would like when I call the popup window to set the view &amp; View model.&nbsp; Assume, I have an orders and products modules, in each module I want to use the popup window for the user to edit a single order line or a single product.&nbsp;</p>\r\n<p>How can I accomplish this by using a common popup window framework?</p>\r\n<p>Thanks again.</p>",
+    "PostedDate": "2012-05-13T11:42:55.803-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "836155",
+    "ThreadId": "236756",
+    "Html": "<p>m5168, I think the issue is that the window does not have an owner set in it, so no matter what you set the WindowStartupLocation it will not work, since the Owner = null.</p>\r\n<p>I am not sure how we would handle that.&nbsp;&nbsp; But maybe aadami will give us some direction soon.</p>",
+    "PostedDate": "2012-05-14T09:46:23.317-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "836174",
+    "ThreadId": "236756",
+    "Html": "<p>Hi,</p>\r\n<p>I'm glad you found the post useful. Regarding how you can place the popup window at the center of the parent window using the aforementioned approach, I believe this could be achieved by manually setting the corresponding <strong>Owner </strong>of the dialog window and its <strong>WindowStartupLocation </strong>property to \"<strong>CenterOwner</strong>\".</p>\r\n<p>An example of this could be modifying the <strong>Invoke </strong>method of the <strong>PopupModalWindowActionBase </strong>class like in the following code snippet, by setting the <strong>MainWindow </strong>as the Owner of the dialog window:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> Invoke(<span style=\"color: blue;\">object</span> parameter)\r\n{\r\n            (...)\r\n            childWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;\r\n            childWindow.Owner = Application.Current.MainWindow;\r\n            childWindow.ShowDialog();\r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Regarding the scenario described by <em>BishMan</em>, I also believe that the approach suggested by <em>Damian Cherubini</em> in <a href=\"http://compositewpf.codeplex.com/discussions/355227\">this thread </a>might be more suitable for it.<br /><br />Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-05-14T10:40:01.84-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "838687",
+    "ThreadId": "236756",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>I am running into a scenario that I can not figure out how to solve.&nbsp;&nbsp; I am using\r\n<a href=\"http://blogs.msdn.com/b/kashiffl/archive/2010/10/04/prism-v4-region-navigation-pipeline.aspx\">\r\nhttp://blogs.msdn.com/b/kashiffl/archive/2010/10/04/prism-v4-region-navigation-pipeline.aspx</a>&nbsp;post as my starting point.&nbsp; I want to have non-linear navigation in my application.&nbsp; I am able to get this working no problem.&nbsp; I created a\r\n popup region&nbsp; and I am able to get the window to load with the view &amp; ViewModel.&nbsp;</p>\r\n<p>What I am struggling with, if I have 2 modules, and in Module One I created a child window, I want to be able to navigate away from the Module One and move to Module Two and launch another child window, I want to be able to switch back and forth between\r\n the module and see both child windows still up.&nbsp; I also would like to be able to center each child window on the module it belongs to not the entire application, and have something like the behavior of child windows in Silverlight where the background\r\n are &quot;covered&quot; with the gray layer, if that makes sense.</p>\r\n<p>How can you accomplish that?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-05-20T16:08:41.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "839117",
+    "ThreadId": "236756",
+    "Html": "<p>Hi,</p>\r\n<p>If I understood your scenario correctly, you have two views (for example, <strong>View1 </strong>and <strong>View2</strong>) in the same region from different modules which can inject their own child views (for example, <strong>ChildView1 </strong>and <strong>ChildView2</strong>) in a <strong>popup region</strong>. You want to be able to navigate between <strong>View1 </strong>and <strong>View2 </strong>so that if the child views were injected in the corresponding region, when you navigate to a view you would also see its corresponding popup view. For example, if you navigate to <strong>View1 </strong>you would also see its <strong>ChildView1 </strong>(but not <strong>ChildView2</strong>) and when you navigate to <strong>View2 </strong>you would also see its <strong>ChildView2 </strong>(but not <strong>ChildView1</strong>).</p>\r\n<p>As far as I know, the aforementioned functionality is not implemented in <strong>Prism </strong>as out of the box. Therefore, you will need to define your own custom logic to handle this scenario.</p>\r\n<p>As a starting point, I believe you could find the <strong>INavigationAware </strong>interface provided by <strong>Prism </strong>useful. For example, each of your views (<strong>View1 </strong>and <strong>View2</strong>) or their view models could implement the aforementioned interface. When a child view is injected in the <strong>popup region</strong>, you could save a \"state\" (<em>popup shown</em> / <em>popup not shown</em>) and the instance of that view in its \"parent\" view / view model (<strong>View1 </strong>for <strong>ChildView1 </strong>and <strong>View2 </strong>for <strong>ChildView2</strong>). Then, in the <strong>OnNavigatedFrom </strong>method of each view (<strong>View1 </strong>and <strong>View2</strong>) you can remove the child view from the popup region and in the <strong>OnNavigatedTo</strong> method, if the aforementioned \"state\" is that the popup was being shown, you could inject the aforementioned instance of the child view in the <strong>popup region</strong> again.</p>\r\n<p>Summarizing, you could remove the corresponding child view from the <strong>popup region</strong> in the <strong>OnNavigatedFrom </strong>method and inject it again in the <strong>OnNavigatedTo </strong>method of each view.</p>\r\n<p>Regarding the functionality of \"disabling\" only the \"parent\" view of the child window instead of \"disabling\" the entire application, a possible approach could be to modify the <strong>DialogActivationBehavior</strong>. By default, the <strong>DialogActivationBehavior </strong>implements a property named <strong>HostControl </strong>which references the control where the <strong>popup region</strong> was defined. For example, if the <strong>popup region</strong> was defined in the <strong>Shell</strong>, the <strong>HostControl </strong>property of the <strong>DialogActivationBehavior </strong>for that region will be the <strong>Shell</strong>.</p>\r\n<p>Taking this into account, each of your views could define their own <strong>popup region</strong> (for example, <strong>View1 </strong>could defined a <strong>PopupRegion1 </strong>where it will inject the <strong>ChildView1</strong>, etc. <strong></strong>), so that when the child view is injected in the corresponding popup region the corresponding \"parent\" view will be accessible in the <strong>DialogActivationBehavior </strong>through the <strong>HostControl </strong>property. For example, if your <strong>View1 </strong>defines a <strong>PopupRegion1 </strong>where you inject the <strong>ChildView1</strong>, the <strong>HostControl </strong>property will be <strong>View1</strong>.</p>\r\n<p>Therefore, when a child view is injected in their corresponding popup window, you would be able to access its \"parent\" and perform the corresponding actions (for example, setting its <strong>IsEnable </strong>property to <strong>false</strong>, etc). As at this point you would be able to access the child view, the parent view and the window, how to implement the rest of your requisites like covering the parent view with a gray layer or center the window's position on top of the parent view is mostly related to <strong>WPF</strong>; and therefore I believe you might find better support for those topics in the <strong>WPF </strong>forums:</p>\r\n<ul>\r\n<li><a href=\"http://social.msdn.microsoft.com/forums/en-US/wpf/threads/\">Windows Presentation Foundation Forums on MSDN</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-05-21T13:43:45.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "839917",
+    "ThreadId": "236756",
+    "Html": "<p><a class=\"UserProfileLink\" href=\"http://www.codeplex.com/site/users/view/DCherubini\">DCherubini</a>&nbsp;&amp; <a class=\"UserProfileLink\" href=\"http://www.codeplex.com/site/users/view/aadami\">aadami</a>,</p>\r\n<p>Thank you so much for your response but I am not sure I explained my self fully.&nbsp; What I am trying to accomplish is similar to what aadami posted on his blog <a href=\"http://blogs.southworks.net/aadami/2012/05/09/prism-interactionrequest-and-popupmodalwindowaction-for-wpf-applications/\">http://blogs.southworks.net/aadami/2012/05/09/prism-interactionrequest-and-popupmodalwindowaction-for-wpf-applications/</a>.&nbsp;</p>\r\n<p>But the problem I am running into is similar to the \"Additional Considerations\" that aadami posted on May 15, 2012.&nbsp;&nbsp; I want to be able to open 2 custom dialogs from 2 different modules at the same time.&nbsp;&nbsp;&nbsp;</p>\r\n<p>Although I understand what you are saying in in your post DCherubini I am thinking there might be an easier more extensible option and I was hoping you guys can give me some direction or a better solution to trying to get 2 custom dialogs to open from 2 different modules at the sametime in PRISM MVVM WPF UNITY application.</p>\r\n<p>Thank you so much for your time and support which is excellent.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-05-23T07:22:53.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "840540",
+    "ThreadId": "236756",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Sorry, it seems that I have misunderstood your scenario. I thought you wanted to have two different popups but only show the one corresponding to the active view (that is, not the two at the same time.) If you want to show two popups at the same time this\r\n can be done for example using the aforementioned <strong>RegionPopupBehavior </strong>\r\nsimply by defining two different regions, one in each view like mentioned before. Like this, each popup will be independent of each other.</p>\r\n<p>As it seems that you have created a new thread regarding this topic, I believe it would be helpful to continue the discussion in that thread:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/357015\">Open 2 message boxes from 2 different modules at the same time</a>\r\n</li></ul>\r\n<p>Regarding the main topic discussed in this thread about <strong>InteractionRequest\r\n</strong>in <strong>WPF </strong>you could check the following blog post which provides an implementation based on Agustin's\r\n<strong>PopupModalWindowAction</strong>, as it provides a workaround for the &quot;additional considerations&quot; he mentioned as well as new features which I believe you might find interesting:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/dcherubini/2012/05/24/popupwindowaction-using-custom-views-instead-of-windows-in-wpf-and-prism/\">PopupWindowAction: using custom views instead of windows in WPF and Prism</a>\r\n</li></ul>\r\n<p>I hope you find it useful,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2012-05-24T10:31:42.243-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "840554",
+    "ThreadId": "236756",
+    "Html": "<p>Thank you so much, yes I created a new discussion to limit the topic we are discussing.&nbsp; As you can tell from the post in the \"Open 2 message boxes from 2 differnt modules at the same time\", I included a project that has the issue I am running into it.&nbsp; I hope you find that helpful in trying to guide me through a solution.</p>",
+    "PostedDate": "2012-05-24T10:48:38.34-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

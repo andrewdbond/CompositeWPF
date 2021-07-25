@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "630641",
+    "ThreadId": "262197",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I've been working with WPF for a while, and have a solid grip on the MVVM best practice.&nbsp; I have an application that I think is a perfect fit for Prism, but would like to get a little direction so that I'm not spinning my wheels on an approach that\r\n won't work.&nbsp; Here's the basics:</p>\r\n<ul>\r\n<li>The WPF application will be used to configure 'run profiles' for a service-type application\r\n</li><li>The WPF application that will contain a primary view with some basic&nbsp;service configuration&nbsp;settings\r\n</li><li>The service application has various 'connectors' that will also need to be configured.&nbsp; These connectors will be dynamic and available per licensing.&nbsp; The connectors will have views that would be loaded dynamically into the shell/primary view.\r\n</li><li>Perfect world scenario would be that on startup, the application would read some sort of configuration (sql, config file, etc...) and load the appropriate connector views\r\n</li></ul>\r\n<p>I realize this isn't&nbsp;much detail, but you can see the direction I'm going.&nbsp; I've looked through the documentation and quick starts, but wasn't sure if there was a good example or just some basic pointers for an approach.&nbsp; I hope this question\r\n doesn't make me sound lazy, I'm not asking someone to write it for me, just maybe say, look for this (MEF?), and here's a few things to watch out for.</p>\r\n<p>Thanks!</p>\r\n<p>Gary</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-06-21T08:51:40.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "630815",
+    "ThreadId": "262197",
+    "Html": "<p>Hi Gary,</p>\r\n<p>Based on my understanding of the scenario you need to achieve, a good starting point will be to check out the <strong>QuickStarts</strong> and the <strong>Reference Implementations</strong> provided with Prism.</p>\r\n<p>These solutions will help you figure out what features will suite better in your application. In my opinion, concepts like <strong>Modular development</strong>, <strong>Regions</strong> and <strong>Navigation</strong> are good candidates to help you achieve the expected scenario.</p>\r\n<p>I hope this information helps you.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-06-21T14:47:13.143-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "630856",
+    "ThreadId": "262197",
+    "Html": "<p>Thank you, Miguel, that's just what I was looking for.&nbsp; I also found a series of videos by Mike Taulty, and watched the first five.&nbsp; Those really gave me a better understanding of the landscape.&nbsp; What I'm going to do is incorporate PRISM into my back end first, as that will get my hands dirty with an implementation, without having to initially deal with the user interface.&nbsp; I'll probably be posting more questions in the future, and thanks again for the help!</p>\r\n<p>Gary</p>",
+    "PostedDate": "2011-06-21T17:07:12.223-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "635552",
+    "ThreadId": "262197",
+    "Html": "<p>I've got the Prism (with Unity) infrastructure up and running, but not really doing much yet.&nbsp; My followup question&nbsp;is a little more specific:</p>\n<p>Once everything is loaded, I'd like my 'engine' to be able to iterate through the available 'connectors', which are defined as modules, and run each one.&nbsp; What I'm not sure how to do, though, is determine the connectors that are loaded.&nbsp; I'm using the configuration file as the catalog for available modules/connectors.&nbsp; I know there is an event for the module manager that can be captured each time a module is initialized... could that help in some way?&nbsp; I'd really like this to be as dynamic as possible, and not break any basic rules of how this sort of thing should be done.</p>\n<p>I hope what I'm asking makes sense.&nbsp; Any insight would be great.</p>\n<p>Thanks!</p>\n<p>Gary</p>",
+    "PostedDate": "2011-06-30T11:37:21.4-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "636032",
+    "ThreadId": "262197",
+    "Html": "<p>Hi Gary,</p>\r\n<p>Based on my understanding of your scenario, you could track when your modules has been loaded by subscribing the <strong>ModuleManager</strong>&rsquo;s <strong>LoadModuleCompleted</strong> event. In the event handler you can implement the logic to inform the applications which modules are loaded and available.</p>\r\n<p>You can find more information in Prism MSDN documentation <a href=\"http://msdn.microsoft.com/en-us/library/gg405479(v=PandP.40).aspx#sec37\">here</a>.</p>\r\n<p>Additionally, you can check the <a href=\"http://msdn.microsoft.com/en-us/library/ff921068(v=PandP.40).aspx\">Modularity QuickStart for WPF</a> using Unity where these concepts are explained.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-07-01T07:43:16.547-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

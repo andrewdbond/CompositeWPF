@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "866623",
+    "ThreadId": "367906",
+    "Html": "\r\n<p>I have a WPF&nbsp;solution&nbsp;using MVVM with Prism and Unity. My login screen obtains connection strings from the module's app.config and puts them into a combox so that the user can select the connection . I need to persist the string so that it is discoverable\r\n by Views that are injected into the main screen. From my reading, I THINK that I have learned that using a Singleton is the best way to accomplish this, but I am not sure. I have read about Singletons in an abstract sense, but I don't have a handle on how\r\n it would be used to accomplish my specific goal. So I have these questions: 1) Is a Singleton the best way to persist a string value across injected views/view modes?; 2) If not, then what?; 3) Can you point me to an example that is solves a problem similar\r\n to the one I have presented?</p>\r\n",
+    "PostedDate": "2012-07-14T09:44:19.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "868191",
+    "ThreadId": "367906",
+    "Html": "<p>P.S. I have found that a simple static variable in a shared class may be used to persist the connection string. However, in doing so, I believe that the MVVM pattern is broken because any module that will use the \"global\" connection string is now dependent upon the login module. How will independent unit testing be accomplished?</p>",
+    "PostedDate": "2012-07-15T10:06:35.49-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "869506",
+    "ThreadId": "367906",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding of your scenario, I believe using a singleton instance like a shared service to persist your string value across your different modules in a loosely coupled fashion should be appropriate. To achieve this you could register your\r\n service instance as a singleton in the container, and consume it across your different modules through a common Interface defined for example in a Infrastructure project referenced by your different modules.</p>\r\n<p>For example in <strong>Unity </strong>you could register the singleton instance like this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">this</span>.Container.RegisterType&lt;IMyServiceInterface, MyService&gt;(<span style=\"color:blue\">new</span> ContainerControlledLifetimeManager()); \n</pre>\r\n</div>\r\n<p>I believe you may find the exercises provided in the <strong>Dependency Injection Lab</strong> from the\r\n<a href=\"http://prismtk.codeplex.com/\">Prism Training Kit</a> useful, as they show how to create and consume a shared service using the\r\n<strong>Unity </strong>container.</p>\r\n<p>Also, you could find more information about Shared Services in the following chapter of the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28v=pandp.40%29\">Chapter 9: Communicating Between Loosely Coupled Components</a>\r\n</li></ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-07-16T05:57:35.66-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

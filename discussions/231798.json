@@ -1,0 +1,178 @@
+[
+  {
+    "Id": "510472",
+    "ThreadId": "231798",
+    "Html": "<p>Can anyone please let me know how to define region in ChildWindow and navigate/inject view into it displaying a modal popup. This should also compose the view using MEF to import is corresponding ViewModel and other imports like IEventAggregator.</p>\r\n<p>A prompt response with sample application will be greatly appreciated.</p>\r\n<p>Thanks,</p>\r\n<p>Milind</p>",
+    "PostedDate": "2010-10-21T06:04:57.453-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "510604",
+    "ThreadId": "231798",
+    "Html": "<p>reference the SL version of the stocktrader_ri. In the shell notice the top of the shell there is xaml code for the &quot;SecondaryRegion&quot; this is directly related to the ChildWindow control in silverlight.&nbsp;&nbsp; In wpf I use standard region methodology to get to it. To understand what is going on the code that makes all this happen is in the Infrastructure project under behaviors.</p>\r\n<p>&nbsp;</p>\r\n<p>regionManager.Regions[&quot;SecondaryRegion&quot;].Add(someView);</p>\r\n<p>this is done in your bound button/link with Commanding.</p>\r\n<p>regionManager.Regions[&quot;SecondaryRegion&quot;].Activate(someView);</p>\r\n<p>or</p>\r\n<p>regionManager.RequestNavigate(&quot;SecondaryRegion&quot;, new Uri(&quot;/theviewinquestion&quot;, UriKind.Relative));</p>\r\n<p>When I want to indicate the window is closing I use regionManager.Regions[&quot;SecondaryRegion&quot;].Deactivate(someView); which is called via a ICommand bound to a button.</p>\r\n<p>&nbsp;</p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre>    xmlns:infBehaviors=&quot;clr-namespace:StockTraderRI.Infrastructure.Behaviors;assembly=StockTraderRI.Infrastructure&quot;\r\n    infBehaviors:RegionPopupBehaviors.CreatePopupRegionWithName=&quot;SecondaryRegion&quot;\r\n    infBehaviors:RegionPopupBehaviors.ContainerWindowStyle=&quot;{StaticResource PopupStyle}&quot;&gt;\r\n</pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2010-10-21T09:21:22.59-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "512584",
+    "ThreadId": "231798",
+    "Html": "\r\n<p>Thanks for the reply, can you please clarify following.</p>\r\n<p>when you are saying&nbsp; &quot;the top of the shell there is xaml code for the &quot;SecondaryRegion&quot; this is directly related to the ChildWindow control in silverlight&quot; do you mean it is derived from ChildWindow class? Besides this how do you get the instances of\r\n view to Add or remove or activate using regionManager.Regions[&quot;SecondaryRegion&quot;].Add/REmove/Activate(someView);</p>\r\n<p>I have one more query how to create object isntances using MEF explicitly so that object getting created wtill import all its dependency. How can I get hold of MEF container from within code. I know we can get it in the bootstrapper, but I am looking for\r\n it in the modules so that I can compose my view using MEF ( so that all dependencies like ViewModel, IEventAggregator etc get imported). Waiting for your response.</p>\r\n<p>It would be great if some one can help me getting ChildWindow scenatio working with some example or sample app.</p>\r\n<p>Milind</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-10-26T02:05:32.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "512804",
+    "ThreadId": "231798",
+    "Html": "\r\n<p>at the bottom of my post there is the code fragment that is facilitating the popup window.&nbsp; In wpf I am using this feature now.&nbsp; The wpf code base uses Windows and SL code base uses ChildWindow class (which is part of silverlight, but not in wpf\r\n bcl).&nbsp; Farret thru that xaml markup and see then also reference the Infrastructure and look for the Behaviors.</p>\r\n<p>As for activating use the newer regionManager.RequestNavigate(&quot;SecondaryRegion&quot;, new Uri(&quot;/theviewinquestion&quot;, UriKind.Relative));&nbsp;</p>\r\n<p>then I use</p>\r\n<p>var viewinquestion = regionManager.Regions[&quot;SecondaryRegion&quot;].GetView(&quot;viewinquestion&quot;);&nbsp; &lt;&lt;-- since Deactivate takes an object parameter.<br>\r\nregionManager.Regions[&quot;SecondaryRegion&quot;].Deactivate(viewinquestion);</p>\r\n<p>for closing the popup window.</p>\r\n",
+    "PostedDate": "2010-10-26T09:39:15.657-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "512887",
+    "ThreadId": "231798",
+    "Html": "\r\n<p>I am also very interested in this solution,</p>\r\n<p>but also could not understand the code you posted.</p>\r\n<p>I took a loke at the&nbsp;StockTraderRI and could not understand that too. and its not a popup.</p>\r\n<p>Is there another simple example?&nbsp;</p>\r\n",
+    "PostedDate": "2010-10-26T11:21:49.107-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "513138",
+    "ThreadId": "231798",
+    "Html": "\r\n<p>Can you please send me the working sample. I know StockTickerRI is there but it has too many things...I just want to clarify the concepts of modal popup display using PRISM mechanism. How easy it is for everyone to stard adding popup, sending data back to\r\n parent screen, hiding popup, sharing popup between different modules etc.</p>\r\n<p>I hope you will come up with the satisfactory answers as you have already...</p>\r\n<p>Most important one is behaviour concepts, what are they?</p>\r\n<p>Milind</p>\r\n",
+    "PostedDate": "2010-10-26T21:06:11.047-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "513361",
+    "ThreadId": "231798",
+    "Html": "\r\n<p>Ok guys I will post a solution, it uses&nbsp;a region for the popup (aka modal dialog).&nbsp; I have&nbsp;modified the behavior that StockTraderRI uses to&nbsp;show as a dialog not as &quot;non-modal dialog&quot;.&nbsp; The&nbsp;code should work for silverlight&nbsp;but\r\n since I don't use SL atm, I haven't tested it under SL.&nbsp;&nbsp;N.B. I have't modified the code for SL.&nbsp;</p>\r\n<p>Give me a few and I will post a very functionally slim example for ya to look thru... As for bringing data in and out, I will leave that for drill since it isn't that hard.</p>\r\n<p>Morgan.</p>\r\n",
+    "PostedDate": "2010-10-27T06:33:15.697-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "513746",
+    "ThreadId": "231798",
+    "Html": "\r\n<p>Thanks Morgan, really appreciated...waiting for the source code. I hope you will be uploading it to some shareware sitte for downloading. I also don't mind the non modal version of the popup behaviour just to have a look at it. But most important one is\r\n modal popup behaviour with MVVM pattern ( wher MEF composes all of view, viewmodles parts). Thanks again, it will really help me in understanding the behaviour and regions.</p>\r\n<p>Thanks,</p>\r\n<p>Milind</p>\r\n",
+    "PostedDate": "2010-10-27T21:13:33.403-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "513987",
+    "ThreadId": "231798",
+    "Html": "\r\n<p>Waiting for the source code too.</p>\r\n<p>i have found a solution to use ChildWindows, but i think its not a Elegant Solution:</p>\r\n<p>My App:</p>\r\n<ul>\r\n<li>App (Main Project) </li><li>ModuleA\r\n<ul>\r\n<li>ViewA </li><li>ChildWindowA </li></ul>\r\n</li><li>ModuleB\r\n<ul>\r\n<li>ViewB </li><li>ChildWindowB (that needs to call the ChildWindowA) </li></ul>\r\n</li><li>Lib (Silverlight Library Project) </li></ul>\r\n<p>So, in the Lib project a declared an Interface:</p>\r\n<p>&nbsp;</p>\r\n<div>\r\n<pre><span></span><pre>public interface IChildWindowA\r\n{\r\n   void Show(/* pass ViewModal and Current Record to update*/);\r\n}</pre>\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>in the ChildWindowA, implements the Interface</p>\r\n<p>&nbsp;</p>\r\n<div>\r\n<pre><pre>[Export(typeof(IChildWindowA))]\r\n[PartCreationPolicy(CreationPolicy.NonShared)]\r\npublic partial class EditTemp : ChildWindow, IChildWindowA\r\n{\r\n   public void Show(...)\r\n   {\r\n      this.Show();\r\n   }\r\n}</pre>\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>The ModuleB DependsOn the ModuleA, In a Button Click inside the ChildWindowB in the ModuleB:</p>\r\n<p>&nbsp;</p>\r\n<div>\r\n<pre><span></span><pre>private void OnButtonClick(object sender, RoutedEventArgs e)\r\n{\r\n   _editWindowA = (IChildWindowA)ServiceLocator.Current.GetInstance(typeof(IChildWindowA));\r\n   _editWindow.Show(...);\r\n}</pre>\r\n</pre>\r\n</div>\r\n<p>Is that a Bad Solution? or i can go with that</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-10-28T07:45:24.93-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514018",
+    "ThreadId": "231798",
+    "Html": "\r\n<p>http://cid-c9472b51c27dc8fe.office.live.com/browse.aspx/.Public</p>\r\n<p>copy / paste that link to my skydrive and then download the .zip with the solution in it...&nbsp; Don't forget to &quot;unblock&quot; if you have anti-viral in place.&nbsp;&nbsp; This is guidance is based on the StockTrader implementation.&nbsp; It's rough and could\r\n probably be refined and allow for a better solution for editing but they way I do it in my other project is check for an object is null if is then its a new entry and vice-versa if its not null then its an edit.&nbsp; I am merely setting an object of type\r\n x (where x is the record) to the most current selection and going from there, edit/delete, etc...&nbsp; That object is in the viewmodel.</p>\r\n<p>The contracts for simplicity sake are not concrete, which can be changed to interfaces for extensibility purposes.</p>\r\n<p>In the Behaviors folder are all the files that StockTrader use to make a &quot;SL Popup&quot; or a WPF Window.</p>\r\n",
+    "PostedDate": "2010-10-28T08:21:40.937-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514116",
+    "ThreadId": "231798",
+    "Html": "\r\n<p>Thx alot&nbsp;<a id=\"x_ctl00_ctl00_MasterContent_Content_PostRepeater_ctl18_UserNameLink\" href=\"http://www.codeplex.com/site/users/view/mvermef\">mvermef</a>,</p>\r\n<p>But i have a consideration:</p>\r\n<p>In the Module inizialization, you imported the and added the view to the Region (Popup). Thats a problem im my App, becausa my App have alot of Popups, and i think its a problem create all and add to the region in the initialization of the module.</p>\r\n<p>I made some changes in your example to try to solve this potential problem.</p>\r\n<p>1 - In the Module initialization i removed the code that Add the view to the region:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>    [ModuleExport(<span style=\"color:blue\">typeof</span>(ExampleModule))]\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> ExampleModule : IModule\r\n    {\r\n        <span style=\"color:blue\">private</span> IRegionManager regionManager;\r\n\r\n        <span style=\"color:green\">//import the view and create a new instance.</span>\r\n        <span style=\"color:green\">//[Import]</span>\r\n        <span style=\"color:green\">//private DemoView view { get; set; }</span>\r\n\r\n        [ImportingConstructor]\r\n        <span style=\"color:blue\">public</span> ExampleModule(IRegionManager regionManager)\r\n        {\r\n            <span style=\"color:blue\">this</span>.regionManager = regionManager;\r\n        }\r\n\r\n\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> Initialize()\r\n        {\r\n            <span style=\"color:green\">//register the view with the region.</span>\r\n            <span style=\"color:green\">//regionManager.Regions[&quot;SecondaryRegion&quot;].Add(view, &quot;DemoAppView&quot;);</span>\r\n        }\r\n    }\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>2 - Created an Interface to export the view:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">namespace</span> DemoApp.Infrastructure\r\n{\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">interface</span> IDemoView\r\n    {\r\n    }\r\n}\r\n</pre>\r\n</div>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>    [Export(<span style=\"color:blue\">typeof</span>(IDemoView))]\r\n    [PartCreationPolicy(CreationPolicy.NonShared)]\r\n    [RegionMemberLifetime(KeepAlive = <span style=\"color:blue\">false</span>)]\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">partial</span> <span style=\"color:blue\">class</span> DemoView : UserControl, IDemoView\r\n    { ... }\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>3 - At the Command that who the Modal Window:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>    <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> ShowModalWindow()\r\n        {\r\n            regionManager.Regions[<span style=\"color:#a31515\">&quot;SecondaryRegion&quot;</span>].Add(ServiceLocator.Current.GetInstance&lt;IDemoView&gt;(), <span style=\"color:#a31515\">&quot;DemoAppView&quot;</span>);\r\n            regionManager.RequestNavigate(<span style=\"color:#a31515\">&quot;SecondaryRegion&quot;</span>, <span style=\"color:blue\">new</span> Uri(<span style=\"color:#a31515\">&quot;/DemoView&quot;</span>, UriKind.Relative));\r\n        }\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>4 - I have a problem in the Close button of the view, the have that attribute &quot;<span style=\"font-family:Consolas,'Courier New',Courier,monospace; white-space:pre\">[RegionMemberLifetime(KeepAlive =\r\n<span>false</span>)]&quot;, but i think its not working, because when i Deactivate the View, its still alive and are not destroyed s. So i removed the view.</span></p>\r\n<p><span style=\"font-family:Consolas,'Courier New',Courier,monospace; white-space:pre\"></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>        <span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> Close()\r\n        {\r\n            <span style=\"color:green\">//Get the View</span>\r\n            <span style=\"color:blue\">var</span> view = regionManager.Regions[<span style=\"color:#a31515\">&quot;SecondaryRegion&quot;</span>].GetView(<span style=\"color:#a31515\">&quot;DemoAppView&quot;</span>);\r\n\r\n            <span style=\"color:green\">//Not Found fail gracefully, otherwise closes the view/region</span>\r\n            <span style=\"color:blue\">if</span> (view != <span style=\"color:blue\">null</span>)\r\n            {\r\n                regionManager.Regions[<span style=\"color:#a31515\">&quot;SecondaryRegion&quot;</span>].Deactivate(view);\r\n                regionManager.Regions[<span style=\"color:#a31515\">&quot;SecondaryRegion&quot;</span>].Remove(view);\r\n            }\r\n        }\r\n</pre>\r\n</div>\r\n</span>\r\n<p></p>\r\n<p><span style=\"font-family:Consolas,'Courier New',Courier,monospace; white-space:pre\">How do think about the sollution? I Just need to Declare and implement an interface for each of the Modals in my Application.</span></p>\r\n<p>&nbsp;</p>\r\n<p><span style=\"font-family:Consolas,'Courier New',Courier,monospace; white-space:pre\">Heres the updated Demo App:\r\n<a href=\"http://cid-59bcdc091895608b.office.live.com/self.aspx/P%C3%BAblica/DemoApp.zip\">\r\nhttp://cid-59bcdc091895608b.office.live.com/self.aspx/P%C3%BAblica/DemoApp.zip</a></span></p>\r\n",
+    "PostedDate": "2010-10-28T10:37:58.45-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514230",
+    "ThreadId": "231798",
+    "Html": "\r\n<p>&nbsp;</p>\r\n<p>All&nbsp;are probably good suggestions, like I said it&nbsp;was&nbsp;a rough app and there is always room for improvement.&nbsp; When i said I would post a solution I was at a conference and then later waiting to catcha&nbsp; flight out of DC, i threw the\r\n bulk of the demo together then finished it today.&nbsp; But I think you get the general idea, I hope it helped.&nbsp; I hadn't ever thought of using the ServerLocator that way since I was using MEF to the majority of the work.&nbsp; I might have to use the\r\n locator more to get stuff into the regions like you had there.</p>\r\n<p>&nbsp;</p>\r\n<p>Morgan.</p>\r\n",
+    "PostedDate": "2010-10-28T14:09:11.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514266",
+    "ThreadId": "231798",
+    "Html": "\r\n<p>But isnt that a bug?</p>\r\n<p>If my view has: &quot;[RegionMemberLifetime(KeepAlive = <span style=\"color:blue\">false</span>)]&quot; that code should destroy the view &quot;&nbsp;regionManager.Regions[<span style=\"color:#a31515\">&quot;SecondaryRegion&quot;</span>].Deactivate(view);&quot;, but the view are not destroyed..\r\n so i need to Remove that from the view.<br>\r\n<br>\r\n</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-10-28T15:40:59.543-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514327",
+    "ThreadId": "231798",
+    "Html": "\r\n<p>Its either that or we aren't disposing correctly of the view on close.</p>\r\n",
+    "PostedDate": "2010-10-28T18:49:17.877-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "519775",
+    "ThreadId": "231798",
+    "Html": "\r\n<p>Thanks guys for good suggestion and solutions...but can anyone confirm the approach for opening one modal popup in Module B from modal popup in Module A lanucnhed from the view within module A. It would be great to have ddemo solution as above. There will\r\n be often scenation where you common modal popups such as serach screens will be in the common module which will get called from other modules . Besides this when&nbsp; we use WCF RIA services&nbsp; it geenrates entites on the client side whcih can be shared\r\n and used by other modules. My question here is from deployment prospective how will be able to acheive deployment of only module A which resulting in to changes in common entities used by other modules lets say module B and C, Do I have to build this module\r\n as well and deploy them as they are using entities changed due to changes in Module A. I want a strategy where I will be able to deeply only parts that got changed</p>\r\n<p>A good guidance on achieving modularity from deployment prospective is all I need here in the production environment and version management.</p>\r\n",
+    "PostedDate": "2010-11-09T21:39:48.39-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "520022",
+    "ThreadId": "231798",
+    "Html": "\r\n<p><a id=\"x_x_x_ctl00_ctl00_MasterContent_Content_PostRepeater_ctl28_UserNameLink\" href=\"http://www.codeplex.com/site/users/view/milind_yande\">milind_yande,</a></p>\r\n<p>yes this will do what we are suggesting.&nbsp; as long as the module is initialized and it good working order this can be achieved.&nbsp; I would even go as far as saying it would be a good idea to even make the modules dependent on one or the other.&nbsp;\r\n I gather that module b is depending on module A in some fashion so there you go.&nbsp; The example above would work.&nbsp; It might even be necessary for a IEventAggregator to be used to do cross module event calls e.g. showing the dialog.</p>\r\n<p>&nbsp;</p>\r\n<p>Morgan.</p>\r\n",
+    "PostedDate": "2010-11-10T08:23:54.27-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "521980",
+    "ThreadId": "231798",
+    "Html": "\r\n<p>Thanks Morgan, it would be good if you can post a sample demonstrating cross module calls for launching popup from within popup. I hope there is one sample already to which I can refer.</p>\r\n<p>Waiting for your resppnse..this will save us lo of time as there is deadline...hoping for the best.</p>\r\n<p>Milind</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-14T23:59:03.927-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "563765",
+    "ThreadId": "231798",
+    "Html": "\r\n<p>OK so I can get the example simple demo app provided earlier in this post to work.&nbsp; However, when I apply this to my solution, the window that pops up is not modal, and I really can't figure out why this is.&nbsp; With the popup window open, I can still\r\n interact with the parent window.</p>\r\n<p>Any pointers as to where I need to look to ensure that my app opens the window as modal?</p>\r\n",
+    "PostedDate": "2011-02-09T23:49:24.457-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "563875",
+    "ThreadId": "231798",
+    "Html": "\r\n<p>Nevermind, I found it.&nbsp; Turns out I had to change the implementation of the Show method in the WindowWrapper class.</p>\r\n",
+    "PostedDate": "2011-02-10T04:19:25.833-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "564001",
+    "ThreadId": "231798",
+    "Html": "\r\n<p>yea I had to modify the underlying code in that class to make it modal..</p>\r\n",
+    "PostedDate": "2011-02-10T07:57:47.537-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "566845",
+    "ThreadId": "231798",
+    "Html": "<p>With lucianotcorreia example, what do you do if the user closes the window an alternate way other than the 'close' button?</p>\r\n<p>Example.<br />Click button to open popup, then Alt+F4 or the x button, then click open popup. An exception occurs when trying to add 'DemoAppView' to the region.</p>\r\n<p>I can add validation code to the ShowModalWindow, but I rather not do that for every viewmodel popup.</p>\r\n<p>Any suggestions?</p>",
+    "PostedDate": "2011-02-15T17:26:11.903-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "623400",
+    "ThreadId": "231798",
+    "Html": "<p>I can confirm xiquon is correct - if you close the modal using Alt + F4 an exception occurs. Are there any suggestions?</p>",
+    "PostedDate": "2011-06-06T04:00:04.98-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

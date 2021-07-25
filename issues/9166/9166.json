@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": "",
+    "Description": "At this time, Prism has very useful class called ApplicationBarButtonCommand which can be used for binding commands to ApplicationBarIconButton. But for ApplicationBarMenuItem Prism doesn't have the same functionality, which can be simply added applying following changes:\n \n1. add following extension method to AppBarExtension:\n \n\tpublic static IApplicationBarMenuItem FindMenuItem(this IApplicationBar appBar, string text)\n        {\n            if (appBar == null) throw new ArgumentNullException(\"appBar\");\n \n            var resultMenuItem = (from object menuItem in appBar.MenuItems\n                            select menuItem as IApplicationBarMenuItem).FirstOrDefault(btn => btn != null && btn.Text == text);\n \n            if (resultMenuItem == null)\n            {\n                resultMenuItem = (from object menuItem in appBar.Buttons\n                                  select menuItem as IApplicationBarMenuItem).FirstOrDefault(btn => btn != null && btn.Text == text);\n            }\n \n            return resultMenuItem;\n        }\n2. At ApplicationBarButtonCommand class replace ApplicationBarIconButton with IApplicationBarMenuItem (ApplicationBarIconButton inherited from IApplicationBarMenuItem)\n \n3. Instead of AppBarExtension method FindButtonMethod use previously added FindMenuItem method\n \nMay be It isn't the best solution but, it adds really useful functionality.\n \nDiff file with required changes is attached to this issue.",
+    "LastUpdatedDate": "2013-02-21T18:38:02.83-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-02-12T23:26:16.637-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ApplicationBarIconButton and ApplicationBarMenuItem Command Binding on Windows Phone 7",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9166
+  },
+  "FileAttachments": [
+    {
+      "FileId": 898002,
+      "FileName": "changes.diff",
+      "DownloadUrl": ".\\898002"
+    }
+  ],
+  "Comments": []
+}

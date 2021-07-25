@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "547253",
+    "ThreadId": "241290",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I want to use a logger that will send a special CompositeAggregationEvent through EventAggregator everytime the ILoggerFacade.Log is called.</p>\r\n<p>But how can I resolve my Logger, that uses IEventAggregator, in the CreateLogger event in the Bootstrapper when the MEF Container has not been build yet and so I cant use ServiceLocator nor Container.GetExportedValue&lt;&gt;?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-11T05:15:16.017-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "547351",
+    "ThreadId": "241290",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>One possible approach for achieving that could be to make the<strong> CreateLogger\r\n</strong>method create the default implementation for <strong>ILoggerFacade</strong>, and then override the\r\n<strong>RegisterBootstrapperProvidedTypes</strong> method (which is the one that export the logger to the MEF container) to export your implementation of the logger. At the time the\r\n<strong>RegisterBootstrapperProvidedTypes</strong> method is called, the MEF container is available, so you should be able to make your logger obtain a reference to the Event Aggregator.</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> <span style=\"color:blue\">void</span> RegisterBootstrapperProvidedTypes()\r\n        {\r\n            <span style=\"color:blue\">this</span>.Container.ComposeExportedValue&lt;ILoggerFacade&gt;(<span style=\"color:blue\">this</span>.Logger); <span style=\"color:green\">// replace this.Logger for your implementation of ILoggerFacade</span>\r\n            <span style=\"color:blue\">this</span>.Container.ComposeExportedValue&lt;IModuleCatalog&gt;(<span style=\"color:blue\">this</span>.ModuleCatalog);\r\n            <span style=\"color:blue\">this</span>.Container.ComposeExportedValue&lt;IServiceLocator&gt;(<span style=\"color:blue\">new</span> MefServiceLocatorAdapter(<span style=\"color:blue\">this</span>.Container));\r\n            <span style=\"color:blue\">this</span>.Container.ComposeExportedValue&lt;AggregateCatalog&gt;(<span style=\"color:blue\">this</span>.AggregateCatalog);\r\n        }\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2011-01-11T08:27:55.553-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "547787",
+    "ThreadId": "241290",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>thank you, this approach works.</p>\r\n<p>To be honest, I have tried almost the same code before I posted my question here...</p>\r\n<p>The only flaw is that all events from the initialization sequence of the application are beeing send to default PRISM Logger (the logger created in the CreateLogger method). And my logger kicks in after the &quot;Initializing shell&quot; event.</p>\r\n<p>Is there any chance that my Logger (with EventAggregator support) could be used for the events from the Initialization sequence?</p>\r\n<p>I guess not because I can't compose my Logger before the MEF container is available, but I am asking anyway...</p>\r\n<p>&nbsp;</p>\r\n<p>Thank you</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-11T23:17:02.967-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "548013",
+    "ThreadId": "241290",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>The approach you're mentioning is possible, but you should create a logger that uses the Event Aggregator only when it's available. To that purpose, you could use\r\n<a href=\"http://mef.codeplex.com/wikipage?title=Declaring%20Imports\">Optional Imports</a> and\r\n<a href=\"http://mef.codeplex.com/wikipage?title=Recomposition\">Recomposition</a>.</p>\r\n<p>However, if you publish an event with the Event Aggregator before any modules are loaded, it's likely that there won't be a loosely coupled subscriber available, hence you might probably not benefit from the Event Aggregator capabilities in such case.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2011-01-12T06:33:29.51-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "548592",
+    "ThreadId": "241290",
+    "Html": "\r\n<blockquote style=\"border:solid .1em #ccc; font-style:italic; margin:.25em 1em 0 1em; padding:0 .25em 0 .25em\">\r\n<strong>GuidoMaliandi wrote:</strong><br>\r\n<br>\r\n<p>However, if you publish an event with the Event Aggregator before any modules are loaded, it's likely that there won't be a loosely coupled subscriber available, hence you might probably not benefit from the Event Aggregator capabilities in such case.</p>\r\n<br>\r\n</blockquote>\r\n<p>Thank you for the advice.</p>\r\n<p>You are abosolutely right and such approach is useless when the modules aren't loaded...</p>\r\n<p>I have decided to modify the source code of the PRISM and added a standart .NET event to the ILoggerFacade interface.</p>\r\n<p>This event is then raised everytime the Log() method is called.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-13T03:11:01.107-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

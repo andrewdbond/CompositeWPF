@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "253283",
+    "ThreadId": "74052",
+    "Html": "<p><span style=\"font-size:10pt;color:black\">I've built a fairly complex Silverlight application using Prism.&nbsp; I've run in to a slight issue where all modules do not seem to initialize properly when using either:</span></p>\r\n<ol>\r\n<li><span style=\"font-size:10pt;color:black\">A large number of modules (more than 25)</span></li>\r\n<li><span style=\"font-size:10pt;color:black\"><span style=\"font-size:10pt;color:black\">A large number of module dependencies.&nbsp; For example, if I have 20 modules, but 10 of them are dependent on an 'Initialization' module.</span></span></li>\r\n</ol>\r\n<p><span style=\"font-size:10pt;color:black\">As an example, suppose I have a module called 'DBLogger'.&nbsp; By using breakpoints, I was able to verify that the constructor for DBLogger runs properly, with the proper injection of IEventAggregator.&nbsp; The EventAggregator looks correct, with the right number of subscriptions etc.&nbsp; I can step through the code and see that it DBLogger subscribes to a 'Log' event.&nbsp; If I breakpoint another module that publishes a 'Log' event, I can see that the event is actually published, but the DBLogger never executes the associated code.&nbsp; Interestingly enough, if I have another module named 'TextLogger' that subscribes to a Log event, the TextLogger will execute the associated code.</span></p>\r\n<p><span style=\"font-size:10pt;color:black\">It doesn't really seem to matter if I use service dependencies, or what order I load the modules.&nbsp; The same modules appear to fail when I have more than 25 or so modules.&nbsp; I'm kind of at a loss.&nbsp; Are there any known limitations in regards to the number of modules in use, or is that a coincidence and it is more likely that I have some 'broken' code somewhere?</span></p>",
+    "PostedDate": "2009-11-04T07:10:22.107-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "255124",
+    "ThreadId": "74052",
+    "Html": "<p id=942201b0-af81-012c-fca6-12313b018621>Hi</p>\r\n<p id=942211e0-af81-012c-fca7-12313b018621>There are no limitations related to the amount of modules your application can have. Possible reasons for this behavior with the <strong>EventAggregator</strong>, could be related to different reasons:</p>\r\n<ol>\r\n<li>The <strong>EventAggregator</strong> instances in each module are different. You can read about that in <a href=\"View.aspx?ThreadId=59649\">this thread</a>.</li>\r\n<li>The Events are not being strong referenced, and are being garbage collected. You can read about this in <a href=\"http://neverindoubtnet.blogspot.com/2009/05/prism-event-aggregator-subscription.html\">this post</a> from <a href=\"http://neverindoubtnet.blogspot.com/\">Ward Bell</a>.</li>\r\n</ol>\r\n<p id=94222ac0-af81-012c-fca8-12313b018621>Please let me know if this helps.</p>\r\n<p id=94224650-af81-012c-fca9-12313b018621>Damian Schenkelman <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-11-09T09:21:15.4-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

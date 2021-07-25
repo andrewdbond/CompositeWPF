@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "617569",
+    "ThreadId": "258848",
+    "Html": "\r\n<p>Wanting to learn MVVM and WPF I've been reading up and then came to the Prism PDF documentation.</p>\r\n<p>In here (page 58) it talks about using ICollectionView inside a view model - but then says you need a different implementation for Silverlight (PagedCollectionView) and WPF (e.g. ListCollectionView)</p>\r\n<p>I thought one of the goals of ViewModel was to be platform agnostic so it could be used for either Silverlight or WPF?</p>\r\n",
+    "PostedDate": "2011-05-24T12:20:37.4-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "617595",
+    "ThreadId": "258848",
+    "Html": "<p>Hi,</p>\n<p>Multi-targeting code between a Silverlight and WPF application is one of Prism's objectives; however, due to the differences between the platforms, the implementations of ICollectionView need to be different. Therefore, one possible way to achieve a platform-agnostic  solution in this case would be to use <a href=\"http://msdn.microsoft.com/en-us/library/aa691099%28VS.71%29.aspx\"> conditional compilation directives</a> to create a PagedCollectionView in case your class is being compiled in Silverlight, and a ListCollectionView otherwise.</p>\n<p>To illustrate this:</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> SomeViewModel\n\n{\n\n(...)\n\nICollectionView collection;\n\n<span style=\"color: blue;\">public</span> SomeViewModel()\n\n{\n\n<span style=\"color: blue;\">#if</span> SILVERLIGHT collection = new PagedCollectionView(); #else collection = new ListCollectionView(); #endif\n\n}\n\n(...)\n\n}\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>Additionally, you might find the following chapter useful:</p>\n<p><a href=\"http://msdn.microsoft.com/en-us/library/ff921109%28PandP.40%29.aspx\">Chapter 10: Sharing Code Between Silverlight and WPF</a></p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-05-24T12:42:55.787-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

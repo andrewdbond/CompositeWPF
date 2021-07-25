@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1037898",
+    "ThreadId": "442162",
+    "Html": "I am using Prism V4, MVVM, and Unity using C#.\r<br />\n<br />\nIn a bootstrapper, I have two views. Using the IRegionManager, I navigate between the first and the second view.\r<br />\n<br />\nThe first view contains a search box. The user types a string, clicks search. The first view passes the string over to the second view. The second view uses this string to call a service to get a list of items.\r<br />\n<br />\nEverything works fine so far, but I would like to make this async that (also adding a ProgressIndicator). That is I do not want the application to lock when the user click on the search button.\r<br />\n<br />\nI want the application to behave like so:\r<br />\n<br />\nThe user enters a search string, and clicks on search (I have implemented.)\r<br />\nThe user should remain on the first view with the progress bar made visible (I have implemented.)\r<br />\nIn the background the search should be making a async call to the DB. (Implemented)\r<br />\nOnce the result is back from the service, the view should change to the second view with the result. (I have not been able to implement this)\r<br />\n<br />\nHow do I implement step 4 behavior?<br />\n",
+    "PostedDate": "2013-04-30T17:48:46.29-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1038700",
+    "ThreadId": "442162",
+    "Html": "Hi,\r<br />\n<br />\nI believe you could find the <strong>IConfirmNavigationRequest</strong> interface provided by Prism useful. This interface defines a <strong>ConfirmNavigationRequest</strong> method which receives a callback as a parameter. This method will be invoked when you are <strong><em>navigate from</em></strong> the view / view model that implements it, and will interrupt the navigation process until the callback is invoked.) For example, if the first view implements this interface, the method will be invoked when navigating from the first view to the second. There, in the first view, you could show the progress bar, invoke the asynchronous operation to obtain the data and continue the navigation when the operation finishes.\r<br />\n<br />\nYou can find more information about the <strong>IConfirmNavigationRequest</strong> interface in the following section of the documentation:<br />\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28v=pandp.40%29.aspx#sec12\" rel=\"nofollow\">Chapter 8 - Navigation - Confirming or Cancelling Navigation</a><br />\n</li>\n</ul>\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-05-02T11:07:04.133-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1039242",
+    "ThreadId": "442162",
+    "Html": "I see. I will use this interface to notify me when the async operation is completed. But, since I am performing the operation on View1.ViewModel and displaying the result (collection of a type) on View2.View, how would I be able to retrieve the result on View2? <br />\n<br />\nI can only send a query string to View 2. And, in this case since I will send the query string to the async operation, I don't have to send any query string to View2.<br />\n<br />\nI am guessing, I need to create an ObservableCollection of the type. On View1.ViewModel I load this collection; on View2.View I display it. Is this correct?<br />\n",
+    "PostedDate": "2013-05-03T19:19:55.497-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1039969",
+    "ThreadId": "442162",
+    "Html": "Hi,\r<br />\n<br />\nI believe you will need to implement a communication mechanism between both view models or abstract the logic of obtaining and storing the data in a different component that could be used by both view models (e. g. a <strong>Shared Service</strong> that works as a data repository).\r<br />\n<br />\nYou can find more information about <strong>Shared Services</strong> and other communications mechanism in the following chapter of the documentation:<br />\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28v=pandp.40%29.aspx\" rel=\"nofollow\">Communicating Between Loosely Coupled Components</a><br />\n</li>\n</ul>\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-05-06T09:59:42.707-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

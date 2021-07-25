@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "243623",
+    "ThreadId": "71430",
+    "Html": "<p>From my understanding, MVVM requires a decoupling of the View from the ViewModel.&nbsp; This is most often accomplished by setting a DataTemplate for a ViewModel to a View in a ResourceDictionary.</p>\r\n<p>On the other hand, MVP requires the ViewModel to either resolve a View, accept a view from the constructor through injection, or opening up a public View property for some other class (i.e. Module) to set the View on the ViewModel.&nbsp; I like using the injection approach.&nbsp;&nbsp;Unlike MVVM, CAL recommends: the ViewModel gets a reference to the View, the ViewModel sets the Model property on the View.&nbsp; The View, then, has a little code behind for the ViewModel property... the getter returns the view's DataContext as a&nbsp;ViewModel type (via casting)&nbsp;and the setter simply sets the DataContext of the View.&nbsp; This means that the View &quot;knows&quot; about the ViewModel because it has a property of type ViewModel.</p>\r\n<p>I would like to use MVVM in CAL/Prism/Composite WPF because I like the ModuleCatalog, Services, Events, Bootstrapper, and other very useful concepts in CAL/Prism/Composite WPF.&nbsp; However, I REALLY want to use MVVM to decouple my View from the ViewModel.&nbsp; So here's what I did...</p>\r\n<p>I created a simple Shell with a region in the main application.&nbsp; I created another assembly to act as a module.&nbsp; In the module's initialize method, I register and resolve a ViewModel instance and add it the the region.&nbsp; Yes, that's right, I add a ViewModel (not a View) to a region.&nbsp; [You'll usually see ViewModel.View added to a region.]&nbsp;</p>\r\n<p>I also have a ResourceDictionary in the model that gets added to the the application's MergedDictionaries.&nbsp; In the ResourceDictionary, I simply set the content of a&nbsp;DataTemplate for the TargetType &quot;MyViewModel&quot; to the &quot;MyView.&quot;</p>\r\n<p>The ViewModel is, in fact, getting added to the Region.&nbsp; The MergedDictionary does contain the DataTemplate.&nbsp; BUT, the View is not being rendered.&nbsp; Any ideas why?</p>\r\n<p>To test to make sure it works in the MVP pattern, I added a ViewModel property in the code behind to the View, added the View in the constructor of the ViewModel for DI, and set the View's ViewModel property in the constructor of the ViewModel.&nbsp; (Plus, I commented out the DataTemplate).&nbsp; I also, of course, added a registration of the view in the Module and added the View (instead of the ViewModel) to the region.&nbsp; And, as expected, it worked.</p>\r\n<p>How do I REALLY implement MVVM with CAL/Prism/Composite WPF?</p>",
+    "PostedDate": "2009-10-08T15:18:42.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "243752",
+    "ThreadId": "71430",
+    "Html": "<p>Hi, Guy,</p>\r\n<p>I think you misunderstand, MVP and MVVM are the same, although the implementation is different in coding format.</p>\r\n<p>MVVM can do antthing that MVP can do, so do MVP.</p>\r\n<p>I think your memtion is the difference between view-first and presenter, or maybe result in the difference between view discovery and view injection.</p>",
+    "PostedDate": "2009-10-09T00:14:43.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "243885",
+    "ThreadId": "71430",
+    "Html": "<p>I guess the the operative word is &quot;implementation.&quot;&nbsp; In one implementation, the View &quot;knows&quot; about the ViewModel, and vice versa.&nbsp; In the other, the View does not &quot;know&quot; about the ViewModel, and the ViewModel is rendered using a DataTemplate to associate a ViewModel with a View.</p>\r\n<p>Although the intentions are the same, to me, these are not only completely different implementations; they are different patterns.&nbsp; One&nbsp;major element of a pattern&nbsp;knowing or not knowing about another major element of a pattern is helps to define the pattern, or at least its nature.</p>\r\n<p>Nevertheless, whether there're different patterns or the same patterns with different implementations, the point is that I would like to add a ViewModel (not a View) to a region and&nbsp;use a DataTemplate to determine how the ViewModel should be rendered by a View.&nbsp; Any experience out there&nbsp;with this?&nbsp; It'd be like combining the CAL reference implementation with Josh Smith's MVVM example on MSDN magazine.</p>\r\n<p>I messed up the subject line for this discussion, I really did not want to get into a patterns discussion.&nbsp; I now realize there is a pretty heated debate about MVP/MVVM.</p>\r\n<p>Could someone help me out with implementation, whether or not MVP and MVVM patterns are the same?</p>",
+    "PostedDate": "2009-10-09T06:49:17.797-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "243920",
+    "ThreadId": "71430",
+    "Html": "<p>One thing I did notice in the InnerAdd method on Region is the code attempts to cast the View to a DependencyObject.&nbsp; Since ViewModels are rarely dependency objects the RegionManager attached property is not being set.</p>\r\n<p>So, I made my ViewModel inherit from DependencyObject just to see what would happen... and... nothing.&nbsp; Same results.&nbsp; Doggone it!</p>",
+    "PostedDate": "2009-10-09T08:22:12.477-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "245293",
+    "ThreadId": "71430",
+    "Html": "<p id=053a2640-9a5a-012c-5025-12313b005851>Hi</p>\r\n<p id=053a63c0-9a5a-012c-5026-12313b005851>You can check <a href=\"http://blogs.southworks.net/jdominguez/2008/09/presentation-model-with-datatemplates-in-compositewpf-prism-sample/\">this blog post</a> from <a href=\"http://blogs.southworks.net/jdominguez/\">Julian Dominguez</a> that explains how to use DataTemplates with Prism (although it is for Prism-v1 the general concepts are still the same). Take into account that this is one of the ways to implement the MVVM pattern. There are other ways to implement this pattern (not necessarily making one more pure or better than another) which might vary depending on your requirements, comfort and preferences. As for the difference between MVP and MVVM, you can think of the ViewModel as kind of a &quot;bindable presenter&quot;.</p>\r\n<p id=053ab6a0-9a5a-012c-5027-12313b005851>You can read the following blog post from Glenn Block which talks about this:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.msdn.com/gblock/archive/2009/08/03/the-spirit-of-mvvm-viewmodel-it-s-not-a-code-counting-exercise.aspx\">The spirit of MVVM (ViewModel), it&rsquo;s not a code counting exercise.</a></li>\r\n</ul>\r\n<p id=053b0ca0-9a5a-012c-5028-12313b005851>As the above explains there is not a single way to do MVVM. Most of the Quickstarts and the RI use the MVVM pattern without data templates, so you might find some of those examples useful if you follow that approach.</p>\r\n<p id=053b6b80-9a5a-012c-5029-12313b005851>Please let me know if this helps.</p>\r\n<p id=053bd880-9a5a-012c-502a-12313b005851>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-10-13T14:45:40.453-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "483320",
+    "ThreadId": "71430",
+    "Html": "<p>MVP and MVVM are not the same hence the reason for having two patterns that solve the same problem. The fundemental difference is in MVP both the presenter (ViewModel) and the view know about each other always (via interfaces)&nbsp;and is typically used with WinForms as WinForms does not have the advanced binding that WPF does. In MVP you'd normally have quite a few different methods&nbsp;on the view interface that accepts data from the presenter. WPF solves this with MVVM with advanced databinding techniques so the presenter no longer needs to do this.&nbsp;In MVVM, generally the View knows about the ViewModel but the ViewModel doesn't know about the view. In&nbsp;the example Prism code,&nbsp;MVP is used&nbsp;but the the added benefits of the view binding to the ViewModel. I'd say in Prism/CAL the pattern used is a mix between MVP and MVVM.</p>\r\n<p>I do like Prism, I think it brings a lot, and separation of modules is great. There is one thing that is nasty though. That is injecting Unity into the module in order to register module specific classes couples you to the unity container somewhat. It would be better perhaps to extend the ServiceLocator to allow registrations as well as resolving - perhaps a new pattern called ServiceRegistrar!</p>\r\n<p>I almost forgot to mention, why are you so concerned about the view knowing about the ViewModel, it should be the other way around, hence the whole point of these separation patterns that then allow you to not only test your view models independently of the view, but also code reuse independent of the view used.</p>\r\n<p>Cheers</p>\r\n<p>Simon</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-08-22T13:22:52.473-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

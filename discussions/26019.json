@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "87087",
+    "ThreadId": "26019",
+    "Html": "\r\nHi guys,<br /><br />I've just started looking at prism. I like it very much!<br /><br />I was looking at the commanding structure and need some guidance on how I should approach this situation:<br />Let's say I have a view &amp; controller that allow the user to select something (for instance, a person from the database). It is used by many usecases throughout the system. Let's call this the 'chooser'.<br />To show the chooser (which is a popup) I would use a command. <br /><br />My first instinct would be to let the chooser define a multi dispatch command, like StockTraderRICommands. I like to group the commands with the functionality that it will invoke. <br /><br />However, multiple controllers would register themselves as handlers to this command. But when a button is pressed in viewA, I need ControllerA to take action on it, and not ControllerA,B and C. <br />So, would the guidance here be to create specific commands per controller?? So let ControllerA create a command 'ChoosePersonForDetailScreen' and ControllerB create 'ChoosePersonForXXXscreen' and let the corresponding views use these specific commands?<br /><br />I think that might be the best approach, but I do not really like it. I think the view should be able to point to that one command, and let the controller register itself to it. I feel the registermethod could be overloaded with a 'Source' filter: Controller A could register itself like: EmployeeChooserCommands.ChooseEmployee.RegisterCommand(chooseEmployeeCommand, <b>this.View</b>); so that it only get's called when the source of the command is actually the view it is interested in.<br /><br />At this point I find myself just creating routeduicommands and in my controller, registering a commandbinding on its view to handle them. Is that the correct way for this scenario?<br />",
+    "PostedDate": "2008-04-16T02:18:02.3-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "87147",
+    "ThreadId": "26019",
+    "Html": "<div class=\"quote\" style=\"border: dotted .1em #aaa; border-left: none; border-right: none; font-style: italic; margin: 1em 0em 2.5em 3em;padding: .2em;\"><br />RBoeke wrote:<br />Hi guys,<br /><br />I've just started looking at prism. I like it very much!<br /><br />I was looking at the commanding structure and need some guidance on how I should approach this situation:<br />Let's say I have a view &amp; controller that allow the user to select something (for instance, a person from the database). It is used by many usecases throughout the system. Let's call this the 'chooser'.<br />To show the chooser (which is a popup) I would use a command. <br /><br />My first instinct would be to let the chooser define a multi dispatch command, like StockTraderRICommands. I like to group the commands with the functionality that it will invoke. <br /><br />However, multiple controllers would register themselves as handlers to this command. But when a button is pressed in viewA, I need ControllerA to take action on it, and not ControllerA,B and C. <br />So, would the guidance here be to create specific commands per controller?? So let ControllerA create a command 'ChoosePersonForDetailScreen' and ControllerB create 'ChoosePersonForXXXscreen' and let the corresponding views use these specific commands?<br /><br />I think that might be the best approach, but I do not really like it. I think the view should be able to point to that one command, and let the controller register itself to it. I feel the registermethod could be overloaded with a 'Source' filter: Controller A could register itself like: EmployeeChooserCommands.ChooseEmployee.RegisterCommand(chooseEmployeeCommand, <b>this.View</b>); so that it only get's called when the source of the command is actually the view it is interested in.<br /><br />At this point I find myself just creating routeduicommands and in my controller, registering a commandbinding on its view to handle them. Is that the correct way for this scenario?<br /><br /></div><br />Take a look at ActiveAwareDispatchCommand, the same as Multi Dispatch command but only executes the active view's command<br />",
+    "PostedDate": "2008-04-16T08:24:46.62-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "87310",
+    "ThreadId": "26019",
+    "Html": "\r\n@RBoeke thanks for your feedback. @hchau is exactly right, ActiveAwareCompositeCommand (the new name in the recent drop), will address this scenario. In this case you are not invoking multiple commands at any one moment, instead only the command for the active screen will be invoked. <br /><br />Regards<br />Glenn<br />",
+    "PostedDate": "2008-04-17T02:16:58.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "87546",
+    "ThreadId": "26019",
+    "Html": "<br /><div class=\"quote\" style=\"border: dotted .1em #aaa; border-left: none; border-right: none; font-style: italic; margin: 1em 0em 2.5em 3em;padding: .2em;\"><br />gblock wrote:<br />@RBoeke thanks for your feedback. @hchau is exactly right, ActiveAwareCompositeCommand (the new name in the recent drop), will address this scenario. In this case you are not invoking multiple commands at any one moment, instead only the command for the active screen will be invoked. <br /><br />Regards<br />Glenn<br /><br /></div><br />Okay, I had already found it. But it's great to hear that that was the correct approach. <br /><br />I have created mainview with a 'choose employee' button and a region (named 'detailregion'). That detailregion get's filled with the chosen employee. <br />The Detailregion has a Teamleader property with again a button next to it. <br />I have implemented the IsActive interface on the views by looking at the 'gotfocus' and 'lostfocus' events.<br /><br />The problem I'm having is: the mainview get's focus when the detailregion has focus, because detailregion is a child.<br /><br />In other words: what better ways are there to determine which view has focus?<br />",
+    "PostedDate": "2008-04-18T05:36:04.527-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

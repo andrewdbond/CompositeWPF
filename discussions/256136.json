@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "606399",
+    "ThreadId": "256136",
+    "Html": "\r\n<p>Dear all,</p>\r\n<p>I created an interface and implementation in the <strong>Infrastructure </strong>\r\nclass-library dll marked with <strong>Export</strong>.</p>\r\n<p>Now I need to load it from another module, I try the <em>Importconstructor </em>\r\nbut it isn't working. I then tried with [<em>Import</em>] on a property also not working.</p>\r\n<p>What is the best way to load the interface implementation from a class-library from another modules.</p>\r\n<p>Regards</p>\r\n<p>Waleed</p>\r\n",
+    "PostedDate": "2011-05-03T06:01:55.577-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "606494",
+    "ThreadId": "256136",
+    "Html": "<p>Hi Waleed,</p>\r\n<p>In order to import your specific class in a module, you need to register your <em>Infrastructure</em> assembly in the container in <strong>bootstrapper&acute;s</strong> <strong>ConfigureAggregateCatalog</strong> method.</p>\r\n<p>To do this, you need to add a reference in your Shell project, and in the aforementioned method the code should look like this:</p>\r\n<p><span style=\"font-size: 9pt;\" lang=\"EN-US\">\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> ConfigureAggregateCatalog()\r\n{\r\n    <span style=\"color: blue;\">this</span>.AggregateCatalog.Catalogs.Add(<span style=\"color: blue;\">new</span> AssemblyCatalog(<span style=\"color: blue;\">typeof</span>(MyImplementationClass).Assembly));\r\n} \r\n</pre>\r\n</div>\r\n</span></p>\r\n<p>Additionally, you can retrieve an instance of your class using the ServiceLocator in your modules, like this:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>[ExportModule(<span style=\"color: blue;\">typeof</span>(MyModule))]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> MyModule: IModule\r\n{\r\n    <span style=\"color: blue;\">private</span> <span style=\"color: blue;\">readonly</span> IMyImplementationClass myClass;\r\n\r\n    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> Initialize() \r\n    {\r\n       myClass = ServiceLocator.Current.GetInstance&lt;IMyImplementationClass&gt;();\r\n    }\r\n}\r\n</pre>\r\n</div>\r\n<p><span style=\"font-size: 9pt;\" lang=\"EN-US\"><span style=\"font-size: x-small;\">I hope you find this information useful.</span></span></p>\r\n<p><span style=\"font-size: 9pt;\" lang=\"EN-US\"><span style=\"font-size: x-small;\">Thanks,</span></span></p>\r\n<p><span style=\"font-size: 9pt;\" lang=\"EN-US\"><span style=\"font-size: x-small;\">Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></span></span></p>",
+    "PostedDate": "2011-05-03T08:22:18.483-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "606537",
+    "ThreadId": "256136",
+    "Html": "<p>Hello Miguel,</p>\r\n<p>Exactelly what I did, have alook at my code:</p>\r\n<p>This is the Interface &amp; the implementation class at the class-library</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">interface</span> IWindowController\r\n\r\n[Export(<span style=\"color: blue;\">typeof</span>(IWindowController))]\r\n[PartCreationPolicy(CreationPolicy.Shared)]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> WindowController : IWindowController\r\n</pre>\r\n<pre><p>This is how I add the class-library to the cataloge:</p><p>&nbsp;</p><div style=\"color: black; background-color: white;\"><pre><span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> ConfigureAggregateCatalog() </pre>\r\n<pre>{ </pre>\r\n<pre><span style=\"color: blue;\">base</span>.ConfigureAggregateCatalog(); </pre>\r\n<pre><span style=\"color: blue;\">this</span>.AggregateCatalog.Catalogs.Add(<span style=\"color: blue;\">new</span> AssemblyCatalog(<span style=\"color: blue;\">typeof</span> (BootStrapper).Assembly));</pre>\r\n<pre><span style=\"color: blue;\">this</span>.AggregateCatalog.Catalogs.Add(<span style=\"color: blue;\">new</span> AssemblyCatalog(<span style=\"color: blue;\">typeof</span>(WindowController).Assembly));</pre>\r\n<pre>}</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>I do the reference in my VM as follows:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> IWindowController WController { <span style=\"color: blue;\">get</span>; <span style=\"color: blue;\">set</span>; }\r\n\r\nWController = ServiceLocator.Current.GetInstance&lt;IWindowController&gt;();\r\n</pre>\r\n<pre>But the last line (servicelocator) is throwing exception :</pre>\r\n<pre>\"Activation error occured while trying to get instance of type IWindowController, key \"\" \"</pre>\r\n<pre>What could be the issue here</pre>\r\n<pre>Appreciate your feedback</pre>\r\n<pre>Waleed</pre>\r\n</div>\r\n</pre>\r\n</div>",
+    "PostedDate": "2011-05-03T09:25:29.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "606553",
+    "ThreadId": "256136",
+    "Html": "<p>Hi Waleed,</p>\r\n<p>The problem you're experiencing could be caused by a timing issue. You should make sure that, when you attempt to retrieve the instance of <strong>IWindowController </strong>from the container, the <strong>ConfigureAggregateCatalog </strong>method has already been called.</p>\r\n<p>Also, it should be noted that these kind of exception may arise because of multiple causes. For example, if there is an invalid operation that would throw an exception in the <strong>WindowController </strong>constructor, you might experience an exception like the aforementioned. You should make sure that this is not the case by, for example, removing all the content of the <strong>WindowController </strong>class and checking if the same exception is thrown.</p>\r\n<p>If you can't find the reason of this unexpected behavior, it would be helpful if you could provide us with more detailed information regarding your scenario.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-05-03T10:00:23.017-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "606561",
+    "ThreadId": "256136",
+    "Html": "<p>Hello Guido,</p>\r\n<p>I don't think it is a timing issue as I do my call after the page is loaded and also after calling dataservice class to fecth some data.</p>\r\n<p>I&nbsp;have a <em>breakpoint </em>in my class constructor that never gets hit ... !! how can this be true ..</p>\r\n<p>My <strong>scenario </strong>is simple:</p>\r\n<p>I have an implementation of a Dialoge in this IWindowControl/WindowControl that I would like to use over my moduels&nbsp;</p>\r\n<p>Well, I was thinking of extending this scenario to be a strategy of loading my modules dataservice from different class-libraries.</p>\r\n<p>Bets regards</p>\r\n<p>Waleed</p>",
+    "PostedDate": "2011-05-03T10:11:00.917-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "607097",
+    "ThreadId": "256136",
+    "Html": "<p>Waleed,</p>\r\n<p>Since you continue experiencing this issue, it could be helpful if you could provide us with a full repro sample of your solution, so that we can help you to identify the cause of your problem.</p>\r\n<p>You could upload your solution to SkyDrive and post the link here.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-04T06:39:22.32-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "607783",
+    "ThreadId": "256136",
+    "Html": "<p>Hello Miguel,</p>\r\n<p>Appreciate your willing to help ...</p>\r\n<p>Here is the <a title=\"Repo sample\" href=\"https://cid-b7c7e0c3f0481483.office.live.com/self.aspx/.Documents/GLRepo.zip\" target=\"_blank\">link </a>to the repo solution I have created.</p>\r\n<p><strong>Run </strong>the application, <strong>click </strong>Login, <strong>press </strong>the opendialog button to see the error</p>\r\n<p>Hope you can help me with this ...</p>\r\n<p>Regards,</p>\r\n<p>Waleed</p>",
+    "PostedDate": "2011-05-05T06:51:27.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "607792",
+    "ThreadId": "256136",
+    "Html": "<p>Hi Waleed,</p>\r\n<p>We've checked the link you've posted, but it says that the item might no longer exist or is no longer available. Could your upload it again?</p>\r\n<p>Thanks,</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-05-05T07:01:50.443-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "608008",
+    "ThreadId": "256136",
+    "Html": "<p>Sorry Guido,</p>\r\n<p>It is the first time I use skydrivre, can you try again please</p>\r\n<p>Regrads</p>\r\n<p>Waleed</p>",
+    "PostedDate": "2011-05-05T11:50:41.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "608460",
+    "ThreadId": "256136",
+    "Html": "<p>Okay guys,</p>\n<p>I solve it in the repo sample But not in my main application ...</p>\n<p>Simply add the IWindowController to the VM as follows:</p>\n<div style=\"background-color: white; color: black;\">\n<pre>[Import]<br /><span style=\"color: blue;\">public</span> IWindowController WindowController { <span style=\"color: blue;\">get</span>; <span style=\"color: blue;\">set</span>; }<br /></pre>\n<pre>Regards</pre>\n<pre>Waleed</pre>\n<pre>I guess I need to do more work there ... <br /><br />EDITED:<br />I even took the sample back to my application &amp; it stoped working ...<br />I don't know what it could be .. a project settings or what !!<br /><br />Why the Servicelocator fail to import the Implementation?<br />Best<br /></pre>\n</div>",
+    "PostedDate": "2011-05-06T06:44:28.937-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "608775",
+    "ThreadId": "256136",
+    "Html": "<p>Finally Solved ... !!</p>\n<p>Yes, I found the problem, it was that other <strong>models&nbsp;</strong>was referencing the <strong>Infrastructure </strong>project has the <span style=\"text-decoration: underline;\"><em>CopyLocal = true </em></span>so it was <strong>loaded more than once</strong>.</p>\n<p>I fixed it and now I can use the [<strong>Import] or [ImportConstructor] </strong>on my&nbsp;<strong>VM </strong>... But still don't know why the <strong><em>Servicelocator is not working yet</em></strong>...</p>\n<p>Anyway, thanks guys for your help.</p>\n<p>Regards</p>\n<p>Waleed</p>",
+    "PostedDate": "2011-05-06T16:54:18.677-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

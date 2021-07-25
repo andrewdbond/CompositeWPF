@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nIt could be useful to know that, as of Prism v2.2, the behavior you've mentioned has been addressed.\r\n\r\nTo illustrate this, here's a fragment of the RegisterViewsAndServices method, which is called from the PositionModule's Initialize method:\r\n\r\n _container.RegisterType<IOrdersController, OrdersController>(new ContainerControlledLifetimeManager());\r\n\r\nAs shown in the code above, the OrdersController interface mapping is done passing a ContainerControlledLifetimeManager, hence marking it as a Singleton instance.\r\n\r\nWe've also found that a similar fix was applied to the News Module.\r\n\r\nThank you for your feedback.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-02-18T09:06:11.41-08:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "In the current implementation (drop 05-02-2008), there are couple of references to the controller that may cause some nasty bug if it is not done intentionally.\nFor example\nIn PositionModule.Initialize(), the code try to resolve an IOrderController -> create new instance\nThen in PositionSummanyPresenter, we have IOrderController as a constructor parameter that will create another instance of OrderController when the code try to resolve IPositionSummaryPresenter",
+    "LastUpdatedDate": "2013-05-16T05:29:06.04-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-05-12T12:29:37.577-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Multiple Controller instances",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 3,
+    "Id": 2153
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "I think I understand your point.  I'll take a look at this item and post an answer.\r\n\r\nthanks Larry",
+      "PostedDate": "2008-05-15T16:25:04.14-07:00",
+      "Id": 155995
+    },
+    {
+      "Message": "Good catch.\r\n\r\nThis is also true in the News Module.    We have filed this as a bug.\r\n\r\nthanks Larry",
+      "PostedDate": "2008-05-16T11:20:40.473-07:00",
+      "Id": 155996
+    }
+  ]
+}

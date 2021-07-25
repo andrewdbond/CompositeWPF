@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "587822",
+    "ThreadId": "251543",
+    "Html": "\r\n<p>In prism 4 documentation in chapter 3: Managing Dependencies Between Components there is statement:</p>\r\n<p>MEF provides several capabilities that Unity does not:</p>\r\n<ul>\r\n<li>It uses XAP file download and assembly discovery. </li></ul>\r\n<p>Can someone explain me why ?&nbsp;&nbsp; Unity can download xap on demand....</p>\r\n<p>Another thing&nbsp; somewhere in doc - Mef can not use xaml configuration..... again not right....Mef can use the same module catalog as unity.....</p>\r\n<p>or i missed something?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-03-28T13:29:24.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "588189",
+    "ThreadId": "251543",
+    "Html": "<p>Hi,</p>\n<p>MEF provides an <strong>AssemblyCatalog</strong>, <strong>DirectoryCatalog </strong> and <strong>DeploymentCatalog</strong> by its own (more information <a href=\"http://mef.codeplex.com/wikipage?title=Using%20Catalogs\"> here</a>). While the scenario of downloading a xap file on demand is supported using Unity as well (due to the <strong>XapModuleTypeLoader</strong> class in the <strong>Modularity </strong>folder of the <strong>Prism.Silverlight</strong> project in the <em>Prism Library</em>), what the documentation seems to be explaining are the native capabilities of MEF and its differences with Unity. It's worth noting that the Modularity mechanisms in Prism provide an abstraction over the  container mechanisms for these scenarios. This is the reason why there is a <strong> MefXapModuleTypeLoader</strong>, as well as a <strong>MefModuleInitializer</strong>, a <strong>MefModuleManager</strong>, and so forth.</p>\n<p>As for specifying modules in a xaml file, there should be no impediment for using that approach in a composite application using MEF. For example, the <a href=\"http://msdn.microsoft.com/en-us/library/ff921163%28PandP.40%29.aspx\">Modularity QuickStart</a> with MEF uses a xaml catalog (<strong>ModulesCatalog.xaml</strong>) to define some of the modules.</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-29T06:19:31.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "588210",
+    "ThreadId": "251543",
+    "Html": "<p>so it means that using prism there is no difference what to use - mef or unity..</p>\r\n<p>Except export&nbsp;attribute in mef (and some other small differences ) there is no difference with&nbsp;unity...right?</p>",
+    "PostedDate": "2011-03-29T06:52:16.703-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "588218",
+    "ThreadId": "251543",
+    "Html": "<p>There should be no major differences in using Unity or MEF for Prism-related functionality, since Prism is container agnostic. Therefore, the choice between them could be based on personal preference.</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-29T07:03:56.573-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "588223",
+    "ThreadId": "251543",
+    "Html": "<p>then I don't understand why some people are screaming that mef is the only way to go.</p>\r\n<p>Thanks.</p>",
+    "PostedDate": "2011-03-29T07:08:59.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

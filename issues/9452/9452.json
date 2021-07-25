@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Relative file paths for modules defined in Xaml are not resolved correctly. In some discussions it is stated that the relative paths are resolved correctly if the modules are located directly in the current working directory, but this does not seem to be the case either. \n \nI believe the only reason it \"works\" when the modules are located directly in the current working directory is that the file path is never resolved by Prism - instead it is resolved by a call to Type.GetType(moduleInfo.ModuleType), hence ignoring the Ref-attribute. So if your module is loaded with a relative path in the Xaml, you can change it to a non-existing filename and it will still load, such as Ref=\"file:///ThisFileDoesn'tExist\".\n \nTo fix it the right way, I guess changes should be made several places in code. However, if the relative paths are converted into absolute paths, this issue will not appear. To do this in the Prism-source, locate line 149 in ModuleCatalog.cs (in method CreateFromXaml(Stream xamlStream) ). It currently is:\n \nreturn XamlReader.Load(xamlStream) as ModuleCatalog;\n \nChange it into this:\n \nModuleCatalog xamlModuleCatalog = XamlReader.Load(xamlStream) as ModuleCatalog;\n \nforeach (ModuleInfo moduleInfo in xamlModuleCatalog.Modules)\n{\n  Uri uriRef;\n  if (Uri.TryCreate(moduleInfo.Ref, UriKind.RelativeOrAbsolute, out uriRef))\n  {\n    if (uriRef.IsFile && !Path.IsPathRooted(uriRef.LocalPath.TrimStart('/')))\n    {\n      // Since we work with Uri's, it is most appropriate to let the Uri class handle the concatenation.\n      Uri newUriRef = new Uri(new Uri(Directory.GetCurrentDirectory() + '\\\\'), uriRef.LocalPath.TrimStart('/'));\n      moduleInfo.Ref = \"file:///\" + newUriRef.OriginalString;\n    }\n  }\n}\n \nreturn xamlModuleCatalog;\n \nIf you do not want to change the Prism-source, simply create a FileStream to the Xaml document and then you can use the same code as above. Something like this:\n \nFileStream xamlStream = System.IO.File.OpenRead(\"ModuleCatalog.xaml\")\n//  Rest of the code here\n \nA sidenote: If you accidentally change the name of a an IModule class that is referred to in the Xaml module catalog (so the class name in Xaml is different from the real class name), you will get this error:\n \n“Failed to load type for module SomeModule. \n \nIf this error occurred when using MEF in a Silverlight application, please ensure that the CopyLocal property of the reference to the MefExtensions assembly is set to true in the main application/shell and false in all other assemblies. \n \nError was: Unable to find the specified file..”\n \nThat is quite difficult to debug, since the path to the file is specified correctly. After applying the above fix, you will get a more helpful error message:\n \n“Unable to retrieve the module type SomeModuleClass, SomeModuleAssemblyName, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null from the loaded assemblies.  You may need to specify a more fully-qualified type name.”\n \nAnother sidenote: This fix also lets you place the modules in subfolders like this: Ref=\"file:///PrismModules/ModuleA/ModularityWithUnity.Desktop.ModuleA.dll\"\n \nSince there are login-instructions to the TFS in the “source code” area on this site, I tried to login to TFS and fix the issue. However I got “Access Denied” when trying to login.\n \n \nNOTE: I just wrote that bug fix code and have only tested it a few minutes on my own system. It seems to work, but I haven’t tested it much!",
+    "LastUpdatedDate": "2013-02-21T18:37:59.44-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-06-14T17:38:02.893-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "[Desktop] Relative file paths in \"Ref\"-attribute for modules registered in Xaml are not resolved correctly",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 3,
+    "Id": 9452
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nThanks for sharing your findings with the rest of the community. \r\n\r\nWe could reproduce the issue you are mentioning, which appears when discovering modules with relative paths defined in XAML with Unity.\r\n\r\nWe also tested your proposed workaround, by modifying the ModuleCatalog, CreateFromXaml method as you mentioned. So far, it seems that the issue does not appear when applying it. However, we also found that when applying this modifications to the Prism library the following test fails: CanLoadCatalogFromXaml.\r\n\r\nAlso, we found that this workaround can be applied in the FileModuleTypeLoader class too; particularly in its LoadModuleType method, by converting the Ref property of the ModuleInfo passed as the argument of this method to contain an absolute path in the same way as your proposed approach. When doing this no tests failed.\r\n\r\nOn the other hand, take into account that another similar approach to register modules with relative paths can be achieved by using a Configuration file, which as far as I know does not present this particular issue. For more information about this approach you could check the following section of the Prism documentation:\r\n\r\nRegistering Modules Using a Configuration File http://msdn.microsoft.com/en-us/library/gg405479(v=pandp.40)#sec21\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2012-06-26T10:59:20.787-07:00",
+      "Id": 156606
+    }
+  ]
+}

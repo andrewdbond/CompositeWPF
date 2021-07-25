@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "232032",
+    "ThreadId": "68221",
+    "Html": "<p>I have simple prism application which has two regions: TopContent and MainContent. When the application starts it shows single button in the TopContent. Using the MVVM model the button's Command property is binded to ViewModel's command. When user clicks the button I would like to show something in the MainContent region. I have working and not working solution for this problem and I'm trying to understand why both of them are not working.</p>\r\n<p>In my ViewModel I have the following code (executed when user clicks the button) which works:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">this</span>.regionmanager.RegisterViewWithRegion(<span style=\"color:#A31515\">&quot;MainContent&quot;</span>,() =&gt; <span style=\"color:Blue\">this</span>.container.Resolve&lt;TemplateEditorViewModel&gt;().View);\r\n</pre>\r\n</div>\r\n<p>If I put breakpoints on the TemplateEditorView (view which should be shown) and in the TemplateEditorViewModel then following happens:</p>\r\n<p>&nbsp;</p>\r\n<p>1. TemplateEditorView constructor<br>2. TemplateEditorViewModel constructor<br>3. TemplateEditorView constructor<br>4. TemplateEditorViewModel constructor<br>5. TemplateEditorView loaded event raised<br>6. TemplateEditorViewModel catches TemplateEditorView's loaded event</p>\r\n<p>Everything works just fine. I don't know why objects are created twice.</p>\r\n<p>Now here is the code that does not work (the view is now shown):</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>TemplateEditorViewModel viewModel = <span style=\"color:Blue\">this</span>.container.Resolve&lt;TemplateEditorViewModel&gt;();\r\nIRegion main_region = <span style=\"color:Blue\">this</span>.regionmanager.Regions[<span style=\"color:#A31515\">&quot;MainContent&quot;</span>];\r\nmain_region.Add(viewModel.View);\r\nmain_region.Activate(viewModel.View);\r\n<br></pre>\r\n</div>\r\n<p>Again if I put breakpoints on the TemplateEditorView (view which should be shown) and in the TemplateEditorViewModel then following happens:</p>\r\n<p>1. TemplateEditorView constructor<br>2. TemplateEditorViewModel constructor</p>\r\n<p>Both objects are created just once and there is no loaded event and the view is not shown.</p>\r\n<p>If I look at the quick start samples (ViewInjectionComposition in the EmployeesController's OnEmployeeSelected event) they use also the second way to show the view. I don't understand why it doesn't work for me.</p>\r\n<p>TemplateEditorView is a standard UserControl and TemplateEditorViewModel's constructor takes following parameters:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> TemplateEditorViewModel(ITemplateEditorView view, IRegionManager regionManager, IUnityContainer container)\r\n</pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2009-09-07T21:29:17.743-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "232423",
+    "ThreadId": "68221",
+    "Html": "<p>Hi</p>\r\n<p>Without knowing your entire code base, the code you provided seems OK, and it should work as you said (since it is done similarly in the QS).</p>\r\n<p>One possible reason for this issue happening could be that you are creating the Shell twice. You can read more about a possible cause for this in <a href=\"View.aspx?ThreadId=56966\">this thread</a>.</p>\r\n<p>That could explain why with <a href=\"http://msdn.microsoft.com/en-us/library/dd490826.aspx\">ViewDiscovery</a> two views are being created (there are two regions with the same name), and why <a href=\"http://msdn.microsoft.com/en-us/library/dd458899.aspx\">ViewInjection</a> is not showing the view (it is showing the view in the instance of the Shell that is not visible).</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-08T15:09:22.863-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "232593",
+    "ThreadId": "68221",
+    "Html": "<p>The link to the other thread (startup uri) helped alot and I found the problem.</p>\r\n<p>As usual the problem is in my code and not in Prism at all.</p>\r\n<p>In the Bootstrapper I had the following code:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>        <span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">override</span> System.Windows.DependencyObject CreateShell()\r\n        {\r\n            <span style=\"color:Blue\">var</span> shell = <span style=\"color:Blue\">new</span> Shell();\r\n            Application.Current.RootVisual = <span style=\"color:Blue\">new</span> Shell();\r\n            <span style=\"color:Blue\">return</span> shell;\r\n        }\r\n\r\n</pre>\r\n</div>\r\nIt is pretty obvious why I couldn't see the view. Since part of the application works fine I thought there must be something wrong in the code I'm using to display the view (region.Add/Activate).</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-09T02:21:05.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

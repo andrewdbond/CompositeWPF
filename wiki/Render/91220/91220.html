@@ -1,0 +1,39 @@
+<div class="wikidoc"><h1>Summary of what&#39;s new</h1><ol><li><a href="#EventAggregationQuickStart">New Event Aggregation QuickStart</a></li>
+<li><a href="#NewElementsadded">New Elements added to Prism to support Event Aggregation</a></li>
+<li><a href="#UpdatedRegionsImplementation">Updated the Regions implementation</a></li></ol>
+<a name="EventAggregationQuickStart"></a>
+<h3>New Event Aggregation QuickStart</h3>This QuickStart demonstrates how modules communicate in a decoupled way using a multicast Pub/Sub eventing mechanism. The QuickStart contains a single Window that gets populated with content from two modules, ModuleA , and ModuleB. The following figure shows the QuickStart main window. ModuleA content is added to the blue area, and ModuleB content is added to the cyan area.<br /><br /><img src="http://download-codeplex.sec.s-msft.com/Download?ProjectName=CompositeWPF&DownloadId=34488" alt="shell.png" title="shell.png" /><br /><br />The view on the left (<b>AddFundView</b>) allows the user to select a customer and add a fund for the selected customer. The views on the right, of type <b>ActivityView</b>, show the funds added for each customer. Note that there are two instances of the same view - each instance shows funds for a particular customer.<br /><br />When you click <b>Add</b> on the <b>AddFundView</b> view, the view&#39;s presenter fires a typed event named <b>FundAddedEvent</b>. This event indicates that a new fund has been added to a customer. This event is handled by the corresponding <b>ActivityView</b>&#39;s presenter, which in turn updates the view on the right to display the fund added.<br /><br />Together with the event, a <b>FundOrder</b> object is supplied as a parameter. By supplying parameters, subscribers can not only get more information about the event, but also they can set filters on the parameter and have the eventing mechanism notify the subscriber only if the parameter matches the filter.<br /><br />The following code shows how the <b>FundAddedEvent</b> is fired.<br /><br /><pre>
+// ModuleA\AddFundPresenter.cs
+void AddFund(object sender, EventArgs e)
+{
+    var fundOrder = new FundOrder();
+    fundOrder.CustomerID = View.Customer;
+    fundOrder.TickerSymbol = View.Fund;
+
+    _EventAggregator.Get&lt;FundAddedEvent&gt;().Fire(fundOrder);
+} </pre><br /><table><tr><td> <b>Note</b>: The parameter for the <b>FundAddedEvent</b> is typed. This means that you can only pass an instance of the class <b>FundOrder</b> to the <b>Fire</b> method. </td></tr></table><br /><br />The following code shows the subscriber code:<br /><br /><pre>
+// ModuleB\ActivityPresenter.cs
+public string CustomerID
+{
+    get { return _customerID; }
+    set
+    {
+        _customerID = value;
+        _EventAggregator.Get&lt;FundAddedEvent&gt;().Subscribe(FundAddedEventHandler, ThreadOption.PublisherThread, false, fundOrder =&gt; fundOrder.CustomerID == _customerID);*
+
+        View.Title = string.Format(&quot;Activity for: {0}&quot;, CustomerID);
+    }
+} </pre><br />As you can see in the code above, a condition is set for the subscription (in this case, using a Lambda expression). This condition will be evaluated when the event is fired, and the event broker will only invoke the event handler if the condition is <b>true</b>.<br /><br />The following code shows the definition of the <b>FundAddedEvent</b> event. This event extends the PrismEvent&lt;TPayload&gt; base class. This base class contains logic to subscribe, fire, an unsubscribe to the event.<br /><br /><pre>
+public class FundAddedEvent : PrismEvent&lt;FundOrder&gt;
+{
+} </pre><br />In the code above, the <b>FundOrder</b> type is specified for the <b>PrismEvent</b>&#39;s generic parameter. This type determines the type of the event&#39;s parameter.<br /><a name="NewElementsadded"></a>
+<h2>New Elements added to Prism to support Event Aggregation</h2><ul><li><b>PrismEvent</b>. This base class contains logic to subscribe, fire, an unsubscribe to an event. You inherit from this class in your application to define an event.</li>
+<li><b>EventAggregator</b>. This class holds a list of events. Within your application, you interact with this class to obtain references to events.</li>
+<li><b>WeakDelegate</b>. This class represents a delegate whose target object&#39;s lifecycle is not controlled by the delegate. To support this, weak references are used.</li>
+<li><b>SubscriptionToken.</b> This class represents a token for a subscription. This token is used to facilitate the unregister process of event handlers.</li></ul>
+<a name="UpdatedRegionsImplementation"></a>
+<h3>Updated the Regions implementation</h3><ul><li>The <b>ItemsControlRegion</b> and <b>PanelRegion</b> regions were removed. Now there is a single region class named <b>SimpleRegion</b>. This region holds references to views and other content such as ViewModels or PresentationModels. These views will be associated to a particular WPF container control. This region behaves much more like a model for the recently introduced region adapters. </li>
+<li>Region adapters are classes that know how to manage the content of a particular WPF control, and they bind the content of WPF container controls to the views that a <b>SimpleRegion</b> instance holds. New region adapters were introduced: <b>ContentControlRegionAdapter</b> and <b>ItemsControlRegionAdapter</b>. The <b>ContentControlRegionAdapter</b> manages <b>ContentControl</b> controls, and the <b>ItemsControlRegionAdapter</b> manages <b>ItemsControl</b> controls.</li>
+<li>A new class to map controls to region adapters was introduced, the <b>RegionAdapterMappings</b> class. You use this class in your application to register region adapters that will be available in your application.</li>
+<li>All the solutions included in the drop have been updated to use this new implementation.</li>
+<li>The <b>RegionManagerService</b> class was renamed to <b>RegionManager</b>.</li></ul></div><div class="ClearBoth"></div>

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "855562",
+    "ThreadId": "361437",
+    "Html": "\r\n<p>Here is my Bootstrapper and I'm not sure what happening..</p>\r\n<pre>public class Bootstrapper : MefBootstrapper\r\n    {\r\n        protected override void ConfigureAggregateCatalog()\r\n        {\r\n            this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(Assembly.GetExecutingAssembly()));\r\n        }\r\n        protected override void InitializeShell()\r\n        {\r\n            base.InitializeShell();\r\n            Application.Current.MainWindow = (Shell)this.Shell;\r\n            Application.Current.MainWindow.Show();\r\n        }\r\n        protected override DependencyObject CreateShell()\r\n        {\r\n            return this.Container.GetExportedValue&lt;Shell&gt;();\r\n        }\r\n    }</pre>\r\n<p>I see that my VM an&nbsp;View exported&nbsp;twice for Shell. Once&nbsp;in CreateShell and second time on base.InitializeShell();</p>\r\n<p>&nbsp;</p>\r\n<p>CreateShell is required. If I remove base.InitializeShell then my Regions is not loaded. How do I fix this?&nbsp;</p>\r\n<div id=\"_mcePaste\" style=\"width:1px; height:1px; overflow:hidden; top:0px; left:-10000px\">\r\n&#65279;</div>\r\n",
+    "PostedDate": "2012-06-29T10:55:47.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "855628",
+    "ThreadId": "361437",
+    "Html": "<p>Hi,</p>\r\n<p>This seems to be related to a known issue in <strong>Modularity Quickstart with MEF</strong>, where the <strong>Shell </strong>is composed two times; first in the <strong>CreateShell </strong>method and then in the <strong>InitializeShell </strong>method of the <strong>MefBootstrapper </strong>base:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/workitem/7634\">ModularityWithMef \"module loaded\" displayed twice</a></li>\r\n</ul>\r\n<p>We tried changing the <strong>InitializeShell </strong>method in several <strong>Quickstarts </strong>to remove the invocation to its base method, and they worked without any problems.</p>\r\n<p>However, if for some reason removing the call to the base <strong>InitializeShell </strong>method is causing an undesired behavior in your application, another possible approach is to create the <strong>Shell </strong>without using the container in the <strong>CreateShell </strong>method. For example, your <strong>Shell </strong>could have a parameter-less constructor, turning all the parameters (if any) into properties or members with importing attributes and implementing the <strong>IPartImportsSatisfiedNotification </strong>so that your <strong>Shell </strong>is notified when it is composed and all the values are available. Therefore, your <strong>CreateShell </strong>method could look like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> DependencyObject CreateShell()\r\n{\r\n    <span style=\"color: blue;\">return</span> <span style=\"color: blue;\">new</span> Shell();\r\n}\r\n</pre>\r\n</div>\r\nAnd your <strong>Shell </strong>would only be composed once when the base <strong>InitializeShell </strong>method is invoked.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-06-29T13:33:03.2-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "855643",
+    "ThreadId": "361437",
+    "Html": "<p>Damian,</p>\r\n<p>Your suggestion worked, thank you. In my case removing call to base.InitializeShell() didn't work because RegionManager didn't have any regions loaded and I use region&nbsp;navigation to initially&nbsp;populate Shell.</p>",
+    "PostedDate": "2012-06-29T13:50:56.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1327190",
+    "ThreadId": "361437",
+    "Html": "Actually following line is unnecessary\r<br />\nApplication.Current.MainWindow = (Shell)this.Shell;\r<br />\n<br />\nbecause already done by the ServiceLocater (after calling CreateShell method). Same for many other examples in PRISM family (quickstarts, Unity, MEF etc)<br />\n<ul>\n<li>ok its small beer but IMHO should be fixed to reduce fluff</li>\n</ul>\n",
+    "PostedDate": "2014-11-29T02:37:27.357-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

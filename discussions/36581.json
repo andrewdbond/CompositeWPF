@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "121305",
+    "ThreadId": "36581",
+    "Html": "<p style=\"margin:0cm 0cm 10pt\"><span><span style=\"font-family:Calibri\">Lately I’ve been working with porting my existing application to prism. It has been a painful experience mostly because, as I believe, I don’t understand how to use prism.</span></span></p>\r\n<p style=\"margin:0cm 0cm 10pt\"><span><span style=\"font-family:Calibri\">My existing application is heavy based on use of generics to avoid repeating code, Unity for dependency injection and other stuff I read about (NHibernate).</span></span></p>\r\n<p style=\"margin:0cm 0cm 10pt\"><span><span style=\"font-family:Calibri\">Prism would give me a way to modularize my application keeping memory footprint low and apply a better testing strategy. I also hoped to be able to rewrite some parts of the UI to achieve better isolation between logic and look and feel.</span></span></p>\r\n<p style=\"margin:0cm 0cm 10pt\"><span><span style=\"font-family:Calibri\">So far this has been a complete failure and I have reached the state where I wonder,,,, why bother. The reason is that my code seems to be more and more cluttered with dependences instead of modularized, I keep repeating my code, etc &nbsp;…….&nbsp;&nbsp;&nbsp; sadly to say&nbsp; “ugly” </span></span></p>\r\n<p style=\"margin:0cm 0cm 10pt\"><span><span style=\"font-family:Calibri\">Could anyone give me a hint how to use prism………&nbsp; the samples I have seen on the internet seems to be “to simple” and I unable to “interpolate” the examples to something useful for me.</span></span></p>\r\n<p style=\"margin:0cm 0cm 10pt\"><span><span style=\"font-family:Calibri\">My application then ……. </span></span></p>\r\n<p style=\"margin:0cm 0cm 10pt\"><span><span style=\"font-family:Calibri\">The base is a collection of Persons. I have two views of persons, first PersonCollection and the PersonCRUD. Then I have a two other collection of objects both with two views: &nbsp;ObjecACollection, ObjectACRUD, ObjectBCollection and ObjectBCrud. Both ObjectA and ObjectB contains references to Person, and ObjecA contains a reference to ObjectB. ObjectA is a quite complex object. (the real application has a lot more views)</span></span></p>\r\n<p style=\"margin:0cm 0cm 10pt\"><span><span style=\"font-family:Calibri\">Having this specification, how would you guys set up a prism project to for best modularity, avoid to repeat &nbsp;code and have good testability and extensibility???</span></span></p>\r\n<p style=\"margin:0cm 0cm 10pt\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0cm 0cm 10pt\"><span><span style=\"font-family:Calibri\">//lasse</span></span></p>\r\n",
+    "PostedDate": "2008-09-27T03:02:47.02-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "121409",
+    "ThreadId": "36581",
+    "Html": "Hi Lassel,&nbsp; I blogged on a similiar topic <a href=\"http://www.global-webnet.net/BlogEngine/post/2008/07/29/CompositeWPF-Sharing-service-among-different-modules.aspx\">HERE</a>.&nbsp; Perhaps this blog entry&nbsp;combined with the&nbsp;message thread it references (from this forum) will help.<br>\r\n<br>\r\n",
+    "PostedDate": "2008-09-28T08:05:24.51-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "121413",
+    "ThreadId": "36581",
+    "Html": "Hi<br>\r\nI think my problem is more of how to reuse Views. From my PersonCollection view I will obvious use my PersonCrud View to be able to manage Person objects. Also, from my ObjectAColletion and ObjectBCollection I also would like to use PersonCrud. If PersonCollectio, ObjectACollection and ObjectBCollection is different modules, where do I put PersonCrud.<br>\r\n<br>\r\nI cant se that your example adresses this topic.<br>\r\n<br>\r\n//lasse\r\n",
+    "PostedDate": "2008-09-28T08:37:27.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "121479",
+    "ThreadId": "36581",
+    "Html": "Hi Lassel, you would put PersonCrud in it's own project/module.&nbsp;&nbsp; In the <a href=\"http://www.global-webnet.net/flash/ClickMe.htm\">flash demo</a>, that I provided on our previous discussion&nbsp;<a href=\"http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=34298\">HERE</a>, I showed how we could move an RSS Feed list (view) from one region to another in a Visual Studio style view (SDMSMain).&nbsp; The RSS Feed view&nbsp;is in it's own project which I use in the SDMSMain view;&nbsp;I could just as easily reused it in any other module.&nbsp;&nbsp;&nbsp;<br>\r\n<br>\r\nFor your convenience I scaled down the application shown in the flash demo to applicable components and replaced the SCSF style events (attributes) with CompositeWPF events =&gt; <a href=\"http://www.global-webnet.net/flash/SDMSV1.0.0.0.zip\">http://www.global-webnet.net/flash/SDMSV1.0.0.0.zip</a>&nbsp; perhaps this will get you closer to what your looking for?<br>\r\n<br>\r\nNote: the MainShell, SDMSMain and RSSFeed have no knowledge of each other - only region names.&nbsp;&nbsp; <br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2008-09-28T22:25:17.577-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "121665",
+    "ThreadId": "36581",
+    "Html": "I am sorry to say that I can not see how moving a View from one region to another region would help me.<br>\r\nIf I put the PersonCrud in a Module of its own, the view of PersonCrud is hard coded to a specific region. How do you access it from other modules without building dependecis to it? ObjectA and ObjectB would like to have their own instances of the view. Another problem,,, the other modules using PersonCrud maby would have the PersonCrud view in a specic view that is a part of their own &quot;View&quot;.<br>\r\n<br>\r\nAs I sad earlier, I am not a pro,,,&nbsp;&nbsp; and I am missing something here....<br>\r\n<br>\r\n<br>\r\n//lasse\r\n",
+    "PostedDate": "2008-09-29T10:51:18.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "121698",
+    "ThreadId": "36581",
+    "Html": "<p>Where there is a will, there is a way :)<br>\r\n<br>\r\nNote below I changed my RSSFeedView.cs code behind so that there is no longer a hard coded reference to MainWorkspace; it now becomes the using modules responsibility to set the Region name, via RSSRegion, prior to resolving the view:<br>\r\n<br>\r\n<em><span style=\"color:#0000ff\">private</span> <span style=\"color:#0000ff\">void</span> listBox1_SelectionChanged(<span style=\"color:#0000ff\">object</span> sender,<br>\r\n&nbsp;&nbsp;&nbsp; <span style=\"color:#2b91af\">SelectionChangedEventArgs</span> e)<br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp; </em><em><span style=\"color:#008000\">// BillKrat.2008.09.29<br>\r\n</span>&nbsp;&nbsp;&nbsp; </em><em><span style=\"color:#008000\">// Get region name from container (configured in module)<br>\r\n</span>&nbsp;&nbsp;&nbsp; </em><em><span style=\"color:#008000\">//IRegion mainRegion = RegionManager.Regions[&quot;MainWorkspace&quot;];<br>\r\n<br>\r\n</span>&nbsp;&nbsp;&nbsp; <span style=\"color:#0000ff\">string</span> regionName = Container.Resolve&lt;<span style=\"color:#0000ff\">string</span>&gt;(<span style=\"color:#a31515\">&quot;RSSRegion&quot;</span>);<br>\r\n&nbsp;&nbsp;&nbsp; <span style=\"color:#2b91af\">IRegion</span> mainRegion = RegionManager.Regions[regionName];<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; <span style=\"color:#2b91af\">RSSViewer</span> view = (<span style=\"color:#2b91af\">RSSViewer</span>)mainRegion.GetView(<span style=\"color:#a31515\">&quot;Viewer&quot;</span>);<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; <span style=\"color:#0000ff\">if</span> (view == <span style=\"color:#0000ff\">null</span>)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </em><em><span style=\"color:#008000\">// If we want to remove the View we'll need to name it<br>\r\n</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mainRegion.Add(Container.Resolve&lt;<span style=\"color:#2b91af\">RSSViewer</span>&gt;(), <span style=\"color:#a31515\">&quot;Viewer&quot;</span>);<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; aggregator.GetEvent&lt;<span style=\"color:#2b91af\">SelectionChangedEvent</span>&gt;().Publish(e);<br>\r\n}</em></p>\r\n<p>I then&nbsp;updated my SDMSMain's MainModule.cs as follows:<br>\r\n<br>\r\n<em><span style=\"color:#0000ff\">protected</span> <span style=\"color:#0000ff\">override</span> <span style=\"color:#0000ff\">void</span> RegisterViewsAndServices()<br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp; <span style=\"color:#0000ff\">base</span>.RegisterViewsAndServices();<br>\r\n&nbsp;<br>\r\n&nbsp;&nbsp;&nbsp; </em><em><span style=\"color:#008000\">// BillKrat.2008.09.29<br>\r\n</span>&nbsp;&nbsp;&nbsp; </em><em><span style=\"color:#008000\">// Set region name at module level<br>\r\n</span>&nbsp;&nbsp;&nbsp; <span style=\"color:#0000ff\">string</span> RSSRegion = <span style=\"color:#a31515\">&quot;MainWorkspace&quot;</span>;<br>\r\n&nbsp;&nbsp;&nbsp; Container.RegisterInstance&lt;<span style=\"color:#0000ff\">string</span>&gt;(<span style=\"color:#a31515\">&quot;RSSRegion&quot;</span>, RSSRegion);<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; </em><em><span style=\"color:#008000\">// Add view to region<br>\r\n</span>&nbsp;&nbsp;&nbsp; <span style=\"color:#2b91af\">IRegion</span> mainRegion = RegionManager.Regions[<span style=\"color:#2b91af\">RegionNames</span>.MainRegion];<br>\r\n&nbsp;&nbsp;&nbsp; mainRegion.Add(Container.Resolve&lt;<span style=\"color:#2b91af\">IMainView</span>&gt;());<br>\r\n}<br>\r\n</em><br>\r\nProgram still works - no hard coded references - are we getting closer?</p>\r\n",
+    "PostedDate": "2008-09-29T13:20:53.677-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "137514",
+    "ThreadId": "41440",
+    "Html": "Hello,<br>\r\n<br>\r\nI have a design question that I hope you can all help me with. I am a new to WPF development so this may be obvious to you all. In any case here it is. <br>\r\n<br>\r\nWithout boring you with the details, lets just say I am following the CAG in a very vinilla way. View - PresentationModel - Model etc...What are your thoughts on registering Views and Presentation Models as singletons? For example it seems logical to me to create views that will be used over and over again i.e. Detail screens once, and then just update them via databinding to the various model changes. Is this a resonable approach? Or is it more common to just reload a new instance of the same view and then display the new one letting GC clean up the waste? Perhaps this is a situation the 'depends on your scenario' but I am just looking for some basic insight.<br>\r\n<br>\r\nThanks,<br>\r\nBrette21\r\n",
+    "PostedDate": "2008-12-03T19:33:58.197-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "137604",
+    "ThreadId": "41440",
+    "Html": "<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">To be single is fast lane… </span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">Or almost, but if you can use singleton on your design use it as much as you can as it is best in performance respect.</span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">Although if you have a lots of views that can be wasted during the user interactions or navigation lifetime you will not benefit garbage collection features till the user ends the application. </span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">Also you have to think if your application is long running, meaning that user is not going to close it, or close it only once in awhile, this case the application will be hanging on and none of the resources will be free for other applications till your user closes the application.</span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">You could go around on this by creating a child container and drop the child container when you think it would be necessary to free the resources but then you are back in your initial question of “to be single or not to be single.”</span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">Hope above helps.</span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">Regards,<br>\r\nAlexander </span></p>\r\n",
+    "PostedDate": "2008-12-04T03:28:15.233-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "137647",
+    "ThreadId": "41440",
+    "Html": "Thanks for the reply... Now I have to break the news to the wife ;-)<br>\r\n<br>\r\nThanks,<br>\r\nBrette21\r\n",
+    "PostedDate": "2008-12-04T06:11:55.46-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "137653",
+    "ThreadId": "41440",
+    "Html": "<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:'tahoma','sans-serif';color:#7f7f7f\">THE wife can be a difficult part, although some people prefer this problem as THE wife can be a complex. But THE issue is still remaining in THE table… gotcha ;-) </span></p>\r\n",
+    "PostedDate": "2008-12-04T06:32:23.143-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "137699",
+    "ThreadId": "41440",
+    "Html": "I see several things wrong with this. First, you are trying to optimize your system up front. Never a good idea. Second, a singleton is essentially a global variable. Here is a good short summary of why many people have moved away from this pattern:<br>\r\n<a href=\"http://blogs.msdn.com/scottdensmore/archive/2004/05/25/140827.aspx\">http://blogs.msdn.com/scottdensmore/archive/2004/05/25/140827.aspx</a><br>\r\n<br>\r\nEven if you don't buy the Singleton argument, I think you might find that your bottlenecks will be elsewhere (e.g. Database). Anyway, I would urge you not to do this.  \r\n",
+    "PostedDate": "2008-12-04T08:39:30.773-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "137724",
+    "ThreadId": "41440",
+    "Html": "<span style=\"font-family:calibri\">\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:'calibri','sans-serif'\">There wasn’t any answer to question related to optimizing of the system but rather question to answer if one should use it or not. </span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:'calibri','sans-serif'\">I said you should use it as much as possible when it makes sense to your design and requirement as it is fastest if and when appropriate on your design.  </span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:'calibri','sans-serif'\">I also made some remark of the negative side when using it without thinking wider range of the consequences.  Your reference to MSDN is rated to pattern of Singleton itself, and we are talking about here the of Unity IoC container type of instance as singleton, which is a bit different but some of these points are still applicable.</span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"line-height:115%;font-family:'calibri','sans-serif';font-size:11pt\">Again, I would use it as much as possible if it makes sense to design and requirement goals. <br>\r\n<br>\r\nRegards,<br>\r\nAlexander</span></p>\r\n</span>\r\n<p style=\"margin:0in 0in 10pt\">&nbsp;</p>\r\n",
+    "PostedDate": "2008-12-04T09:27:51.77-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "137751",
+    "ThreadId": "41440",
+    "Html": "A singleton is a singleton whether your using IoC or not, with all of the problems associated with them. Just because you have a container managing the lifecycle of an object for you doesn't make it less of a singleton. There is a lot to be said for presenters (presentation model whatever) and views having an explicit life cycle. A view typically has a reference to a presenter (sometimes the reverse). Presenters typically interact with lots of other things in a system (services, repositories, etc). Usually these other objects are given to the presenter via constructor injection by an IoC container. There are design considerations beyond just making views and presenters singletons. If you have a small app, sure, you might make it work. The app I am working on now has a couple of hundred views. No way I would keep everything in memory like that. After my own experiences of using singletons, especially in regards to testing, I don't think there is ever a right time to use them. If you are advocating using them as much as possible, which is what is sounds like, I would just say that you are the very first person I have ever heard say that.\r\n",
+    "PostedDate": "2008-12-04T10:47:15.97-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "137826",
+    "ThreadId": "41440",
+    "Html": "Hello,<br>\r\n<br>\r\nThanks for all of the insight. First let me be very clear. I am not suggesting that all my views be singletons! My question was about a specific view. One view of many, that I have set up as a singleton. I did this because it is for the most part always displayed in a specific region (in a specific use case). The only thing that changes is what is bound to it (Customer X, Customer Z). When the screen is not longer needed I would tear it down. In any case thanks again, and I will consider all the insight. I appreciate it.<br>\r\n<br>\r\nBrette\r\n",
+    "PostedDate": "2008-12-04T14:42:22.757-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138333",
+    "ThreadId": "41440",
+    "Html": "If you register your views and presenters directly to main container as singleton, which is associated to UnityBootStrapper, you cannot tear it down before the application ends or you can but then your prism unity container would be gone as well and your application will not function any longer. <br>\r\n<br>\r\nAs I mention, only way around this is to create a child container and add your singleton instances for it. When you don’t need them anymore you can drop the child container.<br>\r\n<br>\r\nRegards,<br>\r\nAlexander <br>\r\n",
+    "PostedDate": "2008-12-06T17:25:02.257-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138335",
+    "ThreadId": "41440",
+    "Html": "That is a good point! I was not aware of this. Thanks for pointing it out. I like the idea of a child container I will try that.\r\n",
+    "PostedDate": "2008-12-06T17:49:59.9-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

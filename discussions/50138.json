@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "167835",
+    "ThreadId": "50138",
+    "Html": "Is it possible to specify a order when injecting views into a ItemsControl region or TabControl region? I don't see a way out of the box in Prism to do this, so what's the best approach to achieve this. I know that the views themselves shouldn't have to be aware of the order in the host control. But it'd still be nice to have some predictability.\r\n",
+    "PostedDate": "2009-03-13T10:55:16.087-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "168590",
+    "ThreadId": "50138",
+    "Html": "Shinakuma,<br>\r\n<br>\r\nUnfortunately, this is not easily possible with the current version of prism. <br>\r\n<br>\r\n_Erwin\r\n",
+    "PostedDate": "2009-03-16T09:08:52.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "176743",
+    "ThreadId": "50138",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">It took some time but with <span style=\"color:#1f497d\"><a href=\"http://blogs.southworks.net/matiasb/\"><span style=\"color:#0000ff\">Matias Bonaventura</span></a> </span>and<span style=\"color:#1f497d\"> <a href=\"http://blogs.southworks.net/ejadib/\"><span style=\"color:#0000ff\">Ezequiel Jadib</span></a></span> we were able to create an extension method for the <b>RegionManager</b> to add a view to a region at a particular index, using an extension method for the <b>RegionManager</b>. Although I do not know what your specific use case is, I believe you might find it useful:</span></p>\r\n<p style=\"margin:0cm 0cm 0pt 69.9pt\"><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><a href=\"http://blogs.southworks.net/dschenkelman/2009/03/14/how-to-add-a-view-to-a-region-in-a-particular-index-with-prism-v2/\"><span style=\"color:#0000ff;font-family:calibri\">How to Add a View to a Region in a particular index with Prism-v2</span></a>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Remember that this probably isn’t the best way to get this to work, but it is a suitable approach.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Please let me know if this helps.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\">Damian Schenkelman</span></p>\r\n<span style=\"font-size:11pt;font-family:'calibri','sans-serif'\"><a href=\"http://blogs.southworks.net/dschenkelman\"><span style=\"color:#0000ff\">http://blogs.southworks.net/dschenkelman</span></a></span></span></p>\r\n",
+    "PostedDate": "2009-04-07T11:49:53.997-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "221253",
+    "ThreadId": "50138",
+    "Html": "<p>I was looking for something similar: my priority is that a particular view is always first and that it is active.&nbsp; I like the way you took the approach of only fiddling with the order and leaving the active view active but in my case I wanted the first view always to be active, so I replaced your ActiveView code bits with:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">if</span> (mainRegion.Views.Count() &gt; 0)\r\n{\r\n    mainRegion.Activate(mainRegion.Views.First());\r\n}\r\n\r\n</pre>\r\n</div>\r\n<p>\r\n<p>\r\n<p>I'm still getting to grips with CAG so this may not be correct but it works and that will do for now.</p>\r\n<p>Thank you&nbsp;very much&nbsp;for your work on this.</p>\r\n</p>\r\n</p>",
+    "PostedDate": "2009-08-09T07:38:18.753-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "226240",
+    "ThreadId": "50138",
+    "Html": "<p>Hi All,</p>\r\n<p>&nbsp;</p>\r\n<p>I tried to implement this solution but this is not working if it's applied to a view discovery approach. Is there any adaptation to make it work even if a needed region is not yet created ?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks in advance</p>",
+    "PostedDate": "2009-08-21T03:03:41.9-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "226931",
+    "ThreadId": "50138",
+    "Html": "<p>Hi again,</p>\r\n<p>I found this post : <a title=\"Ordering items in a region\" href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=36716\">http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=36716</a> but i'm not sure how to implement his solution as there's no details</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-23T23:57:02.88-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "226945",
+    "ThreadId": "50138",
+    "Html": "<p>The problem in the solution of Damian, Matias &amp; Ezequiel is linked to this very first line of the RegisterViewWithRegionInIndex method :</p>\r\n<p>&nbsp;</p>\r\n<p>\r\n<pre>public static IRegionManager RegisterViewWithRegionInIndex(this IRegionManager regionManager, string regionName, Func&lt;object&gt; getContentDelegate, int index)\r\n        {\r\n            IRegion mainRegion = regionManager.Regions[regionName];&lt;/object&gt;</pre>\r\n</p>\r\n<p>&nbsp;</p>\r\n<p>The region name in which i want to register my views is a scoped region, it is not created yet therefore i don't have it in the Region manager yet.</p>\r\n<p>Any help ?</p>",
+    "PostedDate": "2009-08-24T01:14:19.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

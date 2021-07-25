@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1277897",
+    "ThreadId": "554213",
+    "Html": "Hello, <br />\n<br />\nI really like the bindablebase class in PRISM 5, however it looked like it was lacking a little bit in its 'SetProperty' method. I personally am not a huge fan of using the static string name for the OnPropertyChanged method call as I find it to be bit error prone and hard to debug, so I tend to use the expression implementation of OnPropertyChanged. As such, I assumed there would be a 'SetProperty' method that would work in much the same way <br />\nbut much to my chagrin, there is not anyway to call the 'SetProperty' method using an expression.<br />\n<br />\nSo here is another implementation of the SetProperty method that has an optional expression instead of string that calls the notify property changed event. Here's the code I used in my code base to accomplish it, maybe it will help others:<br />\n<pre><code>protected bool SetProperty&lt;T&gt;(ref T storage, T value, Expression&lt;Func&lt;T&gt;&gt; propertyExpression)\n   {\n       if (base.SetProperty&lt;T&gt;(ref storage, value))\n       {\n           var _propertyName = Microsoft.Practices.Prism.Mvvm.PropertySupport.ExtractPropertyName(propertyExpression);\n           this.OnPropertyChanged(_propertyName);\n           return true;\n       }\n       else return false;\n   }\n\n\n</code></pre>\n\n",
+    "PostedDate": "2014-07-25T21:01:57.4-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

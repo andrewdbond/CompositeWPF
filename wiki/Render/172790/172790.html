@@ -1,0 +1,192 @@
+<div class="wikidoc"><h1>Hide/Show views in regions</h1>
+The IRegion interface allows to Add/Remove and activate/deactivate it&#39;s views. One behavior that is not implemented out-of-the-box in prism-v2 is the possibility of hiding views while keeping the view in the region. <br /><br />Hiding view only makes sense in ItemsControl containers, as in other containers views are automatically hidden when they are not active. Hiding views might be particularly helpful, for example if there is a requirement to hide certain TabItems (as deactivating the view won&#39;t hide the tab, and hiding the view won&#39;t hide the tab).<br /><br />The following two classes (one for Silverlight and one for WPF) add extension methods to allow hide/show views in prism-v2 regions. WPF methods implement hide/show for all ItemsControl containers while Silverlight methods are only implemented for the TabControl:
+<ul><li><b>SilverlightRegionExtensions</b> (allow hide views in TabControl regions)</li>
+<li><b>WPFRegionExtensions</b> (allow hide views in ItemsControl regions)</li></ul>
+<br />The aforementioned classes expose the following extension methods for the IRegion interface:
+<ul><li><b>Hide(string viewName): </b>Hides a view registered with a particular name in the region.</li>
+<li><b>Hide(object view):</b> Hides the view passed as a parameter.</li>
+<li><b>Show(string viewName):</b> Shows a view registered with a particular name in the region.</li>
+<li><b>Show(object view):</b> Shows the view passed as a parameter.</li></ul>
+<br />You can download the source code for the classes below from here: <a href=".\942e7563-cce1-4b25-baec-187d7d1cc185">RegionExtensions.zip</a>.<br />
+<h4>Disclaimer</h4>This code is provided “AS IS” with no warranties, and confers no rights.
+<hr />
+<h2>WPFRegionExtensions.cs</h2><pre>
+public static class RegionExtensions
+{
+    public static void Hide(this IRegion region, string viewName)
+    {
+        Hide(region, region.GetView(viewName));
+    }
+   
+    public static void Show(this IRegion region, string viewName)
+    {
+        Show(region, region.GetView(viewName));
+    }
+
+
+    public static void Show(this IRegion region, object view)
+    {
+        ChangeViewVisibility(region, view, Visibility.Visible);
+    }
+
+    public static void Hide(this IRegion region, object view)
+    {
+        ChangeViewVisibility(region, view, Visibility.Collapsed);
+    }
+
+    private static void ChangeViewVisibility(IRegion region, object view, Visibility visibility)
+    {
+        // Validate that the region is attached to an ItemsControl
+        ItemsControl attachedControl = GetAttachedControl(region) as ItemsControl;
+        if (attachedControl == null)
+            throw new ArgumentException(&quot;The region must be attached to an ItemsControl&quot;);
+
+        // Validate that the view is inside the region
+        if(!region.Views.Contains(view))
+            throw new ArgumentException(&quot;The view is not in the region&quot;);
+
+        // Get the ItemContainer 
+        UIElement viewContainer = attachedControl.ItemContainerGenerator.ContainerFromItem(view) as UIElement;
+        if (viewContainer != null)
+        {
+            // show / hide the ItemContainer
+            viewContainer.Visibility = visibility;
+
+            // show/ hide the view
+            UIElement viewElement = view as UIElement;
+            viewElement.Visibility = visibility;
+
+            // activate other view if necessary 
+            Selector selector = attachedControl as Selector;
+            if(selector != null &amp;&amp; visibility == Visibility.Collapsed || visibility == Visibility.Hidden)
+            {
+                // if there is another view that can be shown
+                var viewToActivate = NextViewToActivate(region, view);
+
+                if (viewToActivate != null)
+                {
+                        region.Activate(viewToActivate);
+                }
+            }
+            // Uncomment the following lines to activate a view when you show it again
+            /*else if(selector != null)
+            {
+                Activate the view
+                region.Activate(view);   // It is not always needed activate the view when unhiding
+            }*/
+        }
+    }
+
+    private static object NextViewToActivate(IRegion region, object view)
+    {
+        var currentActiveView = region.ActiveViews.FirstOrDefault();
+        // if the view to hide is the active view and there are other visible views
+        if ((currentActiveView == null || view == currentActiveView) &amp;&amp; region.Views.Any(v =&gt; v != view &amp;&amp; (v as UIElement).Visibility == Visibility.Visible))
+        {
+            return region.Views.First(v =&gt; v != view &amp;&amp; (v as UIElement).Visibility == Visibility.Visible);
+        }
+        return null;
+    }
+
+    public static DependencyObject GetAttachedControl(this IRegion region)
+    {
+        RegionManagerRegistrationBehavior behavior = (RegionManagerRegistrationBehavior)region.Behaviors.First(b =&gt; b.Key == RegionManagerRegistrationBehavior.BehaviorKey).Value;
+        return behavior.HostControl;
+    }
+}
+</pre>
+<hr />
+<h2>SilverlightRegionExtensions.cs</h2><pre>
+public static class RegionExtensions
+{
+    public static void Hide(this IRegion region, string viewName)
+    {
+        Hide(region, region.GetView(viewName));
+    }
+
+    public static void Show(this IRegion region, string viewName)
+    {
+        Show(region, region.GetView(viewName));
+    }
+
+
+    public static void Show(this IRegion region, object view)
+    {
+        ChangeViewVisibility(region, view, Visibility.Visible);
+    }
+
+    public static void Hide(this IRegion region, object view)
+    {
+        ChangeViewVisibility(region, view, Visibility.Collapsed);
+    }
+
+    private static void ChangeViewVisibility(IRegion region, object view, Visibility visibility)
+    {
+        // Validate that the region is attached to an TabControl
+        TabControl attachedControl = GetAttachedControl(region) as TabControl;
+        if (attachedControl == null)
+            throw new ArgumentException(&quot;The region must be attached to an TabControl&quot;);
+
+        // Validate that the view is inside the region
+        if (!region.Views.Contains(view))
+            throw new ArgumentException(&quot;The view is not in the region&quot;);
+
+        // Get the ItemContainer 
+        TabItem tabItem = GetViewTabItem(view as FrameworkElement);
+        /*if (tabItem != null)
+        {*/
+            // show / hide the ItemContainer
+            tabItem.Visibility = visibility;
+
+            // show/ hide the view
+            UIElement viewElement = view as UIElement;
+            viewElement.Visibility = visibility;
+
+            // activate other view if necessary 
+            if (visibility == Visibility.Collapsed)
+            {
+                // if there is another view that can be shown
+                var viewToActivate = NextViewToActivate(region, view);
+
+                if (viewToActivate != null)
+                {
+                    region.Activate(viewToActivate);
+                }
+            }
+            // Uncomment the following lines to activate a view when you show it again
+            /*else if(selector != null)
+            {
+                Activate the view
+                region.Activate(view);   // It is not always needed activate the view when unhiding
+            }*/
+       // }
+    }
+
+    private static TabItem GetViewTabItem(FrameworkElement element)
+    {
+        TabItem item = element as TabItem;
+        if (item != null)
+        {
+            return item;
+        }
+        return GetViewTabItem(element.Parent as FrameworkElement);
+    }
+
+    private static object NextViewToActivate(IRegion region, object view)
+    {
+        var currentActiveView = region.ActiveViews.FirstOrDefault();
+        // if the view to hide is the active view and there are other visible views
+        if ((currentActiveView == null || view == currentActiveView) &amp;&amp; region.Views.Any(v =&gt; v != view &amp;&amp; (v as UIElement).Visibility == Visibility.Visible))
+        {
+            return region.Views.First(v =&gt; v != view &amp;&amp; (v as UIElement).Visibility == Visibility.Visible);
+        }
+        return null;
+    }
+
+    public static DependencyObject GetAttachedControl(this IRegion region)
+    {
+        RegionManagerRegistrationBehavior behavior = (RegionManagerRegistrationBehavior)region.Behaviors.First(b =&gt; b.Key == RegionManagerRegistrationBehavior.BehaviorKey).Value;
+        return behavior.HostControl;
+    }
+}
+</pre></div><div class="ClearBoth"></div>

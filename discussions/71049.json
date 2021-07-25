@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "242281",
+    "ThreadId": "71049",
+    "Html": "<p>I&nbsp;have a TabControl as my main region adapter and each&nbsp;view is loaded in a new tab.&nbsp; I need to be able to open a new view as a popup/childwindow but have it modal to the current tab only.</p>\r\n<p>Ex:&nbsp; User has Order 1 and Order 2 open in two different tabs.&nbsp; If the user is on Order 1 and clicks the Add Item button which&nbsp;opens a popup/window with the AddItem view centered in the Order 1 tab.&nbsp; The user still wants to be able to click over to Order 2 even thow a &quot;window&quot; is open in the tab for Order 1.&nbsp; The user should not be able to do anything else on Order 1 until the AddItem window is closed.</p>\r\n<p>How would I do this?</p>",
+    "PostedDate": "2009-10-05T12:52:42.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "243019",
+    "ThreadId": "71049",
+    "Html": "<p>Is this possible?&nbsp; Am I asking something that is really simple or impossible?</p>",
+    "PostedDate": "2009-10-07T09:26:04.437-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "243552",
+    "ThreadId": "71049",
+    "Html": "<p>OK, so I thought I had a solution working but am now thinking I might have mis-understood scoped regions.</p>\r\n<p>What I tried doing was having each view that is added to the tab control that contains a nested region create a scoped region manager during the add.&nbsp; I have&nbsp;ViewA, which is being added to my main (tabcontrol) region&nbsp;that has a nested region defined called &quot;popregion&quot;.&nbsp; When&nbsp;ViewA is added to the main/tabcontrol region I do a newscreenobj.RegionManager=_mainregion.Add(viewa, uniquename, true) where newscreenobj is kept in a&nbsp;collection of open views (via a screen controller object).&nbsp; Then when the popup view (ViewP)&nbsp;is requested I do a _owningscreenobj.RegionManager(specifiedregion).Add(new viewp) followed by a .Activate(viewp).&nbsp; This works great if I only have ONE of ViewA open.&nbsp; If I have more than one ViewA open the popup view is always displayed in the last instance of ViewA.</p>\r\n<p>Can I create more than one scoped region of the same name for different instances of the same view?</p>\r\n<p>Any help is appreciated!!!!!</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-08T11:25:00.853-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "243773",
+    "ThreadId": "71049",
+    "Html": "<p>This might be a daft suggestion because of screen/view size differences, but couldn't the Order View transition into the add item? Something similar to the way the Stock Trader RI rotates when you click between Position and Watch List. This way you just have one view that changes state. Hope that makes sense.</p>\r\n<p>Just a thought.</p>",
+    "PostedDate": "2009-10-09T01:03:40.267-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "243832",
+    "ThreadId": "71049",
+    "Html": "<p>Its a thought I'm kicking around already.&nbsp; The problem is the screen (or one of them) that I want to &quot;pop up&quot; is a generic screen that potentially would be accessed in a similar manner from other edit screens (ex: Select Part) and ideally&nbsp;I'd&nbsp;like other edit views to just be able to call it the same way rather than always embedding in the view.&nbsp; In addition, I might have 2-3 different views I want to pop up based on user actions and&nbsp;I was trying&nbsp;not to load all those view up&nbsp;unless they&nbsp;were needed.</p>\r\n<p>That being said, your suggestion at the moment is the only way I can get this to work so I might just have to go down that road.&nbsp; My product mgr does not want to use the Child Window approach and have the entire application disabled when one of these windows is requested, they only want the currently selected tab contents &quot;disabled&quot;.</p>\r\n<p>Thanks for the thought.</p>",
+    "PostedDate": "2009-10-09T04:42:13.087-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "243857",
+    "ThreadId": "71049",
+    "Html": "Another thought. How about if you create a generic shell with a single region you can insert a view into? Then when you display this shell to add a new item, disable the current order view. The order view is then only enabled when the user has finished with the new item shell. If the user clicks on the second order the new shell window will go behind the current orders shell window. If the user then goes back to the first order you can detect that it's in a &quot;adding item&quot; state and reshow (bring to the front) the add item shell window. Obviously you'll have to be careful to trap the OnClosing of the new shell window to enable the order view again :)\r\n\r\n",
+    "PostedDate": "2009-10-09T05:30:08.093-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "243859",
+    "ThreadId": "71049",
+    "Html": "<p>Unfortunately I don't think that will work as they want to be able to have a pop-up window open in more than one tab at at time.</p>",
+    "PostedDate": "2009-10-09T05:37:19.153-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

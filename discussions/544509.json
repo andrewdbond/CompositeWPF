@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1242291",
+    "ThreadId": "544509",
+    "Html": "Hello,\r<br />\n<br />\nMy current solution consists of ModuleA with ModelA (ID, Name) and ModuleB. I initialize ModuleB through a command from ModuleA and passing ID and Name as string parameters in the UriQuery. I know that is not possible to pass the whole object ModelA as a parameter. Is there another way?\r<br />\n<br />\nThanks <br />\n",
+    "PostedDate": "2014-05-06T15:31:15.42-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1242628",
+    "ThreadId": "544509",
+    "Html": "Hello,\r<br />\n<br />\nIn order to pass the entire object through <strong>Modules</strong>, you could use the <strong>EventAggregator</strong> approach by working on <strong>Prism 4.1</strong>. As you may see on the <strong>EventAggregation QuickStart</strong>, this feature would let you communicate between <strong>Modules</strong> and pass also an object as parameter.\r<br />\n<br />\nTherefore, for implementing this you may need to first initialize <strong><em>ModuleB</em></strong> in the <strong><em>ModuleA</em></strong>'s <em>CommandHandler</em>, so that <strong><em>ModuleB</em></strong> suscribes to the Event that <strong><em>ModuleA</em></strong> would <em>Publish</em> afterwards. And then, <strong><em>ModuleA</em></strong> would <em>Publish</em> the Event from the <em>CommandHandler</em>, passing the <strong><em>ModelA</em></strong> object as parameter to the <em>ViewModel</em> that would handle the event suscription.\r<br />\n<br />\nAnyway, I would like to point out that new versions of <strong>Prism 4.2 and 5</strong> has been released and they resolve the object parameters passing through <strong><em>UriQuery</em></strong>. You may find more information in the <strong>Prism 5 MSDN Guide</strong>:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40).aspx#sec10\" rel=\"nofollow\">Passing Parameters During Navigation</a><br />\n</li>\n</ul>\nI hope this helped you,\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-05-07T08:08:57.963-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1242965",
+    "ThreadId": "544509",
+    "Html": "Hello,\r<br />\n<br />\nThank you very much for your reply. \r<br />\n<br />\nIf I use the <strong>EventAggregator</strong> approach, how can <strong>ModuleB</strong> know the type of <strong>ModelA</strong>, so that it can unbox it and access its properties?\r<br />\n<br />\nI tried to find and download <strong>Prism 4.2</strong> but with no luck. Since I am currently using <a href=\"http://blogs.msdn.com/b/dphill/archive/2011/01/16/prism-4-0-template-pack-now-available.aspx\" rel=\"nofollow\">Template Pack</a> from David Hill, will I be able to use <strong>Prism 5.0</strong> with no problems?\r<br />\n<br />\nThanks,<br />\n",
+    "PostedDate": "2014-05-08T02:44:12.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1243103",
+    "ThreadId": "544509",
+    "Html": "Hi,\r<br />\n<br />\nI am afraid I am not able to download the <strong><em>Prism template Pack</em></strong> as the Download site does not get resolved. However, at a first glance I would say that you could use the template, and then change the reference assemblies to <strong>Prism 5</strong>. In addition, I don't know what <strong>.NET</strong> version would the template be using, so you may need to update it to <strong>4.5</strong>.\r<br />\n<br />\nNevertheless, the <strong>EventAggregator</strong> works with declared <strong><em>Events</em></strong> which would define a specific parameter type. Therefore, when <strong>ModuleB</strong> suscribes to that particular <strong><em>Event</em></strong>, it would actually know that the event's parameter type would be the one corresponding to the particular <strong><em>Event</em></strong> definition.\r<br />\nAs you may see in the <strong>EventAggregation Quickstart</strong>, the <strong><em>FundAddedEvent</em></strong> class defined in the Infrastructure project, is declaring the <strong><em>Event</em></strong> with the generics parameter type that it would use. So when <strong>ModuleA</strong> would <strong><em>Publish</em></strong> the particular <strong><em>Event</em></strong>, it would need to necessarily pass the expected argument as well as the <strong>Suscriber</strong> would need to receive the argument on the <strong>EventHandler</strong> method:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">public</span> <span style=\"color:Blue;\">class</span> FundAddedEvent : CompositePresentationEvent&lt;FundOrder&gt;\n{\n}\n\r\n</pre></div><strong><em>ModuleA - AddFundPresenter.cs (Publisher):</em></strong><br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n...\neventAggregator.GetEvent&lt;FundAddedEvent&gt;().Publish(fundOrder);\n\r\n</pre></div><strong><em>ModuleB - ActivityPresenter.cs (Suscriber):</em></strong><br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n...\n<span style=\"color:Blue;\">public</span> <span style=\"color:Blue;\">void</span> FundAddedEventHandler(FundOrder fundOrder){\n...\r\n</pre></div>If you don't want to reference <strong>ModuleA</strong> from <strong>ModuleB</strong>, you could create a common class on the <strong>Infrastructure</strong> project for example in order to be configured with <strong>ModelA</strong> important information, and be used as the <strong><em>Event</em></strong> argument.\r<br />\n<br />\nI hope this helped you,\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky.\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-05-08T07:46:58.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-05-11T03:54:07.66-07:00"
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "622290",
+    "ThreadId": "260016",
+    "Html": "\r\n<p>Hi -- I'm a bit on the new side to this stuff, but came across something that I think may be pretty handy if it could be implemented, or maybe someone could suggest a better way for me to do this.</p>\r\n<p>I'm using MEF for module discovery, and often the modules have some external dependencies on third-party DLLs, like Prism, Enterprise Library, and Telerik among possible others.</p>\r\n<p>In order to not keep all of these DLLs in the same directory, and to have a standard location where each developer should be including them, we have setup a simple directory structure for our &quot;helper&quot; DLLs (all under c:\\CompApp\\vbin\\).</p>\r\n<p>In the Bootstrapper.cs, then, we are doing this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>            DirectoryCatalog prism = <span style=\"color:blue\">new</span> DirectoryCatalog(<span style=\"color:#a31515\">@&quot;C:\\CompApp\\vbin\\Prism\\&quot;</span>);\r\n            DirectoryCatalog telerik = <span style=\"color:blue\">new</span> DirectoryCatalog(<span style=\"color:#a31515\">@&quot;C:\\CompApp\\vbin\\Telerik\\&quot;</span>);\r\n            DirectoryCatalog entlib = <span style=\"color:blue\">new</span> DirectoryCatalog(<span style=\"color:#a31515\">@&quot;C:\\CompApp\\vbin\\EntLib\\&quot;</span>);</pre>\r\n<pre>\r\n            DirectoryCatalog catalog = <span style=\"color:blue\">new</span> DirectoryCatalog(<span style=\"color:#a31515\">@&quot;C:\\CompApp\\bin\\Modules\\&quot;</span>);\r\n\r\n            <span style=\"color:blue\">this</span>.AggregateCatalog.Catalogs.Add(prism);\r\n            <span style=\"color:blue\">this</span>.AggregateCatalog.Catalogs.Add(telerik);\r\n            <span style=\"color:blue\">this</span>.AggregateCatalog.Catalogs.Add(entlib);\r\n            <span style=\"color:blue\">this</span>.AggregateCatalog.Catalogs.Add(catalog);</pre>\r\n</div>\r\n<p>Two things:&nbsp;</p>\r\n<ol>\r\n<li>This pattern may not be necessary -- I may have overlooked some different practice I should be following for something like this.&nbsp; If that's the case, could someone set me straight?\r\n</li><li>If this pattern does seem ok, it would be pretty nice if we could get an overload on DirectoryCatalog to specify to look in subdirectories for assemblies as well.&nbsp; Would this be the right place to submit such a suggestion?&nbsp;\r\n</li></ol>\r\n<p>Thanks in advance from a new participant.&nbsp; I'm really liking working with Prism, and am just getting started with what will end up being a pretty large-scale app.&nbsp; :)</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-06-02T18:43:32.17-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "622508",
+    "ThreadId": "260016",
+    "Html": "<p>Hi,</p>\r\n<p>The approach you're mentioning seems to be a valid possibility to achieve the scenario you require. You could create a work item in the <a href=\"http://compositewpf.codeplex.com/workitem/list/advanced\">Issue Tracker</a> suggesting that feature to be added to future versions of Prism.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-06-03T06:21:56.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "622517",
+    "ThreadId": "260016",
+    "Html": "<p>Thanks for the feedback.&nbsp; I've created the work item below for this feature request.</p>\r\n<p><a href=\"http://compositewpf.codeplex.com/workitem/8324\">http://compositewpf.codeplex.com/workitem/8324</a></p>",
+    "PostedDate": "2011-06-03T06:34:23.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

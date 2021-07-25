@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1016831",
+    "ThreadId": "436992",
+    "Html": "Hello<br />\n<br />\nI had newly started working on silverlight &amp; ofcource Prism. I am learning it.<br />\n<br />\nI want to ask one thing How Logger is working in Prism 4.0 with MEF.<br />\n<br />\nAt which location it is creating file for logging? I had observed in stockTradder application &amp; found there we are not providing any file for Logging. But they are using Logger .<br />\n<br />\nSo I want to know that at which location Logger filer created? How Logger is working in Mef in prism?<br />\n<br />\nIf it is automatically creating file then at which location it is creating file?<br />\n<br />\nCan  anybody help me for it?<br />\n<br />\nIs there any alternative way is there? I found in that stock trader application that may be they are giving file name in App.config file.<br />\n<br />\nI want to know that can we provide file name, type format etc from cs file?<br />\n<br />\nIs there any other alternative for it?<br />\n<br />\nTHanks &amp; Regards<br />\nVipul Langalia<br />\n",
+    "PostedDate": "2013-03-17T20:48:29.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1017246",
+    "ThreadId": "436992",
+    "Html": "Hi Vipul,<br />\n<br />\nBy default, <strong>Prism</strong> provides two loggers, one for <strong>Desktop</strong> applications and one for <strong>Silverlight</strong> , as it can seen in the following method of the <strong>Bootstrapper</strong> class:<br />\n<pre><code>protected virtual ILoggerFacade CreateLogger()\n{\n#if SILVERLIGHT\n    return new EmptyLogger();\n#else\n    return new TextLogger();\n#endif\n}</code></pre>\n\nThe <strong>TextLogger</strong> used for <strong>Desktop</strong> writes a log message to a <strong>TextWriter</strong> , which by default is the <strong>Output</strong> console. In other words, the default logger behavior in a <strong>Desktop</strong> application is to print the messages to the console.<br />\nThe <strong>EmptyLogger</strong> used for <strong>Silverlight</strong> is an empty logger with no implementation inside. In other words, this logger works as a place holder; hence, in <strong>Silverlight</strong> , the default logger does <strong><em>nothing</em></strong> at all.<br />\n<br />\nThe <strong>StockTrader RI</strong> provides a custom logger in its <strong>Desktop</strong> version that logs the messages through the <strong>Enterprise Library</strong> logger, but the <strong>Silverlight</strong> version uses the default logger; hence, it logs <strong><em>nothing</em></strong> .<br />\n<br />\nOf course, this behavior can be changed in your application by overriding the <strong>CreateLogger</strong> method and returning the logger you wish to use instead of the default one.<br />\n<br />\nI hope this helps you,<br />\n<br />\nDamian Cherubini<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-03-18T11:41:28.947-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1017449",
+    "ThreadId": "436992",
+    "Html": "Hello Damian Thank you for the detail explainations. It really helps a lot. Apart from that I also find that in App.Config file they are provide some file structure &amp; File name &quot;trace&quot;. They also mention which items are going to be dumped in that logger\r<br />\n file. So I think When we are doing Logger.Log(...) then it is dumping all the structure with value to file. I also analyse the code using decompiling assembly &amp; find that they are calling Write Method inside. Once again thank you for this detail informations.\r<br />\n It is really very helpful. Regards Vipul Langalia<br />\n",
+    "PostedDate": "2013-03-18T20:54:26.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "108542",
+    "ThreadId": "32742",
+    "Html": "I'm trying to get a reference to a resource that is included through Application.Resources MergedDictionaries in my App.xaml. When during the bootstrapping process are those resources available? In a test WPF application w/out Prism I can access them in the constructor of my main window, but with Prism they are not available in the Shell constructor.<br>\r\n",
+    "PostedDate": "2008-08-01T09:22:34.19-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "108586",
+    "ThreadId": "32742",
+    "Html": "<p>Can you provide an example of what is not working?&nbsp; I'll provide an example of what does :)&nbsp;&nbsp; Using the CompositeWPF Commanding solution...</p>\r\n<p>I added the following to the Styles/Styles.xaml</p>\r\n<p>&nbsp; &lt;Style x:Key=&quot;MyLabel&quot; TargetType=&quot;{x:Type Label}&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Setter Property=&quot;HorizontalContentAlignment&quot; Value=&quot;Center&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Setter Property=&quot;VerticalContentAlignment&quot; Value=&quot;Center&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp; &lt;/Style&gt;</p>\r\n<p>The App.xaml file looks as follows (in its entirety)</p>\r\n<p>&lt;Application x:Class=&quot;Commanding.App&quot;<br>\r\n&nbsp;&nbsp;&nbsp; xmlns=&quot;<a href=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">http://schemas.microsoft.com/winfx/2006/xaml/presentation</a>&quot;<br>\r\n&nbsp;&nbsp;&nbsp; xmlns:x=&quot;<a href=\"http://schemas.microsoft.com/winfx/2006/xaml\">http://schemas.microsoft.com/winfx/2006/xaml</a>&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp; &lt;Application.Resources&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ResourceDictionary&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ResourceDictionary.MergedDictionaries&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ResourceDictionary Source=&quot;Styles\\styles.xaml&quot;&gt;&lt;/ResourceDictionary&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ResourceDictionary.MergedDictionaries&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ResourceDictionary&gt;<br>\r\n&nbsp;&nbsp;&nbsp; &lt;/Application.Resources&gt;<br>\r\n&lt;/Application&gt;</p>\r\n<p>App.xaml.cs - code behind</p>\r\n<p>&nbsp;&nbsp;&nbsp; public partial class App : Application<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public App()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeComponent();&nbsp; // &lt;== Must execute before FindResource in main app </p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Style myLabelStyle = FindResource(&quot;MyLabel&quot;) as Style;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (myLabelStyle == null)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new Exception(&quot;MyLabel style not found&quot;);</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ....<br>\r\n&nbsp;&nbsp;&nbsp; }</p>\r\n<p>Shell.xaml.cs - code behind</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public Shell()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Style myLabelStyle = FindResource(&quot;MyLabel&quot;) as Style;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (myLabelStyle == null)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new Exception(&quot;MyLabel style not found&quot;);</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeComponent();&nbsp;&nbsp;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>Everything runs without error.&nbsp;&nbsp; I added the following label to the bottom of the Shell.xaml file:</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Label HorizontalAlignment=&quot;Right&quot; Content=&quot;Hello&quot; Style=&quot;{DynamicResource MyLabel}&quot; Width=&quot;87&quot; /&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Separator Margin=&quot;0,0,0,0&quot; VerticalAlignment=&quot;Bottom&quot; Height=&quot;10&quot; BorderBrush=&quot;#193441&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp; &lt;/Grid&gt;<br>\r\n&lt;/Window&gt;</p>\r\n<p>It works just fine whether I use StaticResource or DynamicResource.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2008-08-01T12:41:58.74-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "110011",
+    "ThreadId": "32742",
+    "Html": "I think the problem is that &quot;InitializeComponent()&quot; call is missing at the CompositeWPF walkthroughs and documentation related to bootstrappers. The samples there give the empty App() constructor where the Bootstrapper is instantiated. I'm afraid there might be a lot of similar discussion topics untill the documentation/samples are corrected.<br>\r\n<br>\r\nBest regards, Denis\r\n",
+    "PostedDate": "2008-08-08T11:50:32.603-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "110734",
+    "ThreadId": "32742",
+    "Html": "I had the same problem, the Window instances referring to the styles would appear unstyled if they were created and shown prior to the main shell window being shown, once the main window is shown the window would flash as you could see the styles being applied after it was created. I resolved this by moving all the window creation into the App.OnStartup(StartupEventArgs) virtual method. You can also add the InitializeComponent call to your constructor, just make sure it's before any calls to present UI, as far as I'm aware this call is added to the constructor automatically.<br>\r\n<br>\r\n-Brett<br>\r\n",
+    "PostedDate": "2008-08-12T17:47:39.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "112833",
+    "ThreadId": "32742",
+    "Html": "Wow! Wish I'd found this earlier as I was tearing my hair out building my spike on the bones of the&nbsp;UIComposition QuickStart! You don't want to know all the stupid things I tried.<br>\r\nCombining @DenisVuyka and @brettryan, I do as shown below. It seems to work. Anyone think I should do otherwise? Am I being paranoid delaying BootStrapper until &quot;OnStartup&quot;?<br>\r\n<span style=\"font-size:13px\"><br>\r\n<code>public partial class App : Application { <br>\r\npublic App() { <br>\r\nInitializeComponent(); <br>\r\n}<br>\r\n<br>\r\nprotected override void OnStartup(StartupEventArgs e) { <br>\r\nnew BootStrapper().Run();<br>\r\n}<br>\r\n} <br>\r\n</code></span>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2008-08-21T18:13:14.637-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "122698",
+    "ThreadId": "32742",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">Hi,</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">We have just published an article regarding this issue in the <span style=\"color:#1f497d\"><a href=\"http://www.codeplex.com/CompositeWPF/Wiki/View.aspx?title=Known Issues / Fixes\">Known Issues / Fixes</a> </span>section of<span style=\"color:#1f497d\"> <a href=\"http://www.codeplex.com/CompositeWPF/Wiki/View.aspx?title=Knowledge Base\">Composite WPF KB</a>:</span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt 36.15pt\"><span style=\"font-family:Symbol\"><span>·<span style=\"font:7pt 'Times New Roman'\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span style=\"font-family:Calibri\"><span style=\"color:#1f497d\">&nbsp;</span><span><a href=\"http://www.codeplex.com/CompositeWPF/Wiki/View.aspx?title=Bootstrapper initialization is not at the Application Startup event in some of the Quickstarts and Documentation topics&referringTitle=Knowledge Base\">Bootstrapper initialization is not at the Application Startup event in some of the Quickstarts and Documentation topics</a></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">Ignacio Baumann Fonay</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><a href=\"http://blogs.southworks.net/ibaumann/\"><span><span style=\"color:#0000ff;font-family:Calibri\">http://blogs.southworks.net/ibaumann/</span></span></a> </span></p>\r\n",
+    "PostedDate": "2008-10-03T10:00:27.13-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1151441",
+    "ThreadId": "32742",
+    "Html": "I just encountered an Interesting behavior creating a brand new application.   &quot;The name 'InitializeComponent' does not exist in the current context&quot; happened after I added the following to see if it would resolve my issue of not being able to access App.xaml styles from my modules:<br />\n<pre><code>        public App()\n        {\n            InitializeComponent();\n        }</code></pre>\n\nI found this odd as I had not encountered this problem until now - when I discovered the problem it made sense as I generally have merged dictionaries.   In your App.Xaml file you have to have the following:  &lt;ResourceDictionary.MergedDictionaries/&gt; <br />\n<br />\nWith this statement you no longer require the constructor or InitializeComponent (and it works).<br />\n<br />\nExample follows:<br />\n<pre><code>    &lt;Application.Resources&gt;\n        &lt;ResourceDictionary&gt;\n            &lt;ResourceDictionary.MergedDictionaries/&gt;\n            &lt;Style TargetType=&quot;Button&quot;&gt;\n                &lt;Setter Property=&quot;Command&quot; Value=&quot;{Binding GenericCommand}&quot;/&gt;\n                &lt;Setter Property=&quot;CommandParameter&quot; Value=&quot;{Binding RelativeSource={RelativeSource Self}}&quot;/&gt;\n            &lt;/Style&gt;            \n        &lt;/ResourceDictionary&gt;\n    &lt;/Application.Resources&gt;\n</code></pre>\n\n",
+    "PostedDate": "2014-01-09T09:55:29.777-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

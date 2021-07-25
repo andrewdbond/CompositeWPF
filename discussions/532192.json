@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1209079",
+    "ThreadId": "532192",
+    "Html": "This is for the new Prism 4.2, but not an item to selected below.\r<br />\n<br />\nI noticed there were some new features added in VS 2013 for XAML and binding.  One was to be able to see the properties of item that was bound to the UI component.  As an example, if I had a Person Class bound to a Grid with TextBlocks, I should be able to see properties (e.g. FirstName, LastName, etc.) in the XAML when typing &lt;TextBlock Text={Binding ...\r<br />\n<br />\nI thought with the new locator and features within would work with the new bits.  It still works and will be displayed in the UI.  I'm I missing something?\r<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2014-02-16T10:58:28.67-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1209543",
+    "ThreadId": "532192",
+    "Html": "Hi shaggygi,\r<br />\n<br />\nI believe you wanted to say that <strong><em>Binding IntelliSense</em></strong> is still not working for you. Based on my understanding, there are a few things that need to be declared in order to make IntelliSense work:<br />\n<h1></h1>\n<ul>\n<li>\n<strong>Data Context</strong> should be defined in View's Xaml code without being injected from the container. So it would be available for <strong>DesignTime</strong> and <strong>Binding</strong> can resolve the Properties with IntelliSense. <strong><em>Local</em></strong> namespace declaration would be needed to reference the <strong>DataContext</strong>.<br />\n</li>\n<li>\nAlso, you would need to declare the following namespaces for the proper IntelliSense to work:<br />\n</li>\n</ul>\n<pre><code>   xmlns:d=&quot;http://schemas.microsoft.com/expression/blend/2008&quot;\n   xmlns:mc=&quot;http://schemas.openxmlformats.org/markup-compatibility/2006&quot;\n   mc:Ignorable=&quot;d&quot;</code></pre>\n\nBear in mind that declaring the <strong><em>DataContext</em></strong> directly into xaml code couples the <strong>View</strong> with its <strong>ViewModel</strong>/<strong>Model</strong> and the container is not able to resolve any dependency from it. Therefore, one possible way to solve this would be to declare a <strong>Mock ViewModel</strong> which implements every property into xaml code, and resolve the proper <strong>ViewModel</strong> from the container.\r<br />\n<br />\nI hope this helped you, \r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky.\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-02-17T10:48:19.877-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1209654",
+    "ThreadId": "532192",
+    "Html": "Yes, that is exactly what I was trying to explain.  Thanks for the help.<br />\n",
+    "PostedDate": "2014-02-17T17:47:45.31-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1209923",
+    "ThreadId": "532192",
+    "Html": "We make a property in the view that is the same type of the viewmodel that will be injected in and set that property as the datacontext in xaml.  We do tie our views to the viewmodel but not the viewmodel to the view.  Then we constructor inject the same type and store it to the property.\r<br />\n<br />\nExample:  of the code behind<br />\n<pre><code>public partial class DashboardView\n{\n        public DashboardViewModel ViewModel { get; set; }\n\n        // need empty constructor for the design time but unity will inject into the other constructor\n        public DashboardView()\n        {\n            InitializeComponent();\n        }\n\n        // At run time unity will use this constructor\n        public DashboardView(DashboardViewModel viewModel)\n        {\n            ViewModel = viewModel;\n            InitializeComponent();\n        }\n}</code></pre>\n\nExample of the Xaml<br />\n<pre><code>&lt;UserControl x:Class=&quot;DashboardView&quot;\n      xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;\n      xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;\n      xmlns:d=&quot;http://schemas.microsoft.com/expression/blend/2008&quot;\n      xmlns:mc=&quot;http://schemas.openxmlformats.org/markup-compatibility/2006&quot;\n      mc:Ignorable=&quot;d&quot;\n      DataContext=&quot;{Binding RelativeSource={RelativeSource Self}, Path=ViewModel}&quot;&gt;</code></pre>\n\nI haven't tried this in VS 2013 but we use Resharper in VS 2012 and it picks up the datacontext this way.   I would hope it works in VS 2013.<br />\n",
+    "PostedDate": "2014-02-18T08:50:49.343-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

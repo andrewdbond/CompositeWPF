@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "478059",
+    "ThreadId": "222920",
+    "Html": "<p>I'm using PRISM v2 in a SilverLight 4 application. I have a problem where views registered to some regions doesn't get displayed.<br><br>When loading a module at startup I register some views to regions as follows:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre>RegionManager.RegisterViewWithRegion(<span style=\"color:#a31515\">&quot;MyRegion1&quot;</span>, <span style=\"color:blue\">typeof</span>(IMySubView1));\r\nRegionManager.RegisterViewWithRegion(<span style=\"color:#a31515\">&quot;MyRegion2&quot;</span>, <span style=\"color:blue\">typeof</span>(IMySubView2));\r\n</pre>\r\n</div>\r\n<p>I have a view implementing an interface called IMyView, where the xaml have two contentcontrols with regions defined in a grid like this:<br>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">ContentControl</span> <span style=\"color:red\">Regions:RegionManager.RegionName</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">MyRegion1</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">HorizontalContentAlignment</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">Stretch</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">VerticalContentAlignment</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">Stretch</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">Grid.Row</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">0</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">Grid.RowSpan</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">1</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">/&gt;</span>\r\n<span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">ContentControl</span> <span style=\"color:red\">Regions:RegionManager.RegionName</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">MyRegion2</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">HorizontalContentAlignment</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">Stretch</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">VerticalContentAlignment</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">Stretch</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">Grid.Row</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">1</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">Grid.RowSpan</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">1</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">/&gt;</span>\r\n</pre>\r\n</div>\r\nI have tried two different methods for adding the view to the main region. Both adds the view and basic elements such as buttons get displayed, but the regions defined in the view does not get filled with associated views.<br><br>Method 1:<br>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">object</span> obj = _container.Resolve&lt;IMyView&gt;();\r\nIRegion mainRegion = _regionManager.Regions[<span style=\"color:#a31515\">&quot;MainViewRegion&quot;</span>];\r\nIRegionManager scoped = mainRegion.Add(obj, <span style=\"color:#a31515\">&quot;test&quot;</span>, <span style=\"color:blue\">true</span>);\r\nmainRegion.Activate(obj);\r\n\r\n<span style=\"color:green\">// Enabling the following call, it will fail saying the region MyRegion1 does not exist. Feels like it should?</span>\r\n<span style=\"color:green\">// IRegion myRegion = scoped.Regions[&quot;MyRegion1&quot;];</span>\r\n</pre>\r\n</div>\r\n<br>Method 2:<br>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">object</span> obj = _container.Resolve&lt;IMyView&gt;();\r\n_regionManager.AddToRegion(<span style=\"color:#a31515\">&quot;MainViewRegion&quot;</span>, obj);\r\n_regionManager.Regions[<span style=\"color:#a31515\">&quot;MainViewRegion&quot;</span>].Activate(obj);\r\n</pre>\r\n</div>\r\n<br>It feels like the regions defined in the xaml file doesn't get registered, and because of that the registered views do not get displayed.<br><br>The MainViewRegion is defined in the shell in a TabControl as this:<br>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">TabControl</span> <span style=\"color:red\">Margin</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">8,0,8,8</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">Regions:RegionManager.RegionName</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">MainViewRegion</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">&gt;</span>\r\n</pre>\r\n</div>\r\n<br>Any suggestions on solving my problem will be greatly appreciated!</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-08-09T06:04:19.887-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "479187",
+    "ThreadId": "222920",
+    "Html": "<p>After many hours of troubleshooting I found something.</p>\r\n<p>In Composite.Presentation\\Regions\\RegionManager.cs there is a method called IsInDesignMode. When a region is about to be created this method is called, and if this method returns true the region is not created. See below:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre>        <span style=\"color:blue\">private</span> <span style=\"color:blue\">static</span> <span style=\"color:blue\">void</span> OnSetRegionNameCallback(DependencyObject element, DependencyPropertyChangedEventArgs args)\r\n        {\r\n            <span style=\"color:blue\">if</span> (!IsInDesignMode(element))\r\n            {\r\n                CreateRegion(element);\r\n            }\r\n        }\r\n\r\n        <span style=\"color:blue\">private</span> <span style=\"color:blue\">static</span> <span style=\"color:blue\">bool</span> IsInDesignMode(DependencyObject element)\r\n        {\r\n            <span style=\"color:green\">// Due to a known issue in Cider, GetIsInDesignMode attached property value is not enough to know if it's in design mode.</span>\r\n            <span style=\"color:blue\">return</span> DesignerProperties.GetIsInDesignMode(element) || Application.Current == <span style=\"color:blue\">null</span>\r\n                   || Application.Current.GetType() == <span style=\"color:blue\">typeof</span>(Application);\r\n        }\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>When our silverlight application starts up and the regions in the shell gets created everything is fine, the Application.Current property is of type &quot;MyName.Shell.App&quot;. But when a view gets added after startup, as a response to user input, the Application.Current type is suddenly of type &quot;Application&quot;, and thus the IsInDesignMode method returns true and the regions are not created.</p>\r\n<p>If I remove the Application.Current conditions everything works as expected. So the question is, is there something wrong in my application or is there something wrong in the prism source code?</p>",
+    "PostedDate": "2010-08-11T09:18:19.04-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "479812",
+    "ThreadId": "222920",
+    "Html": "<p>I asked Larry (our test lead) to see if he could reproduce this issue, and he was able to do so using Prism v2.2.&nbsp; He is doing a bit more investigation to see if it still exists in the v4 code we currently have and to track down the root issue.&nbsp;</p>\r\n<p>In the meantime, if changing the code as you mentioned works, do it and keep an eye out for a fix in the next v4 drop.</p>\r\n<p>Thanks,<br>Michael Puleio</p>",
+    "PostedDate": "2010-08-12T10:21:38.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "480422",
+    "ThreadId": "222920",
+    "Html": "<p>I have an update.&nbsp; After looking at the sample app that was written based on your description, I found a bug in the sample and we were not able to reproduce your problem after all.&nbsp;</p>\r\n<p>I updated the Issue (<a href=\"http://compositewpf.codeplex.com/workitem/7102\">http://compositewpf.codeplex.com/workitem/7102</a>) and attached the sample app that we created to test this out.&nbsp; Please take a look and let me know what you see that is different between the sample and what you have written to help us figure out the issue you are running into.</p>\r\n<p>Thanks,<br>Michael Puleio</p>",
+    "PostedDate": "2010-08-13T16:33:12.397-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "481025",
+    "ThreadId": "222920",
+    "Html": "<p>I have updated the Issue (http://compositewpf.codeplex.com/workitem/7102) and attached a modified sample (RegionProblem.zip) where my problem occurs.</p>",
+    "PostedDate": "2010-08-16T08:36:03.463-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "481467",
+    "ThreadId": "222920",
+    "Html": "<p>I'll look at it (or have someone else from the team do so) as soon as I can.</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2010-08-17T09:21:43.373-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "481584",
+    "ThreadId": "222920",
+    "Html": "<p>Hmmmmm.&nbsp; It looks like the behavior of a few things changed in SL4.</p>\r\n<p>For the moment, hack your version of RegionManager.IsInDesignMode() to look like this:</p>\r\n<pre style=\"font-family:consolas\"><span style=\"color:blue\"><div style=\"color:black;background-color:white\"><pre><span style=\"color:blue\">private</span> <span style=\"color:blue\">static</span> <span style=\"color:blue\">bool</span> IsInDesignMode(DependencyObject element)\r\n{  </pre>\r\n<pre>  <span style=\"color:blue\">return</span> DesignerProperties.GetIsInDesignMode(element);</pre>\r\n<pre>}\r\n</pre>\r\n</div>\r\n</span></pre>\r\n<p>We're going to investigate fixes and try to determine if the known issue from Cider (that caused the current implementation of IsInDesignMode to be written) has been fixed..&nbsp;</p>\r\n<p>The fix&nbsp;won't make the next drop, but we'll get it figured out soon.</p>\r\n<p>Thanks,<br>Michael Puleio</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-08-17T14:29:52.497-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

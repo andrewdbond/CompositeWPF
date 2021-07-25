@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "627987",
+    "ThreadId": "261450",
+    "Html": "<p>Hi!</p>\n<p>My project is .Net FW4, WPF and PRISM4.</p>\n<p>I have a&nbsp;&lt;DataGrid/&gt; which has a number of columns where one of them is of type &lt;DataGridCheckBoxColumn/&gt;. I'd like to be able to raise an event on the underlying ViewModel (this is a MVVM based project) and have therefore declared a method such as:</p>\n<p style=\"padding-left: 30px;\">public ICommand PlotClicked { get; private set; }</p>\n<p>In the constructor of the ViewModel I've created a DelegateCommand</p>\n<p style=\"padding-left: 30px;\">this.PlotClicked = new DelegateCommand&lt;object&gt;(this.OnClick, this.CanClick);</p>\n<p>Now, in the XAML-file of my View I have the following:</p>\n<div style=\"background-color: white; color: black;\">\n<pre>&lt;DataGridCheckBoxColumn ...&gt;\r\n&lt;i:Interaction.Triggers&gt;\r\n&lt;i:EventTrigger EventName=<span style=\"color: #a31515;\">\"??????\"</span>&gt; // I'm not sure what to put here...\r\n&lt;i:InvokeCommandAction Command=<span style=\"color: #a31515;\">\"{Binding Path=PlotClicked\"</span>}\"... /&gt;\r\n&lt;/i:EventTrigger&gt;\r\n&lt;/i:Interaction.Triggers&gt;\r\n&lt;/DataGridCheckBoxColumn&gt;\r\n</pre>\n<pre>When clicking the checkboxcolumn nothing is fired in my ViewModel. I'm a complete newbie to the concept of Interaction.Triggers so I've definitely missed something here...</pre>\n<pre>I hope somebody will be able to point me in the right direction...</pre>\n<pre>Cheers</pre>\n</div>",
+    "PostedDate": "2011-06-15T01:17:05.953-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "628123",
+    "ThreadId": "261450",
+    "Html": "<p>Hi,</p>\r\n<p>One possible way to fulfill your requirement could be to define the command in your DataGrid&rsquo;s <strong>Item Template</strong>, for example, triggering the command when you click the items.</p>\r\n<p>In order to do so, you need to access your command that resides in your <strong>ViewModel</strong> from within a <strong>DataTemplate</strong> (whose <strong>DataContext</strong> is overridden), therefore you should implement one of the possibilities described in the following threads:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/242032\">Commanding in datagrid not works</a></li>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/64514\">Click command for Button into dataTemplate</a></li>\r\n</ul>\r\n<p>Please, let us know if this information helps you.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-06-15T07:00:56.437-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

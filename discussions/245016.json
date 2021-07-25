@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "562129",
+    "ThreadId": "245016",
+    "Html": "\r\n<p>I have created a shell application following the stock trader RI.&nbsp; The major difference is all my views land in a single region &quot;MainRegion&quot;.&nbsp; The region is a content presenter&nbsp;because i only want one view active at&nbsp;time.&nbsp; I load\r\n the views using the behavior included in the sample, the AutoPopulateExportedViewsBehavior.&nbsp;&nbsp;For a while it was showing the&nbsp;Login screen first, like it should even though i didn't understand how.&nbsp; Now i have added more views and can navigate\r\n between them, but the order in which the screens show is different.&nbsp; It starts on the screen&nbsp;I added last and not the login screen.&nbsp; Using the AutoPopulateExportedViewsBehavior whats the best way to force that to be the first view?</p>\r\n",
+    "PostedDate": "2011-02-07T11:12:42.877-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "563350",
+    "ThreadId": "245016",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Take into account that <strong>AutoPopulateExportedViewsBehavior</strong> is used to place views in regions defined by a host controls.</p>\r\n<p>If your application has only one main region, then there is no need to use the aforementioned behavior. You could use the view injection approach to load your login view to the main region.</p>\r\n<p>For example:</p>\r\n<p><span lang=\"EN-US\" style=\"font-size:9.5pt\"></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>[ModuleExport(<span style=\"color:blue\">typeof</span>(ViewsModule))]\r\n   <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> ViewsModule: IModule\r\n   {\r\n       IRegionManager _regionManager;\r\n       \r\n       [ImportingConstructor]\r\n       <span style=\"color:blue\">public</span> ViewsModule(IRegionManager regionManager)\r\n       {\r\n           _regionManager = regionManager;           \r\n       }\r\n \r\n \r\n       <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> Initialize()\r\n       {\r\n           IRegion mainRegion = _regionManager.Regions[<span style=\"color:#a31515\">&quot;MainRegion&quot;</span>];\r\n           mainRegion.Add(<span style=\"color:blue\">new</span> LoginView(_regionManager));\r\n       }\r\n   }\r\n</pre>\r\n</div>\r\n</span>\r\n<p></p>\r\n<p>Then you could use the <strong>RequestNavigate</strong> method of the <strong>\r\nRegionManager</strong> in order to move forward into the other views, when the user login successfully.</p>\r\n<p>You can read more about View Injection in <span style=\"color:black\"><span style=\"color:black\"><a href=\"http://msdn.microsoft.com/en-us/library/ff921098(v=PandP.40).aspx\">Chapter 7: Composing the User Interface</a></span></span></p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n",
+    "PostedDate": "2011-02-09T07:41:11.403-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

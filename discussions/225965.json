@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "488916",
+    "ThreadId": "225965",
+    "Html": "<p>I am using Prism to create tab items in&nbsp;a tab control.&nbsp; Each tab item can have multiple regions, and the views in each region can have regions of their own.&nbsp; Each view has it's own view model.</p>\r\n<p>In some of the view models I suscribe to events using the EventAggregator.&nbsp; Although I realise that because there is a weak reference to these events, I would still like to unsubscribe from these events when a tab closes.&nbsp; The idea of the events still being handled between&nbsp;the tab closing and the garbage collector running makes me uneasy.</p>\r\n<p>Is there anyway for a view mode&nbsp;(or a view) to detect when it is being unloaded so that I can explicitly unsubscribe from the events?&nbsp;</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2010-09-03T08:35:40.727-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "488969",
+    "ThreadId": "225965",
+    "Html": "<p>Hi,</p>\r\n<p>As you mentioned it is not something necessary, since it will be disposed. But Prism could help you to achieve this scenario by using the concept of Region  Behaviors. These are pluggable components that allow you to extend the region&rsquo;s  implementation. For more information about this topic, you could take a look at  the following documentation section on MSDN:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921075(PandP.20).aspx\">UI  Composition</a>, see the <em>Region Behaviors section</em>.</li>\r\n</ul>\r\n<p>As for how to unsubscribe your view model from these events, you could use the <a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.composite.presentation.regions.behaviors.regionactiveawarebehavior.aspx\">RegionActiveAwareBehavior</a> that requires you to implement <a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.composite.iactiveaware.aspx\">IActiveAware</a> in your view.&nbsp;This&nbsp;region behavior&nbsp;is attached by default and it is&nbsp;responsible  for notifying a view if it is active or inactive.&nbsp;&nbsp;Therefore, you can be  notified when&nbsp;a particular&nbsp;view is removed by implementing IActiveAware&nbsp;from  your view.&nbsp;So, you could perform a particular action like the unsubscribe from these events. Your view code could look like the following:</p>\r\n<pre><span>public partial class </span><span>DefaultViewC </span>: <span>UserControl</span>, <span>IActiveAware \r\n </span>{\r\n     <span>public </span>DefaultViewC()\r\n     {\r\n         InitializeComponent();\r\n     }\r\n\r\n     <span>private bool </span>isActive = <span>default</span>(<span>bool</span>);\r\n     <span>public bool </span>IsActive\r\n     {\r\n         <span>get </span>{ <span>return this</span>.isActive; }\r\n         <span>set\r\n         </span>{\r\n             <span>this</span>.isActive = <span>value</span>;\r\n             <span>//here you could send a flag that notifies that your view has been removed\r\n             </span><span>this</span>.OnActiveChanged(<span>EventArgs</span>.Empty);\r\n         }\r\n     }\r\n     <span>public virtual void </span>OnActiveChanged(<span>EventArgs </span>e)\r\n     {\r\n         <span>if </span>(<span>this</span>.IsActiveChanged != <span>null</span>)\r\n             <span>this</span>.IsActiveChanged(<span>this</span>, e);\r\n     }\r\n     <span>public event </span>System.<span>EventHandler </span>IsActiveChanged;\r\n }\r\n</pre>\r\n<p><a href=\"http://11011.net/software/vspaste\"></a><a href=\"http://11011.net/software/vspaste\"></a><a href=\"http://11011.net/software/vspaste\"></a></p>\r\n<p>For more information about this topic, you could check the following  documentation section on MSDN:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921075(PandP.20).aspx\">UI  Composition</a>, see the <em>RegionActiveAwareBehavior section</em>.</li>\r\n</ul>\r\n<p>Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-09-03T10:46:01.047-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "489618",
+    "ThreadId": "225965",
+    "Html": "<p>Hi,</p>\r\n<p>Thank you for your suggestion - I have tried it out but face a problem.</p>\r\n<p>Unfortunately IActiveAware gets set to false when the user switches from one tab to another.&nbsp; I only want to know when the tab is closed as the events still need to be handled when the tab is open, even if it is not the active tab.</p>\r\n<p>Is there any way to differentiate between the view being made inactive, and the view being closed?</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2010-09-06T01:47:21.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "497215",
+    "ThreadId": "225965",
+    "Html": "<p>Hi,</p>\r\n<p>The RegionActiveAwareBehavior is also notifying you when a particular view is deactivated. In this particular case, I think that you could modify the Region class, so when the Remove method is called, you could raise an event.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-22T14:02:21.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "499871",
+    "ThreadId": "225965",
+    "Html": "<p>Hi,</p>\r\n<p>I'm not sure what you mean by this - would this involve changing the Prism source?</p>\r\n<p>Instead we have changed our application to use the event aggregator to publish an event when the tab is closed - our View Model base class listens for this event and performs any clean up neccessary.</p>\r\n<p>I'm not sure if this is the best way of dealing with it - but it is working for us.</p>\r\n<p>Thanks for your help</p>\r\n<p>Matt</p>",
+    "PostedDate": "2010-09-29T03:50:57.997-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "500004",
+    "ThreadId": "225965",
+    "Html": "<p>Hi Matt,<br><br>Thanks for sharing this with the rest of the community, since users with similar scenarios could find this helpful. Nice to see that you found an approach that suites your scenario. It is recommendable to use the recommended approaches by the product team like event aggregator or others if possible.<br><br>But in some cases if you consider that it is necessary for achieving a particular scenario, a possible option could be to extend the Prism library.</p>\r\n<p>Thanks again,<br><br>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-09-29T07:18:50.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

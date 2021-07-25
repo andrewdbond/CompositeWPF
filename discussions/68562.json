@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "233254",
+    "ThreadId": "68562",
+    "Html": "<p>For example, I would like to do something akin to the following, in order to create a module who is capable of listening for and acting upon a group of&nbsp;<span style=\"color:#2b91af;font-size:x-small\"><span style=\"color:#2b91af;font-size:x-small\">CompositePresentationEvent</span></span>(s), whose individual&nbsp;<span style=\"color:#2b91af;font-size:x-small\"><span style=\"color:#2b91af;font-size:x-small\">CompositePresentationEvent</span></span>&nbsp;need not neccessarily be known at design time:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span><span style=\"color:MediumTurquoise\"> SomeClass\r\n</span>{\r\n  <span style=\"color:Blue\">public</span> SomeClass(IEventAggregator aggregator)\r\n  {\r\n      <span style=\"color:Blue\">foreach</span>(<span style=\"color:Blue\">var</span> evt <span style=\"color:Blue\">in</span> aggregator.ResolveAll&lt;SpecializedEvent&gt;())\r\n      {\r\n           evt.Subscribe(someAction, ThreadOption.UIThread)\r\n      }\r\n  }\r\n}</pre>\r\n<pre><p><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span><span style=\"color:MediumTurquoise\"> SpecializedEvent : CompositePresentationEvent<span style=\"color:#000000\">&lt;</span><span style=\"color:#0000ff\">string</span><span style=\"color:#000000\">&gt;</span>    </span>{   }\r\n<span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span><span style=\"color:MediumTurquoise\"> MyEvent1 : SpecializedEvent    </span>{    }\r\n<span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span><span style=\"color:MediumTurquoise\"> SomeFutureEvent : SpecializedEvent    </span>{    }\r\n</p><p>&nbsp;</p><p>&nbsp;</p></pre>\r\n</div>",
+    "PostedDate": "2009-09-10T11:44:00.177-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "233341",
+    "ThreadId": "68562",
+    "Html": "<p>Hi Bill,</p>\r\n<p>There is no out-of-the-box way to achieve this kind of functionality in Prism-v2. The approach I would recommend is creating something like<strong> SpecializedEvent: CompositePresentationEvent&lt;SpecializedEventArgs&gt;. </strong>Instead of having a generic kind of event, the <strong>SpecializedEventArgs</strong> should provide the information that will enable you to filter the events that were originally meant for MyEvent1 using subscription filters (explained <a href=\"http://msdn.microsoft.com/en-us/library/cc707892.aspx\">here</a>).</p>\r\n<p>A possible sample implementation for SpecializedEventArgs could be something like:</p>\r\n<pre><span style=\"color:blue\">public class </span><span style=\"color:#2b91af\">SpecializedEventArgs<br>   </span>{<br>       <span style=\"color:blue\">public string </span>Value { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">set</span>; }<br>       <span style=\"color:blue\">public </span><span style=\"color:#2b91af\">EventKind </span>Kind { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">set</span>; }<br><br>   }<br><br>   <span style=\"color:blue\">public enum </span><span style=\"color:#2b91af\">EventKind<br>   </span>{<br>       MyEvent1,<br>       MyFutureEvent,<br>   }</pre>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman   <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-09-10T15:50:04.253-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

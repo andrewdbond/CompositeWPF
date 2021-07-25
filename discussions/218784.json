@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "464867",
+    "ThreadId": "218784",
+    "Html": "<p>I need to upgrade my existing Silverlight 3 Prism v2.1 application to Prism v2.2. I have downloaded the source and built the assemblies for Prism v2.2.</p>\r\n<p>My problem is that the new assemblies do not map one-to-one to the old v2.1 assemblies (for example, v2.2 doesn't contain a &nbsp;Microsoft.Practices.ObjectBuilder2.dll) and I have not found a comprehensive set of instructions for making the upgrade from v2.1 to v2.2. Consequently, I am not sure what assemblies/references to replace in my v2.1 to complete the upgrade.</p>\r\n<p>If anyone knows of documentation or details that could provide some guidance it would be helpful, thanks.</p>",
+    "PostedDate": "2010-07-08T08:02:09.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "501253",
+    "ThreadId": "218784",
+    "Html": "<p>Hi,</p>\r\n<p>First of all take into account that the product team is working on Prism v4,  so you could download the latest version from <a href=\"../releases/view/52647\">here</a>.</p>\r\n<p>Regarding to your question, there is no guidance on this topic in Prism v2.2  out-of-the-box. But you need to install all System Requirements listed on the  readme.txt which is part of Prism 2.2.</p>\r\n<p>As the documentation says that this is a minor update of Prism, which allows  you to use Silverlight 4.</p>\r\n<p>A possible scenario is that if you change your existent project to target  SL4, you will receive the following error when you open project in Visual  Studio:</p>\r\n<p><em>Unable to read the project file: The imported project &ldquo;C:\\Program  Files\\MSBuild\\Microsoft\\Silverlight\\v3.0\\Microsoft.Silverlight.CSharp.targets&rdquo;  was not found. Confirm that the path in the &lt;import&gt; declaration is  correct, &hellip;</em></p>\r\n<p>Therefore, you should modify the &lt;Import&gt; path in the project files  (files ending with*.csproj) to point to the Silverlight 4 installation path. For  example:</p>\r\n<p><strong>&lt;Import  Project=&rdquo;$(MSBuildExtensionsPath)\\Microsoft\\Silverlight\\v4.0\\Microsoft.Silverlight.CSharp.targets)</strong></p>\r\n<p>Then you should reference the new assemblies in that release. A part from  this, it should not represent any other inconvenient when migrating from the  previous version.</p>\r\n<p>If you need guidance on what assemblies are required, you could check the  references of the Stock Trader Reference Implementation.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-01T13:27:42.07-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "501310",
+    "ThreadId": "218784",
+    "Html": "<p>Thank you for the reply. It was actually a painless operation. I was able to just replace the existing assemblies (with the exception of one which had it's name changed), and then have my solution target .NET 4.0.</p>\r\n<p>I will need to research more about the change to v4, as we plan on migrating to that version of Prism when the code drop is RTM quality</p>\r\n<p>Rich</p>",
+    "PostedDate": "2010-10-01T17:47:13.37-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "502021",
+    "ThreadId": "218784",
+    "Html": "<p>Hi Rich,</p>\r\n<p>Nice to see that you plan to migrate to Prism v4. As you mentioned that you  are waiting for the RTM version, you can find helpful the following link:</p>\r\n<ul>\r\n<li><a href=\"View.aspx?ThreadId=228586\">Latest  schedule / timeline for Prism v4?</a></li>\r\n</ul>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\"><span style=\"color:#0066cc\">http://blogs.southworks.net/fantivero</span></a></p>",
+    "PostedDate": "2010-10-04T06:35:11.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

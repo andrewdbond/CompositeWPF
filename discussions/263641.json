@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "636319",
+    "ThreadId": "263641",
+    "Html": "<p>I have run into a fundamental issue with my prism based application.&nbsp; Just before the Lazy import is evaluated (i.Value) I must export the Constructor parameters (<span style=\"color: #00ffff;\">IConstructParameters</span>) that will be required by [<span style=\"color: #008000;\">ImportingConstructor</span>].&nbsp;  In my attempt I have come across the issues below.<br /> <br /> 1)&nbsp; How do I get a reference to the <span style=\"color: #ff0000;\">container</span> so I can call <span style=\"color: #0000ff;\">ComposeExportedValue</span>.&nbsp; The container is defined in the bootstrapper, and the class below should not depend on bootstrap in any way.&nbsp; I could do an import on ServiceLocator (ie. [Import] IServiceLocator ServiceLocator;), but  that cannot be used to call <span style=\"color: #0000ff;\">ComposeExportedValue</span>.&nbsp; Perhaps I am on the track with something like \"((CompositionContainer)_MyServiceLocator).ComposeExportedValue&lt;IMyExport&gt;(myExport)\"?<br /> <br /> 2) If all this were to work I would be calling the same <span style=\"color: #0000ff;\"> ComposeExportedValue</span> repeated (foreach loop).&nbsp; Would each loop overwrite the same exported IConstructParameters in the container (desired), leaving only one constructParameter in the container at a given time?<br /> <br /> 3)&nbsp; Please help with #1/2 regardless, but is this even the correct approach?&nbsp; To summarize I am trying to dynamically export the constructorParameters just prior to the part being compose due to i.Value evaluation.&nbsp; Creating a class and passing arguments to  the constructor once was a trivial goal.<br /> <br /> [Export(typeof(IContract)]<br /> [ExportMetadata(\"MyData\", \"TestString\")]<br /> public class MyExportClass : IContract<br /> {<br /> &nbsp;&nbsp;&nbsp;&nbsp; [ImportingConstructor]<br /> &nbsp;&nbsp;&nbsp;&nbsp; public MyExportClass(IConstructParameters constructParameters) {}<br /> &nbsp;<br /> &nbsp;&nbsp;&nbsp;&nbsp; public Start() {}<br /> }</p>\n<p><br /> [ImportMany]<br /> IEnumerable&lt;Lazy&lt;IContract, IMetaData&gt;&gt; operations;<br /> <br /> public void UseImport ()<br /> {<br /> &nbsp; foreach (Lazy&lt;IContract, IMetaData&gt; i in operations)<br /> &nbsp;&nbsp;&nbsp; {<br /> &nbsp;&nbsp;&nbsp;&nbsp; if (i.Metadata.MyData.Equals(\"TestString\")) // Check Metadata to find desired export<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Just now able to figure out correct consturctParameters, so export before part is composed by \"i.Value\".</p>\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ?<span style=\"color: #ff0000;\">container</span>?.<span style=\"color: #0000ff;\">ComposeExportedValue</span>&lt;<span style=\"color: #00ffff;\">IContructParameters</span>&gt;(constructParameters);<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i.Value.Start();<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /> }</p>\n<p>Thanks,</p>\n<p>aidesigner</p>",
+    "PostedDate": "2011-07-01T20:26:30.67-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "637150",
+    "ThreadId": "263641",
+    "Html": "<p>Hi,</p>\r\n<p>One possible way to obtain an instance to the Composition Container in your component would be to register the Composition Container, by overriding the <strong>ConfigureContainer</strong>&rsquo;s method in the <strong>Boostrapper</strong>. Then you can access the container via the <strong>ServiceLocator</strong>. For example like this:</p>\r\n<p><span style=\"font-size: 9pt;\">\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">var</span> container = ServiceLocator.Current.GetInstance(CompositionContainer);\r\n</pre>\r\n</div>\r\n</span></p>\r\n<p>Take into account that <strong>ServiceLocator</strong> (which, in your case, retrieves the instances from the MEF container) implements the necessary functionality to retrieve values from the container and hides the registering functionality since that is outside the scope of the functionality that is intended to be exposed through the <strong>IServiceLocator</strong> interface. Therefore, you shouldn&rsquo;t cast the IServiceLocator instance to CompositionContainer.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-07-04T12:54:13.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "637844",
+    "ThreadId": "263641",
+    "Html": "<p>Thank you for the reply and it answered question #1 perfectly.&nbsp; Could I get a little more help with question 2 and 3, as I believe it could be beneficial to everyone!</p>\n<p>Note:&nbsp; My questions assume a just-in-time scheme for creating constructor parameters for use with <span style=\"color: #ff0000;\">[ImportConstuctor]</span> exists.&nbsp; In addition I presume the [<span style=\"color: #ff0000;\">ImportingConstructor</span>] does not pull on the container until \"i.Value\" (Lazy) is evaluated.</p>\n<p>Thanks,</p>",
+    "PostedDate": "2011-07-05T20:00:36.413-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "638930",
+    "ThreadId": "263641",
+    "Html": "<p>Hi,</p>\r\n<p>As this is not strictly related to Prism, you might find better support in <a href=\"http://mef.codeplex.com/discussions\">MEF Forums in Codeplex</a>. Additionally, you might find MEF&rsquo;s support in <a href=\"http://social.msdn.microsoft.com/forums/en-US/MEFramework/threads\">MSDN forums</a></p>\r\n<p>On the other hand, you can check the <strong>MEF Programming Guide</strong> <a href=\"http://mef.codeplex.com/wikipage?title=Guide&amp;referringTitle=Home\">here</a>.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-07-07T11:30:21.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

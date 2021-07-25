@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "84535",
+    "ThreadId": "25211",
+    "Html": "\r\nI thought this code was pretty interesting as I had never thought about registering the container in itself:<br /><br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\nprivate void InitializeContainer()\r\n{\r\n    container = new UnityContainer();\r\n    container.RegisterInstance&lt;IUnityContainer&gt;(container);\r\n}\r\n</pre><br />It then comes into play, for example, in the <b>PositionModule Initialize</b> Code:<br /><br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\npublic void Initialize()\r\n{\r\n    RegisterViewsAndServices();\r\n \r\n    PositionSummaryPresenter presenter = _container.Resolve&lt;PositionSummaryPresenter&gt;();\r\n    presenter.ShowViews();   \r\n}\r\n</pre><br />because the <b>PositionSummaryPresenter</b> has a depedendency on IUnityContainer in its constructor:<br /><br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\npublic PositionSummaryPresenter(\r\n             IPositionSummaryView view\r\n            , IAccountPositionService accountPositionService\r\n            , IMarketFeedService marketFeedSvc, INewsFeedService newsFeedSvc\r\n            , IMarketHistoryService marketHistorySvc\r\n            , IUnityContainer container\r\n            , INewsService newsSvc\r\n            , IRegionManagerService regionManagerService)\r\n</pre><br />which then uses the container in <b>ShowViews()</b> to create the <b>ITrendLinePresenter</b>.<br /><br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\npublic void ShowViews()\r\n{\r\n    trendLinePresenter = Container.Resolve&lt;ITrendLinePresenter&gt;();\r\n    View.ShowTrendLine(trendLinePresenter.View);\r\n \r\n    // ...\r\n}\r\n</pre><br /><br />Is it a good practice to have a Presenter Class, in this case, dependent on the container? I thought it was a pretty slick idea, but am not sure if this is an acceptable practice, code smell, or temporary solution until you get things worked out.<br /><br />Regards,<br /><br />Dave<br />",
+    "PostedDate": "2008-04-02T09:53:55.87-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "84724",
+    "ThreadId": "25211",
+    "Html": "\r\nIt is not only a good practice but in many cases, mandatory as some dependencies, you'll want to lazy load. It wouldn't make sens to create your application entire graph upfront.<br /><br />I usually adapt IUnityContainer into an IServiceLocator or IDependencyLookup as it decouples Resolve from Register, the same way you split a Reader and a Writer.<br />",
+    "PostedDate": "2008-04-03T04:57:38.69-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "84754",
+    "ThreadId": "25211",
+    "Html": "\r\nI typically create a static ServiceLocator Class and just call it when necessary from within the class, such as:<br /><br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\nServiceLocator.Resolve&lt;ITrendLinePresenter&gt;();\r\n</pre><br />I hadn't thought about registering an IServiceLocator with the container and then passing it in via the constructor.<br /><br />I think I like that better than making a static call from within the class.<br /><br />Thanks for the perspective, Francois.<br /><br />Regards,<br /><br />Dave<br />",
+    "PostedDate": "2008-04-03T07:12:24.85-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "84802",
+    "ThreadId": "25211",
+    "Html": "\r\nOne of the benefits to utilizing an instance-based Service Locator is that you can infer scope.  With a static locator, it's going to use the same mechanism to resolve the services each time unless you explicitly pass in a scope value of some kind.<br /><br />Derek<br />",
+    "PostedDate": "2008-04-03T09:19:30.397-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "85057",
+    "ThreadId": "25211",
+    "Html": "\r\nGood point, Derek.<br />",
+    "PostedDate": "2008-04-04T10:27:51.08-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "86425",
+    "ThreadId": "25211",
+    "Html": "\r\nIn \"Prism\" we are encouraging explicit use of your specific container. If you chose to use Unity in your app, then you are happy with Unity semantics, same with Windsor. Having an abstraction for resolving services is forcing you into using the \"One interface to unite them all\", and is self-defeating. We do have the IPrismContainer abstraction, but this is only for low-level core services.<br /><br />You can easily take the code in the RI and change it to use Windsor for example. We are not taking any hard dependencies in the design on any specific container.<br /><br />Thanks<br />Glenn<br />",
+    "PostedDate": "2008-04-11T19:25:41.89-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "87094",
+    "ThreadId": "25211",
+    "Html": "\r\nHave you ever thought about inheriting any Presenter from UnityContainer instead of injecting container's instance into it so Presenters might look like child containers chain?<br />",
+    "PostedDate": "2008-04-16T04:05:30.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "87899",
+    "ThreadId": "25211",
+    "Html": "\r\nWhat???<br /><br />A presenter is NOT a container. There is not such thing as an inheritance relationship between those two concepts.<br />",
+    "PostedDate": "2008-04-20T15:02:40.577-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "91153",
+    "ThreadId": "25211",
+    "Html": "\r\n@David<br /><br />The reason why we did this registering the container in the container is because there are places where you need to imperatively register and resolve. As an example in a module, you register views and presenters. We don't force you to do this in config, as doing it in the module allows it to happen only in the cases where the module loads. Also having it in code is more explicit and easier to debug (in some cases). Often you'll see the view get resolved right after it is registered. We do this so that the view can have it's dependencies injected by the container, leveraging DI rather than manually injecting.<br /><br />Glenn<br />",
+    "PostedDate": "2008-05-08T00:40:07.243-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

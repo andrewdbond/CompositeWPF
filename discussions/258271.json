@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "615316",
+    "ThreadId": "258271",
+    "Html": "\r\n<p>Hi there,</p>\r\n<p><br>\r\nI have two modules in the same assembly and I tried to add this in the app.config,</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre> <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">module</span>\r\n      <span style=\"color:red\">assemblyFile</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">PartsFinder.Chimera.Modules.VendorManagement.dll</span><span style=\"color:black\">&quot;</span>\r\n      <span style=\"color:red\">moduleType</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">PartsFinder.Chimera.Modules.VendorMapping.VendorMappingModule, PartsFinder.Chimera.Modules.VendorManagement, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</span><span style=\"color:black\">&quot;</span>\r\n      <span style=\"color:red\">moduleName</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">VendorMappingModule</span><span style=\"color:black\">&quot;</span>\r\n      <span style=\"color:red\">startupLoaded</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">true</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">&gt;</span>\r\n      <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">dependencies</span><span style=\"color:blue\">&gt;</span>\r\n        <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">dependency</span> <span style=\"color:red\">moduleName</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">PartsFinderModule</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">/&gt;</span>\r\n      <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">dependencies</span><span style=\"color:blue\">&gt;</span>\r\n    <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">module</span><span style=\"color:blue\">&gt;</span>\r\n    <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">module</span>\r\n     <span style=\"color:red\">assemblyFile</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">PartsFinder.Chimera.Modules.VendorManagement.dll</span><span style=\"color:black\">&quot;</span>\r\n     <span style=\"color:red\">moduleType</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">PartsFinder.Chimera.Modules.VendorManagement.VendorReturnPolicyManagementModule, PartsFinder.Chimera.Modules.VendorManagement, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</span><span style=\"color:black\">&quot;</span>\r\n     <span style=\"color:red\">moduleName</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">VendorMappingModule</span><span style=\"color:black\">&quot;</span>\r\n     <span style=\"color:red\">startupLoaded</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">true</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">&gt;</span>\r\n      <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">dependencies</span><span style=\"color:blue\">&gt;</span>\r\n        <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">dependency</span> <span style=\"color:red\">moduleName</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">PartsFinderModule</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">/&gt;</span>\r\n      <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">dependencies</span><span style=\"color:blue\">&gt;</span>\r\n    <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">module</span><span style=\"color:blue\">&gt;</span>\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>Except I get the following error. &quot;The entry 'VendorMappingModule' has already been added. (C:\\\\Projects\\\\branches...&quot; I have been looking through the docs, I see that if I was using a ModuleCatalog.xaml file I could use &quot;Modularity:ModuleInfoGroup&quot; but\r\n just putting it in the app.config I don't have that option, or at least don't see how it would be done. Can someone point me in the right direction please?</p>\r\n<p>Thanks!</p>\r\n",
+    "PostedDate": "2011-05-19T09:10:08.013-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "615339",
+    "ThreadId": "258271",
+    "Html": "<p>Which IoC are you using Unity or MEF?</p>",
+    "PostedDate": "2011-05-19T09:46:22.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "615367",
+    "ThreadId": "258271",
+    "Html": "<p>Unity... Sorry about that.</p>",
+    "PostedDate": "2011-05-19T10:30:37.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "615382",
+    "ThreadId": "258271",
+    "Html": "<p>you only have to include the assembly once&nbsp;eveything from there is automagically accessible from within the container.</p>\r\n<p>So you just need get an instance of your VendorReturnPolicyManagementModule.&nbsp; It's kind of the point of the container.</p>",
+    "PostedDate": "2011-05-19T10:51:19.727-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "615391",
+    "ThreadId": "258271",
+    "Html": "<p>The what is the point ofmoduleType and moduleName? Speaking of that - I see an error, I have the moduleName listed twice... I wonder what fixing that will do?</p>",
+    "PostedDate": "2011-05-19T11:17:22.67-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "615396",
+    "ThreadId": "258271",
+    "Html": "<p>Ah - There, fixing the configuration file so that the moduleName=VendorMappingModule wasn't listed twice solve the problem. For the sake of clarity here is the entire file listing again - notice in the VendorManagement section the module name is different.</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">module</span>\r\n      <span style=\"color: red;\">assemblyFile</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">PartsFinder.Chimera.Modules.VendorManagement.dll</span><span style=\"color: black;\">\"</span>\r\n      <span style=\"color: red;\">moduleType</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">PartsFinder.Chimera.Modules.VendorMapping.VendorMappingModule, PartsFinder.Chimera.Modules.VendorManagement, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</span><span style=\"color: black;\">\"</span>\r\n      <span style=\"color: red;\">moduleName</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">VendorMappingModule</span><span style=\"color: black;\">\"</span>\r\n      <span style=\"color: red;\">startupLoaded</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">true</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">&gt;</span>\r\n      <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">dependencies</span><span style=\"color: blue;\">&gt;</span>\r\n        <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">dependency</span> <span style=\"color: red;\">moduleName</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">PartsFinderModule</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">/&gt;</span>\r\n      <span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">dependencies</span><span style=\"color: blue;\">&gt;</span>\r\n    <span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">module</span><span style=\"color: blue;\">&gt;</span>\r\n    <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">module</span>\r\n     <span style=\"color: red;\">assemblyFile</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">PartsFinder.Chimera.Modules.VendorManagement.dll</span><span style=\"color: black;\">\"</span>\r\n     <span style=\"color: red;\">moduleType</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">PartsFinder.Chimera.Modules.VendorManagement.VendorReturnPolicyManagementModule, PartsFinder.Chimera.Modules.VendorManagement, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</span><span style=\"color: black;\">\"</span>\r\n     <span style=\"color: red;\">moduleName</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">VendorReturnPolicyManagementModule</span><span style=\"color: black;\">\"</span>\r\n     <span style=\"color: red;\">startupLoaded</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">true</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">&gt;</span>\r\n      <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">dependencies</span><span style=\"color: blue;\">&gt;</span>\r\n        <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">dependency</span> <span style=\"color: red;\">moduleName</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">PartsFinderModule</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">/&gt;</span>\r\n      <span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">dependencies</span><span style=\"color: blue;\">&gt;</span>\r\n    <span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">module</span><span style=\"color: blue;\">&gt;</span><br /><br />Thanks for the prompt responses! (even if it was my own dumb error) <br /></pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2011-05-19T11:22:36.457-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "615442",
+    "ThreadId": "258271",
+    "Html": "<p>never used the config file for that, I always just set it up so that all module are in \"Modules\" and the Prism boot loader knows about it.&nbsp; Then all modules compile and xcopy to that folder.&nbsp; At least that is how I do it with MEF as the IoC</p>",
+    "PostedDate": "2011-05-19T12:16:54.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

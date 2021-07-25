@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "506047",
+    "ThreadId": "230587",
+    "Html": "<p>I need to register some globally-available services with Unity. They are all Singleton objects. Is it a good way to register them in the Shell? If so, how can I get the reference of the Unity instance? If I can't, what&rsquo;s the appropriate Unity API to do it?</p>",
+    "PostedDate": "2010-10-12T07:41:43.91-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "506068",
+    "ThreadId": "230587",
+    "Html": "<p>Hi,</p>\r\n<p>First of all take into account that if you need a service that can be used from other modules, it is not necessary to register this in the Shell. For example, it might be registered from the Module Initializer class of a ModuleX in the container, so the service will be available from everywhere you have access to your container.</p>\r\n<p>In Prism there is a documentation section about Communication, so you could take a look at this: <a href=\"http://msdn.microsoft.com/en-us/library/ff921158(PandP.20).aspx\">Communication</a>, see the <em>Shared Services </em>section.</p>\r\n<p>Regarding to how to get a reference of the unity container, you could use the Dependency Injection mechanism of your choose (Constructor Injection, Dependency Property, etc), since the container is registered in the container. So your code might similar to the following (pseudo-code):</p>\r\n<p>public ModuleX (IUnityContainer _container)<br>{<br>...<br>}</p>\r\n<p>For more information you could check the following documentation section: <a href=\"http://msdn.microsoft.com/en-us/library/ff660899(PandP.20).aspx\">Dependency Injection with Unity</a></p>\r\n<p>Unity provide Lifetime Managers to provide a singleton instance of a particular class. So when you register your type, it might be similar to the following code:</p>\r\n<p><span id=\"ctl00_MTCS_main_ctl18\">\r\n<pre id=\"ctl00_MTCS_main_ctl18_code\">_container.RegisterType&lt;IMarketFeedService, MarketFeedService&gt;(new ContainerControlledLifetimeManager());\r\n</pre>\r\n</span></p>\r\n<p>Fore more information about LifetimeManager you could take a look at the following documentation section:<strong> </strong><a href=\"http://msdn.microsoft.com/en-us/library/ff647854.aspx\">Using Lifetime Managers</a></p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-12T08:30:08.373-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

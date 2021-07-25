@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "169377",
+    "ThreadId": "50518",
+    "Html": "Hello,<br>\r\n<br>\r\ni got 2 delegates which presents my CreateCommand and CanCreateCommand functions. (I &quot;loaded&quot; the 2 Methodes with Reflection into a Dictionary&lt;string,Delegate&gt; List) <br>\r\n<br>\r\nThe DelegateCommand expects DelegateCommand(System.Action&lt;object&gt;,System.Func&lt;object,bool&gt;). When i assign my delegate to the DelegateCommand i get the InvalidArguments Error. <br>\r\nIm wondering why i cant assign my delegate to the DelegateCommand. Is it possibel to assign delegates to the DelegateCommand?<br>\r\n<br>\r\nbest regards\r\n",
+    "PostedDate": "2009-03-18T04:53:09.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "169515",
+    "ThreadId": "50518",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Yes, as the documentation explains <i>“the <b><span style=\"font-family:'calibri','sans-serif'\">DelegateCommand</span></b> allows delegating the commanding logic instead of requiring a handler in the code-behind. It uses a delegate as the method of invoking a target handling method.”</i></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">An example of using delegate commands can be checked out in the Reference Implementation. The “+” and “-” buttons in the position view use delegate commands. The functionality is stored in the <b>OrdersController</b> class (OnBuy/SellExecuted methods). The full namespace of that class is: <b>StockTraderRI.Modules.Position.Controllers</b>. Meanwhile, the buttons binded to those commands are in the <b>PositionSummaryView </b>(full namespace <b>StockTraderRI.Modules.Position.PositionSummary</b>).</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"color:#1f497d;font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\">If you are binding a method that you don’t know at compile-time (and thus you are using Reflection), you should cast the Delegate to an Action&lt;object&gt;. For it to work, the signature of the method should be of the that type. For example:</span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\"><b>void</b> MyMethod(<b>object</b> argument) { }</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"color:#1f497d;font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">For more information about Delegate Commands you can check the following topic from the documentation:</span></p>\r\n<p style=\"margin:0cm 0cm 0pt 36pt\"><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458928.aspx\"><span style=\"color:#0000ff;font-family:calibri\">Commands</span></a>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"color:#1f497d;font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Please let me know if this helps.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\">Damian Schenkelman</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><a href=\"http://blogs.southworks.net/dschenkelman\"><span style=\"color:#0000ff;font-family:calibri\">http://blogs.southworks.net/dschenkelman</span></a></span></p>\r\n</span></p>\r\n",
+    "PostedDate": "2009-03-18T11:22:22.53-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "171199",
+    "ThreadId": "50518",
+    "Html": "Hi,<br>\r\n<br>\r\nsry for the late reply. When trying to cast the delegate to Action&lt;object&gt;, i will get a InvalidArguments Error. I will view soon as possibel the reference which you told me.<br>\r\n<br>\r\nbest regards \r\n",
+    "PostedDate": "2009-03-24T00:37:55.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

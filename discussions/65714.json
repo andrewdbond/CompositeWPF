@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "223575",
+    "ThreadId": "65714",
+    "Html": "<p>Hello All,</p>\r\n<p>I'm working on an application to allow control of independent hardware devices. Some basic requirements are:</p>\r\n<p>1. An arbitrary number of devices must be supported</p>\r\n<p>2. Multiple instances of a given device must be supported</p>\r\n<p>The approach I've taken is to create one module per type of hardware device. Requirement 1 is thus supported since I can create as many modules as I need.</p>\r\n<p>To support requirement 2, I've been intending to create as many instances of a module as needed. For example, if I need to control two Acme ABC123 devices, I would have one module named AcmeABC123Module and would instantiate it twice in App.config as follows:</p>\r\n<p>&lt;module assemblyFile=&quot;AcmeABC123Module.dll&quot;</p>\r\n<p>moduleType=&quot;AcmeABC123Module.AcmeABC123Module, AcmeABC123Module&quot;</p>\r\n<p>moduleName=&quot;AcmeABC123Module-1&quot;&gt;</p>\r\n<p>&lt;/module&gt;</p>\r\n<p>&lt;module assemblyFile=&quot;AcmeABC123Module.dll&quot;</p>\r\n<p>moduleType=&quot;AcmeABC123Module.AcmeABC123Module, AcmeABC123Module&quot;</p>\r\n<p>moduleName=&quot;AcmeABC123Module-2&quot;&gt;</p>\r\n<p>&lt;/module&gt;</p>\r\n<p>However, I've recently read in the archives that modules generally get loaded once and that multiple view instances get created. However, that doesn't work in my case since, for example, each device is on a different comm link. In other words, I have business data specific to each device stored at the module level.</p>\r\n<p>Since, I'm new to Prism, I'd like to ask: Does my intended approach fit within the intended use of Prism? The guidance doesn't seem to address this issue, so I'm looking to a broader knowledge base. If my intended approach does not fit within the intended use of Prism, I'd like to solicit suggestions on how a problem such as this should be solved.</p>\r\n<p>If loading a module multiple times is indeed fine (and, based on experiments, it does seem to work), how can a module instance know which instance it is? For example, in the XAML above, I assigned a unique moduleName to each module instance. However, I can't find a way to get at this within the module's code (I posted about this yesterday). Is there a way for a module instance to know its identity when multiple instances of that module type exist?</p>\r\n<p>Thanks for any help!</p>\r\n<p>Best,</p>\r\n<p>Dave</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-14T09:29:07.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "226429",
+    "ThreadId": "65714",
+    "Html": "<p>Hi Dave,</p>\r\n<p>The recommended approach is as you said, load the module<span style=\"color:#1f497d\"> </span>once and then load multiple views from that module instance. Without knowing the application&rsquo;s specifics, if every device has specific data and each device is represented by a View, then you can place that specific data in its <strong>ViewModel/Presenter</strong>. Then you would map a view to a particular device based on its business logic.<span style=\"color:#1f497d\"> </span>If each device is related to several views, you might have a controller (one instance per device). Of course you would have to load the required model for each view, but that is the same for any kind of application.</p>\r\n<p>Another downfall of loading multiple modules in the catalog, is that you have to know how many devices the application will support when creating the catalog. In consequence you will have to modify the catalog to support new devices or more devices of the same type, and perhaps make changes to your application, to load that new particular module. The module catalog should only be responsible for determining the modules to be loaded. You might use a separate resource or a dynamic service to control which devices will be loaded.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-08-21T10:30:39.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "227175",
+    "ThreadId": "65714",
+    "Html": "<p>Damian,</p>\r\n<p>This does indeed help, and I am heading down the road you suggest. Thank you!</p>\r\n<p>Dave</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-24T11:42:44.413-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "152085",
+    "ThreadId": "45581",
+    "Html": "Hello,<br>\r\nI'm writing an App like the UI Composition example.<br>\r\nI have 40000 employess, and now when i start the App, i must wait 2 minutes til i see the ListView with the employees.<br>\r\n<br>\r\nI changed for testing this in the UI Composition Employee Service:<br>\r\n<br>\r\n<code>\r\nnamespace UIComposition.Modules.Employee.Services<br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp; using System.Collections.ObjectModel;<br>\r\n&nbsp;&nbsp;&nbsp; using System;<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; public class EmployeeService : IEmployeeService<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public ObservableCollection&lt;BusinessEntities.Employee&gt; RetrieveEmployees()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ObservableCollection&lt;BusinessEntities.Employee&gt; employees = new ObservableCollection&lt;BusinessEntities.Employee&gt;();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 1; i &lt; 40001; i++)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; employees.Add(new BusinessEntities.Employee(1) { FirstName = &quot;John&quot;, LastName = &quot;Smith&quot;, Phone = &quot;+1 (425) 555-0101&quot;, Email = &quot;john.smith@example.com&quot;, Address = &quot;One Microsoft Way&quot;, City = &quot;Redmond&quot;, State = &quot;WA&quot; });<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return employees;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp; }<br>\r\n</code>\r\n}<br>\r\n<br>\r\nIt's the same as in my Application, i must wait a long time, to see the result, but i think i bind the employee-collection at the employeelistpresenter.<br>\r\nWhy i must wait so long and how can i fix this<br>\r\n<br>\r\nGreets <br>\r\nbapaf<br>\r\n",
+    "PostedDate": "2009-01-28T23:52:48.493-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "152156",
+    "ThreadId": "45581",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi Bapaf,</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">I looked into this and created a blog post, which addresses this specific scenario. I hope you find it useful:</span></p>\r\n<p style=\"margin:0cm 0cm 0pt 36pt\"><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><a href=\"http://blogs.southworks.net/dschenkelman/2009/01/29/how-to-show-large-amounts-of-data-in-wpf-using-ui-virtualization/\"><span style=\"color:#0000ff;font-family:calibri\">How to: Show large amounts of data in WPF using UI Virtualization</span></a>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Please let me know if this helps.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\">Damian Schenkelman</span></p>\r\n<span style=\"font-size:11pt;font-family:'calibri','sans-serif'\"><a href=\"http://blogs.southworks.net/dschenkelman\"><span style=\"color:#0000ff\">http://blogs.southworks.net/dschenkelman</span></a></span></span></p>\r\n",
+    "PostedDate": "2009-01-29T05:51:28.773-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "152225",
+    "ThreadId": "45581",
+    "Html": "In real case, you won't probably call <code>40001</code> records from service. Instead, you will prefer to use server-side paging. <br>\r\n<br>\r\nIf you are using Xceed Datagrid or other controls that supports lazy-loading, you won't have that problem too. <br>\r\n",
+    "PostedDate": "2009-01-29T08:43:18.607-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "152444",
+    "ThreadId": "45581",
+    "Html": "Hi Damian,<br>\r\nthat was the solution.<br>\r\n<br>\r\nthx<br>\r\n",
+    "PostedDate": "2009-01-30T01:18:43.613-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,122 @@
+[
+  {
+    "Id": "608887",
+    "ThreadId": "256729",
+    "Html": "\r\n<p>Hi All,</p>\r\n<p>This is Mahesh. Currently I'm working with PRISM,MEF and WPF. I need a help in injecting the view from the module which is loading ondemand into the Shell.</p>\r\n<p>I have created a Shell with 2 buttons. When I click the button it should load the view from the module. This module is OnDemand. So how do I implement this.</p>\r\n<p>Here is the code, which I tried.</p>\r\n<p>Shell</p>\r\n<p>&lt;Window x:Class=&quot;Prism101.MainWindow&quot;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlns=&quot;<a href=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">http://schemas.microsoft.com/winfx/2006/xaml/presentation</a>&quot;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlns:x=&quot;<a href=\"http://schemas.microsoft.com/winfx/2006/xaml\">http://schemas.microsoft.com/winfx/2006/xaml</a>&quot;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlns:prism=&quot;<a href=\"http://www.codeplex.com/prism\">http://www.codeplex.com/prism</a>&quot;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Title=&quot;MainWindow&quot; Height=&quot;350&quot; Width=&quot;525&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp; &lt;Grid&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsControl Name=&quot;itmControl&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button Name=&quot;btnLoad&quot; Content=&quot;Load Module&quot; Width=&quot;100&quot; Height=&quot;50&quot; Click=&quot;btnLoad_Click&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsControl&gt;</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ContentControl prism:RegionManager.RegionName=&quot;MainContent&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp; &lt;/Grid&gt;<br>\r\n&lt;/Window&gt;</p>\r\n<p>Shell Codebehind</p>\r\n<p>&nbsp;public partial class MainWindow : Window, IPartImportsSatisfiedNotification<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Import]<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private IRegionManager regionManager;</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Import]<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private IModuleManager moduleManager;</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public MainWindow()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeComponent();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void btnLoad_Click(object sender, RoutedEventArgs e)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var mainRegion = regionManager.Regions[&quot;MainContent&quot;];<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region IPartImportsSatisfiedNotification Members</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void OnImportsSatisfied()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion<br>\r\n&nbsp;&nbsp;&nbsp; }</p>\r\n<p>My Module class</p>\r\n<p>[ModuleExport(typeof(Module))]<br>\r\n&nbsp;&nbsp;&nbsp; public class Module : IModule<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IRegionManager _RegionManager;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ImportingConstructor]<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public Module(IRegionManager regionManager)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _RegionManager = regionManager;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void Initialize()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _RegionManager.RegisterViewWithRegion(&quot;MainContent&quot;,typeof(UserControl1));<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp; }</p>\r\n<p>I don't want to mention the RegionName - &quot;MainContent&quot; in the module. Is there anyway to call the view from the module(OnDemand) and load in the shell.</p>\r\n",
+    "PostedDate": "2011-05-07T01:44:57.777-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "609737",
+    "ThreadId": "256729",
+    "Html": "<p>Hi Mahesh,</p>\r\n<p>Based on my understanding of your scenario, you could load on demand your module in your Shell&acute;s btnLoad click event by doing this modification in your code:</p>\r\n<p><span style=\"font-size: 9pt;\" lang=\"EN-US\">\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>[Export]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> MainWindow : Window, IPartImportsSatisfiedNotification\r\n{\r\n    <span style=\"color: blue;\">private</span> <span style=\"color: blue;\">readonly</span> IRegionManager _regionManager;\r\n    <span style=\"color: blue;\">private</span> <span style=\"color: blue;\">readonly</span> IModuleManager _moduleManager;\r\n \r\n    [ImportingConstructor]       \r\n    <span style=\"color: blue;\">public</span> MainWindow(IRegionManager regionManager, IModuleManager moduleManager)\r\n    {\r\n       InitializeComponent();\r\n       <span style=\"color: blue;\">this</span>._regionManager= regionManager;\r\n       <span style=\"color: blue;\">this</span>._moduleManager = moduleManager;\r\n    }\r\n \r\n    <span style=\"color: blue;\">private</span> <span style=\"color: blue;\">void</span> btnLoad_Click(<span style=\"color: blue;\">object</span> sender, RoutedEventArgs e)\r\n    {\r\n        <span style=\"color: blue;\">this</span>._moduleManager.LoadModule(&ldquo;Module&rdquo;);           \r\n    }\r\n    &hellip;   \r\n}\r\n</pre>\r\n</div>\r\n</span></p>\r\n<p>This code will load your module class on demand, and since your <strong>Initialize</strong> method is registering the view <em>UserControl1</em> with <em>MainContent</em> region, it will load your view into aforementioned region in your shell.</p>\r\n<p>You should take into account that <em>UserControl1</em> must be <strong>decorated with the</strong> <strong>Export Attribute</strong>.</p>\r\n<p>On the other hand, another approach could be to load your module on demand in the btnLoad_Click event and in the <strong>OnImportSatisfied</strong> handler, subscribe <strong>to ModuleManager</strong>&acute;s <strong>LoadModuleCompleted</strong>. In this handler you could use the <strong>ServiceLocator</strong> to retrieve your UserControl1 view instance and add it to <em>MainContent</em> region like this:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> OnImportsSatisfied()\r\n{          \r\n    &hellip;        \r\n    <span style=\"color: blue;\">this</span>.moduleManager.LoadModuleCompleted += <span style=\"color: blue;\">this</span>.ModuleManager_LoadModuleCompleted;\r\n}\r\n\r\n<span style=\"color: blue;\">private</span> <span style=\"color: blue;\">void</span> ModuleManager_LoadModuleCompleted(<span style=\"color: blue;\">object</span> sender, LoadModuleCompletedEventArgs e)\r\n{\r\n    <span style=\"color: blue;\">var</span> myView = ServiceLocator.Current.GetInstance&lt;IUserControl1&gt;();\r\n    <span style=\"color: blue;\">this</span>._regionManager.Regions[&ldquo;MainContent&rdquo;].Add(myView);\r\n}\r\n</pre>\r\n</div>\r\n<p>It should be noted that the way UI Composition is performed in Prism is by declaring named regions (for example, in the shell) and adding views from other units of functionality (for example, modules) into that regions. In order to achieve that, the component adding views to a region must know that region&rsquo;s name, or else there is no way for that component to indicate where to place that visual component. On the other hand, the shell should have no notion of the views that are being added to a region inside it from a separate module; that&rsquo;s one way to decouple visual components from the layout in which they&rsquo;re being added in Prism.</p>\r\n<p>Please let me know if this information helps you.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>",
+    "PostedDate": "2011-05-09T13:01:36.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "609947",
+    "ThreadId": "256729",
+    "Html": "<p>Hi mbronzovic,</p>\r\n<p>In the below code snippet how can I get the <span style=\"color: #ff00ff;\">IUserControl1</span>. Because I didn't add any reference of my Module in the Shell. So how can I get the IUserControl interface from MyModule.</p>\r\n<p><span style=\"color: blue;\">private</span> <span style=\"color: blue;\">void</span> ModuleManager_LoadModuleCompleted(<span style=\"color: blue;\">object</span> sender, LoadModuleCompletedEventArgs e)<br />{<br />&nbsp;&nbsp;&nbsp; <span style=\"color: blue;\">var</span> myView = ServiceLocator.Current.GetInstance&lt;<span style=\"color: #ff00ff;\">IUserControl1</span>&gt;();<br />&nbsp;&nbsp;&nbsp; <span style=\"color: blue;\">this</span>._regionManager.Regions[&ldquo;MainContent&rdquo;].Add(myView);<br />}</p>\r\n<div id=\"_mcePaste\" class=\"mcePaste\" style=\"position: absolute; width: 1px; height: 1px; overflow: hidden; top: 0px; left: -10000px;\">﻿</div>\r\n<p>Thanks</p>\r\n<p>Mahesh</p>",
+    "PostedDate": "2011-05-09T21:32:37.46-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "609966",
+    "ThreadId": "256729",
+    "Html": "<p>Hi Mahesh,</p>\r\n<p>The whole point of Modularity is to keep your application as loosely coupled as possible. In your case you should probably have a shared dll which has the IUserControl1 interface type in it, rather than referencing the module you are downloading using ModuleManager.</p>",
+    "PostedDate": "2011-05-09T22:55:03.43-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "610711",
+    "ThreadId": "256729",
+    "Html": "<p>Hi gan_s,</p>\r\n<p>Thanks a lot ! I created a common library with a Interface and loaded the view in the Shell dynamically.</p>\r\n<p>Thanks very much for the support. Soon I will be back with another scenario.</p>\r\n<p>Regards</p>\r\n<p>Mahesh</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-10T21:18:07.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "612275",
+    "ThreadId": "256729",
+    "Html": "<p>Hi,</p>\r\n<p>private void LoadOnDemandModule(string ModuleName, string ViewName, string RegionName)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._moduleManager.LoadModule(ModuleName);</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var myView = ServiceLocator.Current.GetInstance&lt;IModule&gt;(ViewName);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var currentView = this._regionManager.Regions[RegionName].Views.Contains(myView);</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (currentView)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._regionManager.Regions[RegionName].Remove(myView);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._regionManager.Regions[RegionName].Add(myView);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._regionManager.Regions[RegionName].Activate(myView);</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;</p>\r\n<p>I used this method to load the module dynamically in SilverLight. I'm getting activation error \"Activation error occured while trying to get instance of type IModule, key \"MyView1\"\".</p>\r\n<p>This code works in WPF. But in silverlight getting error.</p>",
+    "PostedDate": "2011-05-13T03:04:32.81-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "612282",
+    "ThreadId": "256729",
+    "Html": "<p>Hi Mahesh,</p>\r\n<p>I think you should be doing the region.Add in the Module class in your Module. Something like this</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>[Module(ModuleName = <span style=\"color: #a31515;\">\"Module\"</span>)]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> Module : IModule\r\n{\r\n       <span style=\"color: blue;\">private</span> IRegionManager _regionManager;\r\n        \r\n       <span style=\"color: blue;\">public</span> Module(IRegionManager regionManager)\r\n       {\r\n             _regionManager = regionManager;\r\n        }\r\n\r\n <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> Initialize() \r\n        {\r\n             <span style=\"color: blue;\">var</span> view = ServiceLocator.Current.GetInstance&lt;MyView&gt;(ViewName);\r\n             _regionManager.Regions[RegionName].Add(view, ViewName);\r\n        }\r\n}<br /><br />I think you are trying to get the instance of IModule with your ViewName. Try the above. It should work. <br /></pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-13T03:13:21.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "612326",
+    "ThreadId": "256729",
+    "Html": "<p>Hi gan_s,</p>\r\n<p>I don't want to mention the RegionName in the Module as you said. I just want to call the view in the Shell and load in the region.</p>\r\n<p>private void LoadOnDemandModule(string ModuleName, string ViewName, string RegionName)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._moduleManager.LoadModule(ModuleName);</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var myView = ServiceLocator.Current.GetInstance&lt;IModule&gt;(ViewName);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var currentView = this._regionManager.Regions[RegionName].Views.Contains(myView);</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (currentView)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._regionManager.Regions[RegionName].Remove(myView);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._regionManager.Regions[RegionName].Add(myView);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._regionManager.Regions[RegionName].Activate(myView);</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;</p>\r\n<p>This code works fine in WPF. But its not working in Silverlight.</p>\r\n<p>In my module, I exported the view like below. So I'm calling the view using the key \"MyView1\" in the shell and loading in the region. These all the things are working fine in WPF but its not working in Silverlight.</p>\r\n<p>[Export(\"MyView1\", typeof(IModule))]<br />&nbsp;&nbsp;&nbsp; public partial class MyView1 : UserControl,IModule<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public MyView1()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeComponent();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region IModule Members</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void Initialize()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region IModule Members</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void IModule.Initialize()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion<br />&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;</p>\r\n<p>Please let me know where I'm wrong.</p>",
+    "PostedDate": "2011-05-13T04:58:31.073-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "612333",
+    "ThreadId": "256729",
+    "Html": "<div><span style=\"color: navy; font-family: Arial; font-size: x-small;\">Is your region a singleactive or allactive region? Since you are using mef just use regionmanager.requestnavigate. No need for adding/removing views from the region manually. Of course your view/viewmodel should  implement inavigationaware. Read up on this. <br /></span></div>",
+    "PostedDate": "2011-05-13T05:19:59.88-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "613117",
+    "ThreadId": "256729",
+    "Html": "<p>Hi,</p>\r\n<p>private void LoadOnDemandModule(string ModuleName, string ViewName, string RegionName)<br />{<br /><br />this._moduleManager.LoadModule(ModuleName);</p>\r\n<p><strong><span style=\"color: #ff00ff;\">var myView = ServiceLocator.Current.GetInstance&lt;IModule&gt;(ViewName);</span></strong><br />var currentView = this._regionManager.Regions[RegionName].Views.Contains(myView);</p>\r\n<p>if (currentView)<br />{<br />this._regionManager.Regions[RegionName].Remove(myView);<br />}</p>\r\n<p>this._regionManager.Regions[RegionName].Add(myView);<br />this._regionManager.Regions[RegionName].Activate(myView);</p>\r\n<p><br />}</p>\r\n<p>The above colored line code only throws error \"Activation error occured while trying to get instance of type IModule, key \"MyView1\". I don't know why I'm getting this error. Can u send me your mail id, I will send my sample code.</p>",
+    "PostedDate": "2011-05-15T22:02:19.95-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "613118",
+    "ThreadId": "256729",
+    "Html": "<p>You can send it to ganesh.shivshankar@gmail.com. I will be able to look at this only after I get home. Is that ok with you?</p>",
+    "PostedDate": "2011-05-15T22:06:12.71-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "613704",
+    "ThreadId": "256729",
+    "Html": "<p>Hi Ganesh,</p>\r\n<p>Let me explain my project. We are creating CompositeUI(Dual Targeting) project. We suppose to create a function to support both SilverLight and WPF. Now if you see the project which I sent to you, will get some idea. The modulemanager.LoadModule works in WPF but the same functionality is not working in Silverlight. I just need why that same way of loading is not working. I debugged the code in WPF when the LoadModule calls it invokes the <strong>LoadModuleCompleted </strong>event. But in sliverlight it won't invoke the <strong>LoadModuleCompleted </strong>event.</p>\r\n<p>Regards</p>\r\n<p>Mahesh</p>",
+    "PostedDate": "2011-05-16T22:16:36.533-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "613706",
+    "ThreadId": "256729",
+    "Html": "<p>HI Mahesh,</p>\r\n<p>The problem with your silverlight front is it doesnt seem to have the right path to your xap (module) your are downloading. If you hook up to LoadModuleCompleted event and check the value of 'e' you will get a \"Invalid uri format\" exception. Basically with silverlight it uses a WebClient to download the xap. So unless it does not have the right path to the xap it wont be able to download it. One way to overcome this is host your app on a ASP.NET website and place the xaps in the ClientBin. So LoadModule will automatically pick it up from there.</p>",
+    "PostedDate": "2011-05-16T22:19:58.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "613927",
+    "ThreadId": "256729",
+    "Html": "<p>Hi Mahesh,</p>\r\n<p>In order to target your application for Silverlight and WPF, you can read <a href=\"http://msdn.microsoft.com/en-us/library/ff921109(PandP.40).aspx\">Chapter 10: Sharing code Between Silverlight and WPF</a> from Prism&rsquo;s provided documentation.</p>\r\n<p>On the other hand, you can load modules on demand in WPF and Silverlight applications. This topic is covered in <a href=\"http://msdn.microsoft.com/en-us/library/gg405479(PandP.40).aspx\">Chapter 4: Modular Application Development</a>, specifically in &ldquo;<em>Loading Modules on Demand</em>&rdquo; section.</p>\r\n<p>Take into account that in Silverlight applications, <strong>modules are packaged into .xap files</strong>. For each .xap file, you will need to create a new <strong>Silverlight Application project</strong>. In Visual Studio 2008 and 2010, only application projects produce a separate .xap file.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-17T06:57:19.24-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "614532",
+    "ThreadId": "256729",
+    "Html": "<p>Thanks a lot guys...I did it. I loaded the module dynamically into the shell. once again thanks very much!</p>",
+    "PostedDate": "2011-05-18T04:51:21.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

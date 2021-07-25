@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "486565",
+    "ThreadId": "225335",
+    "Html": "<p>I placed a collection of Views in a TabControl. Each content of the tab item has a region name associated to a View. If I remove/release a tab item from the TabControl, does the associated View (and ViewModel) released automatically? If not, what should I do? Do I have to remove the View from the RegionManager?</p>",
+    "PostedDate": "2010-08-30T12:00:36.437-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "486628",
+    "ThreadId": "225335",
+    "Html": "<p>Hi,</p>\r\n<p>In general if you need to remove a view from its region in Prism, you can programmatically remove it by using the <strong>Remove&nbsp;</strong>method&nbsp;of the region. So, the code could look as it is shown below:</p>\r\n<pre><strong>regionManager.Regions[<span style=\"color:#a31515\">&quot;RegionName&quot;</span>].Remove(yourView);</strong></pre>\r\n<p><a href=\"http://11011.net/software/vspaste\"></a></p>\r\n<p>Regarding&nbsp;to your question.&nbsp;All views (and their VMs) associated&nbsp;to a tab will be removed&nbsp;if you remove that control.&nbsp;Given that when the garbage collection occurs it should dispose all of them,&nbsp;unless you have more references from other components. But take into account that it is&nbsp;not possible to&nbsp;predict when the collection&nbsp;will&nbsp;occur.</p>\r\n<p>For more information on this topic, you could take a look at the following links:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921075(PandP.20).aspx\">UI Composition</a>, see the <em>View Discovery and View Injection </em>section</li>\r\n<li>From the <a href=\"http://blogs.southworks.net/matiasb/\">Matias Bonaventura's Blog</a>, you could check&nbsp;the following&nbsp;post about this:&nbsp;<a title=\"Permanent Link to How-to Hide Views inside Composite Application Guidance (aka Prism-v2) regions.\" rel=bookmark href=\"http://blogs.southworks.net/matiasb/2009/07/02/how-to-hide-views-inside-composite-application-guidance-aka-prism-v2-regions/\"><span style=\"color:#800080\">How-to Hide Views inside Composite Application Guidance (aka Prism-v2) regions</span></a>, it also has an example for removing.</li>\r\n<li><span><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=56692\">Best way to manage views in a region</a></span></li>\r\n<li><span><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=214602\">Unregister view with a region?</a></span></li>\r\n</ul>\r\n<p>&nbsp;Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-08-30T13:35:11.213-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

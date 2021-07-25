@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "712625",
+    "ThreadId": "283065",
+    "Html": "<p>Here's the<a title=\"Stackoverflow question\" href=\"http://stackoverflow.com/questions/8383495\"> Stackoverflow question</a> which may help with what I am getting at</p>\n<p><strong>Q#1 Does prism offer any support for presenter-first style of writing applications ?</strong></p>\n<p><strong>Q#2 If not, is there a way in which I can stub out the UI dependent part of Prism but still maintain all the dynamic composition ?</strong></p>\n<p>Disclaimer: Noob but fast learner.. drilling through the Prism v4 manual. Chap7 at this point in time.</p>\n<p>I am trying to write system level acceptance tests that work at a layer below the UI (i.e. the presenter). I hit a hurdle with Prism here because with the application that I am working with - there is no single <a title=\"composition root\" href=\"http://blog.ploeh.dk/2011/07/28/CompositionRoot.aspx\">composition root</a>.</p>\n<p>The composition happens in a declarative manner. When the UI shows up, Prism finds regions. It looks up the corresponding&nbsp; registered views for the regions and instantiates them. DI pulls in the presenter dependencies for these views and so on down ...</p>\n<p>This poses a problem in that I cannot construct the presenter object graph without PRISM or to be more precise the UI. If there is no UI.. the composition won't happen.</p>\n<p>The top-answer on the SO post suggests renouncing \"Prism regions\" and handling composition manually to achieve this. Just want an official (preferable) confirmation one way or the other.</p>\n<p>Thanks,</p>\n<p>Gishu</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>",
+    "PostedDate": "2011-12-15T03:24:24.417-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "712898",
+    "ThreadId": "283065",
+    "Html": "<p>Hi,</p>\n<p>Based on my understanding the Composite Application Library supports both types of composition. Regardless of the specific separated presentation pattern you use, your application can create and configure the view, presenter, and model components in a number  of ways depending on your decision.</p>\n<p>You can find more information about this in the following links:</p>\n<ul>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff647218.aspx\">Separated Presentation</a> </li>\n<li><a href=\"225637\">Viewmodel-first: \"generally to be avoided\"? </a></li>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405494%28v=PandP.40%29.aspx#sec19\">Testing MVVM Applications</a> </li>\n</ul>\n<p>I believe you could use the <strong>ServiceLocator</strong> to retrieve view models/presenters and then unit test them according to the requirements of your scenario.</p>\n<p>On the other hand, in the following discussion, you can find a case that uses the view model first approach in Prism:</p>\n<ul>\n<li><a href=\"267584\">How to use view-model first approach with the region feature?</a> </li>\n</ul>\n<p>Also, the Prism Library source code, Quickstarts and RI includes unit and UI automation tests examples, that can be used as reference.</p>\n<p>I hope you find this handy</p>\n<p>﻿Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-12-15T12:40:06.613-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "717135",
+    "ThreadId": "283065",
+    "Html": "<p>I guess I should have emphasized the fact that I am looking at acceptance / system tests (NOT unit tests). I need the entire app with some predefined set of actions executed (setup) ; all the ViewModels created and linked up correctly but **without the UI**.</p>\r\n<p>So I need all the viewmodels that would exist at that point if I was manually exercising the UI.</p>\r\n<p>Among the links that you posted, there is a item with some potential (that you can add viewModels to a region and use DataTemplates to render the view). Still reading the Prism docs.. will dig into this bullet and let you know.</p>",
+    "PostedDate": "2011-12-26T01:21:17.46-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "718186",
+    "ThreadId": "283065",
+    "Html": "<p>Alright I just ran through the Prism guidance and my question still remains...</p>\n<p>Can Prism still handle recursive view composition (based on \"regions\") if the UI is never shown ? I want to write acceptance tests that talk to ViewModels (under the UI tests) ; UI Tests are out of proc and sometimes flaky. I'd like to write tests that talk  to VM classes instead - more reliable and less work.</p>\n<p>I didn't see anything that resembled ViewModel first : view discovery is view-first. View injection is still code that injects specific views into named regions ; the regions themselves are instantiated <strong>only if the UI is shown</strong>. If the UI is suppressed somehow, the regions would not be created and exceptions would be raised.</p>\n<p>I tried to add ViewModels into regions instead of views + use DataTemplates to locate the corresponding view. This works for one level of composition. If the corresponding view for level-1 subview has 2 child regions, I'm not able to handle that generically. Is it somehow possible to Recursively discover regions without  the views ? Or get some kind of hook-point where I can intercept and bypass the actual showing of the UI ?</p>\n<p>RFC. Please feel free to tell me how wrong I am :)</p>",
+    "PostedDate": "2011-12-29T01:14:19.72-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "718419",
+    "ThreadId": "283065",
+    "Html": "<p>Hi Gishu,</p>\n<p>As far as I know, Prism does not provide guidance for the scenario of performing acceptance test without composing the UI. Based on my understanding, the <strong>UI Composition</strong> capabilities provided by Prism out of the box, such as <strong>Regions </strong>and <strong>RegionBehaviors</strong>, are designed to compose the visual aspect of the application. In other words, the <strong>UI Composition</strong> functionality is not designed to be used without an user interface to compose. Also, the usual approach regarding <strong>UI Composition</strong> is to define <strong>Regions </strong>in the views, so if no view is created, the <strong>Regions </strong>defined in those views are not created either.</p>\n<p>Regarding this, Prism provides guidance on acceptance testing and includes an <strong> AcceptanceTestLibrary</strong>, which is used to perform acceptance testing on applications (such as the <strong>Stock Trader RI</strong>) <span style=\"text-decoration: underline;\">showing and interacting with the UI.</span></p>\n<p>As a possible approach, the <strong>RegionManager </strong>implementation provided by Prism allows to register a <strong>Region </strong>in code; however, to do this without an existing UI, you might need to create a <strong>Control </strong>that can be defined as a region, register that control as a <strong>Region </strong>and attach the <strong>RegionManager </strong>to the control as a dependecy property (this is because, as the control won't be part of a UI, it will not have a parent and thus, it won't be able to obtain the corresponding <strong>RegionManager </strong>automatically). Also, as most applications define the <strong>Regions </strong>in the views, you will have to design a method to parse the <strong>XAML </strong>code of a view you want to \"simulate\" in order to obtain the <strong>Regions </strong>contained in it and the corresponding control type that was defined as a <strong>Region</strong>. Taking all of this into account, it might be possible to \"simulate\" the composition of a user interface; however, currently there is no guidance about this and you could find several unexpected undesired behaviors in such scenario.</p>\n<p>Also, take into account that, as mentioned in <a href=\"http://msdn.microsoft.com/en-us/library/ff649646.aspx\"> this MSDN article</a>, the most common form of acceptance testing consists of tests that exercise a user scenario from the user interface, as these tests emulate the application keyboard and user interface interactions.</p>\n<p>Regards,<br /> <br /> Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-12-29T12:43:44.43-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "718606",
+    "ThreadId": "283065",
+    "Html": "<p>Thanks Agustin and Damian.</p>\r\n<p>My thoughts exactly. It seems 'simulating Prism' is&nbsp; too much effort + likely to not work out in the end ; since it seems to be 'going against the grain'. <strong>UI Composition </strong>seems to be a strong underlying concept of the the Prism way.</p>\r\n<p>I'm struggling to find a definition for Presenter-first. But my internal association was</p>\r\n<p>* presenters are composed first</p>\r\n<p>* Views are attached later (e.g. locate view for ViewModelX, create, set view.datacontext = viewmodel</p>\r\n<p>That opens the door to simplified unit as well as system testing. You can just peel away the UI and do under the skin tests that do all the user-interaction at the ViewModel level. No need to write UI automation code or test stabilization delays (effort spent to get UI tests to behave predictably. UI tests are notoriously moody.. stops running after some update or behaves differently on a specific OS). In contrast POCOs are a god-send.</p>\r\n<p>Once again, thank you for sharing your inputs..</p>\r\n<p>Gishu</p>",
+    "PostedDate": "2011-12-30T02:42:20.437-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

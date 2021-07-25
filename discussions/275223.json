@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "681719",
+    "ThreadId": "275223",
+    "Html": "<p>Why Removed view still in SingleActiveRegion's filterditems of ViewCollection?</p>\n<p>(1)I have two view, \"loginView\" and \"mainView\". and one SingleActiveRegion \"mianRegion\"</p>\n<p>(2)loginView created by&nbsp;the view discovery</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">var</span> vLogin = _container.Resolve&lt;ILoginPage&gt;(); \n\n_regionManager.Regions[\"mianRegion\"].Add(vLogin); \n</pre>\n</div>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre>_regionManager.Regions[<span style=\"color: #a31515;\">\"</span>mainRegion\"].Activate(vLogin)\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>(3)mainView&nbsp;created by&nbsp;the view discovery and remove loginView</p>\n<pre><div style=\"color: black; background-color: white;\"><pre> <span style=\"color: blue;\">var</span> vLogin = _regionManager.Regions[<span style=\"color: #a31515;\">\"mainRegion\"</span>].GetView(<span style=\"color: #a31515;\">\"loginView\"</span>);\n                <span style=\"color: blue;\">if</span> (vLogin != <span style=\"color: blue;\">null</span>)\n                {\n                    _regionManager.Regions[<span style=\"color: #a31515;\">\"mainRegion\"</span>].Remove(vLogin );\n                }\n\n<span style=\"color: blue;\">var</span> vMain = _container.Resolve&lt;ILoginPage&gt;(); \n\n_regionManager.Regions[<span style=\"color: #a31515;\">\"mianRegion\"</span>].Add(vMain); \n</pre>\n<pre>_regionManager.Regions[<span>\"</span>mainRegion\"].Activate(vMain)</pre>\n<pre><br /></pre>\n<pre>(4)\"loginView\" still can be find,there are two view in filteredItems.</pre>\n<pre><pre><div style=\"color: black; background-color: white;\"><pre>Namespace\tName\t\nSystem\tObject[] (#107,836)\t[...]\nSystem.Collections.Generic\tList&lt;<span style=\"color: blue;\">object</span>&gt; (#107,841)\t_items\nMicrosoft.Practices.Prism.Regions\tViewsCollection (#20,134)\t<span style=\"color: #ff0000;\"><strong>filteredItems</strong></span>\nMicrosoft.Practices.Prism.Regions\tSingleActiveRegion (#25,771)\tviews\nMicrosoft.Practices.Prism.Regions\tIRegion[] (#25,198)\t[...]\nSystem.Collections.Generic\tList&lt;IRegion&gt; (#25,199)\t_items\nMicrosoft.Practices.Prism.Regions\tRegionManager.RegionCollection (#25,200)\tregions\nMicrosoft.Practices.Prism.Regions\tRegionManager (#1,552)\tregionCollection\nEnginuity\tShellHolder (#1,416)\tRegionManager.RegionManager\nSystem.Windows.Controls\tToolTipService\t_rootVisual\n</pre>\n</div>\n<br /></pre>\n<pre><br /></pre>\n</pre>\n</div>\n</pre>",
+    "PostedDate": "2011-10-08T18:20:24.19-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "682410",
+    "ThreadId": "275223",
+    "Html": "<p>You need to deactivate the view? ViewCollection will have all the views, but ActiveViews will just have the current active view. this again depends on what your container is for your region. Example ItemsControl supports more than one active views (i.e. AllActiveRegion), whereas a ContentControl supports only one active view at any point in time (i.e. SingleActiveRegion).</p>",
+    "PostedDate": "2011-10-10T21:14:53.45-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

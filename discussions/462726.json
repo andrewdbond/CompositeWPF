@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1109241",
+    "ThreadId": "462726",
+    "Html": "I have two regions - left region and right region. Basically when any item in left region is triggered, right region will display the data. The problem is sometimes the data takes time to load and make the application not responding. Is there a way to create another layer showing the loading message while the data is processed and this layer covers entire regions? so that users can not click any items. \r<br />\n<br />\nAny thoughts?\r<br />\n<br />\nThanks,\r<br />\nBrew<br />\n",
+    "PostedDate": "2013-10-18T08:16:08.793-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1109300",
+    "ThreadId": "462726",
+    "Html": "Hi Brew,\r<br />\n<br />\nA possible approach could be to create a simple overlay in the <strong>Shell</strong> of you application to cover its contents completely and that could be <strong><em>shown / hidden</em></strong> when needed. Examples of such overlays could be a simple rectangle, an image or a custom <strong>UserControl</strong> as long as it's on top of all the elements of the <strong>Shell</strong>.\r<br />\n<br />\nBy default this overlay would have its <strong>Visibility</strong> property set to <strong><em>Collapsed</em></strong> (so that it's not visible and does not interfere with the rest of the application). When you need to show it, you just need to change its <strong>Visibility</strong> to <strong><em>Visible</em></strong> and it should cover then the entire contents of the <strong>Shell</strong>, including the regions.\r<br />\n<br />\nRegarding the logic to do this, you could create a very simple view model from the <strong>Shell</strong> which could subscribe to an event via the <strong>EventAggregator</strong>. When an operation needs to show or hide the overlay it could publish this event and the view model would change the state of the overlay accordingly. For this, you can use an interaction request, a binding from the <strong>Visibility</strong> property to a property in the view model through a boolean-to-visibilty value converter, etc.\r<br />\n<br />\nI hope you find this useful,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-10-18T10:19:34.41-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1109336",
+    "ThreadId": "462726",
+    "Html": "Hi Damian,\r<br />\n<br />\nThank you. I will give it a try!\r<br />\n<br />\nThanks,\r<br />\nBrew<br />\n",
+    "PostedDate": "2013-10-18T11:29:34.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

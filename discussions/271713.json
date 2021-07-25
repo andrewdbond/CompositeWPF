@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "668446",
+    "ThreadId": "271713",
+    "Html": "\r\n<p>Dear All,</p>\r\n<p>Prism is so amazing that I can' t help loving it.</p>\r\n<p>Yesterday, I came across a binding problem. Here is my scenario:</p>\r\n<p>I have two regions in my Shell,&nbsp;one menuRegion on the top and another is a TabControl called mainRegion on the bottom.</p>\r\n<p>In the menuRegion, I place two buttons: Save and SaveAll.</p>\r\n<p>In the mainRegion,&nbsp;I have &nbsp;two TabItems: Tab1 and Tab2. Each of the TabItems contains a &quot;View&quot;. These views are&nbsp;binding with ViewModels accordingly. Both ViewModel has a bool type&nbsp;property &quot;IsDirty&quot;.</p>\r\n<p>My requirement is:</p>\r\n<p>1. &quot;Save&quot; Button can only save the content of the current active view. If current active view &quot;IsDirty&quot;, &quot;Save&quot; is enabled otherwise it is disabled. When &quot;Save&quot; is clicked, it can use &quot;SaveCommand&quot; from viewmodel of active view to perform saving.</p>\r\n<p>2. &quot;SaveAll&quot; Button can save the content of all dirty view. When any of the view &quot;IsDirty&quot; SaveAll is enabled otherwise it is disabled. When &quot;SaveAll&quot; is clicked, it can use &quot;SaveCommand&quot; from viewmodel of all &quot;dirty&quot; views to perform saving one by one.</p>\r\n<p>It seems like a MDI-style window. But I have no idea how to create one using Prism (4.0). Looking forward to your advice.</p>\r\n<p>Best regards</p>\r\n<p>Leo</p>\r\n",
+    "PostedDate": "2011-09-07T00:15:27.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "668746",
+    "ThreadId": "271713",
+    "Html": "<p>Hi,<span style=\"font-size: 9pt;\" lang=\"EN-US\"> </span><span style=\"font-size: 9pt;\" lang=\"EN-US\">I'm glad you found Prism useful.</span></p>\r\n<p>Regarding your problem, you might try using the <strong>IsActive</strong> property declared in the <strong>IActiveAware </strong>interface for every command you use to perform saving in each view. This way you can define whenever a command becomes active. <strong>DelegateCommand</strong> might be the simplest way to achieve this.</p>\r\n<p>Also you could use a <strong>CompositeCommand</strong> for the &ldquo;SaveAll&rdquo; button. This type of command invokes several child commands. At the same time it supports enablement. Note that by default <strong>CompositeCommand</strong> polls all its child commands by calling <strong>CanExecute</strong> on each child command. If any call to <strong>CanExecute</strong> returns <strong>false</strong>, the <strong>CompositeCommand</strong> will return <strong>false</strong>, thus disabling the invoker(s). Therefore in your scenario you will need to use the activity monitoring behavior to execute only active commands. This behavior is enabled in the <strong>CompositeCommand</strong>'s constructor by setting the <strong>monitorCommandActivity</strong> to <strong>true.</strong></p>\r\n<p>You might find this <a href=\"224701\">thread</a> useful, where a similar issue is addressed.</p>\r\n<p>Also you'll find more information regarding that in the following links:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28v=PandP.40%29.aspx\">Chapter 9: Communicating Between Loosely Coupled Components</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921082%28v=PandP.40%29.aspx\">Commanding Quickstart</a></li>\r\n</ul>\r\n<p>I hope you find this helpful.</p>\r\n<p>﻿Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-09-07T12:04:29.337-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "668864",
+    "ThreadId": "271713",
+    "Html": "<p>Hi, aadami</p>\r\n<p>Thanks for your quick answer. I think that's the right way for me.</p>\r\n<p>I will read all the reference you mentioned.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-09-07T17:53:49.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

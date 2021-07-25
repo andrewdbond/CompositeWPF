@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "219269",
+    "ThreadId": "64427",
+    "Html": "<p>Im running into a problem where I have a usercontrol in a view (The usercontrol is in a different assembly), when the view is being Initialized I get a XamlParseException. My app consists of 3 projects (Shell, Module, Usercontrols). The module consists of a single view and this view references a usercontrol from the Usercontrols assembly.</p>\r\n<p>The code for the view:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">UserControl</span> <span style=\"color:Red\">............</span>\r\n             <span style=\"color:Red\">xmlns:uc</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">clr-namespace:Usercontrols;assembly=Usercontrols</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">&gt;</span>\r\n    <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">Grid</span><span style=\"color:Blue\"> x:Name=&quot;gv&quot;&gt;</span>\r\n        <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">uc</span><span style=\"color:Blue\">:</span><span style=\"color:#A31515\">UserControl1</span><span style=\"color:Blue\">/&gt;</span>\r\n    <span style=\"color:Blue\">&lt;/</span><span style=\"color:#A31515\">Grid</span><span style=\"color:Blue\">&gt;</span>\r\n<span style=\"color:Blue\">&lt;/</span><span style=\"color:#A31515\">UserControl</span><span style=\"color:Blue\">&gt;</span>\r\n<br>The code for this user control:<div style=\"color:Black;background-color:White\"><pre><span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">UserControl</span> <span style=\"color:Red\">...........</span><span style=\"color:Blue\">&gt;</span>\r\n        <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">Grid</span><span style=\"color:Blue\">&gt;</span>\r\n        <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">TextBlock</span> <span style=\"color:Red\">Text</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">Test</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">/&gt;</span>\r\n        <span style=\"color:Blue\">&lt;/</span><span style=\"color:#A31515\">Grid</span><span style=\"color:Blue\">&gt;</span>\r\n<span style=\"color:Blue\">&lt;/</span><span style=\"color:#A31515\">UserControl</span><span style=\"color:Blue\">&gt;</span>\r\n</pre>\r\n</div>\r\nNow when the view is being initialized I get an error on InitializeComponent(); which is a XamlParseException :<br>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> HelloWorldView()\r\n{  \r\n            InitializeComponent();\r\n}\r\n<br>But if I remove the usercontrol from the page, add a Loaded Event in the Initialization like so, and then insert the user control after the view has been loaded then it loads correctly:<div style=\"color:Black;background-color:White\"><pre><span style=\"color:Blue\">public</span> HelloWorldView()\r\n        {\r\n            InitializeComponent();\r\n            <span style=\"color:Blue\">this</span>.Loaded += <span style=\"color:Blue\">new</span> RoutedEventHandler(HelloWorldView_Loaded);\r\n        }\r\n\r\n        <span style=\"color:Blue\">void</span> HelloWorldView_Loaded(<span style=\"color:Blue\">object</span> sender, RoutedEventArgs e)\r\n        {\r\n            UserControl1 uc = <span style=\"color:Blue\">new</span> UserControl1();\r\n            gv.Children.Add(uc);\r\n        }\r\n</pre>\r\n</div>\r\n<br>So I guess my question is : What is going on? And how do I resolve this?<br><br>It seems that I need to create a dependency where the Usercontrols assembly needs to be loaded first. None the less I need to see if there is anything I can do to resolve this issue. <br><br>Thanks<br></pre>\r\n</div>\r\n<br></pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-04T07:53:36.247-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "219270",
+    "ThreadId": "64427",
+    "Html": "<p>Im also using Dynamic Modularity to load the modules.</p>",
+    "PostedDate": "2009-08-04T07:55:24.873-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "219273",
+    "ThreadId": "64427",
+    "Html": "<p>dav_evans and I collaborated on the following demo which pretty much matches your layout and requirements.&nbsp;&nbsp;</p>\r\n<p><a href=\"http://www.global-webnet.net/Webcast/CALDemo.zip\">http://www.global-webnet.net/Webcast/CALDemo.zip</a></p>\r\n<p>&nbsp;If you can't find the answer within it perhaps you can modify it to emulate the problem you are experiencing so we have an example to work with.</p>",
+    "PostedDate": "2009-08-04T08:03:17.093-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "219371",
+    "ThreadId": "64427",
+    "Html": "<p>billkrat,</p>\r\n<p>Thanks for the replay. Not sure that example really hits home.</p>\r\n<p>Here are 2 different <a title=examples>examples</a>:</p>\r\n<p>In Example1 youll see where I was trying to have a project of just user controls and access one of those controls in a different module within a view.</p>\r\n<p>In Example2 youll see where I made the 'Usercontrol' project, a module, copied it to the Modules directory (Bin\\Modules), and then created a dependcy</p>\r\n<p>in the ModuleA</p>\r\n<p>&nbsp;</p>\r\n<p>As im thinking about this I may be going about all this the wrong way. Maybe instead of creating an assembly of nothing but usercontrols I should just create modules with</p>\r\n<p>Views that display what I want. If i need to use this view then I'll load it and place it on the screen.</p>\r\n<p>&nbsp;</p>\r\n<p>The way I was approaching it was that a Module can have 1 or many Views and a View can contain 1 or many usercontrols. That being said there may be several Modules(Views)</p>\r\n<p>that can use the same usercontrol, so I was going to create a project of all the common usercontrols and then use them in the views where I needed them. But with</p>\r\n<p>the Dynamic Modularity approach it appears the Modules are being loaded before the Usercontrol assembly is being loaded, thus I get an error.&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>Hope that helps explain it a bit more.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-04T11:21:02.147-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "219471",
+    "ThreadId": "64427",
+    "Html": "<p>Hi imf232,&nbsp; your &quot;examples&quot; link doesn't appear to be working (at least under IE8).</p>",
+    "PostedDate": "2009-08-04T14:51:09.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "219912",
+    "ThreadId": "64427",
+    "Html": "<p>Sorry about that</p>\r\n<p>&nbsp;</p>\r\n<p><a title=Examples href=\"http://uploading.com/files/0VB9MZD7/Examples.zip.html\">http://uploading.com/files/0VB9MZD7/Examples.zip.html</a></p>\r\n<p>&nbsp;</p>\r\n<p>Again the main goal that im after is this: I may have 2 different modules that share the same functionality, So I want to take that</p>\r\n<p>functionality and put it into a user control (Located in an assembly of nothing but common user controls) and then use that usercontrol in both modules. Again the problem I was running into</p>\r\n<p>was that the Modules seem to be getting initialized before the usercontrol assembly does which leads to an xmlparserexception.</p>\r\n<p>Hope that makes more sense.</p>",
+    "PostedDate": "2009-08-05T11:16:10.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "220298",
+    "ThreadId": "64427",
+    "Html": "<p>Hi Imf232s,</p>\r\n<p>I ran your Example01 DirectoryLookupModularity application and was greeted with the following error:</p>\r\n<p><em>Cannot find type 'Usercontrols.UserControl1'. The assembly used when compiling might <br>be different than that used when loading and the type is missing.&nbsp; Error at object <br>'System.Windows.Controls.StackPanel' in markup file 'ModuleA;component/defaultviewa.xaml' Line 9 Position 15.</em></p>\r\n<p>If I removed the UserControl1 from XAML the demo ran.&nbsp;&nbsp; I added the control back to XAML.</p>\r\n<p>Note: I added the following to Properties | Build Events | Post-Build in the UsersControl project<br><br><em>xcopy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)DirectoryLookupModularity\\bin\\$(ConfigurationName)\\Modules\\&quot; /Y</em></p>\r\n<p>---</p>\r\n<p>There are two ways you can resolve this.&nbsp;&nbsp; The first (easy) way is to simply add a reference to UserControls in <br>your DirectoryLookupModularity project.</p>\r\n<p>The second is to make your UsersControl project a module.&nbsp; I added the following <strong>UserControlModule.cs</strong> file <br>to the UsersControl project:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">namespace</span> Usercontrols\r\n{\r\n    [Module(ModuleName = <span style=\"color:#A31515\">&quot;UserControls&quot;</span>)]\r\n    <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span><span style=\"color:MediumTurquoise\"> UserControlModule : IModule\r\n    </span>{\r\n        <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">void</span> Initialize()\r\n        {\r\n        }\r\n    }\r\n}\r\n</pre>\r\n</div>\r\n<p>I then went to my ModuleA project and updated it as follows:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">namespace</span> ModuleA\r\n{\r\n    [Module(ModuleName = <span style=\"color:#A31515\">&quot;ModuleA&quot;</span>)]\r\n    [ModuleDependency(<span style=\"color:#A31515\">&quot;ModuleD&quot;</span>)]\r\n<strong>    [ModuleDependency(<span style=\"color:#A31515\">&quot;UserControls&quot;</span>)]</strong>\r\n    <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span><span style=\"color:MediumTurquoise\"> ModuleA : IModule\r\n    </span>{\r\n        <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">readonly</span> IRegionManager _regionManager;\r\n\r\n        <span style=\"color:Blue\">public</span> ModuleA(IRegionManager regionManager)\r\n        {\r\n            _regionManager = regionManager;\r\n        }\r\n\r\n        <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">void</span> Initialize()\r\n        {\r\n            _regionManager.Regions[<span style=\"color:#A31515\">&quot;MainRegion&quot;</span>].Add(<span style=\"color:Blue\">new</span> DefaultViewA());\r\n        }\r\n    }\r\n}</pre>\r\n<pre>Bill</pre>\r\n</div>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-06T04:40:35.823-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

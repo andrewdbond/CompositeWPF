@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1195206",
+    "ThreadId": "524254",
+    "Html": "Since my boostrapper, derived from UnityBootstrapper does lots of &quot;things&quot; I would like to unit test it.<br />\n<br />\nFirst unit-test &quot;instantiation&quot; <br />\nvar bootStrapper = new AppBootstrapper();<br />\nOK<br />\n<br />\nnest unitTest &quot;Run&quot;:<br />\nhere I run into my first problem (see below)<br />\n<br />\nAre there any &quot;best practices&quot; available on how to unittest a Unitybootstraper?<br />\n<br />\nThanks for Help and Hints<br />\nRainer<br />\n<br />\n[TestMethod]<br />\npublic void RunCanBeCalled()<br />\n{<br />\n<pre><code>// Arrange\nvar bootStrapper = new AppBootstrapper();\n\n// Act\nbootStrapper.Run();\n\n// Assert\nAssert.IsNotNull(bootStrapper);</code></pre>\n\n}<br />\n<br />\nTestResult:<br />\nTest method X1.PrintDataPreparation.Testing.UnitTests.GuiMain.The_AppBootstrapper.RunCanBeCalled threw exception: <br />\nSystem.IO.FileLoadException: Die Datei oder Assembly &quot;Microsoft.Practices.Unity, Version=2.1.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35&quot; oder eine Abhängigkeit davon wurde nicht gefunden. Die gefundene Manifestdefinition der Assembly stimmt nicht mit dem Assemblyverweis überein. (Ausnahme von HRESULT: 0x80131040)<br />\n<pre><code>bei Microsoft.Practices.Prism.UnityExtensions.UnityBootstrapper.Run(Boolean runWithDefaultConfiguration)</code></pre>\n\nbei Microsoft.Practices.Prism.Bootstrapper.Run()<br />\n   bei X1.PrintDataPreparation.Testing.UnitTests.GuiMain.The_AppBootstrapper.RunCanBeCalled() in The_AppBootstrapper.cs: line 60.<br />\n",
+    "PostedDate": "2014-01-24T03:04:49.747-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1195515",
+    "ThreadId": "524254",
+    "Html": "Hello,\r<br />\n<br />\nBased on my understanding, the <strong><em>Run()</em></strong> method would not be tested as that would be an integration test with UI interaction, trying to show the <em>App.xaml</em> view which is causing the exception.\r<br />\n<br />\nTherefore, in order to unit test each <strong>BootStrapper</strong> method you could use <strong>Mock</strong> objects and configure only the parameters you would need.\r<br />\n<br />\nFor more information and help on the tests implementation you could look into the <strong>Prism Library</strong> <strong>BootstrapperFixture</strong> Test Class.\r<br />\n<br />\nI hope this helps, regards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-01-24T07:02:22.95-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-01-27T00:40:47.653-08:00"
+  },
+  {
+    "Id": "1198778",
+    "ThreadId": "524254",
+    "Html": "Hello Gabriel,\r<br />\n<br />\nthank you very much for your hints. I think they will help me to proceed to unit test my BootStrapper.\r<br />\n<br />\nRegards\r<br />\nRainer<br />\n",
+    "PostedDate": "2014-01-27T00:40:46.28-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

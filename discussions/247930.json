@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "573568",
+    "ThreadId": "247930",
+    "Html": "\r\n<p>I am getting started with Prism 4, and I am working on a demo app to&nbsp;get through the basic learning issues. My demo app has two modules, 'Module A' and 'Module B'. Each module has three views:</p>\r\n<ul>\r\n<li>A&nbsp;<a></a><a></a>navigation button to load ther module's other views. This view object&nbsp;is loaded into a &quot;NavigationRegion&quot; (an&nbsp;ItemsControl)&nbsp;in the Shell.\r\n</li><li>A RibbonTab that is&nbsp;activated when the navigation button is clicked. This view object&nbsp;is loaded into the 'RibbonRegion' in the Shell. The Ribbon uses a Region Adapter that allows it to act as a region, in the same manner as an ItemsControl.\r\n</li><li>A main view for the module, which loads into a 'WorkspaceRegion' (a&nbsp;ContentControl)&nbsp;in the Shell. It is simply a text block with the module's name. It is also activated when the navigation button is clicked.\r\n</li></ul>\r\n<p>The navigation buttons are bound to ICommand objects via MVVM command properties.&nbsp;The ICommands activate and deactivate views when a navigation button is clicked:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>    <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> ShowModuleBViewCommand : ICommand\r\n    {\r\n        ....\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> Execute(<span style=\"color:blue\">object</span> parameter)\r\n        {\r\n            <span style=\"color:green\">// Initialize</span>\r\n            <span style=\"color:blue\">var</span> regionManager = m_ViewModel.RegionManager;\r\n            <span style=\"color:green\">// Show Ribbon Tab</span>\r\n            <span style=\"color:blue\">var</span> moduleBRibbonTab = <span style=\"color:blue\">new</span> Uri(<span style=\"color:#a31515\">&quot;ModuleBRibbonTab&quot;</span>, UriKind.Relative);\r\n            regionManager.RequestNavigate(<span style=\"color:#a31515\">&quot;RibbonRegion&quot;</span>, moduleBRibbonTab);\r\n            <span style=\"color:green\">// Show View</span>\r\n            <span style=\"color:blue\">var</span> moduleBView = <span style=\"color:blue\">new</span> Uri(<span style=\"color:#a31515\">&quot;ModuleBView&quot;</span>, UriKind.Relative);\r\n            regionManager.RequestNavigate(<span style=\"color:#a31515\">&quot;WorkspaceRegion&quot;</span>, moduleBView);\r\n        }\r\n   }\r\n</pre>\r\n</div>\r\n<p>When the app starts up, modules are discovered without problem, and their views are loaded. The Shell correctly displays both navigation buttons in its NavigationRegion. Module A's main view displays correctly in the WorkspaceRegion, and when I click the\r\n ModuleB navigation button, the WorkspaceRegion correctly switches over to Module B's main view.</p>\r\n<p><em><strong>Here is my problem:</strong></em> The RibbonRegion behaves like an ItemsControl (because I may want to load more than one RibbonTab for a module at some point). But that means that the RibbonTabs for both modules are always visible, just like&nbsp;the\r\n navigation buttons. However, the behavior that I want is&nbsp;for the app to switch&nbsp;between the RibbonTabs for the two modules when the navigation buttons are clicked. In other words, when the application starts, only the RibbonTab for Module A should\r\n be visible, and when I click the navigation button for Module B, the RibbonTab for Module A should be hidden (or unloaded), and the RibbonTab for Module B should be shown (or loaded).</p>\r\n<p>What's the best way to accomplish this result, using Prism 4? Thanks for your help.</p>\r\n",
+    "PostedDate": "2011-02-28T16:12:05.117-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573668",
+    "ThreadId": "247930",
+    "Html": "<p>I found my answer. Implement the <strong>IRegionMemberLifetime</strong> interface on the view object or its view model. It has a single boolean property, <strong>KeepAlive</strong>, which determines whether the view should be retained in a region when the view is deactivated. Setting the property to<strong> false </strong>unloads the view on deactivation. See <em>Developer's Guide to Microsoft Prism </em>(ver 4), p. 121.</p>\n<p>BTW, I implemented the interface of the view objects, rather than their view models, since the interface affects only the view--it does not flow through to the back-end of the app.</p>\n<p>Hope that helps someone else down the road!</p>",
+    "PostedDate": "2011-02-28T22:16:51.103-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "576107",
+    "ThreadId": "247930",
+    "Html": "<p>Helped me a lot !!</p>\r\n<p>Thanks</p>\r\n<p>Waleed</p>",
+    "PostedDate": "2011-03-05T13:38:01.83-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

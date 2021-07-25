@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "438893",
+    "ThreadId": "211543",
+    "Html": "<p>Hi, I made a moudle with two views(ViewA,&nbsp;ViewB) &nbsp;displayed in two different regions in the window.</p>\r\n<p>ViewA has a texblox on it while ViewB has button on it.</p>\r\n<p>When I click the Button on viewB, I would like to update the textblock on ViewA.</p>\r\n<p>I have routed the event to make the flow which seems correct when I step through the code. (ViewA, ViewB, ViewAPresenter, ViewBPresenter, ViewController). The ViewBController's constructor linked all the event together</p>\r\n<pre>public ViewBPresenter(IUnityContainer container, \r\n            IViewB view, \r\n            IViewController viewcontroller)\r\n        {\r\n            this.View = view;\r\n            this.container = container;\r\n            this.controller = viewcontroller;\r\n\r\n            this.View.SearchCriteriaSubmitted += delegate(object sender, DataEventArgs e)\r\n            {\r\n                SearchCriteriaSubmitted(sender, e);\r\n            };\r\n\r\n            this.SearchCriteriaSubmitted += new EventHandler&gt;(this.OnSearchCriteriaSubmitted);\r\n\r\n                    }\r\n\r\nprivate void OnSearchCriteriaSubmitted(object sender, DataEventArgs e)\r\n        {\r\n            controller.OnSearchCriteriaSubmitted(e.Value);\r\n        }</pre>\r\n<p>However, while I can see the texblock on ViewA&nbsp;is updated correctly when I step through the code in TextBlockToUpdate, the texblock is not updated on the user interface.</p>\r\n<pre>public partial class ViewA    {\r\n        public ViewA()\r\n        {\r\n            InitializeComponent();\r\n        }\r\n         \r\n        public string TextBlockToUpdate\r\n        {\r\n            get\r\n            {\r\n                return this.TextBlockToUpdate.Text;\r\n            }\r\n            set\r\n            {\r\n                this.TextBlockToUpdate.Text = value;\r\n                \r\n            }\r\n        }\r\n\r\n        </pre>\r\n<pre>&nbsp;</pre>\r\n<p>I try to follow the ViewInjection quick start. However, the viewinjection sample is based on three views while my scenairo is based on two views.</p>\r\n<p>Is there an example about two views within the same module to updaet each other?</p>\r\n<p>What changes do I need to make to my code to get the textblock updated?</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2010-05-04T09:44:12.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "439869",
+    "ThreadId": "211543",
+    "Html": "<p id=2e3ae370-3b47-012d-bd79-1231390f0801>Hi,</p>\r\n<p id=2e3af140-3b47-012d-bd7a-1231390f0801>I have put together a small sample showing how to communicate two views when using MVP which you can download from <a href=\"http://cid-09f63fc7ac065e5e.skydrive.live.com/self.aspx/p^0p Samples/MVP View Communication.zip\">here</a>. It is a very simple scenario, and I omitted the controller, but I hope you can get the basic ideas. Take into account that to keep the sample simple, I did not create any interfaces (for the views, presenter, etc). However, that is a recommended approach in your application, as not being tied to a particular implementation increases the testability.</p>\r\n<p id=2e3affc0-3b47-012d-bd7b-1231390f0801>Please let me know if this helps.</p>\r\n<p id=2e3b0e40-3b47-012d-bd7c-1231390f0801>Damian Schenkelman <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-05-06T07:16:25.433-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "729321",
+    "ThreadId": "287101",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>I'm rather new to Prism and MVVM and need to do a sanity check.</p>\r\n<p>I want to display a traditional-type master-detail form, with a grid for record selection on the top and a detail view for editing the current record in the lower area.&nbsp;</p>\r\n<ol>\r\n<li>I debated with myself whether to include all the details required for the detailed view in the master's viewmodel, and thus use a single viewmodel for both views. However, it seems to me that the principle of &quot;one view, one viewmodel&quot; is the generally-recommended\r\n one, and it makes sense to me. Does this seem sound? Programming would be simpler, I think, with a single viewmodel for both views, but then you have things like the SaveCommand as part of the viewmodel for the set of records, even though it only applies to\r\n the selected and changed record. </li><li>Given that there are 2 different viewmodels involved, I used an event to notify the detail view when the master item has changed, and then the detail view reloads. So far so good. And I have a Save button in the detail view that is only enabled when changes\r\n have been made to data properties of the viewmodel.&nbsp;<strong>However, someone can still click in the grid and change the detail view without triggering a Save/Cancel dialog.</strong>&nbsp;I see several ways to implement this:\r\n<ol>\r\n<li>the detail viewmodel, when it catches an event to change the loaded record, can check whether it is dirty or not and put up the Save/Cancel dialog at that point. but in this case, what is the best way to inform the master view that its navigation has been\r\n rejected? raise a new event? </li><li>the master viewmodel could catch an &quot;IsDirty&quot; event from the detail viewmodel and disable itself, but this is not the traditional interface behavior that I'm seeking, and plus, it seems kind of tightly coupled to me.\r\n</li></ol>\r\n</li></ol>\r\n<p>What do you think? Is there a better way to approach this?</p>\r\n<p>Thanks for your &nbsp;feedback.</p>\r\n<p>Warren</p>\r\n",
+    "PostedDate": "2012-01-23T07:36:47.107-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "729417",
+    "ThreadId": "287101",
+    "Html": "<p>Hi Warren,</p>\r\n<p>In my opinion, using a separated view model for the detailed view would be a useful approach as the concerns that are specific to the detailed view (for example, exposing the corresponding properties and commands to the view, saving the changes, etc) would be handled in the detailed view model instead of the master view model. This would make the master view model more simple and sustainable.</p>\r\n<p>Also, based on my understanding, it would be convenient to include the logic to show the Save/Cancel popup dialog in the detailed view model as well. In this case, as a possible approach to inform the master view model if its \"navigation\" was performed or cancelled, you could pass a callback method to the detailed view model that could be invoked after the event to change the current record, passing the result as a parameter.</p>\r\n<p>However, take into account that the implementation details for this will depend mostly of your personal preferences and the requirements of your scenario.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-01-23T10:14:52.49-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

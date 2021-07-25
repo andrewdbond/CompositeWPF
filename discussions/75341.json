@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "257851",
+    "ThreadId": "75341",
+    "Html": "<p>Hi all,</p>\r\n<p>currently I have a problem by using View Discovery and Silverlight 3. I try to outline my implementation solution as below:</p>\r\n<p>1) I use one ChildWindow for a login dialog that hosts a region with ContentControl.</p>\r\n<p>2) I register a View with this region by using View Discovery.</p>\r\n<p>3) The first time when the Login Dialog is showed, everthing works perfectly.</p>\r\n<p>4) The second time when the Login Dialog is showed (this dialog is created again), the exception namely ArgumentException (the value is out of range) is thrown by the method CreateRegion in DelayedRegionCreationBehavior class.</p>\r\n<p>I traced the error and found out that the error had occurred actually within the method Adapt in the ContentControlRegionAdapter. The following code is suspected:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>region.ActiveViews.CollectionChanged += <span style=\"color:Blue\">delegate</span>\r\n            {\r\n                regionTarget.Content = region.ActiveViews.FirstOrDefault();\r\n            };\r\n</pre>\r\n</div>\r\n<p>As you can see, the system try to assign the first ACTIVE View to the Content of the given ContentControl. I figured out that, all relevant Info of both 1st run and 2nd run was the same, but at the 2nd run the ArgumentException was thrown.</p>\r\n<p>&nbsp;</p>\r\n<p>So, I were maybe wrong? And what should I do? Should I change my implementation way or change the behavior of the ContentControlRegionAdapter?</p>\r\n<p>&nbsp;</p>\r\n<p>Thank you for your helps!</p>\r\n<p>Steven</p>",
+    "PostedDate": "2009-11-17T03:51:01.307-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "258041",
+    "ThreadId": "75341",
+    "Html": "<p>Edit:&nbsp;I made a&nbsp;mistake by&nbsp;answering in the wrong thread.</p>\r\n<p>My apologies,</p>\r\n<p>Fernando Antivero,<br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2009-11-17T12:52:25.84-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

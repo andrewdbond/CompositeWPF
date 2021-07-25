@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "288614",
+    "ThreadId": "84032",
+    "Html": "<p>Hello guys</p>\r\n<p>I am working application using prism with silverlight,i am unable to show the login page before Shell (or) BootStrapper,</p>\r\n<p>my Requirement is before Shell load or BootStrapper run&nbsp; to show login page ,i am checking credential in login page onecs credential is valid then shell should be load</p>\r\n<p>this the code i writen in App.xmal page</p>\r\n<pre>this is for App.xmal\r\nprivate void Application_Startup(object sender, StartupEventArgs e)\r\n\r\n{\r\n\r\nthis.RootVisual = new Login();\r\n\r\n}\r\n\r\n \r\nthis for login page\r\n\r\n private void btnLogin_Click(object sender, RoutedEventArgs e)\r\n\r\n{\r\n\r\n            Csla.DataPortal.ProxyTypeName = typeof(Csla.DataPortalClient.SynchronizedWcfProxy&lt;&gt;).AssemblyQualifiedName;\r\n            Bootstrapper bootstrapper = new Bootstrapper();\r\n            bootstrapper.Run();\r\n\r\n}\r\n</pre>",
+    "PostedDate": "2010-02-10T23:18:53.373-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "289815",
+    "ThreadId": "84032",
+    "Html": "<p id=127ebfe0-f96f-012c-05d7-12313b019911>Hi,</p>\r\n<p id=127ecb00-f96f-012c-05d8-12313b019911>As <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.application.rootvisual(VS.95).aspx\">this  article</a> from the MSDN documentation explains, <em>&ldquo;You can set the  value of the RootVisual property only one time from code, although you  get its value any number of times.&rdquo;</em> Therefore, if you set the <strong>RootVisual</strong> to be an instance of <strong>Login</strong>, the Bootstrapper&rsquo;s  functionality can never set the <strong>Shell</strong> to be the <strong>RootVisual</strong>,  thus the <strong>Shell</strong> won&rsquo;t be displayed.</p>\r\n<p>You can read about a possible workaround for this situation in <a href=\"View.aspx?ThreadId=83910\">this  thread</a>.</p>\r\n<p id=127ee320-f96f-012c-05da-12313b019911>Please let me know if this  helps.</p>\r\n<p id=127eef90-f96f-012c-05db-12313b019911>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-02-11T12:05:11.827-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,51 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "I don't wanna have troubles with the Prism Interactions when I use the throwing (switchable) views.\n\nI created a project on the Codeplex with the same name.\nIt has the live example. Please, look on it.\nhttp://prisminteractionlack.codeplex.com/",
+    "LastUpdatedDate": "2013-03-15T02:16:56.067-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-12-22T14:39:03.543-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "The Prism architecture lack for the Interactions!",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 9797
+  },
+  "FileAttachments": [
+    {
+      "FileId": 898012,
+      "FileName": "view.jpg",
+      "DownloadUrl": ".\\898012"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nI have checked your sample and I believe that the approach of setting the views' DataContext property to null when the views are removed from the visual tree is a valid suggestion to work around this issue. Based on my understanding, this approach seems to work because when the DataContext property is changed, the InteractionRequestTrigger's SourceObject property is also updated due to the corresponding binding.\r\n\r\nAs a side note, based on my understanding, the WeakInteractionRequest approach could also be used to solve this issue, but for it to work there shouldn't be any strong references pointing to the view that was removed. Like this, the garbage collector will destroy the view when it needs to regain memory. This cannot be appreciated in your application as you are saving and reusing the views; hence, they will never be garbage collected. However, unlike your approach, which seems to work immediately, when using the WeakInteractionRequest approach the view will still react to the InteractionRequest until the garbage collector destroy it, which could generate a timing issue.\r\n\r\nThanks for sharing this,\r\n\r\nDamian Cherubinihttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-12-28T11:51:56.047-08:00",
+      "Id": 156627
+    }
+  ]
+}

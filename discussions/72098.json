@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "246046",
+    "ThreadId": "72098",
+    "Html": "<p>I'm a beginning&nbsp;Prism user and I am attempting to use property injection to instantiate a service I have written.&nbsp; I am registering the service in the bootstrapper (I want my service to be available to multiple modules)&nbsp;as follows:</p>\r\n<p>&nbsp;protected override void ConfigureContainer()</p>\r\n<p>{</p>\r\n<p>&nbsp;&nbsp; Container.RegisterType&lt;IMyService, MyService&gt;(new ContainerControlledLifetimeManager());</p>\r\n<p>}</p>\r\n<p>In my ViewModel then I have added a public property as follows:</p>\r\n<p>[Dependency]</p>\r\n<p>public IMyService MyService { get; set;}</p>\r\n<p>Now when I try to call a method on the service in my ViewModel as follows:</p>\r\n<p>MyService.Start()</p>\r\n<p>I get the standard error &quot;Object reference not set to an instance of an object&quot;...debugging shows MyService is null.</p>\r\n<p>Could someone please explain what I am missing?&nbsp; From reading the Unity documentation, my understanding is that using the [Dependency] attribute will cause an instance of MyService to be created and set as the value of the MyService property automatically.</p>\r\n<p>Do I still need to resolve the service as follows:</p>\r\n<p>Container.Resolve&lt;IMyService&gt;();</p>\r\n<p>and if I still need to do this where do I do it?&nbsp; In the ViewModel constructor?&nbsp; The corresponding Module?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-15T07:02:56.51-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "246227",
+    "ThreadId": "72098",
+    "Html": "<p id=59b185b0-9bf4-012c-cead-12313b0068d1>Hi</p>\r\n<p>When you are using Unity Property Injection you have to take in account the following things:</p>\r\n<ul>\r\n<li>You cannot access the injected property from the constructor of the class, at this time the property hasn't been instantiated. For further information visit this <a href=\"http://msdn.microsoft.com/en-us/library/dd203147.aspx\">site</a>. If you require access from the constructor to the injected object use <a href=\"http://msdn.microsoft.com/en-us/library/dd203129.aspx\">constructor injection</a>. </li>\r\n<li>You must create a new instance of your class by using Container.Resolve&lt;<strong>YourViewModel</strong>&gt; in order to resolve all the dependencies injections in the class. For further information visit this <a href=\"http://msdn.microsoft.com/en-us/library/dd203234.aspx\">site</a>, section: Resolving References to Objects </li>\r\n</ul>\r\n<p>I hope this answer helps you</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2009-10-15T13:47:06.46-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

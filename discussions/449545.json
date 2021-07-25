@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1066498",
+    "ThreadId": "449545",
+    "Html": "Hi All,\r<br />\n<br />\nI am using Prism 4.1 and MVVM pattern in my app. What i want is to create a global class in my shell app to catch each module's exception when that occurs. Any exception in each module is not handled in each module thru &quot;try...catch..&quot; statement.\r<br />\n<br />\nI am currently using DispatcherUnhandledException in my app.xaml.cs file, code snippet looks like this:<br />\n<pre><code>public partial class App : Application\n{\n    protected override void OnStartup(StartupEventArgs e)\n    {\n        base.OnStartup(e);\n\n        this.DispatcherUnhandledException+=new DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);</code></pre>\n\n}\r<br />\n}<br />\n<pre><code>    private void App_DispatcherUnhandledException(object sender,\n       DispatcherUnhandledExceptionEventArgs e)</code></pre>\n\n{\r<br />\n}\r<br />\n<br />\nHowerver, it seems to me that the App_DispatcherUnhandledException method can't catch all exception that happens in each module. yes, it did catch some of exceptions, but not all. for example, when an exception happens in the viewmodel of one module, the App_DispatcherUnhandledException  is not hit in the shell app.\r<br />\n<br />\nCould anyone thred some lights on this and help me out?\r<br />\n<br />\nAny input will be much appreciated.<br />\n",
+    "PostedDate": "2013-07-10T04:12:10.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1066718",
+    "ThreadId": "449545",
+    "Html": "Hi,\r<br />\n<br />\nAs far as I know Prism does not provide any functionally to manage <strong><em>unhandled exceptions</em></strong> globally (and it's also listed as a <a href=\"http://msdn.microsoft.com/en-us/library/ff921153%28v=pandp.40%29.aspx#sec4\" rel=\"nofollow\">Challenged not Addressed</a> by Prism in the documentation.) Hence, you will need to include your own logic to catch the exception.\r<br />\n<br />\nAs a starting point you can try subscribing to the <strong>AppDomain.CurrentDomain.UnhandledException</strong> event. Based on my understanding this event should be raised for any <strong><em>unhandled exceptions</em></strong> in your <strong>AppDomain</strong>, regardless of the thread.\r<br />\n<br />\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-07-10T11:46:20.253-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1080050",
+    "ThreadId": "449545",
+    "Html": "Hi,\r<br />\n<br />\nCan a complete sample code be provided for handling global exception with the approach of &quot;subscribing to the AppDomain.CurrentDomain.UnhandledException&quot;?\r<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2013-08-13T04:50:29.3-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1080177",
+    "ThreadId": "449545",
+    "Html": "Hi,\r<br />\n<br />\nYou can find more information about the <strong>UnhandledException</strong> event, as well as an example on how to use it in its <strong>MSDN</strong> page:<br />\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/system.appdomain.unhandledexception%28v=vs.100%29.aspx\" rel=\"nofollow\">AppDomain.UnhandledException in MSDN</a><br />\n</li>\n</ul>\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-08-13T10:26:26.107-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1080359",
+    "ThreadId": "449545",
+    "Html": "Following is the code in AppMain. But the unhandled exception within the Prism Module is not caught by this code. Many websites talk about the fact that this code does not work for Prism application, but could not find any solution for the same. Any help on this will of great help.\r<br />\n<br />\nThanks\r<br />\n<br />\nprotected override void OnStartup(StartupEventArgs e)\r<br />\n{<br />\n<h1>if (DEBUG)</h1>\n<pre><code>        RunInDebugMode();</code></pre>\n\n<h1>else</h1>\n<pre><code>        RunInReleaseMode();</code></pre>\n\n<h1>endif</h1>\n}<br />\n<pre><code>    private static void RunInDebugMode()\n    {\n        Bootstrapper = new Bootstrapper();\n        Bootstrapper.Run();\n    }\n\n    private static void RunInReleaseMode()\n    {\n        AppDomain.CurrentDomain.UnhandledException += AppDomainUnhandledException;\n        try\n        {\n            Bootstrapper = new Bootstrapper();\n            Bootstrapper.Run();\n        }\n        catch (Exception ex)\n        {\n            HandleException(ex);\n        }\n    }\n\n    private static void AppDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)\n    {\n        HandleException(e.ExceptionObject as Exception);\n    }\n\n    private static void HandleException(Exception ex)\n    {\n        if (ex == null) return;\n\n        MessageBox.Show(ex.Message);\n        Environment.Exit(1);\n    }\n</code></pre>\n\n",
+    "PostedDate": "2013-08-13T22:37:32.83-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1081010",
+    "ThreadId": "449545",
+    "Html": "Hi,\r<br />\n<br />\nBased on the code snippets you provided, the only thing that looks odd is that you are not defining your new <strong>Bootstrapper</strong> correctly, since you are using the type as a variable, so you should define a name for your new <strong>Bootstrapper</strong> like this:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n...\nBootstrapper bootstrapper = <span style=\"color:Blue;\">new</span> Bootstrapper();\nbootstrapper.Run();\n...\r\n</pre></div>Nevertheless, assuming that this is a typo mistake of yours, the code seems to be working fine as it looks. When running it in <strong>Debug</strong> mode, if any unhandled exception arises the application will hang. On the other hand, if running it in <strong>Release</strong> mode and any unhandled exception arises, a message box showing details of the exception will appear. \r<br />\n<br />\nI also took the time to create a sample of a simple <strong>Prism</strong> application using Unity container and the code snippets you provided that works as expected. Feel free to download it from my <strong>SkyDrive</strong> account:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://sdrv.ms/14BNPZ0\" rel=\"nofollow\">Prism sample with Exception Catching (Unity)</a><br />\n</li>\n</ul>\nHope this helps,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a> <br />\n",
+    "PostedDate": "2013-08-15T09:18:43.05-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1082072",
+    "ThreadId": "449545",
+    "Html": "Hi Federico Martinez,\r<br />\n<br />\nThanks a lot for the sample. Sample is working fine. <br />\n",
+    "PostedDate": "2013-08-19T03:31:19.057-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

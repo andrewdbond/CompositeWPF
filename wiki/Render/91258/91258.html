@@ -1,0 +1,41 @@
+<div class="wikidoc"><h1>Summary of what&#39;s new </h1><ol><li><a href="#NewModularityQuickstarts">New Modularity QuickStarts</a></li>
+<li><a href="#NewElementsInPrism">New elements in Prism to support dynamic module loading and initialization</a></li>
+<li><a href="#NewViewModel">New the View-Model Composition Spike</a></li>
+<li>Added documentation for the Stock Trader Reference Implementation and UI Composition QuickStart</li></ol>
+<a name="NewModularityQuickstarts"></a>
+<h3>New Modularity QuickStarts</h3>These QuickStarts demonstrate how to perform dynamic module loading.
+<ul><li><b>Directory LookUp Modularity QuickStart</b>. This QuickStart shows how to dynamically load modules using a directory lookup module enumerator. This kind of enumerator loads module assemblies from a specified folder.</li>
+<li><b>Configuration-Based Modularity QuickStart</b>. This QuickStart shows how to load modules dynamically using a configuration-based module enumerator. This module enumerator determines what modules to load by reading a configuration file.</li></ul>
+Both QuickStarts are based on the same business scenario. The only difference between them is how modules are enumerated. <br /><br /><img src="http://download-codeplex.sec.s-msft.com/Download?ProjectName=CompositeWPF&DownloadId=34491" alt="conceptualview.png" title="conceptualview.png" /><br /><br /><b>Figure 1 | QuickStarts Conceptual View</b><br /><br /><img src="http://download-codeplex.sec.s-msft.com/Download?ProjectName=CompositeWPF&DownloadId=34492" alt="modularity.png" title="modularity.png" /><br /><br /><b>Figure 2 | Modularity QuickStart UI</b><br /><a name="NewElementsInPrism"></a>
+<h3>New elements in Prism to support dynamic module loading and initialization</h3>The following list describes the main new items included in Prism to support dynamic module loading.
+<ul><li><b>Prism\Services\DirectoryLookupModuleEnumerator.cs</b>. This module enumerator discovers modules in assemblies stored in a particular folder. The enumerator loads the assemblies in &quot;reflection-only&quot; mode (to optimize performance) and reflects over them to obtain the types that implement the IModule interface. While doing the module discovery, a separate application domain is used to encapsulate the discovery process. Note that this module enumerator supports multiple modules in a single assembly (there could be multiple classes that implement the Imodule interface).</li>
+<li><b>Prism\Services\ConfigurationModuleEnumerator.cs</b>. This module enumerator discovers modules by reading the configuration file of the application. The following figure, extracted from the Configuration-Based Modularity QuickStart, illustrates a sample configuration section for modules.</li></ul>
+<pre>
+&lt;modules&gt;
+    &lt;module assemblyFile=“Modules/ModuleD.dll” moduleType=“ModuleD.ModuleO” moduleName=”ModuleD”&gt;
+        &lt;dependencies&gt;
+            &lt;dependency moduleName=“ModuleB”/&gt;
+        &lt;/dependencies&gt;
+    &lt;/module&gt;
+    &lt;module assemblyFile=“Modules/ModuleB.dll” moduleType= “ModuleB.ModuleB” moduleName= “ModuleB” /&gt;
+    &lt;module assemblyFile=“Modules/ModuleA.dll” moduleType= “ModuleA.ModuleA” moduleName= “ModuleA” /&gt;
+        &lt;dependencies&gt;
+            &lt;dependency moduleName=“ModuleD”/&gt;
+        &lt;/dependencies&gt;
+    &lt;/module&gt;
+    &lt;module assemblyFile=”Modules/ModuleC.dll” moduleType=“ModuleC.ModuleC” moduleName= “ModuleC” allowsDelayLoading=”true”/&gt;
+&lt;/modules&gt; </pre><br /><b>Figure 3 | Modules configuration section</b>
+<ul><li><b>Prism\ModuleAttribute.cs</b>. This attribute provides additional metadata information about a module. This attribute is read by the <b>DirectoryLookupModuleEnumerator</b> when discovering modules. The attribute contains the following properties:
+<ul><li>string ModuleName. This is the name of the module.</li>
+<li>string[] DependsOn: This is a list of module names on which the module depends.</li>
+<li>Bool AllowsDelayLoading: This flag indicates that the module can be loaded on demand.</li></ul></li>
+<li><b>Prism.Interfaces\IModuleEnumerator.cs</b>. This defines the public interface of module enumerators. The interface contains the following methods:
+<ul><li><b>ModuleInfo[] GetModules()</b>. This method returns the metadata for all the modules discovered.</li>
+<li><b>ModuleInfo[] GetNonDelayLoadedModules()</b>. This method returns the metadata for all modules that are not marked with the flag <b>AllowsDelayLoading</b>.</li>
+<li><b>ModuleInfo GetModule(string moduleName)</b>. This method returns the metadata for a module given its name. This method is typically used to load a module on demand.</li></ul></li>
+<li><b>Prism\Services\ModuleInitializerService.cs</b>. This service handles the initialization modules. It defines the modules load order, loads module assemblies, and invokes the <b>Initialize</b> method of each module class.</li>
+<li><b>Prism.Interfaces\IModuleInitializerService</b>. This defines the public interface for module initializer services.</li></ul>
+<a name="NewViewModel"></a>
+<h3> New View-Model Composition Spike</h3>In this spike a different approach to implementing views and regions is explored. 
+<ul><li>In this spike, views are not implemented as User controls. Instead, views are made up of a presentation Model Class and a XAML file that defines data templates for the model which are automatically injected by WPF.</li></ul>
+<table><tr><td> <b>Important</b>: the goal of the spike is to give visibility to the community about the research being done so that you can provide feedback. By no means this spike should be considered as a final implementation because it has not been tested and it is not ready for production. The code written in the spike might be discontinued in future releases. </td></tr></table></div><div class="ClearBoth"></div>

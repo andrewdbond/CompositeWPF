@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "630371",
+    "ThreadId": "262109",
+    "Html": "\r\n<p>In the structure of Prism, we should have</p>\r\n<p>1 project for main window/bootstrapper,</p>\r\n<p>1 project for every module</p>\r\n<p>1 project for common classes shared by those modules.</p>\r\n<p>If we use MEF, we need to add AssemblyCatalog for each assembly. that means main window/boostrapper project needs to reference all projects</p>\r\n<p>regardless if it is really necessary.</p>\r\n<p>Any solution to this?</p>\r\n<p>&nbsp;</p>\r\n<p>thanks</p>\r\n",
+    "PostedDate": "2011-06-20T22:59:12.15-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "630796",
+    "ThreadId": "262109",
+    "Html": "<p>Hi,</p>\r\n<p>It&rsquo;s not necessary to hold references to your modules in your shell project. The <strong>MefBootstrapper</strong> initializes the MEF catalog, and by placing the <strong>ModuleExport</strong> attribute on the <strong>IModule</strong> in your module&rsquo;s projects, the exports for these projects are included in the MEF catalog, regardless of how the module&rsquo;s project was loaded.</p>\r\n<p>You might find more information about this in <a href=\"http://msdn.microsoft.com/en-us/library/gg405479(PandP.40).aspx#sec38\">this section</a> of the Modularity Chapter in the Prism MSDN documentation.</p>\r\n<p>You can also check this in the <strong>Modularity QuickStarts</strong> provided with Prism v4.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p><span style=\"font-size: 11pt;\" lang=\"EN-US\">&nbsp;</span></p>",
+    "PostedDate": "2011-06-21T14:22:13.803-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

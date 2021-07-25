@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "998820",
+    "ThreadId": "432548",
+    "Html": "I've asked similar question before in another thread but i couldn't get an answer so i tried to re-shape my<br />\nquestion and drive it from another perspective:<br />\nI'm developing LOB application with Model layer/module and Service Layer/Module<br />\nthen several modules each cover part of the functionality.<br />\nHere is analogy for part of my Model classes<br />\n<pre><code> public class Customer\n    {\n        \n        public string CustomerID { get; set; }\n        \n        public string CompanyName { get; set; }\n                        \n        public string Address { get; set; }\n                \n        public string Phone { get; set; }\n        \n        public IEnumerable&lt;Order&gt; Orders { get; set; }\n    }\n\n\n public class Order\n    {\n       \n        public int OrderID { get; set; }\n        \n        public DateTime? OrderDate { get; set; }\n        \n        public DateTime? ShippedDate { get; set; }\n                      \n        public IEnumerable&lt;OrderDetail&gt; OrderDetails { get; set; }\n    }\n        \n\n public class OrderDetail\n    {\n        \n        public Product Product { get; set; }\n        \n        public int Quantity { get; set; }\n        \n        public decimal UnitPrice { get; set; }\n        \n   }</code></pre>\n\nthe model classes are populated by CustomerService<br />\nNow i want in one of the modules to: <br />\n1-implement this hierarchy (Master-Details Relationship) in MVVM knowing that<br />\ni'm using Prism 4 and MEF (Microsoft Extensibility Framework) as IOC Container <br />\n2-the Details parts will have their own ViewModel, to enable me to add CRUD operations<br />\n3-how to implement CRUD operations w/n details view models<br />\n<br />\nYour help is very much appreciated.<br />\n",
+    "PostedDate": "2013-02-08T22:53:07.353-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1001286",
+    "ThreadId": "432548",
+    "Html": "If you have a single viewmodel that has  a colleciton of customers and you have a combobox for example with the list use selectedItem to set SelectedCustomer in view model. Bind the selected customer to your for example  DataGrid with its item source={Binding SelectedCustomer.Orders}. When you select the OrdersDatagrid first row set the selecteditem to another property in view model called SelectedOrder. If you bind Selected Order to another Datagrid's ItemsSource=SelectedOrder.orderDetails. \r<br />\n<br />\nYou have one view model that give everything you needed. Of course it will not be a production quality code to just directly bind all easily. For production you may want to filter data based on dates, etc to avoid loading everything from the database.\r<br />\n<br />\nHope this helps!<br />\n",
+    "PostedDate": "2013-02-14T08:07:02.42-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

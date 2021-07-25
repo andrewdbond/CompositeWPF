@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "630768",
+    "ThreadId": "262237",
+    "Html": "\r\n<p>Hi there,</p>\r\n<p>I'm creating a new WPF with MEF and it works nice.</p>\r\n<p>But now I need to create a new Window with a Region but it seems like the region is not registered. However the Regions created in the Window (shell) are registered.</p>\r\n<p>Here's the code for the new Window</p>\r\n<p><strong>Wizard.xaml</strong></p>\r\n<p><span></span>&lt;DockPanel LastChildFill=&quot;True&quot;&gt;<br>\r\n<span style=\"white-space:pre\"></span>&lt;StackPanel Orientation=&quot;Horizontal&quot; HorizontalAlignment=&quot;Right&quot; DockPanel.Dock=&quot;Bottom&quot;&gt;<br>\r\n<span style=\"white-space:pre\"></span>&lt;Button Content=&quot;_Previous&quot; Margin=&quot;0, 0, 10, 0&quot; /&gt;<span>\r\n<br>\r\n</span><span style=\"white-space:pre\"></span>&lt;Button Content=&quot;_Next&quot; /&gt;<span>\r\n<br>\r\n</span><span style=\"white-space:pre\"></span>&lt;/StackPanel&gt;<span> <br>\r\n</span><span style=\"white-space:pre\"></span>&lt;ContentControl cal:RegionManager.RegionName=&quot;WizardStepsRegion&quot; /&gt;<span>\r\n<br>\r\n</span>&lt;/DockPanel&gt;</p>\r\n<p>When I try to get the view inside the region I get the following exception &quot;KeyNotFoundException was unhandled by user code&quot;, &quot;The region manager does not contain the WizardStepsRegion region.&quot;</p>\r\n<p><strong>Wizard.xaml.cs</strong></p>\r\n<p><span></span>private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)<br>\r\n{<span> <br>\r\n</span><span style=\"white-space:pre\"></span>object asdf = regionManager.Regions[&quot;WizardStepsRegion&quot;];//.GetView(&quot;Step1View&quot;);<span>\r\n<br>\r\n</span>}</p>\r\n<p>Can someone help me to fix this?</p>\r\n<p>Thank you.</p>\r\n",
+    "PostedDate": "2011-06-21T13:40:10.403-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "631130",
+    "ThreadId": "262237",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding of your scenario, your problem might be happening because your window doesn&rsquo;t have the RegionManager property set. You could try doing the following:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>IRegionManager regionManager = ServiceLocator.Current.GetInstance&lt;IRegionManager&gt;();\r\nregionManager.SetRegionManager(<span style=\"color: blue;\">this</span>.MyWizardWindow, regionManager);\r\n</pre>\r\n</div>\r\n&nbsp;\r\n<p>If that doesn&rsquo;t make your region appear in the region manager, you could try to registering the specific region manually into the RegionManager. For example like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>IRegionManager regionManager = ServiceLocator.Current.GetInstance&lt;IRegionManager&gt;();\r\nregionManager.SetRegionName(<span style=\"color: blue;\">this</span>.MyContentControl, <span style=\"color: #a31515;\">\"WizardStepsRegion\"</span>);\r\n</pre>\r\n</div>\r\n</p>\r\n<p>&nbsp;</p>\r\n<p>Additionally, you could try using the <strong>View Discovery</strong> approach (that is to say, using the <strong>RegisterViewWithRegion</strong> method to register views into regions), so that you make sure that your views are added to the regions when they are actually created.</p>\r\n<p>You can find more information about Regions in <a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28v=PandP.40%29.aspx\">Prism in Chapter 7: Composing the User Interface</a>.</p>\r\n<p>Please let me know if this information helps you.</p>\r\n<p>Thanks,</p>\r\n<p>&nbsp;</p>\r\n<p>Miguel Bronzovic<br />http://blogs.southworks.net/mbronzovic</p>",
+    "PostedDate": "2011-06-22T07:22:50.24-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "631831",
+    "ThreadId": "262237",
+    "Html": "<p>Hi mbronzovic,</p>\n<p>I followed the first approach and it works :-)</p>\n<p>This is the updated constructor of my new Window</p>\n<div style=\"color: black; background-color: white;\">\n<pre>[ImportingConstructor]\n<span style=\"color: blue;\">public</span> Wizard(IRegionManager rm, CompositionContainer cc)\n{\n\tInitializeComponent();\n\n\t<span style=\"color: blue;\">if</span> (firstTimeRunning)\n\t{\n\t\tfirstTimeRunning = <span style=\"color: blue;\">false</span>;\n\n\t\t<strong>RegionManager.SetRegionManager(<span style=\"color: blue;\">this</span>, rm);</strong>\n\t\trm.RegisterViewWithRegion(<span style=\"color: #a31515;\">\"WizardStepsRegion\"</span>, <span style=\"color: blue;\">typeof</span>(Step1View));\n\t}\n}\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>And this is the way I show it</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre>Wizard wizard = (Wizard)ServiceLocator.Current.GetInstance(<span style=\"color: blue;\">typeof</span>(Wizard));\nwizard.ShowDialog();\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>Can you please tell me why do I've to add the SetRegionManager(...) ?</p>\n<p>If I omit it how can I access to the region? Where is it registered? Because the view is shown without the SetRegionManager().</p>\n<p>Thank you</p>\n<p>&nbsp;</p>",
+    "PostedDate": "2011-06-23T06:36:14.747-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "641287",
+    "ThreadId": "262237",
+    "Html": "<p>I have also had this exact same problem and would be very keen to see the answer to your last question in this thread.</p>\r\n<p>Many thanks in advance.</p>\r\n<p>Simon</p>",
+    "PostedDate": "2011-07-12T12:23:42.263-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "642570",
+    "ThreadId": "262237",
+    "Html": "<p>Hi Simon,</p>\r\n<p>The <strong>RegionManager </strong>property is an <strong>AttachedProperty</strong>, which the <strong>RegionManagerRegistrationBehavior </strong>attempts to locate in parent controls browsing through the visual tree. However, for controls that aren't actually children of a control that has the region manager defined (i.e. a popup window), you must manually set the <strong>RegionManager </strong><strong>AttachedProperty</strong>, as it was done in the example calling the <strong>RegionManager.SetRegionManager</strong> method.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-14T12:21:16.573-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "644395",
+    "ThreadId": "262237",
+    "Html": "<p>Hi there,</p>\n<p>The code that I posted on jun 23 in this thread works well the first time I run the wizard however the second time I run it I get the exception <strong>RegionCreationException</strong>&nbsp;in the statement&nbsp;wizard.ShowDialog();</p>\n<p>Here's the detailed info:&nbsp;An exception occurred while creating a region with name 'WizardStepsRegion'. The exception was: System.ArgumentException: Region with the given name is already registered: WizardStepsRegion.</p>\n<p>How can I fix this?</p>\n<p>Thank you.</p>",
+    "PostedDate": "2011-07-19T08:05:27.667-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645661",
+    "ThreadId": "262237",
+    "Html": "<p>Hi,</p>\n<p>You could try decorating your Wizard class with the <strong>PartCreationPolicy </strong>attribute with the <strong>CreationPolicy.NonShared</strong> value, so that a new instance of your wizard is created each time you resolve it through the service locator.</p>\n<p>Edit: I've checked your <a href=\"http://compositewpf.codeplex.com/discussions/266057\">new thread</a> about this issue; I'll examine your repro sample and provide an answer about it in that thread.</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-21T09:44:51.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645668",
+    "ThreadId": "262237",
+    "Html": "<p>Hi Guido,</p>\r\n<p>I've posted a new post with a simple application at&nbsp;<a title=\"http://compositewpf.codeplex.com/discussions/266057\" href=\"http://compositewpf.codeplex.com/discussions/266057\">http://compositewpf.codeplex.com/discussions/266057</a>&nbsp;where I give a better explanation about it.</p>\r\n<p>The Wizard class is decorated with PartCreationPolicy as you said so that's not the problem.</p>\r\n<p>Thank you for your help.</p>",
+    "PostedDate": "2011-07-21T10:10:07.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645698",
+    "ThreadId": "262237",
+    "Html": "<p>Hi,</p>\r\n<p>I've already provided a response in your <a href=\"266057\">new thread</a>, so let's continue our discussion in that thread.</p>\r\n<p>Thanks,</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-21T10:59:51.483-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

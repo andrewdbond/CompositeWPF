@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "523666",
+    "ThreadId": "235133",
+    "Html": "\r\n<p>I have a problem with a module using a WCFservice. The service i configured in the config file of the module, and a custom behaviorextension is also defined there. The extension is defined in a common module assembly (called ClientLibrary), where there is\r\n also a generic class to create a channelfactory based on the configurationfile of the module (using ConfigurationManager.OpenMappedExeConfiguration).</p>\r\n<p>My problem is that when the channelfactory is created, I get a ConfigurationErrorsException (wrapped in a ModuleInitializeException) saying that the behaviorextension type cannot be loaded:</p>\r\n<p>System.Configuration.ConfigurationErrorsException: The type 'NextGeneration.ClientLibrary.PathologyClientMessageInspectorExtensionElement, ClientLibrary' registered for extension 'PathologyMessageInspector' could not be loaded. (C:\\ProgramData\\Company\\Modules\\LoginModule.dll.config\r\n line 17)</p>\r\n<p><br>\r\nThe only way I can get around this, is to define the modulefolder (I use DirectoryModuleCatalog, and syncronize te module folder against a networkshare containing updated modules at application start) as a subdirectory to the application directory, and adding\r\n the following to the shells config:</p>\r\n<p>&nbsp; &lt;runtime&gt;<br>\r\n&nbsp;&nbsp;&nbsp; &lt;assemblyBinding xmlns=&quot;urn:schemas-microsoft-com:asm.v1&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;probing privatePath=&quot;Modules&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp; &lt;/assemblyBinding&gt;<br>\r\n&nbsp; &lt;/runtime&gt;</p>\r\n<p>This however is not possible in production, since the module will be installed in programfiles folder, and the modulefolder should reside in Programdata folder.</p>\r\n<p>&nbsp;</p>\r\n<p>Any comment would be much appreciated - I hope I do not have to add the behaviorextension programmatically when creating the channelfactory.</p>\r\n",
+    "PostedDate": "2010-11-18T00:19:05.787-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "523923",
+    "ThreadId": "235133",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>If your scenario requires to call a WCF service, you have take into account some concepts. Therefore, if you are using Prism v2, I think that you will find the following links interesting:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/matiasb/2009/06/20/how-to-consume-wcf-services-from-composite-application-guidance-for-wpf-and-silverlightprism-v2-modules/\">How-to: Consume WCF services from Composite Application Guidance for WPF and Silverlight(Prism-v2)\r\n Modules</a> </li><li><a href=\"http://forums.silverlight.net/forums/t/67024.aspx\">Error With Web serivce</a>, this forum thread is for Silverlight, but it might help you.\r\n</li><li><a href=\"http://social.msdn.microsoft.com/Forums/en-US/wcf/thread/49949e61-08f9-4dd4-b3a7-d628a3c273c2/\">Create and Attach Custom Behavior to Client and Service in Web.Config</a>\r\n</li></ul>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero<br>\r\n<a href=\"http://blogs.southworks.net/fantivero\"><span style=\"color:#0066cc\">http://blogs.southworks.net/fantivero</span></a></p>\r\n<p><span lang=\"EN-US\" style=\"font-size:10pt\"><br>\r\n</span></p>\r\n",
+    "PostedDate": "2010-11-18T10:24:45.157-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "525190",
+    "ThreadId": "235133",
+    "Html": "\r\n<p>Hi fantivero</p>\r\n<p>Thank you for the reply!</p>\r\n<p>The first link you provided just states that when using a service from a module, the modules config (not the shells) file will contain the client side settings. This is why I use the ConfigurationManager.OpenMappedExeConfiguration to create the channel from\r\n settings in the modules config file. And this works great as long as the modules are in a folder, that can be registered as a probingpath in the shells config, since otherwise it cannot load the extensiontype.</p>\r\n<p>As stated above this is not possible in production, and so the only solution I can see is to add the behaviourextension programmatically. I would like to avoid that...</p>\r\n<p>Anybody that had similar problems?</p>\r\n",
+    "PostedDate": "2010-11-22T01:13:58.933-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

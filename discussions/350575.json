@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "817450",
+    "ThreadId": "350575",
+    "Html": "<p>I have the following Region hirerachy</p>\n<p>MainRegion</p>\n<p>-----SubMainRegion</p>\n<p>-------------RegionA</p>\n<p>-------------RegionB</p>\n<p>I use ViewModel first approach and then lookup for view corresponding to that ViewModel.</p>\n<p>I try to load SubMainRegion from MainRegionViewModel. Then in the constructor of SubMainRegionViewModel I try to load views in RegionA and RegionB. The problem is that when I try to add view to either SubMainRegion, RegionA or RegionB, I get the \"Region  Not Found\" error. It seems that these regions (SubMainRegion, RegionA and RegionB) doesn't get registered since they are nested within the MainRegion and not directly defined in the MainRegion.xaml. What could be done so that the SubMainRegion, RegionA and  RegionB are eagerly registered? Also is this approach reasonable?</p>\n<p>&nbsp;</p>\n<p>regards,</p>\n<p>Nirvan.</p>",
+    "PostedDate": "2012-03-29T17:16:09.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "817864",
+    "ThreadId": "350575",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding of your scenario this error could be happening due to a timing issue, as the <strong>DelayedRegionCreationBehavior </strong>will create a new region when the control that will host the region is added to the <strong>VisualTree</strong>. Hence, when using <strong>ViewModel </strong>first approach like in your case, your new region won't be available when you try adding the inner views in your <strong>ViewModel's </strong>constructor as the corresponding view has not yet been added to the <strong>VisualTree</strong>.</p>\r\n<p>As far as I know, to avoid this kind of errors you could try using the <strong>View Discovery approach</strong> to register your views from inside your <strong>ViewModel's</strong> constructor. This way when a region is created, the region looks for all the <strong>ViewTypes </strong>associated with the region and automatically instantiates and loads the corresponding views.</p>\r\n<p>You could find more information about this in the following chapter of the <strong>Prism </strong>documentation at <strong>MSDN</strong>:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098(v=pandp.40).aspx\"> Chapter 7: Composing the User Interface</a></li>\r\n</ul>\r\n<p>As another option, you could add the inner views once you ensure the region has been added to the <strong>VisualTree</strong>. For example in your view model you could subscribe to the <strong>Loaded </strong>event of the view and add the corresponding inner views in its handler method.</p>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2012-03-30T10:42:15.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "817895",
+    "ThreadId": "350575",
+    "Html": "<p>I deal with this scenario a lot.</p>\r\n<p>I personally use events and <strong>ViewInjection</strong> to tell when a parent view is injected, meaning the child region should be visible, which means it is safe to inject the child view.</p>\r\n<p>I also inject all views using scoped region managers. &nbsp;This prevents any future problems of having multiple regions/views of the same name conflicting in the same region manager (ie. it's not allowed).</p>\r\n<p>I would however use <strong>ViewDiscovery</strong>&nbsp;if this was all done at startup, since it would all happen during the CreateShell method, which as far as I can tell must complete its cycle before any events can be subscribed to.</p>",
+    "PostedDate": "2012-03-30T11:46:07.983-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,170 @@
+[
+  {
+    "Id": "516147",
+    "ThreadId": "233232",
+    "Html": "\r\n<p>If I use a ContentControl as my navigation region, the first time I navigate that region to a view it works fine. When I navigate to a different view, that works fine. However, when I navigate back to the original view, I get an error - &quot;View already exists\r\n in region&quot;.</p>\r\n<p>I expected my existing view to get activated instead of getting this error.</p>\r\n<p>What is the logic behind raising this error instead of simply activing the existing view?</p>\r\n",
+    "PostedDate": "2010-11-02T14:41:45.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "516148",
+    "ThreadId": "233232",
+    "Html": "\r\n<p>This even happens if I return true from INavigationAware.IsNavigationTarget. For instance:</p>\r\n<p>return navigationContext.Uri.OriginalString == &quot;/path/to/this/view&quot;;</p>\r\n",
+    "PostedDate": "2010-11-02T14:43:25.113-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "516175",
+    "ThreadId": "233232",
+    "Html": "\r\n<p>I don't even care what the logic is behind raising the error. If anyone can suggest a work-around I'm all for it! Thanks.</p>\r\n<p>(I'm in a hurry to finish this project before my boss hears about any of that Silverlight is Dead news that's been going around.)</p>\r\n",
+    "PostedDate": "2010-11-02T15:34:45.953-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "516182",
+    "ThreadId": "233232",
+    "Html": "\r\n<p>OK, nevermind. Sorry, my fault!</p>\r\n<p>Returning true from INavigationAware.IsNavigationTarget does work, you just have to make sure that you're actually returning true and not what you think is true!</p>\r\n<p>(Not implementing INavigationAware at all works as well if you don't need to implement it.)</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2010-11-02T15:59:24.687-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "516184",
+    "ThreadId": "233232",
+    "Html": "\r\n<p>Admins: Feel free to delete this discussion, thank you.</p>\r\n",
+    "PostedDate": "2010-11-02T16:00:13.943-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "516439",
+    "ThreadId": "233232",
+    "Html": "\r\n<p>Hi Wayne,</p>\r\n<p>Nice to see that you figured out how to get your scenario working. As there are several opinions around the role of Silverlight, I think that you can find the following official blog posts interesting:</p>\r\n<ul>\r\n<li><a href=\"http://team.silverlight.net/announcement/pdc-and-silverlight/\">PDC and Silverlight</a>\r\n</li><li><a href=\"http://blogs.msdn.com/b/somasegar/archive/2010/11/01/silverlight-lighting-up-the-client.aspx\">Silverlight: Lighting up the client</a>\r\n</li></ul>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-03T06:39:55.367-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "516514",
+    "ThreadId": "233232",
+    "Html": "\r\n<p>Thanks fantivero!</p>\r\n",
+    "PostedDate": "2010-11-03T08:44:02.717-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "597022",
+    "ThreadId": "233232",
+    "Html": "<p>Good day,</p>\r\n<p>I seem to have the same problem. Not sure why it only happens in this scenario.</p>\r\n<p>If I remove the INavigationAware it seems to work but I'm dependent on the Prism navigation to execute certain initialisations.</p>\r\n<p>The only complexity in this scenario is I load a user control in the main region with RequestNavigate and the loaded user control also contains a region which I load other module also using RequestNavigate. So it&rsquo;s a region in a region.</p>\r\n<p>In other places I do the same and it works fine.</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2011-04-14T00:27:31.643-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "597023",
+    "ThreadId": "233232",
+    "Html": "<p>Good day,</p>\r\n<p>I seem to have the same problem. Not sure why it only happens in this scenario.</p>\r\n<p>If I remove the INavigationAware it seems to work but I'm dependent on the Prism navigation to execute certain initialisations.</p>\r\n<p>The only complexity in this scenario is I load a user control in the main region with RequestNavigate and the loaded user control also contains a region which I load other module also using RequestNavigate. So it&rsquo;s a region in a region.</p>\r\n<p>In other places I do the same and it works fine.</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2011-04-14T00:27:34.053-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "598908",
+    "ThreadId": "233232",
+    "Html": "<p>I wonder if someone can advise me on the RequestNavigate. I did post the question and log an incident on the patterns and practises website for Prism but nobody responded.</p>\r\n<p>We use RequestNavigate extensively to populate the different regions on the composite UI. In this scenario, I&rsquo;ve got a user control with a region and using RequestNavigate I populate the region with a user control that consist out of its own regions where I load other user controls.</p>\r\n<p>&nbsp;</p>\r\n<p>This works perfectly on most areas but for some reason if I implement the <span style=\"font-size: 9.5pt; color: #2b91af;\">INavigationAware </span>in the viewmodels and set the inner RequestNavigation to load all the other user controls in the <span style=\"font-size: 9.5pt;\">OnNavigatedTo</span> as stated above it load the first time perfectly without any issues but if I navigate away and then back it fails to load the inner user controls. If I move the RequestNavigate from the <span style=\"font-size: 9.5pt;\">OnNavigatedTo </span>to the load of the user control it works.</p>\r\n<p>So I did solve the problem but don't like the solution and would like to keep everything in the viewmodel. Any advice will be appreciated?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-04-18T01:07:13.04-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "600563",
+    "ThreadId": "233232",
+    "Html": "<p>Hi,</p>\r\n<p>It could be helpful if you could provide us with a repro sample of your solution, so that we can help you find out the cause of the unexpected behavior you're experiencing.</p>\r\n<p>Thanks,</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-04-20T11:30:08.3-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "601808",
+    "ThreadId": "233232",
+    "Html": "<p>Hi&nbsp;<a class=\"UserProfileLink\" href=\"http://www.codeplex.com/site/users/view/eraubenheimer\">eraubenheimer</a>,</p>\r\n<p>If you uses MEF, you must use the same string (case sensitive) in export attribute with your view name.</p>\r\n<p>This works:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>    [Export(<span style=\"color: #a31515;\">\"View1\"</span>)]\r\n    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> View1 : UserControl, INavigationAware\r\n\r\n</pre>\r\n</div>\r\n</p>\r\n<p>This won't work:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>    [Export(<span style=\"color: #a31515;\">\"view1\"</span>)]\r\n    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> View1 : UserControl, INavigationAware\r\n\r\n</pre>\r\n</div>\r\n</p>\r\n<p>The difference only in \"V\" &amp; \"v\". So once you navigate to it and when you try to re-navigate back it will complain \"\"View already exists in region\".</p>\r\n<p>I tried this on Prism 4 &amp; silverlight 4.</p>",
+    "PostedDate": "2011-04-23T00:03:49.35-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602683",
+    "ThreadId": "233232",
+    "Html": "<p>I dont think its a case sensitive issue. You can give any contract name to your exports. I think it is because the view is not marked as CreationPolicy.NonShared. So when you navigate back to it the region tries to add the same instance of the view to its ViewsCollection and it gives the above error message. Also setting the RegionMemberLifetime(KeepAlive = false) will make sure view is deactivated when you&nbsp;navigate away from the view.</p>",
+    "PostedDate": "2011-04-25T20:50:41.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602698",
+    "ThreadId": "233232",
+    "Html": "<p>That's also what I think, I never realized the problem is in contract name case sensitive issue.</p>\r\n<p>That's why I had spent days just to figure this out.</p>\r\n<p>Please download this <a title=\"VS Solution\" href=\"http://www.mediafire.com/?9dxxqquqm32fqti\" target=\"_blank\">solution</a> to reproduce the issue.</p>\r\n<p>All the views (View1, View2, View3) implements INavigationAware,&nbsp;and all it's&nbsp;IsNavigationTarget are return true.</p>\r\n<p>So in this case it doesn't matter whether you use [CreationPolicy.NonShared] attribute or not,&nbsp;since the view's instance must be reuse each time it navigated to.</p>\r\n<p>You can navigate to View2 and View3 many times, BUT since the View1 contract name is different from it's class name;&nbsp;you only can navigate to it once.</p>",
+    "PostedDate": "2011-04-25T22:30:12.093-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "619524",
+    "ThreadId": "233232",
+    "Html": "<p>Hi, it seems to me that this is a bug in prism (or in documentation)</p>\n<p>Documentation says:</p>\n<p>\"The name used to register the view in the container and to navigate does not have to be associated with the type name; any string will suffice. For example, you can use the full type name instead of a quoted string:</p>\n<pre>typeof(InboxView).FullName\"<br /><br />So, in my Unity bootstrapper solution i used<br /><br />container.RegisterType&lt;object,InboxView&gt;(\"SomeOtherName\");<br /><br />and got exception  \"View already exists in region\"<br /><br />After some prism code investigation i found that there is a method which test view in region for acceptance and it checks view for type name/full type name, not the registered in unity name of view<br /><br />RegionNavigationContentLoader.cs:<br /><br />&nbsp;&nbsp; protected virtual IEnumerable&lt;object&gt; GetCandidatesFromRegion(IRegion region, string candidateNavigationContract)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (region == null) throw new ArgumentNullException(\"region\");<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return region.Views.Where(v =&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string.Equals(v.GetType().Name, candidateNavigationContract, StringComparison.Ordinal) ||<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string.Equals(v.GetType().FullName, candidateNavigationContract, StringComparison.Ordinal));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /></pre>",
+    "PostedDate": "2011-05-27T12:45:51.247-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "619894",
+    "ThreadId": "233232",
+    "Html": "<p>ixolit, good catch. And I think you should report this to the team.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-28T19:59:50.983-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "625366",
+    "ThreadId": "233232",
+    "Html": "<blockquote style=\"padding-bottom: 0px; font-style: italic; margin: 0.25em 1em 0px; padding-left: 0.25em; padding-right: 0.25em; padding-top: 0px; border: #ccc 0.1em solid;\"><strong>ixolit wrote:</strong><br />\n<p>Hi, it seems to me that this is a bug in prism (or in documentation)</p>\n<p>Documentation says:</p>\n<p>\"The name used to register the view in the container and to navigate does not have to be associated with the type name; any string will suffice. For example, you can use the full type name instead of a quoted string:</p>\n<pre>typeof(InboxView).FullName\"<br /><br />So, in my Unity bootstrapper solution i used<br /><br />container.RegisterType&lt;object,InboxView&gt;(\"SomeOtherName\");<br /><br />and got exception  \"View already exists in region\"<br /><br />After some prism code investigation i found that there is a method which test view in region for acceptance and it checks view for type name/full type name, not the registered in unity name of view<br /><br />RegionNavigationContentLoader.cs:<br /><br />&nbsp;&nbsp; protected virtual IEnumerable&lt;object&gt; GetCandidatesFromRegion(IRegion region, string candidateNavigationContract)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (region == null) throw new ArgumentNullException(\"region\");<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return region.Views.Where(v =&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string.Equals(v.GetType().Name, candidateNavigationContract, StringComparison.Ordinal) ||<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string.Equals(v.GetType().FullName, candidateNavigationContract, StringComparison.Ordinal));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /></pre>\n</blockquote>\n<p>&nbsp;</p>\n<p>I can confirm this bug aswell! Anyone reported this yet?</p>",
+    "PostedDate": "2011-06-09T07:05:23.1-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "636079",
+    "ThreadId": "233232",
+    "Html": "<p>Glad to find this thread... I too had noticed that (using MEF) the name used to register my views HAD to match the actual class name of the view which seemed lame... &nbsp; Thanks for filing the bug!</p>",
+    "PostedDate": "2011-07-01T09:18:24.957-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "686015",
+    "ThreadId": "233232",
+    "Html": "<p>Hi,</p>\r\n<p>You might find the following blog post useful, which contains more information about this:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/aadami/2011/10/14/matching-contract-names-and-view-names-in-prism-region-navigation/\">Matching contract names and view names in Prism region navigation</a></li>\r\n</ul>\r\n<p>I hope you find this useful.</p>\r\n<p>﻿Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-10-18T13:45:52.053-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1065557",
+    "ThreadId": "233232",
+    "Html": "Hello,\r<br />\n<br />\nWill it be fixed some day ? It looks like a serious bug to me. \r<br />\nWe are using custom Export attribut names in our Views, thus we are always getting the exception, unless we always return true in IsNavigationTarget. \r<br />\n<br />\nRegards,\r<br />\n<br />\nAdrien<br />\n",
+    "PostedDate": "2013-07-08T06:25:59.147-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1065612",
+    "ThreadId": "233232",
+    "Html": "Hi Adrien,\r<br />\n<br />\nI believe you might find the following work items useful, where modified implementations of the <strong>RegionNavigationContentLoaders</strong> (the classes that are in charge of finding the &quot;candidate&quot; views in a region for navigation) are attached:<br />\n<h1></h1>\n<ul>\n<li>For <strong>Unity</strong> - <a href=\"http://compositewpf.codeplex.com/workitem/8121\" rel=\"nofollow\">Prism ContentControl Region RequestNavigate - &quot;View already exists in region&quot;</a></li>\n<li>\nFor <strong>MEF</strong> - <a href=\"http://compositewpf.codeplex.com/workitem/9439\" rel=\"nofollow\">MEF Navigation to an existing View</a><br />\n</li>\n</ul>\nThe aforementioned implementations were modified to also take into account the contract names used to export the views, avoiding this issue.\r<br />\nBased on my understanding, in order to use the <strong>MEF</strong> implementations in your application you will need to export it with the following attributes:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n[Export(<span style=\"color:Blue;\">typeof</span>(IRegionNavigationContentLoader))]\n[PartCreationPolicy(CreationPolicy.Shared)]\r\n</pre></div>I hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-07-08T08:10:21.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

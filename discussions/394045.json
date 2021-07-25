@@ -1,0 +1,138 @@
+[
+  {
+    "Id": "907252",
+    "ThreadId": "394045",
+    "Html": "\r\n<p>I'm fairly new to Prism. any help would be greatly appreciated. My requirement: every tab I open will have main region to load a grid with some data. depending on requirements, I need to load another view on the left like a searchpanel. (set of vertically\r\n aligned dropdowns and a search button). Not all tabs might have this left region.</p>\r\n<p>My question is in terms of organising regions and views. I'm reading about scoped regions, tab's datatemplates to organise views. I'm confused what to use when. please help.</p>\r\n<p>Because not every tab might have left region, I'm not sure how to organise views and regions. desperate for some advice.</p>\r\n<p>Left region doesn't sit outside tab. but within tab.</p>\r\n<p>I have also posted this in stackoverflow. I'm desperate for some help&nbsp;</p>\r\n<p><a href=\"http://stackoverflow.com/questions/12211854/multiple-views-in-tabitem-using-prism\">http://stackoverflow.com/questions/12211854/multiple-views-in-tabitem-using-prism</a></p>\r\n<p>&nbsp;</p>\r\n<p>Kavya</p>\r\n",
+    "PostedDate": "2012-09-01T04:21:57.587-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "907585",
+    "ThreadId": "394045",
+    "Html": "<p>Hi Kavya,</p>\r\n<p>What you would need is something like this.</p>\r\n<p>TabItem</p>\r\n<ul>\r\n<li>MainView (Loaded in MainRegion)\r\n<ul>\r\n<li>Grid with 2 columns : 1st column a contentcontrol with LeftRegion, 2nd column your datagrid</li>\r\n</ul>\r\n</li>\r\n</ul>\r\n<p>Now when you load tabitem, if you are using MEF, you could do regionManager.RequestNavigate(\"MainRegion\", new Uri(\"MainView\", UriKind.Relative). Now in the OnNavigatedTo in the MainView you can have your logic to decide which view you want to load in the LeftRegion. And then you just have to do&nbsp;regionManager.RequestNavigate(\"LeftRegion\", new Uri(\"SomeView\", UriKind.Relative), where the regionManager is injected into MainView.</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: green;\">// Load main view in MainRegion</span>\r\n_regionManager.RequestNavigate(<span style=\"color: #a31515;\">\"MainRegion\"</span>, <span style=\"color: blue;\">new</span> Uri(<span style=\"color: #a31515;\">\"MainView\"</span>, UriKind.Relative));\r\n\r\n<span style=\"color: green;\">// Main View &amp; ViewModel</span>\r\n[Export(<span style=\"color: #a31515;\">\"MainView\"</span>)]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> MainView\r\n{\r\n   [ImportingConstructor]\r\n   <span style=\"color: blue;\">public</span> MainView(MainViewModel viewModel)\r\n   {\r\n        InitializeComponent();\r\n        DataContext = viewModel;\r\n   }\r\n}\r\n\r\n[Export]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> MainViewModel : INavigationAware\r\n{\r\n     <span style=\"color: blue;\">private</span> IRegionManager _regionManager;\r\n\r\n     [ImportingConstructor]\r\n     <span style=\"color: blue;\">public</span> MainViewModel(IRegionManager regionManager)\r\n     {\r\n           _regionManager = regionManager;\r\n     }\r\n\r\n      <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> OnNavigatedTo(NavigationContext navigationContext)\r\n        {\r\n            <span style=\"color: green;\">// DO you access checks and load the view in leftregion</span>\r\n           _regionManager.RequestNavigate(<span style=\"color: #a31515;\">\"LeftRegion\"</span>, <span style=\"color: blue;\">new</span> Uri(<span style=\"color: #a31515;\">\"SearchView\"</span>, UriKind.Relative));\r\n        }\r\n\r\n        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">bool</span> IsNavigationTarget(NavigationContext navigationContext)\r\n        {\r\n            <span style=\"color: blue;\">return</span> <span style=\"color: blue;\">true</span>;\r\n        }\r\n\r\n        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> OnNavigatedFrom(NavigationContext navigationContext) {}\r\n}\r\n\r\n<span style=\"color: green;\">// Search view &amp; viewmodel</span>\r\n[Export(<span style=\"color: #a31515;\">\"SearchView\"</span>)]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> SearchView\r\n{\r\n   [ImportingConstructor]\r\n   <span style=\"color: blue;\">public</span> MainView(SearchViewModel viewModel)\r\n   {\r\n        InitializeComponent();\r\n        DataContext = viewModel;\r\n   }\r\n}\r\n\r\n[Export]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> SearchViewModel : INavigationAware\r\n{\r\n      <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> OnNavigatedTo(NavigationContext navigationContext)\r\n        {\r\n     \r\n        }\r\n\r\n        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">bool</span> IsNavigationTarget(NavigationContext navigationContext)\r\n        {\r\n            <span style=\"color: blue;\">return</span> <span style=\"color: blue;\">true</span>;\r\n        }\r\n\r\n        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> OnNavigatedFrom(NavigationContext navigationContext) {}\r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p>&nbsp;</p>\r\n<p>Hope this is clear.</p>\r\n<p>Cheers!</p>\r\n<p>Ganesh</p>",
+    "PostedDate": "2012-09-02T21:51:02.487-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "907625",
+    "ThreadId": "394045",
+    "Html": "<p>Hi Ganesh,&nbsp;</p>\r\n<p>Thanks for taking time. your content control tip helped me. I was looking more from the design perspective.</p>\r\n<p>like.. would I need scopedregions for my left search panel? Tabs get loaded when we click one of the button in the menu bar but not from the main region.</p>\r\n<p>but all tabs won't have left panel. I want to be able to load the left view based on few business decisions. like a simple flag for eg.</p>\r\n<p>just trying to connect the dots. if you can shed some light on these aspects would be helpful.</p>\r\n<p>Would I need scoped region within this contentcontrol?(as I dynamically need to load the view?)</p>\r\n<p>Kavya</p>",
+    "PostedDate": "2012-09-03T00:22:48.867-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "907628",
+    "ThreadId": "394045",
+    "Html": "<p>As far as I see it really doesnt matter how your tab is loaded. What I would be concerned about is how you want to load your views in a tabitem. That is precisely what I have shown above. You would do the above on a tabitem loaded or something.</p>\r\n<p>Regarding scoped regions, you dont really need it. If you inspect the regionManager, when your MainView is loaded in the Mainregion, it would have already registered the LeftRegion in its regions collection.&nbsp;</p>\r\n<p>Your business logic can drive whether you want to load something in the LeftRegion or not. It can always remain there, as it is a contentcontrol in grid column. You could set your columnwidth to auto, so it wont occupy space in your page when you dont load view in it.</p>\r\n<p>One thing you might need to do is when you navigate away from the MainView you should remove the LeftRegion from the regionmanager in the OnNavigatedFrom event. Else you could get regioncreationexceptions when you load the MainView the next time.</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">if</span> (_regionManager.ContainsRegionWithName(<span style=\"color: #a31515;\">\"LeftRegion\"</span>))\r\n _regionManager.Regions.Remove(<span style=\"color: #a31515;\">\"LeftRegion\"</span>);\r\n</pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2012-09-03T00:31:04-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "907643",
+    "ThreadId": "394045",
+    "Html": "<p>Thanks Ganesh,&nbsp;</p>\r\n<p>I get what you saying. may be it's my lack of wpf knowledge. but if I've&nbsp;</p>\r\n<p><span>MainView (Loaded in MainRegion)</span></p>\r\n<ul>\r\n<li>Grid with 2 columns : 1st column a contentcontrol with LeftRegion, 2nd column your datagrid</li>\r\n</ul>\r\n<p>left region is fine. i can load any view i want. but i'm guessing i need another content control(in column 1) instead of datagrid? as datagrid would be another user control?&nbsp;</p>\r\n<p>I'll try your approach.&nbsp;</p>",
+    "PostedDate": "2012-09-03T01:20:56.973-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "907644",
+    "ThreadId": "394045",
+    "Html": "<p>would you help me understand when should I exactly use scoped regions then? I've read numerous articles but still can't comprehend. they just say if I need to load a view dynamically, i could use scope regions.</p>",
+    "PostedDate": "2012-09-03T01:21:48.507-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "907645",
+    "ThreadId": "394045",
+    "Html": "<p>Yes. If you Right side is also going to be usercontrol (view) being dynamically loaded, then yes you can have another ContentControl there with a RightRegion.</p>",
+    "PostedDate": "2012-09-03T01:22:29.923-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "907646",
+    "ThreadId": "394045",
+    "Html": "<p>I would probably use scoped regions when I'm adding regions dynamically and not when loading views in a region dynamically.</p>",
+    "PostedDate": "2012-09-03T01:25:51.747-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "907649",
+    "ThreadId": "394045",
+    "Html": "<p>Thanks Ganesh.&nbsp;</p>\r\n<p>Your insight indeed helped me understand. will Take it from here. lets see how I get on. UI has never been my area. so struggling with it a bit.</p>\r\n<p>Thanks again</p>",
+    "PostedDate": "2012-09-03T01:30:36.537-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "907650",
+    "ThreadId": "394045",
+    "Html": "<p>Glad I could help.</p>",
+    "PostedDate": "2012-09-03T01:31:52.583-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "907810",
+    "ThreadId": "394045",
+    "Html": "<p>I'm now one step further.</p>\r\n<p>This is what I have so far:</p>\r\n<p>In a tab. the main region has grid in it(View A). when i click on a row, it should open another tab(view B). Essentially another view.</p>\r\n<p>I had got this working. (I've based it on stocktrader including the headerinfo of tab).</p>\r\n<p>Now, I need above behaviour with left search panel in every tab. as you suggested, i did below. Behaviour is awful. &nbsp;I understand what's going on. but no clue how to fix.&nbsp;</p>\r\n<p>&nbsp;I have below xaml. both the contentcontrols are loaded. however, I think i'm binding it wrong or not sure. when I click on a row in the main region, the next view (view b) open in same tab.</p>\r\n<p>View A and view B are &nbsp;are loaded into subMainRegion where as search panel is loaded into left region. With below xaml, I also lost the headerInfo on a tab.</p>\r\n<p>Please help.</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>&lt;Window x:Class=<span style=\"color: #a31515;\">\"ReleaseManagement.Shell\"</span>\r\n        xmlns=<span style=\"color: #a31515;\">\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"</span>\r\n        xmlns:x=<span style=\"color: #a31515;\">\"http://schemas.microsoft.com/winfx/2006/xaml\"</span>\r\n        xmlns:prism=<span style=\"color: #a31515;\">\"http://www.codeplex.com/CompositeWPF\"</span>  \r\n        xmlns:ei=<span style=\"color: #a31515;\">\"http://schemas.microsoft.com/expression/2010/interactivity\"</span>\r\n         xmlns:i=<span style=\"color: #a31515;\">\"http://schemas.microsoft.com/expression/2010/interactions\"</span>\r\n        xmlns:sdk=<span style=\"color: #a31515;\">\"http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk\"</span>\r\n             xmlns:mc=<span style=\"color: #a31515;\">\"http://schemas.openxmlformats.org/markup-compatibility/2006\"</span>\r\n        Title=<span style=\"color: #a31515;\">\"Shell\"</span> Height=<span style=\"color: #a31515;\">\"768\"</span> Width=<span style=\"color: #a31515;\">\"1024\"</span>&gt;\r\n    &lt;Window.Resources&gt;\r\n        &lt;Style TargetType=<span style=\"color: #a31515;\">\"{x:Type TabItem}\"</span> x:Key=<span style=\"color: #a31515;\">\"ShellTabItemStyle\"</span>&gt;\r\n            &lt;Setter Property=<span style=\"color: #a31515;\">\"Header\"</span>\r\n                Value=<span style=\"color: #a31515;\">\"{Binding RelativeSource={RelativeSource Self},Path=Content.DataContext.HeaderInfo}\"</span> /&gt;\r\n            \r\n           \r\n        &lt;/Style&gt;\r\n    &lt;/Window.Resources&gt;\r\n    \r\n       &lt;!--&lt;ItemsControl prism:RegionManager.RegionName=<span style=\"color: #a31515;\">\"MainRegion\"</span>&gt;--&gt;\r\n        &lt;TabControl x:Name=<span style=\"color: #a31515;\">\"MainRegionHost\"</span> prism:RegionManager.RegionContext=<span style=\"color: #a31515;\">\"{Binding Delivery}\"</span>\r\n                     prism:RegionManager.RegionName=<span style=\"color: #a31515;\">\"MainRegion\"</span>  ItemContainerStyle=<span style=\"color: #a31515;\">\"{DynamicResource ShellTabItemStyle}\"</span>  &gt;\r\n            &lt;TabItem&gt;\r\n                &lt;Grid Margin=<span style=\"color: #a31515;\">\"2\"</span> Width=<span style=\"color: #a31515;\">\"Auto\"</span> Height=<span style=\"color: #a31515;\">\"Auto\"</span>&gt;\r\n                    &lt;Grid.ColumnDefinitions&gt;\r\n                        &lt;ColumnDefinition Width=<span style=\"color: #a31515;\">\".3*\"</span>&gt;&lt;/ColumnDefinition&gt;\r\n                        &lt;ColumnDefinition Width=<span style=\"color: #a31515;\">\".7*\"</span>&gt;&lt;/ColumnDefinition&gt;\r\n                    &lt;/Grid.ColumnDefinitions&gt;\r\n                    \r\n                    &lt;ContentControl Grid.Column=<span style=\"color: #a31515;\">\"0\"</span> prism:RegionManager.RegionName=<span style=\"color: #a31515;\">\"SubFilterRegion\"</span>  &gt;\r\n                        \r\n                    &lt;/ContentControl&gt;</pre>\r\n<pre>//View A loads initially into submainregion. when i click on one of the row of the grid, it should load another view in different tab. but along with search panel\r\n                    &lt;ContentControl  Grid.Column=<span style=\"color: #a31515;\">\"1\"</span> prism:RegionManager.RegionName=<span style=\"color: #a31515;\">\"SubMainRegion\"</span> &gt;&lt;/ContentControl&gt;\r\n                &lt;/Grid&gt;\r\n                \r\n            &lt;/TabItem&gt;\r\n\r\n        &lt;/TabControl&gt;\r\n            &lt;!--&lt;/ItemsControl&gt;--&gt;\r\n              \r\n\r\n&lt;/Window&gt;\r\n\r\n</pre>\r\n<pre><br /></pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2012-09-03T07:35:51.43-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "908064",
+    "ThreadId": "394045",
+    "Html": "<p>I dont think you will be able to achieve this with this design. You'll have to take the dynamic region and scroped region approach.</p>",
+    "PostedDate": "2012-09-04T00:23:38.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "908074",
+    "ThreadId": "394045",
+    "Html": "<p>can you shed some more light?</p>",
+    "PostedDate": "2012-09-04T00:44:33.3-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "908180",
+    "ThreadId": "394045",
+    "Html": "\r\n<p>Hi Kavya,</p>\r\n<p>Based on my understanding of the aforementioned scenario, I believe the behavior your are experiencing (the two views are shown in the same tab) could be caused if you are returning the value\r\n<strong>true </strong>in the <strong>IsNavigationTarget </strong>method of your views / view models, this way if you navigate to the same type of a view in a region more than once, if an instance of this view is present, this will be&nbsp; navigated instead\r\n of creating a new one. Hence, you could try returning <strong>false </strong>in this method. Take into account that if you do this and several views of the same type are loaded in the region, as the user Ganesh mentioned above, you may have to remove the regions\r\n defined in these views when navigating away from them in order to avoid the following exception:</p>\r\n<p><em>&quot;An exception occurred while creating a region with name 'yourRegion'. The exception was: System.ArgumentException: Region with the given name is already registered: yourRegion&quot;</em></p>\r\n<p>Also, note that, your views and view models may have to be decorated with the <strong>\r\n[PartCreationPolicy(CreationPolicy.NonShared)]</strong> attribute, as this will cause the container to return a new instance of the view each time you request one.</p>\r\n<p>On the other hand, if this approach doesn't fit the requirements of your scenario, for example if you need to dynamically change the contents of the already loaded regions in these views and removing the regions from the region manager is not an option,\r\n then using the scoped regions approach may be the alternative, although by default\r\n<strong>Prism </strong>only supports the use of scoped regions with view injection approach.</p>\r\n<p>You can find more information about this in the following section of the documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098(v=pandp.40)#sec42\">7: Composing the User Interface, Creating Multiple Instances of a Region</a>\r\n</li></ul>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-09-04T05:29:15.457-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "908190",
+    "ThreadId": "394045",
+    "Html": "<p>Hi Agustin,&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>Thank you for your inputs. my requirement is slightly different. I want 3 views to be loaded every time a open a tab. something like this</p>\r\n<p>&nbsp;</p>\r\n<p>Tab A</p>\r\n<p>&nbsp;--- &nbsp;left region</p>\r\n<p>&nbsp;--- Tool bar</p>\r\n<p>&nbsp;--- Main region ( This can contain any Usercontrol. lets say a grid for now) on click of a row, i want Tab B open with same structure. something like below</p>\r\n<p>Tab B&nbsp;</p>\r\n<p>&nbsp;&nbsp;--- &nbsp;left region</p>\r\n<p>&nbsp;--- Tool bar</p>\r\n<p>&nbsp;--- Main region (This will have a seperate User control)</p>\r\n<p>Ganesh's inputs helped me lot. but when I put usercontrols into the content control inside tab, I lose the header of the tab as viewmodel of mainregion(content control) is not bound to tab. I think for same reason, when i click on row in Tab A, Tab b opens in same tab.</p>\r\n<p>I cannot have toolbar and left region outside tab control for business requirement reasons. so to summarise, i want to load 3 views in a tab. and if i can bind mainregion's viewmodel anw which way to tab, this would be awesome for me.&nbsp;</p>\r\n<p>Does this help? Desperate for some help from experts like yourself.</p>\r\n<p>&nbsp;</p>\r\n<p>Kavya</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-09-04T06:11:41.327-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "908192",
+    "ThreadId": "394045",
+    "Html": "<p>&nbsp;</p>\r\n<p>Just another update. I couldn't edit the post. strange.</p>\r\n<p>in isNavigationTarget, I did make it false. all works awesomely well if i've just one viewmodel bound to the tab control.</p>\r\n<p>&nbsp;see this post's I raised. i've got all this working now.<a href=\"http://compositewpf.codeplex.com/discussions/392910\">http://compositewpf.codeplex.com/discussions/392910</a>&nbsp;(thanks for helping me here too)</p>",
+    "PostedDate": "2012-09-04T06:16:48.597-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "908734",
+    "ThreadId": "394045",
+    "Html": "<p>I found this solution.&nbsp;</p>\r\n<p>what I did was instead of above structure, was change the way regions are established</p>\r\n<p>Tab A</p>\r\n<p>&nbsp;--- Main region (This will have a seperate User control)</p>\r\n<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -- &nbsp; &nbsp;&lt;contentcontrol for left region&nbsp;</p>\r\n<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; -- &nbsp; &nbsp;&lt;contentcontrol for top region&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>this way, only one vm is bound to the tab and i could load any number of tabs with similar controls</p>\r\n<p>Please ask if you require more details.</p>\r\n<p>thanks for taking time on this thread</p>",
+    "PostedDate": "2012-09-05T08:54:43.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

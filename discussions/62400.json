@@ -1,0 +1,114 @@
+[
+  {
+    "Id": "211807",
+    "ThreadId": "62400",
+    "Html": "<p>I need to load the same module multiples times - for instance customer A while working with customer B-.&nbsp; I'm using a TabControl to add module instances in different tabs.</p>\r\n<p>The first time the module loads ok, but if I need to load the same module in a different tab I'm trying:</p>\r\n<p>Assembly assembly = Assembly.ReflectionOnlyLoadFrom(module.Ref.Substring(8));<br>Type type = assembly.GetType(&quot;W2.Affaires.AffairesModule&quot;, true);<br>IModule aModule = (IModule)container.Resolve(type);<br>aModule.Initialize();</p>\r\n<p>When executing the third line I get the following error:</p>\r\n<p>{&quot;Resolution of the dependency failed, type = \\&quot;W2.Affaires.AffairesModule\\&quot;, name = \\&quot;\\&quot;. Exception message is: The current build operation (build key Build Key[W2.Affaires.AffairesModule, null]) failed: Type must be of type RuntimeType. (Strategy type BuildPlanStrategy, index 3)&quot;}</p>\r\n<p>How can I solve the problem?</p>\r\n<p>Thanks in advance,</p>\r\n<p>Marcos</p>",
+    "PostedDate": "2009-07-14T11:30:04.967-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "211923",
+    "ThreadId": "62400",
+    "Html": "<p>Hi Marcos,</p>\r\n<p>The way I handled this was to have my modules implement a Show method (in addition to the Initialize). That way the automated module loading does all the background work to get a module initialized, and it only does it once (very efficient). Then the show method simply resolves a new instances of the main view I will be showing and places that in the required region.</p>\r\n<p>Hope this helps.</p>\r\n<p>Cheers</p>\r\n<p>Justin<br>http://jtango.wordpress.com/</p>",
+    "PostedDate": "2009-07-14T19:17:14.507-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "212348",
+    "ThreadId": "62400",
+    "Html": "<p>Hi Justin,</p>\r\n<p>Thanks a lot for the answer and for the idea, it's a good way.&nbsp; But the problem I have is previous to the method call.</p>\r\n<p>I have a menu, and when the user select a module I have to create a variable before calling your Show method.&nbsp; Thas what I'm trying to do with</p>\r\n<p>Assembly assembly = Assembly.ReflectionOnlyLoadFrom(module.Ref.Substring(8));<br>Type type = assembly.GetType(&quot;W2.Affaires.AffairesModule&quot;, true);<br>IModule aModule = (IModule)container.Resolve(type);</p>\r\n<p>How are you doing to get a variable (and then call your Show method) from the menuItem?</p>\r\n<p>Marcos</p>",
+    "PostedDate": "2009-07-15T15:10:21.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "212524",
+    "ThreadId": "62400",
+    "Html": "<p>Hi Marcos,</p>\r\n<p>Modules are&nbsp;usually not loaded multiple times. You&nbsp;will probably&nbsp;<a href=\"http://msdn.microsoft.com/en-us/library/dd458899.aspx\">add View into regions </a>multiple times.&nbsp;&nbsp;The following threads deal with related issues to you might find them helpful:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=59827\">Confirmation of understanding</a></li>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=59040\">Loading module more times</a> </li>\r\n</ul>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman</p>\r\n<p><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-07-16T05:14:32.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "212790",
+    "ThreadId": "62400",
+    "Html": "<p>Hi Damian,</p>\r\n<p>Thanks for your answer, I understand and agree.&nbsp; Anyway, I have the same problem:&nbsp;</p>\r\n<p>How I get the a variable containing the module from a string (given by a menu button) to load the presenter.&nbsp;</p>\r\n<p>Marcos</p>",
+    "PostedDate": "2009-07-16T15:04:42.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213149",
+    "ThreadId": "62400",
+    "Html": "<p>Hi Marcos,</p>\r\n<p>To load a particular module on demand after clicking a menu item, you can write code similar to this if you have the module&rsquo;s name string:</p>\r\n<p><span style=\"font-size:10pt\" lang=EN-US>&nbsp;</span></p>\r\n<pre>moduleManager.LoadModule(<span style=\"color:#A31515\">&quot;MyModule&quot;</span>); <span style=\"color:Green\">//moduleManager is an instance of the IModuleManager service, which you can get through DI</span>\r\n<span style=\"font-size:10pt\" lang=EN-US>&nbsp;</span></pre>\r\n<p>&nbsp;</p>\r\n<p>When a module is loaded it can perform its particular logic, like showing a particular view after constructing its presenter. If you try to get an instance of the class that implements the <strong>IModule</strong> interface in the other module you would be breaking the decoupling between modules, so the approach you are taking is not recommended in Composite applications.</p>\r\n<p>You can check the <a href=\"http://msdn.microsoft.com/en-us/library/dd458909.aspx\">Modularity Quickstarts</a> solutions to check an example of On Demand loading.</p>\r\n<p>The following topic explains how to load modules on demand:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/dd458932.aspx\">How to: Load Modules on Demand</a></li>\r\n</ul>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-07-17T11:15:40.66-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213840",
+    "ThreadId": "62400",
+    "Html": "<p>Hi Damian,</p>\r\n<p>Thanks for the answer.&nbsp; But when I recall</p>\r\n<p>moduleManager.LoadModule(<span style=\"color:#a31515\">&quot;MyModule&quot;</span>);</p>\r\n<p>nothing happens, because the module is already loaded.</p>\r\n<p>What I need is to load <span style=\"text-decoration:underline\">another instance</span> of the module in <span style=\"text-decoration:underline\">another tab</span>. How can I get this behavieour?</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2009-07-20T08:24:57.927-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213937",
+    "ThreadId": "62400",
+    "Html": "<p>Hi Marcos,</p>\r\n<p>Taken from the <a href=\"http://msdn.microsoft.com/en-us/library/dd458809.aspx\">Composite Application Guidance Documentation</a>:</p>\r\n<ul>\r\n<li><em>&quot;A module in the Composite Application Library is a logical unit in your application&quot;</em></li>\r\n<li><em>&quot;Views are the composite portions of the user interface&quot;. </em></li>\r\n</ul>\r\n<p>In other words, <a href=\"http://msdn.microsoft.com/en-us/library/dd458911.aspx\">modules</a> are not part of the user interface. Modules might contain <a href=\"http://msdn.microsoft.com/en-us/library/dd490829.aspx\">Views</a> which will compose the UI. As we discussed above, you load different <strong>view</strong> instances in <strong>regions</strong>, not <strong>modules</strong>. Having said that, I assume you want to load different instances of a <strong>view</strong> in a <strong>TabRegion</strong>. To inject and show a new instance of a view to a <strong>TabRegion</strong> you can use the following code:</p>\r\n<p><span style=\"font-size:10pt\" lang=EN-US>regionManager.Regions[&ldquo;TabRegion&rdquo;].Add(viewInstance);<br></span><span style=\"font-size:10pt\" lang=EN-US>regionManager.Regions[&ldquo;TabRegion&rdquo;].Activate(viewInstace);</span></p>\r\n<p>Where <strong>regionManager</strong> keeps a reference to an implementation of the IRegionManager interface (you can get through Unity), and <strong>viewInstance</strong> is an instance of the view you want to show. This should be done somewhere in the module that has the view (since no other module has a reference to the view). So if you create a new instance of the view&rsquo;s <strong>Presenter/ViewModel</strong> you could do something like:</p>\r\n<p><span style=\"font-size:10pt\" lang=EN-US>regionManager.Regions[&ldquo;TabRegion&rdquo;].Add(presenter.View);<br></span><span style=\"font-size:10pt\" lang=EN-US>regionManager.Regions[&ldquo;TabRegion&rdquo;].Activate(presenter.View);</span></p>\r\n<p>If you want to execute that code as soon as the module is initialized you should place it in the Initialize method of the class that implements the <strong>IModule</strong> interface. If this code responds to a particular events in your application, other than your module loading, it could be executed in an event handler of an <a href=\"http://msdn.microsoft.com/en-us/library/dd458915.aspx\">EventAggregator</a> event.</p>\r\n<p>The following topics from the documentation provide more information about adding views to regions:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/dd490826.aspx\">How to: Show a View in a Region Using View Discovery UI Composition</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/dd458899.aspx\">How to: Show a View in a Region Using View Injection UI Composition</a></li>\r\n</ul>\r\n<p>I hope this explanation was useful for you.</p>\r\n<p>Damian Schenkelman<br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-07-20T11:50:24.67-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213990",
+    "ThreadId": "62400",
+    "Html": "<p>Hi Damian,</p>\r\n<p>Very clear explanation, thanks a lot.</p>\r\n<p>Marcos</p>",
+    "PostedDate": "2009-07-20T13:59:32.823-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "215034",
+    "ThreadId": "62400",
+    "Html": "<p>Hi Damian,</p>\r\n<p>In the View Injection QuickStart example, the 'Employee' module has a project reference to the 'Project' module, which seems to lead to some coupling between modules.</p>\r\n<p>Is this a recommended approach if the controller needs to inject views found from multiple modules?</p>",
+    "PostedDate": "2009-07-22T17:02:56.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "215378",
+    "ThreadId": "62400",
+    "Html": "<p>Hi</p>\r\n<p>No, this is not a recommended approach. When two modules reference each other, they are very tight coupled which goes against the modularity guidance. Think of it as if you were to completely remove a module from your application, it should still work. It would not have full functionality, but no changes would be required (except modules to be loaded, of course).</p>\r\n<p>Take into account that the <strong>Quickstart</strong> application&rsquo;s objective is showing a particular feature or capability of the guidance, in the simplest way possible. A good approach for this situation could be firing an event using <a href=\"http://msdn.microsoft.com/en-us/library/dd458915.aspx\">EventAggregator</a> (to communicate between modules), so when the new view has to be injected the module that has it can be notified by the module where the action is initiated. As you can see, this approach would have mixed EventAggregation with UIComposition, thus missing the important point of the <strong>Quickstart</strong>.</p>\r\n<p>For a sample application on how things would really be done you can check the <a href=\"http://msdn.microsoft.com/en-us/library/dd458919.aspx\">Reference Implementation solution</a> that comes with the guidance.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-07-23T09:54:10.257-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "215486",
+    "ThreadId": "62400",
+    "Html": "<p>EventAggregator is fine, but we need more control over the order of the views injected. For views that may be injected in views form other modules, our approach is to defined their interfaces in the infrastructure. Our controller uses these interfaces to the view to do the view injection. Seems to work fine for us.</p>",
+    "PostedDate": "2009-07-23T14:28:16.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "215885",
+    "ThreadId": "62400",
+    "Html": "<p>Hi,</p>\r\n<p>I agree that event agregator is the way to go for me.&nbsp; But I create a &quot;MenuButtonClicked&quot; event in the module, and it's not fired .&nbsp; May be is not the good place?</p>\r\n<p>My code:</p>\r\n<p>In the shell I have the&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"font-size:x-small\">menuButtonClicked.Publish(MenuName);&nbsp;&nbsp;&nbsp; correctly fired.</span></p>\r\n<p><span style=\"font-size:x-small\">In the XXXModule the code is:</span></p>\r\n<p>In the Initialize() function I put</p>\r\n<p><span style=\"font-size:x-small\">\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp; menuButtonClicked = eventAgregator.GetEvent&lt;<span style=\"color:#2b91af;font-size:x-small\"><span style=\"color:#2b91af;font-size:x-small\">MenuButtonClicked</span></span><span style=\"font-size:x-small\">&gt;();</span></p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp; menuButtonClicked.Subscribe(CheckMenuClick);</p>\r\n<p>who is correctly executed in the module initializer.&nbsp; But the event is never fired.&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p><span style=\"color:#0000ff;font-size:x-small\"><span style=\"color:#0000ff;font-size:x-small\">public</span></span><span style=\"font-size:x-small\"> </span><span style=\"color:#0000ff;font-size:x-small\"><span style=\"color:#0000ff;font-size:x-small\">void</span></span><span style=\"font-size:x-small\"> CheckMenuClick(</span><span style=\"color:#0000ff;font-size:x-small\"><span style=\"color:#0000ff;font-size:x-small\">string</span></span><span style=\"font-size:x-small\"> MenuName)</span></p>\r\n<p><span style=\"font-size:x-small\">{</span>&nbsp;</p>\r\n<p>\r\n<p><span style=\"color:#0000ff;font-size:x-small\"><span style=\"color:#0000ff;font-size:x-small\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</span></span><span style=\"font-size:x-small\"> (MenuName == </span><span style=\"color:#a31515;font-size:x-small\"><span style=\"color:#a31515;font-size:x-small\">&quot;xxxModule&quot;</span></span></p>\r\n<p><span style=\"color:#a31515\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Show</span></p>\r\n<p><span style=\"font-size:x-small\">)</span></p>\r\n</p>\r\n<p>\r\n<p>&nbsp;I'm using a lot EventAgregator without problems.&nbsp; There is something special in the Module itself?</p>\r\n<p>Thanks in advance,</p>\r\n<p>Marcos</p>\r\n</p>\r\n</span></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-24T15:41:45.727-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "216458",
+    "ThreadId": "62400",
+    "Html": "<p>Hi Marcos,</p>\r\n<p>I can think of two possible reasons for this happening.</p>\r\n<ol>\r\n<li>The event is being implemented with weak references and the handlers is being GC. You can read more about that in <a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=63156\">this thread</a>.</li>\r\n<li>You are using different instances of the EventAggregator. I cannot be certain of this because I do not know how you are getting the EventAggregator&rsquo;s instance in your module and shell. <a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=59649\">This thread</a> is related.</li>\r\n</ol>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman</p>\r\n<p><span style=\"font-size:11pt\" lang=EN-US><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></span></p>",
+    "PostedDate": "2009-07-27T10:21:27.453-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

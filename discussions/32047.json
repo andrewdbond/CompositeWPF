@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "106419",
+    "ThreadId": "32047",
+    "Html": "Hello, <br>\r\n<br>\r\n1) I think that a way of using event publication and event subscription mechanism has been changed in Prism. May I know why? If it's still the same, Could you please give me an example how to use SCSF style &quot;event subscription and event publication&quot; in Prism? <br>\r\n<br>\r\n2)&nbsp; The following is the way that we used to use in SCSF. How can I get the same in Prism? <br>\r\n<br>\r\n<span id=\"ctl00_ctl00_Content_TabContentPanel_Content_wikiSourceLabel\">\r\n<pre>[EventSubscription(EventTopicNames.CustomerSelected, ThreadOption.UserInterface)]<br>public void WorkWithCustomer(object sender, EventArgs&lt;Customer&gt; e)<br>{</pre>\r\n</span>&nbsp;}<br>\r\n<br>\r\n<span id=\"ctl00_ctl00_Content_TabContentPanel_Content_wikiSourceLabel\">\r\n<pre>[EventPublication(EventTopicNames.CustomerSelected, PublicationScope.Global)]<br>public event EventHandler&lt;EventArgs&gt; CustomerSelected;</pre>\r\n</span><span id=\"ctl00_ctl00_Content_TabContentPanel_Content_wikiSourceLabel\">\r\n<pre>public void WorkWithCustomer(Customer customer)<br>{<br>        if (CustomerSelected != null)<br>            CustomerSelected(this, new EventArgs&lt;Customer&gt;(customer));<br>}<br><br>3) Why do I need to create my own event class and my own eventargs class in order to use the event pub/sup in Prism? We tried to create one generic event class &quot;SimpleAction&quot; and generic eventargs &quot;SimplePayLoad&quot; in our project. The problem is that we can't specify the id of event. How can I specify the id of event? <br><br><br>Thanks in advance.</pre>\r\n</span>\r\n",
+    "PostedDate": "2008-07-22T20:14:37.667-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "107020",
+    "ThreadId": "32047",
+    "Html": "The SCSF way of event publication and subscription doesn't work in CompositeWPF. Instead they introduced the CompositeWpfEvent base class.<br>\r\nSadly you can't specify an event ID but are required to create a subclass instead. There is no extension available at this point to change this.<br>\r\n",
+    "PostedDate": "2008-07-25T03:13:24.73-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "107051",
+    "ThreadId": "32047",
+    "Html": "To get the same sort of behavior, your subclass will need to expose an id property, and then when you subscribe to your message, use the predicate&nbsp;parm to say you only want messages with a certain id.<br>\r\n<br>\r\nOr you could tell it you want messages with a particular id range, or messages that meet whatever criteria you want to check on exposed properties.&nbsp; Very powerfull.&nbsp; Much better than the simple string check done in CAB.<br>\r\n<br>\r\nJust my opinion.<br>\r\nPaul\r\n",
+    "PostedDate": "2008-07-25T05:57:22.317-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "107099",
+    "ThreadId": "32047",
+    "Html": "[WMeints] The SCSF way of event publication and subscription doesn't work in CompositeWPF.<br>\r\n<br>\r\nYou can make it work as it does&nbsp;in SCSF with a <em>little</em> work.&nbsp; The <a href=\"http://www.CodePlex.com/Unity\">http://www.CodePlex.com/Unity</a> source code provides an event broker sample.&nbsp;&nbsp;<br>\r\nOn the following link I apply it in 7 steps to the CompositeWPF Commanding solution provided with the CWPF source.&nbsp; Only steps 3, 4,&nbsp;6 and 7<br>\r\nmay apply to your requirements.<br>\r\n<br>\r\n<a href=\"http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=31598\">http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=31598</a>\r\n",
+    "PostedDate": "2008-07-25T08:11:19.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "107408",
+    "ThreadId": "32047",
+    "Html": "Thanks. <br>\r\nHi Paul,<br>\r\n<br>\r\n&gt;&gt;&gt;r you could tell it you want messages with a particular id range, or\r\nmessages that meet whatever criteria you want to check on exposed\r\nproperties.&nbsp; Very powerfull.&nbsp; Much better than the simple string check\r\ndone in CAB.<br>\r\n<br>\r\nYou mean, I should added one property called ID on Event Class? <br>\r\n<br>\r\nHi BillKrat,<br>\r\n<br>\r\nI tried the way that you mentioned. But the PreBuildUp of EventBrokerReflectionStrategy class doesn't get called. What would be the problem? <br>\r\n",
+    "PostedDate": "2008-07-27T23:12:30.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "107442",
+    "ThreadId": "32047",
+    "Html": "On your subclass, you can add whatever properties you want.&nbsp; If you want to use an id to determine if a message is for a particular subscriber, define an id property.&nbsp; Make it an int, a string, or another complete object.&nbsp; Then when you subscribe to the message, use the predicate,&nbsp;working with&nbsp;the property, to filter the messages for a particular subscriber.&nbsp; This way you are not limited to just a string compare to see if you get a message.&nbsp; You could look for a string, or an int, or a range of ints, or whatever expression&nbsp;you can put into the predicate.\r\n",
+    "PostedDate": "2008-07-28T04:09:48.727-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "107563",
+    "ThreadId": "32047",
+    "Html": "Hi Michaelsync,&nbsp;&nbsp; If the PreBuildUp of a Strategy is not executed it is mostly likely that it isn't a registered strategy.&nbsp; Unity exposes the context's strategy object (for AddNew) via the UnityContainerExtension; in our case the SimpleEventBrokerExtension.&nbsp;&nbsp; If you'll examine the SimpleEventBrokerExtension.cs file you'll see it adds both the EventBrokerReflectionStrategy as well as the EventBrokerWireupStrategy.&nbsp;&nbsp; You'll want to add&nbsp;an <strong>.AddNewExtension&lt;SimpleEventBrokerExtension&gt;()</strong> to your unity container, an example follows:<br>\r\n<br>\r\n<span style=\"font-size:13px\">\r\n<p>&nbsp;</p>\r\n</span>\r\n<p><span style=\"font-size:13px;color:#2b91af\">IUnityContainer</span><span style=\"font-size:13px\"> container = </span><span style=\"font-size:13px;color:#0000ff\">new</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#2b91af\">UnityContainer</span><span style=\"font-size:13px\">()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp; </span><span style=\"font-size:13px\">.AddNewExtension&lt;</span><span style=\"font-size:13px;color:#2b91af\">SimpleEventBrokerExtension</span><span style=\"font-size:13px\">&gt;()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp; .RegisterType&lt;</span><span style=\"font-size:13px;color:#2b91af\">ILogger</span><span style=\"font-size:13px\">, </span><span style=\"font-size:13px;color:#2b91af\">StatusLogger</span><span style=\"font-size:13px\">&gt;();\r\n<p>&nbsp;</p>\r\n</span></p>\r\n<em>In response to:<br>\r\n[michaelsync] I tried the way that you mentioned. But the PreBuildUp of EventBrokerReflectionStrategy class doesn't get called. What would be the problem? <br>\r\n</em>\r\n",
+    "PostedDate": "2008-07-28T14:15:54.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "108396",
+    "ThreadId": "32047",
+    "Html": "Sorry for late reply. I've been trying for that these days and still not working the way that I want. <br>\r\n<br>\r\nHi Paul,<br>\r\n<br>\r\n&gt;&gt;On your subclass, you can add whatever properties you want.&nbsp; If you\r\nwant to use an id to determine if a message is for a particular\r\nsubscriber, define an id property.&nbsp; Make it an int, a string, or\r\nanother complete object.&nbsp; Then when you subscribe to the message, use\r\nthe predicate,&nbsp;working with&nbsp;the property, to filter the messages for a\r\nparticular subscriber.&nbsp; This way you are not limited to just a string\r\ncompare to see if you get a message.&nbsp; You could look for a string, or\r\nan int, or a range of ints, or whatever expression&nbsp;you can put into the\r\npredicate<br>\r\n<br>\r\nYes. Thanks. I did that and it works. But it happened to me to add ID in EventArg (Payloads) (not Event (SimpleAction)) class. <br>\r\n<br>\r\nHi Bill, <br>\r\n<br>\r\n&gt;&gt;<span style=\"font-size:13px;color:rgb(43, 145, 175)\">IUnityContainer</span><span style=\"font-size:13px\"> container = </span><span style=\"font-size:13px;color:rgb(0, 0, 255)\">new</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:rgb(43, 145, 175)\">UnityContainer</span><span style=\"font-size:13px\">()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp; </span><span style=\"font-size:13px\">.AddNewExtension&lt;</span><span style=\"font-size:13px;color:rgb(43, 145, 175)\">SimpleEventBrokerExtension</span><span style=\"font-size:13px\">&gt;()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp; .RegisterType&lt;</span><span style=\"font-size:13px;color:rgb(43, 145, 175)\">ILogger</span><span style=\"font-size:13px\">, </span><span style=\"font-size:13px;color:rgb(43, 145, 175)\">StatusLogger</span><span style=\"font-size:13px\">&gt;();<br>\r\n<br>\r\n</span>Since I'm using Prism, I can't initialize that way. But I tried the following way. <br>\r\n<br>\r\n&nbsp;class BootStrapper : UnityBootstrapper<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override DependencyObject CreateShell()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong> Container.AddNewExtension&lt;SimpleEventBrokerExtension&gt;();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong>&nbsp;&nbsp; // it doesn't work.&nbsp; <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Shell shell = Container.Resolve&lt;Shell&gt;();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; shell.Show();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return shell;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override IModuleEnumerator GetModuleEnumerator()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //return new ConfigurationModuleEnumerator();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ConfigurationStore store = new ConfigurationStore();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return new ConfigurationModuleEnumerator(store);<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp; }<br>\r\n",
+    "PostedDate": "2008-07-31T20:08:23.643-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "108495",
+    "ThreadId": "32047",
+    "Html": "the predicate works against the TPayLoad in the <strong>CompositeWpfEvent&lt;TPayLoad&gt;</strong>.&nbsp; So the values you want to filter on in the predicate should be there.<br>\r\n<br>\r\nAnd just in case you hadnt seen it, in the Composite Application Guidance for WPF help file, in the Development Activities sections, they give examples of how to create and publish events<br>\r\nand how to subscribe and unsubscribe to events.&nbsp; In the filter section of those Activites, they have examples of this using a FundAddedEvent and a FundOrder.&nbsp; <br>\r\n<br>\r\nThey give a predicate example of &quot;fundOrder =&gt; fundOrder.CustomerId == _customerId&quot;.&nbsp; <br>\r\n<br>\r\nPaul\r\n",
+    "PostedDate": "2008-08-01T06:20:54.297-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "108677",
+    "ThreadId": "32047",
+    "Html": "Hi MichaelSync,&nbsp; I created a CompositeWPF (aka Prism) demo that utilizes SCSF style event publication/subscription via Unity.&nbsp;<br>\r\nSource and flash demo are available <a href=\"http://www.global-webnet.net/BlogEngine/post/2008/08/02/Composite-WPF-Implementing-the-Unity-Event-Broker-in-a-CompositeWPF-application.aspx\">HERE</a>.&nbsp;&nbsp;<br>\r\n",
+    "PostedDate": "2008-08-02T09:17:14.35-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "109031",
+    "ThreadId": "32047",
+    "Html": "@Michael<br>\r\n<br>\r\nThe reason for the base class is to enable compile-time checking. In CAB there is no guarantee at compile time that the publisher and subscriber are correctly wired. <br>\r\nA common pattern there&nbsp;is to have a shared set of string constants that define the event name. This however does not ensure that the proper arguments are passed by the publisher or the subscriber. <br>\r\nIf the publisher event&nbsp;and subscriber handlers do not have the right signatures, then they will <strong>fail</strong> at runtime. The only way to ensure they are correct is through convention. In a large system&nbsp;with many events<br>\r\nthis can be problematic.&nbsp;With the CompositeWPFEvent however, this is not the case. Because the class is generic, the Publish and Subscribe methods will only allow passing in parameters of type TPayLoad. <br>\r\nAdditionally this also enforces the type of the subscription filters. Finally having a type removes embedding constants throughout the application.<br>\r\n<br>\r\nHope this clarifies<br>\r\nGlenn\r\n",
+    "PostedDate": "2008-08-04T23:47:40.983-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

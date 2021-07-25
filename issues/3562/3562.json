@@ -1,0 +1,61 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "you currently have \n \npublic static IRegionManager AddToRegion(this IRegionManager regionManager, string regionName, object view)\n \ncan you please add\n \npublic static IRegionManager AddToRegion(this IRegionManager regionManager, string regionName, object view, string viewName)\n{\n            if (!regionManager.Regions.ContainsRegionWithName(regionName))\n            {\n                throw new ArgumentException(\n                    string.Format(Thread.CurrentThread.CurrentCulture, Resources.RegionNotFound, regionName), \"regionName\");\n            }\n \n            IRegion region = regionManager.Regions[regionName];\n \n            return region.Add(view, viewName);\n}\n \nThank You,\n \nPavel",
+    "LastUpdatedDate": "2013-02-21T18:38:52.287-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-01-06T13:43:48.523-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Add another AddToRegion method to RegionManagerExtentions",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 3,
+    "Id": 3562
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897958,
+      "FileName": "AddToRegionExtension.cs",
+      "DownloadUrl": ".\\897958"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Additionally, I would like to see the IRegionViewRegistry::RegisterViewWithRegion methods overloaded to accept a viewName attribute.",
+      "PostedDate": "2009-01-12T10:10:14.073-08:00",
+      "Id": 156080
+    },
+    {
+      "Message": "Hi,\r\n\r\nFor those who would like to use an overload of the AddToRegion method that accepts a name for the view as a parameter, I am attaching in this work item a source code file containing an extension method for the IRegionManager interface with the aforementioned overload.\r\n\r\nRegarding the RegisterViewWithRegion overload that accepts a view name as a parameter, you might find this work item useful (http://compositewpf.codeplex.com/workitem/5413) where a possible solution for this scenario is proposed.\r\n\r\nI hope you find this useful,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2011-09-30T10:27:30.35-07:00",
+      "Id": 156081
+    },
+    {
+      "Message": "Attaching AddToRegionExtensions.cs file.",
+      "PostedDate": "2011-09-30T10:28:51.19-07:00",
+      "Id": 156082
+    }
+  ]
+}

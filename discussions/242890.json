@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "553821",
+    "ThreadId": "242890",
+    "Html": "\r\n<p>Probably a confusing title for this question, but it's the best description I could come up with.&nbsp; Here's an example of what I am asking about:</p>\r\n<p>I'm creating an option box service for my application.&nbsp; If you go Tools\\Options in Visual Studio, what I'm creating looks just like that.&nbsp; TreeView on the left, settings for the selected item on the right.</p>\r\n<p>I have a Hierarchical class of OptionItems, I just use a HierarchicalDataTemplate to show them in the TreeView, and each item has a content property of type object.&nbsp; I bind the content control on the right to the selected item of the TreeView and then\r\n use DataTemplates to format the content.&nbsp; (The OptionItems and Content are ViewModels, the DataTemplates are the View.)</p>\r\n<p>That's basically the same Technique as is used in the MVVM Quick Start for hierarchical ViewModels.</p>\r\n<p>However... in this case, the OptionItem may be originating from some AddOn module that my Options Dialog Window should know nothing about.&nbsp; So I can't create the template in the Dialog Window.</p>\r\n<p>I've been hacking around it by setting content to a View instead of a ViewModel.&nbsp; But that violates the MVVM pattern and the Prism guidance.</p>\r\n<p>How would you implement this?</p>\r\n",
+    "PostedDate": "2011-01-22T20:04:15.747-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "554649",
+    "ThreadId": "242890",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding of your scenario, one possible way to achieve your requirement could be to use a shared service (you can read more about\r\n<strong>Shared Services</strong> in <a href=\"http://msdn.microsoft.com/en-us/library/ff921122(v=PandP.40).aspx\">\r\nChapter 9: Communicating Between Loosely Coupled Components</a>) that holds an observable collection of\r\n<strong>OptionItems</strong>, and make your <strong>OptionItemsViewModel</strong> consume that collection and expose it as a property for your view to access it through Data Binding.</p>\r\n<p>As explained in the aforementioned chapter, this instance should be a singleton one. You can achieve this by simply decorating your service with the\r\n<a href=\"http://msdn.microsoft.com/en-us/library/system.componentmodel.composition.partcreationpolicyattribute.aspx\">\r\nPartCreationPolicyAttribute</a> <em>attribute</em> set to <em>Shared</em>. This specifies that a single shared instance of the associated\r\n<em>ComposablePart</em> will be created by the <em>CompositionContainer</em> and shared by all requestors. Your modules could then retrieve an instance of your service through the dependency injection mechanism you are using, and add and remove\r\n<strong>OptionItems</strong> from the service&rsquo;s collection.</p>\r\n<p>As an example, you could take a look at the following sample, which illustrates the aforementioned approach\r\n<a href=\"http://cid-c29751940e840420.office.live.com/self.aspx/p%5E0p%20samples/ObservableCollectionSample.zip\">\r\nhere</a></p>\r\n<p>You could also find the handy the <a href=\"http://cid-c29751940e840420.office.live.com/self.aspx/p%5E0p%20samples/ObservableCollectionSample.zip\">\r\nIn The Box MVVM Training</a> by <a href=\"http://karlshifflett.wordpress.com/\">Karl Shifflett</a>.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n",
+    "PostedDate": "2011-01-24T13:41:37.003-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "554807",
+    "ThreadId": "242890",
+    "Html": "\r\n<p>Thanks Miguel,</p>\r\n<p>I've actually written 2 prism MEF services already, so that should be pretty easy.&nbsp;&nbsp;</p>\r\n<p>Part of my problem may be that I'm still struggling a bit with the Region and Module aspects of prism.&nbsp; I get MVVM pretty well, but I'm new to MEF and prisms modular design concepts.&nbsp; I think part of my solution here may exist in the RegionManager,\r\n what I'm trying to avoid here is instantiating the View in the ViewModel.&nbsp;</p>\r\n<p>I'll review the links you gave and report back on this.</p>\r\n",
+    "PostedDate": "2011-01-24T21:59:44.37-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "555182",
+    "ThreadId": "242890",
+    "Html": "\r\n<p>In looking at your references, that seems similar to what I already have in the works.</p>\r\n<p>I have a base service that collects the OptionsItems from each of the modules.&nbsp; The OptionsItems are HierarchicalViewModels so they form the tree for the TreeView.&nbsp; Since they are all based on a common base class I just use a HierarchicalDataTemplate\r\n and the TreeView draws itself.</p>\r\n<p>Each OptionsItems has a content property that contains the ViewModel for the right hand content control.</p>\r\n<p>The problem is instantiating the correct View, for the selected OptionsItem.Content property.</p>\r\n<p>I have a few ideas I'm mulling over at the moment.</p>\r\n<p>1. Create a view dictionary in the service.&nbsp; The key would be the type of the ViewModel and the value would be a delegate that creates an instance of the correct view for the view model.&nbsp; Then use the region manager to inject that view into the\r\n dialog.&nbsp;</p>\r\n<p>2. Create a custom RegionBehavior that instantiates the view based on the bound ViewModel.&nbsp;</p>\r\n<p>Does it sound like I'm on the right track?&nbsp; (Have a better idea?)</p>\r\n",
+    "PostedDate": "2011-01-25T11:34:01.03-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "555667",
+    "ThreadId": "242890",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I wouldn&acute;t recommend to put the ViewModel for your views inside the OptionItems' content property. One alternative approach would be to register the ViewModels in\r\n<strong>Mef</strong> using a contract name, and store a string containing that name in your OptionItems' content property. Then, when you click that OptionItem, you could navigate to that view in the right region, passing that string as the Uri. Note that you\r\n can also pass parameters to the navigation request.</p>\r\n<p>You can read more about Navigation in <a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=PandP.40).aspx\">\r\nthis chapter</a> from the Prism documentation. You could also find the <a href=\"http://msdn.microsoft.com/en-us/library/gg430881(v=PandP.40).aspx\">\r\nView-Swtiching Navigation QuickStart</a> and the Navigation HOL in the <a href=\"http://prismtk.codeplex.com/\">\r\nPrism Training Kit</a> useful.</p>\r\n<p>Therefore, you don&rsquo;t need to implement neither a dictionary nor a behavior to instantiate the correct view based on the selected item on the tree.</p>\r\n<p>Once again, please let me know if this helps you.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-26T09:09:10.857-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "555774",
+    "ThreadId": "242890",
+    "Html": "\r\n<p>I was looking at those yesterday, I also found &quot;<a href=\"http://blogs.msdn.com/b/kashiffl/archive/2010/10/04/prism-v4-region-navigation-pipeline.aspx\" target=\"_blank\">Prism v4 Region Navigation Pipeline</a>&quot; really helpful, once I had looked at those.</p>\r\n<p>I think I need to play with my model next and ensure that I have a decent XPath syntax.</p>\r\n<p>I had kind of abandoned the idea of going this route, but I think your right, this might be the best route, I'll give it a shot.</p>\r\n<p>Thanks again for your help.&nbsp; I'll let you know how it turns out, or if I have more questions.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-26T10:45:16.767-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "557478",
+    "ThreadId": "242890",
+    "Html": "\r\n<p>So... in case anyone comes across this thread, here's what I wound up with.</p>\r\n<p>To add items to the options dialog, a module creates a class or classes that export IOptionsProvider.</p>\r\n<p>IOptionsProvider is very simplistic it only requires a key to uniquely identify itself, A method that returns the option items for the tree view, and a method to get the data for an option item based on a key.</p>\r\n<p>I have an options service that is responsible for showing the dialog.&nbsp; It looks for any modules that export IOptionsProvider and builds the hierarchical view model for the tree view using the get option items method of the IOptionsProvider.</p>\r\n<p>The option items contain an exported key for the View that will display on the right, and a provider and data key for it's data.</p>\r\n<p>When the selection in the tree view changes normal region navigation is called using a URI built from the option item.&nbsp; It took a bit to get that working the\r\n<a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=243726\" target=\"_blank\">\r\nsolution is in this thread.</a></p>\r\n<p>The ViewModel for the right hand control that is navigated to, makes a call to the options service, using the keys in the URI to obtain the data it needs. It all seems to be working great so far.&nbsp; And the simplicity of just adding an IOptionsProvider\r\n class to a module in order to implement this will be nice!</p>\r\n<p>Thanks for your help on this Miguel, I think I like the way it turned out.</p>\r\n<div id=\"x__mcePaste\" style=\"left:-10000px; top:0px; width:1px; height:1px; overflow:hidden\">\r\n<pre style=\"font-family:consolas\"><span style=\"color:#2b91af\">IOptionsProvider</span><br></pre>\r\n</div>\r\n",
+    "PostedDate": "2011-01-29T20:19:37.17-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

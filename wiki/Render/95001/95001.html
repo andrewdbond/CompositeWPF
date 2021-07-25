@@ -1,0 +1,50 @@
+<div class="wikidoc"><h1>Summary of what&#39;s new in this drop</h1><ol><li><a href="#Bootstrapper">Bootstrapper&#58; Extracted common functionality into a base class</a></li>
+<li><a href="#Documentation">Documentation</a></li>
+<li><a href="#EventAggregation">Integrated Event Aggregation in RI</a></li>
+<li><a href="#QuickStart">New Commanding QuickStart</a></li>
+<li><a href="#Implementation">New StaticModuleEnumerator implementation</a> </li>
+<li>Several Bugs Fixed</li></ol>
+<h3>Bootstrapper: Extracted common functionality into a base class <a name="Bootstrapper"></a> </h3>A new base class named <b>UnityPrismBootstrapper</b> was introduced. This class provides common code for a <b>Bootstrapper</b> that uses the <b>Unity</b> container. The main methods are the following:
+<ul><li><b>Run</b>. This method starts the Bootstrapper process.</li>
+<li><b>Configure Container.</b>This method configures the Unity container. It may be overwritten in a derived class to register application-specific type mappings. It can configure the container with the default configuration depending on a flag that you pass to the <b>Bootstrapper.Run</b> method. It registers type mappings in case you didn&#39;t add them before.</li>
+<li><b>ConfigureRegionAdapterMappings</b>. This method configures the default region adapter mappings to use in the application. This method may be overwritten in a derived class to add specific mappings required by the application.</li>
+<li><b>InitializeModules</b>. This method initializes the modules. It may be overwritten in a derived class to use custom module loading and to avoid using an <b>IModuleLoaderService</b> and <b>IModuleEnumerator</b>.</li>
+<li><b>CreateContainer</b>. This method creates the <b>IUnityContainer</b> that will be used as the default container.</li>
+<li><b>GetModuleEnumerator</b>. This method returns the module enumerator that will be used to initialize the modules. When using the default initialization behavior, this method must be overwritten by a derived class.</li>
+<li><b>ShowShell</b>. In this template method you show the Shell window and return it. You return this object because it will be injected with the default region manager of the application to be able to add regions using the <b>RegionManager.RegionNameProperty</b> attached property from XAML.</li></ul>
+All the solutions included in the drop have been updated to use this new implementation.
+<h3>Documentation <a name="Documentation"></a></h3><ul><li>Added RI Background</li>
+<li>Added What is going on in the RI?</li>
+<li>Added Technical Concepts</li>
+<li>Added Design Concepts</li>
+<li>Added several How-To docs</li></ul>
+<h3>Integrated the Event Aggregation service in the Stock Trader Reference Implementation <a name="EventAggregation"></a></h3><img src="http://download-codeplex.sec.s-msft.com/Download?ProjectName=CompositeWPF&DownloadId=35798" alt="stocktrader.png" title="stocktrader.png" /><br />The Event Aggregation service was integrated in the Stock Trader Reference Implementation (RI) to establish loosely coupled communications between components. The Event Aggregation service is used in the RI to update stock’s market price and to show related news articles when a stock is selected.<br />The <b>MarketPricesUpdatedEvent</b> event is raised when the stock’s market price is automatically updated after a time interval. This event is used by the modules StockTraderRI.Modules.Market and StockTraderRI.Modules.Position to communicate in a loosely coupled way. The following code shows the event class signature; the class extends the PrismEvent&lt;TPayload&gt; class specifying a dictionary as the payload type.<br /><br /><pre>
+public class MarketPlacesUpdatedEvent : PrismEvent &lt;IDictionary&lt;string, decimal&gt;&gt;
+{
+
+} </pre>
+<h4>Event Subscription</h4>The following code shows a line of the <b>PositionSummaryPresenter</b> class’ constructor. In this line an event handler for the <b>MarketPricesUpdatedEvent</b> event is subscribed using the Event Aggregator service.<br /><br /><pre>
+eventAggregator.Get&lt;MarketPricesUpdatedEvent&gt;().Subscribe(MarketPricesUpdated, ThreadOption.UIThread);
+</pre>
+<h4>Event Publishing</h4>When stock’s market prices are updated, the event <b>MarketPricesUpdatedEvent</b> is published by the <b>MarketFeedService</b> class. The following code shows how this happens.<br /><br /><pre>
+private void OnMarketPricesUpdated()
+{
+    var clonedPriceList = new Dictionary&lt;string, decimal&gt;(_priceList);
+
+    EventAggregator.Get&lt;MarketPricesUpdatedEvent&gt;().Publish(clonedPriceList);
+}
+</pre>
+<h3>New commanding QuickStart <a name="QuickStart"></a></h3>The Commanding QuickStart demonstrates how to build a Windows Presentation Foundation (WPF) user interface that uses commands to handle UI actions in a decoupled way. The Commanding QuickStart is based on a fictitious product ordering system where the user can place customer orders.<br />This QuickStart contains the following commands:
+<ul><li>SaveOrder: this command is fired when the user submits a single order.</li>
+<li>SaveAllOrders: this command is fired when the user clicks on the toolbar button to submit all orders.</li></ul>
+These commands get enabled or disabled depending on validation rules on the order form.
+<h3>New StaticModuleEnumerator Implementation <a name="Implementation"></a></h3>The class <b>StaticModuleEnumerator</b> class was introduced in Prism. This module enumerator facilitates the task of statically adding modules to your application. The following code, extracted from the Stock Trader reference implementation, shows an example usage of this module enumerator:<br /><br /><pre>
+protected override IModuleEnumerator GetModuleEnumerator()
+{
+    return new StaticModuleEnumerator()
+        .AddModule(typeof(NewsModule))
+        .AddModule(typeof(MarketModule))
+        .AddModule(typeof(WatchModule), &quot;MarketModule&quot;)
+        .AddModule(typeof(PositionModule), &quot;MarketModule&quot;, &quot;NewsModule&quot;);
+}
+</pre></div><div class="ClearBoth"></div>

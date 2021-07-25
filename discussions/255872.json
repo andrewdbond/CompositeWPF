@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "605485",
+    "ThreadId": "255872",
+    "Html": "\r\n<p>I am a new member of prism. I encountered an excepetion as title. Below is what I do in my demo.</p>\r\n<p>Below 4 project included in my project.<br>\r\nPrismStart <br>\r\nModel<br>\r\nView<br>\r\nViewModel</p>\r\n<p>I use UnityBootstrapper to add &quot;View&quot; project to the &quot;mainRegion&quot; of PrismStart project. View,ViewModel and Model are a standard MVVM slution. when I changed to use UnityBootstrapper add ViewModel as a module. problem solved. Strangely why there are no exception\r\n of loading &quot;Model&quot; project. is there any way to avoid the exception when loading &ldquo;ViewModel&quot; project as not a module?</p>\r\n<p><br>\r\n(and also I want to let my project work on WPF and SliverLight well sharing the same &quot;model&quot; and &quot;viewmodel&quot; based on prism. can I?&nbsp; if i can, what should i do for it.)</p>\r\n<p>any helps will be appreciated.</p>\r\n",
+    "PostedDate": "2011-05-01T06:09:22.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "605990",
+    "ThreadId": "255872",
+    "Html": "<p>Hi,</p>\r\n<p>Placing ViewModels in a different assembly that views is not a recommended practice in Prism. Modules are meant to be a unit that contains different components that compose a certain use case, so Views and ViewModels should reside on the same module. If you don&rsquo;t need to divide your application in different modules, you could simply place all your components in the same project, and avoid the use of modules.</p>\r\n<p>Additionally, you should take into account that you can add views to regions, not modules or projects. You can read more about this in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921098(PandP.40).aspx\">UI Composition chapter</a> of the Prism MSDN documentation.</p>\r\n<p>As an example of how these concerns are applied to organize a composite application using Prism, you could take a look at the <a href=\"http://msdn.microsoft.com/en-us/library/ff921074(PandP.40).aspx\">Stock Trader Reference Implementation</a>.</p>\r\n<p>On the other hand, in case you want to write code that targets both WPF and Silverlight applications, you can read <a href=\"http://msdn.microsoft.com/en-us/library/ff921109(PandP.40).aspx\">Chapter 10: Sharing Code Between Silverlight and WPF</a> and you can also follow the <a href=\"http://msdn.microsoft.com/en-us/library/ff921176(PandP.40).aspx\">Multi Targeting QuickStart</a>.</p>\r\n<p>Please let me know if this information helps you.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-02T10:56:38.043-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "606260",
+    "ThreadId": "255872",
+    "Html": "<p>Thanks for your response.</p>\r\n<p>But if I really want to place ViewModels in a different assambly as a reference of View project, is there any way to make it works if do not make it as a \"module\"?</p>",
+    "PostedDate": "2011-05-02T23:49:15.45-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "606464",
+    "ThreadId": "255872",
+    "Html": "<p>Hi,</p>\r\n<p>In order for the Unity container to resolve an instance of a class, the assembly containing it must be loaded into the app domain, such as when you load a module, or when you reference an assembly in a project that is loaded. Taking that into account, there should be no impediments for what you're trying to achieve.</p>\r\n<p>However, you should take into account that this scenario isn't supported in Prism's guidance.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-05-03T07:30:46.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

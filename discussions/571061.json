@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1318225",
+    "ThreadId": "571061",
+    "Html": "I'm not finding any guidance on how to implement MEF's RegistrationBuilder (Convention model) in Prism - can you provide an example of a best pattern and practice for this?<br />\n<br />\nBelow, in my POC,  I implement what little documentation I can find on the convention model topic to successfully execute imported commands but only if I manually satisfy imports.<br />\n<pre><code>        [ImportMany]\n        public IEnumerable&lt;ICommand&gt; Commands { get; set; }\n\n        protected override void ConfigureAggregateCatalog()\n        {\n            base.ConfigureAggregateCatalog();\n\n            // Add this class \n            AggregateCatalog\n                   .Catalogs\n                   .Add(new AssemblyCatalog(typeof(QuickStartBootstrapper).Assembly));\n\n            // Add the AddIns folder \n            var catalog = new DirectoryCatalog(&quot;AddIns&quot;);\n            AggregateCatalog.Catalogs.Add(catalog);\n\n            // Export all ICommand values and import them into the Commands property\n            var conventions = new RegistrationBuilder();\n            conventions.ForTypesDerivedFrom&lt;ICommand&gt;().Export&lt;ICommand&gt;();\n            conventions.ForType&lt;QuickStartBootstrapper&gt;()\n                    .ImportProperty&lt;ICommand&gt;(p =&gt; p.Commands);\n\n            var thisAssemblyCatalog = new \n                AssemblyCatalog(typeof (CallbackLogger).Assembly, conventions);\n\n            this.AggregateCatalog.Catalogs.Add(thisAssemblyCatalog);\n\n            using (var service = thisAssemblyCatalog.CreateCompositionService())\n            {\n                service.SatisfyImportsOnce(this, conventions);\n                foreach (var command in Commands)\n                {\n                    if (command.CanExecute(moduleManager))\n                        command.Execute(Logger);\n                }\n            }\n        }\n\n </code></pre>\n\n",
+    "PostedDate": "2014-11-01T07:44:40.82-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1319007",
+    "ThreadId": "571061",
+    "Html": "My recent blog on &quot;a way&quot; for <a href=\"https://www.global-webnet.net/blog/post/2014/11/04/How-to-use-MEF’s-convention-model-in-PRISM.aspx\" rel=\"nofollow\">How to use MEF's convention model in PRISM</a><br />\n",
+    "PostedDate": "2014-11-04T07:02:34.537-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-11-04T07:02:57.453-08:00"
+  }
+]

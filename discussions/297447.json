@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "745413",
+    "ThreadId": "297447",
+    "Html": "\r\n<div>\r\n<p>Using a C#, WPF, MVVM, Prism, MEF. I need the external effects (I have it from the View is called Dispose ()) to free resources in the ViewModel, used in the View. I use something like the following code:</p>\r\n<pre><code><span>public</span><span> </span><span>class</span><span> </span><span>MyViewModel</span><span>:</span><span> </span><span>IDisposable</span><span>,</span><span> </span><span>IMyViewModel</span><span>,</span><span> </span><span>...</span><span><br></span><span>{</span><span><br>&nbsp; &nbsp; </span><span>private</span><span> </span><span>bool</span><span> disposed </span><span>=</span><span> </span><span>false</span><span>;</span><span><br><br>&nbsp; &nbsp; </span><span>private</span><span> </span><span>System</span><span>.</span><span>Timers</span><span>.</span><span>Timer</span><span> timer</span><span>;</span><span><br><br>&nbsp; &nbsp; </span><span>public</span><span> </span><span>MyViewModel</span><span>()</span><span><br>&nbsp; &nbsp; </span><span>{</span><span><br>&nbsp; &nbsp; &nbsp; &nbsp; timer </span><span>=</span><span> </span><span>new</span><span> </span><span>System</span><span>.</span><span>Timers</span><span>.</span><span>Timer</span><span>();</span><span><br>&nbsp; &nbsp; &nbsp; &nbsp; timer</span><span>.</span><span>Interval</span><span> </span><span>=</span><span> </span><span>100</span><span>;</span><span><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span>//timer.Elapsed &#43;= new ElapsedEventHandler(timer_Elapsed);</span><span><br>&nbsp; &nbsp; &nbsp; &nbsp; timer</span><span>.</span><span>Start</span><span>();</span><span><br>&nbsp; &nbsp; </span><span>}</span><span><br><br>&nbsp; &nbsp; </span><span>public</span><span> </span><span>void</span><span> </span><span>Dispose</span><span>()</span><span><br>&nbsp; &nbsp; </span><span>{</span><span><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span>Dispose</span><span>(</span><span>true</span><span>);</span><span><br><br>&nbsp; &nbsp; &nbsp; &nbsp; GC</span><span>.</span><span>SuppressFinalize</span><span>(</span><span>this</span><span>);</span><span><br>&nbsp; &nbsp; </span><span>}</span><span><br><br>&nbsp; &nbsp; </span><span>protected</span><span> </span><span>virtual</span><span> </span><span>void</span><span> </span><span>Dispose</span><span>(</span><span>bool</span><span> disposing</span><span>)</span><span><br>&nbsp; &nbsp; </span><span>{</span><span><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span>if</span><span>(!</span><span>this</span><span>.</span><span>disposed</span><span>)</span><span><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span>{</span><span><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span>if</span><span>(</span><span>disposing</span><span>)</span><span><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span>{</span><span><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span>// Dispose managed resources.</span><span><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; timer</span><span>.</span><span>Dispose</span><span>();</span><span><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; timer </span><span>=</span><span> </span><span>null</span><span>;</span><span><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span>//GC.KeepAlive(timer);</span><span><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span>//GC.Collect();</span><span><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span><span>}</span><span><br><br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; disposed </span><span>=</span><span> </span><span>true</span><span>;</span><span><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span>}</span><span><br>&nbsp; &nbsp; </span><span>}</span><span><br><br>&nbsp; &nbsp; </span><span>~</span><span>MyViewModel</span><span>()</span><span><br>&nbsp; &nbsp; </span><span>{</span><span><br>&nbsp; &nbsp; &nbsp; &nbsp; </span><span>Dispose</span><span>(</span><span>false</span><span>);</span><span><br>&nbsp; &nbsp; </span><span>}</span><span><br></span><span>}</span><span><br></span></code></pre>\r\n<p>As such, the View and ViewModel instances are not destroyed and there is a memory leak. If you delete the interface and its methods IDisposable, the View and ViewModel deleted successfully.</p>\r\n<p>I using ANTS Memory Profiler. On next diagram you can see three instance, from DisposableReflecationComposablePart, but must be a one instance.</p>\r\n<p><img src=\"http://i.stack.imgur.com/vMpsq.png\" alt=\"enter image description here\" width=\"809\" height=\"91\"></p>\r\n<p>I can not understand what was happening. Any ideas?</p>\r\n<p>&nbsp;</p>\r\n<p><span style=\"color:#c0c0c0\">Original: http://stackoverflow.com/questions/9174898/memory-leak-with-idisposable-in-viewmodel-why</span></p>\r\n</div>\r\n",
+    "PostedDate": "2012-02-07T09:16:17.037-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "745687",
+    "ThreadId": "297447",
+    "Html": "<p>Hi,</p>\r\n<p>From the information you're providing here, I can't think of an explanation for the memory leak caused by implementing <strong>IDisposable</strong>.</p>\r\n<p>As mentioned in the original question you linked above, we believe it isn't necessary to implement <strong>IDisposable</strong> in your case, since you don't seem to be using unmanaged resources in your scenario.</p>\r\n<p>Thanks,</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2012-02-07T12:09:18.44-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "746126",
+    "ThreadId": "297447",
+    "Html": "<p><span id=\"result_box\" lang=\"en\"><span class=\"hps\">The above</span> <span class=\"hps\">code</span> <span class=\"hps\">is</span> <span class=\"hps\">just an example</span> <span class=\"hps\">of course</span> <span class=\"hps\">means</span> <span class=\"hps\">the availability of resources</span> <span class=\"hps\">to be</span> <span class=\"hps\">freed.</span></span></p>",
+    "PostedDate": "2012-02-07T17:04:15.043-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "746450",
+    "ThreadId": "297447",
+    "Html": "<p><span id=\"result_box\" lang=\"en\"><span class=\"hps\">I</span> <span class=\"hps\">found an article (</span></span>http://msdn.microsoft.com/en-us/library/ee155691.aspx<span id=\"result_box\" lang=\"en\"><span class=\"hps\">)</span> <span class=\"hps\">which states</span> <span class=\"hps\">that</span> <span class=\"hps\"> non-shared</span><span>-export</span> <span class=\"hps\">should be used</span> <span class=\"hps\"> to destroy</span> <span class=\"hps\">ReleaseExport</span> <span class=\"hps\"></span></span><span id=\"result_box\" lang=\"en\"><span class=\"hps\">exported object</span><span>.</span></span><span id=\"result_box\" lang=\"en\"><br /> <span class=\"hps\">There is a</span> <span class=\"hps\">good example</span> <span class=\"hps\"> on this subject?</span></span></p>",
+    "PostedDate": "2012-02-07T21:25:51.573-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "746986",
+    "ThreadId": "297447",
+    "Html": "<p><span id=\"result_box\" lang=\"en\"><span class=\"hps\">I understand</span> <span class=\"hps\">that</span> <span class=\"hps\">my</span> <span class=\"hps\">statements</span> <span class=\"hps\">explain</span> <span class=\"hps\">the problem</span> <span class=\"hps\">is</span> <span class=\"hps\">the link:</span> </span>http://mef.codeplex.com/wikipage?title=Parts%20Lifetime&amp;referringTitle=Guide<span id=\"result_box\" lang=\"en\"> </span></p>\r\n<p><span id=\"result_box\" lang=\"en\"><span class=\"hps\">in</span> <span class=\"hps\">the following sentence</span><span>:</span><br /> <span class=\"hps\">Thus, the container will not hold references to parts it creates unless one of the following is true:</span><br /><br />&nbsp;&nbsp;&nbsp;&nbsp; <span class=\"hps\">The part is marked as Shared</span><br />&nbsp;&nbsp;&nbsp;&nbsp; <span class=\"hps\">The part implements IDisposable</span><br />&nbsp;&nbsp;&nbsp;&nbsp; <span class=\"hps\">One or more imports is configured to allow recomposition</span></span></p>",
+    "PostedDate": "2012-02-08T04:10:34.27-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "748977",
+    "ThreadId": "297447",
+    "Html": "<p><span id=\"result_box\" lang=\"en\"><span class=\"hps\">Workaround</span> <span class=\"hps\">found: the</span> <span class=\"hps\">use of</span> <span class=\"hps\">its interface</span><span>.</span><br /> <span class=\"hps\">http://stackoverflow.com/questions/9174898/memory-leak-with-idisposable-in-viewmodel-why</span></span></p>",
+    "PostedDate": "2012-02-09T09:29:20.953-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "654967",
+    "ThreadId": "268320",
+    "Html": "\r\n<p>Hello everyone,</p>\r\n<p>&nbsp;</p>\r\n<p>I have been trying to leverage Application Library Caching this time with MEF and get an interesting problem.</p>\r\n<p>I have followed the documentation:</p>\r\n<p>The second approach is to leverage application library caching in Silverlight. To use this feature, you go to the Silverlight project properties of a project and select the check box labeled&nbsp;<strong>Reduce XAP size by using application library caching</strong>.\r\n When you do this, any referenced assemblies that have the right metadata files collocated with them will not be included in the XAP file; instead, they will be placed in a separate .zip file, and the .zip file will be referenced by the XAP file's ApplicationManifest.xaml\r\n file as an external part. The signed Silverlight Prism Library binaries have the required metadata files to use this feature as well as the libraries from the Silverlight SDK and the Silverlight Toolkit. To leverage this functionality for your own shared assemblies,\r\n you need to provide a metadata file, as described in the topic, &quot;<a href=\"http://msdn.microsoft.com/en-us/library/dd833069(VS.95).aspx\">How to: Use Application Library Caching</a>&quot; on MSDN.</p>\r\n<p>Steps:</p>\r\n<p>1) I have strong named the open source CoverFlow control with a key.</p>\r\n<p>2) I have created a mapext.xml file for the assembly and placed it next to it.</p>\r\n<p>3) I have activated the &quot;Application Library caching&quot; checkbox in the projects.</p>\r\n<p>4) rebuilt.</p>\r\n<p>I can confirm that the open source cover flow control now shows up in a zip file next to the xap file. The xap file doesn't include the cover flow control anymore.</p>\r\n<p>So what happens at this stage? Should I be able to run the application or do i still need to add some more meta data somewhere? I can't see that from the documentation.</p>\r\n<p>If thats all, this doesn't work. &nbsp;I get an exception that the coverflow control or one of it's dependencies can't be loaded.</p>\r\n<p>I have a sample project uploaded here to&nbsp;illustrate&nbsp;the problem: &nbsp;<a href=\"https://skydrive.live.com/embedicon.aspx/.Public/TestProject.zip?cid=177395ddb7f8acdd&sc=documents\">Download</a></p>\r\n<p>Your help on this would be highly appreciated,</p>\r\n<p>Kind Regards,</p>\r\n<p>Houman</p>\r\n",
+    "PostedDate": "2011-08-08T23:57:26.763-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "655518",
+    "ThreadId": "268320",
+    "Html": "<p>Apologies, it seems I had forgotten adding the Prism libraries to the project, hence it wasn't buildable. &nbsp;If this has put somebody off to try it. Please don't give up on me and try again. :)</p>\n<p>Here is the new <a href=\"https://skydrive.live.com/?cid=177395ddb7f8acdd&amp;sc=documents&amp;id=177395DDB7F8ACDD%21158#\"> download</a>.</p>\n<p>&nbsp;</p>\n<p>Thank you</p>",
+    "PostedDate": "2011-08-09T14:45:36.057-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "655842",
+    "ThreadId": "268320",
+    "Html": "<p>Hi Houman,</p>\r\n<p>We've tested your sample and were able to verify the problem you're experiencing; we also found out that adding a reference to the <strong>DC.ControlLibrary</strong> in the shell project fixes the problem; usually, when you have a custom control in a module, you need to add a reference to the library containing that control in your shell as well.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-08-10T06:03:36.577-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "655890",
+    "ThreadId": "268320",
+    "Html": "<p>Hi Guido,</p>\r\n<p>Oh my goodness. That was all about it? I can't believe I didn't see that. &nbsp;But its really hard to figure this out. How did you guys see that? Amazing!!!!!<br /><br />I don't want to be dramatic again, but you don't know how much your help means to me. I was working on this since last Friday non-stop. &nbsp; THANK YOUUUUUUUUUUUUU!</p>\r\n<p>Finally the assemblies are strong named and are using Application library caching.</p>\r\n<p>Have a great day!!!<br />Houman</p>",
+    "PostedDate": "2011-08-10T07:19:11.133-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

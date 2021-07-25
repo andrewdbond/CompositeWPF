@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "246347",
+    "ThreadId": "72176",
+    "Html": "<p>I have a structure in 1 module</p>\r\n<p>EmployeeList<br>&nbsp;&nbsp; - EmployeeListView (binding list of employee model)<br>&nbsp;&nbsp; - EmployeeListPresentationModel</p>\r\n<p>EmployeeComposition<br> &nbsp;&nbsp; - EmployeeCompositionView<br> &nbsp;&nbsp; - EmployeeCompositionPresentationModel</p>\r\n<p>script:<br>&nbsp;- Double click on selected employee in EmployeeListView =&gt; Show EmployeeCompositionView and pass selected employee to EmployeeCompositionPresentationModel</p>\r\n<p>What should i do:</p>\r\n<ol>\r\n<li>EmployeeCompositionPresentationModel employeeCompositionPresentationModel = container.Resolve&lt;EmployeeCompositionPresentationModel&gt;();<br>employeeCompositionPresentationModel.SelectedEmployee = SelectedEmployee;<br>RegionManager.RegisterViewWithRegion(RegionNames.MainRegion, employeeCompositionPresentationModel.View);</li>\r\n<li>Using controller (how do i do?).</li>\r\n<li>Using EventAggregator.</li>\r\n<li>Or ....</li>\r\n</ol>\r\n<p>Thanks for help.</p>",
+    "PostedDate": "2009-10-15T20:18:07.97-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "246511",
+    "ThreadId": "72176",
+    "Html": "<p id=ab955790-9c81-012c-432e-12313b005981>Hi</p>\r\n<p id=ab956690-9c81-012c-432f-12313b005981>For this particular situation, a possible approach could be using a Controller or any other component that is in charge of orchestrating the views for an entire module. <a href=\"http://neverindoubtnet.blogspot.com/\">Ward Bell</a> talks a bit more about a component like this in these posts (<a href=\"http://neverindoubtnet.blogspot.com/2009/06/screen-factory.html\">Screen Factory</a> and <a href=\"http://neverindoubtnet.blogspot.com/2009/05/birth-and-death-of-m-v-vm-triads.html\">Birth and Death of M-V-VM Triads</a>). You can notify the &ldquo;coordinator&rdquo; from your <strong>EmployeeListPresentationModel</strong> about the employee changing (passing the employee as parameter) and then creating the view as you are doing in 1).</p>\r\n<p id=ab957fc0-9c81-012c-4330-12313b005981>Please let me know if this helps.</p>\r\n<p id=ab959990-9c81-012c-4331-12313b005981>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-10-16T06:09:59.18-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "246813",
+    "ThreadId": "72176",
+    "Html": "<p>Hi Damian, thank for quick reply. It usefull for me.</p>\r\n<p>And another question: How i can implement global shortkeys (e.g: Ctrl + N) for show edit view or something like that.</p>\r\n<p>EmployeeListView(is active in ContentControl) =&gt; press Ctrl + N =&gt; Show EmployeeCompositionView to add new Employee.<br>CustomerListView(active in ContentControl) =&gt; press Ctrl + N =&gt; Show CustomerCompositionView to add new Customer.<br>And so on.</p>\r\n<p>Thank for your helps.</p>\r\n<p>.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-17T00:00:34.53-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "247788",
+    "ThreadId": "72176",
+    "Html": "<p id=6245cf50-9ee2-012c-36d9-12313b0085f1>Hi</p>\r\n<p id=6245e4f0-9ee2-012c-36da-12313b0085f1>This kind of functionality is not addressed by the guidance but there are different ways to do it. <a href=\"http://blogs.msdn.com/llobo/\">Lester Lobo</a> recently blogged about <a href=\"http://blogs.msdn.com/llobo/archive/2009/10/09/a-basic-mvvm-framework.aspx\">CoreMVVM: A basic MVVM framework</a>, which uses the <a href=\"http://wpf.codeplex.com/wikipage?title=WPF Model-View-ViewModel Toolkit&ProjectName=wpf\">MVVM toolkit</a> to, among other things, provide support for DelegateCommands and KeyBindings.</p>\r\n<p id=62461170-9ee2-012c-36db-12313b0085f1>You can download the library from <a href=\"http://coremvvm.codeplex.com/\">here</a>.</p>\r\n<p id=62463aa0-9ee2-012c-36dc-12313b0085f1>Please let me know if this helps.</p>\r\n<p id=62466070-9ee2-012c-36dd-12313b0085f1>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-10-20T10:10:01.33-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

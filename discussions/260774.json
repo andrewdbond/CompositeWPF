@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "625362",
+    "ThreadId": "260774",
+    "Html": "\r\n<p>Hi</p>\r\n<p>I have a prism application with several views and can navigate between the views without any problems using RequestNavigate(...).</p>\r\n<p>One of my views has a grid and I would like this grid to fill the entire region.</p>\r\n<p>I have read that you can replace ContentControl with an ItemsControl as follows:</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsControl<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name=&quot;ContentRegion&quot;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Regions:RegionManager.RegionName=&quot;ContentRegion&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsControl.ItemsPanel&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsPanelTemplate&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Grid/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsPanelTemplate&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsControl.ItemsPanel&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsControl&gt;</p>\r\n<p>I have done this but when I navigate between the views, the views are now displayed on top of each other.</p>\r\n<p>Each of the views implements IRegionMemberLifetime and returns false for KeepAlive property.</p>\r\n<p>Each of the view model and model types are registered with unity container using TransientLifetimeManager.</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2011-06-09T07:02:21.183-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "625525",
+    "ThreadId": "260774",
+    "Html": "<p>Hi,</p>\r\n<p>The reason your views are placing one on top each other is because you are using an <strong>ItemsControl</strong> which region defined by it region adapter is an <strong>AllActiveRegion</strong>. In your case you should use the <strong>ContentControl</strong> to place your views, since it region adapter defines a <strong>SingleActiveRegion</strong>. A <strong>SingleActiveRegion</strong> means every time you navigate between your views, only one will be display inside the region.</p>\r\n<p>On the other hand, you could try setting the <strong>HorizontalAlignment</strong> and <strong>VerticalAlignment</strong> properties to <em>Stretch</em> value, which stretches the grid to fill the entire layout slot of the parent element. You can read about these properties <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.frameworkelement.horizontalalignment(VS.95).aspx\">here</a>.</p>\r\n<p>As this is not strictly related to Prism, you might obtain better support about how to fulfill the entire layout of a content control in the <a href=\"http://forums.silverlight.net/forums/\">Silverlight Forums</a>.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>",
+    "PostedDate": "2011-06-09T10:38:08.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "625539",
+    "ThreadId": "260774",
+    "Html": "<p>Thank you for your reply.</p>\r\n<p>I have tried setting the HorizontalAlignment and VerticalAlignment properties to Stretch value for both the Grid, the UserControl that contains the Grid as well as the ContentControl but the content still appears in the top left corner of the region.</p>\r\n<p>I will obtain further support in the Silverlight Forums.</p>",
+    "PostedDate": "2011-06-09T11:02:46.38-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "625549",
+    "ThreadId": "260774",
+    "Html": "<p>The solution is to set the HorizontalContentAlignment and VerticalContentAlignment properties of the ContentControl to Stretch value.</p>\r\n<p>Thanks again for your help.</p>",
+    "PostedDate": "2011-06-09T11:20:58.543-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "625555",
+    "ThreadId": "260774",
+    "Html": "<p>Hi,</p>\r\n<p>Thank you for share this with the rest of the community, as other users might benefit from knowing this.</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-06-09T11:26:49.707-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

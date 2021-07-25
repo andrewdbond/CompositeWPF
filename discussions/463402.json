@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1111572",
+    "ThreadId": "463402",
+    "Html": "Hi,\r<br />\n<br />\nWe are using unity,Prism in our wpf appp. In one of our view model \r<br />\nwe have a constructor which accepts ImoduleManager , During runtime , this value is set property. But how to set/initialize it during unit tests. Whenever we run unit tests, it throws erro. How to create instance of ImoduleManger via unit tests. please suggest\r<br />\n<br />\n<br />\nFor e;g: In code ,   <strong>UserControlViewModel([Dependency] IModuleManager moduleManager)</strong>\r<br />\n<br />\nKind Regards\r<br />\nKrishna<br />\n",
+    "PostedDate": "2013-10-24T05:54:58.67-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111589",
+    "ThreadId": "463402",
+    "Html": "Hi,\r<br />\n<br />\nUse a mocking framework like Moq, Rhinomocks to mock the IModuleManager and pass that to your viewmodel. Read up more on how to mock methods.\r<br />\n <a href=\"http://code.google.com/p/moq/\" rel=\"nofollow\">http://code.google.com/p/moq/</a>\r<br />\n<br />\nCheers!\r<br />\nGanesh<br />\n",
+    "PostedDate": "2013-10-24T06:16:20.863-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111626",
+    "ThreadId": "463402",
+    "Html": "Hi Krishna,\r<br />\n<br />\nBased on my understanding the module manager gets instantiated when the <strong>Bootstrapper</strong> is ran. Therefore, the <strong>IModuleManager</strong> instance is retreived on the constructor from the <em>Container</em>. \r<br />\n<br />\nAs Ganesh correctly said, you may create a mock instance of <strong>IModuleManager</strong> which would be then passed to the <strong>ViewModel</strong> constructor. The following implementation shows how to create the <strong>IModuleManager</strong> mock and the corresponding <strong>ViewModel</strong> (<em>You would need to use</em> <strong><em>Microsoft.Practices.Prism.Modularity</em></strong> <em>namespace for</em> <strong><em>IModuleManager</em></strong>):<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">var</span> moduleManagerMock = <span style=\"color:Blue;\">new</span> Mock&lt;IModuleManager&gt;();\n<span style=\"color:Blue;\">var</span> viewModel = <span style=\"color:Blue;\">new</span> MyViewModel(moduleManagerMock.Object);\r\n</pre></div>I hope this helps,\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blog.southworks.net/gostrowsky\" rel=\"nofollow\">https://blog.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2013-10-24T06:55:16.777-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111940",
+    "ThreadId": "463402",
+    "Html": "Thanks for your reply . We are not using Moq or any other framework for unit testing . How to instatiate ImoudleManager in normal way . I guess it accepts 3 more parameters . Is there a way to do it or Moq is the only way to do it.<br />\n",
+    "PostedDate": "2013-10-24T22:57:53.937-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111952",
+    "ThreadId": "463402",
+    "Html": "Hi,\r<br />\n<br />\nIdeally when testing your ViewModel you should mocking external references, as the purpose of your unit testing is to test the viewmodel behavior and not how IModuleManager works. So mocking is the only good way to go about doing this.\r<br />\n<br />\nCheers!<br />\n",
+    "PostedDate": "2013-10-24T23:44:09.12-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

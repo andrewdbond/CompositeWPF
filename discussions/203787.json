@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "414115",
+    "ThreadId": "203787",
+    "Html": "<p>Hi,&nbsp;</p>\r\n<p>this is my scenario. I have 8 modules and in every module in IModule class I register viemodel+model via:</p>\r\n<p>example:</p>\r\n<p><span style=\"color:#0000ff\">Me._container.RegisterType(Of IStranicaViewModel, StranicaViewModel)()</span></p>\r\n<p><span style=\"color:#0000ff\">Me._container.RegisterType(Of IStranica, Stranica)()</span></p>\r\n<p>Then I resolve them when the module gets initialized:&nbsp;</p>\r\n<p><span style=\"color:#0000ff\">&nbsp;Dim model As IStranicaViewModel = Me._container.Resolve(Of IStranicaViewModel)()</span></p>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\"><span style=\"color:#0000ff\">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;model.sXml = arr(i)</span></div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\"><span style=\"color:#0000ff\">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;model.View.sUcitajXml()</span></div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\"><span style=\"color:#0000ff\">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Me._regionManager.Regions(&quot;Stranice&quot;).Add(model.View, &quot;Stranica&quot; &amp; i.ToString)</span></div>\r\n<p>&nbsp;</p>\r\n<p><span style=\"color:#0000ff\">&nbsp;Me._regionManager.Regions(&quot;Stranice&quot;).Add(model.View, &quot;Stranica&quot; &amp; i.ToString)</span></p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>Thing that I want to do is on a event to kill the view instance added to the region and create new instance. I tried with removing the view from region:</p>\r\n<p>\r\n<p><span style=\"color:#0000ff\">&nbsp;&nbsp;Dim Kolekcija As IViewsCollection = Me._regionManager.Regions(&quot;Stranice&quot;).Views</span></p>\r\n<p><span style=\"color:#0000ff\">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;For j As Integer = Kolekcija.Count - 1 To 0 Step -1</span></p>\r\n<p><span style=\"color:#0000ff\">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If TypeOf (Kolekcija(j)) Is IStranica Then</span></p>\r\n<p><span style=\"color:#0000ff\">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp; Me._regionManager.Regions(&quot;Stranice&quot;).Remove(Kolekcija(j))</span></p>\r\n<p><span style=\"color:#0000ff\">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</span></p>\r\n<p><span style=\"color:#0000ff\">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Next</span></p>\r\n<p>I used the&nbsp;<span style=\"font-family:Verdana, Arial, Helvetica, sans-serif;font-size:12px;line-height:15px\">SciTech.NET.Memory.Profiler to see if I manage to kill old instances before creating new ones but their number just gets increasing. What else do I need to do to kill unwanted view instances, cos the memory usage of my application just coontinues to rise as i click....</span></p>\r\n<p><span style=\"color:#0000ff\"><br></span></p>\r\n</p>",
+    "PostedDate": "2010-03-04T05:42:25.663-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "414283",
+    "ThreadId": "203787",
+    "Html": "<p id=90034c10-09f1-012d-d3ba-1231390bc9e1>Hi,</p>\r\n<p id=90037ce0-09f1-012d-d3bb-1231390bc9e1>We have tried to reproduce your issue  by creating a sample application with a scenario similar to the one you are  explaining but were not able to reproduce it. However, below you can find some  things that might help you:</p>\r\n<ul>\r\n<li>Try forcing garbage collection, after all the views have been removed, by adding a button that simply calls  <strong>GC.Collect</strong>.<strong> </strong>It is possible that the memory  might not be being released since it is not being needed.</li>\r\n<li>Check that no other object is keeping a reference to the views.</li>\r\n<li><a href=\"http://blogs.southworks.net/dschenkelman/2009/12/23/memory-leak-removing-view-with-child-regions-in-prism-v2/\">This  post</a> explains a possible scenario when removing views from a region could  cause memory leaks.</li>\r\n</ul>\r\n<p id=9003b570-09f1-012d-d3bc-1231390bc9e1>It would be useful if you could  provide a small repro sample so we can help you solve this issue.</p>\r\n<p id=90040910-09f1-012d-d3bd-1231390bc9e1>Please let me know if this helps.</p>\r\n<p id=900451f0-09f1-012d-d3be-1231390bc9e1>Damian Schenkelman <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-03-04T11:40:36.447-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "414530",
+    "ThreadId": "203787",
+    "Html": "<p>I tried this approach with adding&nbsp;<span style=\"font-family:Consolas, 'Courier New', Courier, monospace;color:#2b91af;white-space:pre\">ClearChildViewsRegionBehavior </span><span style=\"white-space:pre\"><span style=\"color:#000000\">(I am too adding a view with his own regions into a region in Shell), but when I remove that view from Shell region it doesn't get disposed... I tried GC.Collect, still no luck.</span></span></p>\r\n<p><span style=\"white-space:pre\"><span style=\"color:#000000\">I tried unsubscribing all event subscriptions that didn't help either. </span></span></p>",
+    "PostedDate": "2010-03-05T03:27:00.913-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "416258",
+    "ThreadId": "203787",
+    "Html": "<p>bump</p>\r\n<p>&nbsp;</p>\r\n<p>Anyone having suggestions?</p>",
+    "PostedDate": "2010-03-10T00:53:00.957-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "438920",
+    "ThreadId": "203787",
+    "Html": "<p>Got the same problem, the ViewModels are living in the background, and catching events....</p>",
+    "PostedDate": "2010-05-04T11:13:13.43-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "548368",
+    "ThreadId": "203787",
+    "Html": "\r\n<p>Think i'm having the same problem.</p>\r\n<p>Tried&nbsp;ClearChildViewsRegionBehavior and that didn't do much, i put a breakpoint on the actual property changed code and it never gets called.</p>\r\n<p>I'm actually finding that if there are multiple instances of a view that it actually cleans some of them up, but it always leaves at least one instance of each view in memory.</p>\r\n<p>This is the same case for every view in our system, it's not a code error, i've been using Redgate Memory Profiler and can see only a weak reference to the views from RegionCollection.</p>\r\n",
+    "PostedDate": "2011-01-12T17:15:52.267-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "548853",
+    "ThreadId": "203787",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Perhaps the <a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.prism.regions.iregionmemberlifetime%28PandP.38%29.aspx\">\r\nIRegionMemberLifetime</a> interface can be helpful for you to fix this undesired behavior.</p>\r\n<p>You might find the following threads that deal with that interface useful:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=229036\"><span>How to Remove A View From Memory When Closed.</span></a>\r\n</li><li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=236967\"><span>SingleActiveRegion and KeepAlive</span></a>\r\n</li><li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=231080\"><span>Big Business App &#43; Prism &#43; Regions</span></a>\r\n</li><li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=239142\"><span>Problems with RegionMemberLifetime</span></a>\r\n</li></ul>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2011-01-13T10:43:28.117-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

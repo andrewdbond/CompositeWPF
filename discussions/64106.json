@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "217977",
+    "ThreadId": "64106",
+    "Html": "<p>Hi.</p>\r\n<p>I'm a beginner with Prism, so please forgive me if this question is stupid. I went through a few tutorials and I'm creating my first Silverlight application with Prism. It's composed of a Login screen and a second screen that does CRUD operations on a simple database table.</p>\r\n<p>One feature is to select data using multiple filters, which are defined&nbsp;in TextBoxes (filters like Name, Email, Address, etc). I want to fetch data when the text of any of these textboxes chages. There will be a single command which should be invoked when any of the textboxes' text chages.</p>\r\n<p>The question is how do I bind the command to the TextChanged event?</p>\r\n<p>If I want to bind it to the click event of a button, that's easy, as shown in all tutorials:</p>\r\n<p>&lt;Button Content=&quot;Login&quot; commands:Click.Command=&quot;{Binding LoginCommand}&quot; /&gt;</p>\r\n<p>&nbsp;</p>\r\n<p>But what about the TextChanged scenario?</p>\r\n<p>Thanks.</p>",
+    "PostedDate": "2009-07-31T05:51:28.507-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218107",
+    "ThreadId": "64106",
+    "Html": "<p>Hi</p>\r\n<p>For this particular scenario you can create a command via an attached behavior that &ldquo;monitors&rdquo; the <strong>TextChanged</strong> event. Julian Dominguez explains the main concepts of this approach in <a href=\"http://blogs.southworks.net/jdominguez/2008/08/icommand-for-silverlight-with-attached-behaviors/\">this post</a>. You can also check out the following post that provides a sample on how to create a command for a Silverlight <strong>DataForm</strong> particular event:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/dschenkelman/2009/04/18/commands-with-attached-behavior-for-silverlight-3-dataform/\">Commands with Attached Behavior for Silverlight 3 DataForm</a></li>\r\n</ul>\r\n<p>Another possible approach, if this textbox has a two way binding to a model property, could be subscribing to the property changed event and execute the command from there. This would avoid any view code behind (which is the objective of the XAML command), but saves the trouble of creating the attached behavior.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><span style=\"font-size:11pt\" lang=EN-US><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></span></p>",
+    "PostedDate": "2009-07-31T10:59:20.643-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218665",
+    "ThreadId": "64106",
+    "Html": "<p>Hi.</p>\r\n<p>Thanks for the reply. I tried the second approach because it sounded easier&nbsp;(subscribing to the textchanged event), but it didn't work as I expected, because of the binding between the textboxes and the propertyes. The problem is that the value of the textbox is not reflected in the property with every change (every keypress inside the textbox), but only when the focus is lost.</p>\r\n<p>What I want to do is:&nbsp;</p>\r\n<p>while the user types - for example&nbsp;- &quot;Dan&quot;, the&nbsp;hanler of the event should&nbsp;be executed 3 times (after &quot;D&quot;, &quot;Da&quot; and &quot;Dan&quot;).</p>\r\n<p>This doesn't happen, because the settter of the property in the ViewModel is only called after I press tab, or click on another visual element.</p>\r\n<p>Do you know if this binding behavior can be adjusted in any way?Otherwise, I think I'll try your first suggestion.</p>\r\n<p>I must admit that all these tricks and workarounds that must be implemented for even a simple (but non-trivial) application make Prism hard to love. (at least for me... at least for now).</p>\r\n<p>Thanks for the help.</p>",
+    "PostedDate": "2009-08-03T01:28:39.77-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218887",
+    "ThreadId": "64106",
+    "Html": "<p>You should look to build a KeyUp command behavior that can be applied to any UIElement. I did this to know when the enter key was pressed to trigger an action and you could use this to do the same. Have a look at the Click commanding code to model your KeyUp logic.</p>\r\n<p>Once this is done, you will be able to use the event the way you need (I am assuming a MVVM pattern with this).</p>\r\n<p>&lt;TextBox x:Name=&quot;MyTextBox&quot;&nbsp;lcmd:KeyUp.Command=&quot;{Binding KeyPressedCommand}&quot; /&gt;</p>\r\n<p>Let me know if you need more assistance and I can provide more when I am at my development workstation.</p>",
+    "PostedDate": "2009-08-03T11:14:40.283-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "219101",
+    "ThreadId": "64106",
+    "Html": "<p>Hi again.</p>\r\n<p>I implemented the first suggestion of dschenkelman, which is very similar to what you proposed, Fred. So I monitor the TextChanged&nbsp;event (instead of KeyUp)&nbsp;and the new command fires ok, but there is still&nbsp;this problem:</p>\r\n<p>Binding from the&nbsp;textboxes to the properties in the view model is not updated with TextChanged, but only when focus is lost. So When the handler of the command is executed after the first key press, let's say, the string property is still null...</p>\r\n<p>Now I must find a hack to force the textbox&nbsp;binding to update with each key press, or else I'm lost...</p>\r\n<p>But thanks again for your help. Even if I didn't solve my scenario (yet), I learned a lot of useful things from the attempts. :)</p>",
+    "PostedDate": "2009-08-03T23:45:20.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "219125",
+    "ThreadId": "64106",
+    "Html": "<p>There is a much simpler way to do this, and it's what I've been using so far in WPF, but I think it still applies to silverlight.<br>I too am new to prism and m-v-vm patterns, so please forgive me if I am off track here.</p>\r\n<p>In my xaml I just bind the text property of the textbox to a property in my viewmodel class as follows:&nbsp;<br>(the datacontext of the window is set to an instance of my viewmodel class somewhere)</p>\r\n<p><span style=\"color:#808080\">&lt;TextBox Text=&quot;{Binding Path=MyText, UpdateSourceTrigger=PropertyChanged}&quot; /&gt;</span></p>\r\n<p>Then in my viewmodel class I define the MyText Property:</p>\r\n<p><span style=\"color:#808080\">private string _myText;<br>public string MyText<br>{<br></span><span style=\"white-space:pre\"><span style=\"color:#808080\"> </span></span><span style=\"color:#808080\">get { return _myText; }<br></span><span style=\"white-space:pre\"><span style=\"color:#808080\"> </span></span><span style=\"color:#808080\">set <br></span><span style=\"white-space:pre\"><span style=\"color:#808080\"> </span></span><span style=\"color:#808080\">{<br></span><span style=\"white-space:pre\"><span style=\"color:#808080\"> </span></span><span style=\"color:#808080\">_myText = value;<br></span><span style=\"white-space:pre\"><span style=\"color:#808080\"> </span></span><span style=\"color:#808080\">OnPropertyChanged(&quot;MyText&quot;); // when implementing INotifyPropertyChanged<br></span><span style=\"white-space:pre\"><span style=\"color:#808080\"> </span></span><span style=\"color:#808080\">CallMyMethod(); // call any other method you want to handle when the text has changed<br></span><span style=\"white-space:pre\"><span style=\"color:#808080\"> </span></span><span style=\"color:#808080\">}<br>}&nbsp;</span></p>\r\n<p>The &quot;UpdateSourceTrigger=PropertyChanged&quot; in the binding tells it to trigger immediately as soon as the text has changed instead of only when it loses focus.</p>\r\n<p>I hope this is of help.</p>\r\n<p>Jason.</p>",
+    "PostedDate": "2009-08-04T00:50:27.267-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "219132",
+    "ThreadId": "64106",
+    "Html": "<p>@Jason</p>\r\n<p>For some reason, Silverlight does not support &quot;UpdateSourceTrigger&quot;. Luckily I found a <a title=\"blog post\" href=\"http://michaelsync.net/2009/06/10/silverlight-attached-properties-bindingupdatesourcetriggerpropertychanged\">blog post</a> which describes how to emulate that, by losing and regaining focus on the TextChanged event. It's an ugly hack and I normally would avoid such things, but it seems that currently there is no other way to get this functionality in Silverlight.</p>",
+    "PostedDate": "2009-08-04T01:13:51.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

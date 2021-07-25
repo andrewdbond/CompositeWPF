@@ -1,0 +1,24 @@
+﻿using System;
+using System.Threading;
+using Microsoft.Practices.Prism.Regions;
+
+namespace Microsoft.Practices.Prism.Regions
+{
+    public static class AddToRegionExtension
+    {
+        public static IRegionManager AddToRegion(this IRegionManager regionManager, string regionName, object view, string viewName)
+        {
+            if (regionManager == null) throw new ArgumentNullException("regionManager");
+
+            if (!regionManager.Regions.ContainsRegionWithName(regionName))
+            {
+                throw new ArgumentException(
+                    string.Format(Thread.CurrentThread.CurrentCulture, "RegionNotFound", regionName), "regionName");
+            }
+
+            IRegion region = regionManager.Regions[regionName];
+
+            return region.Add(view, viewName);
+        }
+    }
+}

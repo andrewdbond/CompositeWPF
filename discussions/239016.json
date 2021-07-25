@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "538332",
+    "ThreadId": "239016",
+    "Html": "\r\n<p>I seem to be struggling with dynamically showing and hiding views. &nbsp;I have an application that uses a Menu that has checkbox MenuItems. &nbsp;When the user checks the box the view is supposed to show up, unchecked it goes away. &nbsp;Pretty simple concept\r\n but the implementation is eluding me.</p>\r\n<p>I can brute force remove a view using this code:</p>\r\n<pre>&nbsp;&nbsp;&nbsp;<div style=\"color:black; background-color:white\"><pre>IRegionManager regionManager = ServiceLocator.Current.GetInstance&lt;IRegionManager&gt;();\r\nIRegion region = regionManager.Regions[regionName];\r\nregion.Remove(region.ActiveViews.First(x =&gt; x.ToString() == viewName));\r\n</pre>\r\n</div>\r\n</pre>\r\n<p>and have tried a long series of combination to get the view to come back with no luck.</p>\r\n<p>Any help would be greatly appreciated.</p>\r\n<p>Thanks!!</p>\r\n",
+    "PostedDate": "2010-12-20T08:53:27.443-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538345",
+    "ThreadId": "239016",
+    "Html": "\r\n<p>Hi Mark,</p>\r\n<p>You might find the <a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28PandP.40%29.aspx\">\r\nNavigation chapter</a> from the Prism MSDN documentation useful to your purpose. From the documetation\r\n<em>&quot;Frequently, navigation means that certain controls in the UI are removed, while other controls are added.&quot;</em></p>\r\n<p>In order to add the view back when you have removed it, you could for example make use of navigation or View Injection (which is explained in\r\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28PandP.40%29.aspx\">this chapter</a> from the MSDN documentation) to inject the view back when you want it again in your region.</p>\r\n<p>Additionally, you might find the following threads useful, as they deal with similar scenarios (without using Navigation, however, as it is a feature introduced in Prism v4 and the posts are from an older date):</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=56692\"><span>Best way to manage views in a region</span></a>\r\n</li><li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=59250\"><span>Removing Views &amp; Garbage Collection</span></a>\r\n</li><li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=210844\"><span>Remove all the views from a region</span></a>\r\n</li><li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=85972\"><span>Problems Removing Views from a Region</span></a>\r\n</li><li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=58577\"><span>deactivate a view</span></a>\r\n</li><li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=225335\"><span>Is View Removal Automatically?</span></a>\r\n</li><li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=216114\"><span>IRegion Deactivate vs Remove</span></a>\r\n</li></ul>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-20T09:22:42.967-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538361",
+    "ThreadId": "239016",
+    "Html": "\r\n<p>Guido,</p>\r\n<p>Thanks for the quick response.&nbsp; I will definately read through those post and see what i can come up with.</p>\r\n<p>But.. this hackery got me through.. :).. MainRegion being an ItemsControl, vis being System.Windows.Visibility variable i set based on the checkstate of the MenuItem... Lame I know.. sorry had to move onto other task</p>\r\n<p><span style=\"color:#2b91af\">UserControl</span>&nbsp;c&nbsp;=&nbsp;((<span style=\"color:#2b91af\">UserControl</span>)MainRegion.Items[0]).ChildrenOfType&lt;<span style=\"color:#2b91af\">UserControl</span>&gt;().First(z&nbsp;=&gt;&nbsp;z.ToString()&nbsp;==&nbsp;viewName)&nbsp;<span style=\"color:blue\">as</span>&nbsp;<span style=\"color:#2b91af\">UserControl</span>;<br>\r\nc.Visibility&nbsp;=&nbsp;vis;</p>\r\n",
+    "PostedDate": "2010-12-20T09:38:23.253-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

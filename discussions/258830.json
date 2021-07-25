@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "617494",
+    "ThreadId": "258830",
+    "Html": "\r\n<p>I was trying to attached my application to&nbsp;enhanced an approach for module initialization within Prism-based applications.</p>\r\n<p>I am using the following URL as a sample&nbsp;<a href=\"http://www.aspiringcraftsman.com/2009/05/24/enhancing-prism-module-initialization/\">http://www.aspiringcraftsman.com/2009/05/24/enhancing-prism-module-initialization/</a></p>\r\n<p>Here is my repo project: &nbsp;https://cid-8017f79e49592b4d.office.live.com/browse.aspx/prismExample?nl=1&amp;uc=1</p>\r\n<p>I am getting the following eception when the application&nbsp;initializes&nbsp;: &nbsp;ResolutionfailException</p>\r\n<p>Resolution of the dependency failed, type = &quot;Microsoft.Practices.ServiceLocation.IServiceLocator&quot;, name = &quot;(none)&quot;.Exception occurred while: while resolving.Exception is: InvalidOperationException - The current type, Microsoft.Practices.ServiceLocation.IServiceLocator,\r\n is an interface and cannot be constructed. Are you missing a type mapping?-----------------------------------------------At the time of the exception, the container was:<br>\r\n&nbsp; Resolving Microsoft.Practices.ServiceLocation.IServiceLocator,(none)</p>\r\n<p>I can't figure out what I did wrong. Can someone give me a hand with this problem? &nbsp;</p>\r\n<p>I am doing this project because I want to update splash screen with&nbsp;information&nbsp;to user about module loading information.</p>\r\n<p>Thanks in advance.</p>\r\n<p>Regards,</p>\r\n<p>John</p>\r\n",
+    "PostedDate": "2011-05-24T10:27:24.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "617581",
+    "ThreadId": "258830",
+    "Html": "<p>Hi John,</p>\r\n<p>We tried to download the sample you've provided, but we got the following message in SkyDrive: <em>\"This item might have been deleted, expired, or you might not have permission to view it(...)\". </em>Please provide us with a new link for us to download the sample, so that we can help you troubleshoot your scenario.</p>\r\n<p>Thanks,</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-05-24T12:34:58.843-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "617598",
+    "ThreadId": "258830",
+    "Html": "<p>Hi Guido,</p>\r\n<p>Please retry the URL(https://cid-8017f79e49592b4d.office.live.com/browse.aspx/prismExample?nl=1&amp;uc=1). &nbsp;I fixed the folderpermissions to include&nbsp;everyone&nbsp;now. &nbsp;Talk to you soon.</p>\r\n<p>Regards,</p>\r\n<p>John</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-24T12:43:56.387-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "617659",
+    "ThreadId": "258830",
+    "Html": "<p>Hi Guido,</p>\r\n<p>Did you download the repo sample? &nbsp;Talk to you soon.</p>\r\n<p>Regards,</p>\r\n<p>John</p>",
+    "PostedDate": "2011-05-24T14:08:25.917-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "618324",
+    "ThreadId": "258830",
+    "Html": "<p>Hi Guys, Guido,</p>\r\n<p>Did anybody have take a look at the issue I reported with my sample repo program?</p>\r\n<p>Regards,</p>\r\n<p>John</p>",
+    "PostedDate": "2011-05-25T14:12:40.953-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "618673",
+    "ThreadId": "258830",
+    "Html": "<p>Hi John,</p>\n<p>The error you're experiencing seems to be caused by the fact that, in your override of the <strong>ConfigureContainer </strong>method in your bootstrapper, you haven't called the base implementation, which among other things, registers the interface mapping for the <strong>IServiceLocator </strong>interface.</p>\n<p>If you change the code in your <strong>ConfigureContainer </strong>method to this:</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> ConfigureContainer()\n        {\n            <strong><span style=\"color: blue;\">base</span>.ConfigureContainer();</strong>\n            _moduleInitializationService = <span style=\"color: blue;\">new</span> ModuleInitializationService();\n            Container.RegisterInstance(_moduleInitializationService, <span style=\"color: blue;\">new</span> ContainerControlledLifetimeManager());\n        }\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>The aforementioned exception isn't thrown anymore.</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-05-26T06:39:13.84-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "618713",
+    "ThreadId": "258830",
+    "Html": "<p>Hi Guido,</p>\r\n<p>Thanks a million. &nbsp;</p>\r\n<p>Regards,</p>\r\n<p>John</p>",
+    "PostedDate": "2011-05-26T07:16:55.507-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "618718",
+    "ThreadId": "258830",
+    "Html": "<p>hello dotcomputercraft</p>\r\n<p>can you keep this post up to date with your findings ?</p>\r\n<p>im really interested on how you will be able to update the splashscreen</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2011-05-26T07:23:22-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "618736",
+    "ThreadId": "258830",
+    "Html": "<p>Sure... &nbsp;I post my final repo sample once I complete. &nbsp;It should be in a few days. &nbsp;I have to catch up on some work.</p>\r\n<p>Regards,&nbsp;</p>\r\n<p>John</p>",
+    "PostedDate": "2011-05-26T07:49:38.16-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "628548",
+    "ThreadId": "258830",
+    "Html": "<p>hello dotcomputercraft</p>\r\n<p>&nbsp;</p>\r\n<p>anything news about this subject ?</p>\r\n<p>&nbsp;</p>\r\n<p>Regards</p>",
+    "PostedDate": "2011-06-16T00:58:51.587-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "629387",
+    "ThreadId": "258830",
+    "Html": "<p>hi mkadoussi,</p>\r\n<p>I have not updated the project yet because I was assigned a very large project that I am currently working on. &nbsp;I will post my final findings on this subject soon.</p>\r\n<p>Regards,</p>\r\n<p>John</p>",
+    "PostedDate": "2011-06-17T12:22:45.327-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

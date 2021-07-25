@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "466354",
+    "ThreadId": "219162",
+    "Html": "<p>Hello!&nbsp;</p>\r\n<p>I've got IUnityConainter inside my class. Is it possible to resolve IEventAggregator using unity container? I don't want to change semantics of class library and base interfaces.</p>\r\n<p>Thanks!</p>",
+    "PostedDate": "2010-07-12T07:54:00.29-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "467897",
+    "ThreadId": "219162",
+    "Html": "<p>So long as IEventAggregator is registered with the container (and it should be if you are using the container created by the bootstrapper), you should be able to just call Resolve with something like this (coded in a browser, not VS, so there may be a typo):</p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre>IEventAggregator eventAggregator = myContainer.Resolve&lt;IEventAggregator&gt;();\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Of course, if the class is already being created by the unity container (via a Resolve call), then you could add a constructor parameter for the event aggregator and have it injected for you. For an example, take a look at the StockTrader RI and find the NewsController class.</p>\r\n<p>&nbsp;</p>\r\n<p>I hope that helps,</p>\r\n<p>Michael Puleio</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-07-15T10:10:44.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

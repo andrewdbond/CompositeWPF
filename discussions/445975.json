@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1052712",
+    "ThreadId": "445975",
+    "Html": "Hi All,\r<br />\n<br />\nI have an Infragistics TabGroupPane and I am using scoped regions (using Prism 4.1 with MEF) to display the same TabItemView (which has multiple regions in it) in different tabitems.\r<br />\n<br />\n-My TabItemView, with nested regions, use ClearChildViewsRegionBehavior.ClearChildViews set to true.\r<br />\n-TabGroupPane is defined as a usercontrol which resides in a region named &quot;TAB_REGION&quot;.\r<br />\n-Whenever I add a TabItem to the TabGroupPane, I create a new scoped regionmanger so that regions within the TabItemView are not registered to the main region manager using the following code:\r<br />\n<br />\nscopedRegionManager = regionManager.Regions[&quot;TAB_REGION&quot;].Add(tabItemView, null, true);\r<br />\n-I am <em>not</em> registering this scopedRegionManager with the MEF container, neither it is referenced by any part of the application.\r<br />\n-After adding 5 tabItems, I have 6 views in my &quot;TAB_REGION&quot;. \r<br />\n<br />\n-When I remove a TabItem, I also remove the TabItemView from &quot;TAB_REGION&quot;. I have to do a UpdateRegion() and I can see that the TabItemView is removed from &quot;TAB_REGION&quot;.\r<br />\n<br />\nBut I do have following questions/concerns:<br />\n<ol>\n<li>Where are the scopedregionmanagers stored? Is there a collection of regionmanagers similar to one we have for Regions?</li>\n<li>How can I access a scoped regionmanager if I want to in any part of the application?</li>\n<li>\nHow and when the scoped regionmanager is destroyed/disposed? And how can I ensure that the scoped regionmanager is disposed?<br />\n</li>\n</ol>\nMy main aim is to ensure that any scopedRegionManager created (whether or not assigned to a variable) is duly disposed.\r<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2013-06-04T09:49:58.113-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1052750",
+    "ThreadId": "445975",
+    "Html": "Hi,\r<br />\n<br />\nFirst of all, when you inject a view with a scoped <strong>RegionManager</strong> (using the <strong>Add</strong> method as you mentioned above,) the newly created <strong>RegionManager</strong> is stored inside an attached property put in the injected view. For example, if you inject the <strong>tabItemView</strong> with an scoped <strong>RegionManager</strong>, said <strong>RegionManager</strong> will be put in a &quot;<strong>RegionManager</strong>&quot; attached property in the <strong>tabItemView</strong>. Also, in <strong>Prism</strong>, all regions have a reference to their corresponding <strong>RegionManager</strong> (if any,) so when the scoped regions in the <strong>tabItemView</strong> are created they will have a reference to the scoped <strong>RegionManager</strong> too.\r<br />\n<br />\nThere is no specific method to access the scoped <strong>RegionManagers</strong> created in your application. If you have a <strong>Region</strong> that is registered in that <strong>RegionManager</strong> you can obtain it from its <strong>RegionManager</strong> property. If you have a reference to the view, you can obtain it from its attached property using the <strong>GetRegionManager</strong> method:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\nIRegionManager rm = RegionManager.GetRegionManager(tabItemView);\r\n</pre></div>Also, if you wish to access the scoped <strong>RegionManager</strong> in the view models that are injected in the scoped regions, I believe you could find the <strong>RegionManagerAwareBehavior</strong> included in the following blog post useful:<br />\n<ul>\n<li>\n<a href=\"http://blogs.southworks.net/dcherubini/2011/11/10/regions-inside-datatemplates-in-prism-v4-using-a-region-behavior/\" rel=\"nofollow\">Regions inside DataTemplates in Prism v4 using a region behavior</a><br />\n</li>\n</ul>\nFinally, the last question is related to how the memory is managed in a .<strong>NET</strong> application. Basically, when there is no strong reference that keep the <strong>RegionManager</strong> alive, it will be marked to be garbage-collected. However, that <strong>RegionManager</strong> will only be destroyed when when the garbage-collector is run.\r<br />\n<br />\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-06-04T11:53:31.013-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1052778",
+    "ThreadId": "445975",
+    "Html": "Thanks a bunch Damian.\r<br />\n<br />\nThis is really helpful!\r<br />\n<br />\n-RDV<br />\n",
+    "PostedDate": "2013-06-04T12:47:47.007-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

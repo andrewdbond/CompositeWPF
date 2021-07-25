@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "500682",
+    "ThreadId": "229202",
+    "Html": "<p>I've had an odd problem with a TimePicker.&nbsp; Another user has reported <a href=\"http://forums.silverlight.net/forums/p/170340/474998.aspx#474998\">something similar</a> in the Silverlight forum.</p>\r\n<p>The error is: &quot;XamlParseException - The type  'TimePicker' was not found.&quot;</p>\r\n<p>I re-created the problem by following a series of steps:</p>\r\n<p>creating a new Silverlight Application project and adding a TimePicker to the MainPage.xaml - failed to recreate</p>\r\n<p>created a UserControl in the application in a Views folder, moved the TimePicker to it, added the UserControl to the MainPage.xaml- failed to recreate</p>\r\n<p>Added the Prism references (V4drop8) to the project and turned MainPage.xaml into Shell.xaml, adding a Bootstrapper.cs as per the standard instructions and poiting App.xaml.cs at the bootstrapper.&nbsp; I hadn't added any regions or modules- failed to recreate.</p>\r\n<p>I added a module to the solution, gave the shell project a reference to it and it a ref to Prism., Created a Views folder, moved the UserControl with the TimePicker to the Views folder and changed the namespace to match the module project.&nbsp; Then I created a region in the shell.xaml (using a tabcontrol) and told the module to stick the UserControl in the mainregion.&nbsp; Recreated the problem.</p>\r\n<p>In both my actual project and my recreating-the-problem project, the TimePicker had been dragged off the Toolbox and had the xmlns:toolkit namespace applied.&nbsp; In both, I've added the xmlns:swcit=&quot;clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit&quot; namespace and changed the TimePicker line to point to that.</p>\r\n<p>The error now becomes (in both projects):</p>\r\n<p>XamlParseException - The type 'TimePicker' was not found because 'clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit' is an unknown namespace.&nbsp;</p>\r\n<p>In my acual project (but not in my recreation) the latter error can be resolved by adding a Name attribute, e.g.</p>\r\n<p>x:Name=&quot;Dennis&quot;</p>\r\n<p>just as with the other guy.&nbsp; I haven't reported this as an issue because I can't see how it's a problem with Prism but it only manifests itself in a Prism region.</p>",
+    "PostedDate": "2010-09-30T12:53:58.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "501243",
+    "ThreadId": "229202",
+    "Html": "<p>Hi,</p>\r\n<p>Thanks for reporting that. It would be helpful if you could send the repro sample that you mentioned. So if we found that this is an issue related to Prism, we will create a work-item for this. Additionally the community can also vote.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-01T13:02:52.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509844",
+    "ThreadId": "229202",
+    "Html": "<p>Sorry about the delay - I've been out of the office.&nbsp; Where would you like me to send it?</p>",
+    "PostedDate": "2010-10-20T03:33:08.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509924",
+    "ThreadId": "229202",
+    "Html": "<p>Hi,</p>\r\n<p>I think you could upload this to the cloud, for example using <a href=\"http://skydrive.live.com/\">skydrive</a>. Then you could post in this thread  the URL.&nbsp;So all the community could contribute as well.</p>\r\n<p>Thanks,</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-20T06:59:27.887-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "511124",
+    "ThreadId": "229202",
+    "Html": "\r\n<p>Okay.&nbsp; I <strong>think</strong> I've done that!&nbsp; It's here: <a href=\"http://cid-22078f9a937627b6.office.live.com/self.aspx/.Public/TimePickerError.zip\">\r\nTimePickerError.zip</a>.&nbsp; I've not used SkyDrive before so we'll see how this goes.</p>\r\n",
+    "PostedDate": "2010-10-22T07:34:38.627-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "513756",
+    "ThreadId": "229202",
+    "Html": "\r\n<p>Hi.&nbsp; I was wondering if you've had time to look at this?</p>\r\n",
+    "PostedDate": "2010-10-27T22:32:25.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "519516",
+    "ThreadId": "229202",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Sorry for the delay. I reproduced this situation using your repro sample. Additionally, I think that you can find the following thread in the Silverlight Forum interesting: &#65279;<a href=\"http://forums.silverlight.net/forums/p/178500/401888.aspx\">SL4 runtime\r\n error when parsing Generic.xaml: unknown namespace</a></p>\r\n<p>Based on this thread, it seems to be something related to references. You can find a workaround over there.</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-09T11:37:56.687-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

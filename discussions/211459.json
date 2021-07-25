@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "438603",
+    "ThreadId": "211459",
+    "Html": "<p>All,</p>\r\n<p>My team is trying to find the answer the the question in the subject line.&nbsp; Here's in a nutshell what were trying to do:</p>\r\n<p>1. Develop a common set of components that we name Core.dll (Strong named)<br>2. Develop several modules that uses Core.dll<br>3. All different modules are assembled in Shell.dll using Prism<br>4. All modules can reference different version of Core.dll</p>\r\n<p>Up to #3, we were smooth sailing.&nbsp; #4 seems to break this modularity pattern down to its knees in Silverlight...</p>\r\n<p>Have you come up against this situation and what do you usually do?&nbsp; If you're going to tell me to recompile all modules against the new Core.dll, don't bother...</p>\r\n<p>Thanks,<br>Francois</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-05-03T20:07:42.88-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "439410",
+    "ThreadId": "211459",
+    "Html": "<p>Hi Francois,</p>\r\n<p>The modularity approach of Prism makes it possible to isolate modules from  each other, and they can be loaded into the application as independent  components in a loosely coupled way but allowing communication between them.</p>\r\n<p>If I understood correctly, your scenario would require having&nbsp;different  versions of Core.dll loaded into the application.&nbsp;However,&nbsp;it isn&rsquo;t possible to  load multiple versions of an assembly on the same <strong>AppDomain </strong>(you can read more about that on <a href=\"http://msdn.microsoft.com/en-us/library/ky3942xh(v=VS.95).aspx\">this  article</a>). Although you could have multiple <strong>AppDomains</strong> (which is possible, as explained on <a href=\"View.aspx?ThreadId=206952\">this  thread</a>), it isn&rsquo;t supported on Prism, and it has some complexities.</p>\r\n<p>A possible&nbsp;approach for your situation would be to make&nbsp;the shell reference a  single version of&nbsp;Core.dll, register all its components in the <strong>Container </strong>with their respective <a href=\"http://msdn.microsoft.com/en-us/library/ff650322.aspx#depkey_interfaces\">interface  mappings</a>, and&nbsp;make all modules reference an interface through which you  consume that implementation. That would avoid referencing Core.dll in several  modules, so changes on that assembly wouldn&rsquo;t imply that you have to recompile  all modules against the new version.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-05-05T11:09:39.263-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

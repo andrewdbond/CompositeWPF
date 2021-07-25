@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "168562",
+    "ThreadId": "50331",
+    "Html": "Is there an easier way in Prism V2 to deal with the Scoped Region, because it quickly becomes a mess when we have several nested Scoped Regions!<br>\r\nMy solution is to put a property RegionManager in each view and I set\r\nit with the right RegionManger when I create the view, as is I can\r\nretreive the RegionManager of the any view without knowing it belongs\r\nto a new Scoped Region.<br>\r\nBut I wonder if there is a better way to retrieve the RegionManager of an already instantiated View (potentially in a scoped region)?<br>\r\nThanks by advance,<br>\r\nDgis\r\n",
+    "PostedDate": "2009-03-16T08:13:43.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "169135",
+    "ThreadId": "50331",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi Dgis,</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">A possible approach, recommended in the Composite Application Guidance for WPF &amp; Silverlight documentation, could be placing the code to manage the views in a controller class that coordinates the activity of multiple views. If you create a controller class for each scoped region, save a reference to the region manager. When you add new view to that region, you can get a reference to its related controller.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt -1.35pt\"><span style=\"font-family:calibri\">However, if you want to get the RegionManager from a particular view you could use a method similar to the <b>FindRegionManager </b>helper<b> </b>method of the <b>RegionManagerRegistrationBehavior </b>class.(Full namespace: <b>Microsoft.Practices.Composite.Presentation.Regions.Behaviors</b>). This private method gets a dependency object (which can be your view) as a parameter and returns its related <b>RegionManager</b> by walking up the element tree.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"color:#1f497d;font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Please let me know if this helps.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\">Damian Schenkelman</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><a href=\"http://blogs.southworks.net/dschenkelman\"><span style=\"color:#0000ff;font-family:calibri\">http://blogs.southworks.net/dschenkelman</span></a></span></p>\r\n",
+    "PostedDate": "2009-03-17T12:07:47.747-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "170006",
+    "ThreadId": "50331",
+    "Html": "I already have controllers (and controller of controller) which can save the RegionManager, but I don't like to put the RegionManagers in a dictionary besides the views !<br>\r\nThank for your help, I think your idea about the helper will help me.<br>\r\nDgis<br>\r\n<br>\r\n",
+    "PostedDate": "2009-03-19T14:42:52.69-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

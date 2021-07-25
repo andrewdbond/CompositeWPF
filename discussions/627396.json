@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1410780",
+    "ThreadId": "627396",
+    "Html": "Hi,\r<br />\nI am working on WPF PRISM 5.0. I am using Popup of PRISM. I have done some customization in popup. I am facing one issue. I am using RequestNavigate to move from one user control to another.\r<br />\nSo when I move from one user control to another, Raised event of InteractionRequest becomes null and popup doesn't open.\r<br />\n<br />\nBelow is some of the code snippet from my application.<br />\n<h2>UserControl1.xaml</h2>\n&lt;in:Interaction.Triggers&gt;<br />\n<pre><code>    &lt;prism:InteractionRequestTrigger x:Uid=&quot;prism:InteractionRequestTrigger_1&quot; SourceObject=&quot;{Binding ConfirmationRequest, Mode=OneWay}&quot;&gt;\n        &lt;Popup:PopupWindowAction x:Uid=&quot;prism:PopupWindowAction_1&quot; IsModal=&quot;True&quot; CenterOverAssociatedObject=&quot;True&quot; Width=&quot;350&quot; Height=&quot;150&quot;&gt;\n        &lt;/Popup:PopupWindowAction&gt;\n    &lt;/prism:InteractionRequestTrigger&gt;\n&lt;/in:Interaction.Triggers&gt;\n</code></pre>\n\n<h2>ViewModel.cs</h2>\nthis.ConfirmationRequest = new InteractionRequest&lt;PopupConfirmation&gt;();\r<br />\n<br />\npublic InteractionRequest&lt;PopupConfirmation&gt; ConfirmationRequest { get; private set; }\r<br />\n<br />\n<br />\nthis.ConfirmationRequest.Raise(<br />\n<pre><code>            new PopupConfirmation { Content = &quot;Hi&quot;, Title = &quot;Confirm&quot; },\n            OnConfirmation);\n\n</code></pre>\n\nIn the above code after navigate to other user control and coming back here, Raised event of this.ConfirmationRequest becomes null. It works everytime if I don't navigate to other user control.\r<br />\n<br />\nKindly help me what's the issue here.\r<br />\n<br />\nThanks,\r<br />\nAyaz Shaikh<br />\n",
+    "PostedDate": "2015-04-14T05:10:45.33-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1410807",
+    "ThreadId": "627396",
+    "Html": "If you can provide a full repro (not just snippets - need to be able to download and run and see the problem) in an issue at <a href=\"http://github.com/prismlibrary\" rel=\"nofollow\">http://github.com/prismlibrary</a> we can look at fixing in our next release if it is a Prism problem.\r<br />\nThanks\r<br />\nBrian<br />\n",
+    "PostedDate": "2015-04-14T05:17:10.35-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1416605",
+    "ThreadId": "627396",
+    "Html": "@BrianNoyes, Sorry for late reply...\r<br />\nI resolved this issue. The issue was that for user control I haven't assigned the viewModel explicitly and it was using the viewModel of it's parent view. So to resolved this issue, I have explicitly injected view model to the child user control.\r<br />\nSo while registering my code was:\r<br />\n<br />\n// Register ViewModel\r<br />\nthis.container.RegisterType&lt;IParentViewModel, ParentViewModel&gt;(&quot;ParentviewModel&quot;, new ContainerControlledLifetimeManager());\r<br />\n<br />\n// Register View\r<br />\nthis.container.RegisterType&lt;object, ParentView&gt;(&quot;ParentView&quot;, new InjectionConstructor(new ResolvedParameter&lt;IParentViewModel&gt;(&quot;ParentViewModel&quot;)));\r<br />\nthis.container.RegisterType&lt;object, UserControl1View&gt;(&quot;UserControl1View&quot;);\r<br />\nthis.container.RegisterType&lt;object, UserControl2View&gt;(&quot;UserControl2View&quot;);\r<br />\nSo in the above code I haven't explicitly injected the view model for UserControl1View and UserControl2View and it was using ParentViewModel.\r<br />\n<br />\nTo resolve this issue I have explicitly injected view Model as below and it works.\r<br />\n<br />\n// Register View\r<br />\nthis.container.RegisterType&lt;object, ParentView&gt;(&quot;ParentView&quot;, new InjectionConstructor(new ResolvedParameter&lt;IParentViewModel&gt;(&quot;ParentViewModel&quot;)));\r<br />\nthis.container.RegisterType&lt;object, UserControl1View&gt;(&quot;UserControl1View&quot;, new InjectionConstructor(new ResolvedParameter&lt;IParentViewModel&gt;(&quot;ParentViewModel&quot;)));\r<br />\nthis.container.RegisterType&lt;object, UserControl2View&gt;(&quot;UserControl2View&quot;, new InjectionConstructor(new ResolvedParameter&lt;IParentViewModel&gt;(&quot;ParentViewModel&quot;)));\r<br />\n<br />\nSo what's the issue with Raised event in PRISM popup if we don't explicitly inject view model.\r<br />\n<br />\nThanks,\r<br />\nAyaz Shaikh<br />\n",
+    "PostedDate": "2015-04-22T01:10:23.463-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2015-04-27T03:47:53.757-07:00"
+  },
+  {
+    "Id": "1418779",
+    "ThreadId": "627396",
+    "Html": "@BrianNoyes - Kindly let me know if any update on above post. Although I have marked it as Answer, kindly let me why Raised event become NULL after requestNavigate when we don't provide explicit viewmodel to child view.\r<br />\n<br />\nThanks,\r<br />\nAyaz Shaikh<br />\n",
+    "PostedDate": "2015-04-27T03:50:27.963-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1418930",
+    "ThreadId": "627396",
+    "Html": "Could you please post this as an issue with your background detail in our new repo at <a href=\"http://github.com/PrismLibrary/Prism\" rel=\"nofollow\">http://github.com/PrismLibrary/Prism</a>?\r<br />\nThanks\r<br />\nBrian<br />\n",
+    "PostedDate": "2015-04-27T06:01:52.223-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1438051",
+    "ThreadId": "627396",
+    "Html": "Hello Brian,\r<br />\n<br />\nWe have a similar issue but the resolution [RegionMemberLifetime(KeepAlive = false)] is not helping here.\r<br />\n<br />\nWe have a view that opens a UserControl (UC1) as a popup using InteractionRequest&lt;INotification&gt;. <br />\n<pre><code>        UC1ViewRequest.Raise(new UC1ViewModel\n        {\n            Title = &quot;User Control 1&quot;\n\n        });\n</code></pre>\n\nUC1 has a button that opens another UserControl (UC2) as a popup using InteractionRequest&lt;INotification&gt;. <br />\n<pre><code>        UC2ViewRequest.Raise(new UC2ViewModel\n        {\n            Title = &quot;User Control 2&quot;\n\n        });\n</code></pre>\n\nOpening UC2 again and again from UC1 works fine as long as UC1 is not closed. \r<br />\n<br />\nBut after closing UC1, UC2 cannot be shown/opened from UC1 but UC1 can be opened again from the main view. \r<br />\n<br />\nThe Raised event on the UC2ViewRequest is null.\r<br />\n<br />\nPlease advise. I can send you a sample to reproduce.<br />\n",
+    "PostedDate": "2015-08-10T14:34:17.267-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

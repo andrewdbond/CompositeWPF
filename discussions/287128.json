@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "729480",
+    "ThreadId": "287128",
+    "Html": "\r\n<p>I know there are a lots of samples unig region manages and interaction request triggers to show dialogs using prism, WPF and MVVM. in my situation I have different modules. For example I have module which creates organization units and assigns executive\r\n person to newly created unit. this view needs to be shown in standard dialog window with returned object of Model type which is OrganizationUnit object in this case. after showing view in modal window it has an textbox input here executive person name is entered\r\n and in case no matching person found it needs to open another dialog window which creates person and returns created object to already opened dialog window. I have seen all examples of using dialogs in MVVM as well as using popup region behavior and interactionrequesttrigger\r\n in PRISM. I do not get much out of using custom control to show popup as all I need is standard showdialog method which can be called from any viewmodel with callback specified.</p>\r\n<p>the way I want to achieve this is to have interactionrequesttriger in my shell and initial call to open popup dialog is performed on this trigger. to not to make this all very complicated I want some centralized way of showing dialogs and within dialogs\r\n showing other dialogs and all this with callbacks. could someone point me to the right direction?</p>\r\n<p>By The way I want to have single control DialogView which will have ContentControl where viewmodels inject their views and buttons placeholder which holds buttons; Ok, Cancel, Apply and want to bind have them bind to loaded viewmodels commands.</p>\r\n<p>I know all this sounds a little bit complicated and complex but there might be solution for this. please someone give me ideas of how to accomplish this task.</p>\r\n",
+    "PostedDate": "2012-01-23T12:01:34.867-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "729524",
+    "ThreadId": "287128",
+    "Html": "<p>Hi,</p>\r\n<p>If I understood you scenario correctly, you basically want to show a dialog window which contains a region for views and a place holder for buttons. Also, this dialog window should be able to show its own dialog windows and all should be able to invoke a call back in the previous dialog when task performed in the dialog is done.</p>\r\n<p>As a possible approach, you could create a shared service that would be in charge of showing the dialog windows and passing them the corresponding callbacks. The dialog could be a window that could contain a region for its content (possibly with a scoped region manager) and the aforementioned place holder for buttons. For example, each dialog window could be an instance of that class. Then, when an interaction request is raised, the interaction request trigger could use this service to raise the dialog. However, take into account that the implementation details for this will depend mostly of your personal preferences and the requirements of your scenario.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-01-23T13:13:43.69-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "729531",
+    "ThreadId": "287128",
+    "Html": "<p>Thank u for your answer. this is something I think of but without regions. I think of creating some IDialogService for this and use it to show dialogs but can not make code architecture. could u please provide some pseudo code on how to implement this? this  other problem I see to be complicated is that each view loaded in a dialog window needs to set that window as a parent to another child window if that is open from already opened dialog window. I am not ver good at actions and triggers and this makes my live  a bit difficult but as I understan I need to overid some getDefaultWinow or something like this method to return new dialog window right? as This ChildWindowAction is only silverlight implementation . I am looking way to use window.showdialog() in WPF. some  pseudo cod will be great help for me.</p>\n<p>and I want to have something like this in my viewmodel</p>\n<p>\n<div style=\"color: black; background-color: white;\">\n<pre> DialogService.Raise(<span style=\"color: blue;\">new</span> Confirmation { Content = ViewModel},\n                confirmation =&gt;\n                {\n                    <span style=\"color: blue;\">if</span> (confirmation.Confirmed)\n                    {\n                    }\n                });\n</pre>\n</div>\n</p>\n<p>here Viewmodel implements IViewModel and it has IView property so dialog window could us this viewmodel to set window content . but setting buttons and commands for each button based on viewmodel still seems mysterious for me. as there will not bee more buttons only OK Cancel Apply and each Viewmodel must set appropriate delegate command for these buttons</p>\n<p>I even this if it is possible at all?</p>",
+    "PostedDate": "2012-01-23T13:22:16.807-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "730097",
+    "ThreadId": "287128",
+    "Html": "<p>does not anyone know some better solution or could one provide with pseudo code fr my problem?</p>",
+    "PostedDate": "2012-01-24T11:15:29.96-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "730686",
+    "ThreadId": "287128",
+    "Html": "<p>Hi,</p>\r\n<p>The functionality you are mentioned is not supported by Prism as out of the box. As mentioned in <a href=\"http://msdn.microsoft.com/en-us/library/gg405494%28PandP.40%29.aspx#sec12\">Chapter 6: Advanced MVVM Scenarios - Using Interaction Request Objects</a>, Prism provides the <strong>InteractionRequestTrigger</strong> and <strong>PopupChildWindowAction</strong> classes as a basis for the development of your own triggers and actions.</p>\r\n<p>However, based on my understanding of your requirements, I believe you might find the following thread interesting:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/279807\">Modal Dialog</a></li>\r\n</ul>\r\n<p>In the aforementioned thread you will find a repro sample application portraying a scenario where a modal dialog, with a specific view model, is shown through an interaction request. Following this sample, you could have various <strong>Windows </strong>that you could use as your dialogs, and show the appropriate one for each situation.</p>\r\n<p>Although the code provided in the aforementioned link is targeted for Silverlight, I believe it could be ported to WPF without problems.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-01-25T11:43:13.21-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,96 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 8,
+    "Custom": "",
+    "Description": "Hi,\n \nIt would be helpful if Prism provided support from out of the box for Region Navigation using Scoped Regions.\n \nThis topic has been discussed with a possible workaround in the following thread (http://compositewpf.codeplex.com/discussions/279224)\n \nThanks,\n \nAgustin Adami\nhttp://blogs.southworks.net/aadami﻿",
+    "LastUpdatedDate": "2015-03-24T09:33:27.933-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-11-21T11:46:30.527-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Navigation and ScopedRegions",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 5,
+    "Id": 8927
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897997,
+      "FileName": "NavigationWithScopedRegionSample.zip",
+      "DownloadUrl": ".\\897997"
+    },
+    {
+      "FileId": 897998,
+      "FileName": "ImprovedScopedRegionSample.zip",
+      "DownloadUrl": ".\\897998"
+    },
+    {
+      "FileId": 897999,
+      "FileName": "NavigationWithScopedRegionSampleWithUnity.zip",
+      "DownloadUrl": ".\\897999"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Needed for navigation to be at all useful for applications that aren't extremely simple. I don't understand how this has been overlooked. Workaround seems a bit of a mess.",
+      "PostedDate": "2011-11-22T02:12:20.637-08:00",
+      "Id": 156546
+    },
+    {
+      "Message": "Hi,\r\n\r\nWe thought of an alternative approach which I believe might be a more elegant solution. The approach consist of obtaining the region manager returned by the call of the Region.Add method, through the NavigationResult passed in the navigation callback from the RequestNavigate method instead of using a shared dictionary to save it. \r\n\r\nAs the result you will be able to navigate with scoped regions, like in the following code snippet: \r\n\r\n    this.regionManager.RequestNavigate(\r\n                \"MainRegion\", \r\n                new Uri(\"HelloWorldView?createRegionManagerScope=true\", UriKind.Relative), \r\n                (result) =>\r\n                {\r\n                    var myRegionManager = result.ExtractRegionManager();\r\n                    myRegionManager.RequestNavigate(\"NestedRegion\", new Uri(\"View1\", UriKind.Relative));\r\n                });\r\n\r\nBelow you will find the details of this implementation:\r\n\r\nTo achieve this scenario, the first thing we needed was a NavigationResult that allows us to pass the region manager instance. For this we created a CustomNavigationResult class that inherits from NavigationResult, but with another constructor which added an IRegionManager parameter, that sets its RegionManager property.\r\nNext, to obtain the region manager returned by the call of the Region.Add method, we needed the LoadContent method in the RegionNavigationContentLoader to return a Tuple instead of only an object view. Therefore we created a CustomRegionNavigationContentLoader and its corresponding interface. Also we changed the name of the parameter passed with the view when navigating to \"createRegionManagerScope\" and verify if its value is “true” to specify if a new region manager must be created (in case scoped regions are used). \r\n\r\nThis changes can be seen in the following code snippet:\r\n\r\npublic Tuple LoadContent(IRegion region, NavigationContext navigationContext)\r\n        {\r\n(…)\r\nif (view != null)\r\n            {\r\n                return new Tuple(view, region.RegionManager);\r\n            }\r\n\r\n            view = this.CreateNewRegionItem(candidateTargetContract);\r\n\r\n            bool createRegionManagerScope = navigationContext.Parameters[\"createRegionManagerScope\"] == \"true\";\r\n\r\n            var rm = region.Add(view, null, createRegionManagerScope);\r\n\r\n            return new Tuple(view, rm);\r\n        }\r\n(…)\r\n\r\nAlso, as the ExecuteNavigation method in the RegionNavigationService is the one that calls the LoadContent method, we had to create a CustomRegionNavigationService, to let it receive the returned tuple. In this same method instead of passing the default NavigationResult to the navigationCallback we pass our CustomNavigationResult with the returned region manager as a parameter.\r\n\r\nYou can find this modifications in the following code snippet: \r\n\r\nprivate void ExecuteNavigation(NavigationContext navigationContext, object[] activeViews, Action navigationCallback)\r\n        {\r\n(…)\r\n  Tuple tuple = this.regionNavigationContentLoader.LoadContent(this.Region, navigationContext);\r\n\r\n                // Raise the navigating event just before activing the view.\r\n                this.RaiseNavigating(navigationContext);\r\n\r\n                this.Region.Activate(tuple.Item1);\r\n\r\n                // Update the navigation journal before notifying others of navigaton\r\n                IRegionNavigationJournalEntry journalEntry = this.serviceLocator.GetInstance();\r\n                journalEntry.Uri = navigationContext.Uri;\r\n               this.journal.RecordNavigation(journalEntry);\r\n\r\n                // The view can be informed of navigation\r\n                InvokeOnNavigationAwareElement(tuple.Item1, (n) => n.OnNavigatedTo(navigationContext));\r\n\r\n                navigationCallback(new CustomNavigationResult(navigationContext, true, tuple.Item2));\r\n(…)\r\n}\r\n\r\nFinally to avoid modifying the prism library we used the export attribute at the top of our custom classes (CustomRegionNavigationContentLoader and CustomRegionNavigationService) which allows the MefBootstrapper to provide these classes as a default implementation.\r\n\r\nHow to use:\r\n\r\nIf you apply this changes, then you will be able to call the RequestNavigate method with a delegate method as the navigation callback, which will receive a NavigationResult. The only problem is that you will have to cast the NavigationResult to our CustomNavigationResult class, in order to obtain the desired regionManager. Hence we created an extension method called ExtractRegionManager in the NavigationResultExtension class, which will make things easier.\r\n\r\nFor those interested, we prepared a sample application that portrays the aforementioned modifications. This sample shows two instances of a view being navigated to using the RequestNavigate method, inside a region in a TabControl. Each of these views has an inner region, and because this region names will be duplicated they must be defined as scoped regions. You can find the application sample attached under the name NavigationWithScopedRegionSample.\r\n\r\nI hope you find this useful\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami﻿",
+      "PostedDate": "2011-11-23T13:04:54.453-08:00",
+      "Id": 156547
+    },
+    {
+      "Message": "Thank you, this is very useful. I'm probably saying something very simple here, but how would you pass the new regionmanager to the newly scoped viewmodel? There isn't a way to get this from the navigationcontext is there?\r\n\r\nI am wanting to navigate within the scoped viewmodel changing the region within.",
+      "PostedDate": "2011-11-28T04:01:20.137-08:00",
+      "Id": 156548
+    },
+    {
+      "Message": "James,\r\n\r\nI'm glad you find this useful. Regarding your question, you might find this blog post useful (http://blogs.southworks.net/aadami/2011/11/30/prism-region-navigation-and-scoped-regions/), where we implemented the aforementioned suggestions and also added the posibility to pass the new RegionManager to the corresponding ViewModel. To achieve this we used the RegionManagerAwareBehavior proposed in the following blog post from Damian Cherubini (http://blogs.southworks.net/dcherubini/2011/11/10/regions-inside-datatemplates-in-prism-v4-using-a-region-behavior/).\r\n\r\nI hope you find it helpful\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami﻿",
+      "PostedDate": "2011-11-30T13:00:35.273-08:00",
+      "Id": 156549
+    },
+    {
+      "Message": "I would like to offer another workaround for this problem.\r\nAs I see it this issue could be divided into two separate problems: letting know the loader to add view to the region using scope, and accessing correct RegionManager in scoped view.\r\nTo indicate requirement for scoped region we could use interface of custom attribute on the view type. This will allow us to add three extra lines to content loader and accomplish the result:\r\nview = this.CreateNewRegionItem(candidateTargetContract);\r\n// Check if scoped region is required\r\n\r\nIProvideRegionScopeInfo info = (view as IProvideRegionScopeInfo) \r\n    ?? (ScopedRegionManagerAttribute)view.GetType()\r\n                                         .GetCustomAttributes(typeof(ScopedRegionManagerAttribute), false)\r\n                                         .FirstOrDefault();\r\n\r\nif (null == info)\r\n region.Add(view);\r\nelse\r\n region.Add(view, info.ViewName, info.CreateRegionManagerScope);\r\n\r\nreturn view;\r\n\r\n\r\nAccessing the correct manager is even easier. When view is being added to the region RegionManager.RegionManager attached property is added and updated with reference to instance of the manager responsible for that view. So if the view is added with scope this property will have reference to correct scoped instance of the manager. \r\nAll we have to do is to bind to that attached property, this is what they are for, and uses the manager in View or ViewModel.\r\nI’ve modified sample project posted earlier to implement described method. \r\nIf you need more explanation please see it here: http://www.codeproject.com/Articles/320673/PrismScopedRegions\r\n",
+      "PostedDate": "2012-03-30T09:37:34.74-07:00",
+      "Id": 156550
+    },
+    {
+      "Message": "Adding sample project to illustrate solution",
+      "PostedDate": "2012-03-30T14:35:15.33-07:00",
+      "Id": 156551
+    },
+    {
+      "Message": "Hi Agustin,Thanks for the solutions. I tried to use it with Unity, but no luck. \r\n\r\nOur requirement is something similar to the problem raised by user JanWaiz in [following discussion](http://compositewpf.codeplex.com/discussions/279224)I mainly used Prism with Unity and I know nothing about MEF. The project I am currently working on is in final stage but only one critical section require same view with 2 regions load into a tab container multiple times. Changing to MEF is not an option due to time limitaion.\r\n\r\nPlease help ! Would you be able to help to convert this NavigationWithScopedRegionSample.zip to use with Unity ?",
+      "PostedDate": "2013-10-21T21:44:07.397-07:00",
+      "Id": 156552
+    },
+    {
+      "Message": "Hi du999,\r\n\r\nYou can find the __NavigationWithScopedRegionSample__ solution using __UnityCootstrapper__ attached.\r\n\r\nThe main differences between both containers that would need to be changed are related on how the __Modules__ and __Items__ are being registered.While __MEF__ uses the export attribute to automatically register the __Views__ and __Services__, __Unity__ needs explicit registration from the __Bootstrapper__ and the __Module's__ _Initialize()_ methods.\r\n\r\nYou may see the aforemention registrations on the following sample's methods:\r\n\r\n```C#Bootstrapper.cs\r\n\r\nprotected override IModuleCatalog CreateModuleCatalog(){     return new ConfigurationModuleCatalog();}\r\n\r\nprotected override void ConfigureModuleCatalog(){     Type helloWorldModuleType = typeof(HelloWorldModule.HelloWorldModule);     ModuleCatalog.AddModule(new ModuleInfo(helloWorldModuleType.Name, helloWorldModuleType.AssemblyQualifiedName));}\r\n\r\nprotected override void ConfigureContainer(){\r\n\r\n     RegisterTypeIfMissing(typeof(IRegionNavigationService), typeof(CustomRegionNavigationService), false);     RegisterTypeIfMissing(typeof(ICustomRegionNavigationContentLoader), typeof(CustomRegionNavigationContentLoader), false);\r\n\r\n     base.ConfigureContainer();}```\r\n\r\n```C#HelloWorldModule.cs\r\n\r\npublic HelloWorldModule(IRegionViewRegistry registry, IRegionManager regionManager, IUnityContainer container){     this.container = container;...}\r\n\r\npublic void Initialize(){     this.container.RegisterType(\"HelloWorldView\");     this.container.RegisterType(\"View1\");     this.container.RegisterType(\"View2\");...}```\r\n\r\nI hope this helps,\r\n\r\nGabriel Ostrowskyhttp://blogs.southworks.net/gostrowsky",
+      "PostedDate": "2013-10-24T11:50:02.757-07:00",
+      "Id": 156553
+    }
+  ]
+}

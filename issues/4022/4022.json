@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "For people who are running into this issue, it could be useful to know that in Prism v4.0, this scenario has been addressed, by updating the GetNotAllreadyLoadedModuleInfos method in the DirectoryModuleCatalog class to ignore non-. NET assemblies. You can see the BadImageFormartException caught below.\r\n\r\nprivate static IEnumerable<ModuleInfo> GetNotAllreadyLoadedModuleInfos(DirectoryInfo directory, Type IModuleType)\r\n{\r\n    ...\r\n    foreach (FileInfo fileInfo in fileInfos)\r\n    {\r\n        Assembly assembly = null;\r\n        Try\r\n        {\r\n            assembly = Assembly.ReflectionOnlyLoadFrom(fileInfo.FullName);\r\n            validAssemblies.Add(fileInfo);\r\n        }\r\n        catch (BadImageFormatException)\r\n        {\r\n            // skip non-.NET Dlls\r\n        }\r\n    }\r\n    ...\r\n}\r\n\r\nIf you are using an older release of Prism, you could download the latest one from: http://www.microsoft.com/downloads/en/details.aspx?FamilyID=3453ab2b-2067-41e4-b087-312d8385cf1b&displaylang=en\r\n\r\nThank you for your feedback.\r\n\r\nFernando Antivero\r\nhttp://blogs.southworks.net/fantivero",
+    "ClosedDate": "2010-12-02T06:58:34.123-08:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "If you call the DirectoryLookupModuleEnumerator and pass it a path containing an unmanaged assembly or an assembly which has dependencies which cannot be resolved the DirectoryLookupModuleEnumerator throws either a BadImageFormatException or FileNotFoundException (respectively). The workaround to this is to place the application's modules in a sub folder which contains no other assemblies but this just just more work for the developer. Far better to simply have the enumerator deal with this case.\n \nI have similar code for locating my application AddIns. It looks like this:\n \n            foreach (string filePath in Directory.GetFiles(path, \"*.DLL\"))\n            {\n                try\n                {\n                    _assemblies.Add(Assembly.LoadFile(filePath));\n                } \n                catch (FileNotFoundException)\n                {\n                    // Attempted to load something with a missing dependency - ignore.\n                }\n                catch (BadImageFormatException)\n                {\n                    // Attempted to load unmanaged assembly - ignore.\n                }\n            }",
+    "LastUpdatedDate": "2013-05-16T05:28:58.407-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-05-02T08:55:21.913-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "DirectoryLookupModuleEnumerator throws if it finds an unmanaged assembly",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 6,
+    "Id": 4022
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Actually this issue has only been partly covered in Prism v4.0. The issue with the BadFormatException is resolved, but a managed assembly that can not find one of its dependencies will still result in an exception (FileNotFoundException)",
+      "PostedDate": "2011-05-06T05:13:43.19-07:00",
+      "Id": 156133
+    },
+    {
+      "Message": "Actually this issue has only been partly covered in Prism v4.0. The issue with the BadFormatException is resolved, but a managed assembly that can not find one of its dependencies will still result in an exception (FileNotFoundException)",
+      "PostedDate": "2011-05-06T05:14:16.2-07:00",
+      "Id": 156134
+    }
+  ]
+}

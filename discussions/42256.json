@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "140357",
+    "ThreadId": "42256",
+    "Html": "Hello,<br>\r\n<br>\r\nHow to show a view more than one time in same region at the same time.? <br>\r\n<br>\r\nLet's say I have a view called &quot;PersonalDetails&quot; and I'm using tab region. If the user open that view, I want to show that view in one tab. If the user open that view again then I want to show that view in different tab without closing the tab which is already opened.&nbsp; I think that scoped region doesn't fix for that scenario.<br>\r\n<br>\r\nTechnically, I would like to remove this line from InnerAdd(object view, string viewName, IRegionManager scopedRegionManager) method of Region.cs.<br>\r\n<br>\r\nif (ItemMetadataCollection.FirstOrDefault(x =&gt; x.Item == view) != null)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new InvalidOperationException(Resources.RegionViewExistsException); <br>\r\n<br>\r\nWhat will be the problem if I remove that line? <br>\r\n",
+    "PostedDate": "2008-12-14T01:09:07.9-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "142558",
+    "ThreadId": "42256",
+    "Html": "<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Hi</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Is there any special reason you want to add the same view instance several times in a region?</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">The normal behavior when you try to show a view that was previously added to a region should be activating it / giving focus to it. Check the following sample code:</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;color:#2b91af;font-family:'courier new'\">IRegion</span><span style=\"font-size:10pt;font-family:'courier new'\"> tabRegion = <span style=\"color:blue\">this</span>.regionManager.Regions[<span style=\"color:#a31515\">&quot;TabRegion&quot;</span>];</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'courier new'\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;color:green;font-family:'courier new'\">// <b>_view2</b> is the instance of your PersonalDetails view that you want to show.</span> </p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;color:blue;font-family:'courier new'\">if</span><span style=\"font-size:10pt;font-family:'courier new'\"> (!tabRegion.Views.Contains(_view2))</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'courier new'\">{</span></p>\r\n<p style=\"margin:0in 0in 0pt 1in\"><span style=\"font-size:10pt;font-family:'courier new'\">mainRegion.Add(_view2);</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'courier new'\">}</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'courier new'\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'courier new'\">mainRegion.Activate(_view2);</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">For a further sample you can check how the <b>EmployeesDetailsView</b> is showed in the </span><a href=\"http://msdn.microsoft.com/en-us/library/cc707868.aspx\"><span style=\"font-family:calibri\">UI Composition Quickstart</span></a><span style=\"font-family:calibri\">.</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">If what you want is to create different tabs for each of your <b>PersonalDetails</b> views you should consider creating a different instance of it every time. I think that removing those lines in the <b>InnerAdd</b> method is not a good idea because could produce side effects in the normal behavior of your tabs.</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Please let me know if this helps.</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Mariano Converti </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><a href=\"http://blogs.southworks.net/mconverti\"><span style=\"font-family:calibri\">http://blogs.southworks.net/mconverti</span></a> </p>\r\n",
+    "PostedDate": "2008-12-23T04:04:37.48-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "142748",
+    "ThreadId": "42256",
+    "Html": "<p>Thanks. </p>\r\n<p>I have solved the problem by using the scoped region. I'm not sure what problem I'm going to face after switching from default region to scoped region. </p>\r\n<p>I'm currently facing some problems in switching views.. Could you please answer me this question http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=42843 ??  Thanks. </p>\r\n<p></p>\r\n",
+    "PostedDate": "2008-12-23T19:38:08.683-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

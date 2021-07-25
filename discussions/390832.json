@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "897413",
+    "ThreadId": "390832",
+    "Html": "\r\n<p>Can I set prismRegion:TabControlRegionAdapter.ItemContainerStyle&nbsp;as a resource, rather than inline.</p>\r\n<p>This works:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>      <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">prismRegion</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">TabControlRegionAdapter.ItemContainerStyle</span><span style=\"color:blue\">&gt;</span>\r\n        <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">Style</span> <span style=\"color:red\">TargetType</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">sdk:TabItem</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">&gt;</span>\r\n          <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">Setter</span> <span style=\"color:red\">Property</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">HeaderTemplate</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">&gt;</span>\r\n            <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">Setter.Value</span><span style=\"color:blue\">&gt;</span>\r\n              <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">DataTemplate</span><span style=\"color:blue\">&gt;</span>\r\n                <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">TextBlock</span> <span style=\"color:red\">Text</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">{Binding HeaderInfo}</span><span style=\"color:black\">&quot;</span> <span style=\"color:blue\">/&gt;</span>\r\n              <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">DataTemplate</span><span style=\"color:blue\">&gt;</span>\r\n            <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">Setter.Value</span><span style=\"color:blue\">&gt;</span>\r\n          <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">Setter</span><span style=\"color:blue\">&gt;</span>\r\n        <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">Style</span><span style=\"color:blue\">&gt;</span>\r\n      <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">prismRegion</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">TabControlRegionAdapter.ItemContainerStyle</span><span style=\"color:blue\">&gt;</span>\r\n\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>but I'm having to use it all over the place, violating the DRY principle. &nbsp;But I can't work out how to make it a resource. &nbsp;Is it possible?</p>\r\n<p>I'm using Silverlight 5.</p>\r\n",
+    "PostedDate": "2012-08-09T01:17:08.007-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "897651",
+    "ThreadId": "390832",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding you should be able to define your <strong>Style </strong>as a resource and set it to your <strong>TabControlRegionAdapter.ItemContainerStyle</strong> property for example like this:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">sdk</span><span style=\"color: blue;\">:</span><span style=\"color: #a31515;\">TabControl</span> <span style=\"color: red;\">Name</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">MainRegion</span><span style=\"color: black;\">\"</span> <span style=\"color: red;\">Regions:RegionManager.RegionName</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">MainRegion</span><span style=\"color: black;\">\"</span> <span style=\"color: red;\">Regions:TabControlRegionAdapter.ItemContainerStyle</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">{StaticResource HeaderStyle}</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">&gt;</span>\r\n</pre>\r\n</div>\r\n<p>Also, I believe ,you could check the <a href=\"http://msdn.microsoft.com/en-us/library/ff921074(v=pandp.40)\">Stock Trader Reference Implementation</a>, which uses a similar approach in the <strong>AnimatedTabControl </strong>defined as a region in its <strong>Shell</strong> view.</p>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-08-09T09:54:19.49-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "898510",
+    "ThreadId": "390832",
+    "Html": "<p>Thanks, that sorted it out for me. &nbsp;It's now working.</p>",
+    "PostedDate": "2012-08-11T23:02:26.39-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

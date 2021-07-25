@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "574968",
+    "ThreadId": "248298",
+    "Html": "\r\n<p>I've been using Prism for more than a year now on Silverlight and have never seen this. &nbsp;I have a CanExecute method that just doesn't fire. &nbsp;However, the Execute method DOES. &nbsp;So I know the command is bound correctly.</p>\r\n<pre><span>This is my code:</span></pre>\r\n<pre><span><br></span></pre>\r\n<pre><span>_GetNextClaimCommand</span>&nbsp;<span>=</span>&nbsp;<span>new</span>&nbsp;<span>DelegateCommand</span>(<span>ExecuteGetNextClaim</span>,&nbsp;<strong>CanGetNextClaim</strong>);</pre>\r\n<pre><span><br></span></pre>\r\n<pre><span>private</span>&nbsp;<span>bool</span>&nbsp;<span>CanGetNextClaim</span>() { return <strong>false</strong>; }</pre>\r\n<pre><br></pre>\r\n<pre>CanGetNextClaim is NEVER called for some ungodly reason, yet the ExecuteGetNextClaim does!</pre>\r\n<pre><br></pre>\r\n<pre>Please help!!  P.S. I'm using Prism 4, latest official release.</pre>\r\n",
+    "PostedDate": "2011-03-03T05:14:27.417-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "575036",
+    "ThreadId": "248298",
+    "Html": "<p>Hi,</p>\r\n<p>Take into account that you need to call the _GetNextClaimCommand&acute;s <strong><span style=\"color: #30332d;\" lang=\"EN-US\">RaiseCanExecuteChanged</span></strong><span style=\"color: #30332d;\" lang=\"EN-US\"> method in order for the CanNextGetClaim to be called.</span></p>\r\n<p><span style=\"color: #30332d;\" lang=\"EN-US\">You might find the <a href=\"http://msdn.microsoft.com/en-us/library/ff921082(v=PandP.40).aspx\">Commanding QuickStart</a> handy, where you see an example of how you can implement this.</span></p>\r\n<p><span style=\"color: #30332d;\" lang=\"EN-US\">I hope you find this information useful.</span></p>\r\n<p><span style=\"color: #30332d;\" lang=\"EN-US\">Thanks,</span></p>\r\n<p><span style=\"color: #30332d;\" lang=\"EN-US\">Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></span></p>\r\n<p><span style=\"color: #30332d;\" lang=\"EN-US\">&nbsp;</span></p>",
+    "PostedDate": "2011-03-03T06:41:50.45-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "575068",
+    "ThreadId": "248298",
+    "Html": "<p>OK looks like I was actually binding to a nearly identical command on another viewmodel, which is why the Execute seemed to be executing. &nbsp;My bad.</p>\r\n<p>Miguel, I am aware of the need to call RaiseCanExecuteChanged(); however that isn't necessary for the initial call to CanGetNextClaim(). &nbsp;Thanks for your response!</p>",
+    "PostedDate": "2011-03-03T07:29:37.133-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "363322",
+    "ThreadId": "155539",
+    "Html": "<p>Is there any way to get reference of the unity container as with Regions (RegionContext). Something like UnityContext.Resolve..., ?</p>",
+    "PostedDate": "2010-02-23T11:40:11.093-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "409572",
+    "ThreadId": "155539",
+    "Html": "<p id=70387b30-0523-012d-f9b9-123139096d81>Hi,</p>\r\n<p id=70388320-0523-012d-f9ba-123139096d81>One possible way to get a  reference to the Unity container is getting it <a href=\"http://msdn.microsoft.com/en-us/library/dd203129.aspx\">injected in  the constructor</a> of your class. All classes that implement the <strong>IModule</strong> interface are injected with dependencies, so in those kind of classes  you simply have to add the Container&rsquo;s interface to your constructor. In  any other class you need to add the interface and also make sure it  goes through the container&rsquo;s builder pipeline (either by <a href=\"http://msdn.microsoft.com/en-us/library/dd203138.aspx\">resolving  it</a> or calling the <a href=\"http://msdn.microsoft.com/en-us/library/dd203136.aspx\">build up  method</a>).</p>\r\n<p id=703892c0-0523-012d-f9bb-123139096d81>Assuming  you want something similar to the region context (share between parent  and child views), you can make sure all the views get injected with the  container.</p>\r\n<p id=7038a740-0523-012d-f9bc-123139096d81>You can  check any of the Prism <a href=\"http://msdn.microsoft.com/en-us/library/dd458858.aspx\">Quickstarts</a> or the <a href=\"http://msdn.microsoft.com/en-us/library/dd458919.aspx\">Reference  Implementation</a> to see how this is done.</p>\r\n<p id=7038b930-0523-012d-f9bd-123139096d81>Please let me know if this  helps.</p>\r\n<p id=7038cbe0-0523-012d-f9be-123139096d81>Damian  Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-02-26T10:05:53.093-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "409640",
+    "ThreadId": "155539",
+    "Html": "<p>Hi</p>\r\n<p>&nbsp;</p>\r\n<p>Actually I need to use unity container in one custom IValueConverter to, so instead of creating global instance of UnityContainer I wonder if there is same way to access it like with RegionContext.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;public object Convert(object value, Type targetType, object parameter, CultureInfo culture)</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp;{</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp; &nbsp;if (value == null)</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp; &nbsp; throw new ArgumentNullException(&quot;value&quot;);</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp; &nbsp;IUnityContainer unityContainer = Module.MyContainer;</div>\r\n<p>\r\n<p>&nbsp;public object Convert(object value, Type targetType, object parameter, CultureInfo culture)&nbsp;&nbsp; &nbsp;{</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp;IUnityContainer unityContainer = Global.MyContainer; =&gt; HERE USE something like UnityContext instead?</p>\r\n<div>}</div>\r\n<div></div>\r\n<div></div>\r\n</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-02-26T10:15:34.137-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "409825",
+    "ThreadId": "155539",
+    "Html": "<p id=37a69130-0535-012d-fb39-123139096d81>Hi,</p>\r\n<p id=37a6a510-0535-012d-fb3a-123139096d81>You can add a reference to the  <strong>Microsoft.Practices.ServiceLocation.dll </strong>(located in  the Prism lib folder) and use the following code in your converter:</p>\r\n<p id=37a6bd20-0535-012d-fb3b-123139096d81><span style=\"font-family:Consolas;font-size:x-small\">var myService =  ServiceLocator.Current.GetInstance&lt;WhatYouWantToResolveFromUnity&gt;();</span></p>\r\n<p id=37a6da20-0535-012d-fb3c-123139096d81>If you require the  UnityContainer specifically (and not just getting a service) you can  simply resolve the <strong>UnityContainer</strong>:</p>\r\n<p id=37a6fa90-0535-012d-fb3d-123139096d81><span style=\"font-family:Consolas;font-size:x-small\">var  container =  ServiceLocator.Current.GetInstance&lt;IUnityContainer&gt;();</span></p>\r\n<p id=37a71d80-0535-012d-fb3e-123139096d81>Please let me know if this  helps.</p>\r\n<p id=37a74130-0535-012d-fb3f-123139096d81>Damian  Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-02-26T10:47:50.617-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "410312",
+    "ThreadId": "155539",
+    "Html": "<p>Yes!!</p>\r\n<p>&nbsp;</p>\r\n<p>Both of those works, great! <span style=\"text-decoration:underline\"><strong>ServiceLocator </strong></span>was the one I was looking for!!!!!</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-02-26T12:44:36.91-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

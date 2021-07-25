@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1005993",
+    "ThreadId": "434333",
+    "Html": "Hi,<br />\nI'm struggling with the following scenario and i don't now if Prism is capable of accomplishing it or not?<br />\nI have the following scenario:<br />\nShellWindow: contains <br />\n   1-NavigationRegion: contains tow tabs CustomerList, OrdersList<br />\n   2-Main Region: Tabbed Region (TabControl)<br />\n   3-Details Region : display details of the object in the selected tab in Main Region<br />\n                 <br />\nWhen Customer is selected in customerList: event is published of Customer object where subscribers display the following:<br />\n   MainRegion display a new tab open contains customer object data<br />\n   DatailsRegion display a group of tabs contains: Orders, Contacts, History, ...each in different tab<br />\nquestions<br />\n1-When many tabs are open in MainRegion, each contain different customer when i click a previous customer tab header the Details region still display the data belong the last customer selected from the customer list.how to make tab content in details region change with clicking different tabs (it change only w/ selecting Customer in CustomerList) - i tried to make ShellWindow publish an event when tab header is selected but i don't know how to transfere<br />\nthe customer object in the selected tab from xaml to the view model to publish it.<br />\n2-Now if i selected an Order in OrderList in NavigationRegion Tabs representing Order Objects are open in MainRegion beside the Customer tabs,i need different user control contain different group of tabs pertaining to Order object to be displayed in DetailsRegion same way like Customer details how to replace user control containing tabs belonging to Customer object with user control containing tabs belonging to Order Object<br />\n<br />\nPlzzz i need somebody to till me if this is possible or not and if possible how?<br />\n",
+    "PostedDate": "2013-02-24T12:34:53.82-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1007077",
+    "ThreadId": "434333",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding of your problem, I think that a possible solution for both cases could be subscribing to the event raised when the active view changes in the <strong>MainRegion</strong> . This way, when you click on a previous tab or open a new one (from Customers or Orders), since tabbed controls can only have 1 active view at the moment, the <strong>ActiveViews.CollectionChanged</strong> event will be raised and you will be able to get the necessary information from the <strong>ActiveViews</strong> collection item to update the <strong>Details</strong> region accordingly.\r<br />\n<br />\nIn order to subscribe to the <strong>ActiveViews.CollectionChanged</strong> event, you can use the following code snippet:<br />\n<pre><code>this.regionManager.Regions[&quot;MainRegion&quot;].ActiveViews.CollectionChanged += ActiveViews_CollectionChangedHandler;</code></pre>\n\nAlso, in order to be able to update the <strong>Details</strong> regions correctly when switching between Customers and Orders, you should wipe out all views from the <strong>Details</strong> region (which are related to the previous tab) and load the new ones using the approach mentioned above.\r<br />\n<br />\nI hope you find this useful, \r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-02-26T09:53:16.873-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

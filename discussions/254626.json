@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "600271",
+    "ThreadId": "254626",
+    "Html": "\r\n<div id=\"x__mcePaste\" style=\"width:1px; height:1px; overflow:hidden; top:0px; left:-10000px\">\r\n&#65279;</div>\r\n<p style=\"line-height:normal; margin:0in 0in 0pt\"><span style=\"font-size:small\"><span style=\"font-family:Calibri\">In ModuleInit I am loading the same view into the region twice by using different parameters in the<span style=\"\">&nbsp;\r\n</span>constructor, like:</span></span></p>\r\n<p style=\"line-height:normal; margin:0in 0in 0pt\"><span style=\"font-size:small\"><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"line-height:normal; margin:0in 0in 0pt\"><span style=\"font-size:small\"><span style=\"font-family:Calibri\">this.regionManager.Regions[&quot;MainNavigationRegion&quot;].Add(new FillRateNavigationItemView(&quot;Overall&quot;), &quot;Overall&quot;);</span></span></p>\r\n<p style=\"line-height:normal; margin:0in 0in 0pt\"><span style=\"font-size:small\"><span style=\"font-family:Calibri\">this.regionManager.Regions[&quot;MainNavigationRegion&quot;].Add(new FillRateNavigationItemView(&quot;Projectors&quot;), &quot;Projectors&quot;);</span></span></p>\r\n<p style=\"line-height:normal; margin:0in 0in 0pt\"><span style=\"font-size:small\"><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"line-height:normal; margin:0in 0in 0pt\"><span style=\"font-size:small\"><span style=\"font-family:Calibri\">I have ViewModel attached to the view like:</span></span></p>\r\n<p style=\"line-height:normal; margin:0in 0in 0pt\"><span style=\"font-family:Consolas; font-size:9.5pt\">[<span style=\"color:#2b91af\">Import</span>]</span></p>\r\n<p style=\"line-height:normal; margin:0in 0in 0pt\"><span style=\"font-family:Consolas; color:blue; font-size:9.5pt\">public</span><span style=\"font-family:Consolas; font-size:9.5pt\">\r\n<span style=\"color:#2b91af\">EpsonColumnViewModel</span> ViewModel {</span></p>\r\n<p style=\"line-height:normal; margin:0in 0in 0pt\"><span style=\"font-family:Consolas; font-size:9.5pt\"><span style=\"\">&nbsp;&nbsp;&nbsp;\r\n</span><span style=\"color:blue\">set</span> { <span style=\"color:blue\">this</span>.DataContext =\r\n<span style=\"color:blue\">value</span>; }</span></p>\r\n<p style=\"line-height:normal; margin:0in 0in 0pt\"><span style=\"font-family:Consolas; font-size:9.5pt\"><span style=\"\">&nbsp;&nbsp;&nbsp;\r\n</span><span style=\"color:blue\">get</span> { <span style=\"color:blue\">return</span> (<span style=\"color:#2b91af\">EpsonColumnViewModel</span>)<span style=\"color:blue\">this</span>.DataContext; }</span></p>\r\n<p style=\"line-height:normal; margin:0in 0in 0pt\"><span style=\"font-family:Consolas; font-size:9.5pt\">}</span></p>\r\n<p style=\"line-height:normal; margin:0in 0in 0pt\"><span style=\"font-family:Consolas; font-size:9.5pt\">&nbsp;</span></p>\r\n<p style=\"line-height:normal; margin:0in 0in 0pt\"><span style=\"font-size:small\"><span style=\"font-family:Calibri\">The problem is that ViewModel is instantiated only once and both view display the same values. I would need the ViewModel to calculate values for\r\n both instances of the view. What is a good approach here?</span></span></p>\r\n",
+    "PostedDate": "2011-04-20T02:48:31.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "600428",
+    "ThreadId": "254626",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding of your scenario, you need to decorate your <em>EpsonColumnViewModel</em> class with the <strong>PartCreationPolicy</strong> attribute as <strong>NonShared</strong>.</p>\r\n<p>By doing this, a new instance of the exported view model will be created each time it is resolved. For example in your code it would look like this:</p>\r\n<pre>[Export(<span style=\"color: blue;\">typeof</span>(IEpsonColumnViewModel))]\r\n[PartCreationPolicy(CreationPolicy.NonShared)]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> EpsonColumnViewModel : IEpsonColumnViewModel\r\n{\r\n   &hellip;\r\n}\r\n</pre>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>",
+    "PostedDate": "2011-04-20T07:50:24.577-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "601124",
+    "ThreadId": "254626",
+    "Html": "<p>Yeah. That's it. Thanks Miguel.</p>",
+    "PostedDate": "2011-04-21T10:38:47.527-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

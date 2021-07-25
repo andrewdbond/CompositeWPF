@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "432752",
+    "ThreadId": "209791",
+    "Html": "<p>Hi\r\n<p>&nbsp;</p>\r\n</p>\r\n<p>I have 2 regions setup in my shell ToolBarRegion(ItemsControl) and DetailsRegion(ContentControl).&nbsp; I load 3 modules in the bootstrapper</p>\r\n<p>Companies: This module will display a list of companies</p>\r\n<p>&nbsp;</p>\r\n<p>When this module get initialized it gets added to the DetailsRegion.</p>\r\n<p>IRegionManager regionManager;</p>\r\n<p>Public Companies(IRegionManager _regionManager)</p>\r\n<p>{</p>\r\n<p>regionManager = _regionManager;</p>\r\n<p>}</p>\r\n<p>public void Initialize()</p>\r\n<p>{</p>\r\n<p>CompanyDetails cd = new CompanyDetails();</p>\r\n<p>IRegion region = regionManager.Regions[&quot;DetailsRegion&quot;];</p>\r\n<p>region.Add(cd);</p>\r\n<p>}</p>\r\n<p>Users: This module shows a list of users and it's initialized like the code above</p>\r\n<p>MainToolBar: When initialized gets added to the ToolBarRegion and then activated - like above code but also calls region.Activate(viewname).</p>\r\n<p>This module will display buttons which will have their tag property bound to the name of the view to be displayed.&nbsp; These views are in the other modules(Companies,Users) that get loaded in the bootstrapper.</p>\r\n<p>I have a delegate command in my MainToolBarViewModel called ShowView.&nbsp; This is set as the command for the button.</p>\r\n<p>It does the following</p>\r\n<p>public void ShowView(object param)</p>\r\n<p>{</p>\r\n<p>this.regionManager.Regions[&quot;DetailsRegion&quot;].Activate(param)</p>\r\n<p>}<span style=\"color:#008000;font-size:x-small\"><span style=\"color:#008000;font-size:x-small\"></span></span>\r\n<p>It breaks on the above line with the following error &quot;The region does not contain the specified view Parameter name:view&quot;</p>\r\n<p>The param object is showing the correct name for the view i want to show, also if i drill into the Regions and expand the Results view it shows 2 entries 1 for the ToolBarRegion and 1 for the DetailsRegion.</p>\r\n<p>If i expand the DetailsRegion and then expand the Views then expand Results view i can see the 2 views i have loaded into this region.</p>\r\n<p>[0] {Users}</p>\r\n<p>[1] {Companies}</p>\r\n<p>Can anybody shed some light on what i'm doing wrong here.</p>\r\n<p>I've also had a look at the following post <a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=67573\">http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=67573</a>&nbsp;but still same error whichever way i try.</p>\r\n<p>Thanks</p>\r\n<p>Paul</p>\r\n<p>&nbsp;</p>\r\n</p>\r\n&nbsp;",
+    "PostedDate": "2010-04-19T09:03:34.563-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432815",
+    "ThreadId": "209791",
+    "Html": "<p>The Activate method takes the view that you want to activate as the parameter. It would appear from your description that you are passing a string to the Activate method.</p>\r\n<p>You should try:</p>\r\n<p>regionManager.Regions[&quot;DetailsRegion&quot;].Activate(regionManager.Regions[&quot;DetailsRegion&quot;].GetView(param));</p>\r\n<p>&nbsp;</p>\r\n<p>&lt;edit&gt; But I don't think that will work unless you add the views using a name, region.Add(cd, &quot;CompanyDetails&quot;);</p>",
+    "PostedDate": "2010-04-19T11:39:57.113-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432824",
+    "ThreadId": "209791",
+    "Html": "<p id=6f46fc70-2e10-012d-816f-12313b069c21>Hi Paul,</p>\r\n<p id=6f4743c0-2e10-012d-8170-12313b069c21>The activate method takes an  object as a parameter that is supposed to be the View (not the View&lsquo;s  name). To get the view specifying the name, you can use the <strong>GetView(string  viewName)</strong> method, and then call the activate method.</p>\r\n<p id=6f47a180-2e10-012d-8171-12313b069c21>Something I noted from your  implementation is that the <strong>MainToolbar</strong> buttons know  about view names in other modules. This is not recommended, as it highly  increases the coupling of your modules, which are supposed to be  isolated from each other. The recommended approach is that each module  is in charge of handling its own views.</p>\r\n<p id=6f480eb0-2e10-012d-8172-12313b069c21>A possible way to decouple the  modules could be getting <strong>ToolBarRegion</strong> filled with  views from each of those modules. Then each of the ToolBar items should  only be call functionality from its own module.</p>\r\n<p id=6f4883e0-2e10-012d-8173-12313b069c21>Please let me know if this  helps.</p>\r\n<p id=6f48f470-2e10-012d-8174-12313b069c21>Damian  Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-04-19T11:53:34.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432877",
+    "ThreadId": "209791",
+    "Html": "<p>Hi Waday</p>\r\n<p>i tried using the GetView method (GetView(param.ToString()) but get the following error</p>\r\n<p>Value cannot be null.<br>Parameter name: view</p>\r\n<p>Thanks</p>\r\n<p>Paul</p>",
+    "PostedDate": "2010-04-19T13:57:48.013-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432880",
+    "ThreadId": "209791",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>paul3654 wrote:</strong><br>\r\n<p>Value cannot be null.<br>Parameter name: view</p>\r\n</blockquote>\r\n<p>I would guess that either you did not add the view to the region using a name for the view, or the parameter you are getting&nbsp;passed to the ShowView method is null. See the Region.Add method for adding a view to a region with a name.&nbsp;</p>",
+    "PostedDate": "2010-04-19T14:04:23.523-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432890",
+    "ThreadId": "209791",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>dschenkelman wrote:</strong><br>\r\n<p id=6f46fc70-2e10-012d-816f-12313b069c21>Hi Paul,</p>\r\n<p id=6f4743c0-2e10-012d-8170-12313b069c21>The activate method takes an object as a parameter that is supposed to be the View (not the View&lsquo;s name). To get the view specifying the name, you can use the <strong>GetView(string viewName)</strong> method, and then call the activate method.</p>\r\n<p id=6f47a180-2e10-012d-8171-12313b069c21>Something I noted from your implementation is that the <strong>MainToolbar</strong> buttons know about view names in other modules. This is not recommended, as it highly increases the coupling of your modules, which are supposed to be isolated from each other. The recommended approach is that each module is in charge of handling its own views.</p>\r\n<p id=6f480eb0-2e10-012d-8172-12313b069c21>A possible way to decouple the modules could be getting <strong>ToolBarRegion</strong> filled with views from each of those modules. Then each of the ToolBar items should only be call functionality from its own module.</p>\r\n<p id=6f4883e0-2e10-012d-8173-12313b069c21>Please let me know if this helps.</p>\r\n<p id=6f48f470-2e10-012d-8174-12313b069c21>Damian Schenkelman <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n</blockquote>\r\n<p>&nbsp;Hi Damian</p>\r\n<p>The MainToolBar buttons are bound to an observablecollection.&nbsp; This collection is a list of modules that the logged in user has permissions to run.&nbsp; I have tables in a database for users, roles, modules etc.&nbsp;The table modules has a field that holds the name of the view associated with that module.</p>\r\n<p>My MainToolBar view is a listbox of buttons that are bound to properties of the observablecollection name of button, button image, view to activate etc.</p>\r\n<p>The buttons command is bound to a command in the viewmodel and the command parameter is the name of the view to activate from the observablecollection.</p>\r\n<p>All the above works fine in that all the data is returned from the database as expected i've just hit a wall in trying to activate the views.&nbsp; In your opinion am i doing&nbsp;this the wrong way?&nbsp; Is there a better approach in loading modules depending on the role a user is in?</p>\r\n<p>I still would have tought the the GetView method would have worked as i said when i drill into the regionmanager i can see the view listed but the GetView method still returns null.</p>\r\n<p>Thanks</p>\r\n<p>Paul</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-19T14:22:43.213-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432892",
+    "ThreadId": "209791",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>waday wrote:</strong><br>\r\n<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>paul3654 wrote:</strong><br>\r\n<p>Value cannot be null.<br>Parameter name: view</p>\r\n</blockquote>\r\n<p>I would guess that either you did not add the view to the region using a name for the view, or the parameter you are getting&nbsp;passed to the ShowView method is null. See the Region.Add method for adding a view to a region with a name.&nbsp;</p>\r\n</blockquote>\r\n<p>&nbsp;Hi Waday</p>\r\n<p>When this module get initialized it gets added to the DetailsRegion.</p>\r\n<p>IRegionManager regionManager;</p>\r\n<p>Public Companies(IRegionManager _regionManager)</p>\r\n<p>{</p>\r\n<p>regionManager = _regionManager;</p>\r\n<p>}</p>\r\n<p>public void Initialize()</p>\r\n<p>{</p>\r\n<p>CompanyDetails cd = new CompanyDetails();</p>\r\n<p>IRegion region = regionManager.Regions[&quot;DetailsRegion&quot;];</p>\r\n<p><strong>region.Add(cd);</strong></p>\r\n<p>}</p>\r\n<p>When i check the parameter passed to the ShowView method it is the name of the view that i'm trying to activate.</p>\r\n<p>Thanks</p>\r\n<p>Paul</p>",
+    "PostedDate": "2010-04-19T14:27:27.393-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432896",
+    "ThreadId": "209791",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>paul3654 wrote:</strong><br>\r\n<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>region.Add(cd);</strong></blockquote>\r\n<p>&nbsp;</p>\r\n<p>When i check the parameter passed to the ShowView method it is the name of the view that i'm trying to activate.</p>\r\n<p>Paul,</p>\r\n<p>I understand that. You added the view <strong>object</strong> to the region but trying to access it by <strong>name.</strong> The type name of the object and the string name that you would refer to it by are not the same thing. They could be not but not necessarily.</p>\r\n<p>To be able to access the view by name you have to add it to the region using a name. as in, region.Add(cd, &quot;CompanyDetails&quot;);</p>\r\n</blockquote>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-19T14:35:07.633-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432906",
+    "ThreadId": "209791",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>waday wrote:</strong><br>\r\n<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>paul3654 wrote:</strong><br>\r\n<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>region.Add(cd);</strong></blockquote>\r\n<p>&nbsp;</p>\r\n<p>When i check the parameter passed to the ShowView method it is the name of the view that i'm trying to activate.</p>\r\n<p>Paul,</p>\r\n<p>I understand that. You added the view <strong>object</strong> to the region but trying to access it by <strong>name.</strong> The type name of the object and the string name that you would refer to it by are not the same thing. They could be not but not necessarily.</p>\r\n<p>To be able to access the view by name you have to add it to the region using a name. as in, region.Add(cd, &quot;CompanyDetails&quot;);</p>\r\n</blockquote>\r\n<p>&nbsp;</p>\r\n</blockquote>\r\n<p>Ah i get it now,&nbsp;Brilliant Waday that worked a charm.&nbsp;</p>\r\n<p>Thanks very much i've been staring at this for a while now probably to long :)</p>\r\n<p>Paul</p>",
+    "PostedDate": "2010-04-19T14:52:05.73-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432908",
+    "ThreadId": "209791",
+    "Html": "<p>Glad to help.</p>",
+    "PostedDate": "2010-04-19T14:56:18.89-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

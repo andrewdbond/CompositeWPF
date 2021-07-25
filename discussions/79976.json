@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "273989",
+    "ThreadId": "79976",
+    "Html": "<p>Hi all,</p>\r\n<p>I am attempting to use the CompositeWPF library in my new desktop application but I am faced with an issue of which I cannot determine the best practice.</p>\r\n<p>I have a third party library which processes some GPS data and provides me with a single object I can use containing a whole set of properties and an update function. I should call this update function so many times (the goal is between 20 and 50 times per second) to retrieve and process new data. For that I created a seperate helper library which performs all the low level tasks.</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span> Manager\r\n{\r\n  <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">void</span> UpdateLoopFromBackgroundThread()\r\n  {\r\n    ThirdPartyLib.Update();\r\n  }\r\n}</pre>\r\n</div>\r\n<p>Every time the update function is called about 20 properties from the third party library get updated.</p>\r\n<p>Now I have 7 modules which should use the data from this third party library so each of them can draw different plots which are of course also update between 2 and 10 times per second. What's the best way to notify these modules they should redraw their plot? I can't use change notifiers on the ThirdPartyLib object because the object itself doesn't change, and as far as I can tell putting those notifier events on each individual property is also not desired. I also don't like to create a custom class which has the same properties as the ThirdPartyLib object and create a new one 50 times per second, that might be too hard for the Garbage Collector.</p>\r\n<p>I was thinking of putting a timer in my module which is triggered every 500 or 100 milliseconds and to use the properties from the ThirdPartyLib object to update my views. I also considered using an event in the UpdateLoopFromBackgroundThread() function on which my modules can add an event handler but I think that's not a correct use of the mvvm pattern, plus all those event calls might be quite expensive performance wise.</p>\r\n<p>Any pointers on a correct solution are greatly appreciated. All the samples I encountered only processed relative static data so any articles or samples are always welcome.</p>",
+    "PostedDate": "2010-01-06T13:22:38.453-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "274273",
+    "ThreadId": "79976",
+    "Html": "<p>as an interesting approach, you might want to take a look at Rx.</p>\r\n<p><a href=\"http://msdn.microsoft.com/en-us/devlabs/ee794896.aspx\">http://msdn.microsoft.com/en-us/devlabs/ee794896.aspx</a></p>\r\n<p>and this post&nbsp; <a href=\"http://themechanicalbride.blogspot.com/2009/08/joy-of-rx-building-asynchronous-service.html\">http://themechanicalbride.blogspot.com/2009/08/joy-of-rx-building-asynchronous-service.html</a></p>\r\n<p>Other than that, using the event aggregator to publish the events might be an option.&nbsp; Have the modules/views subscribe to the events they need.&nbsp; But make sure that you read <a href=\"http://neverindoubtnet.blogspot.com/2009/05/prism-event-aggregator-subscription.html\">http://neverindoubtnet.blogspot.com/2009/05/prism-event-aggregator-subscription.html</a></p>\r\n<p>Paul</p>",
+    "PostedDate": "2010-01-07T04:44:21.51-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "274274",
+    "ThreadId": "79976",
+    "Html": "<p>some more interesting links&nbsp;about Rx</p>\r\n<p><a href=\"http://blogs.msdn.com/wesdyer/archive/2009/11/18/a-brief-introduction-to-the-reactive-extensions-for-net-rx.aspx\">http://blogs.msdn.com/wesdyer/archive/2009/11/18/a-brief-introduction-to-the-reactive-extensions-for-net-rx.aspx</a></p>\r\n<p><a href=\"http://themechanicalbride.blogspot.com/2009/07/developing-with-rx-part-1-extension.html\">http://themechanicalbride.blogspot.com/2009/07/developing-with-rx-part-1-extension.html</a></p>\r\n<p>This is available for 3.5 from the first link I gave above&nbsp;( <a href=\"http://msdn.microsoft.com/en-us/devlabs/ee794896.aspx\">http://msdn.microsoft.com/en-us/devlabs/ee794896.aspx</a>&nbsp;).&nbsp;</p>\r\n<p>If you go this path, I would be very interested in hearing about the results.&nbsp; The interesting part would be the surfacing of the feed to the dynamically loaded modules.&nbsp; I would think that the use of the Unity Container would play a large&nbsp;role here.&nbsp;Registering the appropriate services in the container&nbsp;and then being able to receive the data through Rx.&nbsp; You might also want to ask the same question on the Rx Forum and see if they have any suggestions</p>\r\n<p><a href=\"http://social.msdn.microsoft.com/Forums/en-US/rx/threads\">http://social.msdn.microsoft.com/Forums/en-US/rx/threads</a></p>\r\n<p>Paul</p>",
+    "PostedDate": "2010-01-07T04:47:52.11-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "274313",
+    "ThreadId": "79976",
+    "Html": "<p>I agree with Paul that Rx would be a good candidate to solve your problem.</p>\r\n<p>Another (maybe simpler) approach would be to put a .NET event on your Manager class that gets raised every time the GPS data is updated. You can then register a singleton instance of the manager class in the container and get a reference to it whereever you need to have your data/views refreshed. Once you have the reference, you can hook into the event to update your views.</p>\r\n<p>This is a similar approach to what Paul suggested with the Event Aggregator, but I think it would perform slightly better - especially since you'll be updating the data so frequently.</p>\r\n<p>Hope that helps.</p>\r\n<p>Ryan</p>",
+    "PostedDate": "2010-01-07T06:33:13.383-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "274426",
+    "ThreadId": "79976",
+    "Html": "<p>Thanks for the replies.</p>\r\n<p>I think that I don't have the time to look up and check the Rx framework.</p>\r\n<p>As for the events, I feel like that would cause a lot of overhead because an event feels like a very expensive call. I also don't know if that's the proper way to handle this. Right now I am working with a timer in my module controller which run at a lower rate than my main update loop which fetch the date using a service and update the properties in my viewmodel class. I am not sure this is a better way, but it feels less expensive and the benefit is that my modules don't necessarily have to be in sync or one module is delayed while another's event handler is still computing.</p>",
+    "PostedDate": "2010-01-07T10:18:11.073-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

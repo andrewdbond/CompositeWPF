@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "618216",
+    "ThreadId": "258991",
+    "Html": "<p>Hi,</p>\n<p>Every time I deploy my PRISM application to another server, I have to open the xap file and edit the ServiceReferences.ClientConfig file.</p>\n<p>Therefore, I decided to try and&nbsp;use the <strong>initparams </strong><span style=\"text-decoration: underline;\">&lt;param name=\"initparams\" value=\"servicepoint=Local\" /&gt; </span>to pass the Binding name to the App.xaml.cs file.</p>\n<p>Then in my <strong>module </strong>I was <strong>registering </strong>the service like this:</p>\n<p><strong>_container.RegisterType&lt;CodeGeneratorServiceClient&gt;(new InjectionConstructor());</strong></p>\n<p>However, I need the <strong>instance </strong>that is in the _<strong>container </strong>to <strong>know </strong>about the&nbsp;<strong>Bindind </strong>so that it <strong>finds </strong>the <strong>service</strong>.&nbsp;</p>\n<p>I tried different options but to no avail:<br />---------------------------------------------------<br />// Create an instance of the service<br />CodeGeneratorServiceClient <strong>proxy </strong>= new CodeGeneratorServiceClient(\"BasicHttpBinding_ICodeGeneratorService_\" + (Application.Current).Host.InitParams[\"servicepoint\"]);</p>\n<p>_container.RegisterType&lt;CodeGeneratorServiceClient&gt;(new InjectionConstructor(<strong>proxy</strong>));<br />or<br />_container.RegisterType&lt;<strong>proxy</strong>&gt;(new InjectionConstructor());</p>\n<p>Then I tried:<br />-------------------<br />_container.RegisterInstance(<strong>proxy</strong>, new InjectionConstructor())</p>\n<p>1 - How do I <span style=\"text-decoration: underline;\"><strong>extract a service instance from the container </strong></span>so that I can set its bindings like this:</p>\n<p>BasicHttpBinding binding = new BasicHttpBinding();<br />binding.Name = \"BasicHttpBinding_ICodeGeneratorService_\" + (Application.Current).Host.InitParams[\"servicepoint\"];<br /><strong>proxy</strong>.Endpoint.Binding = binding;</p>\n<p>2 - <strong>How do I change the Bindins of a WCF service dyanamically in the module so that when I deploy it I do not have to change the ServiceReferences.ClientConfig file in xap file?</strong></p>\n<p>Please note that&nbsp;the <strong>service is injected in the&nbsp;my ViewModels, they need to have the right Bindings set</strong>.</p>\n<p>public DetailViewViewModel(<strong>CodeGeneratorServiceClient </strong>ctx)<br />{<br />&nbsp;&nbsp;&nbsp;_ctx = ctx;<br />}</p>\n<p>Cheers</p>\n<p>Claudio</p>",
+    "PostedDate": "2011-05-25T11:12:15.62-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "618727",
+    "ThreadId": "258991",
+    "Html": "<p>Hi Claudio,</p>\r\n<p>If you have trouble using the <strong>Resolve </strong>method of the Unity Container to retrieve an instance of your auto-generated service proxy, you could create a wrapper class that holds an instance of that service, and could be easily registered with an interface mapping (which would also increase testability, as the wrapper could be mocked, unlike the auto-generated service proxy).</p>\r\n<p>As for how to change the binding of a WCF service dinamically, you might find this article useful:</p>\r\n<p><a href=\"http://blogs.msdn.com/b/kaevans/archive/2009/01/20/dynamically-invoking-web-services-with-wcf-this-time.aspx\">Dynamically Invoking Web Services... With WCF This Time</a></p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n<p><br /><br /></p>",
+    "PostedDate": "2011-05-26T07:35:42.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "618805",
+    "ThreadId": "258991",
+    "Html": "<p>Hi Guido,</p>\r\n<p>It was very helpful. Thanks.</p>\r\n<p><em>\"you could create a wrapper class that holds an instance of that service, and could be easily registered with an interface mapping (which would also increase testability, as the wrapper could be mocked, unlike the auto-generated service proxy).\"</em></p>\r\n<p>Are you talking about adding a DataService layer and create an Instance of CodeGeneratorServiceClient service inside this class and use this class to call the methods on the service?</p>\r\n<p>1 - How would my ViewModels use this class? Would I inject this class into each ViewModel's&nbsp;parameters like I was injecting the CodeGeneratorServiceClient?</p>\r\n<p>2 - I have another problem&nbsp;that I simply cannot find any articles on line showing how to&nbsp;solve it. <strong>Basically, all my code is sitting on my local computer i.e.&nbsp;the Silverlight Client and Web.&nbsp; From the Silverlight client application I add a service reference to a&nbsp;standard WCF service that is in another project. </strong></p>\r\n<p>When I run this service I have <strong>configured cassini to run it using port 2587</strong>. Therefore, it simulates it being in <strong>another domain since the Silverlight Web is running on port 3346.</strong></p>\r\n<p>I have a <strong>ClientPolicyFile.xml in the root of this service </strong>given access to everyone so that I can access the WCF service from&nbsp;my Silverlight client application.</p>\r\n<p><span style=\"text-decoration: underline;\"><strong>The problem is that I will have to put this service on a Server that will be behind a firewall. This is for security reason. The database server and the WCF service will be both behind a firewall.</strong></span></p>\r\n<p><span style=\"text-decoration: underline;\"><strong>How will I be able to access this service from the Silverlight client if it is behind a protected firewall?</strong></span></p>\r\n<p>Cheers</p>\r\n<p>Claudio</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-26T09:14:01.05-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "618831",
+    "ThreadId": "258991",
+    "Html": "<p>Hi Claudio,</p>\r\n<p>By wrapper class, I'm referring to a shared service in your client; that is, just a class that wraps the methods of the generated proxy class, but which implements an interface and can be mocked. Since you would register an interface mapping pointing to an implementation that wraps your proxy's methods, you could obtain a reference to the wrapper in your view models by resolving the instance through the container.</p>\r\n<p>In case you use a firewall in your server, you should add the pertinent rules in your server's firewall to allow the communication in the ports associated to your service. As that is not related to Prism, you might find better support in the <a href=\"http://social.msdn.microsoft.com/Forums/en/wcf/threads/\">WCF forum</a>.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-05-26T10:03:06.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "619554",
+    "ThreadId": "258991",
+    "Html": "<p>Hi Guido,</p>\r\n<p>Thanks. I will try that.</p>\r\n<p>Cheers</p>\r\n<p>Claudio</p>",
+    "PostedDate": "2011-05-27T13:50:13.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "683175",
+    "ThreadId": "258991",
+    "Html": "<p>Hi,</p>\r\n<p>For those concerned with this issue, you could check the following  blog post, which provides guidance on how to use WCF services with Prism  in Silverlight:</p>\r\n<p><a href=\"http://blogs.southworks.net/gmaliandi/2011/10/using-wcf-services-in-prism-silverlight-applications/\">Using WCF services in Prism Silverlight applications</a></p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-10-12T07:59:21.767-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

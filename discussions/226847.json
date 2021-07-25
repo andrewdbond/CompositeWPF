@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "492110",
+    "ThreadId": "226847",
+    "Html": "<p>Hi,</p>\r\n<p>Going through the quickstarts and building something along the line to learn prism.</p>\r\n<p>I am surely missing something cannot seem to find how you register the module.</p>\r\n<p>Usually in the constructor of a module I think we should have something like</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre>   <span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> RegisterViewsAndServices()\r\n        {\r\n            <span style=\"color:blue\">this</span>.Container.RegisterType&lt;IActivityView, ActivityView&gt;();\r\n        }\r\nI have looked in all the modules A,B,C etc... but cannot see how you register them.</pre>\r\n<pre>Is done in the bootstrapper by the moduleTracker?</pre>\r\n<pre>Which line of code does the registration? </pre>\r\n<pre>Just wanted to learn your approach</pre>\r\n<pre>Thanks for any feedback</pre>\r\n</div>",
+    "PostedDate": "2010-09-11T00:25:26.327-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "492119",
+    "ThreadId": "226847",
+    "Html": "<p>It depends on what you mean by &quot;registering a module.&quot;</p>\r\n<p>If you mean getting the modules in the module catalog, the quickstart's bootstrapper adds the modules in several different ways in the <strong>ConfigureModuleCatalog</strong> method: A &amp; C are added explicitly, B &amp; D are added via directory sweep, and E &amp; F are added via configuration.&nbsp; In a real app, you would probably choose only one of these approaches, but we wanted to show all of them being used.&nbsp; This is what I consider &quot;registering a module&quot;.</p>\r\n<p>If you mean registering the UI components&nbsp;from the modules, the quickstart does not do this.&nbsp; All the UI is in the shell and the <strong>ModuleTracker </strong>(view model) is notfied of changes in the state of the modules by the modules themselves. All the modules have the <strong>ModuleTracker </strong>injected into the constructors and they call methods to indicate state changes.&nbsp; However in a typical app, you would probably use the module's initialize method to dynamically register UI elements (or use a <strong>RegisterViews </strong>method that is called from <strong>Initialize</strong> like the one that you describe above).</p>\r\n<p>If you mean registering application-level services from the module with the container, there is only one service (&nbsp;an&nbsp;<strong>IModuleTracker </strong>implementation) that is provided by the shell in the bootstrapper.&nbsp; Again, on a typical app, you would probably use the module's initialize method to register services (or use a <strong>RegisterViews </strong>method that is called from Initialize like the one that you describe above).&nbsp;</p>\r\n<p>You may also want to read through the following sections in the CHM file:</p>\r\n<ul>\r\n<li><em>Chapter 4: Modular Application Development</em>&nbsp; \r\n<ul>\r\n<li>This explains most of the concepts around modularity you will probably run into in an app. Skim down to the <em>Core Scenarios</em> section if you are in a hurry.</li>\r\n</ul>\r\n</li>\r\n<li><em>Modularity QuickStarts for WPF (updated)</em> -- under <em>Appendix G: QuickStarts&nbsp;</em>\r\n<ul>\r\n<li>This explains how we built the modularity quickstarts and how modules are created, registered, loaded, etc.</li>\r\n</ul>\r\n</li>\r\n</ul>\r\n<p>Let us know if you still have questions.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-11T01:30:54.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "492123",
+    "ThreadId": "226847",
+    "Html": "<p>Thank you very much for detailed explanation</p>\r\n<p>All clear now thanks</p>\r\n<p>My Scenarios are</p>\r\n<p>Registering the UI components&nbsp;from the modules</p>\r\n<p>Registering application-level services from the module with the container</p>\r\n<p>and you fully answered them.</p>\r\n<p>I was&nbsp;a bit intrigued as all the examples I have seen so far on the net the use RegisterViews and Services etc.. like the EventAggregator Example but the modularity one didnt and being new to Prism I had doubts</p>\r\n<p>thanks</p>\r\n<div id=\"_mcePaste\" style=\"width:1px;height:1px;overflow:hidden;top:0px;left:-10000px\">﻿</div>",
+    "PostedDate": "2010-09-11T01:59:18.753-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

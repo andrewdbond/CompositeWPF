@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "937166",
+    "ThreadId": "402059",
+    "Html": "\r\n<p>Hello, I am trying to handle&nbsp;ModuleInitializeException (MIE) from my code&nbsp;but without success. It can't be done from my&nbsp;code because MIE is thrown in another thread.&nbsp;This thread initializated by callback of&nbsp;module loading over network.</p>\r\n<p>So i need to alter prism sources to achieve&nbsp;possibility of handling MIE. From perspective&nbsp;<br>\r\nof prism developer, how to do it better?</p>\r\n<p>&nbsp;</p>\r\n<p>I think, it can be done by implementing custom IModuleInitializer, using it instead of default ModuleInitializer and firing some event through IEventAggregator to let graceful handling if this Exception somewhere in user code.</p>\r\n<p>Or should Exception object&nbsp;additionally&nbsp;be passed in LoadModuleCompletedEventArgs of ModuleManager.LoadModuleCompleted?</p>\r\n<p>Or somehow else?</p>\r\n",
+    "PostedDate": "2012-11-06T02:54:28.17-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "937366",
+    "ThreadId": "402059",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding both approaches should be valid for handling this kind of exceptions. In my opinion the more direct approach will be to implement a custom\r\n<strong>IModuleInitializer </strong>to replace the default implementation, which could override the\r\n<strong>HandleModuleInitializationError </strong>method in order to handle the exception. And for example this method could raise and event when this occurs as you mentioned.</p>\r\n<p>On the other hand, I believe that passing the exception to the <strong>LoadModuleCompletedEventArgs\r\n</strong>when raising the <strong>LoadModuleCompleted </strong>event would be a more organized approach, as it will allow you to handle all the exceptions of the module loading process in a centralized fashion. For example, to achieve this, you could catch\r\n the exception and pass it, in the <strong>InitializeModule </strong>method in the\r\n<strong>ModuleManager </strong>class like this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> InitializeModule(ModuleInfo moduleInfo)\n        {\n            ModuleInitializeException moduleInitializeException = <span style=\"color:blue\">null</span>;\n\n            <span style=\"color:blue\">if</span> (moduleInfo.State == ModuleState.Initializing)\n            {\n                <span style=\"color:blue\">try</span>\n                {\n                    <span style=\"color:blue\">this</span>.moduleInitializer.Initialize(moduleInfo);\n                }\n                <span style=\"color:blue\">catch</span> (ModuleInitializeException e)\n                {\n                    moduleInitializeException = e;\n                }\n                moduleInfo.State = ModuleState.Initialized;\n\n                <span style=\"color:blue\">this</span>.RaiseLoadModuleCompleted(moduleInfo, moduleInitializeException);\n            }\n        }\n</pre>\r\n</div>\r\n<p>The only problem, with this approach is that it will require creating a custom\r\n<strong>ModuleManager </strong>implementation, with a modified <strong>InitializeModule\r\n</strong>method (which is currently not defined as a virtual method). Hence, this would require copying the code of the default\r\n<strong>ModuleManager </strong>implementation in your custom one.</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-11-06T09:12:28.73-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "938351",
+    "ThreadId": "402059",
+    "Html": "<p>Thank you for great detailed answer.</p>\r\n<p>I've successfully created custom MefModuleManager, by merging ModuleManager/MefModuleManager class definitions, and using your handy snippet of InitializeModule.</p>",
+    "PostedDate": "2012-11-07T23:14:35.177-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "499717",
+    "ThreadId": "228936",
+    "Html": "<p>I tried to run RegionNavigation in the Quickstarts from Drop 8, when I started to run the app,&nbsp;got following runtime error: Failed to load type for module RegionNavigation.Calendar. Error was: An exception occurred during a WebClient request.. It seems that there is problem during loading &quot;Calendar&quot;, actually, any module can not be loaded (for example, I only define one module in ModulesCatalog.xaml, then load it, the same error still there), I could not figure out what could be wrong. I must miss some&nbsp;critical stuff.&nbsp;Could someone give your insight suggestions? Thanks lot!</p>",
+    "PostedDate": "2010-09-28T19:50:19.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "500011",
+    "ThreadId": "228936",
+    "Html": "<p>Hi,</p>\r\n<p>This might be related to it is necessary to set the RegionNavigation.Web project as startup project. You could check this information in the readme file (see <em>Navigation Quickstart</em> section) of the lastest drop of Prism.</p>\r\n<p>Please let me know if this help.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-29T07:30:23.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "500019",
+    "ThreadId": "228936",
+    "Html": "\r\nHi, Fernando,<br>\r\n <br>\r\nThank you very much for your response.<br>\r\n <br>\r\nI did set RegionNavigation.Web as startup project, still the same. <br>\r\n <br>\r\nShirley<br> <br>\r\n\r\n<hr id=stopSpelling>\r\nFrom: [email removed]<br>To: [email removed]<br>Date: Wed, 29 Sep 2010 07:30:25 -0700<br>Subject: Re: Runtime error: Module TypeLoadingException was unhandled by user code [CompositeWPF:228936]<br><br>\r\n\r\n\r\n\r\nFrom: fantivero<br>\r\n<div id=ecxThreadNotificationPostBody>\r\nHi,<br>\r\nThis might be related to it is necessary to set the RegionNavigation.Web project as startup project. You could check this information in the readme file (see <em>Navigation Quickstart</em> section) of the lastest drop of Prism.<br>\r\nPlease let me know if this help.<br>\r\nFernando Antivero <br><a>http://blogs.southworks.net/fantivero</a><br>\r\n <br></div>\r\n<div id=ecxThreadNotificationFooter>\r\nRead the <a>full discussion online</a>.<br>\r\nTo add a post to this discussion, reply to this email (<a>CompositeWPF@discussions.codeplex.com</a>)<br>\r\nTo start a new discussion for this project, email <a>CompositeWPF@discussions.codeplex.com</a><br>\r\nYou are receiving this email because you subscribed to this discussion on CodePlex. You can <a>unsubscribe</a> on CodePlex.com.<br>\r\nPlease note: Images and attachments will be removed from emails. Any posts to this discussion will also be available online at CodePlex.com<br></div> \t\t \t   \t\t  ",
+    "PostedDate": "2010-09-29T07:42:05.607-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "500133",
+    "ThreadId": "228936",
+    "Html": "<p>Hi Shirley,</p>\r\n<p>This is certainly strange, I faced with the same situation and found no issues by performing this configuration.&nbsp; I would recommend you start this Quickstart from scratch and set only the RegionNavigation.Web project as startup.<br><br>Is there any message in your output window?<br><br>If you continue experiencing this, could you send this quickstart? So in case that we confirm this as an issue, I could create a work-item for this.<br><br>Thanks for reporting that.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-29T11:20:35.643-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "500619",
+    "ThreadId": "228936",
+    "Html": "\r\nHi, Fernando:<br>\r\n <br>\r\nI re-check the issue(s) and find something which seem related with the reference of &quot;Micorsoft.practices.Prism.MefExtensions&quot;. I am quite confused by the phenomena, I describe as follow, hope to get some of your insight suggestions.<br>\r\n <br>\r\nHere are the processes I conducted, hope they are helpful to you understanding my issue, please let me know what step(s) I did was (were) wrong or you have some restriction by referencing Prism library:<br>\r\n <br>\r\n1. Download Drop 8.<br>\r\n2. Run Desktop & Silverlight - Open Prism Library.bat. Successfully compile all projects.<br>\r\n3. Extract comonents DLL from different folders to form a new library folder, say &quot;MyPrismLibrary&quot;, example, copy the new generated &quot;Microsoft.Practices.Prism.MefExtensions.dll&quot; to &quot;MyPrismLibrary&quot;, etc.<br>\r\n4. Go to Quickstarts - Navigation - Open RegionNavigation.Silverlight solution<br>\r\n5. Go to RegionNavigation project - go to reference - remove Microsoft.practices.Prism.MefExtensions - ADD this DLL from new generated &quot;MyPrismLibrary&quot;<br>\r\n6. Run application. The I got following errors. Note the error is random, one could show this (see attach Figure 1), another could show this (see attach Figure 2).<br>\r\n7. Then I remove this reference again, add ORIGINAL reference from LIB folder. Error not gone, still there.<br>\r\n8. If I un-zip a brand-new drop 8, go to Navigation folder to run the application, everything is fine. The important point is that this setting now is exactly the same as above step #7. <br>\r\n <br>\r\nWhat are wrong? I am completely baffled. <br>\r\n <br>\r\nThank you very much!<br>\r\n <br>\r\nShirley<br>\r\n <br>\r\n <br>\r\n<br> <br>\r\n\r\n<hr id=stopSpelling>\r\nFrom: [email removed]<br>To: [email removed]<br>Date: Wed, 29 Sep 2010 11:20:45 -0700<br>Subject: Re: Runtime error: Module TypeLoadingException was unhandled by user code [CompositeWPF:228936]<br><br>\r\n\r\n\r\n\r\nFrom: fantivero<br>\r\n<div id=ecxThreadNotificationPostBody>\r\nHi,<br>\r\nThis is certainly strange, I faced with the same situation and found no issues by performing this change.  I would recommend you start this Quickstart from scratch and set only the RegionNavigation.Web project as startup.<br><br>Is there any message in your output window?<br><br>If you continue experiencing this, could you send this quickstart? So in case that we confirm this as an issue, I could create a work-item for this.<br><br>Thanks for reporting that.<br>\r\nFernando Antivero <br><a>http://blogs.southworks.net/fantivero</a><br>\r\n <br></div>\r\n<div id=ecxThreadNotificationFooter>\r\nRead the <a>full discussion online</a>.<br>\r\nTo add a post to this discussion, reply to this email (<a>CompositeWPF@discussions.codeplex.com</a>)<br>\r\nTo start a new discussion for this project, email <a>CompositeWPF@discussions.codeplex.com</a><br>\r\nYou are receiving this email because you subscribed to this discussion on CodePlex. You can <a>unsubscribe</a> on CodePlex.com.<br>\r\nPlease note: Images and attachments will be removed from emails. Any posts to this discussion will also be available online at CodePlex.com<br></div> \t\t \t   \t\t  ",
+    "PostedDate": "2010-09-30T10:35:55.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "500651",
+    "ThreadId": "228936",
+    "Html": "<p>Hi Shirley,</p>\r\n<p>Please take into account&nbsp;that the images attached are not posted in Codeplex.  First of all, I am seeing that you missed to list the step that&nbsp;set the  <strong>RegionNavigation.Web</strong> project as startup project.</p>\r\n<p>Have you performed this step? Since it is strictly necessary to get this  Quickstar running.</p>\r\n<p>The following steps&nbsp;might help you:</p>\r\n<ol>\r\n<li>Download Prism v4 - Drop 8 from <a href=\"../releases/view/52647\">here</a> and  executes the downloaded file.</li>\r\n<li>Open the <strong>Prism installation folder</strong>.</li>\r\n<li>Go to the <strong>Lib\\Silverlight\\Moq&nbsp;</strong> folder&nbsp;and follow the  instructions in the&nbsp;<strong>readme.txt</strong> for downloading moq.</li>\r\n<li>Go to the <strong>Lib\\Desktop\\Moq&nbsp;</strong> folder&nbsp;and follow the  instructions in the&nbsp;<strong>readme.txt</strong> for downloading moq.</li>\r\n<li>Back&nbsp;to the <strong>Prism installation folder</strong> and execute  <strong>Desktop &amp; Silverlight&nbsp;&ndash; Open Prism Library.bat</strong> file.</li>\r\n<li>Compile the solution and close the solution.</li>\r\n<li>Go to <strong>RegionNavigationQuickstar folder </strong>and open the  solution.</li>\r\n<li>Go to the references section of the RegionNavigation project remove the  following references: \r\n<ul>\r\n<li>Microsoft.Practices.ServiceLocation</li>\r\n<li>System.Windows.Interactivity</li>\r\n</ul>\r\n</li>\r\n<li>Add&nbsp;again the aforementioned references&nbsp;from <strong>Lib\\Silverlight\\Prism </strong>folder<strong>.</strong></li>\r\n<li>Set the <strong>RegionNavigation.Web</strong> project as the startup  project.</li>\r\n<li>Press F5.</li>\r\n</ol>\r\n<p>If you need more information of these steps, you could check the INSTALLING  AND COMPILING PRISM and QUICKSTARTS&nbsp;&ndash; Navigation Quickstart sections in the  Readme.mht file, which is part of Prism Drop 8.</p>\r\n<p>The step 8 and 9 represent&nbsp;a known issue and it will be solved in future&nbsp;drops.</p>\r\n<p>I hope this help.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-30T11:32:37.74-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

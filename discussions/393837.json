@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "906624",
+    "ThreadId": "393837",
+    "Html": "\r\n<p>I am in the process of re-writing one of our large Silverlight apps to use PRISM and the MVVM design pattern.</p>\r\n<p>A very common scenario is a DataGrid in the View. Double clicking a row allows the user to edit the entity represented by the row, using a ChildWindow.</p>\r\n<p>I am tempted just to capture the DoubleClick event in the code behind, create a new ChildWindow of the proper type, and set the DataContext to be DataGrid.SelectedItem.</p>\r\n<p>I know that this is not the proper way to handle this scenario with PRISM and MVVM, however.</p>\r\n<p>I would love advice on what is! (re: my title...it seems like InteractionRequest might be the best way to do this? &nbsp;I don't clearly see what I gain by doing it that way though...)</p>\r\n<p>Thanks...</p>\r\n",
+    "PostedDate": "2012-08-30T20:01:44.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "906974",
+    "ThreadId": "393837",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, using <strong>InteractionRequests </strong>to achieve the functionality you are describing seems to be a valid approach which also keeps a clear separation of concerns between the view and view model.</p>\r\n<p>You can read more about the benefits of using <strong>InteractionRequests </strong>in a <strong>MVVM </strong>scenario in the following article by Brian Noyes:</p>\r\n<ul>\r\n<li><a href=\"http://briannoyes.net/2010/11/15/PromptingTheUserFromAViewModelndashPrism4Gems.aspx\">Prompting the User From a View Model&ndash;Prism 4 Gems</a></li>\r\n</ul>\r\n<p>For example, your view model could expose through properties an <strong>InteractionRequest </strong>and a <strong>Command</strong>, which would raise the <strong>InteractionRequest </strong>when invoked. Then, the view could implement an <strong>InteractionRequestTrigger </strong>that would bind to the <strong>InteractionRequest </strong>property of the view model, and you could also bind the <strong>SelectedItem </strong>property of the <strong>DataGrid </strong>to a property in the view model so that it is aware of which item of the <strong>DataGrid </strong>is selected. Also, you could use an <strong>InvokeCommandAction </strong>in the view to listening the corresponding event and invoke the aforementioned <strong>Command </strong>in the view model when that event is raised.</p>\r\n<p>By doing this, the view model would be in charge of when the interaction should be requested and the information to be used for that interaction, while the view would be in charge of presenting the interaction to the user.</p>\r\n<p>You can find more information about <strong>InteractionRequests </strong>in the aforementioned blog post and in the following chapter of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405494%28v=pandp.40%29#sec12\">Chapter 6 - Advance MVVM Scenarios - Using Interaction Request Objects</a></li>\r\n</ul>\r\n<p>I hope your find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-08-31T10:25:15.33-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

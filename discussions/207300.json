@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "423621",
+    "ThreadId": "207300",
+    "Html": "I am working on a project where couple of dependency are optional. \r\n\r\nI got one module named core, which is the core of application. \r\n\r\nI got more modules/services e.g NoteReader, CoinReader, CreditCardReader.\r\n\r\nMy core module need to interact/control those modules/services and I've done dependency injection in core module for those services. However the type of services I need in core are dependent on the deployment of our software e.g one deployment might need all three services and other might only need 1 or 2. \r\n\r\nHow I go about achieving that in Prism. Is there a way to tell Prism I need you to inject service1/service2 but if you can't find one it is ok and inject a null object?\r\n\r\nThanks.\r\n\r\nQaiser.",
+    "PostedDate": "2010-03-25T08:11:43.607-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "424138",
+    "ThreadId": "207300",
+    "Html": "<p id=be0e9010-1b16-012d-8b10-12313d013db1>Hi Qaiser,</p>\r\n<p id=be0e9a90-1b16-012d-8b11-12313d013db1>The scenario you are trying to  achieve is viable. You can use the <strong>TryResolve</strong> extension method  (explained <a href=\"http://msdn.microsoft.com/en-us/library/dd458913.aspx\">here</a>) of the  for the <strong>IServiceLocator</strong> interface (or create your own for the  Unity container) which will return null if the service cannot be resolved. Take  into account that this is not viable in case you are injecting the services  through <a href=\"http://msdn.microsoft.com/en-us/library/dd203147.aspx\">property</a> or <a href=\"http://msdn.microsoft.com/en-us/library/dd203129.aspx\">constructor</a> injection, as you have to explicitly use service locator to resolve the  instances.</p>\r\n<p id=be0eab20-1b16-012d-8b12-12313d013db1>Please let me know if this helps.</p>\r\n<p id=be0ebc20-1b16-012d-8b13-12313d013db1>Damian Schenkelman <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-03-26T08:56:57.29-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "424147",
+    "ThreadId": "207300",
+    "Html": "<p>Hi dschenkelman,</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks for your reply. I was initially trying to do it with constructor injection and wasn't sure how to do it. But now I am using <strong>Resolve</strong> method of UnityContainer by wrapping call in Try/Catch block and it gives me an instance if service is there otherwise throws an exception which I catch. Not an elegant solution but it works.</p>\r\n<p>&nbsp;</p>\r\n<p>Qaiser.</p>",
+    "PostedDate": "2010-03-26T09:16:46.867-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "105366",
+    "ThreadId": "31723",
+    "Html": "Hello,<br>\r\nI am currently porting WPFCAB application to CompositeWPF platform, and I noticed that services (i.e. service interfaces) defined in Prism don't expose events when specific action is executed. <br>\r\ne.g. IModuleLoader does not expose ModuleLoaded event,&nbsp; IRegionManager does not expose RegionAttached, etc.<br>\r\nServices in CAB provided such events -&nbsp;is there any specific reason why they were omitted in Prism? In WPFCAB&nbsp;I used such events for updating splashscreen on initialization, now I can't find elegant solution for given task. What is the&nbsp;recommended aproach ?<br>\r\n<br>\r\ncheers,<br>\r\nSimon\r\n",
+    "PostedDate": "2008-07-17T06:07:11.64-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "105452",
+    "ThreadId": "31723",
+    "Html": "Hi Simon,<br>\r\n<br>\r\nMaybe I'm missing something - your module is loaded after Initialize() is called.&nbsp; If you need to send a message back to an extenrnal resource, just inject the external resource and communicate with it (i.e. the event aggregator or a shell service) at the end of your Initialize().<br>\r\n<br>\r\nclass MyModule : IModule<br>\r\n{<br>\r\n&nbsp;&nbsp; private IExternalResource _externalResource;<br>\r\n<br>\r\n&nbsp; public MyModule(IExternalResource er) { _externalResource = er; }<br>\r\n<br>\r\n&nbsp; public void&nbsp;Initialize()<br>\r\n&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp; ... do iniitalization<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp; _externalResource.Hello();<br>\r\n&nbsp;&nbsp; }<br>\r\n}<br>\r\n<br>\r\nHope this helps.&nbsp; Jim\r\n",
+    "PostedDate": "2008-07-17T11:06:13.71-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "105539",
+    "ThreadId": "31723",
+    "Html": "@<a id=\"ctl00_ctl00_Content_TabContentPanel_Content_PostRepeater_ctl00_UserNameLink\" href=\"../../site/users/view/JesenkoS\">JesenkoS</a>, I'd be very interested in your splash solution, as I can't figure out how to get modules loading on a seperate thread which will allow the splash screen to update for modules that take a long time to load (initial model requirement maybe).<br>\r\n<br>\r\n@<a id=\"ctl00_ctl00_Content_TabContentPanel_Content_PostRepeater_ctl02_UserNameLink\" href=\"../../site/users/view/jwalklin\">jwalklin</a>, I think I understand what Jesenkos problem is, it's not so much getting an external service to have some event fired, it's more of a global notification within the module loader subsystem.<br>\r\n<br>\r\n-Brett.<br>\r\n",
+    "PostedDate": "2008-07-17T19:00:58.12-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "105571",
+    "ThreadId": "31723",
+    "Html": "@jwalklin: I am aware of such solution, and it would indeed work. But in given example, it's each module responsibility to notify &quot;splashPresenter&quot; that it is loading. I would prefer something like (in bootstrapper):<br>\r\n<br>\r\nIModuleLoader loader = container.Resolve&lt;IModuleLoader&gt;();<br>\r\nloader.ModuleLoaded += delegate(object sender, LoaderEventArgs e){<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;splashPresenter.EnqueueText (&quot;Loaded module &quot; + e.ModuleName);<br>\r\n}<br>\r\n<br>\r\nNow shell is responsible for appropriate splash notifications. It was indeed possible in CAB, in prism there are no such events&nbsp;exposed&nbsp;- at any service, not just IModuleLoader.<br>\r\n<br>\r\n@jwalkin: I am doing it other way around - I am running SplashScreen in separate thread, not module loader. Actually, I ported splash solution I found for CAB (WinForms):<br>\r\n<a href=\"http://www.codeplex.com/smartclient/Thread/View.aspx?ThreadId=24177\">http://www.codeplex.com/smartclient/Thread/View.aspx?ThreadId=24177</a><br>\r\nIt requires some tweaking, but can be done in wpf also.<br>\r\n<br>\r\nSimon\r\n",
+    "PostedDate": "2008-07-18T00:16:37.507-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "105709",
+    "ThreadId": "31723",
+    "Html": "Simon,<br>\r\n<br>\r\nSorry I wasn't more help.&nbsp; My only other thought is to bootstrap your own implementation of IModuleLoader that fires the event you desire.<br>\r\n<br>\r\nLike Brett, I'd also be interested in your splash solution.<br>\r\n<br>\r\nJim\r\n",
+    "PostedDate": "2008-07-18T14:52:49.113-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "121697",
+    "ThreadId": "31723",
+    "Html": "I am also very insterested in a good implementation of Splash Screen. Would really appreciate your help. Thanks!\r\n",
+    "PostedDate": "2008-09-29T13:10:14.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "121705",
+    "ThreadId": "31723",
+    "Html": "In the absence of a <em>good implementation of a Splash Screen</em> I implemented a &quot;Loading...&quot; message (click&nbsp;<a href=\"http://www.global-webnet.net/Flash/demo/TraceTool-splash.htm\">HERE</a> for flash demo); the &quot;Loading...&quot; message could&nbsp;be easily replaced with an image.&nbsp;&nbsp; I blog on it&nbsp;<a href=\"http://www.global-webnet.net/BlogEngine/post/2008/08/22/CompositeWPF-Displaying-Loading-message-while-form-loads.aspx\">HERE</a> and provide a demo application.\r\n",
+    "PostedDate": "2008-09-29T13:34:27.477-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

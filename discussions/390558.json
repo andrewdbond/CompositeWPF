@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "896449",
+    "ThreadId": "390558",
+    "Html": "\r\n<p>I want to bind to the NavigationService.CanGoBack method in my view, so I know whether a user can navigate backwards. If they can go back it shows a Back Button, otherwise it is the icon of the screen they are on.</p>\r\n<p>So I create a property wrapper like so:</p>\r\n<p>public bool CanGoBack {&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>get &nbsp;{&nbsp; return _navigationService != null ? _navigationService.Journal.CanGoBack : false; &nbsp;} &nbsp; &nbsp; &nbsp;&nbsp;</p>\r\n<p>}</p>\r\n<p>The problem is I need the view to be aware when this changes. So I thought in a ViewModels OnNavigatedTo method to RaisePropertyChanged on this. But the issue is the journal doesn't appear to be up to date with the currententry at this point, it is only\r\n after this it is up to date. So the problem occurs when I navigate from View1 to View2, it is correct, but when I go back to View1 it is incorrect and thinks it can go back. How could I get round this?</p>\r\n<p>Here is my OnNavigatedTo method:</p>\r\n<p>public override void OnNavigatedTo(NavigationContext navigationContext)&nbsp; &nbsp; &nbsp; &nbsp; {&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; base.OnNavigatedTo(navigationContext);&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>_navigationService = navigationContext.NavigationService;</p>\r\n<p>RaisePropertyChanged(&quot;CanGoBack&quot;);</p>\r\n<p>}</p>\r\n",
+    "PostedDate": "2012-08-07T03:46:18.787-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "896557",
+    "ThreadId": "390558",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I believe, you could try subscribing to the <a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.prism.regions.iregionnavigationservice.navigated%28v=pandp.40%29\">\r\nNavigated event</a> defined in the region navigation service, this way you will be notified when navigation within a region is completed. Then in its event handler you could notify the UI that it has to reevaluate the\r\n<strong>CanGoBack </strong>property for example by calling the <strong>RaisePropertyChanged</strong> method as you mentioned. I believe that using this approach, you shouldn't experience the timing issue you mentioned.</p>\r\n<p>Please let us know if this helps to solve your problem,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-08-07T07:52:58.783-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "896793",
+    "ThreadId": "390558",
+    "Html": "<p>Yep that's good thanks</p>",
+    "PostedDate": "2012-08-08T00:34:07.247-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

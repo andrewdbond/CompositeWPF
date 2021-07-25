@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "We have updated Prism to work with Unity 2.0 for Prismv4, which is in progress.  Grab one of the recent drops to see how this works.\r\nThere were a few changes in Unity2 and a Unity for silverlight release which should help a bit.",
+    "ClosedDate": "2010-08-02T10:06:38.56-07:00",
+    "CommentCount": 0,
+    "Custom": "",
+    "Description": "I cannot get the Prism assemblies to build using Unity 2.0.  I have been trying for two days.  The problem is that the IUnityContainer.AddNewExtension<TExtension> no longer exists.  There is a generic method that is gone.  And there is no mention of it in any of the Unity 2.0 documentation.  They did document plenty of the changes and deprecation on Unity 2.0, like the merge of ObjectBuilder2 into Unity and the deprecation of the Microsoft.Practices.ObjectBuilder2.BuildFailedException.  But there is no mention of the elimination of the AddNewExtension.  I pulled down the Unity 2.0 source code and confirmed the method is missing.  The Prism test projects use it extensively and they won't build along with the UnityBootstrapperExtension from the Composite.UnityExtensions.Desktop assembly.  I really need a Prism for Unity 2.0.  I have no choice but to keep trying to build it myself and the Unity 2.0 documentation has a hole in it.  What shall I do?\n \nCan the P&P team try the Unity 2.0 build, then release for the rest of us?  It should not take long for the experts to do it.\n \nI have been around this track a few times now.  Here is the deal:\n \nWhen I change the CAL Desktop projects to use Unity 2.0 I get an error that some members of the IUnityContainer need to be implemented.  So I implement them as NotImplementedException().  This makes the Desktop CAL build.  But then the Silverlight CAL breaks.  Apparently several of the Silverlight CAL files are actually links to Desktop CAL files.  After implementing the Unity 2.0 IUnityContainer Members they do not build in the Silverlight CAL because the Silverlight Unity assembly has no idea about the new IUnityContainer Members.  So, I need a Silverlight Unity 2.0 assembly.  I have no idea if one exists.\n \nI feel as though I am almost qualified to join the P&P team at this point.",
+    "LastUpdatedDate": "2013-05-16T05:28:53.26-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-05-26T13:12:07.103-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Composite WPF and Silverlight (CAL/Prism) with Unity 2.0",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 4,
+    "Id": 6749
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

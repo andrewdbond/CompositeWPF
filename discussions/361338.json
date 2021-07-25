@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "855188",
+    "ThreadId": "361338",
+    "Html": "\r\n<p>In UICompositionQuickStart all Views receive it's corresponding ViewModel as a parameter:</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre>        <span style=\"color:blue\">public</span> EmployeeSummaryView(<strong>EmployeeSummaryViewModel viewModel</strong>) {\r\n            <span style=\"color:blue\">this</span>.InitializeComponent();\r\n\r\n            <span style=\"color:green\">// Set the ViewModel as this View's data context.</span>\r\n            <span style=\"color:blue\">this</span>.DataContext = viewModel;\r\n        }\r\n</pre>\r\n</div>\r\n<p>I suppose that it will help resolve things better when in the <strong>MainRegionController\r\n</strong>it does:</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre>view = <span style=\"color:blue\">this</span>.container.Resolve&lt;<strong>EmployeeSummaryView</strong>&gt;();\r\n</pre>\r\n</div>\r\n<p>My question is:</p>\r\n<p>I won't use the ViewModel as a DataContext but as a StaticResource for the view&nbsp;instead (I&nbsp;won't set the DataContext but will use the ViewModel as a StaticResource in the view's xaml), then, given that the view won't have the ViewModel parameter<strong>,\r\n will &quot;container.Resolve&lt;<strong>EmployeeSummaryView</strong>&gt;();&quot; resolve all necessary types, including the\r\n<strong>EmployeeSummaryViewModel </strong>that will be&nbsp;in the xaml only?</strong></p>\r\n<p><strong>&nbsp;</strong></p>\r\n",
+    "PostedDate": "2012-06-28T14:39:43.873-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "855451",
+    "ThreadId": "361338",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding creating objects defined in <strong>XAML </strong>by partnering with an Inverse of Control Container is currently not supported. Hence, the container will only resolve the dependencies you have defined for your registered class by using the property-based or constructor-based injection approaches, according to the specific container you used.</p>\r\n<p>As you may find, there are several ways the view and the view model can be constructed and associated at run time, and not all include using a dependency injection container, for example you could check the approach used in the <strong>QuestionnaireView.xaml </strong>in the <a href=\"http://msdn.microsoft.com/en-us/library/gg430869%28v=pandp.40%29\">MVVM Quickstart</a>, in which the view model is declaratively instantiated in <strong>Xaml</strong>. In this case when the view is constructed, the corresponding view model object will also be constructed, although this may only be possible if your view model does not have any constructor arguments due to the aforementioned limitations.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-06-29T06:40:17.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "855656",
+    "ThreadId": "361338",
+    "Html": "\r\n<p>The QuestionnaireView.xaml declares the datacontext in xaml, but what if I don't use the DataContext at all, and have the ViewModel as a StaticResource instead , as in:</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre>    <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">UserControl.Resources</span><span style=\"color:blue\">&gt;</span>\r\n        <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">ViewModels</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">CustomersViewModel</span>\r\n            <span style=\"color:red\">x:Key</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">CustomersViewModel</span><span style=\"color:black\">&quot;</span> <span style=\"color:blue\">/&gt;</span>\r\n    <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">UserControl.Resources</span><span style=\"color:blue\">&gt;</span>&nbsp;</pre>\r\n</div>\r\n<p>...</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">sdk</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">DataGridTemplateColumn</span> <span style=\"color:red\">Header</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">City</span><span style=\"color:black\">&quot;</span> <span style=\"color:blue\">&gt;</span>\r\n    <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">sdk</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">DataGridTemplateColumn.CellTemplate</span> <span style=\"color:blue\">&gt;</span>\r\n        <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">DataTemplate</span><span style=\"color:blue\">&gt;</span>\r\n            &lt;ComboBox ItemsSource<strong>=&quot;{Binding Cities, Source={StaticResource \r\n                                                         CustomersViewModel}}&quot; \r\n</strong>                        SelectedItem=&quot;{Binding City, Mode=TwoWay}&quot; \r\n                        DisplayMemberPath=&quot;CityName&quot;\r\n                        SelectedValuePath=&quot;CityID&quot;\r\n                    /&gt;\r\n        <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">DataTemplate</span><span style=\"color:blue\">&gt;</span>\r\n    <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">sdk</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">DataGridTemplateColumn.CellTemplate</span><span style=\"color:blue\">&gt;</span>\r\n<span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">sdk</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">DataGridTemplateColumn</span><span style=\"color:blue\">&gt;</span>\r\n</pre>\r\n</div>\r\n<p>I ask you this because I discovered that when working with certain controls, just as the DataForm, or cases like the one I depicted above, a ComboBox inside a DataGrid or DataForm,\r\n<em>there were some cases </em>that it worked best when I had the ViewModel used as a StaticResource instead of with the DataContext, I don't know why, but I simply plan to develop those views using the static resource approach, and I don't want to have problems\r\n when I do it using Prism modulaity.</p>\r\n<p>Then, do you think it'll work that way?</p>\r\n<p>Rafael Soteldo</p>\r\n<p>&nbsp;</p>\r\n<p>P.S.: My ViewModels are parameterless</p>\r\n<div id=\"_mcePaste\" style=\"width:1px; height:1px; overflow:hidden; top:0px; left:-10000px\">\r\n&#65279;</div>\r\n",
+    "PostedDate": "2012-06-29T14:18:12.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "856440",
+    "ThreadId": "361338",
+    "Html": "<p>Hi Rafael,</p>\r\n<p>Based on my understanding you should be able to use this approach without problems. As far as I know, mainly the disadvantages, will be that your view will have to know its corresponding view model type, which might not be promoting loosely coupling between these components. Also, as you mentioned the view model constructor will have to be parameter-less and you may not be benefiting from the use of dependency injection containers to resolve this instances. Although, you should be able to retrieve registered components from the container by using the <strong>ServiceLocator</strong>, as an alternative.</p>\r\n<p>Another point to consider, could be that every time you create a new view this way, a new instance of the corresponding view model will be created, not allowing the use of singleton instances.<br /><br />Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-07-02T10:13:11.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "856446",
+    "ThreadId": "361338",
+    "Html": "<p>Thank you Agustin for answering.</p>",
+    "PostedDate": "2012-07-02T10:25:54.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

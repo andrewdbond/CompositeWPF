@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "434287",
+    "ThreadId": "210206",
+    "Html": "<p>Hello friends,</p>\r\n<p>I want to hide shell&nbsp;on start up. Is it possible in CAL for WPF?</p>\r\n<p>Kshamesh</p>",
+    "PostedDate": "2010-04-22T10:47:29.237-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "434677",
+    "ThreadId": "210206",
+    "Html": "<p id=253e6ce0-3115-012d-785e-1231390c8891>Hi Kshamesh,</p>\r\n<p id=253e77c0-3115-012d-785f-1231390c8891>Not showing the Shell is perfectly possible (I assume you are using WPF). As the <strong>Bootstrapper</strong> is in charge of creating the Shell in a Prism application, you simply don&rsquo;t have to call the Shell&rsquo;s Show method (assuming it is a window). For example:</p>\r\n<p><span style=\"font-family:Consolas;font-size:x-small\">\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> DependencyObject CreateShell() \r\n       { \r\n           Shell shell = <span style=\"color:blue\">new</span> Shell(); \r\n           <span style=\"color:green\">//shell.Show(); </span>\r\n           <span style=\"color:blue\">return</span> shell; \r\n       }\r\n</pre>\r\n</div>\r\n</span></p>\r\n<p id=253e99a0-3115-012d-7861-1231390c8891>Please let me know if this helps.</p>\r\n<p id=253ead30-3115-012d-7862-1231390c8891>Damian Schenkelman <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-04-23T08:45:43.057-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "435108",
+    "ThreadId": "210206",
+    "Html": "<p>Hi Damian,</p>\r\n<p>Thank you for your inputs. :-)</p>\r\n<p>Yes, I am using WPF. I have tried commenting //shell.Show();</p>\r\n<p>It helped me to hide shell on start up. However, I couldn't see my next module loaded on screen which is supposed to be.</p>\r\n<p>Do I require to write some code in my module, to show the shell again along with my module?</p>\r\n<p>Kshamesh</p>",
+    "PostedDate": "2010-04-25T00:18:29.777-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "442145",
+    "ThreadId": "210206",
+    "Html": "<p id=66a28160-4013-012d-e112-12313d013db1>Hi Kshamesh,</p>\r\n<p id=66a28d30-4013-012d-e113-12313d013db1>Sorry for the delayed response. Since you have not shown the Shell in the <strong>CreateShell</strong> method, you will have to call the its <strong>Show</strong> method to get it displayed.</p>\r\n<p id=66a29be0-4013-012d-e114-12313d013db1>For example,&nbsp;a possible approach to get this done could be subscribing to an event in the Shell presenter/view model, and showing the Shell&nbsp;in the event handler. The event could be published when a particular view is added to a region, and the Shell will be shown once the view has been added.</p>\r\n<p id=66a2af70-4013-012d-e115-12313d013db1>Please let me know if this helps.</p>\r\n<p id=66a2c2a0-4013-012d-e116-12313d013db1>Damian Schenkelman <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-05-12T09:44:34.4-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "444268",
+    "ThreadId": "210206",
+    "Html": "<p>Hi Damian,</p>\r\n<p>Even, I was away from work for few days&nbsp;:-) I can update you after I try your suggestion.</p>\r\n<p>Thank you.</p>\r\n<p>Kshamesh</p>",
+    "PostedDate": "2010-05-18T05:12:49.413-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "234254",
+    "ThreadId": "68846",
+    "Html": "<p>Hi.</p>\r\n<p>So I created a Behavior attached to the Expanded event of the TreeViewItem class and I also have the ICommand implemented in the ViewModel.</p>\r\n<p>The question is: Where and how can I specify the behavior and the ICommand binding in the XAML? The command is to be executed when any tree view item is expanded.</p>\r\n<p>Thanks.</p>",
+    "PostedDate": "2009-09-14T04:12:06.29-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "236871",
+    "ThreadId": "68846",
+    "Html": "<p>Hi</p>\r\n<p>The first thing you will have to do is create a template for the TreeViewItems that sets the AttachedBehavior for each <strong>TreeViewItem</strong> created in the <strong>TreeView</strong>. Assuming you are using <strong>Silverlight 3</strong> (based on your history of asked/answered questions), there is no way of doing the binding to the command through XAML (as there is not RelativeSource property for binding other than Self) since the DataContext of the TreeViewItem is the DataSource of the TreeView.</p>\r\n<p>A possible workaround could be having a <strong>StaticResource</strong> in your XAML, and instead of binding directly to the Command in the <strong>TreeViewTemplate</strong>, bind to the <strong>StaticResource</strong>. In the View's code behind, you can bind the Resource to the command in the ViewModel.</p>\r\n<p>The <a href=\"http://msdn.microsoft.com/en-us/library/dd458919.aspx\">Prism-v2 Silverlight RI</a>, uses a similar approach (with an ObservableCommand) in the PositionSummaryView and ViewModel to bind to a command in a different data context. You might find it useful.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman   <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-09-21T06:28:44.85-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

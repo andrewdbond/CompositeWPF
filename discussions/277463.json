@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "690419",
+    "ThreadId": "277463",
+    "Html": "\r\n<p>I'm attempting to implement IActiveAware in a prism based project in order to have a well designed means of finding out which is the active view at any given point in time. &nbsp;I've looked through all of the quickstarts that come with the Prism code, I've\r\n checked the PrismTrainingKit (http://prismtk.codeplex.com/), I've searched through this discussion board and finally off into the web at large, and am amazed to have yet to find an example of someone actually implementing IActiveAware.</p>\r\n<p>The most complete explanation I've found thus far is on Brian Noyes' blog: &nbsp;http://www.softinsight.com/bnoyes/2009/12/08/DetectingTheActiveViewInAPrismApp.aspx &nbsp;--- And this is what I've tried to implement in my own project, however, the IsActive\r\n property is definitely not changing as views are brought in and out of sight.</p>\r\n<p>&nbsp;</p>\r\n<p>My first question is: &nbsp;Why does it seem to be such an unused feature? &nbsp;Are there issues? &nbsp;Does it not work as well as it should, or is it just extremely difficult to implement? &nbsp;Definitely the biggest surprise was that none of the sample\r\n code that comes with prism seem to use IActiveAware.</p>\r\n<p>My second, and much more important question is: &nbsp;Does anyone know of a sample, and hopefully an accompanying tutorial for using IActiveAware to detect active views of a prism based application? &nbsp;I think I might be able to piece things together,\r\n if I could see it working properly.</p>\r\n<p>&nbsp;</p>\r\n<p>If anyone can point me in the right direction on this, I would be extremely grateful... Thank you so much for taking the time to read my questions, and thanks in advance for your insight. &nbsp; &nbsp;=)</p>\r\n<p>&nbsp;</p>\r\n<p>Sincerely,</p>\r\n<p>Jon B</p>\r\n",
+    "PostedDate": "2011-10-27T11:25:16.327-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "690895",
+    "ThreadId": "277463",
+    "Html": "<p>Hi,</p>\r\n<p>We prepared a sample application using <strong>IActiveAware</strong>. In this sample you will  find a region defined in a <strong>ListBox </strong>control, where we added a view four times.  The view model for that view implements the <strong>IActiveAware </strong>interface. The view  contains a <strong>TextBox</strong>, with the <strong>IsEnabled </strong>property bound to it's view model's  <strong>IsActive </strong>property, so each time you select a view, its <strong>IsActive </strong>property is set  to true (due to the <strong>RegionActiveAwareBehavior </strong>which is responsible for notifying  a view if it is active or inactive); and when the view is unselected, its <strong> IsActive </strong>property is set to false.﻿</p>\r\n<p>You can find the sample in my <a href=\"https://skydrive.live.com/?ppud=4#!/?cid=7890102b5b8bc928&amp;sc=documents&amp;uc=1&amp;id=7890102B5B8BC928!103\">skydrive account</a>, under the <strong>IActiveAwareListBoxSample </strong>name.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-10-28T10:15:19.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "691224",
+    "ThreadId": "277463",
+    "Html": "<p>Hi Agustin,</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks so much for your quick reply and assistance! &nbsp;After downloading and examining the sample you posted, I have a follow-up question I was wondering if you (or anyone) might help me understand:</p>\r\n<p>I see that in HelloWorldView.xaml, the IsEnabled property of the text box is bound to the IsActive property of the viewModel (HelloWorldViewModel.cs). &nbsp;Based on the Prism 4 documentation and Brian Noyes' blog post I mentioned in my original post, I had been under the impression that IActiveAware 's IsActive property did not require any binding in the xaml of the application, as opposed to relying on the text boxes' IsEnabled property. &nbsp;A couple of things that I worry about are:</p>\r\n<ol>\r\n<li>If I didn't want the textBoxes to become disabled when the user leaves them, would my only option be to find some other property to bind to?</li>\r\n<li>If a viewModel was more complex, containing a whole bunch of controls. &nbsp;How would you set the IsActive property of the viewModel?</li>\r\n</ol>\r\n<p>Do you know if the example you created is the typical implementation of IActiveAware, and if there are alternative methods of implementing it to address the above 2 concerns?</p>\r\n<p>Thanks again for your help, and your time. &nbsp;I really appreciate it!</p>\r\n<p>Sincerely,</p>\r\n<p>Jon B</p>",
+    "PostedDate": "2011-10-29T19:03:56.753-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "691711",
+    "ThreadId": "277463",
+    "Html": "<p>Hi Jon,</p>\r\n<p>The fact that the <strong>IsEnabled </strong>property of the <strong>TextBox </strong>is bound to the <strong>IsActive </strong>property of the view model is just a way to demonstrate that the <strong>IsActive </strong>property is being changed when selecting items in a region, due to the aforementioned behavior of the region. Hence, this property will be set by the region behavior if the view model implements&nbsp;<strong>IActiveAware</strong>, regardless of its complexity. Therefore you can benefit from this by defining a custom logic in the setter of the <strong>IsActive </strong>property that suits your scenario. As Brian Noyes shows in his blog, you can also fire the <strong>IsActiveChanged </strong>event from here, this way you can subscribe to this event to be notified when the <strong>IsActive </strong>property changes.</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-10-31T09:50:25.793-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "691831",
+    "ThreadId": "277463",
+    "Html": "<p>Hi Agustin,</p>\r\n<p>Interesting!&nbsp; Thanks for the clarification!&nbsp; When I had been looking at your sample code before, it had appeared that if I removed the binding of the text box's IsEnabled property to the viewModel's IsActive property, the setting of IsActive in the viewModel stopped working altogether.</p>\r\n<p>Since your reply, I've played with it a bit more, and have come to realize that IActiveAware indeed still <em>does</em> work, but it has an interesting behavior:&nbsp; If you click <span style=\"text-decoration: underline;\">inside</span> the textBox (for example, to change the text) and even change the text within, IsActive will not fire.&nbsp; Even if I go into each and every text box and change the text in each, IsActive never fires.&nbsp; However, if I click <span style=\"text-decoration: underline;\">outside</span> and to the right of any given textBox, the IsActive property fires appropriately.</p>\r\n<p>What is it that determines when IActiveAware will fire?&nbsp; For instance, is it possible to make some modification such that clicking into the text box contained within a particular region would make IActiveAware fire?</p>\r\n<p>Thanks very much!&nbsp; This is extremely helpful!</p>\r\n<p>Jon</p>",
+    "PostedDate": "2011-10-31T14:11:38.003-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "692160",
+    "ThreadId": "277463",
+    "Html": "<p>Hi,</p>\r\n<p>The <strong>SelectorRegionAdapter</strong>, as any region adapter, maps a certain control (in this sample, a <strong>ListBox</strong>, which inherits from <strong>Selector</strong>) to a region, making it possible to coordinate the display of views within specific regions. In this particular case, this is done through the <strong>SelectorItemsSourceSyncBehavior</strong>, which is&nbsp; attached to the region considered by the aforementioned adapter.</p>\r\n<p>This behavior ensures that if you select an item in the control, it will <strong>Activate </strong>it in the region (so it will now belong to the <strong>ActiveViews </strong>collection in the region).</p>\r\n<p>On the other hand, the <strong>RegionActiveAwareBehavior </strong>will monitor the <strong>ActiveViews </strong>collection, and will update the <strong>IsActive </strong>property of the <strong>IActiveAware </strong>views/view models that enter or leave this collection. Thus, the <strong>IsActive </strong>property of views that belong to a <strong>Selector </strong>region will be modified when the item is selected or unselected. This should be true regardless of whether you click on the <strong>Textbox</strong>, or outside it, as long as you select the item in the list box.﻿</p>\r\n<p>I hope you find this useful.</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-11-01T07:55:54.92-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

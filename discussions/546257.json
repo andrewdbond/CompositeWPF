@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1248494",
+    "ThreadId": "546257",
+    "Html": "Hello,\r<br />\n<br />\nI implemented a Tab Region which works fine. The problem is that I have a separate menu region and the same menu command in the menu region should work differently depending on which tab in the TabControl is currently selected. I implemented IActiveAware in the view classes in the tab region. But all of the views' IsActive are set to true when the region.Activate() is called (I'm using view injection because I need to dynamically add tabs) and I cannot tell which tab is currently selected.\r<br />\n<br />\nHow do I know which tab is currently selected?\r<br />\n<br />\nThanks,<br />\n",
+    "PostedDate": "2014-05-22T10:03:02.53-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1248537",
+    "ThreadId": "546257",
+    "Html": "Hi,\r<br />\n<br />\nThe following discussion threads mey help you:<br />\n<ul>\n<li><a href=\"https://compositewpf.codeplex.com/discussions/232618\" rel=\"nofollow\">Recognize active view</a></li>\n<li><a href=\"http://stackoverflow.com/questions/6358843/how-to-get-the-current-active-view-in-a-rigion-using-prism\" rel=\"nofollow\">How to get the current active view in a rigion using PRISM?</a></li>\n<li>\n<a href=\"http://stackoverflow.com/questions/18699316/how-to-get-a-name-of-the-active-view-in-prism\" rel=\"nofollow\">How to get a name of the active view in PRISM</a><br />\n</li>\n</ul>\nEach <strong>Region</strong> has an <strong>ActiveViews</strong> property, which returns to you a list of all the <strong>Views</strong> in the region that are currently active. The scenario you described would use a <strong>Region</strong> for the <strong>TabControl</strong>. Therefore, you would have only one <strong><em>activeView</em></strong>.\r<br />\n<br />\nThen, you can resolve the returned view and perform the desired logic.\r<br />\n<br />\nRegards.\r<br />\nGabriel Ostrowsky.\r<br />\n<a href=\"https://blog.southworks.net/gostrowsky\" rel=\"nofollow\">https://blog.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-05-22T11:32:11.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1248892",
+    "ThreadId": "546257",
+    "Html": "Hi Gabriel,\r<br />\n<br />\nThanks for your response. I used region.ActiveViews.FirstOrDefault(). But it didn't work. The setter for the IsActive property was not called either when I clicked different tabs. However, I have finally found why those didn't work - I was using Telerik's RadTabControl, rather than the standard TabControl. I blindly assumed that the Telerik control simply inherits the standard one. But obviously it does not. When I replaced it with the standard one, everything worked.\r<br />\n<br />\nThank you for your help, anyways.\r<br />\n<br />\nTetsu<br />\n",
+    "PostedDate": "2014-05-23T06:58:10.273-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

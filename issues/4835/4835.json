@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "For people who are running into this issue, it could be useful to know that in Prism v4.0, this scenario has been addressed, by updating the GetNotAllreadyLoadedModuleInfos method in the DirectoryModuleCatalog class to ignore non-. NET assemblies. You can see the BadImageFormartException caught below.\r\n\r\nprivate static IEnumerable<ModuleInfo> GetNotAllreadyLoadedModuleInfos(DirectoryInfo directory, Type IModuleType)\r\n{\r\n    ...\r\n    foreach (FileInfo fileInfo in fileInfos)\r\n    {\r\n        Assembly assembly = null;\r\n        Try\r\n        {\r\n            assembly = Assembly.ReflectionOnlyLoadFrom(fileInfo.FullName);\r\n            validAssemblies.Add(fileInfo);\r\n        }\r\n        catch (BadImageFormatException)\r\n        {\r\n            // skip non-.NET Dlls\r\n        }\r\n    }\r\n    ...\r\n}\r\n\r\nIf you are using an older release of Prism, you could download the latest one from: http://www.microsoft.com/downloads/en/details.aspx?FamilyID=3453ab2b-2067-41e4-b087-312d8385cf1b&displaylang=en\r\n\r\nThank you for your feedback.\r\n\r\nFernando Antivero\r\nhttp://blogs.southworks.net/fantivero",
+    "ClosedDate": "2010-12-02T06:58:08.49-08:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "The DirectoryModuleCatalog.GetNotAllreadyLoadedModuleInfos method assumes that all *.dll files in a directory are .NET assemblies. However, sometimes a DLL is just a regular Windows DLL and in that case Assembly.ReflectionOnlyLoadFrom throws a BadImageFormatException which is propagated to the client.\n \nDirectoryModuleCatalog should analyze .NET assemblies only, and ignore any other DLLs in the directory.",
+    "LastUpdatedDate": "2013-05-16T05:28:56.197-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-08-27T04:55:22.02-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "DirectoryModuleCatalog throws when a DLL is not a .NET assembly",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 10,
+    "Id": 4835
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Is there a workaround for this problem?",
+      "PostedDate": "2010-02-10T06:22:24.753-08:00",
+      "Id": 156174
+    },
+    {
+      "Message": "I made a quick fix in GetNotAllreadyLoadedModuleInfos but i think it can be better. Not realy experienced with Linq\r\nAnyway for those who are interrested this is the code:\r\n\r\nAssembly[] alreadyLoadedAssemblies = AppDomain.CurrentDomain.ReflectionOnlyGetAssemblies();\r\n\r\n                // try to load assemblies first to prevent exception in SelectMany query\r\n                IEnumerable files = directory.GetFiles(\"*.dll\")\r\n                                        .Where(file => alreadyLoadedAssemblies\r\n                                        .FirstOrDefault(\r\n                                        assembly =>\r\n                                        String.Compare(Path.GetFileName(assembly.Location), file.Name,\r\n                                                      StringComparison.OrdinalIgnoreCase) == 0) == null);\r\n                List assemblies = new List();\r\n                foreach (FileInfo file in files)\r\n                {\r\n                    try\r\n                    {\r\n                        Assembly assembly = Assembly.ReflectionOnlyLoadFrom(file.FullName);\r\n                        assembly.GetExportedTypes();\r\n                        assemblies.Add(assembly);\r\n                    }\r\n                    catch\r\n                    {\r\n                    }\r\n                }\r\n\r\n                return assemblies\r\n                    .SelectMany(assembly => assembly\r\n                                    .GetExportedTypes()\r\n                                    .Where(IModuleType.IsAssignableFrom)\r\n                                    .Where(t => t != IModuleType)\r\n                                    .Where(t => !t.IsAbstract)\r\n                                    .Select(type => CreateModuleInfo(type)));",
+      "PostedDate": "2010-02-10T14:07:55.48-08:00",
+      "Id": 156175
+    },
+    {
+      "Message": "You could work around this by implementing your own ModuleCatalog...\r\n\r\nI wanted to comment because I just spent a day and a half trying to figure out where my runtime BadImageFormatException was coming from... we are using a third party DLL that requires some other DLLs be in the same folder, and the exception was saying one of these required DLLs was the culprit...  finally I realized that we loading the modules from the same directory (for now), and that PRISM's DirectoryModuleCatalog was trying to load all the DLLs in that folder as .NET assemblies...\r\n\r\nThe tough part was not being able to find any help when searching for the problem... only after I figured it out, did I find this issue :-)",
+      "PostedDate": "2010-08-26T13:35:19.593-07:00",
+      "Id": 156176
+    }
+  ]
+}

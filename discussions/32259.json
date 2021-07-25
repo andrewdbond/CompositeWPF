@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "106978",
+    "ThreadId": "32259",
+    "Html": "Can anyone explain how the&nbsp;SelectorRegionAdapter when used in a TabControl identifies a TabItem&nbsp;as the type for any child control.<br>\r\n<br>\r\nAnd how this might be intercepted.<br>\r\n<br>\r\nI'm trying to have the TabControl use a CloseableTabItem instead as per the appraoch outlined here <a href=\"http://happynomad121.blogspot.com/2008/01/closable-tabitem-in-wpf.html\">http://happynomad121.blogspot.com/2008/01/closable-tabitem-in-wpf.html</a><br>\r\n<br>\r\n",
+    "PostedDate": "2008-07-24T23:27:04.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "107017",
+    "ThreadId": "32259",
+    "Html": "The solution is quite simple. You can combine the closable tabitem sample with a sample I created earlier: <a href=\"http://blogs.infosupport.com/blogs/willemm/archive/2008/07/15/Customizing-regions-in-CompositeWPF.aspx\">http://blogs.infosupport.com/blogs/willemm/archive/2008/07/15/Customizing-regions-in-CompositeWPF.aspx</a><br>\r\n<br>\r\nCompositeWPF supports using the TabControl as a region quite nicely, so this shouldn't be much of a problem.<br>\r\n",
+    "PostedDate": "2008-07-25T03:02:32.143-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "107612",
+    "ThreadId": "32259",
+    "Html": "Thanks for the suggestion. However the TabControl wants to instantiate a TabItem rather than a CloseableTabItem.<br>\r\n<br>\r\nLooking through your sample, this seems to represent an alternative approach that is not so easily combined.<br>\r\n<br>\r\nWhat I'm looking for is a place where I can specify that the TabControl container should&nbsp;have as its&nbsp;items a set fo controls of&nbsp;the type CloseableTabItem.&nbsp;\r\n",
+    "PostedDate": "2008-07-28T17:51:38.707-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "107946",
+    "ThreadId": "32259",
+    "Html": "To get the functionality you require I recommend creating a custom version of the tabcontrol and inherit from the original tabcontrol.<br>\r\nThe following piece of code can help in the process:<br>\r\n<br>\r\npublic class ClosableTabControl: TabControl<br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;protected override&nbsp;DependencyObject GetContainerForItemOverride()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;{<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return new ClosableTabItem();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;}<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;protected override&nbsp;bool IsItemItsOwnContainerOverride(Object item)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;{<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return item is ClosableTabItem;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;}<br>\r\n}<br>\r\n<br>\r\npublic class ClosableTabItem: TabItem <br>\r\n{<br>\r\n<br>\r\n}\r\n",
+    "PostedDate": "2008-07-30T05:37:52.417-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "108164",
+    "ThreadId": "32259",
+    "Html": "Thanks - With bit of fiddling that worked.\r\n",
+    "PostedDate": "2008-07-31T00:46:02.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "109041",
+    "ThreadId": "32259",
+    "Html": "You don't need to wrap the original tabcontrol to get closable tabitems. I needed the same trick for different application so I created a couple of custom templates and a small piece of code. I even wrote a blogpost about it so others could use that trick as well : <a href=\"http://blogs.infosupport.com/blogs/willemm/archive/2008/07/31/Creating-closeable-tabitems-for-use-in-CompositeWPF.aspx\">http://blogs.infosupport.com/blogs/willemm/archive/2008/07/31/Creating-closeable-tabitems-for-use-in-CompositeWPF.aspx</a><br>\r\n",
+    "PostedDate": "2008-08-05T00:52:50.597-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

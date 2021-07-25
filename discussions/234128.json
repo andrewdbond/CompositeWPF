@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "519836",
+    "ThreadId": "234128",
+    "Html": "\r\n<p>Hello everybody!</p>\r\n<p>I have just upgraded my application (WPF) to drop 10 from the CTP and i am having problems with the DelegateCommand class.<br>\r\n</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>        <span style=\"color:blue\">public</span> DelegateCommand(Action&lt;T&gt; executeMethod, Func&lt;T, <span style=\"color:blue\">bool</span>&gt; canExecuteMethod)\r\n            : <span style=\"color:blue\">base</span>((o) =&gt; executeMethod((T)o), (o) =&gt; canExecuteMethod((T)o))\r\n        {\r\n            <span style=\"color:blue\">if</span> (executeMethod == <span style=\"color:blue\">null</span> || canExecuteMethod == <span style=\"color:blue\">null</span>)\r\n                <span style=\"color:blue\">throw</span> <span style=\"color:blue\">new</span> ArgumentNullException(<span style=\"color:#a31515\">&quot;executeMethod&quot;</span>, Resources.DelegateCommandDelegatesCannotBeNull);\r\n\r\n<span style=\"color:blue\">#if</span> !WINDOWS_PHONE\r\n            Type genericType = <span style=\"color:blue\">typeof</span>(T);\r\n\r\n            <span style=\"color:green\">// DelegateCommand allows object or Nullable&lt;&gt;.  </span>\r\n            <span style=\"color:green\">// note: Nullable&lt;&gt; is a struct so we cannot use a class constraint.</span>\r\n            <span style=\"color:blue\">if</span> (genericType.IsValueType)\r\n            {\r\n                <strong><span style=\"color:blue\">if</span> ((!genericType.IsGenericType) || (!<span style=\"color:blue\">typeof</span>(Nullable&lt;&gt;).IsAssignableFrom(genericType.GetGenericTypeDefinition())))\r\n</strong>                {\r\n                    <span style=\"color:blue\">throw</span> <span style=\"color:blue\">new</span> InvalidCastException(Resources.DelegateCommandInvalidGenericPayloadType);\r\n                }\r\n            }\r\n<span style=\"color:blue\">#endif</span>\r\n        }\r\n\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>When I associate the action with the DelegateCommand and this action has a parameter of type Boolean, DateTime, Int32, etc., then the InvalidCastException is raised.</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>ShowCalendarCommand = <span style=\"color:blue\">new</span> DelegateCommand&lt;DateTime&gt;(ShowCalendarAction);\r\n\r\n<span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> ShowCalendarAction(DateTime date)\r\n{\r\n    <span style=\"color:green\">//Actions...</span>\r\n}\r\n\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>My whole code is full of this kind of Actions (with this type of parameters) and all worked fine until the upgrade, but now i can't continue developing due to this issue.</p>\r\n<p>What is happening? Is there any fix for this problem?</p>\r\n<p>Thanks in advance.</p>\r\n<p>Anti</p>\r\n",
+    "PostedDate": "2010-11-10T01:44:13.157-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "519973",
+    "ThreadId": "234128",
+    "Html": "\r\n<p>Hi Anti,</p>\r\n<p>In Prism value types are no longer supported when using DelegateCommand(s). But you could use a Nullable&lt;Decimal&gt;. If you need more information, I think that can find the following forum threads interesting:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=228082\"><span>var cmd = new DelegateCommand&lt;double&gt;(...)?&nbsp;\r\n</span></a></li><li><span id=\"x_TitleLabel\"><a href=\"http://compositewpf.codeplex.com/workitem/7272\">var cmd = new DelegateCommand&lt;double&gt;(...)? (work-item)</a></span>\r\n</li></ul>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero<br>\r\n<a href=\"http://blogs.southworks.net/fantivero\"><span style=\"color:#0066cc\">http://blogs.southworks.net/fantivero</span></a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-10T07:18:24.877-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "519999",
+    "ThreadId": "234128",
+    "Html": "\r\n<p>Ok, i'm afraid i'll have to change my code, but i understand why value types are no longer allowed.</p>\r\n<p>I'll try your approach in all our classes (about sixty more or less)</p>\r\n<p>Thank you very much!</p>\r\n",
+    "PostedDate": "2010-11-10T07:49:31.743-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

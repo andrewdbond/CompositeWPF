@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2010-09-15T15:16:02.373-07:00",
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "In my opinion the most common scenario for the usage of the DelegateCommand is without a CommandParameter.\n \n \nprivate readonly DelegateCommand<object> exitCommand;\n \nprivate void Exit(object parameter)\n{\n    Close();\n}\n \n \nIn the example above I define a command to exit the application. The command handler doesn’t need the parameter to execute its task. Why should I have to define my command handling method with the method argument “object parameter” when it doesn’t use this information. Furthermore, I have to define the “exitCommand” as type DelegateCommand<object>. But I don’t need this generic parameter for my command. I believe the generic DelegateCommand complicates simple scenarios where no command parameter is needed.\nIn my project www.codeplex.com/CompositeExtensions I have written a non-generic DelegateCommand class. So I can use this one for the simple commanding scenarios.\n \n \nprivate readonly DelegateCommand exitCommand;\n \nprivate void Exit()\n{\n    Close();\n}\n \n \nThe implementation of my DelegateCommand is absolute simple and does involve just a few lines of code because I reuse the generic DelegateCommand of the CAL libraries. Here is the complete code:\n \n \npublic class DelegateCommand : DelegateCommand<object>\n{\n    public DelegateCommand(Action<object> executeMethod, Func<object, bool> canExecuteMethod)\n        : base(executeMethod, canExecuteMethod) { }\n \n    public DelegateCommand(Action<object> executeMethod) \n        : base(executeMethod) { }\n \n    public DelegateCommand(Action executeMethod, Func<bool> canExecuteMethod)\n        : base(parameter => executeMethod(), parameter => canExecuteMethod()) { }\n \n    public DelegateCommand(Action executeMethod) \n        : base(parameter => executeMethod()) { }\n}\n \n \nPlease consider to ship a simplified DelegateCommand with the CAL libraries.\nThanks, jbe",
+    "LastUpdatedDate": "2013-05-16T05:29:00.927-07:00",
+    "PlannedForRelease": "Prism v4 - Drop 7",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-01-24T09:45:40.643-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Simplify DelegateCommand for the most common scenario",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 13,
+    "Id": 3670
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "I have added an \"ActionCommand\" to many of my WPF applications as I too use a parameterless Command often (50% of the time?). We named ours ActionCommand just so that developers didnt confuse it with the DelegateCommand. I image if it was added to the library then naming it simply DelegateCommand would be fine i.e. there would be DelegateCommand and DelegateCommand just as there is Action and Action in the BCL.",
+      "PostedDate": "2009-10-07T08:57:23.097-07:00",
+      "Id": 156090
+    },
+    {
+      "Message": "We have added support for DelegateCommand without a CommandParameter to the Prism library and this will be in the next drop of Prism.\r\n\r\nThank you for reporting this,\r\n\r\nKarl Shifflett",
+      "PostedDate": "2010-09-15T14:46:29.163-07:00",
+      "Id": 156091
+    },
+    {
+      "Message": "Fixed in Prism v4 Drop 7\r\n\n\n** Closed by Karl_Shifflett 9/15/2010 3:04 PM",
+      "PostedDate": "2010-09-15T15:04:15.14-07:00",
+      "Id": 156092
+    },
+    {
+      "Message": "Fixed in Prism v4 Drop 7",
+      "PostedDate": "2010-09-15T15:04:16.233-07:00",
+      "Id": 156093
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "928655",
+    "ThreadId": "399873",
+    "Html": "\r\n<p>Hi;</p>\r\n<p>&nbsp;</p>\r\n<p>Firstly - would it be possible to have David Hill's template pack available from an MSDN location (or Codeplex).</p>\r\n<p>&nbsp;</p>\r\n<p>Secondly; I've been trying to solve an issue I am having with a composite view that contains a datagrid. When I have this view incorporated via the view embedding features of PRISM the data grid vertical scroll bar auto activation does not work. I've tried\r\n the same procedure using a view with a datagrid&nbsp; pachaged in a user control and it works fine. When the view is packaged as a prism view the data grid vertical bar does not get activated. Am I missing something in the view contruction?</p>\r\n<p>&nbsp;</p>\r\n<p>Peter</p>\r\n",
+    "PostedDate": "2012-10-18T03:29:56.797-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "928970",
+    "ThreadId": "399873",
+    "Html": "<p>Hi Peter,</p>\r\n<p>Based on my understanding the cause of this behavior could be that your <strong>DataGrid </strong>is being wrapped inside a <strong>StackPanel </strong>and the <strong>DataGrid's Height </strong>property has not a fixed value and as this panel will not limit the height of your control your vertical scroll bar will not be shown. This can be seen in any <strong>WPF </strong>application when defining a <strong>Datagrid&nbsp;</strong>inside a <strong>StackPanel</strong>.</p>\r\n<p>A possible scenario where this could also happen, is if your region is defined in an <strong>ItemsControl </strong>which by default defines the panel to use for the layout of its items as a <strong>StackPanel</strong>. Hence in order to avoid this kind of problems you should have to replace your layout panel with a different panel which limits the height of it's children, or set a fixed value for your <strong>DataGrid </strong>control.</p>\r\n<p>Also, in my experience this problem should not happen when defining regions in controls like a <strong>ContentControl </strong>or <strong>TabControl</strong>, as they do not use a <strong>StackPanel</strong> as their layout panel.</p>\r\n<p>I hope you find this handy</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>,</p>",
+    "PostedDate": "2012-10-18T12:33:02.137-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "929342",
+    "ThreadId": "399873",
+    "Html": "<p>Hi;</p>\r\n<p>Thx @Agustin - that was exactly my problem. I have been following PRISM since its days as the composite application pattern and I had put together an app at that time. I must have been following an example because I was using ﻿﻿an ItemsControl for the composite view that contained a DataGrid. When I changed this over to a contentControl all was fine. I don't remeber why I chose an ItemsControl (which is why I think I was&nbsp;following an example). I think originally I was percieving that the PRISM markup extensions only worked with ItemsControl markup and not [generally] witha ny control.</p>\r\n<p>I have also come to the realization (because I ran into it also) that Grid row defintions with a height [for a row def] set to auto will also cause the content to take the space it requires and the [vertical] ScrollBar&nbsp;will not be activated, which I guess is in line with the auto defintion.</p>\r\n<p>Peter</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-10-19T05:21:50.687-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

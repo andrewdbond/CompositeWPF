@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "825007",
+    "ThreadId": "352592",
+    "Html": "<p>I am new to WPF and Prism with MVVM, and I am trying to experiment with regions.&nbsp; I have a simple learning project with a shell that contains a grid.&nbsp; Cell 0,0 of the grid contains a stackPanel which is designated as a region.&nbsp; My intention is to inject into the region a view which consists of nothing more than a canvas&nbsp;with a red background.&nbsp; What I get instead is text which follows:</p>\n<p>Resolution of the dependency failed, type = \"simpletest.Modules.Views.ucanvas\", name = \"(none)\".</p>\n<p>I have read the Prism 4.1 document and I have experiemnted with the Quickstarts.&nbsp; I am trying to adapt what I have learned in the Quickstarts, but progress is slow.&nbsp; Can anybody point me to a very simple example of injecting of simple content (not data) into a named region?</p>\n<p>My failed code, as goofy as it may be, follows:</p>\n<div style=\"background-color: white; color: black;\">\n<pre><span style=\"color: blue;\">using</span> Microsoft.Practices.Prism.Modularity;\r\n<span style=\"color: blue;\">using</span> Microsoft.Practices.Prism.Regions;\r\n<span style=\"color: blue;\">using</span> Microsoft.Practices.Unity;\r\n\r\n<span style=\"color: blue;\">using</span> simpletest.Modules.Models;\r\n<span style=\"color: blue;\">using</span> simpletest.Modules.Views;\r\n\r\n<span style=\"color: blue;\">namespace</span> simpletest.Modules.Views\r\n{\r\n  <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> ucanvasModule : IModule\r\n  {\r\n    <span style=\"color: blue;\">private</span> <span style=\"color: blue;\">readonly</span> IRegionManager regionManager;\r\n    <span style=\"color: blue;\">private</span> <span style=\"color: blue;\">readonly</span> IUnityContainer container;\r\n\r\n    <span style=\"color: blue;\">public</span> ucanvasModule(IUnityContainer container, IRegionManager regionManager)\r\n    {\r\n      <span style=\"color: blue;\">this</span>.container = container;\r\n      <span style=\"color: blue;\">this</span>.regionManager = regionManager;\r\n    }\r\n\r\n    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> Initialize()\r\n    {\r\n      <span style=\"color: blue;\">this</span>.container.RegisterType&lt;IUnityContainer&gt;(<span style=\"color: blue;\">new</span> ContainerControlledLifetimeManager());\r\n\r\n      <span style=\"color: blue;\">this</span>.container.RegisterType&lt;IUnityContainer&gt;(<span style=\"color: blue;\">new</span> ContainerControlledLifetimeManager());\r\n      <span style=\"color: blue;\">this</span>.regionManager.RegisterViewWithRegion(<span style=\"color: #a31515;\">\"GridColumn0Row0Region\"</span>, () =&gt; <span style=\"color: blue;\">this</span>.container.Resolve&lt;ucanvas&gt;());\r\n    }\r\n  }\r\n}\r\n</pre>\n</div>",
+    "PostedDate": "2012-04-17T12:01:42.307-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "825077",
+    "ThreadId": "352592",
+    "Html": "<p>Hi,</p>\r\n<p>You can find a very simple example of how to register a view to be injected in a region (using the <strong>RegisterViewWithRegion </strong>method) in the <strong>Hello World QuickStart</strong> provided with <strong>Prism</strong>. Also, you can compare your application against this <strong>QuickStart </strong>to check if there is any missing code required to start-up a <strong>Prism </strong>application.</p>\r\n<p>Regarding the code snippet you posted, I am a bit confused about what you are trying to accomplish in the following line:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">this</span>.container.RegisterType&lt;IUnityContainer&gt;(<span style=\"color: blue;\">new</span> ContainerControlledLifetimeManager());\r\n</pre>\r\n</div>\r\nAs far as I know, this sentence is not required to inject a view in a region and might even cause an unexpected behavior in your application.</p>\r\n<p>Based on your description of the problem, it seems that the container cannot compose the <strong>ucanvas </strong>type. As far as I know, this can be caused by several reasons. So, if the aforementioned suggestions were not useful to help you solve this problem, you can provide us with your sample application so that we take and look at it and help you further with this.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-04-17T13:43:23.653-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "825403",
+    "ThreadId": "352592",
+    "Html": "<p>Hi,</p>\r\n<p>I uploaded a small sample based on the description you made. You can find it in my <a href=\"https://skydrive.live.com/#cid=7890102B5B8BC928&amp;id=7890102B5B8BC928!103\">SkyDrive account</a>&nbsp; under the name \"<strong><em>CanvasSample</em></strong>\", I hope you can use it to find any differences with your own implementation.</p>\r\n<p>Additionally, I believe you could find the following resources useful, which might help you in the learning process:</p>\r\n<ul>\r\n<li><a href=\"http://prismtk.codeplex.com/\">Prism training kit</a></li>\r\n<li><a href=\"http://visualstudiogallery.msdn.microsoft.com/3ab5f02f-0c54-453c-b437-8e8d57eb9942\">MVVM Training</a></li>\r\n</ul>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-04-18T06:20:14.487-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "825497",
+    "ThreadId": "352592",
+    "Html": "<blockquote style=\"padding-bottom: 0px; font-style: italic; margin: 0.25em 1em 0px; padding-left: 0.25em; padding-right: 0.25em; padding-top: 0px; border: #ccc 0.1em solid;\">Regarding the code snippet you posted, I am a bit confused about what you are trying to accomplish in the following line:\n<p>&nbsp;<span style=\"color: blue;\">this</span>.container.RegisterType&lt;IUnityContainer&gt;(<span style=\"color: blue;\">new</span> ContainerControlledLifetimeManager());</p>\n</blockquote>\n<p>&nbsp;</p>\n<p>I'm not sure what I meant by it either.</p>",
+    "PostedDate": "2012-04-18T09:02:56.223-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "825501",
+    "ThreadId": "352592",
+    "Html": "<p>aadami, thank you for the training links.&nbsp; I could certainly use more training.</p>",
+    "PostedDate": "2012-04-18T09:04:48.537-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

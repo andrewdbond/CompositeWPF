@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nAs you mentioned, in Prism v2 the Configuration Store uses the ConfigrationManager to retrieve the configuration, thus avoiding this problem.\r\n\r\nThank you for your feedback.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-03-11T09:16:50.433-08:00",
+    "CommentCount": 0,
+    "Custom": "",
+    "Description": "I was working on a small sample project, which we'll name ABC, with Prism V1 the other day. I wanted to reuse simlilar components used in my fairly larger project, which we'll name Main. I ensured that ABC built in the same directory as Main. After I was done with ABC, I went back to Main, debugged and noticed that module enumeration was trying to load module mentioned in ABC.\n \nI found the problem in ConfigurationStore where probing for the config file looks something like this:\n \npublic virtual ModulesConfigurationSection RetrieveModuleConfigurationSection()\n{\n foreach (string fileName in Directory.GetFiles(_baseDirectory, \"*.config\", SearchOption.TopDirectoryOnly))\n {\n  System.Configuration.Configuration configuration =\n   GetConfiguration(Path.Combine(_baseDirectory, fileName));\n \n  ModulesConfigurationSection section = (ModulesConfigurationSection)configuration.GetSection(\"modules\");\n \n  if (section != null)\n  {\n   return section;\n  }\n }\n \n return null;\n}\n \nThis implementation assumes that there is only one config file in the target directory. My thoughts are that this assumption should go further and constrain the application to an expected file, which is the correct app.config of the running application.\n \npublic virtual ModulesConfigurationSection RetrieveModuleConfigurationSection()\n{\n var configInfo = new FileInfo(Path.Combine(_baseDirectory, System.AppDomain.CurrentDomain.SetupInformation.ApplicationName));\n \n if (configInfo == null) return null;\n System.Configuration.Configuration configuration =\n   GetConfiguration(configInfo.FullName.Replace(configInfo.Extension, \".config\"));\n \n if (configuration == null) return null;\n return (ModulesConfigurationSection)configuration.GetSection(\"modules\"); \n}\n \nV2 uses the ConfigurationManager from the Configuration namespace, which is a different implementation. I will check to see if it occurs. My assumption is that it has been fixed, yet for V1 users this could be an issue.",
+    "LastUpdatedDate": "2013-05-16T05:29:00.353-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-02-10T13:04:10.05-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Accuracy in discovering file for ConfigurationModuleEnumeration",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 3799
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

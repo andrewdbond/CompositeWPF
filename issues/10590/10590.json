@@ -1,0 +1,61 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "Hi,\n\nI’m stomped on this one.  The Raised event of the InteractionRequest<T> is null the second time an interaction request is raised and hence doesn’t open the dialog.\n\nI managed to reproduce the issue in a simple example.  Check out the Menu in the MainWindow to see a working example, and one that doesn't:\n\n<Menu>\n            <MenuItem Header=\"RootMenuItem\">\n                <MenuItem Header=\"NotWorkingMenuItem\" Prism:RegionManager.RegionName=\"MenuRegion\"/>\n            </MenuItem>\n            <!--<MenuItem Header=\"WorkingMenuItem\" Prism:RegionManager.RegionName=\"MenuRegion\"/>-->\n        </Menu>\n\nHelp!!!  :)\n\nRené",
+    "LastUpdatedDate": "2014-05-03T08:18:24.853-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2014-04-11T22:29:49.573-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Interaction requests in nested region aware menu items only work once",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 2,
+    "Id": 10590
+  },
+  "FileAttachments": [
+    {
+      "FileId": 898019,
+      "FileName": "WpfApplication1.zip",
+      "DownloadUrl": ".\\898019"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Interesting... Seems to be related to nesting MenuItems more than 2 deep. I'll investigate further.",
+      "PostedDate": "2014-04-22T17:25:12.413-07:00",
+      "Id": 156696
+    },
+    {
+      "Message": "Hi Rene,\r\n\r\nI have troubleshoot your issue and it seems that the interaction request gets a null value because the ___AssociatedObject_Unloaded()___ method of __InteractionRequestTrigger__ class is being called twice after the popup is shown. This leads to setting null on both the ___sourceObject___ property and field which would not meet the validation for the next _Raise_ event.\r\n\r\nBased on my understanding, the addtional parent _MenuItem_ would be suscribing to the __InteractionRequestTrigger__ somehow and generating this behaviour of loading and unloading the event twice every time the _Request_ is _Raised_.\r\n\r\nI will continue troubleshooting this issue, and try to find a workaround in order to disable the parent _MenuItem_ effect.\r\n\r\nRegards.Gabriel Ostrowskyhttps://blogs.southworks.net/gostrowsky",
+      "PostedDate": "2014-04-23T07:06:36.2-07:00",
+      "Id": 156697
+    },
+    {
+      "Message": "Thanks for the effort guys, really.I banged my head quite a bit just to pinpoint the problem… tough one.Kind regards,René",
+      "PostedDate": "2014-04-24T16:50:14.69-07:00",
+      "Id": 156698
+    }
+  ]
+}

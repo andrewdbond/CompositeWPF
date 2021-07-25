@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "552285",
+    "ThreadId": "242499",
+    "Html": "\r\n<p>This is my situation: A Textbox for typing an number, click button &quot;OK&quot; , the page will generate many Textboxes according to the number typed. That's very easy in Code Behind.</p>\r\n<p>How to implement this in MVVM ?</p>\r\n<p>Thanks!</p>\r\n",
+    "PostedDate": "2011-01-19T17:56:46.767-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "552696",
+    "ThreadId": "242499",
+    "Html": "\r\n<p id=\"x_7dc10f90-06d3-012e-71ec-123139154a75\">Hi,</p>\r\n<p id=\"x_7dc11810-06d3-012e-71ed-123139154a75\">As Prism&acute;s <a href=\"http://msdn.microsoft.com/en-us/library/gg405484%28v=PandP.40%29.aspx\">\r\nChapter 5: Implementing the MVVM Pattern</a> documentation shows:</p>\r\n<p id=\"x_7dc12280-06d3-012e-71ee-123139154a75\">&ldquo;<em>&hellip;because the view model should have no explicit knowledge of the specific visual elements in the view, code to programmatically manipulate visual elements within the view should reside in the\r\n view's code-behind or be encapsulated in a behavior. Similarly, code to retrieve or manipulate data items that are to be displayed in the view through data binding should reside in the view model.</em>&rdquo;</p>\r\n<p id=\"x_7dc13040-06d3-012e-71ef-123139154a75\">Therefore, your code regarding on the creation the textboxes could reside in view&acute;s code behind, but the code to retrieve or manipulate the data to be shown in those textboxes should reside in the view model.\r\n In order to achieve that, you should take into account that you can create bindings programatically (you can see an example here http://betaforums.silverlight.net/forums/p/48935/129554.aspx).</p>\r\n<p id=\"x_7dc13ea0-06d3-012e-71f0-123139154a75\">I hope you find this information useful.</p>\r\n<p id=\"x_7dc14cb0-06d3-012e-71f1-123139154a75\">Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-20T09:22:07.807-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "553804",
+    "ThreadId": "242499",
+    "Html": "\r\n<p>The text box should be created in the code behind. The data model it binds to should be in the view model as in the below link.</p>\r\n<p><a href=\"http://10rem.net/blog/2010/12/08/dynamically-generating-controls-in-wpf-and-silverlight\">http://10rem.net/blog/2010/12/08/dynamically-generating-controls-in-wpf-and-silverlight</a></p>\r\n<p>So you would have code like this in the cod behind, which binds to a view model:</p>\r\n<p>&nbsp;</p>\r\n<div><code>var firstNameField = CreateTextBox(</code><code>new</code> <code>Thickness(3), 0, 1);</code></div>\r\n<div><code>Binding firstNameBinding = </code><code>new</code> <code>Binding();</code></div>\r\n<div><code>firstNameBinding.Source = viewModel;</code></div>\r\n<div><code>firstNameBinding.Path = </code><code>new</code> <code>PropertyPath(</code><code>&quot;FirstName&quot;</code><code>);</code></div>\r\n<div><code>firstNameBinding.Mode = BindingMode.TwoWay;</code></div>\r\n<div><code>firstNameField.SetBinding(TextBox.TextProperty, firstNameBinding);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n</code></div>\r\n<div>&nbsp;</div>\r\n<div><code>rootGrid.Children.Add(firstNameField);</code></div>\r\n<div></div>\r\n<div>Thanks,</div>\r\n<div>Kamran</div>\r\n<div><a href=\"http://activedirectorytools.com/\">http://activedirectorytools.com/</a></div>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-22T18:10:21.94-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

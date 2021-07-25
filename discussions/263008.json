@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "633866",
+    "ThreadId": "263008",
+    "Html": "<p>Hi, I am exploring modules using MEF. I have a CustomerModule exported using [ModuleExport], but this module's Initialize() and constructor never gets called. Certainly, it seems I am missing some wire-up code. Here are the relevant parts of code.</p>\n<pre><span style=\"font-family: 'Segoe UI', 'Microsoft Sans Serif', Arial, Geneva, sans-serif;\"><span style=\"white-space: normal;\"><div style=\"color: black; background-color: white;\"><pre><span style=\"color: green;\">//CustomerModule</span>\n\n[ModuleExport(<span style=\"color: blue;\">typeof</span>(CustomerModule), InitializationMode = InitializationMode.WhenAvailable)]\n    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> CustomerModule : IModule {\n    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> Initialize() { <span style=\"color: green;\">//Never gets called.</span>\n            RegionViewRegistry.RegisterViewWithRegion(<span style=\"color: #a31515;\">\"MainRegion\"</span>, <span style=\"color: blue;\">typeof</span>(CustomerViewModel));\n...\n    }\n}\n\n<span style=\"color: green;\">//MefBootstrapper</span>\n\n        <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> IModuleCatalog CreateModuleCatalog() {\n            <span style=\"color: blue;\">return</span> <span style=\"color: blue;\">new</span> ConfigurationModuleCatalog();\n        }\n\n\n        <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> ConfigureAggregateCatalog() {\n            <span style=\"color: blue;\">base</span>.ConfigureAggregateCatalog();\n\n            <span style=\"color: blue;\">this</span>.AggregateCatalog.Catalogs.Add(\n                <span style=\"color: blue;\">new</span> AssemblyCatalog (<span style=\"color: blue;\">typeof</span>(CustomerModule.CustomerModule).Assembly));\n}\n</pre>\n</div>\n<br /></span></span></pre>\n<p>Any suggestions why CustomerModule.Initialize() (and constructor too) is never called.</p>\n<p>regards,</p>\n<p>Nirvan.</p>",
+    "PostedDate": "2011-06-27T17:07:50.153-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "634146",
+    "ThreadId": "263008",
+    "Html": "<p>Hi Nirvan,</p>\r\n<p>Based on the description of your scenario, there doesn&rsquo;t seem to be any problem with the code you&rsquo;ve shown here. However you could try re check the <strong>Run</strong>&rsquo;s sequence in your <strong>Boostrapper</strong> in order to verify everything is running correctly. Remember also to check your <strong>App.xaml.cs </strong>code behind and check the <strong>OnStartUp</strong> method to verify how you are instantiating and calling the <strong>Bootstrapper</strong>&rsquo;s <strong>Run</strong> method.</p>\r\n<p>You could use <strong>WPF using MEF QuickStarts</strong> provided with Prism to help you compare the code.</p>\r\n<p>In case you continue experiencing this behavior, it could be helpful if you could provide us with a repro sample (for example, uploading to <a href=\"http://skydrive.live.com/\">SkyDrive</a>) of your solution, so that we can help you find out the cause.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-06-28T07:27:15.637-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "634180",
+    "ThreadId": "263008",
+    "Html": "<p>Guido/Bronzovic,</p>\n<p>I checked the Bootstrapper Run sequence and it seems to be normal. Here is the sequence of invocation.</p>\n<ol>\n<li>protected override IModuleCatalog CreateModuleCatalog()&nbsp; </li>\n<li>protected override void ConfigureAggregateCatalog() </li>\n<li>protected override void ConfigureContainer() </li>\n<li>protected override DependencyObject CreateShell() </li>\n<li>protected override void InitializeShell() </li>\n</ol>\n<p>I debugged and saw that the AggregateCatalog has all the entries for my modules(Views and ViewModels). So AggregateCatalog is properly populated. But the ModuleCatalog's Modules is Empty Collection. How is that the ModuleCatalog and AggregateCatalog is out  of sync. The Application runs alright (except for region discovery, for which I will probably start a new discussion) , but I don't get a chance to Initialize CustomerModule.cs as it is never called. So in short all parts get exported, except the actual CustomerModule.cs  (which implements IModule).&nbsp;</p>\n<p>regards,<br /> Nirvan.&nbsp;</p>\n<p>Note: I don't have account with sky drive or any service, so I cannot post the repro. Will open one shortly.</p>",
+    "PostedDate": "2011-06-28T08:25:01.633-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "634251",
+    "ThreadId": "263008",
+    "Html": "<p>Guido/Bronzovic,</p>\n<p>I have my skydrive account active now. What do you want me to upload on skydrive ? I mean, does repro mean the whole solution ? In that case you can find the same <a href=\"https://skydrive.live.com/redir.aspx?cid=163065233235319f&amp;resid=163065233235319F!105\" target=\"_blank\"> here</a>. After the Shell loads the MainRegoin, click on Customer Button in the toolbar. The CustomerModule Constructor is not invoked at any point.</p>\n<p>regards,</p>\n<p>Nirvan.</p>",
+    "PostedDate": "2011-06-28T10:03:11.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "634301",
+    "ThreadId": "263008",
+    "Html": "<p>Hi Nirvan,</p>\r\n<p>A repro sample usually means a sample application that is intended to reproduce a specific behavior that you're experiencing. In some cases, a repro sample might be the whole solution, although showing a scenario scoped only to the exact problem that you want to point out might depict your point in a clearer way.</p>\r\n<p>As for the problems you're experiencing, the problem is caused by the fact that you are experiencing some <strong>CompositionException</strong>s, due to the fact that you're trying to get imports in an incorrect way. When registering services, it's a common good practice to export types using the interface as the contract; that is to say, if you have (for example) the <strong>EventAggregator </strong>class, you should export it with the <strong>IEventAggregator </strong>interface  as the contract type. Therefore, other components can \"know\" of the interface, but not of the exact implementation of that interface. Prism follows that approach, and therefore, exports for services use the interface as the contract type. Therefore, when importing Prism's services, such as the region view registry, you should indicate that your import is of type <strong>IRegionViewRegistry</strong>, not <strong>RegionViewRegistry</strong>. In your sample application, we've replaced all the imports for Prism services with the corresponding interface, and after that, your module was initialized correctly.</p>\r\n<p>To illustrate this:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>[ModuleExport(<span style=\"color: blue;\">typeof</span>(CustomerModule), InitializationMode = InitializationMode.WhenAvailable)]\r\n    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> CustomerModule : IModule {\r\n\r\n        <span style=\"color: blue;\">public</span> CustomerModule()\r\n        {\r\n\r\n        }\r\n\r\n        <span style=\"color: green;\">// This is correct</span>\r\n        [Import]\r\n        IRegionViewRegistry RegionViewRegistry { <span style=\"color: blue;\">get</span>; <span style=\"color: blue;\">set</span>; }\r\n\r\n\r\n        <span style=\"color: green;\">// This is incorrect</span>\r\n        <span style=\"color: green;\">//[Import]</span>\r\n        <span style=\"color: green;\">//RegionViewRegistry RegionViewRegistry { get; set; }</span>\r\n\r\n        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> Initialize()\r\n        {\r\n\r\n        }\r\n    }\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>Additionally, we've examined your sample and found that you're importing your module's exports (such as the view models for your views) directly in your shell view model (for example, in the <strong>LoadCustomerModule </strong>method inside the&nbsp;<strong>ShellViewModel</strong> class). That might not be a good practice, as you are coupling your shell to your customer module. The approach recommended by prism is to make modules responsible for adding their views to regions defined in the shell. One possibility to cover that scenario would be to use <a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28PandP.40%29.aspx\">Navigation</a> to indicate that you should navigate to your <strong>CustomerMainViewModel </strong>in the <strong>LoadCustomerModule </strong>method.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-06-28T11:16:00.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "634458",
+    "ThreadId": "263008",
+    "Html": "<p>Guido,</p>\r\n<p>Thanks for helping me out resolve the Module Initialization issue and guiding me about the ideal practices. I will surely have a look on Navigation part of Prism Developers guide so that decouple the Modules as much as possible. The issue in this discussion is resolved.</p>\r\n<p>regards,</p>\r\n<p>Nirvan.</p>",
+    "PostedDate": "2011-06-28T16:53:19.663-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1088322",
+    "ThreadId": "263008",
+    "Html": "Hi Guido, <br />\n<br />\nI found some minor bug in your code. Access modifier for <strong>RegionViewRegistry</strong> property should be <strong>public</strong>, otherwise MEF would throw an error on module initialization. <br />\n<pre><code>        // This is more correct :)\n        [Import]\n        public IRegionViewRegistry RegionViewRegistry { private get; set; }</code></pre>\n\n",
+    "PostedDate": "2013-09-04T09:43:37.2-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

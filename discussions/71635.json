@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "244339",
+    "ThreadId": "71635",
+    "Html": "<p>Hi,</p>\r\n<p>The following tests fail under VS2010 Beta 1 (only Desktop successfully imported):</p>\r\n<ol>\r\n<li>DifferentTargetTypeInFilterThrows</li>\r\n<li>DifferentTargetTypeInActionThrows</li>\r\n<li>ShouldLoadFilesEvenIfDynamicAssemblyExists</li>\r\n<li>ShouldNotThrowWithLoadFromByteAssemblies</li>\r\n</ol>\r\n<p>Is there a .NET 4.0 compatible test solution?</p>\r\n<p>Thanks in advance.</p>",
+    "PostedDate": "2009-10-11T04:38:03.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "247583",
+    "ThreadId": "71635",
+    "Html": "<p>Same issue with VS2010 Beta 2.</p>\r\n<p>Surely there are others trying to use PRISM on .NET 4. Is there anyone else with this problem?</p>\r\n<p>Currently these issues cause the module loading system to fail if you use the DirectoryModuleCatalog.</p>\r\n<p><strong>EDIT: </strong>Ok I've fixed up the tests. Here's how:</p>\r\n<p><em>DifferentTargetTypeInFilterThrows</em>: This is a covariance issue. In the test, change the Predicate&lt;object&gt; to Predicate&lt;int&gt;, or anything that string doesn't inherit from.</p>\r\n<p><em>DifferentTargetTypeInActionThrows</em>: Also a covariance issue. Change Action&lt;object&gt; to Action&lt;int&gt;.</p>\r\n<p><em>ShouldLoadFilesEvenIfDynamicAssemblyExists </em>and <em>ShouldNotThrowWithLoadFromByteAssemblies: </em>These two are the same issue, and are to do with the way dynamic assemblies are built. To fix, open the Composite.Modularity.DirectoryModuleCatalog class, go to the InnerLoad method, and change this:</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var assemblies = (<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where !(assembly is System.Reflection.Emit.AssemblyBuilder)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &amp;&amp; !String.IsNullOrEmpty(assembly.Location)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select assembly.Location<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</p>\r\n<p>to this:</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var assemblies = (<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where !(assembly is System.Reflection.Emit.AssemblyBuilder)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>&amp;&amp; assembly.GetType().FullName != &quot;System.Reflection.Emit.InternalAssemblyBuilder&quot;</strong><br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &amp;&amp; !String.IsNullOrEmpty(assembly.Location)<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select assembly.Location<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );</p>",
+    "PostedDate": "2009-10-20T00:34:35.437-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "249533",
+    "ThreadId": "71635",
+    "Html": "<p>This is great stuff, confirmed to work (on VS2008 as well). Thanks a bunch!</p>",
+    "PostedDate": "2009-10-25T13:09:46.2-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "255072",
+    "ThreadId": "71635",
+    "Html": "<p id=ad279880-af6f-012c-fa3c-12313b018621>Hi</p>\r\n<p id=ad27ecf0-af6f-012c-fa3d-12313b018621>I have migrated Prism 2 to Visual Studio 2010 Beta 2 and fixed this and some other issues while doing it. You can read more about it (and download the updated version) <a href=\"http://blogs.southworks.net/dschenkelman/2009/11/09/prism-2-composite-application-guidance-for-wpf-silverlight-migrated-to-visual-studio-2010-beta-2/\">here</a>.</p>\r\n<p id=ad284cf0-af6f-012c-fa3e-12313b018621>Please let me know if this helps.</p>\r\n<p id=ad28af20-af6f-012c-fa3f-12313b018621>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-11-09T07:14:44.537-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

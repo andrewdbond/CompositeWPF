@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "933958",
+    "ThreadId": "401156",
+    "Html": "\r\n<p>Having some issues designing an application with a model hierarchy. We have a Contract object, which can have X number of Projects. The project can have X number of Lines. I'm using MEF. On my Shell, I have a ContentControl marked as &quot;ContractRegion&quot;. In\r\n that, I intend to load a ContractView. Inside of the ContractView, I want to have a ListBox that lists all projects and a &quot;ProjectRegion&quot; that I can activate a ProjectView when a project is selected from the ListBox.</p>\r\n<p>Currently, I have a &quot;controller&quot; class that activates the ContractView into the ContractRegion. Then, when I select a Project, the ContractViewModel notifies the controller to load the ProjectView into ProjectRegion. OK...this works, but now I don't know\r\n how to destroy these viewmodels. I have a test button to unload the ContractView from the ContractRegion...but the ContractViewModel/ProjectViewModel objects still exist...they're still subscribed to the EventAggregator.</p>\r\n<p>Can someone help me figure out how to destroy the view/viewmodels on-demand (or at least guarantee they are designated for garbage collection). Could someone take a look at my small sample project and help me?</p>\r\n",
+    "PostedDate": "2012-10-29T12:25:40.007-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "933959",
+    "ThreadId": "401156",
+    "Html": "\r\n<p>Sample Project:&nbsp;</p>\r\n<p>https://skydrive.live.com/redir?resid=152C8532AEE08875!143&amp;authkey=!AOqMIDTbb3anLio</p>\r\n",
+    "PostedDate": "2012-10-29T12:27:52.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "933974",
+    "ThreadId": "401156",
+    "Html": "<p>Hi,</p>\r\n<p>If your view model does not require to perform any specific \"clean-up\" when being destroyed, I believe you could take advantage of the <strong>IRegionMemberLifetime</strong> interface and the <strong>RegionMemberLifetimeBehavior </strong>to remove the view and it's view model automatically when deactivated.</p>\r\n<p>Basically, when a view / view model that implements the <strong>IRegionMemberLifetime </strong>interface is deactivated in a <strong>Region </strong>the <strong>RegionMemberLifetimeBehavior </strong>will check its <strong>KeepAlive </strong>property. If this property returns <em><strong>false</strong></em>, the behavior will automatically remove the view / view model from the <strong>Region</strong>, and as the <strong>Region </strong>will no longer hold a reference to the view / view model, it will be marked to be garbage collected unless another object of your application is holding a strong reference to it.</p>\r\n<p>Based on my understanding of your scenario, you could implement the <strong>IRegionMemberLifetime </strong>interface in your <strong>ProjectViewModels </strong>and set its <strong>KeepAlive </strong>property to <em><strong>false</strong></em>. If the <strong>ProjectRegion </strong>is a <strong>ContentControl</strong>, when you inject a <strong>ProjectView </strong>in it any other previous <strong>ProjectViews </strong>in the <strong>ProjectRegion </strong>will be marked as deactivated (this is the default behavior when using a <strong>ContentControl </strong>as a <strong>Region</strong>, as there can be only one active view.) Then, the deactivated <strong>ProjectView </strong>(and its view model) will be removed from the <strong>ProjectRegion </strong>by the <strong>RegionMemberLifetimeBehavior </strong>and, if it is not being referenced by any other object in your application, it should be marked to be garbage collected automatically.</p>\r\n<p>Take into account that even if an object is marked to be garbage collected, it will still listen to the events from the <strong>EventAggregator </strong>until the garbage collector destroys it. In order to check if the views / view models are being marked to be garbage collected properly, you could invoke the <strong>GC.Collect()</strong> method before publishing the testing event in order to avoid false positives (remember that the <strong>CG.Collect()</strong> method should only be used with testing purposes as its usage is not recommended in a common application.)</p>\r\n<p>I hope this helps,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-10-29T13:53:38.033-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "934174",
+    "ThreadId": "401156",
+    "Html": "\r\n<p>Thank you for your reply. If I have a <strong>ProjectView</strong> loaded into my\r\n<strong>ProjectRegion</strong>&nbsp;and choose to deactivate my <strong>ContractView</strong>, do I have to do anything special to unload the\r\n<strong>ProjectView</strong>&nbsp;as well, or will it automatically unload?</p>\r\n",
+    "PostedDate": "2012-10-30T05:43:36.863-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "934353",
+    "ThreadId": "401156",
+    "Html": "<p>Hi,</p>\r\n<p>In that case I believe you could find the <strong>ClearChildViewsRegionBehavior </strong>provided in <strong>Prism 4.1</strong> useful. By using this behavior, when removing a view from a region, if that view has a nested region inside it, that region should be removed from its <strong>RegionManager</strong>; and as the region is no longer attached to the <strong>RegionManager</strong> it should be garbage collected together with the views it contains.</p>\r\n<p>Hence, by using the <strong>ClearChildViewsRegionBehavior</strong>, when the <strong>ContractView </strong>is removed from the <strong>ContractRegion</strong>, its <strong>ProjectRegion </strong>will be removed from the <strong>RegionManager </strong>and if no strong reference is made to that region, the <strong>ProjectRegion </strong>will be marked to be garbage collected along with the <strong>ProjectViews </strong>inside it.</p>\r\n<p>You can find more information about how to use the <strong>ClearChildViewsRegionBehavior </strong>in the following section of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405471%28v=pandp.40%29.aspx#sec10\">Prism 4.1 Readme - Applying ClearChildViewsRegionBehavior</a></li>\r\n</ul>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-10-30T11:57:26.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "934368",
+    "ThreadId": "401156",
+    "Html": "<p>OH that worked perfectly! Thanks. I had tried to implement my own version of that because I didn't realize it was built into 4.1, and it didn't work. But switching to the built-in version fixed it. Thanks again!</p>",
+    "PostedDate": "2012-10-30T12:22:56.82-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "460310",
+    "ThreadId": "217461",
+    "Html": "<p>I'm unable to Export / Import within the Bootstrapper - is there a &quot;Container.Buildup&quot; equivalent in MEF?&nbsp;&nbsp;</p>\r\n<p>In my MVPVM refactor of the ModularityWithMef sample, everything went smoothly until I tried to export the MainWindow's presenter (so I could move the Imports out from code-behind into the Presenter).&nbsp;&nbsp;</p>\r\n<p>MVPVM ModularityWithMef sample available on the following link:</p>\r\n<p><a href=\"http://www.global-webnet.net/blogengine/post/2010/06/26/PRISM-V4-Drop-2-MVPVM-Modularity-with-MEF.aspx\">http://www.global-webnet.net/blogengine/post/2010/06/26/PRISM-V4-Drop-2-MVPVM-Modularity-with-MEF.aspx</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-06-26T22:41:38.847-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "460373",
+    "ThreadId": "217461",
+    "Html": "<p>Bill,</p>\r\n<p>Your link is broken...</p>\r\n<p>&nbsp;</p>\r\n<p>Morgan.</p>",
+    "PostedDate": "2010-06-27T10:05:36.137-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "460374",
+    "ThreadId": "217461",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>mvermef wrote:</strong><br>\r\n<p>Bill,</p>\r\n<p>Your link is broken...</p>\r\n<p>&nbsp;Morgan.</p>\r\n</blockquote>\r\n<p>&nbsp;Thanks Morgan, I failed to publish the blog entry - it is available now.</p>",
+    "PostedDate": "2010-06-27T10:10:27.173-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "461891",
+    "ThreadId": "217461",
+    "Html": "<p>Hi Bill,</p>\r\n<p><br>There's a few ways you can access parts via the container from within your Boostrapper class.&nbsp; The difficulty is that the boostrapper creates the container itself, so probably shouldn't have declarative attributes on itself.&nbsp; As well, the boostrapper isn't meant to have a long lifetime either, so the recommendation is to do imports/exports using other classes.</p>\r\n<p><br><strong>Option A: Compose an instance directly</strong></p>\r\n<p><span style=\"color:#000080\">1. Create a class that uses [Import] (and/or [Export])</span></p>\r\n<p><span style=\"color:#000080\">2. Override ConfigureContainer and instantiate your type, then call this.Container.ComposeExportedValue.&nbsp;</span></p>\r\n<p>The MefBootstrapper does this for all the types that it or derived classes instantiate directly before the container is available.</p>\r\n<p>&nbsp;&nbsp;&nbsp; Example: Composing the logger.</p>\r\n<p>&nbsp;&nbsp;&nbsp; this.Container.ComposeExportedValue&lt;ILoggerFacade&gt;(this.Logger);</p>\r\n<p><strong>Option B: Satisfy imports to compse&nbsp;the Boostrapper.</strong></p>\r\n<p>I think of the MEF container kind of like the .NET garbage collector.&nbsp; The GC works from a root object and walks down a tree of everything that is referenced - anything not in the tree is a candidate for collection.&nbsp; The MEF container might know about a bunch of exported types via its catalog, but doesn't really start resolving something until composes something that needs to resolve [Import] statements. The container then uses exports to resolve imports which might cause the need to resolve more imports.</p>\r\n<p>The MEF container doesn't know about the Boostrapper by default and no one asks to compose it, so imports are not resolved.&nbsp; Plus, you've already instantiated the Bootstrapper, so you'll have to put imports on fields/properties that allow recomposition.</p>\r\n<p><span style=\"color:#000080\">1. Add a field or get/set property to your Boostrapper and place an [Import(AllowRecomposition=true)] attribute on it.&nbsp;&nbsp;</span></p>\r\n<p><span style=\"color:#000080\">2. Override ConfigureContainer and call this.Container.ComposeParts(this).</span></p>\r\n<p><span style=\"color:#000080\">2b. Alternatively, you could call this.Container.SatisfyImportsOnce(this) if you only want to satisfy the imports a single time.</span></p>\r\n<p>Before using your type, you may want to wait until the imports are satisfied.&nbsp; The Shell.xaml.cs uses this technique.</p>\r\n<p><span style=\"color:#000080\">3. Add IPartImportsSatisfiedNotification interface to the Boostrapper declaration.</span></p>\r\n<p><span style=\"color:#000080\">4. Implement OnImportsSatisfied() and use your new type there.</span></p>\r\n<p>I'm not sure if Option B is a good idea because then the container is holding a reference to something holding a reference to the container.&nbsp; This could cause a memory leak (at least until the app domain terminates).</p>\r\n<p>If you have troubles, could you put some commented out code in your sample application of what you would like to have and I can try and work through how the container could resolve it for you.</p>\r\n<p>Hope this helps,</p>\r\n<p>Geoff Cox<br>Southworks</p>",
+    "PostedDate": "2010-06-30T15:56:22.603-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "462119",
+    "ThreadId": "217461",
+    "Html": "<p>Yes Geoff, this helps alot; you gave me a number of options to work with (and more importantly a better understanding).&nbsp;&nbsp;I'll probably try both options as I refactor the Bootstrapper to create child containers for each module; something I do with Unity.&nbsp;&nbsp; I want to upgrade the sample so that when you click on the green module box that it will unload the module&nbsp;(as in Disposing the container and all child objects to reclaim memory) and permit me to reload it.</p>",
+    "PostedDate": "2010-07-01T04:11:32.477-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

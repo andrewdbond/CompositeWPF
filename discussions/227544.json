@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "494736",
+    "ThreadId": "227544",
+    "Html": "<p>Hi,</p>\r\n<p>I am trying to load a view (MVVM) from a module into region and am having a MEF issue.</p>\r\n<p>I am using behaviors to tie events from my view to my viewmodel but it seems to be causing a problem with MEF.</p>\r\n<p>In my view I have defined this:</p>\r\n<p>*****</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button Content=&quot;Save Products&quot; HorizontalAlignment=&quot;Left&quot; Height=&quot;21&quot; Margin=&quot;157,8,0,0&quot; VerticalAlignment=&quot;Top&quot; Width=&quot;117&quot;&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;i:Interaction.Triggers&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;i:EventTrigger EventName=&quot;Click&quot;&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;i:InvokeCommandAction Command=&quot;{Binding SaveProductsCommand}&quot;/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/i:EventTrigger&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/i:Interaction.Triggers&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Button&gt;</p>\r\n<p>*****</p>\r\n<p>&nbsp;</p>\r\n<p>This is the error I'm getting when I try to load the view into the region:</p>\r\n<p>*******</p>\r\n<p>The composition produced a single composition error. The root cause is provided below. Review the CompositionException.Errors property for more detailed information.</p>\r\n<p>1) The attachable property 'Triggers' was not found in type 'Interaction'. [Line: 16 Position: 33]</p>\r\n<p>&nbsp;Resulting in: An exception occurred while trying to create an instance of type 'PointOfService.ProductsView.</p>\r\n<p>&nbsp;Resulting in: Cannot activate part 'PointOfService.ProductsView.</p>\r\n<p>Element: PointOfService.ProductsView --&gt;&nbsp; PointOfService.ProductsView --&gt;&nbsp; AssemblyCatalog (Assembly=&quot;PointOfService, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot;)</p>\r\n<p>&nbsp;Resulting in: Cannot get export 'PointOfService.ProductsView (ContractName=&quot;PointOfService.ProductsView&quot;)' from part 'PointOfService.ProductsView.</p>\r\n<p>Element: PointOfService.ProductsView (ContractName=&quot;PointOfService.ProductsView&quot;) --&gt;&nbsp; PointOfService.ProductsView --&gt;&nbsp; AssemblyCatalog (Assembly=&quot;PointOfService, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot;)</p>\r\n<p>*******</p>\r\n<p>&nbsp;</p>\r\n<p>If I comment out the Interactions.Triggers block then the region displays the region without any problems.</p>\r\n<p>Can anyone shed some light on this plz!</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p>Darren.</p>",
+    "PostedDate": "2010-09-16T19:48:02.29-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "494740",
+    "ThreadId": "227544",
+    "Html": "<p>Hi All,</p>\r\n<p>I found a solution:</p>\r\n<p>http://social.msdn.microsoft.com/Forums/en-US/wpf/thread/25e5082d-71ea-41b8-a6e6-dea07449aaa1 from Gazficko at the bottom.</p>\r\n<p>&nbsp;</p>\r\n<p>I referenced the Microsoft.Expression.Interactions.dll in my shell app and it worked fine.</p>\r\n<p>Darren.</p>",
+    "PostedDate": "2010-09-16T19:56:54.42-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "494985",
+    "ThreadId": "227544",
+    "Html": "<p>Hi Darren,</p>\r\n<p>Nice to see that you found the solution. Thanks for sharing this with the community. It doesn't seem to be related with Prism, so I will not create a work-item for this. Please let me know if I'm wrong.</p>\r\n<p>Fernando Antivero&nbsp;<br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-09-17T07:11:24.273-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "495724",
+    "ThreadId": "227544",
+    "Html": "<p>hi Fernando,</p>\r\n<p>I very new to Prism so i'm not sure if it is an issue or not.<br>My thinking leads me to believe it is an issue but i might just be missing somthing. I would have thought that I would be able to add the reference required to only the module in question and that none it wouldn't be required in the shell project. If it is truly modular and decoupled why would the scheel project need to know about the referenced dll in the module project?</p>\r\n<p>What are your thoughts?</p>\r\n<p>Cheers,</p>\r\n<p>Darren.</p>",
+    "PostedDate": "2010-09-19T17:50:59.147-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "496201",
+    "ThreadId": "227544",
+    "Html": "<p>Hi Darren,</p>\r\n<p>Your thoughts are reasonable. At first, I thought that it was not a work-item, since I didn&rsquo;t realized that you need to add this to your Shell project for something required in your modules.<br><br>It means that if you add this assembly to your module (not shell), it throws an exception. Do you have a repro sample of this? I would like to open a work-item if it does not work as expected.</p>\r\n<p>Thanks for reporting that.</p>\r\n<p>Fernando Antivero<br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-09-20T13:37:12.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,70 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 6,
+    "Custom": "",
+    "Description": "RegisterViewWithRegion, have a global view registry,  based on region name.\n \nSo if I have for example TabControl with \"WorkSpaces\" region registered in GlobalRegionManager, with each TabPage containing it's own child RegionManager, in which I define \"TabContent\" region, whenever I add new TabPage, all view loading delegates with \"TabContent\" region name get called, event though they belong to different region managers.",
+    "LastUpdatedDate": "2013-02-21T18:38:07.72-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-09-29T01:12:30.503-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "RegisterViewWithRegion doesn't care about RegionManager in which view is registered",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8735
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Implementing your own IViewRegistry, will not help, implementing your own AutoPopulateRegionBehavior will not help too, when inside AutoPopulateRegionBehavior : RegionBehavior -> Region.RegionManager is Null, so no way to get RegionManager.\r\n\r\nAs a dirty workaround I now bind RegionName to viewModel in view : prism:RegionManager.RegionName=\"{Binding RegionName}\"\r\nand in ViewModel Name my region like: RegionName = \"TabPage.\"+ Guid.NewGuid()",
+      "PostedDate": "2011-09-29T03:49:53.56-07:00",
+      "Id": 156519
+    },
+    {
+      "Message": "Hi,\r\n\r\nThe intention of the view discovery approach (which is portrayed by the RegisterViewWithRegionMethod) is to set a relationship between a region name and a view, regardless the region manager in which the region/regions with that name are contained into. This is true even if you call the RegisterViewWithRegion method from a specific region manager; if you examine the extension method that makes it possible to call the RegisterViewWithRegion method from an IRegionManager instance, you will find that it does not use that instance of the region manager (but rather, it uses the service locator to obtain a reference to the region view registry and sets up this relationship using it).\r\n\r\nIn case you need to have explicit programmatic control of where your views are added into, the recommended approach is to use view injection (using the Region.Add method). \r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-09-29T11:13:01.51-07:00",
+      "Id": 156520
+    },
+    {
+      "Message": "One more bug found there: Registered views delegates never get removed, from ViewRegistry, so it's even worse then i thought. this makes RegisterViewWithRegion unusable.",
+      "PostedDate": "2011-09-30T05:19:01.327-07:00",
+      "Id": 156521
+    },
+    {
+      "Message": "Hi,\r\n\r\nRegistering a view in a region is an action intended to last for the whole application lifetime, as the releationship defined between a view (represented by a delegate which results in the construction of an instance) and a certain region name is independent of the lifetime of a specific region object that has that name, or a specific instance of a view.\r\n\r\nAs explained in my previous comment, if you need to have explicit control of this situation, the recommended approach is view injection (you can read more about it in this section from the UI Composition chapter in the Prism MSDN documentation: http://msdn.microsoft.com/en-us/library/ff921098%28PandP.40%29.aspx#sec28). So based on your input, it seems that the view discovery approach is not suitable for your scenario, which does not necessarily mean that it has bugs.\r\n\r\nEven so, in the IRegionViewRegistry interface there is no method to remove a certain view-region registration, which might be troublesome in certain scenarios, like possibly yours. If you find that blocking, you could create a separate work item speaking about it.\r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-09-30T06:51:39.29-07:00",
+      "Id": 156522
+    },
+    {
+      "Message": "Guido: Of course I end up using Region.Add method, but this messed up a lot of my program design. I'm constructing ViewModels first, and then inject them in View, so Regions are not available at ViewModel initialization, and anyway I need some mechanism to delay region population untill registered, thought I can't use out the box prism solution to this. \r\n\r\nSo basically this part of PRISM fails in what it suppose to do.",
+      "PostedDate": "2011-10-01T22:30:11.6-07:00",
+      "Id": 156523
+    },
+    {
+      "Message": "Hi,\r\n\r\nYou might find the following blog post by Damian Cherubini useful, which proposes a possible extension to the RegisterViewWithRegionMethod to support registering views in regions only in a certain region manager:\r\nhttp://blogs.southworks.net/dcherubini/2011/10/06/registering-a-view-in-a-specific-region-manager/\r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-10-07T13:25:15.737-07:00",
+      "Id": 156524
+    }
+  ]
+}

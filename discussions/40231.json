@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "133502",
+    "ThreadId": "40231",
+    "Html": "Within a module we create a singleton<br>\r\n<br>\r\n<span style=\"font-size:13px\">_container.RegisterType&lt;</span><span style=\"font-size:13px;color:#2b91af\">IDocumentWorkflowRepository</span><span style=\"font-size:13px\">, </span><span style=\"font-size:13px;color:#2b91af\">DocumentWorkflowRepository</span><span style=\"font-size:13px\">&gt;(</span><span style=\"font-size:13px;color:#0000ff\">new</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#2b91af\">ContainerControlledLifetimeManager</span><span style=\"font-size:13px\">()); <br>\r\n<br>\r\nHowever within this we'd like to dispose of a resource the singleton uses. What's the best way to achieve this?<br>\r\n<br>\r\n<p> The boot strapper is created in the app on startup event which has a reference to unity container. Should I keep a reference to the bootstrapper or unity container and then call dispose in an override such as OnExit?<br>\r\n<br>\r\nShould my singleton object implement IDisposable which presumably the disposal of the unity container would call?</p>\r\n</span>\r\n",
+    "PostedDate": "2008-11-18T14:06:09.77-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "133622",
+    "ThreadId": "40231",
+    "Html": "Singleton object and its lifetime is managed by container. The singlton object is kept in scope as long as the container isn’t disposed.<br>\r\n<br>\r\nTo go around on this I think would be easiest to create hiarchy of containers. By adding child container to main container. Each container added become child of parent container. You can disponse any of the child container independently. Gil Fink on his blog descibes container hierarchies on Unity, see the link below.<br>\r\n<br>\r\n<a href=\"http://blogs.microsoft.co.il/blogs/gilf/archive/2008/07/26/using-unity-container-hierarchies.aspx\">http://blogs.microsoft.co.il/blogs/gilf/archive/2008/07/26/using-unity-container-hierarchies.aspx</a> \r\n",
+    "PostedDate": "2008-11-19T04:32:28.317-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "133644",
+    "ThreadId": "40231",
+    "Html": "Thanks Alexander<br>\r\n<br>\r\nHowever why do I need the complexity of hierarchy of containers if you mentioned<br>\r\n<br>\r\n&quot;The singlton object is kept in scope as long as the container isn’t disposed.&quot;<br>\r\n<br>\r\nCan't I simply dispose of the main container? If so what's the recommend way to do this in a WPF appi.e. at what point?<br>\r\n",
+    "PostedDate": "2008-11-19T05:55:41.577-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "133658",
+    "ThreadId": "40231",
+    "Html": "<p>Matt,<br>\r\n<br>\r\nI wasn’t sure exactly what you were looking for in your question so I made some assumptions, so lets start again. <br>\r\n<br>\r\nIf you going to use UnityBootStrapper you can not dispose your main Unity container, or you can but then your application will be gone as well.<br>\r\n<br>\r\nIf you need to to dispose your singleton objects without leaving the application (if you do leave they are gone). You can do this by two different ways:</p>\r\n<ul>\r\n    <li>You can create a child container and register type mapping/instances with <span style=\"text-decoration:underline\">ContainerControlledLifeTimeManger</span> and dispose this child container when you are required to dispose the singleton objects without leaving the application. </li>\r\n</ul>\r\n<p>        Or</p>\r\n<ul>\r\n    <li>You can also try to use Unity <span style=\"text-decoration:underline\">ExternallyControlledLifetimeManager</span> instead of <span style=\"text-decoration:underline\">ContainerControlledLifeTimeManager</span>. I am not sure if Silverlight version of Unity is supporting this but you can try. Anyhow, you can simply dispose these objects by setting those type instances to null. </li>\r\n</ul>\r\n<p><em>About ContainerControlledLifeTimeManager:<br>\r\n</em>If you create a singleton object by using ContainerControlledLifeTimeManager the Unity container will create a strong reference to it. Which will mean that the container will take over management of the object  lifetime. The only way to dispose your (singleton) object(s) from container in this case is to dispose the container that holds a singleton object or exit the application.<br>\r\n<br>\r\n<em>About ExternallyControlledLifeTimeManager:<br>\r\n</em>When you use ExternallyControlledLifeTimeManager the Unity container will returns the same instance of the registered type or object each time you call the Resolve method. The container does not hold onto a strong reference to the object after it creates it, which means that the garbage collector can dispose of the object if no other code is holding a strong reference to it. <br>\r\n<br>\r\nHope this helps and clears out the answer. <br>\r\n<br>\r\nRegards,<br>\r\nAlexander </p>\r\n",
+    "PostedDate": "2008-11-19T07:13:21.39-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "459583",
+    "ThreadId": "40231",
+    "Html": "Hi\r\nCould you please provide some code sample for both scenarios? Perhaps for the situation when you register an instance of scoped regionmanager in the container",
+    "PostedDate": "2010-06-24T09:56:58.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

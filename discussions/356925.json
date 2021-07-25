@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "840227",
+    "ThreadId": "356925",
+    "Html": "\r\n<p>Hi All,</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I am using PRISM4. I have many userControls. I need to create this as View.</p>\r\n<p>My Shell is having TabControl. this is the MianRegion of my Project.</p>\r\n<p>Currently I am creating View as TabItem like below</p>\r\n<p>&lt;TabItem x:Name=&quot;Person&quot;</p>\r\n<p>//some statndard Properties&gt;</p>\r\n<p>&lt;Grid&gt;</p>\r\n<p>&lt;UserControl&gt;</p>\r\n<p>&lt;/Grid&gt;</p>\r\n<p>So i registerd this TabItem in Module.</p>\r\n<p>Here the Issue is I am Creating UserControl seperately, once again i need to create View as TabItem seperately.</p>\r\n<p>I like to use UserControl as View Directly. How can i create this?</p>\r\n<p>is it Possible?</p>\r\n",
+    "PostedDate": "2012-05-23T22:55:26.223-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "840417",
+    "ThreadId": "356925",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding of your scenario, I believe you could benefit from the use of <strong>Prism regions</strong>, as this will allow you to dynamically compose your <strong>UI </strong>in a loosely coupled way.</p>\r\n<p>You could find more information about this in the following chapter of the <strong>Prism </strong>documentation at <strong>MSDN</strong>:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28v=pandp.40%29\">Chapter 7: Composing the User Interface</a></li>\r\n</ul>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-05-24T06:28:14.45-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "841504",
+    "ThreadId": "356925",
+    "Html": "<p>Hi ,</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Thanks for your reply.I am Expecting some sample code.</p>\r\n<p>could you give the sample code? or give bit more Explanation about how to add userControl as TabItem in a TabControl.</p>",
+    "PostedDate": "2012-05-27T20:37:48.84-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "841746",
+    "ThreadId": "356925",
+    "Html": "<p>Hi,</p>\r\n<p>You can define the <strong>TabControl </strong>in your <strong>Shell </strong>as a region doing something like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">TabControl</span> <span style=\"color: red;\">Name</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">MainRegion</span><span style=\"color: black;\">\"</span> <span style=\"color: red;\">cal:RegionManager.RegionName</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">MainRegion</span><span style=\"color: black;\">\"</span> <span style=\"color: blue;\">/&gt;</span>\r\n</pre>\r\n</div>\r\n</p>\r\n<p>And then you can simply inject a view (defined as a <strong>UserControl</strong>) in the aforementioned region by using one of the UI composition methods provided by Prism. For example, if you have a <strong>UserControl </strong>named <strong>HelloWorldView </strong>you can inject it by:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: green;\">// Using view injection,</span>\r\n<span style=\"color: blue;\">var</span> view = ServiceLocator.Current.GetInstance&lt;HelloWorldView&gt;();\r\n_regionManager.Regions[<span style=\"color: #a31515;\">\"MainRegion\"</span>].Add(view);\r\n\r\n<span style=\"color: green;\">// or using view discovery.</span>\r\n_regionManager.RegisterViewWithRegion(<span style=\"color: #a31515;\">\"MainRegion\"</span>, <span style=\"color: blue;\">typeof</span>(Views.HelloWorldView));\r\n</pre>\r\n</div>\r\n</p>\r\n<p><strong>Prism </strong>will automatically wrap the <strong>UserControls </strong>(views) inside a <strong>TabItem </strong>(one for each view) and add them to the <strong>TabControl</strong>.</p>\r\n<p>Also, I believe you might find the <strong>UI Composition labs</strong> provided in the <strong>Prism Training Kit</strong> interesting:</p>\r\n<ul>\r\n<li><a href=\"http://prismtk.codeplex.com/\">Prism Training Kit</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-05-28T10:59:04.453-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

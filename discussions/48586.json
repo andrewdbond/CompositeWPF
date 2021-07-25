@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "162219",
+    "ThreadId": "48586",
+    "Html": "<p>Yesterday we did try to go from Prism v1 to Prism v2 in our WPF application.<br>\r\nNow some functionality isn't working anymore, it all has to do with region behavior.<br>\r\n<br>\r\nWhen activating a view in a TabControl region then all the other views automaticaly deactivated, even if someone else said it has to deactive.<br>\r\nNow it only works when the TabControl itself says it.<br>\r\n<br>\r\nWe have a workregion defined in xaml<br>\r\n<span style=\"font-size:13px;color:#0000ff\">&lt;</span><span style=\"font-size:13px;color:#a31515\">TabControl</span><span style=\"font-size:13px;color:#ff0000\"> Name</span><span style=\"font-size:13px;color:#0000ff\">=&quot;WorkRegion&quot;</span><span style=\"font-size:13px;color:#ff0000\"> cal</span><span style=\"font-size:13px;color:#0000ff\">:</span><span style=\"font-size:13px;color:#ff0000\">RegionManager.RegionName</span><span style=\"font-size:13px;color:#0000ff\"><span style=\"font-size:13px;color:#0000ff\">=&quot;WorkRegion&quot;\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n</span>\r\n<p>&nbsp;</p>\r\n</span></p>\r\n<p>And from a listview in another region we can 'navigate' thru our active views.<br>\r\nIn our application layer we don't allow a presenter or view without a controller, so each usecase there is always an controller.<br>\r\nUntil now we didn't need to deactive another controller because like i wrote above, it automaticaly became deactivated because it presents a view that deactivated.<br>\r\n<br>\r\nI see that alot changed in Prism v2 with Region Behaviors.<br>\r\n<br>\r\nThe SelectorItemsSourceSyncBehavior is being hit after calling the Region.Deactive(view), but the sender and the source are differend when the navigate listview says it.<br>\r\nLine 182:   if source == sender   --&gt; false<br>\r\n<br>\r\nI don't know if this is supposed to be this way, or if i can replace the behavior with SingleActiveRegion or something (plz explain how) hehe<br>\r\n<br>\r\nGreetings,<br>\r\nRaymond de Jong</p>\r\n",
+    "PostedDate": "2009-02-26T01:41:58.603-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "162283",
+    "ThreadId": "48586",
+    "Html": "Hi Raymond,<br>\r\n<br>\r\nThis is a known issue with Prism 2.0.<br>\r\nBecause there is a high severity issue with the brand new update of Silverlight (read about it <a href=\"http://www.codeplex.com/CompositeWPF/Wiki/View.aspx?title=Fix: CAL Build failure with Silverlight GDR update\">here</a>), we will be creating a new release that fixes that issue, and we were able to squeeze a fix for the TabControl behavior that you are experiencing, to make it work as in Prism 1.0.<br>\r\nAs of now, only these 2 issues will be fixed, and there will be no other change to the current release. <br>\r\n<br>\r\nMake sure to check back here very soon,<br>\r\nJulian Dominguez<br>\r\n<a href=\"http://blogs.southworks.net/jdominguez\">http://blogs.southworks.net/jdominguez</a><br>\r\n<br>\r\n",
+    "PostedDate": "2009-02-26T05:06:48.077-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "162336",
+    "ThreadId": "48586",
+    "Html": "Ok, glad to hear that it's wrong behavior and marked as a bug.<br>\r\nI'll wait with patience for the next release (or official bugfix)<br>\r\n<br>\r\nThanks<br>\r\n",
+    "PostedDate": "2009-02-26T07:27:00.7-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "162458",
+    "ThreadId": "48586",
+    "Html": "We've refreshed the release so this should work as it did in V1.&nbsp; You can get it from <a href=\"http://www.microsoft.com/downloads/details.aspx?FamilyID=fa07e1ce-ca3f-4b9b-a21b-e3fa10d013dd&DisplayLang=en\">MSDN. </a><br>\r\nLet us know if the fix solves your problem.<br>\r\n",
+    "PostedDate": "2009-02-26T11:57:00.507-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "162696",
+    "ThreadId": "48586",
+    "Html": "The fix solved my problem!<br>\r\n<br>\r\nOur chicken is now happy :)<br>\r\nIf u know what i mean hehe, perhaps it might be strange language to u.\r\n",
+    "PostedDate": "2009-02-27T03:48:13.47-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "162715",
+    "ThreadId": "48586",
+    "Html": "Good to know that it works for you too.<br>\r\n<br>\r\nBy the way, it's not a strange language. Patterns &amp; Practices is all about agile.<br>\r\nYou can check this blog post (from Glenn Block in Prism v1): <a href=\"http://codebetter.com/blogs/glenn.block/archive/2008/04/27/the-prism-team-and-how-we-develop.aspx\">The Prism Team and How We Develop</a><br>\r\nOr even <a href=\"http://www.ademiller.com/blogs/tech/\">Ade Miller's blog</a> (p&amp;p's dev lead) where you'll find several posts about agile, and even a scrum bestiary (not only chickens &amp; pigs there).<br>\r\n<br>\r\nRegards,<br>\r\nJulian Dominguez\r\n",
+    "PostedDate": "2009-02-27T05:08:59.507-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

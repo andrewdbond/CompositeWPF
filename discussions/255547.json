@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "604076",
+    "ThreadId": "255547",
+    "Html": "\r\n<p>I would like to implement a menu with a list of last recently navigated views within a region. I would like to use the entries in the navigation journal as the dataset for the menu list. It seems that the navigation journal provided by prism 4 doesn't provide\r\n access to the entries in the journal. In the the Developer's guide to Prism it is noted that it's possible to implement a custom navigation journal for a region.</p>\r\n<p>How can I implement a custom navigation journal and configure it in my specific region?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks.</p>\r\n<p>Marco</p>\r\n",
+    "PostedDate": "2011-04-28T04:50:42.37-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "604100",
+    "ThreadId": "255547",
+    "Html": "<p>Hi Marco,</p>\r\n<p>You can implement a custom Region Navigation Journal by creating a class that implements the <strong>IRegionNavigationJournal </strong>interface, and export it to the dependency injection container that you use.</p>\r\n<p>For example, the <strong>MefRegionNavigationJournal </strong>class, which is responsible for providing an export of the default <strong>RegionNavigationJournal </strong>class mentions the following:</p>\r\n<p>\"This allows the <strong>MefBootstrapper </strong>to provide this class as a default implementation. <em>If another implementation is found, this export will not be used.</em>\"</p>\r\n<p>In case you're using Unity, you could override the <strong>ConfigureContainer</strong> method and register your custom <strong>RegionNavigationJournal </strong>before calling the base implementation. That would result in your implementation overriding the default one.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-04-28T06:08:53.34-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "604222",
+    "ThreadId": "255547",
+    "Html": "<p>Hi Guido</p>\r\n<p>Ok, that could work. If I register my custom navigation journal in the Bootstrapper my custom navigation journal will be used in every region. I'm not sure if this will be a problem. I will certainly give it a try.</p>\r\n<p>Thanks.</p>\r\n<p>&nbsp;</p>\r\n<p>Marco</p>",
+    "PostedDate": "2011-04-28T09:23:37.54-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

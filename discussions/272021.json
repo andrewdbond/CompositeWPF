@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "669566",
+    "ThreadId": "272021",
+    "Html": "\r\n<p>New to this..</p>\r\n<p>I am porting my SL project to prism.</p>\r\n<p>I have multiple (4) modules. One of them is the CommandDispatch Module which essentially houses a toolbar. This sits in the &quot;CommandRegion&quot; of the window - at the top.</p>\r\n<p>When I click on certain buttons, I want the different views to be places in the main &quot;contentregion&quot;</p>\r\n<p>In each module I have a View and ViewModel.</p>\r\n<p>So, my project structure is something like</p>\r\n<p>main<br>\r\n&nbsp; &nbsp; Shell.xaml...</p>\r\n<p>commandDispatch<br>\r\n&nbsp; &nbsp; &nbsp; ViewModels<br>\r\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; commandDispactView.xaml<br>\r\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;commandDispacthViewModel.cs</p>\r\n<p>Module1<br>\r\n&nbsp; &nbsp; ViewModels&nbsp;<br>\r\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Module1View.xaml<br>\r\n&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ModuleViewModel.cs&nbsp;</p>\r\n<p>and so on....</p>\r\n<p>Since these are all separate modules and separate project, I am confused about how to create a URI within my commandDispatchViewModel.cs that navigates to Module1.</p>\r\n<p>At the top of the class definition of Module1, I decorate with [Export (&quot;Module1View&quot;)]</p>\r\n<p>when I need to navigate, I have tried:<br>\r\n&nbsp; &nbsp; regionManager.RequestNavigate(&quot;ContentRegion&quot;, new Uri(&quot;/Module1View;component/Module1&quot;, UriKind.Relative)); &nbsp; &nbsp;<br>\r\n&nbsp; &nbsp; regionManager.RequestNavigate(&quot;ContentRegion&quot;, new Uri(&quot;/Module1View;component/Module1.ViewModels&quot;, UriKind.Relative));&nbsp;</p>\r\n<p>and a couple of other combinations.</p>\r\n<p>So, HOW DO I compose the URI?</p>\r\n<p>&nbsp;</p>\r\n<p>thanks,</p>\r\n<p>jas</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-09-09T01:53:29.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "669804",
+    "ThreadId": "272021",
+    "Html": "<p>Hi,</p>\r\n<p>By default, the navigation <strong>URI </strong>specifies the <strong>contract name </strong>of a view that is registered in the container. Therefore you could create your <strong>URI </strong>like the code below:</p>\r\n<p style=\"padding-left: 30px;\">regionManager.Regions[<span style=\"color: #a31515;\">\"MyRegion\"</span>].RequestNavigate(<span style=\"color: blue;\">new</span> Uri(<span style=\"color: #a31515;\">\"Module1View\"</span>, UriKind.Relative));</p>\r\n<p>When the region navigation service creates a view, it requests a type of <strong>Object </strong>from the container with a name that matches the one supplied in the navigation <strong>URI</strong>.</p>\r\n<p>Various containers provide different registration mechanisms to support this.</p>\r\n<p>In MEF, it is implemented differently and only the <strong>contract name</strong> is used. Therefore, as long as the view is exported with a <strong>contract name</strong> that matches the name in the <strong>URI </strong>request, the view can be successfully constructed.</p>\r\n<p>You'll find more information regarding that in the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=PandP.40).aspx#sec8\">Chapter 8: Navigation, Basic Region Navigation</a></li>\r\n</ul>\r\n<p><br />I hope you find this helpful</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-09-09T10:53:45.213-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "670065",
+    "ThreadId": "272021",
+    "Html": "<p>Thanks aadami. Will check out the refrence.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-09-10T08:12:59.113-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

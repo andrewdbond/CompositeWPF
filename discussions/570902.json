@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1317621",
+    "ThreadId": "570902",
+    "Html": "In an application I create a primary shell in the usual way using a bootstrapper that calls ConfigureModuleCatalog, CreateShell and InitializeShell in this order. Works fine.\r<br />\nIn order to display a new window with detailed information on a patient selected in one of the primary shell's Views a new PatientBootstrapper gets executed that creates a new Shell. It also includes the ConfigureModuleCatalog, CreateShell and InitializeShell sequence.\r<br />\nDuring this process a Presenter associated with a View registered in this new shell subscribes to an Event using an IEventAggregator injected in its constructor (through the Unity framework). At a later stage that Event is fired from the primary Shell's content, also using an injected IEventAggregator.\r<br />\nIt turn's out that both IEventAggregators are different, judging from the Events registered in them. One is associated with the primary Shell, the other with the new Shell. As a result there is no follow-up to the fired event.\r<br />\nQuestions:<br />\n<ol>\n<li>Where and when is the second IEventAggregator constructed?</li>\n<li>How do I force a common IEventAggregator in all created Shells?</li>\n</ol>\n",
+    "PostedDate": "2014-10-30T03:53:21.92-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1317897",
+    "ThreadId": "570902",
+    "Html": "Regarding question 2:\r<br />\nIn the new PatientBootstrapper I now bypass ConfigureModuleCatalog altogether. Instead I resolve the initializers of the Modules directly, passing the original EventAggregator as an injected constructor parameter. This initializer in turn passes the EventAggregator to the Presenter(s), after which their associated Views are registered with regions in the usual way.\r<br />\nStill it seems awkward that the standard facilities of ConfigureModuleCatalog cannot be used to handle the initialization and registration in this case.<br />\n",
+    "PostedDate": "2014-10-31T01:49:23.69-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

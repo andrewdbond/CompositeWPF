@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "645564",
+    "ThreadId": "266057",
+    "Html": "\r\n<p>Hi there,</p>\r\n<p>I&rsquo;m creating an application that uses a wizard.</p>\r\n<p>The wizard is a new Window with its own region named &ldquo;WizardStepsRegion&rdquo; where all the steps (views) will be shown there and it has a button that when is pressed it shows a new UserControl (the step 2 of the wizard).</p>\r\n<p>It works well but when I close the wizard window and open it again without closing the application I get the following exception&nbsp;</p>\r\n<p>&ldquo;RegionCreationException&rdquo;. An exception occurred while creating a region with name 'WizardStepsRegion'. The exception was: System.ArgumentException: Region with the given name is already registered: WizardStepsRegion.</p>\r\n<p>I&rsquo;ve created a new simplified application that shows the same error I tried to keep it as simple as possible using the MVVM pattern only in the wizard to simplify the code. The solution can be downloaded from this link\r\n<a title=\"https://skydrive.live.com/?cid=737f94b0dcbc9094&sc=documents&id=737F94B0DCBC9094%212189\" href=\"https://skydrive.live.com/?cid=737f94b0dcbc9094&sc=documents&id=737F94B0DCBC9094%212189\">\r\nhttps://skydrive.live.com/?cid=737f94b0dcbc9094&amp;sc=documents&amp;id=737F94B0DCBC9094%212189</a></p>\r\n<p>The app is composed of two Windows the shell and the wizard. When you run it you'll see the shell with a button &quot;push me&quot; and when you push it the wizard is opened.</p>\r\n<p>Can someone help me to fix this and tell me why I get that exception the second time I open the Window?</p>\r\n<p>Thank you very much.</p>\r\n",
+    "PostedDate": "2011-07-21T07:24:52.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645684",
+    "ThreadId": "266057",
+    "Html": "<p>Hi,</p>\n<p>We've examined your sample and found that the problem is happening because the region is being registered in the region manager each time you show your wizard. As a workaround to prevent that, we've added the following line in the handler for the <strong>Closed </strong>method of your <strong>Wizard </strong>dialog:</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre>ServiceLocator.Current.GetInstance&lt;IRegionManager&gt;().Regions.Remove(<span style=\"color: #a31515;\">\"WizardStepsRegion\"</span>);\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>However, please note that in order to show views in a region inside a popup dialog, the recommended approach is to use the <strong>RegionPopupBehaviors</strong>, as in the Stock Trader Reference Implementation. You can find more information about it in this thread:</p>\n<p><a href=\"http://compositewpf.codeplex.com/discussions/265715\"><span>Modal Dialog </span></a></p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-21T10:39:40.853-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645744",
+    "ThreadId": "266057",
+    "Html": "<p>Hi Guido,</p>\r\n<p>Thank you very much for your help. I tried it and now it works :-)</p>\r\n<p>I spent some time looking for a way to remove the region but I failed so I supposed that there was no way to remove a region and I thought that the region is removed once it has no views but I removed the views and the error persisted so I didn't know what to do.</p>\r\n<p>Thank you for your help. I'll check now how work the RegionPopupBehaviors.</p>\r\n<p>Thank you.</p>",
+    "PostedDate": "2011-07-21T12:27:11.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1367437",
+    "ThreadId": "588407",
+    "Html": "Hi,\r<br />\n<br />\nI have a prism wpf application. In the shell I have defined ListBox as LeftPaneRegion.\r<br />\nThe views are added to this region using ViewExport Attribute\r<br />\ne.g.<br />\n<pre><code>[ViewExport(RegionName =LeftPaneRegion)]\n[PartCreationPolicy(CreationPolicy.NonShared)]\n[ViewSortHint(&quot;01&quot;)]\npublic partial class MyView1: IView, IActiveAware\n\n[ViewExport(RegionName =LeftPaneRegion)]\n[PartCreationPolicy(CreationPolicy.NonShared)]\n[ViewSortHint(&quot;02&quot;)]\npublic partial class MyView1: IView, IActiveAware\n</code></pre>\n\nWhen the application loads I want to select one of the view as default.\r<br />\nHow to achieve it?\r<br />\n<br />\nRegards,\r<br />\nSharda.<br />\n",
+    "PostedDate": "2015-03-19T23:31:52.32-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1368679",
+    "ThreadId": "588407",
+    "Html": "If driven from the module itself, should be able to just set the IsActive property of the view and raise the IsActiveChanged event.<br />\n",
+    "PostedDate": "2015-03-20T18:08:39.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1378351",
+    "ThreadId": "588407",
+    "Html": "Hi BrianNoyes,\r<br />\n<br />\nThanks for the response. I tried setting isActive to true in view's InitializeComponent function. But changing the isActive to true does not change IsSelected property of listboxitem. I want both of them to be in sync.\r<br />\n<br />\nRegards,\r<br />\nSharda.<br />\n",
+    "PostedDate": "2015-03-22T20:34:45.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1392899",
+    "ThreadId": "588407",
+    "Html": "Hi Sharda,\r<br />\nI apologize, I was remembering wrong. The region implementation will set the IsActive flag on a view that is activated by the user through the interactions of the container control, which was the scenario it was designed around, but there is not currently a way to get the region to switch the active view for you from a contained view or view model.\r<br />\n<br />\nI think this could be achieved through a custom RegionBehavior. I'll add an item to our backlog at <a href=\"http://github.com/prismlibrary\" rel=\"nofollow\">http://github.com/prismlibrary</a> for this, but if you want to take a look into creating a RegionBehavior that does this and submit a pull request over there that would be great.\r<br />\nBrian<br />\n",
+    "PostedDate": "2015-03-24T05:08:02.157-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1392927",
+    "ThreadId": "588407",
+    "Html": "On second thought, I'm not sure if that would be the best approach. One workaround at this point could also be to use PubSubEvents to notify the ViewModel for the parent region that a child view would like to become active, and leave it up to that parent ViewModel to do the activation. This may be better overall because there may be transient state in the current view for something like a TabControl where letting a child take control of the navigation by demanding it become active may be the wrong thing to do. The better way is to use the RequestNavigate means of activating an appropriate view within a region. That can be called from anywhere in a loosely coupled way, and leaves the views that are participating in the region in control of things like should the current view be navigated away from.<br />\n",
+    "PostedDate": "2015-03-24T05:18:14.43-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1393860",
+    "ThreadId": "588407",
+    "Html": "Hi Brian,\r<br />\n<br />\nThanks for the suggestion. Currently I think using RequestNavigate also this problem will arise. But I would have to try.\r<br />\n<br />\nCurrently I have implemented one workaround.\r<br />\nThe ChildView is implementing IActiveAware and IPartImportsSatisfiedNotification. IsActive Property is bound to IsSelectedItem of Listbox Region<br />\n<pre><code>    &lt;Style x:Key=&quot;RegionListItemContainerStyle&quot; TargetType=&quot;{x:Type ListBoxItem}&quot;&gt;\n        &lt;Setter Property=&quot;IsSelected&quot; Value=&quot;{Binding IsActive, Mode=TwoWay, NotifyOnSourceUpdated=True}&quot;/&gt;\n</code></pre>\n\nOn ImportSatisfy event in the child view, I am setting IsActive to true, which will update the ListboxItem IsSelected property and hence on UI we see that item is selected.\r<br />\n<br />\nRegards,\r<br />\nSharda.<br />\n",
+    "PostedDate": "2015-03-24T20:29:07.543-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1395407",
+    "ThreadId": "588407",
+    "Html": "Actually I like your solution even better! Leverage the power of data binding for what it was intended for - synchronizing state of two things. Well done.<br />\n",
+    "PostedDate": "2015-03-25T05:13:35.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

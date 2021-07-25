@@ -1,0 +1,85 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 9,
+    "Custom": "",
+    "Description": "I have a question on how to work with resourcedictionaries with compositewpf.\n \nI create an instance of a model in a resourcedictionary defined at my module. The module works on its own fine. However, when I try to load the module from the shell the reference to the resource dictionary is lost. I have tried different settings such as copying the file and changing its build action. I have also tried to use a Mergedictionaies in the app.xaml application definition file. \n'Cannot find resource named' is the error that is thrown from the xaml page that tries to load it. Is there a way to propagate this dictionary to the so the module can use in in the shell?",
+    "LastUpdatedDate": "2014-01-09T10:05:00.197-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-09-24T08:23:30.073-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ResourceDictionary in a Module",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 6,
+    "Id": 3020
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi\r\n\r\nYou should merge the ResourceDictionary located in your module at module start up. For example:\r\npublic void Initialize()\r\n{\r\n            ResourceDictionary dictionary = new ResourceDictionary();\r\n            dictionary.Source = new Uri(\"pack://application:,,,/MyModule;Component/MyModuleResourceDictionary.xaml\");\r\n            Application.Current.Resources.MergedDictionaries.Add(dictionary);\r\n}\r\n\r\nYou may find useful the following examples:\r\n- Presentation Model with DataTemplates in CompositeWPF (Prism) Sample: http://blogs.southworks.net/jdominguez/2008/09/presentation-model-with-datatemplates-in-compositewpf-prism-sample/\r\n- WindowRegionAdapter for CompositeWPF (Prism): http://blogs.southworks.net/ibaumann/2008/09/26/windowregionadapter-for-compositewpf-prism/\r\n\r\nHope it helps.\r\n\r\nIgnacio Baumann Fonay\r\nhttp://blogs.southworks.net/ibaumann/",
+      "PostedDate": "2008-10-01T11:13:18.183-07:00",
+      "Id": 156033
+    },
+    {
+      "Message": "Also, make sure you are running the bootstrapper from within the Application's Startup event, because if you are running it from the Application's constructor, the resource dictionaries will not be in place at that time.\r\n\r\nPlease let us know if you could solve the issue.\r\nJulian Dominguez",
+      "PostedDate": "2008-10-01T11:47:56.02-07:00",
+      "Id": 156034
+    },
+    {
+      "Message": "Hi\r\n\r\nRegarding the issue described by Julian Dominguez, we have just published an article in the Known Issues / Fixes section of Composite WPF KB:\r\n- http://www.codeplex.com/CompositeWPF/Wiki/View.aspx?title=Bootstrapper%20initialization%20is%20not%20at%20the%20Application%20Startup%20event%20in%20some%20of%20the%20Quickstarts%20and%20Documentation%20topics&referringTitle=Knowledge%20Base\r\n\r\nHope it helps.\r\n\r\nIgnacio Baumann Fonay\r\nhttp://blogs.southworks.net/ibaumann/",
+      "PostedDate": "2008-10-03T13:36:08.343-07:00",
+      "Id": 156035
+    },
+    {
+      "Message": "We were able to get it to work by placing in the Application.Resources a merge Dictionary. Such as follows:\r\n\r\n            \r\n                 \r\n            \r\n\r\n\r\nThis is essentially the same as the later quote by ibaumann. There were some additional steps such as setting the dictionaries build action as \"Resource\" but we were able to get it to work. \r\n\r\nIt would be nice if the shell did a discovery of the resources (not just a dictionary) in a module and loads them during runtime but I am happy with what we have. Thanks for your help.",
+      "PostedDate": "2008-10-07T12:37:37.257-07:00",
+      "Id": 156036
+    },
+    {
+      "Message": "Another solution I found was to allow WPF to discover your resources for you. Before I discovered this solution, I had a declaration to my resources in a merged dictionary for each Xaml that needed it. This was annoying.\r\n\r\nThis issue, specifically towards the end of the posting [Sep 3 at 11:34 AM], describes the steps of how I was able to declare my reference to resources in a centralized fashion for my module.\r\nhttp://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=34723\r\n\r\nHope this helps.\r\n\r\nAndres Olivares",
+      "PostedDate": "2008-10-09T04:31:36.937-07:00",
+      "Id": 156037
+    },
+    {
+      "Message": "Hi,\r\n\r\nBased on my understanding, there is a known issue in Prism where if you have a ResourceDictionary defined inside a module, this ResourceDictionary will not be available in the application at runtime. For those having problems with this I believe you can find the following blog post by Guido Maliandi useful, where a possible approach to work around this behavior is proposed:\r\n - How to: define module-specific resource dictionaries in Prism (http://blogs.southworks.net/gmaliandi/2012/01/how-to-define-module-specific-resource-dictionaries-in-prism/)\r\n\r\nYou can find more information about this in Prism's knowledge base:\r\n - Using resource dictionaries in modules (http://compositewpf.codeplex.com/wikipage?title=Using%20resource%20dictionaries%20in%20modules)\r\n\r\nAlso, there is an existing work item, which seems to be related to this same subject:\r\n - Add ability to create resource dictionaries shared between all modules. (http://compositewpf.codeplex.com/workitem/3504)\r\n\r\nI hope you find this useful,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-01-31T08:55:40.877-08:00",
+      "Id": 156038
+    },
+    {
+      "Message": "other than the approach Guido provide, I implement it using below solution:\r\nusethe ModuleExport attribute and the Initialize method of IModule interface on specific modules. Inside Initialize method, \r\n            ResourceDictionary dictionary = new ResourceDictionary();\r\n            dictionary.Source = new Uri(\"pack://application:,,,/ModuleA;component/Resources/Styles.xaml\");\r\n            Application.Current.Resources.MergedDictionaries.Add(dictionary);\r\n\r\nBy default, it will fail to display the window because the execution sequence about Module initialization and Shell initialization. If move the shell initialization after module inistialization(actually we have the source codes of Prism), it works.\r\n\r\nBut I have concerns about the lazy module initialization. I think the best choice is extend the ModuleExportAttribute and IModuleExport interface to allow plug-in developers provide resource URI for shell to load before module initialization. Does anyone have comments on it?",
+      "PostedDate": "2012-02-13T02:04:50.293-08:00",
+      "Id": 156039
+    },
+    {
+      "Message": "Hi Jeffrey,\r\n\r\nIn my opinion, I believe that extending the ModuleExportAttribute to provide URIs of resources that should be loaded before the initialization of modules is a valid suggestion.\r\n\r\nAs far as I know, this suggestion seems to be very similar to the approach proposed by Guido Maliandi in his blog post (http://blogs.southworks.net/gmaliandi/2012/01/how-to-define-module-specific-resource-dictionaries-in-prism/) with the difference that he created a new ModuleResourceAttribute instead of extending the ModuleExportAttribute. Therefore, for those interesting in adding this functionality in your application, I believe you will find the aforementioned blog post useful.\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-03-23T10:37:02.9-07:00",
+      "Id": 156040
+    },
+    {
+      "Message": "I found if you don't have at least the following in your App.xaml resources will not load:\r\n\r\n```                                   ```",
+      "PostedDate": "2014-01-09T10:04:15.427-08:00",
+      "Id": 156041
+    }
+  ]
+}

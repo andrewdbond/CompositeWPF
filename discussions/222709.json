@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "477328",
+    "ThreadId": "222709",
+    "Html": "I'm using Fluent Ribbon (http://fluent.codeplex.com/) and want to place a Region in the Ribbon Backstage.<br>\r\n<br>\r\n&lt;fluent:RibbonWindow x:Class=&quot;Shell&quot; ....&gt;<br>\r\n&lt;fluent:Ribbon ...&gt;<br>\r\n&lt;fluent:Ribbon.BackstageItems&gt;<br>\r\n&lt;fluent:Ribbon.BackstageTabItem ...&gt;<br>\r\n&lt;ContentControl cal:RegionManager:RegionName=&quot;MyRegionName&quot; /&gt;<br>\r\n&lt;/fluent:Ribbon.BackstageTabItem&gt;<br>\r\n&lt;/fluent:Ribbon.BackstageItems&gt;<br>\r\n&lt;/fluent:Ribbon&gt;<br>\r\n&lt;/fluent:RibbonWindow&gt;<br>\r\n<br>\r\nUnfortunately, this doesn't work. As far as I know the reason is the following: In the fluent ribbon, the backstage items are not in the same logical tree as the RibbonWindow - they are in an adorner. But the RegionManager is attached to the Shell/RibbonWindow and can only be found from the ContentControl by walking up the logical tree.<br>\r\n<br>\r\nTo solve this I think I would have to attach the region manager manually to a parent of the backstage items (this does not seem to be possible in fluent, as the backstage and backstageButton are private and the BackstageItems is not a DependencyProperty) or even to each BackstageTabItem (which kind of defeats the purpose of using CAL in the first place.)<br>\r\n<br>\r\nDoes anyone have a better idea?<br>\r\n<br>\r\nThanks!",
+    "PostedDate": "2010-08-06T04:37:47.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "480914",
+    "ThreadId": "222709",
+    "Html": "Could the region manager maybe somehow detect it's in an adorner and search in the adorned element's logical tree, too?",
+    "PostedDate": "2010-08-16T03:34:04.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "502704",
+    "ThreadId": "222709",
+    "Html": "<p>Hi,</p>\r\n<p>I am not aware how Fluent Ribbon works. But if you need to expose a UI  control as a region, you could create a Region Adapter. For more information on  this topic you could take a&nbsp; look at the following documentation section on  MSDN:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921129(PandP.20).aspx\">How to:  Create a Custom Region Adapter</a></li>\r\n</ul>\r\n<p>On the other hand, if BackstageItems derives from ItemsControl, it will be  able to act as a region.</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-05T14:06:12.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "508667",
+    "ThreadId": "222709",
+    "Html": "<p>Hi,</p>\r\n<p>Let me clarify and simplify. Assume there's a third party control that presents some of my UI in a special adorner:</p>\r\n<pre style=\"font-family:consolas\"><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">UserControl</span><span style=\"color:red\">&nbsp;x</span><span style=\"color:blue\">:</span><span style=\"color:red\">Class</span><span style=\"color:blue\">=</span><span style=\"color:blue\">&quot;ThirdPartyControl&quot;</span><span style=\"color:red\"> ...</span><span style=\"color:blue\">&gt;</span><br><span style=\"color:#a31515\">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">AdornerDecorator</span><span style=\"color:blue\">&gt;</span><br><span style=\"color:#a31515\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">ContentPresenter</span><span style=\"color:blue\"> /&gt;</span><span style=\"color:blue\">&nbsp;</span><br><span style=\"color:#a31515\">&nbsp;&nbsp;&nbsp;&nbsp;</span><span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">AdornerDecorator</span><span style=\"color:blue\">&gt;</span><br><span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">UserControl</span><span style=\"color:blue\">&gt;</span><span style=\"color:blue\"></span></pre>\r\n<p>In that part of my UI I want to put a region:</p>\r\n<pre style=\"font-family:consolas\"><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">Window</span><span style=\"color:red\"> x</span><span style=\"color:blue\">:</span><span style=\"color:red\">Class</span><span style=\"color:blue\">=</span><span style=\"color:blue\">&quot;MyMainWindow&quot;</span><span style=\"color:red\"> ...</span><span style=\"color:blue\">&gt;</span><br><span style=\"color:#a31515\">&nbsp; &nbsp; </span><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">ThirdPartyControl</span><span style=\"color:blue\">&gt;</span><br><span style=\"color:#a31515\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">ItemsControl </span><span style=\"color:red\">RegionManager</span><span style=\"color:blue\">:</span><span style=\"color:red\">RegionName</span><span style=\"color:blue\">=</span><span style=\"color:blue\">&quot;MyRegion&quot;</span><span style=\"color:blue\">&nbsp;/&gt;</span><br><span style=\"color:#a31515\">&nbsp;&nbsp;&nbsp; </span><span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">ThirdPartyControl</span><span style=\"color:blue\">&gt;</span><br><span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">Window</span><span style=\"color:blue\">&gt;</span></pre>\r\n<ul>\r\n<li><strong>Problem</strong>: The above attached property<span style=\"color:red\"> RegionManager</span><span style=\"color:blue\">:</span><span style=\"color:red\">RegionName</span><span style=\"color:blue\">=</span><span style=\"color:blue\">&quot;MyRegion&quot;</span> will not work. (Assuming only<span style=\"color:blue\"> MyMainWindow</span> is registered with<span style=\"color:#2b91af\"> RegionManager</span>.SetRegionManager(<span style=\"color:blue\">&nbsp;</span>myMainWindowShell,&nbsp;regionMgr); )</li>\r\n</ul>\r\n<ul>\r\n<li><strong>Reason</strong>: The attached property event handler searches for <em>regionMgr</em> by walking up the logical tree. The adorner prevents this from working, Since the adorner content (the region) is not in the same logical tree as the container (<em>myMainWindowShell</em>).</li>\r\n</ul>\r\n<ul>\r\n<li>My <strong>solution </strong>so far: Call <span style=\"color:#2b91af\">RegionManager</span>.SetRegionManager(uiElementInAdorner,&nbsp;regionMgr); where <em>uiElementInAdorner</em> is the ItemsControl in the adorner.</li>\r\n</ul>\r\n<ul>\r\n<li><strong>Downside </strong>of this solution: There are actually multiple regions in that adorner. Attaching the <em>regionMgr</em> to each region seems like a weak solution. A slight improvement would be to attach <em>regionMgr</em> to a common parent of all regions. (The parent would still have to be inside the adorner for this to work.) The ThirdPartyControl does currently not expose or allow for such a parent, so this is nont possible however.</li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n<ul>\r\n<li>My <strong>preferred solution</strong>: The Prism regions library is changed to work natively with adorners. (Not sure if this is feasible or realistic.)</li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n<ul>\r\n<li>Regarding <strong>your proposal of a Region Adapter</strong>: I'm not sure how that would help. My UI control that should become a region already has a working region adapter. I don't think it would make sense or help to write a region adapter for the ThirdPartyControl.</li>\r\n</ul>\r\n<p>Cheers.</p>",
+    "PostedDate": "2010-10-18T00:39:41.973-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "508887",
+    "ThreadId": "222709",
+    "Html": "<p>Hi,</p>\r\n<p>Thanks for reporting that. I will copy this as a work-item, so the product team will be notified. Additionally, the community can vote this.</p>\r\n<p>I am glad that you found a possible workaround. I think that you can find interesting the following link, since a user has a similar scenario: <a href=\"http://social.msdn.microsoft.com/forums/en-US/wpf/thread/11d9dd6d-4f48-4274-a2ac-93b10bfe544d/\">Propogating inherited DPs to the adorner layer</a></p>\r\n<p>If you have a repro sample of this without the third-party control, could you please send it?</p>\r\n<p>Fernando Antivero    <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-18T09:55:44.417-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "508890",
+    "ThreadId": "222709",
+    "Html": "This discussion has been copied to a work item. Click <a href=\"http://compositewpf.codeplex.com/workitem/7391\">here</a> to go to the work item and continue the discussion.",
+    "PostedDate": "2010-10-18T10:06:39.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509171",
+    "ThreadId": "222709",
+    "Html": "<p>Hi</p>\r\n<p>Thanks. I will look into the linked discussion and if time permits try to create a repro sample.</p>\r\n<p>Cheers.</p>",
+    "PostedDate": "2010-10-19T00:23:27.847-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509220",
+    "ThreadId": "222709",
+    "Html": "<p>Added a repro sample to the work item.</p>",
+    "PostedDate": "2010-10-19T02:09:19.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "815950",
+    "ThreadId": "222709",
+    "Html": "<p>You can inherit from the third party control.</p>\r\n<p><span>In the static cto'r override the Backstage metadata with a property changed callback handler that adds the Backstage from the NewValue property of the event args, to the control's logical children.</span><br /><span>In the public cto'r register to loaded event in which you can remove the Backstage from the logical children.</span><br /><span>Override the LogicalChildren property so that get returns the control's Items and Backstage properties.</span></p>",
+    "PostedDate": "2012-03-27T01:49:34.817-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

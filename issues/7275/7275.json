@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2010-10-08T11:38:33.097-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Hi Again,\n \nI've spent a few hours with Drop7 (+a few mins with Drop 8) and the Navigation framework its shaping up nicely! A couple of comments/questions\n \n \nHow do we integrate/sync the browser's nav and journal with Prism's Navigation framework? (I may be missing something really obvious here\nAt present it isn't possible to have 2 views with the same Name (but in different namespaces) (e.g. 2 modules with a ModuleSummaryView in each) at present when navigating the LocatorNavigationTargetHandler.GetTargetView (drop7) assesses candidates based on the Type.Name and selects FirstOrDefault(), which is understandable. Is it possible to have the framework navigate to say something like /ModuleName/ModuleSummaryView (or even just GetType().FullName)? \n \nIf the plan is to have these Uri's exposed externally (i.e in the Browser's location bar) Perhaps have something along the lines of a UriMapper? Which should help with deeper navigation structures, for example /Level1/Level1.1/ViewName?query=2 etc (we also Localise our nav items where possible)\n \nThanks again for your efforts",
+    "LastUpdatedDate": "2013-05-16T05:28:48.313-07:00",
+    "PlannedForRelease": "Prism v4 - Drop 8",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-09-22T07:39:17.66-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Silverlight Navigation Framework/Region Integration",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 3,
+    "Id": 7275
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Karl will be doing a blog-post on this in the near future, so keep an eye out for it.\r\n\r\nThe quick answer is that we'll demonstrate replacing the region navigation service with one that delegates to silverlight navigation (this buys us silverlights deep linking and journaling) and have the addition of a custom content loader that will be able to load items from the region using the RegionNavigationContentLoader.  Unfortunately, we didn't have time to get this into the shipping bits with Prism, but via Karl's blog we'll show all the working pieces.\r\n\r\nWith SL intergration you will be able to rely on the SL Uri Mapper for some of what you want to do with friendly URI to region URI.  \r\n\r\nRegarding supporting more complex Uri schemes (such as /Module/SomeView), for this you would need to override the RegionNavigationContentLoader to support that scheme.  \r\n\r\nHTH,\r\n\r\n-b",
+      "PostedDate": "2010-10-08T11:38:26.1-07:00",
+      "Id": 156319
+    }
+  ]
+}

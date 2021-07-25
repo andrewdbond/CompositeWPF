@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "828335",
+    "ThreadId": "353521",
+    "Html": "<p>Hi all,</p>\n<p>&nbsp; &nbsp; &nbsp; I have a main region where in I load views. I load different views in the main region. The problem is that prism is keeping these views in memory and loading these views when I switch between views using RegionManager.RequestNavigate. For example if  I load View-A in main region, then navigate to View-B in the same main region and then navigate back to View-A then the View-A is not newly created. It is the same view that was there before I navigated to View-B.&nbsp;</p>\n<p>So the issue is how to clear the Views from memory (when navigated from), so that prism cannot re-use those views. In the above example when I navigate to View-B, I want the View-A (and all its sub-views) to be completely destroyed, so that when I navigate  back to View-A, I get a completely new instance of View-A (and its nested sub-views).&nbsp;</p>\n<p>Here is what I have tried</p>\n<p>Downloaded prism 4.1 and used in MainRegion ClearChildViews=\"True\" attribute like this on the main region</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">ContentControl</span> <span style=\"color: red;\">prism:RegionManager.RegionName</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">{x:Static g:RegionNames.MainRegion}</span><span style=\"color: black;\">\"</span> <span style=\"color: red;\">Grid.Column</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">2</span><span style=\"color: black;\">\"</span>\n                                <span style=\"color: red;\">prism:ClearChildViewsRegionBehavior.ClearChildViews</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">True</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">/&gt;</span>\n\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>I also used the above ClearChildViews in each of sub-regions of main region but without success</p>\n<p>I used RegionMemberLifetime attribute in each views as given below</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre>    [Export(<span style=\"color: #a31515;\">\"SContactMainView\"</span>)]\n    [PartCreationPolicy(CreationPolicy.Shared)]\n    [RegionMemberLifetime(KeepAlive=<span style=\"color: blue;\">false</span>)]\n    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> SContactMainView : UserControl {\n        <span style=\"color: blue;\">public</span> SContactMainView() {\n            InitializeComponent();\n        }\n    }\n\n</pre>\n</div>\n<p>&nbsp;</p>\n<p><span style=\"background-color: white;\">If anyone knows how to destroy existing views from a region and its nested-regions when a different view is loaded, please help me.&nbsp;</span></p>\n<p>regards,</p>\n<p>Nirvan.</p>\n<p>Note: I had also posted same issue in StackOverflow forum, but its been more than a couple of days and I still not have had any response.</p>",
+    "PostedDate": "2012-04-25T05:43:04.433-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "828504",
+    "ThreadId": "353521",
+    "Html": "<p>Hi Nirvan,</p>\r\n<p>I believe that the problem you are experiencing could be related to the fact that your view is decorated with the <strong>PartCreationPolicy </strong>attribute set to <strong>CreationPolicy.Shared</strong> (this can be seen in the code snippet you posted above.) Based on my understanding, this means that <strong>MEF </strong>will threat your view as a \"singleton\" and will always return the same instance of the view. Therefore, when performing a navigation request, it seems that the view is removed from the region; but when Prism asks for a new instance of the view <strong>MEF </strong>returns the same instance that was removed.</p>\r\n<p>You can try decorating your view with the <strong>PartCreationPolicy </strong>attribute set to <strong>CreationPolicy.NonShared</strong> and check if this solves the problem you are experiencing.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-04-25T09:56:55.247-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "828732",
+    "ThreadId": "353521",
+    "Html": "<p>Damian,</p>\n<p>You were indeed correct that the PartCreationPolicy.Shared was the causing the same view to be returned by the container. I changed it to CreationPolicy.NonShared and resolved my issue. Thank you very much.</p>\n<p>regards,</p>\n<p>Nirvan.</p>",
+    "PostedDate": "2012-04-25T19:05:03.853-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "828750",
+    "ThreadId": "353521",
+    "Html": "<p>I have another related doubt/issue. After changing the PartCreationPolicy to Shared, I get the behavior I needed when switching views. But when I reload the same view, I still get the old instance of the view. For example, consider that I navigate to View-A. Now when I try to reload the View-A again, I still get the old instance of the View-A. In short switching different views produces new instances of view (exactly as I want), but reloading the same view returns the same instance.&nbsp;</p>\r\n<p>How do I reload a view with a new instance.</p>\r\n<p>regards,</p>\r\n<p>Nirvan.</p>",
+    "PostedDate": "2012-04-25T20:45:58.497-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "828891",
+    "ThreadId": "353521",
+    "Html": "<p>Hi Nirvan,</p>\r\n<p>Based on my understanding of your scenario, you may find the <strong>INavigationAware </strong>interface useful. As mentioned in the documentation, by implementing this interface, your view or view model can opt-in to participate in the navigation process.</p>\r\n<p>This way if your view returns false in its <strong>IsNavigationTarget</strong> method (defined in this interface), you should be able to retrieve a new instance of the view. In other words this allows an existing (displayed) view or view model to indicate whether it is able to handle the navigation request.</p>\r\n<p>You could find more information about this topic in the following chapter of the <strong>Prism </strong>documentation at MSDN:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40).aspx#sec9\">View and View Model Participation in Navigation</a></li>\r\n</ul>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-04-26T06:00:13.813-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "829155",
+    "ThreadId": "353521",
+    "Html": "<p>Augistin,</p>\r\n<p>Thanks for the link, but I have already implemented <strong>INavigationAware</strong>&nbsp;interface. My problem is that I have nested region. When the parent region is Navigated from to another parent region, <strong>NavigatedFrom</strong> callback is not called for the child views. An example will make it clear.</p>\r\n<p>I have <strong>Shell</strong> which contains <strong>MainRegion</strong>. I have a module <strong>ModuleA</strong>. The main view for <strong>ModuleA</strong> is <strong>ViewA</strong> which is loaded into Shell's <strong>MainRegion</strong>. <strong>ViewA</strong> contains a nested region <strong>RegionAA</strong> with view <strong>ViewAA</strong>. Now when I navigate from <strong>ModuleA</strong> to another module, the <strong>NavigatedFrom</strong> of <strong>ViewA</strong> is called, but the <strong>NavigatedFrom</strong> of <strong>ViewAA</strong> (contained inside ViewA) is not called. This suggests that the <strong>RegionAA</strong> and its view <strong>ViewAA</strong> is not cleared from memory, as a result of which I get <strong>RegionCreationException</strong> when I navigate back to <strong>ModuleA</strong>. What I was looking for is that when <strong>ModuleA</strong> is unloaded(<strong>NavigatedFrom</strong>), all its child views should be removed from memory (that is the <strong>NavigatedFrom</strong> of all child views inside <strong>ViewA</strong> should be invoked). But this doesn't happen despite of all the attempts that I tried (as mentioned previously).</p>\r\n<p>So the question boils down to : What is the best way to dispose nested regions ?</p>\r\n<p>regards,</p>\r\n<p>Nirvan</p>",
+    "PostedDate": "2012-04-26T17:56:37.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "829537",
+    "ThreadId": "353521",
+    "Html": "<p>Hi Nirvan,</p>\r\n<p>I reproduced this scenario based on your aforementioned descriptions. Also using the following attributes in my views:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>[Export(<span style=\"color: #a31515;\">\"ViewA\"</span>)]\r\n[PartCreationPolicy(CreationPolicy.NonShared)]\r\n[RegionMemberLifetime(KeepAlive=<span style=\"color: blue;\">false</span>)]\r\n</pre>\r\n</div>\r\n</p>\r\n<p>And the <strong>IsNavigationTarget </strong>method defined to return <strong>false</strong>. As the result, when I navigated from <strong>ViewA </strong>to <strong>ViewB </strong>and back I didn't found any problem. On the other hand, I found that when navigating from <strong>ViewA</strong> to a different instance of <strong>ViewA</strong> a<strong> RegionCreationException </strong>was thrown:</p>\r\n<p><em>An exception occurred while creating a region with name 'RegionAA'. The exception was: System.ArgumentException: Region with the given name is already registered: RegionAA</em></p>\r\n<p>As you mentioned it seems that when re-navigating to a different instance of the same view the aforementioned exception is raised because Prism tries to register the <strong>RegionAA </strong>again before removing the previous one.</p>\r\n<p>In my opinion, as a possible approach to work around this behavior you could try using <strong>Scoped regions</strong> which will allow a view to have its own instance of a region manager. However, <strong>Scoped regions</strong> currently are only available with view injection in <strong>Prism </strong>from out of the box, as you could find in the following work item:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/workitem/8927\">Navigation and ScopedRegions</a></li>\r\n</ul>\r\n<p>There you could find different proposed approaches to use <strong>Scoped regions</strong> with the Region Navigation functionality.</p>\r\n<p>Also, you can find more information about Scoped regions in the following link of the Prism documentation:<br /><br /></p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098(v=pandp.40).aspx#sec42\">Chapter 7: Composing the User Interface, Creating Multiple Instances of a Region</a></li>\r\n</ul>\r\n<p>As a side note, about why the call of the <strong>OnNavigatedFrom </strong>method of the view is not called, take into account that this method wouldn't be called in the inner views if the navigation request is performed in the \"<em>MainRegion</em>,\" and not in the inner ones. <br /><br />Additionally, regarding this subject you could find the following thread interesting:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/352230\">OnNavigatedFrom is not being called for views inside nested regions</a></li>\r\n</ul>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-04-27T13:42:47.023-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "830066",
+    "ThreadId": "353521",
+    "Html": "<p>Augustin,</p>\n<p>Based on you suggestion, I decided to use scoped regions and I picked up the \"<a id=\"FileLink1\" href=\"http://compositewpf.codeplex.com/Download/AttachmentDownload.ashx?ProjectName=compositewpf&amp;WorkItemId=8927&amp;FileAttachmentId=2971\">ImprovedScopedRegionSample.zip</a>\"  from <a href=\"http://compositewpf.codeplex.com/workitem/8927\" target=\"_blank\">Navigation and ScopedRegions</a>&nbsp;. The Scoped region managers were instantiated when the view was marked with&nbsp;[ScopedRegionManager] attribute. Also, using the RegionManager attached  property, it was possible to set the LocalRegionManager in the view model.</p>\n<p>The only problem that I had was that the Child Views could not access the LocalRegionManager without manual wiring up. So I searched on net and found a RegionBehavior, which makes it easy for the Child Views to access the LocalRegionManager without any code.&nbsp;</p>\n<p>That resolves my issue. Thanks for all the help</p>\n<p>regards,</p>\n<p>Nirvan.</p>",
+    "PostedDate": "2012-04-30T00:50:43.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "872438",
+    "ThreadId": "353521",
+    "Html": "<p>Hi Nirvan</p>\r\n<p>Could you say a litttle more about the RegionBehavior you are referring to? Where can I find it and how do I use it? I am trying to do the same as you and would appreciate any help I can get.</p>",
+    "PostedDate": "2012-07-17T23:29:17.643-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "877431",
+    "ThreadId": "353521",
+    "Html": "<p>Hi Mfalcon,</p>\r\n<p>I believe you con find the <strong>region behavior</strong> that is included in this blog post useful:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/dcherubini/2011/11/10/regions-inside-datatemplates-in-prism-v4-using-a-region-behavior/\">Regions inside DataTemplates in Prism v4 using a region behavior</a></li>\r\n</ul>\r\n<p>After registering this behavior in the <strong>Bootstrapper </strong>of your application, when a view or view model that implements the <strong>IRegionManagerAware </strong>interface is injected in a region, the behavior will automatically set its <strong>RegionManager </strong>property to the corresponding <strong>RegionManager </strong>for the view.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-07-19T11:43:44.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

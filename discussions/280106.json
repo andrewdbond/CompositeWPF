@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "700634",
+    "ThreadId": "280106",
+    "Html": "<p>newbie question.&nbsp; I am building a Pism app that has multiple modules where each module will load thier own menus.&nbsp; ModuleA has a number of views and each view has an associated menu that gets loaded in the MenuRegion when the module loads.&nbsp; The current implementation that just loads the menus is working fine but the menu's are always enabled.&nbsp; I want to enable the menu when the view is activated and disable the menu when the view is deactivated.&nbsp; I define a view for each menu like the following:&nbsp; The MenuRegion is defined as a Menu</p>\n<pre><div style=\"background-color: white; color: black;\"><pre>&lt;MenuItem x:Class=<span style=\"color: #a31515;\">\"ModuleA.Views.ViewOneMenuView\"</span>\r\n             xmlns=<span style=\"color: #a31515;\">\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"</span>\r\n             xmlns:x=<span style=\"color: #a31515;\">\"http://schemas.microsoft.com/winfx/2006/xaml\"</span>\r\n             xmlns:mc=<span style=\"color: #a31515;\">\"http://schemas.openxmlformats.org/markup-compatibility/2006\"</span> \r\n             xmlns:d=<span style=\"color: #a31515;\">\"http://schemas.microsoft.com/expression/blend/2008\"</span> \r\n             mc:Ignorable=<span style=\"color: #a31515;\">\"d\"</span>\r\n             Header=<span style=\"color: #a31515;\">\"View One Menu\"</span>&gt;\r\n\r\n            &lt;MenuItem Header=<span style=\"color: #a31515;\">\"Item A\"</span> /&gt;\r\n            &lt;MenuItem Header=<span style=\"color: #a31515;\">\"Item B\"</span> /&gt;\r\n&lt;/MenuItem&gt;</pre>\n</div>\n</pre>\n<p><span style=\"color: blue;\"><span style=\"color: #000000;\">I add the menu to the MainMenu region when the Module loads as follows:</span></span></p>\n<pre style=\"font-family: Consolas; background: white; color: black; font-size: 13px;\">regionManager.RegisterViewWithRegion(<span style=\"color: #a31515;\">\"MainMenu\"</span>,&nbsp;<span style=\"color: blue;\">typeof</span>(<span style=\"color: #2b91af;\">ViewOneMenuView</span>));</pre>\n<p><span style=\"color: blue;\"><span style=\"color: #000000;\">Now I would like to enable or disable this menu when the associated view is enable/disabled.&nbsp; So in the ViewOneViewModel I thought I could do something like the following:</span></span></p>\n<p><span style=\"color: blue;\"><span style=\"color: #000000;\">&nbsp;</span></span></p>\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> OnNavigatedFrom(NavigationContext navigationContext)\r\n{\r\n    <span style=\"color: blue;\">var</span> regionManager = ServiceLocator.Current.GetInstance&lt;IRegionManager&gt;();\r\n    <span style=\"color: blue;\">var</span> region = regionManager.Regions[<span style=\"color: #a31515;\">\"MainMenu\"</span>];\r\n    UserControl menu = (UserControl)region.GetView(<span style=\"color: #a31515;\">\"ViewOneMenuView\"</span>);\r\n    menu.IsEnabled = <span style=\"color: blue;\">false</span>;\r\n}</pre>\n<p><span style=\"color: blue;\"><span style=\"color: #000000;\">This did not work since the menuItem being inserted into the MainMenu region is of type MenuItem which does not have a Name. and therfore region.getView() could not locate it.</span></span></p>\n<p><span style=\"color: blue;\"><span style=\"color: #000000;\">How do I fix this?</span></span></p>\n<p><span style=\"color: blue;\"><span style=\"color: #000000;\">Thanks</span></span></p>\n<p><span style=\"color: blue;\">&nbsp;</span></p>\n<p>&nbsp;</p>",
+    "PostedDate": "2011-11-19T11:14:10.707-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "700654",
+    "ThreadId": "280106",
+    "Html": "<p>The following seems to solve my problem but I want to know if it is the correct way.&nbsp; This works because there is only one ViewOneMenuView in the ManiMenu region.</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> OnNavigatedTo(NavigationContext navigationContext)\r\n        {\r\n            <span style=\"color: blue;\">var</span> regionManager = ServiceLocator.Current.GetInstance&lt;IRegionManager&gt;();\r\n            <span style=\"color: blue;\">var</span> region = regionManager.Regions[<span style=\"color: #a31515;\">\"MainMenu\"</span>];\r\n            ViewOneMenuView menuView = (ViewOneMenuView)region.Views.First(p =&gt; p.GetType() == <span style=\"color: blue;\">typeof</span>(ViewOneMenuView));\r\n            menu.IsEnabled = <span style=\"color: blue;\">true</span>;\r\n        }\r\n</pre>\r\n</div>",
+    "PostedDate": "2011-11-19T13:25:10.857-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "701215",
+    "ThreadId": "280106",
+    "Html": "<p>Hi,</p>\n<p>Based on my understanding of your scenario, the approach you mentioned seems to be a reasonable alternative.</p>\n<p>Also you could benefit from using commanding instead of manually modifying the <strong>IsEnabled </strong>property of your visual component. In other words you could bind your menu button to a command (e.g a <strong>DelegateCommand</strong>), and react accordingly when navigating to another view by changing something in the view model where the command resides, that causes the <strong>CanExecute </strong>method of that command to change. After doing this you should call the <strong>RaiseCanExecuteChanged </strong>method, to make the command refresh its state on the UI.</p>\n<p>For example, in the <strong>OnNavigatedTo </strong>method you could publish an event through the event aggregator, and subscribe to that event in your view model (where the command is placed), to react accordingly.</p>\n<p>You can find more information about commanding in the Prism documentation at MSDN:</p>\n<ul>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28v=PandP.40%29.aspx\">Communicating Between Loosely Coupled Components</a></li>\n</ul>\n<p>I hope you find this helpful.</p>\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-11-21T06:41:55.457-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "701904",
+    "ThreadId": "280106",
+    "Html": "<p>Thank you</p>\r\n<p>John</p>",
+    "PostedDate": "2011-11-22T09:51:57.097-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

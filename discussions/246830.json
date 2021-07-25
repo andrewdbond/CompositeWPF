@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "569295",
+    "ThreadId": "246830",
+    "Html": "\r\n<p>I started learning Prsim V4 using the Prism V4 Navigation integration with Silverlight navigation project. &nbsp;My plan was to create a new moduel based on the inventory module as it demonstrates lots of great concepts.</p>\r\n<p>The problem I am having is&nbsp;I'm trying to use the region manager request navigate function from a view model in a dynamically loaded module and it fails right away.</p>\r\n<div>\r\n<pre>_regionManager.RequestNavigate(RegionNames.MainContentRegion, Constants.AdministrationHomeView, PostNavigationCallback);</pre>\r\n<pre><br></pre>\r\n<pre><div><pre> <span>void</span> PostNavigationCallback(NavigationResult navigationResult)\r\n        {\r\n            <span>if</span> (navigationResult.Result == <span>true</span>)\r\n                MessageBox.Show(<span>&quot;Navigation Successful&quot;</span>);\r\n            <span>else</span>\r\n                MessageBox.Show(<span>&quot;Navigation Failed&quot;</span>);\r\n        }\r\n</pre>\r\n</div>\r\n</pre>\r\n<pre><br></pre>\r\n<pre>In the post navigation call back I noticed that the NavigationResult objects context property does not have a reference to a navigation service. </pre>\r\n<pre>It looks like I am not getting a reference to the region manager from the shell application.</pre>\r\n<pre><br></pre>\r\n<pre>In the ctor of my view model I am importing the region manager. It does get set to a valid object however it is not the region manager from the shell.</pre>\r\n<pre><br></pre>\r\n<pre><div><pre>[ImportingConstructor]\r\n<span>public</span> UserViewModel(\r\n      IRegionManager regionManager\r\n      )\r\n{\r\n\r\n _regionManager = regionManager;\r\n\r\n}\r\n</pre>\r\n</div>\r\n<br></pre>\r\n<pre>My view model is implementing the following interfaces: <pre><span>INavigationAware</span>,&nbsp;<span>IPageTitle</span>,&nbsp;<span>IRegionMemberLifetime</span><br></pre>\r\n<div><span><br></span></div>\r\nIf there is any additional information that I can provide please let me know.</pre>\r\n</div>\r\n",
+    "PostedDate": "2011-02-20T11:36:21.713-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "569787",
+    "ThreadId": "246830",
+    "Html": "<p>Hi,</p>\r\n<p>I try to reproduce your scenario using the <strong>Exercise 3 Hands-On-Lab</strong> solution, located in the <strong>Navigation</strong> <em>folder</em> of the <a href=\"http://prismtk.codeplex.com/\">Prism Training Kit</a></p>\r\n<p>In <strong>ModuleA</strong>, in the <strong>ModuleANavigationItemView</strong> on the <em>Button_Click</em> event I do this:</p>\r\n<p>\r\n<p><span style=\"font-size: 9.5pt;\" lang=\"EN-US\">\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">var</span> uri = <span style=\"color: blue;\">new</span> Uri(ViewNames.ModuleAView, UriKind.Relative);\r\nregionManager.RequestNavigate(RegionNames.MainRegion, uri, PostCallBack);\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\nand in the callback I have this code:</span></p>\r\n</p>\r\n<p>\r\n<p><span style=\"font-size: 9.5pt;\" lang=\"EN-US\">\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">if</span> (e.Result == <span style=\"color: blue;\">true</span>)\r\n        MessageBox.Show(<span style=\"color: #a31515;\">\"This MessageBox is working, go to target view!\"</span>);\r\n<span style=\"color: blue;\">else</span>\r\n        MessageBox.Show(<span style=\"color: #a31515;\">\"Something is not working ok\"</span>);\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n&nbsp;</span></p>\r\n</p>\r\n<p>In order to take another approach, since nothing in your code seems to be wrong, you could retrieve the instance of the <strong>RegionManager</strong> using the <strong>ServiceLocator</strong> in the constructor of your view model, like this:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">private</span> <span style=\"color: blue;\">readonly</span> IRegionManager regionManager;\r\n\r\n<span style=\"color: blue;\">public</span> UserViewModel()\r\n{\r\n     regionManager = ServiceLocator.Current.GetInstance&lt;IRegionManager&gt;();\r\n}\r\n</pre>\r\n</div>\r\n<p>If you continue experiencing this issue, could you provide us with a repro sample in order to reproduce you specific scenario?</p>\r\n<p>Please let me know if this information helps you.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>",
+    "PostedDate": "2011-02-21T12:09:55.747-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "570217",
+    "ThreadId": "246830",
+    "Html": "<p>This works, thank you for the response. &nbsp;</p>",
+    "PostedDate": "2011-02-22T08:01:21.35-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

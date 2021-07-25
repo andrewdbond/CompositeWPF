@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Hi,\r\n\r\nI have an Windows Phone 8 APP which runs great on most of the devices. But in the last few months customers reported APP crashes on their newer devices like Lumia 1520 oder 930. The App crashes sometimes when they press the BACK key to return to the MainPage. Error message is called\r\n\r\n\"Error HRESULT E_FAIL has been returned from a call to a COM component.\"\r\n\r\nI can't reproduce the error on my Lumia 1020 but I can reproduce the same error if I use the 6-inch 1080p Win 8.1 Emulator:\r\n1.Start the Win 8.1 1080p Emulator and set the device language and region to german (APP won't crash on en-US Emulators!)\r\n2.Use VS 2013 to build a new WP8 Project with Visual Basic, create a Main Page and a Sub Page\r\n3.Navigate from the Main Page to the Sub Page (Page1.xaml) with NavigationService.Navigate\r\n4.if the User clicks on a button to start speech recognition and speech recognition is not installed on that phone, a runtime error will be fired. Put this inside a try..catch..end Statement to work with the runtime error. \r\n5.if the runtime error is catched between try..catch..end, display an error message and return to MainPage.xaml by using NavigationService.GoBack()  ==> now the runtime Error will be displayed\r\n\r\nI recorded this behavior on a Video and included it together with the source code of the demo Project inside the attachment.\r\n\r\nAs I mentioned above, the runtime error will not be displayed on en-US emulators or on the 4-inch Standard 512 MB Emulator for example. \r\n\r\nStrange, isn't it?\r\n\r\nThe Workaround to turn SystemTray off (isVisible=False) will help inside the Emulator but not on real phones as my customers reported.\r\n\r\nHow can I debug the error or avoid it? It seems to be a bug in Windows Phone 8.1....\r\n\r\nThanks for any help\r\n\r\nRalf.\r\n",
+    "LastUpdatedDate": "2014-09-17T04:34:54.777-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2014-09-17T04:34:54.353-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "NavigationsService.Navigate fires runtime exception after catching a runtime error with try..catch..end on a sub page",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 10712
+  },
+  "FileAttachments": [
+    {
+      "FileId": 909471,
+      "FileName": "WinPhoneBug.zip",
+      "DownloadUrl": ".\\909471"
+    }
+  ],
+  "Comments": []
+}

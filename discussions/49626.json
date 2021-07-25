@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "166118",
+    "ThreadId": "49626",
+    "Html": "Hi!<br>\r\n<br>\r\nWhat tips can you give me to implement view change animation for views which resides in the same view?<br>\r\n<br>\r\nThere are 2 scenarios (for me):<br>\r\n- View change with &quot;module&quot; change. When the 2 different view is in 2 different modules. Like invoking different commands from a menu bar.<br>\r\n- View change within the same module, when the views are sharing the same viewmodel also.<br>\r\n<br>\r\nI'd like to follows these principals:<br>\r\n- Each view has a &quot;dedicated state&quot; in VSM declaration like: &quot;Visible&quot;, &quot;Hidden&quot;.<br>\r\n- Each view should implement an interface to abstract away the VSM stuff like a &quot;ISupportAnimatedViewChange&quot; and has 2 methods: Show, Hide.<br>\r\n<br>\r\nIn these method implementations when the state change animation is complete the completed event handler should publish a ViewHideComplete or ViewShowComplete event...<br>\r\n<br>\r\nSo these are my thoughts, which way should I go?<br>\r\n<br>\r\nThanks,<br>\r\nAttila\r\n",
+    "PostedDate": "2009-03-09T08:48:23.243-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "166160",
+    "ThreadId": "49626",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi Attila,</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:calibri\">If I understand correctly you want to show different views in the same region, and only one at a time. In this </span><a href=\"http://blogs.msdn.com/erwinvandervalk/archive/2009/03/02/how-to-build-an-outlook-style-application.aspx\"><span style=\"font-family:calibri\">post</span></a><span style=\"font-family:calibri\">, </span><a href=\"http://blogs.msdn.com/erwinvandervalk/\"><span style=\"color:#0000ff;font-family:calibri\">Erwin Van der Valk</span></a><span style=\"font-family:calibri\">, developer of the Prism-v2 team, explains how to do this by clicking different buttons (an approach similar to your command bar).</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:calibri\">As for the “dedicated state” you could publish an event in the method that shows each of the views and subscribe to it in all views(sort of a <b>ChangeActiveView</b> event). Depending on the sender all views should update their state (only active view is the one publishing the event). You can use the </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458915.aspx\"><span style=\"color:#0000ff;font-family:calibri\">Event Aggregator</span></a><span style=\"font-family:calibri\"> provided by Prism-v2 for this.</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">For more information on events:</span></p>\r\n<p style=\"margin:0cm 0cm 0pt 36pt\"><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458942.aspx\"><span style=\"color:#0000ff;font-family:calibri\">How to: Create and Publish Events</span></a>\r\n<p style=\"margin:0cm 0cm 0pt 36pt\"><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458904.aspx\"><span style=\"color:#0000ff;font-family:calibri\">How to: Subscribe and Unsubscribe to Events</span></a>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Please let me know if this helps.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\">Damian Schenkelman</span></p>\r\n<span style=\"font-size:11pt;font-family:'calibri','sans-serif'\"><a href=\"http://blogs.southworks.net/dschenkelman\"><span style=\"color:#0000ff\">http://blogs.southworks.net/dschenkelman</span></a></span></span></p>\r\n</span></p>\r\n",
+    "PostedDate": "2009-03-09T10:31:52.243-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "166222",
+    "ThreadId": "49626",
+    "Html": "Hi Damian!<br>\r\n<br>\r\nThanks, so what you wrote confirms my thoughts, so I'll go that way and also read Erwin's post :-)<br>\r\n<br>\r\nI'm familiar with the principals and components of CAL we're just in the middle of a SL app dev with CAL.<br>\r\n<br>\r\nRegards,<br>\r\nAttila\r\n",
+    "PostedDate": "2009-03-09T12:27:58.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

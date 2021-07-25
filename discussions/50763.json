@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "170195",
+    "ThreadId": "50763",
+    "Html": "I am currently going through the Prism samples and am confused by something in the ViewDiscoveryComposition sample. The Employee module contains both a EmployeesController and a EmployeesPresenter and I'm not entirely sure why.<br>\r\n<br>\r\nThe EmployeesPresenter presents the EmployeesPresentationModel to the EmployeesView, which binds the RegionContext of &quot;SelectionPanel&quot; region (populated with an EmployeesDetailsView by the EmployeesDetailsPresenter), but simply passes off SelectedEmployee change notifications to the EmployeeController, which then in turn loads a new EmployeeDetailsPresenter into the SelectionPanel region.<br>\r\n<br>\r\nDespite the obvious confusion that Prism is using MVC+MVP+MVVM, is there a diagram or video that explains the difference in responsibilities of presenters vs controllers within Prism?\r\n",
+    "PostedDate": "2009-03-20T07:25:01.55-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "170982",
+    "ThreadId": "50763",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi Richard,</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">You are probably right, and this approach is a bit of an overkill for this particular situation. But one of the things the <b>Prism</b>-<b>v2</b> team looked to accomplish with it was to show how composite views and scoped regions work, and this made this simple master-details scenario in something somewhat contrived, with very cohesive views coming from different places. It also shows that combining all these elements and patterns is a doable approach. (Say that someone felt comfortable with MVP but still wants to take advantage of the WPF binding capabilities that is best accustomed in the ViewModel).</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Although it is kind of confusing, try to think that in this particular scenario the <b>EmployeesController </b>is acting as a controller for the entire module (or cross module). If the module had some extra functionality that needed to be managed at a higher level than each of the views (or presenters really), this would be the best place to do it. As for the presenter and the view-model, as you said the <b>EmployeesPresenter</b> is only setting the model to the view, but it could handle more complex logic. </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"><b>Example</b>: if clicking a button in the view, was meant to load a different module, that logic should normally not be handled by the view. But, if the view notified the presenter, which in turn would notify the controller to load a new module that would be a better approach.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Please let me know if this helps.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\">Damian Schenkelman</span></p>\r\n<span style=\"font-size:11pt;font-family:'calibri','sans-serif'\"><a href=\"http://blogs.southworks.net/dschenkelman\"><span style=\"color:#0000ff\">http://blogs.southworks.net/dschenkelman</span></a></span>\r\n",
+    "PostedDate": "2009-03-23T12:47:54.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "170992",
+    "ThreadId": "50763",
+    "Html": "Hi Damian,<br>\r\n<br>\r\nThanks for that, it makes alot more sense now. Is the responsibility of the EmplyeesModule, then, only to handle initialisation?<br>\r\n<br>\r\nCheers,<br>\r\nRich\r\n",
+    "PostedDate": "2009-03-23T13:13:44.67-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

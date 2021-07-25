@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "256816",
+    "ThreadId": "75048",
+    "Html": "<p>I am creating a relatively simple project manager as a Prism learning exercise. The application is built around a collection of&nbsp;Project objects. Each Project has a Tasks property (a collection of Task objects).</p>\r\n<p>There are two main views in the application, and each view is a separate Prism Module:</p>\r\n<ul>\r\n<li>The Project View shows a Project and its Tasks.</li>\r\n<li>The Calendar View shows all Tasks for all Projects that are due on&nbsp;a selected date. </li>\r\n</ul>\r\n<p>In other words, Tasks are shown in each view. They are displayed on a WPF Toolkit DataGrid.&nbsp;</p>\r\n<p>My Task object has a Notes property (a collection of TaskNote objects). To see a Task's notes in either view, the user double-clicks a task on the DataGrid in the current view, and a dialog pops up with a list of notes for that task. And that's where my problem arises:</p>\r\n<p>Since the dialog can be invoked from either module, where should it be located? I hate to put a copy of the dialog in each module--that sort of duplication has a code smell to it. Any suggestions at to where to put the Notes dialog? Thanks in advance.</p>",
+    "PostedDate": "2009-11-13T08:34:55.21-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "256915",
+    "ThreadId": "75048",
+    "Html": "<p id=9d48ff20-b2bb-012c-6f3c-12313d0195d1>Hi</p>\r\n<p>You can use the <strong>PopupRegionBehavior </strong>that comes with the <a href=\"http://msdn.microsoft.com/en-us/library/dd458919.aspx\">RI</a> to achieve what you are trying to do in a decoupled way. You can read more about it <a href=\"View.aspx?ThreadId=65394\">here</a>.</p>\r\n<p id=9d4927f0-b2bb-012c-6f3e-12313d0195d1>Please let me know if this helps.</p>\r\n<p id=9d493c00-b2bb-012c-6f3f-12313d0195d1>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-11-13T12:05:16.977-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "256916",
+    "ThreadId": "75048",
+    "Html": "<p>Thanks, Damian! It sounds like the exact solution that I am looking for.</p>\r\n<p>For others researching this issue:</p>\r\n<p>1) Note that the class that creates the behavior is called<em> RegionPopupBehaviors</em>.</p>\r\n<p>2) Note also that there is a bug in Prism 2.0 that causes a popup region to throw an&nbsp;error if the region it contains has an items control, such as a DataGrid. The bug, and a suggested workaround, are discussed <a href=\"http://compositewpf.codeplex.com/wikipage?title=Popup region throws error if the region it contains has an items control.&referringTitle=Known Issues / Fixes\">here</a>.</p>",
+    "PostedDate": "2009-11-13T12:20:15.993-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

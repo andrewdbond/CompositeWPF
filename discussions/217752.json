@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "461245",
+    "ThreadId": "217752",
+    "Html": "<p>First off, is the View Injection QuickStart following the Supervising Presenter or Presentation Model Separated Presenation Pattern, or a mixture of the two? It seems to me if there is an EmployeesDetailsPresenationModel, then  there should be an EmployeesListPresentationModel and  EmployeesPresentationmodel as well.</p>\r\n<p>To me, the EmployeesDetailsPresenationModel seems unnecessary, why not just move its logic into the EmployeesDetailsPresenter? I am fairly new to Composite WPF and am having a hard time understanding this. Thanks in advance.</p>",
+    "PostedDate": "2010-06-29T09:06:41.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "462656",
+    "ThreadId": "217752",
+    "Html": "<p>anyone?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-07-02T07:28:01.723-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "467005",
+    "ThreadId": "217752",
+    "Html": "<p id=3da8df10-6ccf-012d-4ddd-1231390e04c1>Hi,</p>\r\n<p>Good question, based on the <a href=\"http://msdn.microsoft.com/en-us/library/ff647218.aspx\">Separated Patterns</a> in the <a href=\"http://msdn.microsoft.com/en-us/library/ff648611.aspx\">Prism documentation</a> this quickstart uses MVP with &ldquo;Presenter First Composition&rdquo;<strong>&nbsp;</strong>since the presenter is created first and then hooked up to a suitable view and a model.</p>\r\n<p>Additionally, <a href=\"http://msdn.microsoft.com/en-us/library/ff647388.aspx\">Supervising Pattern</a> as well as <a href=\"http://msdn.microsoft.com/en-us/library/ff647585.aspx\">Presentation Model</a> are variants of the MVP. This quickstart uses <a href=\"http://msdn.microsoft.com/en-us/library/ff647388.aspx\">Supervising Pattern</a>, since views are updated by presenters, and views interact with presentation models/models. Also this quickstart is mentioned in the <a href=\"http://msdn.microsoft.com/en-us/library/ff647388.aspx\">Supervising Pattern</a> under the section <strong>Example </strong>as sample.<strong> </strong></p>\r\n<p>Regarding to whether EmployeesPresentationModel and EmployeesListPresentationModel should exist, for an &quot;orthodox way&quot; the answer is yes, tough they are not strictly needed. The presentation models are needed when you want to bind a view to a non-existent property&nbsp;in&nbsp;the model. In this cases,&nbsp;a presentation model exposes those properties in a bind-able way without changing the model itself. For example, the EmployeesDetailsPresentationModel wrap the model to expose the AddressMapURL, which does not exist on the Employee model. For more information about data binding:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ms750612.aspx\">WPF</a> </li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/cc278072(VS.95).aspx\">Silvelight</a> </li>\r\n</ul>\r\n<p>It is possible to move the EmployeeDetailsPresentationModel logic&nbsp;to the presenter. But&nbsp;this would imply that the presenter has to set the AddressMapURL to the view (through the view interface). In addition, if you need&nbsp;the&nbsp;view to be updated every time&nbsp;the AddressMapURL&nbsp;changes, the presenter would&nbsp;need to&nbsp;<a href=\"http://msdn.microsoft.com/en-us/library/ee817669.aspx\">observe</a>&nbsp;the model. On the other hand, with the presentation model approach you are taken advantage of&nbsp;bindings to avoid this extra work.&nbsp;</p>\r\n<p>Note:&nbsp;the <a href=\"http://msdn.microsoft.com/en-us/library/ff647585.aspx\">Presentation Model</a> pattern unifies the presentation logic and bind-able content in only one class (usually called ViewModel). This pattern is also known as&nbsp;<a href=\"http://msdn.microsoft.com/en-us/magazine/dd419663.aspx\">Model-View-ViewModel</a>, which is&nbsp;used in the new <a href=\"http://compositewpf.codeplex.com/releases/view/48920\">Prism v4</a>.</p>\r\n<p>Back to <a href=\"http://msdn.microsoft.com/en-us/library/ff647388.aspx\">Supervising Pattern</a>, ideally all the bind-able content like properties (e.g. AddressMapURL) live in a presentation model or in a model. While all the complex interaction between <strong>view &ndash;&gt; model</strong> and <strong>model &ndash;&gt; view</strong> in a presenter. The following examples are some of common interactions considered complex:</p>\r\n<ol>\r\n<li>Change the color of a control. </li>\r\n<li>Hide/Show controls dynamically. </li>\r\n<li>Listen a click button or menu item. </li>\r\n</ol>\r\n<p>However, Prism&nbsp;provides guidance, so you could choice either to follow the patterns as they are proposed or make your own implementation.</p>\r\n<p>I hope you can find it useful.</p>\r\n<p id=3da96440-6ccf-012d-4de4-1231390e04c1>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-07-13T15:40:52.323-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "467051",
+    "ThreadId": "217752",
+    "Html": "<p>Thank you for the clarification.</p>",
+    "PostedDate": "2010-07-13T19:34:44.343-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

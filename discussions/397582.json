@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "920161",
+    "ThreadId": "397582",
+    "Html": "\r\n<p>hi i need a hint please,</p>\r\n<p>in the Sample ModularityWithinUnity.Desktop the Shell Class is defined with the constructor</p>\r\n<p>public Shell(IModuleManager moduleManager, IModuleTracker moduleTracker, CallbackLogger logger)</p>\r\n<p>{</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (moduleManager == null)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new ArgumentNullException(&quot;moduleManager&quot;);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>..</p>\r\n<p>}</p>\r\n<p>and the Initialization is done i think in the QuickStartBootstrapper class</p>\r\n<p>with&nbsp;</p>\r\n<p>ServiceLocator.Current.GetInstance&lt;Shell&gt;();</p>\r\n<p>without the Arguments of the Constructor. How does the ServiceLocator class know them or&nbsp; which order , i try to debug but it stops on this GetInstance Level.</p>\r\n<p>In prism documentation there are only 2 constructors documented</p>\r\n<p>http://msdn.microsoft.com/en-us/library/hh860230%28v=pandp.51%29.aspx</p>\r\n<p>1 default , 1 with a string but not with this structure above.</p>\r\n<p>thnx br thomas</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-10-01T12:29:52.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "920773",
+    "ThreadId": "397582",
+    "Html": "<p>Hi Thomas,</p>\r\n<p>Basically, the <strong>Shell </strong>is being constructed through dependency injection. Based on my understanding, this is how it works:</p>\r\n<ul>\r\n<li>The <strong>QuickStart </strong>uses <strong>Unity </strong>as a dependency injection container. If fact, you will find that <strong>Unity </strong>is used in several <strong>QuickStarts </strong>and that it's supported as out of the box by the <strong>Prism </strong>library (the library also supports <strong>MEF</strong>.)</li>\r\n<li>The <strong>UnityBootstrapper</strong>, from which the <strong>QuickStartBootstrapper </strong>class inherits in the <strong>ModularityWithUnity QuickStart</strong>, registers a <strong>UnityServiceLocatorAdapter </strong>as the \"locator provider\" of the <strong>ServiceLocator </strong>class. Based on my understanding, by setting the aforementioned adapter, each time an instance of a type is requested to the <strong>ServiceLocator</strong>, the <strong>Unity </strong>container will be used to resolve it.</li>\r\n<li>The corresponding types for the <strong>IModuleManager </strong>and <strong>IModuleTracker </strong>interfaces as well as an instance of <strong>CallbackLogger </strong>are registered in the container before invoking the <strong>CreateShell </strong>method. You can see this in the <strong>ConfigureContainer </strong>method of the <strong>QuickStartBootstrapper </strong>class (the type for <strong>IModuleManager </strong>is registered by its super class <strong>UnityBootstrapper</strong>.)</li>\r\n<li>When an instance of type <strong>Shell </strong>is requested using the <strong>ServiceLocator</strong>, the \"request\" is resolved through <strong>Unity</strong>. As far as I know, <strong>Unity </strong>obtains the type (in this case <strong>Shell</strong>) through reflection, checks the arguments required in the <strong>Shell</strong>'s constructor and, if <strong>Unity </strong>knows the arguments' types, it creates the <strong>Shell </strong>injecting the corresponding instances in the constructor automatically.</li>\r\n</ul>\r\n<p>Dependency injection is an approach widely used in <strong>Prism </strong>applications. You can find more information it in the following chapter of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921140%28v=pandp.40%29.aspx\">Chapter 3 - Managing Dependencies Between Components</a></li>\r\n</ul>\r\n<p>In this case, <strong>Unity </strong>creates an instance of the type <strong>Shell </strong>by using a capability named \"constructor injection.\" However, this is only one of the capabilities provided by this container. If you are interested in knowing more about the <strong>Unity </strong>container, I believe you could find more information about this in its <strong>CodePlex </strong>site:</p>\r\n<ul>\r\n<li><a href=\"http://unity.codeplex.com/\">Unity in CodePlex</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-10-02T11:32:50.697-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "920872",
+    "ThreadId": "397582",
+    "Html": "<p>hallo Damian ,</p>\r\n<p>thanks a lot :) now it&acute;s a logical chain for me, i did not notice the registration was done in front of the CreateShell so Unity knows the types ,and the instance and could create or resolve the three attributes.</p>\r\n<p>regards thomas</p>",
+    "PostedDate": "2012-10-02T14:05:15.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

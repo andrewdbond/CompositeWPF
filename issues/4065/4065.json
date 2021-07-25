@@ -1,0 +1,75 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "This issue was fixed in the Prism-v2.1 release, so the Workitem is closed now. Prism 2.1 can be downloaded from here:\r\nhttp://www.microsoft.com/downloads/details.aspx?FamilyID=387c7a59-b217-4318-ad1b-cbc2ea453f40&displaylang=en",
+    "ClosedDate": "2009-11-03T11:28:30.837-08:00",
+    "CommentCount": 7,
+    "Custom": "",
+    "Description": "When profiling my application I noticed that plenty of EventHandlers had never been deregistered from DelegateCommand's CanExecuteChanged-Event. So those EventHandlers were never been garbage-collector, which caused a severe memory leak.\n \nAs registering CanExecuteChanged-EventHandles is done outside application code scope I had expected them to be deregistered automatically as well. At this point I thought this might as well be a ThirdParty WPF control issue, but digging further I read a blog post stating that \"WPF expects the ICommand.CanExecuteChanged-Event to apply WeakReferences for EventHandlers\". I had a look into RoutedCommand, and noticed it uses WeakReferences as well.\n \nI adapted DelegateCommand to use an implementation similar to RoutedCommand's CanExecuteChanged-Event, and the memory leak was gone. The same is true for CompositeCommand.",
+    "LastUpdatedDate": "2013-05-16T05:28:57.86-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-05-18T08:36:46.847-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Memory Leak caused by DelegateCommand.CanExecuteChanged Event",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 10,
+    "Id": 4065
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "The Prism team is looking at this issue. \r\n\r\nBlaine Wastell",
+      "PostedDate": "2009-06-15T10:03:37.53-07:00",
+      "Id": 156140
+    },
+    {
+      "Message": "Our application regularly creates new views/ViewModels and disposes of them & this bug has quite a large knock on effect.  We've worked around for now by explicitly releasing all the DelegateCommands & their events upon disposal, but I'd argue that its Impact level of Low is not really realistic & it should be upgraded to a higher level.",
+      "PostedDate": "2009-06-16T06:41:06.193-07:00",
+      "Id": 156141
+    },
+    {
+      "Message": "This was causing us a pretty bad memory leak (Views and associated ViewModels hanging around.  I had to edit this to include WeakReference support today.",
+      "PostedDate": "2009-07-17T09:54:26.433-07:00",
+      "Id": 156142
+    },
+    {
+      "Message": "Any news on the status of this issue ? andersonimes can you please share your fix ?",
+      "PostedDate": "2009-10-08T15:07:49.64-07:00",
+      "Id": 156143
+    },
+    {
+      "Message": "I saw that suggested patch has been implemented in V3 SourceCode. We'll give it a try.",
+      "PostedDate": "2009-10-09T12:17:15.293-07:00",
+      "Id": 156144
+    },
+    {
+      "Message": "ifioravanti: thanks for saying this... I was in the middle of posting my solution... now I don't have to. :)",
+      "PostedDate": "2009-10-09T13:02:00.123-07:00",
+      "Id": 156145
+    },
+    {
+      "Message": "Just tried this implementation and verified no leaks.  Thanks Prism folk!",
+      "PostedDate": "2009-10-09T13:08:11.56-07:00",
+      "Id": 156146
+    }
+  ]
+}

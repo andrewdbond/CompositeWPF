@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1040601",
+    "ThreadId": "442873",
+    "Html": "I have a View class that contains a ItemsControl with a DataTemplate containing UserControls to edit the Item.  But the View class doesn't have any &lt;Button&gt; controls only controls to edit the Item and the ViewModel class doesn't currently expose any ICommands for the View class to use, although with no &lt;Button&gt; controls I'm not sure how I would use a ICommand if it was available.<br />\n\r<br />\nIf I implement IDataErrorInfo in the Model class what is the best mechanism for the View to Notify the ViewModel of Validation Errors and/or Data Changes by the User?\r<br />\n<br />\nShould the ViewModel hook into the Model PropertyChanged Events?  In this case I have nested collections and hooking into the PropertyChanged Events seems awkward and could lead to classes getting rooted if I don't unhook the PropertyChanged hook.\r<br />\n<br />\nShould the View class use the Binding SourceUpdated and Validation.Error event callbacks to call a method in the ViewModel?\r<br />\n<br />\nCould the View class use a ViewModel ICommand if it doesn't have a &lt;Button&gt; control to bind the Command to?\r<br />\n<br />\nThanks in advance...<br />\n",
+    "PostedDate": "2013-05-07T14:34:53.52-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1041022",
+    "ThreadId": "442873",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding of your scenario, to implement <strong>Data Validation</strong> without using <strong>ICommands</strong>, you could implement one of the following approaches:<br />\n<h1></h1>\n<ul>\n<li>\nImplement <strong>IDataErrorInfo</strong> on your <strong>Model</strong> class and bind to its properties directly from your <strong>View</strong> or fire an event to tell the <strong>ViewModel</strong> that a <strong>Data Validation</strong> error ocurred and update the <strong>View</strong> accordingly.<br />\n</li>\n<li>\nUse <strong>Event Triggers</strong> on your <strong>View</strong> and define a method on your <strong>ViewModel</strong> to handle this event and do the <strong>Data Validation</strong>. This way, you can make the <strong>ViewModel</strong> to do <strong>Data Validation</strong> when an event from the <strong>Items</strong> of your <strong>ItemsControl</strong> is raised, like GotFocus and LostFocus.<br />\n</li>\n</ul>\nFor more information about <strong>IDataErrorInfo</strong> or <strong>Triggers</strong>, you can visit the following sections of the documentation:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg405484(v=PandP.40).aspx#sec14\" rel=\"nofollow\">IDataErrorInfo</a><br />\n</li>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/cc295196(v=Expression.40).aspx\" rel=\"nofollow\">Event Triggers</a><br />\n</li>\n</ul>\nHope this helps,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-05-08T11:55:49.993-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

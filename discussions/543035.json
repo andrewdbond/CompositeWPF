@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1236964",
+    "ThreadId": "543035",
+    "Html": "I have had a look at:<br />\n<br />\n<a href=\"http://compositewpf.codeplex.com/wikipage?title=Using%20resource%20dictionaries%20in%20modules\" rel=\"nofollow\">http://compositewpf.codeplex.com/wikipage?title=Using%20resource%20dictionaries%20in%20modules</a><br />\n<br />\nBut I do not have app.xaml in my Modules? Is this still the best way to do this? If so how do I add the app.xaml file?<br />\n<br />\nI am on Prism 5.0.<br />\n<br />\nI see the StockTrader sample seems to work, but I'm not sure how.<br />\n",
+    "PostedDate": "2014-04-23T03:18:49.093-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1237099",
+    "ThreadId": "543035",
+    "Html": "Hi James,\r<br />\n<br />\nI am not sure what would you be trying to accomplish. <strong>WPF</strong> applications would not need to have one <strong>App.xaml</strong> file on every <em>Module</em> in order to properly run. Based on the article you mentioned, you may define the <em>Resource Dictionaries</em> on each <em>Module</em> with the only objective of having the resources available at <em>Design time</em>. \r<br />\n<br />\nWhen working at runtime, the <strong>App.xaml</strong> file that would run and configure the <em>Resource Dictionaries</em> would only be the one defined in the <em>Shell</em> project. You may find related information on the follwing <strong>MSDN Prism Guide</strong> chapter:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921098(v=pandp.40).aspx#sec48\" rel=\"nofollow\">Composing the User Interface: Resources</a><br />\n</li>\n</ul>\nIf you could tell us in more detail the goals you would be trying to achive, I would be able to give you further support.\r<br />\n<br />\nI hope this helped,\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky.\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-04-23T08:16:03.033-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1237122",
+    "ThreadId": "543035",
+    "Html": "Yes I understand that. I am looking purely for getting the Designer working.<br />\n",
+    "PostedDate": "2014-04-23T08:47:53.777-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1237218",
+    "ThreadId": "543035",
+    "Html": "Hi James, \r<br />\n<br />\nThanks for the response. Adding an <em>App.xaml</em> file on the desired Modules should be quite straightforward. Damian Cherubini's article references to a post of <em>&quot;How To define module-specific resource dictionaries&quot;</em>, which explains how to add an <em>App.xaml</em> file on each Module with the <strong>Resources Dictionary</strong> defined on it. Find the blogpost in the following link:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://blogs.southworks.net/gmaliandi/2012/01/how-to-define-module-specific-resource-dictionaries-in-prism/\" rel=\"nofollow\">How to: define module-specific resource dictionaries in Prism</a><br />\n</li>\n</ul>\nMoreover, the mentioned post above provides a small sample on which you may see the workaround properly working.\r<br />\n<br />\nHowever, the <strong>Reference Implementation</strong> provides another approach in order to make the resources work at <strong><em>DesignTime</em></strong> which is based on a <strong>Visual Studio</strong> behaviour for <em>Modules</em> that would be referenced in the main project's solution. The following discussions may help you understand how the approach works:<br />\n<h1></h1>\n<ul>\n<li><a href=\"https://compositewpf.codeplex.com/discussions/444815\" rel=\"nofollow\">How does a module project access the main application's style resources?</a></li>\n<li>\n<a href=\"https://compositewpf.codeplex.com/workitem/3504\" rel=\"nofollow\">Add ability to create resource dictionaries shared between all modules.</a><br />\n</li>\n</ul>\nRegards.\r<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-04-23T12:21:07.747-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1237492",
+    "ThreadId": "543035",
+    "Html": "Thanks for your help!\r<br />\n<br />\nI see in your first article it says:\r<br />\n<br />\n&quot;You may have noticed that some times modules also contain an App.xaml file. This file isn’t loaded when Prism modules are loaded; only one Application class is instantiated, and that’s the one in the Shell project.\r<br />\n<br />\nimage\r<br />\n<br />\nSo, while defining the resources in the module’s App.xaml file would make them show in the designer, they wouldn’t work when the application is ran. Going backwards a little, Application.Current.Resources can be accessed from anywhere inside the Prism application (even modules), and the ResourceDictionary class supports adding new entries! So you might see where I’m going with this…&quot;\r<br />\n<br />\nBut it doesn't explain how to get that file on there?? It seems to also show a SilverLight solution so I don't know if this is any different? He then goes on how to actually add the resource dictionary to Application resources, which I don't want to do because this is just for design time.\r<br />\n<br />\nI see on your second link the Stock Trader example app, has references to it's module's, which is why it works. Is this best practice??\r<br />\n<br />\nAnd your third link suggests using the App.xaml file again in Modules as it is ignored on full running of the application. Bug again I'm not sure on how to add this correctly.\r<br />\n<br />\nSorry to be a pain!<br />\n",
+    "PostedDate": "2014-04-24T04:23:47.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1237715",
+    "ThreadId": "543035",
+    "Html": "Hi James, \r<br />\n<br />\nBasically, the only negative connotation of the <strong><em>StockTrader</em></strong> approach would be that it couples all the <em>Module</em> projects when they could possibly be kept decoupled, for example when using xap files in <em>Silverlight</em>. This would be the reason for the existence of Damian and Guido's workaround. Nevertheless, if you would like to work with the <strong><em>Designer</em></strong> and then clean the solution for release, you could simply remove the corresponding references from the main project, and no other source code modification would need to be performed.\r<br />\n<br />\nRegarding the workaround of adding the <strong><em>App.xaml</em></strong> files on each <em>Module</em>, it would work for both <em>WPF</em> and <em>Silverlight</em> solutions. So you would be able to copy the highlighted updates from the sample into your solution. In order to properly configure it, you should perform the following changes:<br />\n<ul>\n<li>From the <em>Module</em> side, you would need to add the <strong><em>App.xaml</em></strong> file with the <strong><em>Resource Dictionary</em></strong> defined, and the create the <strong><em>Resources.xaml</em></strong> file which would be loaded. Then, add the <strong><em>ModuleResource</em></strong> attribute on the IModule's implementation class.</li>\n<li>From the <em>Main project</em> side, create the <strong><em>ResourceLoader</em></strong> service and the <strong><em>ModifiedModuleInitializer</em></strong>. Register these types in the <em>Container</em> from the Bootstrapper's <strong><em>ConfigureContainer()</em></strong> method as follows:</li>\n</ul>\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">protected</span> <span style=\"color:Blue;\">override</span> <span style=\"color:Blue;\">void</span> ConfigureContainer()\n{\n    <span style=\"color:Blue;\">this</span>.Container.RegisterType&lt;IResourceLoader, ResourceLoader&gt;();\n    <span style=\"color:Blue;\">this</span>.Container.RegisterType&lt;IModuleInitializer, ModifiedModuleInitializer&gt;();\n\n    <span style=\"color:Blue;\">base</span>.ConfigureContainer();\n}\r\n</pre></div><ul>\n<li>\nLastly, create an <strong>Infrastructure</strong> project, and add the <strong><em>IResourceLoader</em></strong> and <strong><em>ModuleResourceAttribute</em></strong> classes. Reference the <strong>Infrastructure</strong> project from every <em>Module</em> and the Main project.<br />\n</li>\n</ul>\nWith the mentioned changes, the solution would be able to add all the resources definitions from the diferent <em>Modules</em> into the <strong><em>ResourcesDictionaries</em></strong> and properly resolve the <strong><em>StaticResources</em></strong> to run at <strong><em>DesignTime</em></strong>.\r<br />\n<br />\nI hope you find this useful,\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-04-24T12:39:07.853-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

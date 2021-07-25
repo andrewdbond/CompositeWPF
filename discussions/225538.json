@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "487248",
+    "ThreadId": "225538",
+    "Html": "<p>In StockTraderRI WatchModule (Silverlight), when select a item in the datagrid, the TickerSymbolSelectedEvent is published.&nbsp;&nbsp;TrendLinePresentationModel&nbsp;module subscribes this event. Now I want to subscribe it from StockTraderRI.Silverlight.ShellPresenter, but the event handle is never fired. In ShellPresenter constructor, I put: eventAggregator.GetEvent&lt;TickerSymbolSelectedEvent&gt;().Subscribe(this.TickerSymbolChanged);, then provide handler:&nbsp;&nbsp;public void TickerSymbolChanged(string newTickerSymbol). But this TickerSymbolChanged is never got called. I really appreciate if anyone could provide insight suggestions &amp; understandings.</p>\r\n<p><span style=\"font-family:Consolas;font-size:x-small\"><span style=\"font-family:Consolas;font-size:x-small\"><span style=\"font-family:Consolas;font-size:x-small\">\r\n<p>&nbsp;</p>\r\n</span></span></span></p>",
+    "PostedDate": "2010-08-31T15:17:14.99-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "490439",
+    "ThreadId": "225538",
+    "Html": "<p>Shirley,</p>\r\n<p>Sorry you are having a problem getting this to work for you.</p>\r\n<p>Please try adding the&nbsp;&nbsp;ThreadOption.UIThread to the Subscribe call.&nbsp; This is required if the event is being published on another thread and you need it on the UI Thread.</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre>eventAggregator.GetEvent&lt;TickerSymbolSelectedEvent&gt;().Subscribe(this.TickerSymbolChanged, ThreadOption.UIThread);</pre>\r\n</div>\r\n<p>Have a nice day,</p>\r\n<p>Karl&nbsp;</p>",
+    "PostedDate": "2010-09-07T17:06:50.583-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

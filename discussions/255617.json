@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "604372",
+    "ThreadId": "255617",
+    "Html": "\r\n<p>I created a WFP project created put the existing&nbsp;AnimatedTabControl.cs in a folder called Controls. &nbsp;I created the</p>\r\n<p>Shell.xaml</p>\r\n<p>&lt;Window x:Class=&quot;HelloWorld.Desktop.Shell&quot; &nbsp; &nbsp; &nbsp;&nbsp;xmlns:prism=&quot;http://www.codeplex.com/prism&quot;&nbsp;xmlns:Controls=&quot;clr-namespace:HelloWorld.Desktop.Controls&quot; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;\r\n &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;Title=&quot;Hello World&quot; Height=&quot;350&quot; Width=&quot;525&quot;&gt; &nbsp; &nbsp;&nbsp;&lt;ItemsControl Name=&quot;TestTab2&quot;&gt; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&lt;Controls:AnimatedTabControl\r\n x:Name=&quot;TestTab&quot;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; SelectedIndex=&quot;0&quot;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; VerticalAlignment=&quot;Stretch&quot;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; prism:RegionManager.RegionName=&quot;MainRegion&quot; /&gt; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &lt;/ItemsControl&gt;\r\n &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&lt;/Window&gt;</p>\r\n<p>&nbsp;////////////////////////////////////////////////////////////////////////////////////////////////////</p>\r\n<p>Module</p>\r\n<p>using Microsoft.Practices.Prism.Modularity;using Microsoft.Practices.Prism.Regions;<br>\r\nnamespace HelloWorldModule{&nbsp;&nbsp; &nbsp;public class HelloWorldModule : IModule&nbsp;&nbsp; &nbsp;{&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private readonly IRegionManager _regionManager;<br>\r\n&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public void Initialize()&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_regionManager.RegisterViewWithRegion(&quot;MainRegion&quot;, typeof(Views.HelloWorldView));&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}<br>\r\n&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public HelloWorldModule(IRegionManager regionManager)&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this._regionManager = regionManager;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}&nbsp;&nbsp; &nbsp;}}</p>\r\n<p>//////////////////////////////////////////////////////////////////////////////////////////////////////////////</p>\r\n<p>user control</p>\r\n<p>&lt;UserControl x:Class=&quot;HelloWorldModule.Views.HelloWorldView&quot;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;&nbsp;&nbsp;\r\n &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; xmlns:mc=&quot;http://schemas.openxmlformats.org/markup-compatibility/2006&quot;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; xmlns:d=&quot;http://schemas.microsoft.com/expression/blend/2008&quot;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;\r\n &nbsp; &nbsp; mc:Ignorable=&quot;d&quot;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; d:DesignHeight=&quot;300&quot; d:DesignWidth=&quot;300&quot;&gt;&nbsp;&nbsp; &nbsp;&lt;Grid&gt;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;TextBlock Text=&quot;Hellow World&quot; Foreground=&quot;Green&quot; HorizontalAlignment=&quot;Center&quot;\r\n VerticalAlignment=&quot;Center&quot; FontFamily=&quot;Calibri&quot; FontSize=&quot;24&quot; FontWeight=&quot;Bold&quot;&gt;&lt;/TextBlock&gt;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&lt;/Grid&gt;&lt;/UserControl&gt;</p>\r\n<p>/////////////////////////////////////</p>\r\n<p>and finally. to where I am STUCK:</p>\r\n<p><strong>What would be the code for the MainRegion to be able to have multiple tabs that do the animation on change? I cannot seem to figure out how to bind anything to AnimatedTabControl or even a regular tab control...</strong></p>\r\n<p>Any help would be appreciated. &nbsp;I am new to prism...</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-04-28T12:58:38.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "604442",
+    "ThreadId": "255617",
+    "Html": "<p>Hi,</p>\r\n<p>You might find handy the following thread where tab control uses are covered:</p>\r\n<p><a href=\"http://compositewpf.codeplex.com/discussions/248912\">How to add new tab(or view) to AnimatedTabControl in StockTraderRI WPF</a></p>\r\n<p>Additionally, you can read <a href=\"http://msdn.microsoft.com/en-us/library/ff921098(PandP.40).aspx\">Chapter 7: Composing the User Interface</a>, specifically <strong>View Discovery approach</strong> section, which is the one you are following to load a view in the tab control.</p>\r\n<p>Also you can check the <a href=\"http://msdn.microsoft.com/en-us/library/ff921174(PandP.40).aspx\">UI Composition QuickStart</a> and <a href=\"http://msdn.microsoft.com/en-us/library/ff921074(PandP.40).aspx\">Stock Trader RI</a> where this functionality is implemented.</p>\r\n<p>If you continue experiencing this issue, it could be helpful if you could provide us with a full repro sample of your solution, so that we can help you to identify the cause of your problem.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-04-28T13:56:34.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "604589",
+    "ThreadId": "255617",
+    "Html": "<p>Hi Miguel,</p>\r\n<p>Where should I submit my repo sample. &nbsp;Should I place the sample in github repo? &nbsp;Please let me know. &nbsp;Thanks</p>\r\n<p>John</p>",
+    "PostedDate": "2011-04-28T19:57:40.66-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "604814",
+    "ThreadId": "255617",
+    "Html": "<p>Hi John,</p>\r\n<p>You could upload this to SkyDrive, or any other storage site you'd like to, and post the link here.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-04-29T06:50:46.17-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "604854",
+    "ThreadId": "255617",
+    "Html": "<p>Hi Miguel,</p>\r\n<p>I posted the complete repo sample in the following github site: \"git@github.com:dotcomputercraft/Prism-learning.git\"</p>\r\n<p>I know I am missing several items to make the automated tab work. &nbsp;But I really need some help here because I would love to try it out for a demo project that I am working on. &nbsp;The basic idea is to have the automatedtab host a view which contains a devExpress grid. &nbsp;The grid loads data from a database. &nbsp;After I see how to add 1 item to the tab, &nbsp;I can hopefully add another tab on my own. &nbsp; I am thankful for any help you can offer me. &nbsp;I really like the WPF programing&nbsp;paradigm&nbsp;, but it is a big learning curve. &nbsp;Talk to you soon.</p>\r\n<p>Regards,</p>\r\n<p>John</p>",
+    "PostedDate": "2011-04-29T07:42:28.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "604958",
+    "ThreadId": "255617",
+    "Html": "<p>John,</p>\r\n<p>I updated the solution you shared with us and uploaded&nbsp;it to&nbsp;SkyDrive. I removed the DevExpress references and created two new views to add in the animated tabcontrol region.</p>\r\n<p>You can download&nbsp;the updated solution&nbsp;<a href=\"http://cid-c29751940e840420.office.live.com/self.aspx/p^0p%20samples/DelMarOMSClientzip.zip\">here</a>. I followed the approach described in <a href=\"http://compositewpf.codeplex.com/discussions/65361\">this thread</a>, the views that are placed inside the <strong>AnimatedTabControl</strong> have a <strong>HeaderInfo </strong>property defined inside the View Model, as it is done in the <strong>PositionSummaryView </strong>of the StockTrader RI.</p>\r\n<p>I hope this helps you resolve your problem.</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-04-29T10:22:42.233-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "604966",
+    "ThreadId": "255617",
+    "Html": "<p>Miguel,</p>\r\n<p>Thanks for the prompt and excellent support. &nbsp;Have a wonderful weekend.</p>\r\n<p>Regards,</p>\r\n<p>John</p>",
+    "PostedDate": "2011-04-29T10:34:33.63-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

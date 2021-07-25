@@ -1,0 +1,122 @@
+[
+  {
+    "Id": "984421",
+    "ThreadId": "428995",
+    "Html": "\r\n<p>Hi</p>\r\n<p>An application I am working on has a Shell window with a MainRegion for displaying views and NavigationRegion for my navigation buttons/links.</p>\r\n<p>A Client entity has a collection of Notes, notes can also be attached to other entities such as appointments etc... to this end I have added a NotesModule to my solution.</p>\r\n<p>My thinking is that when user selects to add a new note or view existing note I will get UnityContainer to knock me up a NotesEditView&nbsp;as a &quot;ChildWindow&quot; and display&nbsp;modally but am wondering how I would go about this with the PRISM architecture.\r\n I have implemented a Confirmation & Notification popup mechanism that I found on the web, and am thinking this may the way to go for &quot;ChildWindows&quot; style windows to capture data outside of the current View.</p>\r\n<p>Does anyone know of any nice simple examples as I can't seem to find any?</p>\r\n<p>Thanks in advance.</p>\r\n",
+    "PostedDate": "2013-01-09T03:28:34.953-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "984579",
+    "ThreadId": "428995",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I believe you might find the following blog post interesting, where I proposed an approach (along with a sample application) to show views in popup windows using\r\n<strong>InteractionRequests </strong>based on a port from the <strong>Prism's PopupChildWindowAction</strong> to\r\n<strong>WPF</strong>:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/dcherubini/2012/05/24/popupwindowaction-using-custom-views-instead-of-windows-in-wpf-and-prism/\">PopupWindowAction: using custom views instead of windows in WPF and Prism</a>\r\n</li></ul>\r\n<p>I hope you like it,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n<ul>\r\n</ul>\r\n",
+    "PostedDate": "2013-01-09T09:54:24.47-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "984876",
+    "ThreadId": "428995",
+    "Html": "\r\n<p>Do you know what, I think this is where I robbed your Notification/Confirmation implementation from :) I'll have another look and see if I can figure how this would be used by a view/viewmodel in a module to interact with the DB and then return some eventargs\r\n back to the calling view model. Does that sound like the correct approach to you?</p>\r\n<p>Thanks for all your help past week or so, really is appreciated squire.</p>\r\n",
+    "PostedDate": "2013-01-10T02:35:49.337-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "984942",
+    "ThreadId": "428995",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>This seems like a feasible approach to me as while the user interacts with the pop-up window, the context object passed when raising the\r\n<strong>InteractionRequest </strong>is updated according to the bindings defined in that pop-up window, and after the user closes the pop-up window, this updated context object is passed back to the calling view model, along with any updated values through\r\n the callback method, allowing you to receive this information in the calling view model to react accordingly. An example of this approach could be the\r\n<strong>SelectItemRequest </strong>of the above mentioned sample.</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2013-01-10T05:40:43.94-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "984946",
+    "ThreadId": "428995",
+    "Html": "\r\n<p>You guys are the kings.... Cheers</p>\r\n",
+    "PostedDate": "2013-01-10T05:47:13.403-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "984947",
+    "ThreadId": "428995",
+    "Html": "\r\n<p>You guys are the kings.... Cheers</p>\r\n",
+    "PostedDate": "2013-01-10T05:47:29.987-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "985138",
+    "ThreadId": "428995",
+    "Html": "\r\n<p>Can I mither you chaps again? I'm trying to get my notes module up and running and have the view and view model created and have a NoteEditFinished class inheriting the&nbsp;: CompositePresentationEvent&lt;t&gt; class for my event, I assume, but as this\r\n is contained in it's own module, how would my ClientViewViewModel know about the&nbsp;NoteEditFinished class without a holding a reference to the NotesModule?</p>\r\n<p>I thought my modules should not be coupled in this way?</p>\r\n<p>Thanks if you can help me yet again :)</p>\r\n<p>**Edit**</p>\r\n<p>I thought of adding the NoteEditFinished :&nbsp;CompositePresentationEvent&lt;Note&gt; to the Infrastructure project I ripped off from your example but know this must be aware of my ClientModuke(as that is where I currently have the EntityFramework and dataContext\r\n classes), does this follow the pattern?</p>\r\n",
+    "PostedDate": "2013-01-10T12:26:09.277-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "985417",
+    "ThreadId": "428995",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>In my opinion, I would consider moving the models classes to a separate project that could be referenced by all the different modules that requires them, as Damian suggested in this previous thread (<a href=\"http://compositewpf.codeplex.com/discussions/428593\">WPF\r\n PRISM modular design</a>). This shouldn't be wrong, as <strong>Prism </strong>recommends that modules should not reference each other, but not that they shouldn't share common projects between them if required.</p>\r\n<p>Regarding this topic, I believe you could also find the following threads interesting, where similar discussions have been addressed:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/276985\">Data Access across modules</a>\r\n</li><li><a href=\"http://compositewpf.codeplex.com/discussions/241013\">How to create the optimal infrastructure?</a>\r\n</li></ul>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2013-01-11T05:44:51.543-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "985443",
+    "ThreadId": "428995",
+    "Html": "\r\n<p>Hi Agustin, I undertook the re-architecture exercise last evening as I remembered Damian advising, that was spot on and I got the child window to load but when my OnEditNote method fired all that was displayed seemed to be an instance of the Notification\r\n Window from the Infrastructure project I borrowed from you guys, how is the application supposed to figure out that upon my Interactionrequest, and injecting the EditNoteViewViewModel, that the window which needs displaying is my EditNoteView? I am tied up\r\n knots.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks for any help you can offer an ailing developer.</p>\r\n",
+    "PostedDate": "2013-01-11T06:32:21.98-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "985493",
+    "ThreadId": "428995",
+    "Html": "\r\n<p>Never mind Augistin, I just inspected the XAML of the HelloWorldView and think I've found the way you have worked this, with the</p>\r\n<p><span style=\"font-family:Consolas; color:#a31515; font-size:x-small\"><span style=\"font-family:Consolas; color:#a31515; font-size:x-small\"><span style=\"font-family:Consolas; color:#a31515; font-size:x-small\"><span style=\"font-family:Consolas; color:#a31515; font-size:x-small\"><span style=\"font-family:Consolas; color:#a31515; font-size:x-small\"><span style=\"font-family:Consolas; color:#a31515; font-size:x-small\"><span style=\"font-family:Consolas; color:#a31515; font-size:x-small\"><span style=\"font-family:Consolas; color:#a31515; font-size:x-small\"><span style=\"font-family:Consolas; color:#a31515; font-size:x-small\"><font face=\"Consolas\" size=\"2\" color=\"#a31515\"></p>\r\n<p>&nbsp;</p>\r\n</font></span></span></span></span></span></span></span></span></span>\r\n<p></p>\r\n<p><span style=\"font-family:Consolas; color:#0000ff; font-size:x-small\"><span style=\"font-family:Consolas; color:#0000ff; font-size:x-small\"><span style=\"font-family:Consolas; color:#0000ff; font-size:x-small\"></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>&lt;inf_int:PopupWindowAction.WindowContent \r\n&gt;\r\n<span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">local</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">SelectItemView</span> \r\n<span style=\"color:blue\">/&gt;</span>\r\n&lt;/inf_int:PopupWindowAction.WindowContent \r\n&gt;\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p><span style=\"font-family:Consolas; color:#0000ff; font-size:x-small\"><span style=\"font-family:Consolas; color:#0000ff; font-size:x-small\">&nbsp;</span></span></p>\r\n</span></span></span>\r\n<p></p>\r\n<p><span style=\"font-family:Consolas; color:#0000ff; font-size:x-small\"><span style=\"font-family:Consolas; color:#0000ff; font-size:x-small\">&nbsp;</span></span><span style=\"font-family:Consolas; color:#0000ff\">Code..... genius....</span></p>\r\n<p><span style=\"font-family:Consolas; color:#0000ff; font-size:x-small\"><span style=\"font-family:Consolas; color:#0000ff; font-size:x-small\">&nbsp;</span></span></p>\r\n",
+    "PostedDate": "2013-01-11T08:01:03.423-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "985872",
+    "ThreadId": "428995",
+    "Html": "\r\n<p>Agustin, I am, unsurprisingly, confused again, my view and view model for creating/editing/viewing a note are contained in a NoteModule. With the examples you geniuses have developed the code to fire the modal/&quot;ChildWindow&quot; effect your view and view models\r\n reside in the same project, selectItem method requires a reference to, or knowledge of, the SelectItemViewModel as below:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">this</span>.SelectItemRequest.Raise(<strong>\r\n    <span style=\"color:blue\">new</span> SelectItemViewModel</strong> { Title = <span style=\"color:#a31515\">&quot;Items&quot;</span> },\r\n    (vm) =&gt;\r\n    {\r\n        <span style=\"color:blue\">if</span> (vm.SelectedItem != <span style=\"color:blue\">null</span>)\r\n        {\r\n            Result = <span style=\"color:#a31515\">&quot;The user selected: &quot;</span> + vm.SelectedItem;\r\n        }\r\n        <span style=\"color:blue\">else</span>\r\n        {\r\n            Result = <span style=\"color:#a31515\">&quot;The user didn't select an item.&quot;</span>;\r\n        }\r\n    });\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>If SelectItem was a View&ViewModel in a separate module how would you guys go about raising the interaction request for the view model? Also, to see if I could get the Note editor to show with the method you show, I added a reference in my Client module\r\n to my Note module and tried the following:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> OnAddNewNote()\r\n{\r\n    _unityContainer.RegisterInstance&lt;NoteViewViewModel&gt;(<span style=\"color:blue\">new</span> NoteViewViewModel(<span style=\"color:blue\">this</span>._dbContext, 0));\r\n    <span style=\"color:blue\">this</span>.AddNewNoteRequest.Raise(_unityContainer.Resolve&lt;NoteViewViewModel&gt;(),\r\n        (cb) =&gt;\r\n        {\r\n            <span style=\"color:blue\">int</span> i = 0;\r\n        });\r\n}\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>&nbsp;As you can see I use a UnityContainer to register and instance of my NoteViewViewModel and pass the parameters I require then raise the AddNewNoteRequest passing in the view model resolved by unity but the method fails as I have not set the Notification\r\n windows' Title property, how can I set this using the above code?</p>\r\n<p>Sorry if I am totally missing something, and many thanks for your assistance with my learning curve, this architecture is a big step away from the old &quot;code behind&quot; days....</p>\r\n<p>Thanks</p>\r\n",
+    "PostedDate": "2013-01-12T06:28:30.36-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "986473",
+    "ThreadId": "428995",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding, when following the approach you mentioned you should be able to set the\r\n<strong>Title </strong>property to the resolved instance before raising the <strong>\r\nInteractionRequest </strong>as the <strong>NoteViewViewModel </strong>should inherit from the\r\n<strong>Notification </strong>class. For example this could be achieved like this:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> OnAddNewNote()\r\n{\r\n    _unityContainer.RegisterInstance&lt;NoteViewViewModel&gt;(<span style=\"color:blue\">new</span> NoteViewViewModel(<span style=\"color:blue\">this</span>._dbContext, 0));\r\n\r\n   NoteViewViewModel myNoteViewViewModel = _unityContainer.Resolve&lt;NoteViewViewModel&gt;();\r\n\r\n   myNoteViewViewModel.Title=<span style=\"color:#a31515\">&quot;NoteTitle&quot;</span>;\r\n \r\n    <span style=\"color:blue\">this</span>.AddNewNoteRequest.Raise(myNoteViewViewModel,\r\n        (cb) =&gt;\r\n        {\r\n            <span style=\"color:blue\">int</span> i = 0;\r\n        });\r\n}\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>However, fully decoupling these components may not be straightforward if following this approach, this is mainly because the\r\n<strong>InteractionRequest </strong>class uses the <strong>Notification </strong>\r\nclass as a base class, in which case as mentioned in the following work item:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/workitem/9153\">'Notification' really should be an interface</a>\r\n</li></ul>\r\n<p>Some changes should be implemented to allow more complex scenario, like re-implementing the\r\n<strong>IInteractionRequest </strong>interface to allow passing an interface instead of the\r\n<strong>Notification </strong>class, this could be helpful in order to resolve complex contexts from the container that could implement this interface, allowing to decoupled your view model through this interface.</p>\r\n<p>On the other hand, as you may find in Damian Cherubini's blog post, you could also use another approach to pass your view model to your view:</p>\r\n<p><em>The view could inject its own view model through dependency injection (using the ServiceLocator) which wouldn’t require for the view model to inherit from Notification and would decouple the popup view model from the invoker view model. However, your\r\n view and view model would not be able to interact with the Notification passed in the InteractionRequest (I will explain how to solve this in the following section).</em></p>\r\n<p>Perhaps, this approach could become handy, if decoupling these components is required (an example of this can be seen in the\r\n<strong>SelectClientRequest</strong> of the above mentioned sample).</p>\r\n<p>I hope this helps,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2013-01-14T07:25:44.09-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "986556",
+    "ThreadId": "428995",
+    "Html": "\r\n<p>Once again thanks for your help, really great of you guys. I think I'm going to simply have my Client module, and any other module having entities where notes can be introduced, hold a reference to the Notes module. The above solutions sound like a decent\r\n amount of effort is going to be required to refactor the projects to work in this fashion. No doubt I'll stumble across this issue in the next module I am adding to the solution. Beginning to wonder if I should have opted for one of the &quot;lighter&quot; frameworks\r\n such as MVVM light?</p>\r\n<p>Thanks again sir.</p>\r\n",
+    "PostedDate": "2013-01-14T09:47:24.263-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "987225",
+    "ThreadId": "428995",
+    "Html": "\r\n<p>Hi there,</p>\r\n<p>Usually, a view that is being shown through an <strong>InteractionRequest </strong>\r\nis somewhat related to its &quot;host&quot; view, and this includes their corresponding view models. You could think of the &quot;popup view&quot; as an &quot;extension&quot; of the host view. Hence, as described by Agustin, using an\r\n<strong>InteractionRequest </strong>for views / view modules that you want to reuse in different modules (while maintaining them decoupled) could not be straight forward. This is mainly because you need to use the &quot;popup view&quot; in the &quot;host view's&quot;\r\n<strong>XAML </strong>code, and your custom <strong>Notification </strong>object passed to the\r\n<strong>InteractionRequest </strong>cannot be exported in the container through an interface.</p>\r\n<p>Although there might be some workarounds to be able to decouple the popup view in a different module, I believe using\r\n<strong>RegionPopupBehaviors </strong>might be a more suitable approach. Basically, this behavior allows you to register a region that, when a view is injected in it, it will be shown in a new window. As this still acts like a common region defined in a\r\n<strong>RegionManager</strong>, you could use it like any other region. For example, instead of raising an\r\n<strong>InteractionRequest </strong>you could just add the view to the region through the\r\n<strong>Add </strong>method and the view should be shown in a new window. However, in this case you would be able to decouple the view / view model from the &quot;host,&quot; as you will not be limited by\r\n<strong>XAML </strong>nor by the <strong>Notification </strong>class, thus allowing you to put them in a decoupled separated module. The drawback is that you don't have a built-in functionality to pass information from the &quot;host&quot; view model to the popup, but\r\n this could be achieved for example by using the <strong>EventAggregator</strong>, adding the popup view to the popup region through a navigation request (where you can pass parameters,) etc.</p>\r\n<p>The <strong>RegionPopupBehaviors </strong>can be found in the <strong>Stock Trader Reference Implementation</strong> that is shipped with\r\n<strong>Prism</strong>.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2013-01-15T11:13:18.747-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1033997",
+    "ThreadId": "428995",
+    "Html": "OK, I got it<br />\n",
+    "PostedDate": "2013-04-22T08:04:11.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

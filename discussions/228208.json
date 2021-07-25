@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "497167",
+    "ThreadId": "228208",
+    "Html": "<p>I have a controller class that subscribes to an event, and when fired opens a view in the popup region behavior. I am passing a callback in the event payload to the view's viewmodel. However, I need to close the view after the user clicks a button. &nbsp;Does it make sense to fire another event and have the controller close the popup as well? I know it'll work however I can see how my app could start to have many open/close event pairs. Maybe I could have a generic set and apply a filter to the subscription in the controller. &nbsp;Does that make sense? Thanks.</p>",
+    "PostedDate": "2010-09-22T12:45:47.28-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "497536",
+    "ThreadId": "228208",
+    "Html": "<p>Hi,</p>\r\n<p>There is&nbsp;a new recommended approach in <a href=\"../releases/view/52647\">Prism 4</a> for  achieving this scenario, which&nbsp;requires the usage of &nbsp;InteractionRequest and  InteractionRequestTriggers. I noted that you are using Prism 2 but it might  guide you. For more information on this topic:</p>\r\n<ul>\r\n<li><a href=\"View.aspx?ThreadId=227485\">MVVM  dialog service - problems closing dialog from the vM</a></li>\r\n</ul>\r\n<p>On the other hand, if your scenario requires to close a popup after clicking  a button, you could use commands. For more information, you could check the  following:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921126(PandP.20).aspx\">Commands</a></li>\r\n</ul>\r\n<p>I do not know your exact scenario,&nbsp;so take into account that Prism provides  guidance for many scenario, but if you consider necessary the usage of events in  your particular scenario, you could do that.</p>\r\n<p>There are other forums threads where this topic&nbsp;has been treated, so you  could take a look at the following links:</p>\r\n<ul>\r\n<li><span><a href=\"View.aspx?ThreadId=67992\">ChildWindow  closed command</a>,&nbsp;it contains sample application.&nbsp;</span></li>\r\n<li><a href=\"View.aspx?ThreadId=65774\">How to  close a Popup from the viewmodel</a></li>\r\n</ul>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-09-23T06:48:41.373-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "497636",
+    "ThreadId": "228208",
+    "Html": "<p>At this point, the app is new, so I think migrating from v2 to v4 is the way. &nbsp;Is there a doc on migrating? I see the MVVM RI uses MEF in lieu of Unity. &nbsp;I have no love or hate toward Unity so it makes no diff to me, I just need to know where I need to make changes. &nbsp;Also, this is a WPF app and the MVVM RI appears to only be Silverlight. I guess the app doesn't technically need to be WPF for migrating to Silverlight is fine as well.</p>",
+    "PostedDate": "2010-09-23T09:07:52.22-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "497673",
+    "ThreadId": "228208",
+    "Html": "<p>We are working on a migration guide for upgrading from v2 to v4, but it is still in the rough draft stage.</p>\r\n<p>Prism is DI Contianer agnostic.&nbsp; You can choose to use Unity or MEF with the provided code, or if you want to write a little bit of code you can use any other container you want.&nbsp; So if your app is already using Unity and it fits your needs, there is no need to change to MEF.</p>\r\n<p>Also, Prism provides guidance on both WPF and Silverlight.&nbsp; Due to past experiences, we have written our samples on the more constrained platform (Silverlight) first, and where possible with the time constraints we have, we are porting the samples to WPF as well. In the next drop, you will see the StockTrader RI updated to use MVVM in both Silverlight and WPF.&nbsp;</p>\r\n<p>I hope that helps you make the key decisions you need to for your app.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-23T10:13:11.193-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "498086",
+    "ThreadId": "228208",
+    "Html": "<p>I've been using Prism since it &quot;replaced&quot; SCSF/CAB so I'm familiar with the container agnostic behavior. As a point of note, the use of an async programming model in the MVVM Quickstart/RI could be simplified with the use of the <a href=\"http://msdn.microsoft.com/en-us/devlabs/ee794896.aspx\">Reactive Extensions for .NET (Rx)</a>. Personally I love it.</p>",
+    "PostedDate": "2010-09-24T07:43:02.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "498092",
+    "ThreadId": "228208",
+    "Html": "<p>Hi,</p>\r\n<p>Thanks for your feedback. I've already added a <a href=\"../workitem/7234\">work-item</a> for a  similar <a href=\"View.aspx?ThreadId=226492\">post</a>.  So, you could vote this over there. If you consider that it is not exactly what  you want, you could create a work-item for this particular thread.</p>\r\n<p>I will include a link to this thread in the work-item. Additionally, there is more information in <a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=227114\">this thread</a>.</p>\r\n<p>Thanks again,</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-24T08:00:21.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "498140",
+    "ThreadId": "228208",
+    "Html": "<p>I voted up the Rx work-item. Also, <a href=\"http://www.twitter.com/paulousky\">@paulousky</a>&nbsp;said he was working up a doc on migrating a v2 Unity&nbsp;app to a v4 MEF app. From looking at the prism.chm chapter 3 entry, MEF looks like less coding is required.</p>",
+    "PostedDate": "2010-09-24T09:31:06.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "501124",
+    "ThreadId": "228208",
+    "Html": "<p>It appears that the InteractionRequest on works with Silverlight and not WPF. Interactions.Triggers is in System.Windows.Interactivity.dll assembly as part of the Silverlight SDK. &nbsp;Can this be accomplished in WPF?</p>",
+    "PostedDate": "2010-10-01T08:45:34.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "501235",
+    "ThreadId": "228208",
+    "Html": "<p>Hi,</p>\r\n<p>There is no guidance on this topic in Prism out-the-box. As you mentioned the  behaviors framework is provided by Microsoft Expression Blend. You could find  interesting the following forum thread:</p>\r\n<ul>\r\n<li><a href=\"http://social.msdn.microsoft.com/Forums/en-US/wpf/thread/c2768574-1056-4afd-bc37-9d8f09524894\">WPF  behaviors in .NET 4.0 instead of blend ?</a></li>\r\n</ul>\r\n<p>In Prism the MVVM RI and QS are provided for Silverlight. But take into account that could be included some updates in the final release.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-01T12:45:13.72-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "501244",
+    "ThreadId": "228208",
+    "Html": "<p>I'm not sure how that'll work since the Interaction stuff is Silverlight only.&nbsp;</p>",
+    "PostedDate": "2010-10-01T13:04:03.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

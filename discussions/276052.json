@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "684834",
+    "ThreadId": "276052",
+    "Html": "\r\n<p>Hi<br>\r\n<br>\r\nDuring navigation, does the Region navigation service implementation dependent on the presence of a DI framework for creating a target view&nbsp;that is not found in a Region?<br>\r\n<br>\r\nIs there a hook where I can take over and provide the requested instance using &quot;new&quot;?<br>\r\n<br>\r\nRegards,<br>\r\n<br>\r\n-Itai</p>\r\n<div id=\"_mcePaste\" style=\"width:1px; height:1px; overflow:hidden; top:0px; left:-10000px\">\r\n&#65279;</div>\r\n",
+    "PostedDate": "2011-10-16T05:35:08.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "685184",
+    "ThreadId": "276052",
+    "Html": "<p>Hi,</p>\r\n<p>When navigating to a view in a region, once the navigation request is confirmed, the <strong>RegionNavigationContentLoader.LoadContent</strong> method should load the view that is target of the navigation request into the region. If none of the views in the region can be the target of the navigation request, a new view is created calling the <strong>RegionNavigationContentLoader.CreateNewRegionItem</strong> method, which requests a type of Object from the container (through the <strong>serviceLocator</strong>) with a name that matches the one supplied in the navigation URI.</p>\r\n<p>Based on the aforementioned, you could try modifying the <strong>RegionNavigationContentLoader.CreateNewRegionItem</strong> method to retrieve your view using any mechansim you consider appropriate (such as a shared service, or reflection) to obtain the views based on the navigation contract.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-10-17T07:00:59.633-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "685242",
+    "ThreadId": "276052",
+    "Html": "<p>Thanks.</p>",
+    "PostedDate": "2011-10-17T09:08:23.023-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

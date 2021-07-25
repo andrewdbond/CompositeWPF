@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "944005",
+    "ThreadId": "403809",
+    "Html": "\r\n<p>This question was originally posted in this forum:</p>\r\n<p>http://social.msdn.microsoft.com/Forums/en-US/Offtopic/thread/621a56c2-c5d8-4f19-ae10-e9a7ef421b3e</p>\r\n<p>I am using Prism 4.1 and castle.windsor 3.1 in a WPF application. I'd like to use the Prism &quot;view based&quot; navigation framework. However, to do so, I must register my view with castle &quot;as object.&quot; I have yet to find a way to do this so\r\n that the prism navigation framework can resolve the view when I call RegionManager.RequestNavigate. I currently register all views and viewmodels via convention. Any insight and especially, example registration code appreciated.</p>\r\n",
+    "PostedDate": "2012-11-19T07:39:20.45-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "944007",
+    "ThreadId": "403809",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding a possible approach to register your views in <strong>\r\nWindsor </strong>against the <strong>Object </strong>type could be for example like this:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>windsorContainer.Register(Castle.MicroKernel.Registration.Component.For(<span style=\"color:blue\">typeof</span>(<span style=\"color:blue\">object</span>))\r\n.ImplementedBy(<span style=\"color:blue\">typeof</span>(yourView)).Named(<span style=\"color:#a31515\">&quot;yourView&quot;</span>).LifeStyle.Singleton); <span style=\"color:green\">//The defined LifeStyle will deppend on your requirements</span>\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>For more information about the different registration methods used by <strong>\r\nWindsor </strong>you could check the following resource:</p>\r\n<ul>\r\n<li><a href=\"http://docs.castleproject.org/Default.aspx?Page=Registering-components-one-by-one&NS=Windsor&AspxAutoDetectCookieSupport=1\">Registering components one-by-one</a>\r\n</li></ul>\r\n<p>On the other hand, take into account that the <strong>Prism </strong>library accesses the container through the\r\n<strong>IServiceLocator </strong>interface, hence if you want to use <strong>Prism\r\n</strong>with a container other than <strong>Unity </strong>or <strong>MEF </strong>\r\nin your application you will need to write a<strong> Service Locator</strong> adapter for your container and also need to write a container-specific\r\n<strong>bootstrapper </strong>class. This is mentioned in the <a href=\"http://msdn.microsoft.com/en-us/library/gg430866(v=pandp.40).aspx\">\r\nExtending Prism Chapter</a> of the <strong>Prism </strong>documentation.<br>\r\n<br>\r\nIf you need further assistance please let us know,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-11-19T07:43:02.637-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

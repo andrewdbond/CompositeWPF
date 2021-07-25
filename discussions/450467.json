@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1070005",
+    "ThreadId": "450467",
+    "Html": "Hi all,\r<br />\n<br />\nI have a wpf windows application with PRISM framework. I need to convert this application in to dll for using in some other application.\r<br />\n<br />\nFollowing is the project structure (modules)<br />\n<ol>\n<li>Customer</li>\n<li>\nAddress<br />\n</li>\n</ol>\nand one shell project.\r<br />\n<br />\nFor converting i tried the following <br />\n<ol>\n<li>\nRemoved the app.xaml class<br />\n</li>\n<li>\nChanged the project propery to class library <br />\n</li>\n<li>\nBuild the application and build was successful and got the dll.<br />\n</li>\n<li>\nAdded this dll in to another wpf application and called the constructor method of one class in main application (it calls the bootstrapper)<br />\n</li>\n</ol>\nbut while running this none of the modules constructors are getting called.\r<br />\n<br />\nCan any one tell me how to convert wpf application to DLL and how to use this dll in some sample application.\r<br />\n<br />\nRegards,\r<br />\nNidheesh<br />\n",
+    "PostedDate": "2013-07-18T05:49:18.183-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1070139",
+    "ThreadId": "450467",
+    "Html": "Hi Nidheesh,\r<br />\n<br />\nI did a quick test using the <strong>Hello World QuickStart</strong> and it seems it's possible to start a <strong>Prism</strong> application from another <strong>WPF</strong> application. Perhaps the problem is that your <strong>Prism</strong> application cannot locate the modules when executed from the host application. \r<br />\nWhat method are you using to load the modules? (direct reference, directory module catalog, etc.)\r<br />\nAlso what container are you using in your <strong>Prism</strong> application?\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-07-18T11:09:44.237-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1278549",
+    "ThreadId": "450467",
+    "Html": "I realize this thread is old but I'm trying to do the same thing.  I have a WPF/Prism EXE that I converted to a DLL that I need to start from a Class Library.  I created an entry point that calls the bootstrapper and the shell window appears but fails when I try to inject a view into a region as the RegionManager doesn't recognize the region names.  (The EXE I started with works as expected so it's setup as a valid Prism application).  I did verify that ConfigureAggregateCatalog is being called and my MEF exports are being picked up so it's not an issue there.\r<br />\n<br />\nI tried the same thing with the Hello World Quickstart and the shell opens but the module isn't loaded into the region.<br />\n\r<br />\nHere is my code from InitializeShell in the bootstrapper:<br />\n<pre><code>        base.InitializeShell();\n\n        Window mainWindow = (Window)CreateShell();\n        mainWindow.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate()\n            {\n                mainWindow.Show();\n            }\n        ));\n        System.Windows.Threading.Dispatcher.Run();   \n</code></pre>\n\nAny ideas?\r<br />\n<br />\nThanks,\r<br />\n-Scott<br />\n",
+    "PostedDate": "2014-07-28T16:10:38.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

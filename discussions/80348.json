@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "275404",
+    "ThreadId": "80348",
+    "Html": "<p>A view command handler in my ViewModel needs to create a new View that is displayed in a popup region.&nbsp; It seems to me that a ViewModel creating Views violated the MVVM triad.&nbsp; What would be the best-practices way of doing this?&nbsp; Should I register my popup View and then use an even to show it?</p>",
+    "PostedDate": "2010-01-10T11:53:54.99-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "275765",
+    "ThreadId": "80348",
+    "Html": "<p>I am currently doing this exact same thing.<br>For example... I have three regions in my application: ApplicationRibbonRegion, ApplicationMainRegion, and ApplicationStatusBarRegion.</p>\r\n<p>When I activate/show a View in the ApplicationMainRegion I need to show some correspoding Views in the other two regions.<br>I am uncertain as to how others have accomplished this but for the most part my Views have a one-to-one relationship with their ViewModel.<br>The ViewModel has a reference to the View and hooks into the View's Loaded and Unloaded events. I use these two events to add/remove corresponding Views to other regions if needed.</p>\r\n<p>If someone has a better way of handling this particular problem please share it as I have struggled to find a better way.</p>\r\n<p>Michael</p>",
+    "PostedDate": "2010-01-11T09:30:17.95-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "275975",
+    "ThreadId": "80348",
+    "Html": "<p>My ViewModel has no reference whatsoever to the View. &nbsp;The ViewModel is injected into the View using the Container when its registered with a given region. &nbsp;If I need to communicate back to the View from the ViewModel, I raise an event that the View has a handler for. &nbsp;I am not using the EventAggregator between the View and ViewModel. &nbsp;I only use the EventAggregator between ViewModels or between Services, or some combination of both.</p>\r\n<p>My other issue is my model is a library unto itself. &nbsp;It is however, not a module, but it does expose services. &nbsp;How do other folks handle their model? &nbsp;Can a model have its own Views also?</p>",
+    "PostedDate": "2010-01-11T19:32:28.657-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "275978",
+    "ThreadId": "80348",
+    "Html": "<p>How are you setting the DataContext (ViewModel) for the View that the ViewModel represents?</p>",
+    "PostedDate": "2010-01-11T19:50:40.213-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "275982",
+    "ThreadId": "80348",
+    "Html": "<p>I'm doing this from memory because I'm not in the office, so bear with me. &nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">namespace</span> foo {\r\n\r\n  <span style=\"color:Blue\">class</span> View {\r\n\r\n    <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">readonly</span> ViewModel _viewModel;\r\n\r\n    <span style=\"color:Blue\">public</span> View(){\r\n      InitializeComponents();\r\n    }\r\n\r\n    <span style=\"color:Blue\">public</span> View(ViewModel viewModel) : <span style=\"color:Blue\">this</span>() {\r\n      _viewModel = viewModel;\r\n      DataContext = _viewModel;\r\n      _viewModel.RequestClose += OnRequestClose;\r\n    }\r\n\r\n    <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> OnRequestClose(<span style=\"color:Blue\">object</span> sender, EventArgs e){\r\n      <span style=\"color:Green\">// do some stuff :)</span>\r\n    }\r\n\r\n  }\r\n\r\n}\r\n</pre>\r\n</div>\r\n<p>The key here is that the instantiation of the View must be handled by the Container. &nbsp;For example, if you call RegisterViewWithRegion, you will pass a Type of your View. &nbsp;The Container will instantiate it and inject the ViewModel into the View. &nbsp;Let me know if you have any other questions and I'll answer them tomorrow when I have my codebase in front of me.</p>",
+    "PostedDate": "2010-01-11T20:12:00.937-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "275988",
+    "ThreadId": "80348",
+    "Html": "<p>Instead of using RegisterViewWithRegion... you might think about using Region.Add().<br>This how I do it and so far it works well (if you are not opposed to your ViewModels knowing about their Views use the code below)<br>You can override the OnViewLoaded to add/activate Views in another region if needed and override OnViewUnloaded to remove/deactivate Views in that same region.</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">abstract</span> <span style=\"color:Blue\">class</span> ViewModel : ObservableObject\r\n{\r\n\r\n\t<span style=\"color:Blue\">#region</span> [ Fields ]\r\n\r\n\t<span style=\"color:Blue\">private</span> <span style=\"color:Blue\">readonly</span> Dispatcher _dispatcher;\r\n\r\n\t<span style=\"color:Blue\">#endregion</span>\r\n\r\n\t<span style=\"color:Blue\">#region</span> [ Constructors ]\r\n\r\n\t<span style=\"color:Blue\">protected</span> ViewModel()\r\n\t{\r\n\t\t<span style=\"color:Blue\">this</span>._dispatcher = Application.Current.Dispatcher;\r\n\t}\r\n\r\n\t<span style=\"color:Blue\">#endregion</span>\r\n\r\n\t<span style=\"color:Blue\">#region</span> [ Properties ]\r\n\r\n\t<span style=\"color:Blue\">public</span> Dispatcher Dispatcher\r\n\t{\r\n\t\t<span style=\"color:Blue\">get</span>\r\n\t\t{\r\n\t\t\t<span style=\"color:Blue\">return</span> <span style=\"color:Blue\">this</span>._dispatcher;\r\n\t\t}\r\n\t}\r\n\r\n\t<span style=\"color:Blue\">#endregion</span>\r\n\r\n\t<span style=\"color:Blue\">#region</span> [ Methods ]\r\n\r\n\t<span style=\"color:Blue\">public</span> <span style=\"color:Blue\">void</span> CheckAccessInvokeAction(Action action)\r\n\t{\r\n\t\t<span style=\"color:Blue\">if</span> (<span style=\"color:Blue\">null</span> == action)\r\n\t\t\t<span style=\"color:Blue\">throw</span> <span style=\"color:Blue\">new</span> ArgumentNullException(<span style=\"color:#A31515\">&quot;Action cannot be null&quot;</span>);\r\n\r\n\t\t<span style=\"color:Blue\">if</span> (<span style=\"color:Blue\">this</span>.Dispatcher.CheckAccess() == <span style=\"color:Blue\">false</span>)\r\n\t\t{\r\n\t\t\t<span style=\"color:Blue\">this</span>.Dispatcher.BeginInvoke(<span style=\"color:Blue\">new</span> ThreadStart(<span style=\"color:Blue\">delegate</span> { <span style=\"color:Blue\">this</span>.CheckAccessInvokeAction(action); }), DispatcherPriority.Send);\r\n\t\t}\r\n\t\t<span style=\"color:Blue\">else</span>\r\n\t\t{\r\n\t\t\taction.Invoke();\r\n\t\t}\r\n\t}\r\n\r\n\t<span style=\"color:Blue\">#endregion</span>\r\n\r\n}\r\n\r\n<span style=\"color:Blue\">public</span> <span style=\"color:Blue\">abstract</span> <span style=\"color:Blue\">class</span> ViewModel&lt;TView&gt; : ViewModel\r\n\t<span style=\"color:Blue\">where</span> TView : FrameworkElement, IView\r\n{\r\n\t<span style=\"color:Blue\">#region</span> [ Fields ]\r\n\r\n\t<span style=\"color:Blue\">private</span> TView _view;\r\n\r\n\t<span style=\"color:Blue\">#endregion</span>\r\n\r\n\t<span style=\"color:Blue\">#region</span> [ Constructors ]\r\n\r\n\t<span style=\"color:Blue\">protected</span> ViewModel(TView view) : <span style=\"color:Blue\">base</span>()\r\n\t{\r\n\t\t<span style=\"color:Blue\">this</span>.View = view;\r\n\t}\r\n\r\n\t<span style=\"color:Blue\">#endregion</span>\r\n\r\n\t<span style=\"color:Blue\">#region</span> [ Properties ]\r\n\r\n\t<span style=\"color:Blue\">protected</span> TView View\r\n\t{\r\n\t\t<span style=\"color:Blue\">get</span>\r\n\t\t{\r\n\t\t\t<span style=\"color:Blue\">return</span> <span style=\"color:Blue\">this</span>._view;\r\n\t\t}\r\n\t\t<span style=\"color:Blue\">set</span>\r\n\t\t{\r\n\t\t\t<span style=\"color:Blue\">if</span> (value != <span style=\"color:Blue\">this</span>._view)\r\n\t\t\t{\r\n\t\t\t\t<span style=\"color:Blue\">this</span>.OnViewChanging();\r\n\t\t\t\t<span style=\"color:Blue\">this</span>._view = value;\r\n\t\t\t\t<span style=\"color:Blue\">this</span>.OnViewChanged();\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n\r\n\t<span style=\"color:Blue\">#endregion</span>\r\n\r\n\t<span style=\"color:Blue\">#region</span> [ Methods ]\r\n\r\n\t<span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">virtual</span> <span style=\"color:Blue\">void</span> OnViewChanging()\r\n\t{\r\n\t\t<span style=\"color:Blue\">if</span> (<span style=\"color:Blue\">null</span> != <span style=\"color:Blue\">this</span>.View)\r\n\t\t{\r\n\t\t\t<span style=\"color:Blue\">this</span>.View.Loaded -= <span style=\"color:Blue\">new</span> RoutedEventHandler(<span style=\"color:Blue\">this</span>.View_Loaded);\r\n\t\t\t<span style=\"color:Blue\">this</span>.View.Unloaded -= <span style=\"color:Blue\">new</span> RoutedEventHandler(<span style=\"color:Blue\">this</span>.View_Unloaded);\r\n\t\t}\r\n\t}\r\n\r\n\t<span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">virtual</span> <span style=\"color:Blue\">void</span> OnViewChanged()\r\n\t{\r\n\t\t<span style=\"color:Blue\">if</span> (<span style=\"color:Blue\">null</span> != <span style=\"color:Blue\">this</span>.View)\r\n\t\t{\r\n\t\t\t<span style=\"color:Blue\">this</span>.View.Loaded += <span style=\"color:Blue\">new</span> RoutedEventHandler(<span style=\"color:Blue\">this</span>.View_Loaded);\r\n\t\t\t<span style=\"color:Blue\">this</span>.View.Unloaded += <span style=\"color:Blue\">new</span> RoutedEventHandler(<span style=\"color:Blue\">this</span>.View_Unloaded);\r\n\t\t}\r\n\t}\r\n\r\n\t<span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">virtual</span> <span style=\"color:Blue\">void</span> OnViewLoaded()\r\n\t{\r\n\r\n\t}\r\n\r\n\t<span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">virtual</span> <span style=\"color:Blue\">void</span> OnViewUnloaded()\r\n\t{\r\n\r\n\t}\r\n\r\n\t<span style=\"color:Blue\">#endregion</span>\r\n\r\n\t<span style=\"color:Blue\">#region</span> [ Event Handlers ]\r\n\r\n\t<span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> View_Loaded(<span style=\"color:Blue\">object</span> sender, RoutedEventArgs e)\r\n\t{\r\n\t\t<span style=\"color:Blue\">this</span>.OnViewLoaded();\r\n\t}\r\n\r\n\t<span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> View_Unloaded(<span style=\"color:Blue\">object</span> sender, RoutedEventArgs e)\r\n\t{\r\n\t\t<span style=\"color:Blue\">this</span>.OnViewUnloaded();\r\n\t}\r\n\r\n\t<span style=\"color:Blue\">#endregion</span>\r\n}\r\n</pre>\r\n</div>",
+    "PostedDate": "2010-01-11T20:27:32.193-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "276181",
+    "ThreadId": "80348",
+    "Html": "<p>Yes, I have an enormous problem with my ViewModel being aware of the View.&nbsp; The whole idea about seperation is that, theoretically, I could use my ViewModel with any sort of View.&nbsp; Yes, I have used the Add() method.&nbsp; The only time I do that is if I have to pass a value to the ViewModel prior to instantiating the View.&nbsp; I do it as such:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>            _viewModel = _locator.GetInstance&lt;ViewModel&gt;();\r\n            _viewModel.SomeProperty = foo;\r\n            _view = _locator.GetInstance&lt;View&gt;();\r\n            _view.DataContext = _viewModel;\r\n\r\n            <span style=\"color:Blue\">var</span> region = _regionManager.Regions[RegionNames.SecondaryRegion];\r\n            region.Add(_view);\r\n            region.Activate(_view);\r\n\r\n\r\n</pre>\r\n</div>\r\n</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-12T07:07:48.977-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "276209",
+    "ThreadId": "80348",
+    "Html": "<p>I tried your approach to begin with keeping my ViewModels ignorant of the Views... and in some circumstances I still do this.<br>However, this approach always gave me grief. I very RARELY interact directly with the View from the ViewModel... mainly it is there so that I can hook into the Loaded and Unloaded events.</p>\r\n<p>Using your example from above.... when constructing the View catch the Loaded and Unloaded events on the View and then call a specific method on the ViewModel.</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">namespace</span> foo {\r\n\r\n  <span style=\"color:Blue\">class</span> View {\r\n\r\n    <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">readonly</span> ViewModel _viewModel;\r\n\r\n    <span style=\"color:Blue\">public</span> View(){\r\n      InitializeComponents();\r\n    }\r\n\r\n    <span style=\"color:Blue\">public</span> View(ViewModel viewModel) : <span style=\"color:Blue\">this</span>() {\r\n      _viewModel = viewModel;\r\n      DataContext = _viewModel;\r\n      _viewModel.RequestClose += OnRequestClose;\r\n      <span style=\"color:Blue\">this</span>.Loaded += <span style=\"color:Blue\">new</span> RoutedEventHandler(<span style=\"color:Blue\">this</span>.View_Loaded);\r\n    }\r\n\r\n    <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> OnRequestClose(<span style=\"color:Blue\">object</span> sender, EventArgs e){\r\n      <span style=\"color:Green\">// do some stuff :)</span>\r\n    }\r\n\r\n    <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> View_Loaded(<span style=\"color:Blue\">object</span> sender, RoutedEventArgs e)\r\n    {\r\n       <span style=\"color:Blue\">this</span>._viewModel.OnViewLoaded();\r\n    }\r\n\r\n  }\r\n\r\n}\r\n\r\n</pre>\r\n</div>",
+    "PostedDate": "2010-01-12T07:57:38.297-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "276227",
+    "ThreadId": "80348",
+    "Html": "<p>You're absolutely right.&nbsp; As I said, I was doing it from memory.&nbsp; Yes, I hook the Loaded event (i just wire it up in the XAML) and then call a Start() method on my ViewModel.&nbsp; The Start() method does things such as pulling data from the DB and populating bound properties (subsequently raising the property changed event).</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-12T08:18:21.383-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "276230",
+    "ThreadId": "80348",
+    "Html": "<p>I would hook in to the Unloaded event as well and just activate any views you need to add to other regions in the Loaded event and then deactivate them in the Unloaded event.</p>",
+    "PostedDate": "2010-01-12T08:20:36.223-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

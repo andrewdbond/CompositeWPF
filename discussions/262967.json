@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "633643",
+    "ThreadId": "262967",
+    "Html": "\r\n<p>When I run this code to remove all views in my region it is also removing the region.&nbsp; I do not want it to remove my region. Is there something extra that I need to do to keep my region alive?</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre> <span style=\"color:blue\">if</span> (RegionManager.Regions.ContainsRegionWithName(AdminDockSiteRegionIdentifiers.RightDocked) == <span style=\"color:blue\">false</span>)\r\n                <span style=\"color:blue\">return</span>;\r\n\r\n            <span style=\"color:blue\">var</span> region = RegionManager.Regions[AdminDockSiteRegionIdentifiers.RightDocked];\r\n            \r\n            \r\n            <span style=\"color:blue\">foreach</span> (<span style=\"color:blue\">var</span> view <span style=\"color:blue\">in</span> region.Views.Where(view =&gt; view != <span style=\"color:blue\">null</span>))\r\n            {\r\n                region.Remove(view);\r\n            } </pre>\r\n<pre>I would also like to mention that the region in question is a custom region adaptor I created for a docking framework. I have traced my custom region adaptor code and only see the region tearing down the view, nothing else appears to be functionally wrong.</pre>\r\n<pre>Thanks in advance!</pre>\r\n</div>\r\n",
+    "PostedDate": "2011-06-27T10:45:27.903-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "633673",
+    "ThreadId": "262967",
+    "Html": "<p>Hi,</p>\r\n<p>The region should be kept alive as long as the control it's mapped to is added in the visual tree. Also, the <strong>RegionManager </strong>should hold a reference to your region in its <strong>Regions </strong>collection.</p>\r\n<p>You could check the code of your custom adapter to check if there's something in its code that might make the view that holds your region to be disposed when you dispose a child item in it. That could be the cause of this behavior.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-06-27T11:34:26.18-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "633720",
+    "ThreadId": "262967",
+    "Html": "<p>Hi Guido and thanks for you quick reply.</p>\r\n<p>I am still not seeing why this is removing the region from the RegionManager but it most definately is.</p>\r\n<p>In my applicaiton I have a tab control within a separate document window (separate region) and to the right of this document window (region) I have a right docking region which is where I inject now two views.</p>\r\n<p>Currently I am using the onselectionchanged event of the tab control situated in my document window and when fired, I&nbsp;test to see if the tab item's&nbsp;datacontext (viewmodel)&nbsp;being changed from/to supports a custom interface I wrote that allows me to call back through the tab item(s) related&nbsp;view model and request it to remove&nbsp;any&nbsp;related views from the docking region (ie, will call's a supporting method of&nbsp;the old tabitem's view model&nbsp;tabbing&nbsp;from) and then I call the the tab item's supporting interface to requestnavigate any views back into the docking region (within&nbsp;my custom interface's).&nbsp;</p>\r\n<p>I added two views instead of just one to the same and only removed one of the views.&nbsp;</p>\r\n<p>What I see is what I expect to see, the one view remains (does not implement IRegionMemberLifetime) while the other is removed and the Region remains which allows me to navigate the one I removed back into the region when I click back to the supporting tab item.</p>\r\n<p>It's as if some code elsewhere is requesting that I remove this docking region but&nbsp;hangs on until&nbsp;all the views are removed. I have searched high and low but do not see where anything is trying to remove a region.&nbsp;</p>\r\n<p>&nbsp; <span style=\"font-family: Consolas; font-size: x-small;\"><span style=\"font-family: Consolas; font-size: x-small;\"><span style=\"font-family: Consolas; font-size: x-small;\">&nbsp;</span></span></span>\r\n<p><span style=\"font-family: Consolas; color: #0000ff; font-size: x-small;\"><span style=\"font-family: Consolas; color: #0000ff; font-size: x-small;\"><span style=\"font-family: Consolas; color: #0000ff; font-size: x-small;\">&nbsp;</span></span></span></p>\r\n<p>&nbsp;</p>\r\n</p>",
+    "PostedDate": "2011-06-27T12:41:39.62-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "633800",
+    "ThreadId": "262967",
+    "Html": "<p>This is really killing me. I have spent the entire day trying to understand what is going on as it really makes no sense whatsoever.</p>\r\n<p>In an attempt to isolate what the heck is going on I thought I would remove one of the&nbsp;two views from the docking region I am having issues with (see above)&nbsp;however the code below is not finding the named view which does not make sense for when I debug to that point and can see two views on the said region (named accordingly) however the GetView method is not locating the view in question, even though I can clearly see it within that region.</p>\r\n<p>Can anyone explain what the heck I am missing ?</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>            <span style=\"color: blue;\">var</span> region = RegionManager.Regions[AdminDockSiteRegionIdentifiers.RightDocked];\r\n\r\n            <span style=\"color: blue;\">var</span> vw = region.GetView(<span style=\"color: #a31515;\">\"ApplicationPropertyContainerView\"</span>);\r\n            <span style=\"color: blue;\">if</span>(vw != <span style=\"color: blue;\">null</span>)\r\n            {\r\n                region.Remove(vw);\r\n            }\r\n</pre>\r\n</div>",
+    "PostedDate": "2011-06-27T14:56:36.637-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "634170",
+    "ThreadId": "262967",
+    "Html": "<p>Hi,</p>\r\n<p>The <a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.prism.regions.region.getview%28PandP.40%29.aspx\">Region.GetView</a> method retrieves a view that had been added with a specific name (by providing a name string in the <strong>Region.Add</strong> method). Therefore, if you haven't registered your views with a name string, the <strong>GetView </strong>method won't return anything.</p>\r\n<p>If you can't debug this further to find a solution to your problem, you could upload a repro sample application (for example, to Skydrive) so that we can help you better understand what could be causing this undesired behavior.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-06-28T07:58:34.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "634276",
+    "ThreadId": "262967",
+    "Html": "<p>Hi and thanks again for your support.</p>\r\n<p>I am actually using the RequestNavigate to load my view (see code below) .&nbsp; Is there any other way of registering the View without performing the Region.Add method?</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>   RegionManager.RequestNavigate(AdminDockSiteRegionIdentifiers.RightDocked,\r\n                                            <span style=\"color: blue;\">new</span> Uri(<span style=\"color: #a31515;\">\"ApplicationPropertyContainerView\"</span>, UriKind.Relative));\r\n</pre>\r\n</div>",
+    "PostedDate": "2011-06-28T10:43:52.813-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "634304",
+    "ThreadId": "262967",
+    "Html": "<p>Hi,</p>\r\n<p>If you register your view using navigation, the view will not be added using a name string, so you won't be able to retrieve it using the <strong>GetView </strong>method.</p>\r\n<p>Currently, the way Prism offers to register views with a name string is to use the <strong>Add</strong> method.</p>\r\n<p>As for alternative means of adding views to regions, you could follow the View Discovery approach, which involves using the <strong>IRegionViewRegistry.RegisterViewWithRegion</strong> method (or the <strong>IRegionManager.RegisterViewWithRegion</strong> extension method, which produce identical results). However, that method also doesn't offer the possibility of registering the view with a name string.</p>\r\n<p>You can read more about this in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28PandP.40%29.aspx\">UI Composition</a> chapter of the Prism MSDN documentation.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-06-28T11:25:53.96-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "635455",
+    "ThreadId": "262967",
+    "Html": "<p>Hi Guido,</p>\r\n<p>You were 100% bang-on.&nbsp; As it turns out the Region was unloading because the Docking Area it was bound to was unloading.&nbsp; I did not fully understand the behavior of the 3rd Party Docking Framework I am using and after consulting with the vendor I was informed that the docking areas do unload if you remove all windows.</p>\r\n<p>As can be seen in this link, <a href=\"http://compositewpf.codeplex.com/discussions/263394\">http://compositewpf.codeplex.com/discussions/263394</a>&nbsp;I created a check to see if this condition exists and then recreate both the unloaded docking area then create and bind a new region to it.&nbsp; Seems to work just fine.</p>\r\n<p>Many thanks for you help!</p>",
+    "PostedDate": "2011-06-30T08:22:09.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

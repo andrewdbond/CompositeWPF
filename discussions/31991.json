@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "106259",
+    "ThreadId": "31991",
+    "Html": "I have following scenario.<br>\r\n1) StudentView has a listbox to display student names. DataContext of the view is bound to StudentModel within same module. StudentModel has a property StudentList&nbsp;returning List&lt;Student&gt;. <br>\r\n2) The property StudentList in turn gets its records from StudentDataService. StudentDataService publishes ListChanged event to notify changes.<br>\r\n3) StudentModel is a subscriber to ListChanged event. StudentModel also implements INotifyPropertyChanged interface to notify bound controls.<br>\r\n<br>\r\nStepping through the code, event publication/subscription works perfect. While in debugger, I can even see the conents of StudentList property being&nbsp;refreshed but the contents of ListBox on StudentView (.xaml) do not change. My implementation of INotifyPropertyChanged is fine since I have used it at other places successfully. <br>\r\n<br>\r\nAny clues, what I am missing here.\r\n",
+    "PostedDate": "2008-07-22T08:24:11.04-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "106302",
+    "ThreadId": "31991",
+    "Html": "One quick suggestion - Try replacing List&lt;Student&gt; with System.Collections.ObjectModel.ObservableCollection&lt;Student&gt;.&nbsp; You should bind your&nbsp;ListBox&nbsp;to a collection of this type in WPF, when the collection is changing.<br>\r\n<br>\r\nIf this doesn't work, post your code and we'll see what's going on.\r\n",
+    "PostedDate": "2008-07-22T11:05:49.543-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "106311",
+    "ThreadId": "31991",
+    "Html": "Bull's eye. Thanks jwalklin. Changing List to ObservableCollection fixed the problem. I still have to go back and check several other places where I was using List&lt;T&gt; for similar situations and compare but for now that's all I needed.<br>\r\n",
+    "PostedDate": "2008-07-22T11:30:20.02-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

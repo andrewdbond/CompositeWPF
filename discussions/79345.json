@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "271638",
+    "ThreadId": "79345",
+    "Html": "<p>Hi,</p>\r\n<p>I am using Prism to build WPF application, where in I have multiple views in my module which needs to be loaded only based on certain conditions, I am using Event Aggregators to switch between views, I am using event aggregators in code behind og my views and using MVVM for all my user controls.</p>\r\n<p>--&gt; Is this approach a good approach for using Event Aggregators to switch between views (defined in a module) in same region?</p>\r\n<p>--&gt; Is there any other better way to subscribe for event aggreagators (I don't want to subscribe in Module class, as this would lead me to strong type my events and that in turn would not allow my Module class (where I initiliaze my modeule) to be disposed off, or correct me if I am wrong?</p>\r\n<p>--&gt; Is there any other way where I could&nbsp;add the modules itself based on consitions at runtime?</p>\r\n<p>Would appreciate any help on the same.</p>\r\n<p>Regards,</p>\r\n<p>Suchit.</p>",
+    "PostedDate": "2009-12-30T00:53:31.027-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "271812",
+    "ThreadId": "79345",
+    "Html": "<p id=d9805de0-d79b-012c-1e23-12313b030246>Hi Suchit,</p>\r\n<p>If all views are defined in the same module, there might be no need to use the <a href=\"View.aspx?ThreadId=49448\">EventAggregator</a>, as common .Net events might suffice. This is because there is no need for decoupled communication between the views of a single module. Another possible approach could be using the ScreenCoordinator pattern explained by Ward Bell in these couple of posts:</p>\r\n<ul>\r\n<li><a href=\"http://neverindoubtnet.blogspot.com/2009/06/screen-factory.html\">Screen Factory</a> </li>\r\n<li><a href=\"http://neverindoubtnet.blogspot.com/2009/05/birth-and-death-of-m-v-vm-triads.html\">Birth and Death of M-V-VM Triads</a> </li>\r\n</ul>\r\n<p id=d9808880-d79b-012c-1e25-12313b030246>If you do decide to use the Event Aggregator, the only way Prism provides to subscribe to events is explained <a href=\"http://msdn.microsoft.com/en-us/library/dd458904.aspx\">here</a>.</p>\r\n<p id=d980ab00-d79b-012c-1e26-12313b030246>To add modules based on conditions at runtime, an approach that could be used is having all the conditional modules load on demand and load only those modules after your conditions have been determined. Some threads that discuss this are the following:</p>\r\n<ul>\r\n<li><a href=\"View.aspx?ThreadId=58292\">Show login modal form before</a> </li>\r\n<li><a href=\"View.aspx?ThreadId=67191\">Too many regions in my shell</a> </li>\r\n<li><a href=\"View.aspx?ThreadId=49448\">User Defined Module Loading using Prism</a></li>\r\n</ul>\r\n<p id=d980cdd0-d79b-012c-1e27-12313b030246>Please let me know if this helps.</p>\r\n<p id=d980f550-d79b-012c-1e28-12313b030246>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-30T12:37:42.58-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "271890",
+    "ThreadId": "79345",
+    "Html": "<p>Thanks &nbsp;very much Damian, these posts were of great help and gave a lot of solutions that I was looking for.</p>\r\n<p>One more question, rather taking your point of view,</p>\r\n<p>In my application the modules which I am loading on demand, is their any way I could unload those modules also at runtime, to add to it (only if unloading is also possible), these modules might be used frequently in a running instance of my application, so again would this idea of loading/unloading be very expensive if the frequency of usage is high for modules which are loaded on demand?</p>",
+    "PostedDate": "2009-12-30T20:11:41.39-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

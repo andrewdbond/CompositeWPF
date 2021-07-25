@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "223669",
+    "ThreadId": "65744",
+    "Html": "<p>Currently, I cannot access the Views count in a region. Being told that IViewsCollection does not have a Count() method. I have an instance of the shell region manager in a presenter that was passed in via the constructor as IRegionManager.</p>\r\n<p>&nbsp;</p>\r\n<p>I recently made two changes to the TabControlRegionAdaptor and recompiled the Composite.Presentation.dll - they were the TabItem HeaderTemplate fix (suggested here: http://compositewpf.codeplex.com/WorkItem/View.aspx?WorkItemId=4599) and I also wrapped TabItem with a custom TabItem which does some stuff OnApplyTemplate. I don't see how that could suddenly make the Count() method unavailable in the region, but could it?</p>\r\n<p>&nbsp;</p>\r\n<p>Just really confused as I see plenty of examples like this:</p>\r\n<p>IRegion mainRegion = regionManager.Regions[regionName];</p>\r\n<p>int viewsAmount = mainRegion.Views.Count();</p>\r\n<p>&nbsp;</p>\r\n<p>That snippet will not compile for me....</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks in advance for any suggestions and apologies if I am missing something really obvious....</p>",
+    "PostedDate": "2009-08-14T12:52:31.363-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "223696",
+    "ThreadId": "65744",
+    "Html": "<p><span style=\"font-size:11pt;color:black\" lang=EN-US>Hi headbiznatch, </span></p>\r\n<p><span style=\"font-size:11pt;color:black\" lang=EN-US>You are probably not using the <strong>System.Linq</strong> namespace. The count method that usually can be used in <strong>IViewCollection</strong> is just the extension method that linq provides on <strong>IEnumerable. </strong>Try adding <span style=\"color:Blue\">using</span> System.Linq;</span></p>\r\n<p><span style=\"font-size:11pt;color:black\" lang=EN-US>If this does not resolve your issue, what is the compile error that you are receiving?</span></p>\r\n<p>Hope it helps!</p>\r\n<p>Matias Bonaventura<br><a href=\"http://blogs.southworks.net/matiasb\">http://blogs.southworks.net/matiasb</a></p>",
+    "PostedDate": "2009-08-14T14:11:49.07-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "223697",
+    "ThreadId": "65744",
+    "Html": "<p>You beat me to the punch! Just figured it out and yeah, I feel like a moron. Thanks....</p>",
+    "PostedDate": "2009-08-14T14:13:35.723-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

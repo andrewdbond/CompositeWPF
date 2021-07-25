@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "286065",
+    "ThreadId": "83219",
+    "Html": "<p>I'm using PRISM for developing a financial application. Our requirement is to be able to communicate across modules/process/machine boundaries.</p>\r\n<p>For our first delivery we only want to be able to communicate between modules. However, we want to build a design which can be extended to cross-process/machine at a later stage without much change to existing stuff.</p>\r\n<p><em>Solution im considering</em></p>\r\n<p>I'm considering using EventAggregator for the first delivery. I plan to extend it at a later stage by building a listener module that can listen to the events and wire them to a bus for cross process communication. I'm concerned about two things here :</p>\r\n<ul>\r\n<li>Is it as elegant as i think it is. In terms of simplicity and providing the flexibility to extend it later using any sort of listener and wiring we want.</li>\r\n<li>When the volume of communication increases, would it hit the performance significantly.</li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n<p>Need suggestions, inputs please.</p>\r\n<p>Thanks.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-02-04T20:35:02.197-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "286250",
+    "ThreadId": "83219",
+    "Html": "<p id=532025a0-f48f-012c-5708-1231390b4121>Hi,</p>\r\n<p id=53203c40-f48f-012c-5709-1231390b4121>The solution you are proposing seems like a good one, as it provides extensibility&nbsp; and the possibility to change the behavior by simply adding a module to the application.</p>\r\n<p>As the <strong>EventAggregator</strong> is meant for inter-module communication, another possible solution could be  creating a &ldquo;Communication Service&rdquo; that is in charge of your  application&rsquo;s communication.</p>\r\n<p id=53205840-f48f-012c-570a-1231390b4121>At first, this would only wrap  the <strong>EventAggregator&rsquo;s</strong> functionality, but eventually  you can change the underlying implementation of the service to use an <strong>Enterprise  Service Bus</strong> or any other form of communication. Since the  interface of the service should not change, you don&rsquo;t need to make any  modifications to the application.</p>\r\n<p id=53208d60-f48f-012c-570b-1231390b4121>Take into account that the  underlying implementation of the service should be able to discern  between an event that should be made available publicly and one that is  only mean for use as <a href=\"http://msdn.microsoft.com/en-us/library/dd458915.aspx\">EA default  functionality</a> to avoid over consuming the Service Bus.</p>\r\n<p>You should take the approach you find most suiting for your application/familiy of applications.</p>\r\n<p id=5320c5d0-f48f-012c-570c-1231390b4121>Please let me know if this  helps.</p>\r\n<p id=532210f0-f48f-012c-570d-1231390b4121>Damian  Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-02-05T06:47:40.34-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

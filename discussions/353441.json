@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "828113",
+    "ThreadId": "353441",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>We have a shell in path &quot;.\\xyz\\shell\\&quot;&nbsp;which uses directorycatalog to load 2 different independent modules A and module B. These 2 modules do not have any inter dependencies.</p>\r\n<p>&#65279;&#65279;Module A project has references to other assemblies(these are not module). Module A and its referenced assemblies are copied to&nbsp;path &quot;.\\comp1\\moduleA\\&quot; in post build step.</p>\r\n<p>&#65279;&#65279;Module B project has references to a different set of assemblies (this is not a module). Module B and all of its referenced assemblies are copied to path &quot;.\\comp2\\Reporting\\&quot; in post build step.</p>\r\n<p>When&nbsp;i run the application, it throws exception that the module referenced assemblies could not be loaded (&quot;Could not load file or assembly ......&quot;). If i copy the all of its referenced assemblies to the shell path, then it works, but i do not want\r\n module referenced assemblies to be side by the shell app. If i remove the referenences from both the modules, then the modules are loaded as expected. I &nbsp;want modules and its referenced assemblies to be in its own path and shell be able to load the modules.</p>\r\n<p>Has any body encountered this issue?</p>\r\n<p>Would appreciate any help.</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2012-04-24T15:26:22.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "828613",
+    "ThreadId": "353441",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding when using the \"<em>Discovering modules in a directory</em>\" approach, you should not require the dependent <strong>dlls </strong>of the modules to be in the same directory as your shell application.</p>\r\n<p>For example, I tried to reproduce the scenario you mentioned using the <a href=\"http://msdn.microsoft.com/en-us/library/ff921068%28v=pandp.40%29.aspx\">ModularityWithMef Quickstart</a> as a starting point. Then I added a reference to a custom library to each of the modules discovered by inspecting a directory (<strong>Module B</strong> and <strong>Module D</strong>). Also I override the <strong>ConfigureAggregateCatalog</strong> method to register the directories like in the following code snippet:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>   <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> ConfigureAggregateCatalog()\r\n        {\r\n            <span style=\"color: blue;\">base</span>.ConfigureAggregateCatalog();\r\n(...)\r\n            DirectoryCatalog catalog1 = <span style=\"color: blue;\">new</span> DirectoryCatalog(<span style=\"color: #a31515;\">\"D:\\\\ModuleB\"</span>);\r\n\r\n            DirectoryCatalog catalog2 = <span style=\"color: blue;\">new</span> DirectoryCatalog(<span style=\"color: #a31515;\">\"D:\\\\ModuleD\"</span>);\r\n\r\n            <span style=\"color: blue;\">this</span>.AggregateCatalog.Catalogs.Add(catalog1);\r\n\r\n            <span style=\"color: blue;\">this</span>.AggregateCatalog.Catalogs.Add(catalog2);\r\n(...) \r\n    }\r\n</pre>\r\n</div>\r\n</p>\r\n<p><em>Note that I placed each module in a different directory, in my case I used absolute paths but this can also be done using relative paths.</em></p>\r\n<p>After rebuilding the solution, I ensure that each module folder also contained the corresponding referenced assemblies for each module.</p>\r\n<p>This way I could run the application without having the module dependent <strong>dlls </strong>in the shell application directory.</p>\r\n<p>Perhaps in your case one of those <strong>dlls </strong>is also being referenced by your shell project.</p>\r\n<p>Please let us know if we have misunderstood your scenario,</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-04-25T12:44:46.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "829560",
+    "ThreadId": "353441",
+    "Html": "<p>Hi Agustin,</p>\r\n<p>Your understanding of my earlier post is right and Shell project does not references those dlls. Only module project references those dll.</p>\r\n<p>On further investigation, here is my findings.</p>\r\n<p><strong><span style=\"text-decoration: underline;\">Little bit of background to the issue: </span></strong>Modules are loaded using DirectoryModuleCatalog. <span style=\"text-decoration: underline;\">One of the views in my module project uses <strong>user control </strong>that is present in the referenced assembly </span>(whose copy local = true).</p>\r\n<p>If i place this user control in xaml file, then it fails to load and gives error&nbsp; \"﻿﻿﻿﻿﻿﻿could not load file or assembly xxxxxxxxxxx or one of its dependencies.....\", but if i programatically create same user control in code behind/*.cs file and add to the some control say stack panel, then it works and this user control from referenced assemblie shows up in the view defined in the module project.</p>\r\n<p>I was able to consistantly reproduce this behaviour with small demo app as well.</p>\r\n<p>Hope this gives you more insight to the issue that i have.</p>\r\n<p>Any suggestions are well appreciated.</p>\r\n<p>Thanks in advance.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-04-27T15:53:32.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "831217",
+    "ThreadId": "353441",
+    "Html": "<p>Hi,</p>\r\n<p>It would be helpful to know which dependency injection container you are using in your scenario (<strong>MEF </strong>or <strong>Unity</strong>). As for the case of&nbsp;<strong>MEF </strong>when discovering modules from a directory, you should use the <strong>DirectoryCatalog </strong>as mentioned in this <a href=\"http://msdn.microsoft.com/en-us/library/gg405479(v=pandp.40).aspx#sec40\">section</a> of the <strong>Prism </strong>documentation. On the other hand for <strong>Unity </strong>the <strong>DirectoryModuleCatalog </strong>should be used instead.<strong></strong></p>\r\n<p>Also, if you already reproduced this behavior in a small demo, it would be helpful if you could upload it to <a href=\"https://skydrive.live.com/\">SkyDrive</a> or any other storage site you'd like to, and post the link here.</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-05-02T10:12:56.45-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "834830",
+    "ThreadId": "353441",
+    "Html": "<p>Hi Agustin,</p>\r\n<p>I am using Unity for DI and using DirectoryModuleCatalog.</p>\r\n<p>Have uploaded zip file here <a href=\"https://skydrive.live.com/redir.aspx?cid=a61b89d393645bc2&amp;resid=A61B89D393645BC2!119&amp;parid=A61B89D393645BC2!114&amp;authkey=!AJV0bBDy6pjYrQk\">https://skydrive.live.com/redir.aspx?cid=a61b89d393645bc2&amp;resid=A61B89D393645BC2!119&amp;parid=A61B89D393645BC2!114&amp;authkey=!AJV0bBDy6pjYrQk</a></p>\r\n<p>Plugin1 has a reference to WPFToolkit.Extended with copylocal = true. When using BusyIndicator user control from WPFToolkit.Extended library in xaml code, gives me could not load file or assembly error, but if i create same usercontrol in xaml code behind, then every thing works fine. Try the code as it is and it should work. Comment the code in UserControl1.xaml.cs and uncomment the xaml code in UserControl1.xaml file and run to see the error. I can reproduce this with any other control whose library (dlls)&nbsp;is present <strong>only </strong>in the directory path where module exist and <strong>is not available </strong>in other path.</p>\r\n<p>Hope this sample is clear and you&nbsp;are&nbsp;able to reproduce the issue.</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2012-05-10T14:32:30.77-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "835257",
+    "ThreadId": "353441",
+    "Html": "<p>Hi,</p>\n<p>Thanks for taking the time to provide this sample. After checking this behavior we realize that the cause is not related to the way your module is loaded.<br /> It seems that when only defining and using an assembly in <strong>XAML</strong>, this assembly won't be loaded if it's not present in the main applications folder. In fact this is not related to <strong>Prism </strong>as it can be reproduced in a simple <strong>WPF </strong>application.</p>\n<p>On the other hand when using assemblies in your project files (like in the code behind as you mentioned) the assemblies are correctly loaded.</p>\n<p>Another possible approach to avoid this, could be ensuring that the assembly is loaded before your view is resolved. For example, I manually loaded the assembly when the module initializes, like in the following code snippet:</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> Initialize()\n{\n\n<span style=\"color: green;\">//relative path to the main application</span>\nAssembly.LoadFrom(<span style=\"color: #a31515;\">@\".\\Plugin1\\WPFToolkit.Extended.dll\"</span>);\n\n(...)\n\n}\n</pre>\n</div>\n<p>However you should consider if adding this complexity is necessary instead of placing these <strong>dll </strong>files in you main project or simple adding a reference to them.</p>\n<p>&nbsp;</p>\n<p>Regards,</p>\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-05-11T11:18:29.573-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "835302",
+    "ThreadId": "353441",
+    "Html": "<p>That answers. Was not aware it is an inherent problem with WPF.</p>\r\n<p>Thanks for your response.</p>\r\n<p>Shankaar</p>",
+    "PostedDate": "2012-05-11T14:04:02.41-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

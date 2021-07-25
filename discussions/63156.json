@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "214606",
+    "ThreadId": "63156",
+    "Html": "<p>I came across this issue in the last couple of days and though it might be of interest to people.</p>\r\n<p>I have 2 presenters, and each which to subscribe to a global event fired by an Event Aggreator.</p>\r\n<p>In each presenter I have the following line of code</p>\r\n<p>myEventAggregator.GetEvent&lt;MyCustomEvent&gt;().Subscribe(PerformMyEventResponse);</p>\r\n<p>where PerformMyResponse is a method with the appropriate signature.</p>\r\n<p>What I find is that only the registation from the 2nd presenter is ever fired. The reason for this is that the event signatures are the same. I.e. they are both called &quot;PerformMyEventResponse&quot;. The issue is easily resolved by giving the 2 methods distinct names, although it makes me wonder what is going on in the background of EventAggregator that stops it from executing the first delegate.</p>\r\n<p>Anyone from the PRISM team care to comment on this?</p>\r\n<p>Cheers</p>\r\n<p>Justin<br><a href=\"http://jtango.wordpress.com\">http://jtango.wordpress.com</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-21T20:39:42.12-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "214902",
+    "ThreadId": "63156",
+    "Html": "<p>Hi Justin,</p>\r\n<p>I have tried to reproduce your issue with no success. You can check the InternalSuscribe method in the <strong>EventBase</strong> class, and after both subscriptions have been performed check the Subscription count.<br>To reproduce your scenario, in the EventAggregator Quickstart I tried subscribing to the <strong>FundAddedEvent</strong> in the Presenter of each module using the code below and all handlers were fired:<br><span style=\"font-size:10pt\" lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eventAggregator.GetEvent&lt;FundAddedEvent&gt;().Subscribe(FundAddedEventHandler);</span></p>\r\n<p><strong><em><span style=\"color:#1f497d\" lang=EN-US>&nbsp;</span></em></strong></p>\r\n<p>A possible reason for events not firing could be because the event is being implemented with Weak References (<a href=\"http://neverindoubtnet.blogspot.com/2009/05/prism-event-aggregator-subscription.html\">this post</a> provides a detailed scenario about it). However, this probably is not your scenario because when you call the methods differently your handlers get fired.</p>\r\n<p>Could you provide a small repro sample?</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><span style=\"font-size:11pt\" lang=EN-US><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></span></p>",
+    "PostedDate": "2009-07-22T11:47:42.993-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "215086",
+    "ThreadId": "63156",
+    "Html": "<p>Hi Damian,</p>\r\n<p>Thanks for the quick response. You were actually spot on with your diagnosis. It was to do with weak referencing. The reason my original post thought it was a naming thing was that due to the indetermiante nautre of the garbages collector, the reference was not collected in the 2 runs after I changed the name, but was in the previous runs. How's that for a quirky coincidence?</p>\r\n<p>Problem is now solved. Thanks so much for your help.</p>\r\n<p>Cheers</p>\r\n<p>Justin<br><a href=\"http://jtango.wordpress.com/\">http://jtango.wordpress.com</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-22T21:06:11.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "223302",
+    "ThreadId": "65571",
+    "Html": "<p>Today I translate PresentationModel to ViewModel in my project. I think it is easy to merge the presenter into the model, which we call it ViewModel now. During this working, I have some suggestions to p&amp;p Team:</p>\r\n<p>1. Let's call presenter-first as view-last, because some patterns lack presenter.</p>\r\n<p>2. Does ViewModel need a&nbsp;Presenter? I find some persons use it in ViewModel, but I think in this way, ViewModel actually is a PresentationModel, although we still call this name.</p>",
+    "PostedDate": "2009-08-14T02:21:58.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "223323",
+    "ThreadId": "65571",
+    "Html": "<p>[jianqiang] 2. Does ViewModel need a Presenter?</p>\r\n<p><a href=\"http://www.martinfowler.com/eaaDev/PresentationModel.html\">Presentation Model</a> and Model-View-ViewModel are <a href=\"http://en.wikipedia.org/wiki/MVVM\">synomonous</a>.</p>\r\n<p>Martin Fowler teaches us in his article on <a href=\"http://www.martinfowler.com/eaaDev/uiArchs.html\">GUI Architectures</a> in 2006&nbsp;(about the time Microsoft's John Gossman coined the phrase MVVM for WPF) that the Presentation Model evolved from MVC,&nbsp;&nbsp; the noted limitations of the Presentation Model &quot;helped develop the Model-View-Presenter approach&quot;.&nbsp; John Gossman introduces even more limitations in his <a href=\"http://blogs.msdn.com/johngossman/archive/2006/03/04/543695.aspx\">Tales from the Smart Client</a> article which suggest MVVM may not be well suited for small or&nbsp;Enterprise applications.</p>\r\n<p>It is my experience with Enterprise level applications that PRISM, more specifically Dependency Injection,&nbsp;the Presentaiton Model opens the door for&nbsp;even more issues.&nbsp; Reusability and loose coupling...&nbsp;&nbsp; As Martin Folwer notes in his Presentation Model article, each view should have only one Presentation Model, Presentation Models can be shared by more than one View.&nbsp;&nbsp; Since different views can have different algorithms for calculations the Presentation Model can become bloated and/or impractical for reuse&nbsp;and can lead to duplication (more complexity and inconsistencies) - reference&nbsp;&quot;Patterns of Enterprise Application Architecture&quot; by Martin Fowler, Domain Model (116).&nbsp;&nbsp;</p>\r\n<p>A Presenter levels the playing field.&nbsp;&nbsp; Common entities and behaviors can be placed on a Presentation Model (reusable) and Presenters, using dependency injection, can specify the Presentation Model it will be using (loosely coupled).&nbsp;&nbsp;&nbsp;Presenters can encapsulate domain logic that is specific to a use case.</p>",
+    "PostedDate": "2009-08-14T03:35:12.813-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

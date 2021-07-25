@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "251298",
+    "ThreadId": "73521",
+    "Html": "<p>Hi All,</p>\r\n<p>I am trying to make Shell as UserControl in WPF Composite application. I Started by modifying the Quickstart app: &quot;Quickstarts\\UI Composition\\ViewDiscovery&quot;. I made &quot;UIComposition.Desktop.csproj&quot; a UserControl class library with Shell.xaml as UserControl. Created another WPFApplication to host the Shell. Added the following code in App.xaml.cs:</p>\r\n<p>protected override void OnStartup(StartupEventArgs e)<br>{<br>base.OnStartup(e);<br>Bootstrapper bootStrapper = new Bootstrapper();<br>bootStrapper.Run();<br>// Get ShellContainer from IOC <br>IUnityContainer container = bootStrapper.Container;<br>var shellElement = container.Resolve&lt;Shell&gt;();<br>ShellContainer win = new ShellContainer();<br>// Add the ShellContainer UserControl to the main window <br>win.mygrid.Children.Add(shellElement);<br>win.Show();<br>}</p>\r\n<p>The form shows up with the shell but when I click on the employee it doesn't show the details view. Please help!!! If any body has tried this.<br>Thanks &amp; Regards,<br>Vishal.</p>",
+    "PostedDate": "2009-10-29T11:25:09.34-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "251765",
+    "ThreadId": "73521",
+    "Html": "<p id=afb32740-a7bb-012c-02d1-12313d010131>Hi,</p>\r\n<p id=afb34690-a7bb-012c-02d2-12313d010131>When you need to create a specific kind of Shell window, for example as you mentioned, based on an UserControl, you should override the CreateShell method of the UnityBootstrapper class in order to put the Shell creation logic.</p>\r\n<p id=afb37200-a7bb-012c-02d3-12313d010131>A proposed solution to perform this, it is to create a Bootstraper class, which inherits from the UnityBootstrapper class and override the CreateShell method.</p>\r\n<p id=afb39630-a7bb-012c-02d4-12313d010131>The following code implements the aforementioned solution:</p>\r\n<p id=afb3be90-a7bb-012c-02d5-12313d010131>Bootstrapper implementation</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">internal</span> <span style=\"color:Blue\">class</span> Bootstrapper : UnityBootstrapper\r\n{\r\n    <span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">override</span> DependencyObject CreateShell()\r\n    {\r\n        <span style=\"color:Green\">// Get ShellContainer from IOC</span>\r\n        <span style=\"color:Blue\">var</span> shellUserControl = <span style=\"color:Blue\">this</span>.Container.Resolve&lt;ShellUserControl&gt;();\r\n        ShellContainer shellContainer = <span style=\"color:Blue\">new</span> ShellContainer();\r\n        <span style=\"color:Green\">// Add the ShellContainer UserControl to the main window</span>\r\n        shellContainer.mygrid.Children.Add(shellUserControl);\r\n        shellContainer.Show();\r\n        <span style=\"color:Blue\">return</span> shellContainer;\r\n    }\r\n    <span style=\"color:Green\">//more code here...</span>\r\n}\r\n\r\n</pre>\r\n</div>\r\n<p id=afb431a0-a7bb-012c-02d8-12313d010131>App.xaml.cs</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">partial</span> <span style=\"color:Blue\">class</span> App : Application\r\n{\r\n    <span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">override</span> <span style=\"color:Blue\">void</span> OnStartup(StartupEventArgs e)\r\n    {\r\n        <span style=\"color:Blue\">base</span>.OnStartup(e);\r\n        Bootstrapper bootStrapper = <span style=\"color:Blue\">new</span> Bootstrapper();\r\n        bootStrapper.Run();\r\n    }\r\n}\r\n\r\n</pre>\r\n</div>\r\n<p>I hope you can find this answer helpful.</p>\r\n<p id=afb4d680-a7bb-012c-02dc-12313d010131>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2009-10-30T13:38:01.74-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "252175",
+    "ThreadId": "73521",
+    "Html": "<p>Hi fantivero,</p>\r\n<p>Thanks for replying. As I said Shell is a Usercontrol class library which is hosted in another WPF/WinForm Application. When i tried this approach with the quickstart app: &quot;Quickstarts\\UI Composition\\ViewDiscovery&quot;, Employee details view is not visible in the shell.</p>\r\n<p>To reproduce the problem, modify the quickstart proj &quot;UIComposition.Desktop.csproj&quot; as a user control proj with shell as usercontrol and host it another WPF/winform application.</p>\r\n<p>Thanks &amp; Regards,</p>\r\n<p>Vishal.</p>",
+    "PostedDate": "2009-11-01T11:24:02.467-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

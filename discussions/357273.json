@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "841281",
+    "ThreadId": "357273",
+    "Html": "\r\n<p>Hi,<br>\r\n<br>\r\nI'm pretty new to MVVM / Prism and was wondering if someone would be able to tell me whether I am going about this the right way.<br>\r\n<br>\r\nI have a user interface that has left hand side and right hand side regions. The user will make a selection in the left hand side region and then the selection's data will be retrieved and displayed in the right hand side region using a custom user control.<br>\r\n<br>\r\nI have the modules for each of the two regions getting loaded correctly and events passing between them using the event aggregator. My question is regarding the population of the user controls in the right hand side region.<br>\r\n<br>\r\nAt the moment I am contructing the controls and adding them to an ObservableCollection which is bound to an ItemsControl. To clarify, here is some code illustrating what I'm doing when the right hand region receives a selection.<br>\r\n<br>\r\n</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> OnAddObjectA(ObjectA objA)\r\n{\r\n    ObjectAViewModel objModel = <span style=\"color:blue\">new</span> ObjectAViewModel(eventAggregator, objA);\r\n    ObjectAView objView = <span style=\"color:blue\">new</span> ObjectAView(objModel);\r\n\r\n    objectAs.Add(objView);\r\n}\r\n</pre>\r\n</div>\r\n<br>\r\nI essentially want to know whether there is a better way of doing this or is my method acceptable within the design pattern?<br>\r\n<br>\r\nSorry if anything is unclear, as I said I'm new to this and not completely sure about the right terminology for everything!<br>\r\n<br>\r\nThanks,\r\n<p></p>\r\n",
+    "PostedDate": "2012-05-26T13:12:10.9-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "841641",
+    "ThreadId": "357273",
+    "Html": "<p>Hi,</p>\r\n<p>There are several ways to achieve this kind of scenarios, which approach you take may depend mostly on your personal preferences and your requirements.</p>\r\n<p>As a suggested approach, I recommend you to check the <a href=\"http://msdn.microsoft.com/en-us/library/ff921174%28v=pandp.40%29\">UI Composition QuickStart</a> provided with <strong>Prism</strong>.</p>\r\n<p>Also, you could find the samples provided in the <a href=\"http://prismtk.codeplex.com/\">Prism Training Kit</a> useful (particularly you could check the <strong>Communication Lab</strong> samples).</p>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-05-28T07:02:54.963-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "841671",
+    "ThreadId": "357273",
+    "Html": "<p>Thanks for the links.</p>\r\n<p>Will take a look through them and see how I get on.</p>\r\n<p>Cheers,</p>",
+    "PostedDate": "2012-05-28T07:52:39.457-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "843220",
+    "ThreadId": "357273",
+    "Html": "<p>Hi,</p>\r\n<p>I've looked at the links you sent and they were very helpful.</p>\r\n<p>I have now setup my project with a Main Region Controller that adds views to the region when commanded.</p>\r\n<p>However, this leads me on to my next issue with nested views. Each View (Object A) added will have another ItemsControl beneath it with a variable amount of user controls (Object B) within it. And each 'Object B' will contain another level of controls (Object C).</p>\r\n<p>What is the best way to handle these nested levels? Should my Main Controller class be inserting the Object B's into my Object A or should this be handled by the Object A View Model.</p>\r\n<p>Should I have another region within the Object A control to store the Object Bs? If so, how will I distinguish which Object Bs belong to which Object As if I want to retrieve them from the Controller or another location.</p>\r\n<p>If this scenario isn't clear let me know, I will try to clarify as best I can.</p>\r\n<p>Thanks again,</p>",
+    "PostedDate": "2012-05-31T10:26:53.24-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "843657",
+    "ThreadId": "357273",
+    "Html": "<p>Hi,</p>\r\n<p>In my opinion, which approach you should follow will depend mostly of your personal preferences, the requirements of your scenario and the functionality of the \"<strong>Objects</strong>\" you mention.</p>\r\n<p>As an example, suppose that the aforementioned objects are defined like this:</p>\r\n<ul>\r\n<li><strong>Object A</strong>: A view showing a list of clients and actions to interact with the list (ordering, filtering, reloading, etc.)</li>\r\n<li><strong>Object B</strong>: A view that shows information of a specific client and that is contained in the <strong>Object A</strong>'s client list (one <strong>Object B</strong> for each client.)</li>\r\n</ul>\r\n<p>If the <strong>Object B</strong> must only show some information about the client, <strong>Object B</strong> could be simply an <strong>ItemTemplate </strong>for the <strong>Object A</strong>'s <strong>ItemsControl </strong>(the client list) and the <strong>Source </strong>of that <strong>ItemControl </strong>would simply be a collection of client models. In this case, due to the \"simplicity\" of the <strong>Object B</strong>, there was no need to define a separate view and view model for each client.</p>\r\n<p>On the other hand, if the <strong>Object B</strong> will also provide the user with options like modifying the client's data or more complex operations, it seems reasonable to define <strong>Object B</strong> as a separate view with its own view model to contain the data and handle such operations. In this case, the <strong>Object A</strong>'s client list could be a <em><strong>scoped region</strong></em> where the <strong>Object B</strong> views or view models could be injected. The <strong>Object A</strong>'s view model or an specific controller for the <strong>Object A</strong> could then inject the required instances of <strong>Object B</strong> in the scoped region. <strong>Object B</strong> could also contain scoped regions and so on...</p>\r\n<p>Regarding how to retrieve an specific <strong>Object B</strong>, you could take benefit for the different communication approaches provided with <strong>Prism </strong>as explained in the following chapter of the documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28v=pandp.40%29\">Chapter 9 - Communicating Between Loosely Coupled Components</a></li>\r\n</ul>\r\n<p>Also, you can find more information about <em><strong>scoped regions</strong></em> and <em><strong>scoped region managers</strong></em> in the following chapter of the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28v=pandp.40%29\">Chapter 7 - Composing the User Interface</a></li>\r\n</ul>\r\n<p>As a side note regarding the use of <em><strong>scoped regions</strong></em> and <em><strong>scoped region managers</strong></em>, I believe you might find the <strong>RegionManagerAwareBehavior </strong>and the <strong>IRegionManagerAware </strong>interface described in the following blog post interesting:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/dcherubini/2011/11/10/regions-inside-datatemplates-in-prism-v4-using-a-region-behavior/\">Regions inside DataTemplates in Prism v4 using a region behavior</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-06-01T12:20:27.863-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "845447",
+    "ThreadId": "357273",
+    "Html": "<p>Thanks for the info. This sounds like what I was looking for.</p>\r\n<p>Cheers,</p>",
+    "PostedDate": "2012-06-06T02:40:11.527-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

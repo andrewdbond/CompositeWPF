@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "828843",
+    "ThreadId": "353674",
+    "Html": "\r\n<p>Hi ,</p>\r\n<p>I am using EventAggregator , where i am choosing to go for weakreference while publishing the events . When doing so few of the times i could observe subsciber method is not getting invoked . When i tried the same sample with strong reference by setting\r\n true to the third parameter while publishing the event , everything seems to be working fine.</p>\r\n<p>Are there any problems with EventAggregator ?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-04-26T03:32:00.14-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "829042",
+    "ThreadId": "353674",
+    "Html": "<p>Hi,</p>\r\n<p>In my opinion this problem could be related to the use of <strong>Weak Reference </strong>to the subscriber instance, as the garbage collector could be disposing the subscriber instance in case there are no strong references to it. Therefore you should ensure that references to those instances are maintained alive to avoid disposing the corresponding subscriptions.</p>\r\n<p>For example, as mentioned in the <strong>Prism </strong>documentation:</p>\r\n<p><em>Module instances lifetime is short-lived by default. After the Initialize method is called during the loading process,the reference to the module instance is released. If you do not establish a strong reference chain to the module instance, it will be garbage collected. And this behavior may be problematic to debug if you subscribe to events that hold a weak reference to your module, because your module just \"disappears\" when the garbage collector runs.</em></p>\r\n<p>Based on this, please check that your subscription is still present by the time you publish the event.</p>\r\n<p>Additionally, you could find more information about this and the use of <strong>Weak References</strong> in the following MSDN article:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ms404247.aspx\">Weak References</a></li>\r\n</ul>\r\n<p>If you still can't solve this problem, it would be helpful if you could provide us with more information about your scenario or if you could isolate this behavior in a repro sample application and upload it to <a href=\"https://skydrive.live.com/\">SkyDrive</a> or any other storage site you'd like to, and post the link here.</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-04-26T11:35:16.493-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "830498",
+    "ThreadId": "353674",
+    "Html": "<p>Hi ,</p>\r\n<p>Thanks for your reply . Its a very simple WPF prism application which i have created . I will share the project to skyDrive and update the link.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-04-30T23:18:36.273-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,57 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Microsoft.Practices.Prism.Commands;
+using System.Windows;
+
+namespace Commanding.Modules.Order
+{
+    public class SimpleCommand<T> : DelegateCommandBase
+    {
+        public SimpleCommand(Action<T> executeMethod)
+            : this(executeMethod, (o) => true)
+        {
+        }
+        
+        public SimpleCommand(Action<T> executeMethod, Func<T, bool> canExecuteMethod)
+            : base((o) => executeMethod((T)o), (o) => canExecuteMethod((T)o))
+        {
+        }
+
+        protected override bool CanExecute(object parameter)
+        {
+            return base.CanExecute(parameter);
+        }
+
+        protected override void Execute(object parameter)
+        {
+            MessageBox.Show("Executing from SimpleCommand<T>");
+            base.Execute(parameter);
+        }
+    }
+
+    public class SimpleCommand : DelegateCommandBase
+    {
+        public SimpleCommand(Action executeMethod)
+            : this(executeMethod, () => true)
+        {
+        }
+        
+        public SimpleCommand(Action executeMethod, Func<bool> canExecuteMethod)
+            : base((o) => executeMethod(), (o) => canExecuteMethod())
+        {
+        }
+
+        protected override bool CanExecute(object parameter)
+        {
+            return base.CanExecute(parameter);
+        }
+
+        protected override void Execute(object parameter)
+        {
+            MessageBox.Show("Executing from SimpleCommand");
+            base.Execute(parameter);
+        }
+    }
+}

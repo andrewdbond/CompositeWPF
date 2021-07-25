@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "860163",
+    "ThreadId": "362765",
+    "Html": "In the current implementation of the ModuleManager, if a module fails to download, it is not possible to download it again. Is there a recommendation on how to allow for this (preferably without modifying Prism's source and rebuilding)?<br />\n<br />\nThe problem is in that the ModuleManager.downloadingModules holds onto the URIs of failed downloads, thus prevent new download requests for being created. (This downloadingModules dictionary is usually updated inside the RecordDownloadComplete method, which is called from the HandleModuleDownloaded callback). Ideally I think it would be nice if the downloadingModules dictionary is updated all the time (or at the very least, if the events error was handled)<br />\n<br />\n(Edit, fixed several typos)<br />\n",
+    "PostedDate": "2012-07-10T23:20:13.303-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "861779",
+    "ThreadId": "362765",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding this scenario is not supported in <strong>Prism </strong>\r\nas out of the box. In order to achieve it, I believe you will have to implement your own module retrieval strategy.</p>\r\n<p>In order to do this, you could modify or create your custom implementation of the\r\n<strong>XapModuleTypeLoader</strong>, for example by modifying the <strong>HandleModuleDownloaded\r\n</strong>method in this class, to remove the corresponding <strong>Uri </strong>from the\r\n<strong>downloadingModules </strong>dictionary if an error was received. Take into account that this implementation will depend mostly on your personal preferences and the requirements of your scenario.</p>\r\n<p>As far as I know, you will have to modify this class from the <strong>Prism </strong>\r\nlibrary, or as an alternative you could register a custom <strong>ModuleManager </strong>\r\nin your container, in order to return your custom implementation of the <strong>XapModuleTypeLoader\r\n</strong>instead of the default one.</p>\r\n<p>Also, remember that if you don't want to receive the exception in your application, you will have to set the\r\n<strong>IsErrorHandled </strong>property value to <strong>true </strong>in the <strong>\r\nLoadModuleCompletedEventArgs</strong>.</p>\r\n<p>Additionally, if you believe this behavior should be supported in <strong>Prism\r\n</strong>by default, I believe you could create a work item in the <a href=\"http://compositewpf.codeplex.com/workitem/list/advanced\">\r\nIssue tracker section</a>, so that the <strong>Prism </strong>team can analyze it for future releases.</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-07-12T10:51:44.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

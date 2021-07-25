@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "144054",
+    "ThreadId": "43354",
+    "Html": "Hi,<br>\r\nOne of the modules in my application is presenting a wizard-like GUI. I've approach this by using a compositeView (WizardCompositeView) that contains the &quot;constant&quot; parts of the wizard (back, next, step account etc). The composite view have a control that is bound to the currentStepView property of WizardCompositViewPresentationModel. All the various wizards views eventually add up to update a single object (FileTypeDefinition).<br>\r\nMy thinking was that the WizardCompositViewPresentationModel will keep the state of this single object (FileTypeDefinition). So that with each step the current view will update the single object in the WizardCompositViewPresentationModel (using an event). To sum up: each time the user click next the following would happen:<br>\r\n<ol>\r\n    <li>Step1ViewPresentationModel publish an event with the updated FileTypeDefinition as a parameter.</li>\r\n    <li>WizardCompositViewPresentationModel is subscribed to the event. It picks up the FileTypeDefinition and update its own copy of the object.</li>\r\n    <li>WizardCompositViewPresentationModel update currentStepView property to be IStep2View. As a consequence WizardCompositeView displays Step2View (instead of) Step1View.</li>\r\n    <li>Step1ViewPresentationModel need to get a copy of FileTypeDefinition and this is where I'm stuck...</li>\r\n</ol>\r\nWhat I can't figure out is how to access FileTypeDefinition object from WizardCompositViewPresentationModel each time the next step view is loading. <br>\r\nAny idea will be great and if I'm approaching that all wrong I'll be happy to hear it as well,<br>\r\nThank you,<br>\r\nken\r\n",
+    "PostedDate": "2009-01-02T15:27:59.77-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

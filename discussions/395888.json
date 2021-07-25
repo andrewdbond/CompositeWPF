@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "913923",
+    "ThreadId": "395888",
+    "Html": "\r\n<p>Currently an ItemsControl in my shell is associated with a region. And that region registered with two views. Using a hyperlink I'm trying to navigate to a view present in another module.</p>\r\n<p>But then the view to which I'm trying to navigate is not appearing on the ItemsControl. When i debugged, i could decipher that the view is indeed getting added to the ActiveViews collection but as the last entry, the first two being the other views that\r\n were previously registered.</p>\r\n<p>How can i resolve the above issue and make the currently navigated to view as the active one and deactivate the other two? Please find below the code that is getting executed on the click of the Hyperlink to produce the navigation.</p>\r\n<p>&nbsp;</p>\r\n<pre>unityContainer.RegisterType&lt;object, Sample&gt;(&quot;SampleView&quot;);       \r\n\r\n            IRegion BodyRightRegion = regionManager.Regions[&quot;BodyRightRegion&quot;];\r\n\r\n            BodyRightRegion.RequestNavigate(new Uri(&quot;SampleView&quot;, UriKind.Relative));<br><br></pre>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-09-17T22:09:29.687-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "914100",
+    "ThreadId": "395888",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding of your scenario, if the \"<em>SampleView</em>\" is being added to the <strong>ActiveViews </strong>collection, this view should appear on the <strong>ItemsControl</strong>. As a starting point, I believe you could check the style properties set in your <strong>ItemsControl </strong>(e.g. Height), as perhaps your view is not appearing because the control is to small for the views.</p>\r\n<p>On the other hand, regarding how to deactivate the other two views, take into account that the region used for the <strong>ItemsControl </strong>control is an <strong>AllActiveRegion</strong>. This kind of region keeps all the views in it active and doesn't allow deactivation of the views. Hence, in order to avoid showing this views, you may have to add the logic to remove them from the region. For example as a possible approach you could remove all the views in it before executing the navigation to the \"SampleView\", e.g. like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre> <span style=\"color: blue;\">if</span> (BodyRightRegion != <span style=\"color: blue;\">null</span>)\r\n            {\r\n                <span style=\"color: blue;\">foreach</span> (<span style=\"color: blue;\">object</span> view <span style=\"color: blue;\">in</span> BodyRightRegion.Views)\r\n                { BodyRightRegion.Remove(view); }\r\n            }\r\n</pre>\r\n</div>\r\n</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-09-18T06:57:53.27-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "915523",
+    "ThreadId": "395888",
+    "Html": "<p>Thanks Agustin, now its working like a charm.</p>\r\n<p>I understand that you pointed out that the region used for the ItemsControl is an AllActiveRegion. So, is there any way change this behavior other than manually removing all the views before navigating to a new one?</p>",
+    "PostedDate": "2012-09-20T21:46:13.107-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917196",
+    "ThreadId": "395888",
+    "Html": "<p>Hi,</p>\r\n<p>As far as I know <strong>Prism </strong>only  provides the <strong>RegionMemberLifetimeBehavior </strong>which could be used to achieve this kind of scenarios. This behavior&nbsp; is responsible for determining if an item should be removed from the region when it is deactivated, which could be used to remove the view when navigating away from it. The problem with this approach is that it requires that your region allows deactivation of the views, in which case you could consider changing your region container to be a <strong>SingleActiveRegion</strong>.</p>\r\n<p>As an alternative, I believe you could also implement you own region behavior which for example could monitor changes in the <strong>Views </strong>collection of the region, and remove previous views from the region based on a custom logic depending on the requirements of your scenario. For more information about region behaviors you could check the following sections of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098(v=pandp.40).aspx#sec16\">7: Composing the User Interface,Region Behaviors</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430866(v=pandp.40).aspx#sec28\">Appendix E: Extending Prism, Region Behaviors</a></li>\r\n</ul>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-09-25T05:47:27.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "711065",
+    "ThreadId": "282685",
+    "Html": "\r\n<p>Does anyone have Prism 4 working with SL5 and loading modules dynamically using MEF?</p>\r\n<p>Pointers / Warnings / How tos?&nbsp;</p>\r\n",
+    "PostedDate": "2011-12-12T12:04:05.243-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "711084",
+    "ThreadId": "282685",
+    "Html": "<p>I'm using RiaServices/Prism4/Mef/EntityFramework and have simmilar problem.</p>\r\n<p>After recompilation of Prism4 Library&nbsp;for SL5,&nbsp;I've&nbsp;set up 'Copy Local' to 'True' for MefExtensions in all my client projects.</p>\r\n<p>Then I've removed all Bin/Obj folders and xaps (from ClientBin, server side) manually.</p>\r\n<p>The application now starting&nbsp;&nbsp;without error message related to MEF, but&nbsp;there is&nbsp;another&nbsp;complex error message :</p>\r\n<p>&nbsp;</p>\r\n<p>The composition remains unchanged. The changes were rejected because of the following error(s): The composition produced multiple composition errors, with 9 root causes. The root causes are provided below. Review the CompositionException.Errors property for more detailed information.</p>\r\n<p>1) Change in exports prevented by non-recomposable import 'MyProject.Shell.ModuleManager (ContractName=\"Microsoft.Practices.Prism.Modularity.IModuleManager\")' on part 'MyProject.Shell'.</p>\r\n<p>2) Change in exports prevented by non-recomposable import 'MyProject.Shell.RegionManager (ContractName=\"Microsoft.Practices.Prism.Regions.IRegionManager\")' on part 'MyProject.Shell'.</p>\r\n<p>3) Change in exports prevented by non-recomposable import 'MyProject.Shell.EventAggregator (ContractName=\"Microsoft.Practices.Prism.Events.IEventAggregator\")' on part 'MyProject.Shell'.</p>\r\n<p>4) Change in exports prevented by non-recomposable import 'MyProject.Shell.ModuleManager (ContractName=\"Microsoft.Practices.Prism.Modularity.IModuleManager\")' on part 'MyProject.Shell'.</p>\r\n<p>5) Change in exports prevented by non-recomposable import 'MyProject.Shell.RegionManager (ContractName=\"Microsoft.Practices.Prism.Regions.IRegionManager\")' on part 'MyMyProject.Shell'.</p>\r\n<p>6) Change in exports prevented by non-recomposable import 'MyProject.Shell.EventAggregator (ContractName=\"Microsoft.Practices.Prism.Events.IEventAggregator\")' on part 'MyProject.Shell'.</p>\r\n<p>7) Change in exports prevented by non-recomposable import 'MyProject.Shell.ModuleManager (ContractName=\"Microsoft.Practices.Prism.Modularity.IModuleManager\")' on part 'MyProject.Shell'.</p>\r\n<p>8) Change in exports prevented by non-recomposable import 'MyProject.Shell.RegionManager (ContractName=\"Microsoft.Practices.Prism.Regions.IRegionManager\")' on part 'MyProject.Shell'.</p>\r\n<p>9) Change in exports prevented by non-recomposable import 'MyProject.Shell.EventAggregator (ContractName=\"Microsoft.Practices.Prism.Events.IEventAggregator\")' on part 'MyProject.Shell'.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-12-12T12:39:11.16-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "711130",
+    "ThreadId": "282685",
+    "Html": "<p>Personally, I set copy local to true for the MefExtension DLL in the shell project and then ensure it is false in all other projects.</p>\r\n<p>As for your particular error, it seems that you are attempting to read the same assembly in multiple times. &nbsp;Either in your boot strapper, or through a reference in an assembly that your are loading into your mef catalogs. &nbsp;</p>\r\n<p>The parts in the error message are part of the&nbsp;Microsoft.Practices.Prism.dll</p>",
+    "PostedDate": "2011-12-12T14:38:40.223-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "711202",
+    "ThreadId": "282685",
+    "Html": "<p>Well, I solved my problem. &nbsp;</p>\r\n<p>Had to ensure that all referenced assemblies within my dynamically loaded &nbsp;XAP were compiled against SL5. &nbsp;</p>\r\n<p>This included:</p>\r\n<p>System.Windows.Controls.Toolkit (September 2011 SL 5 Toolkit)</p>\r\n<p>System.Windows.Interactivity (Expression SL 5 Preview)</p>\r\n<p>Microsoft.Expression.Interactions&nbsp;(Expression SL 5 Preview)</p>\r\n<p>Any third party DLL's you downloaded and installed because they did something cool.... had to be recompiled for SL 5.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-12-12T18:24:26.253-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "713531",
+    "ThreadId": "282685",
+    "Html": "<p>Finally solved !</p>\r\n<p>The&nbsp;solution was simple -&nbsp;I have&nbsp;several projects and names of&nbsp;two are:&nbsp;'MyProject' (this is the main project)&nbsp;and 'MyProject.Main'.</p>\r\n<p>'Copy Local =&nbsp;True' for 'MefExtensions'&nbsp;shoud be set up for 'MyProject', not for 'MyProject.Main' ;)</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-12-17T00:49:29.963-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

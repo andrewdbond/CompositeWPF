@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "487609",
+    "ThreadId": "225637",
+    "Html": "<p>I found some of the guidance in the Prism 4 .chm a little strange (in Chapter 5: Implementing the MVVM Pattern, under &quot;Construction&quot;):</p>\r\n<p><em>It is also possible to employ this approach the other way round &ndash; i.e. for the view model to explicitly instantiate its corresponding view. However, this leads to numerous difficulties and is generally to be avoided. Specifically, this approach creates an explicit type dependency between the view model and a specific view implementation making it difficult to dynamically replace the view with an alternate one, either at run-time or at design-time.</em></p>\r\n<p>I don't think this has to be true at all. Much of the advice I've seen involves the ViewModel having either a property of type &quot;object&quot;, or of something like &quot;IView&quot;, which is either a decorator interface, or (even better) an interface with a set-only property called DataContext or ViewModel. All the view has to do is implement the setter in codebehind and set DataContext = value, which is no worse than creating a property in the View's codebehind used to import a viewmodel. The viewmodel can use a container to get a hold of a view via a loosely-coupled contract name or interface name and store it as an IView.</p>\r\n<p>Plus, with d:DataContext, d:DesignInstance and d:DesignData, it seems that all of the Blendability problems that used to pop up with every strategy besides simple view-first first have been solved.</p>",
+    "PostedDate": "2010-09-01T07:32:32.28-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "488534",
+    "ThreadId": "225637",
+    "Html": "<p>You are correct, the wording is overly strong, especially considering all the view model-first samples in Prism 2 and prior do exactly what you are describing - decouple the view model from the view concrete type through an interface and use dependency injection to provide the instance.</p>\r\n<p>The real downside to the view model first approach that the docs should be pointing out is a lack of Blendability - the view doesn't know about the properties exposed by its data context, so you can't leverage the VS and Blend design time data tools as well. Additionally, it locks a view model into supporting only a single view contract, and it is not infrequent that a single view model may be able to support more than one view type (i.e. a summary and a details view). It is also one more dependency that needs to be mocked out when testing the view model, whereas you usually don't write unit tests against the view so there is not the same concern of substitutability when the view has a ref to the view model as there is when the roles are reversed.</p>\r\n<p>I'll work with the team to try to clean up that language in that section.</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2010-09-02T15:25:15.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "488544",
+    "ThreadId": "225637",
+    "Html": "<p>Thanks for the response Brian.</p>\r\n<p>The d: properties are powerful and I think they fix a lot of&nbsp;problems with Blendability regardless of how one chooses to wire up views and viewmodels, but it seems like it's always mentioned as a secondary option. Why is this? Blend even provides first-class support for it.</p>\r\n<p>Creating a designer-only viewmodel or design data&nbsp;for d: binding may take a little bit more work up front, but it actually provides a clean separation between design time and runtime that you don't get when you try to acheieve Blendability with your real run-time viewmodel.&nbsp;Using the real viewmodel for design-time support ends up polluting it with scattered IsInDesignTool checks, sample data loaders, and added default constructors specifically to support the designer.</p>",
+    "PostedDate": "2010-09-02T15:57:48.157-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "489101",
+    "ThreadId": "225637",
+    "Html": "<p>I don't disagree for a second with what you are saying, and am in the process of updating the docs, so will try to include some of what you are suggesting here as what you need to do if you choose view model first. I'm definitely removing the &quot;to be avoided&quot; part. Really it comes down to a matter of preferences and Blendability is a spectrum of capability, not an on/off switch. Either way you put some stuff in place to make the designer happy and fully functional.</p>",
+    "PostedDate": "2010-09-03T15:50:45.997-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

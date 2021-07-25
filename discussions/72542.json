@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "247701",
+    "ThreadId": "72542",
+    "Html": "<p>Hello all,</p>\r\n<p>Looking for some basic advice on using composite guidance in conjunction with re-hosting the WF workflow designer.&nbsp; Basically, I have a module which&nbsp;contains a UserControl that encapsulates the re-hosted workflow designer.&nbsp; One of the things in this control is a System.Activities.Design.ToolboxControl.&nbsp; In XAML, the basic control is populated with all of the standard activities like If, Parallel, WriteLine, etc.&nbsp; Now I would like to allow various other contributors to create their own modules that contain additional custom activities and have them appear in my designer simply by dropping these modules in the .\\modules folder (i'm using the directory method of populating my catalog).&nbsp; So my question is, what might be the best approach, in the Initialize() method of&nbsp;these custom modules, to making the custom workflow elements show up in the toolbox of my designer.&nbsp; I guess i need to do some magic with regions and items around the toolbox control?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p>~Bill</p>",
+    "PostedDate": "2009-10-20T07:21:28.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "247801",
+    "ThreadId": "72542",
+    "Html": "<p>I'm thinking maybe service might work here? &nbsp;IActivityRegistration would allow custom modules to register their activities and associated designers.&nbsp; The shell would implement a simple container to hold a list of custom activities and the module that contains the re-hosted workflow designer would just read this dictionary on start up and add each of the custom activities to it's toolbox.</p>\r\n<p>~Bill</p>",
+    "PostedDate": "2009-10-20T10:50:39.997-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "248648",
+    "ThreadId": "72542",
+    "Html": "<p id=ae22b1b0-a06e-012c-3cd4-12313b015e11>Hi Bill,</p>\r\n<p id=ae22cdd0-a06e-012c-3cd5-12313b015e11>A possible approach to achieve this kind of functionality could be having regions inside the UserControl (view) that contains the basic controls. Then each of the modules could add their own views to those regions (in this case the views would be other custom activities) which will allow you the flexibility of adding different custom activities based on the modules you load.</p>\r\n<p id=ae22ed70-a06e-012c-3cd6-12313b015e11>The UI Composition quickstarts (<a href=\"http://msdn.microsoft.com/en-us/library/dd458934.aspx\">View Discovery</a> &amp; <a href=\"http://msdn.microsoft.com/en-us/library/dd458920.aspx\">View Injection</a>) use a view which constains a region (EmployeesView), so you might find them useful to start with.</p>\r\n<p id=ae231230-a06e-012c-3cd7-12313b015e11>Please let me know if this helps.</p>\r\n<p id=ae233260-a06e-012c-3cd8-12313b015e11>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-10-22T09:39:04.053-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "436473",
+    "ThreadId": "210844",
+    "Html": "<p>Hi,</p>\r\n<p>what is the best way to remove all the views from a region at once?</p>\r\n<p>there is no region.views.removeall method. If I try to use the code below</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> clearRegionViews(IRegion region)\r\n        {\r\n            <span style=\"color:blue\">foreach</span> (<span style=\"color:blue\">object</span> view <span style=\"color:blue\">in</span> region.Views)\r\n            {\r\n                <span style=\"color:blue\">if</span> (view != <span style=\"color:blue\">null</span>)\r\n                {\r\n                    region.Remove(view);\r\n                }\r\n            }\r\n}\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>An exception will be generated &quot;Collection was modified; enumeration operation may not execute.&quot;.</p>\r\n<p>I am trying to clear the region everytime a new tab is selected in an tabcontrol.</p>",
+    "PostedDate": "2010-04-28T04:55:43.813-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "436522",
+    "ThreadId": "210844",
+    "Html": "<p>We had the same problem and did something like this:</p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><div style=\"color:black;background-color:white\"><pre><span style=\"color:blue\">&nbsp;</span><div style=\"color:black;background-color:white\"><pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> clearRegionViews(IRegion region) \r\n{ \r\n    region.Views.ToList().ForEach(v =&gt; region.Remove(v)); \r\n} \r\n</pre>\r\n</div>\r\n</pre>\r\n</div>\r\n<pre></pre>\r\n</pre>\r\n</div>\r\n</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-28T06:34:23.853-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "436929",
+    "ThreadId": "210844",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>ericbock wrote:</strong><br>\r\n<p>We had the same problem and did something like this:</p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><div style=\"color:black;background-color:white\"><pre><span style=\"color:blue\">&nbsp;</span><div style=\"color:black;background-color:white\"><pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> clearRegionViews(IRegion region) \r\n{ \r\n    region.Views.ToList().ForEach(v =&gt; region.Remove(v)); \r\n} \r\n</pre>\r\n</div>\r\n</pre>\r\n</div>\r\n</pre>\r\n</div>\r\n</p>\r\n<p>&nbsp;</p>\r\n</blockquote>\r\n<p>&nbsp;&nbsp;&nbsp; Thank you so much. It works.</p>",
+    "PostedDate": "2010-04-29T00:29:52.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

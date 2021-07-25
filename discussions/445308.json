@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "1050009",
+    "ThreadId": "445308",
+    "Html": "Hi,\r<br />\n<br />\nI was able to design the page into 3 regions , the middle region is dynamically loaded with different views.\r<br />\nThe first region has a view , on click of a button I want to show a modal dialog , Currently I am facing an issue in showing that.\r<br />\nCan you please share if you have any links or code so that I can refer and work upon.\r<br />\n<br />\nI have a View,ViewModel, Model,DAL\r<br />\n<br />\nThe button command  is present in the viewmodel. On click of it , I am first getting the regionname and then I am struck when I want to retrieve the View (GetView (typeof(viewname) ,, the reason being ViewModel doesn't have reference of view . Already i created a reference of viewmodel in view and if i try to dao it viceversa circulardependncy occurs. I need to get the viewname .\\\r<br />\nShould I change any architecture here. (view,viewmodel,model,DAL)\r<br />\n<br />\nNeed urgent help in this regard.\r<br />\n<br />\nRegards\r<br />\nKrishna<br />\n",
+    "PostedDate": "2013-05-29T03:15:38.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1050217",
+    "ThreadId": "445308",
+    "Html": "Hi Krishna,\r<br />\n<br />\nI am not aware of how your problem with the modal dialog is related to the one with retrieving the view from the region; however, I will try to provide an answer for both of them.\r<br />\n<br />\nRegarding the first problem (of showing a modal dialog) you have several approaches you can use to show a dialog window. One of them is using the <strong>WindowDialogActivationBehavior</strong> included in the <strong>Stock Trader RI</strong> which creates a region that acts as a popup when a view is injected in it. Another approach is to use a <strong>PopupWindowAction</strong> to show a dialog in response to an <strong>InteractionRequest</strong>. You can find a modified version a <strong>PopupWindowAction</strong> in the following blog post:<br />\n<ul>\n<li>\n<a href=\"http://blogs.southworks.net/dcherubini/2012/05/24/popupwindowaction-using-custom-views-instead-of-windows-in-wpf-and-prism/\" rel=\"nofollow\">PopupWindowAction: using custom views instead of windows in WPF and Prism</a><br />\n</li>\n</ul>\nRegarding the second problem, a possible approach to obtain the view corresponding to your view model from a region is to iterate over the views until you find one that is using the view model as its <strong>DataContext</strong>. For example, you could implement a logic similar to the following one in the view model in order to obtain the view from a specific region:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">object</span> myView = <span style=\"color:Blue;\">null</span>;\n\n<span style=\"color:Blue;\">foreach</span> (<span style=\"color:Blue;\">var</span> view <span style=\"color:Blue;\">in</span> <span style=\"color:Blue;\">this</span>.regionManager.Regions[<span style=\"color:#A31515;\">&quot;RegionName&quot;</span>].Views)\n{\n    FrameworkElement element = view <span style=\"color:Blue;\">as</span> FrameworkElement;\n    <span style=\"color:Blue;\">if</span> (element != <span style=\"color:Blue;\">null</span> &amp;&amp; element.DataContext == <span style=\"color:Blue;\">this</span>)\n    {\n        myView = view;\n     }\n}\r\n</pre></div>I hope this help,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-05-29T10:23:46.107-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1052058",
+    "ThreadId": "445308",
+    "Html": "Hi,\r<br />\nThanks for your reply.\r<br />\nI tried using the POpupwindow action.\r<br />\n<br />\nI have a view (Usercontrol ) where it has a pdf, the source is retrieved from DB and via PDFconverter it is binded.Now the issue is\r<br />\nOn click of a button , the dialog should open and the source should get binded.\r<br />\n<br />\nI tried implementing this using the PopUpaction , How can we bind the source to the Popupdialog .\r<br />\nI tried seeting the porperties of viewmodel like ID,name ,area etc and set it to the content property of Notification.\r<br />\nIt is not binding ,I see in the output window , Cannot find Viewmodel or proeprty in 'Confirmation' class.\r<br />\n<br />\nRequirement:'\r<br />\n<br />\nI want to pass data to the Dialog ,display name, Id etc on dialog along with pdf.\r<br />\n<br />\nNeed your suggestions.<br />\n",
+    "PostedDate": "2013-06-03T03:22:28.583-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1052310",
+    "ThreadId": "445308",
+    "Html": "Hi,\r<br />\n<br />\nIn my opinion, if you want to pass information from your view model to your popup you should not use a <strong>Notification</strong> directly, but a class that <strong><em>inherits</em></strong> from <strong>Notification</strong> and provides you with the correct properties you need to pass and create bindings. As the class would inherit from <strong>Notification</strong> it can be passed in the <strong>InteractionRequest</strong> without problems.\r<br />\n<br />\nIn the sample provided with the <strong>PopupWindowAction</strong> post you can find a couple of examples showing how to pass information to a popup using either a class that inherits from <strong>Notification</strong> or a separate view model. You can use them as a reference.\r<br />\n<br />\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-06-03T12:13:32.943-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1108175",
+    "ThreadId": "445308",
+    "Html": "Hi ,We were able to develop the app with dialogs using interaction requests .Now the issue by using PopUPwindowAction is \r<br />\n<br />\nSuppose, I open a dialog from a view that dialog has a grid .Now if we navigate/select any row  to the middle of the grid and close the app.The next time I open the dialog should be opened and the first row should be selected.But I see the dialog is not re-initialized  again.we tried setting focus or setting a new instance of Viewmodel/Interaction request but doesn't work either.please let us know the solution for this issue.\r<br />\n<br />\nRegards\r<br />\nKrishna<br />\n",
+    "PostedDate": "2013-10-16T02:37:37.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1108344",
+    "ThreadId": "445308",
+    "Html": "Hi chaituatp,\r<br />\n<br />\nUnfortunately, I wasn't able to reproduce the problem you mention. I would suggest you to verify the following:<br />\n<h1></h1>\n<ul>\n<li>\nThe <strong>ViewModel</strong> is created each time the dialog is raised. <br />\n</li>\n</ul>\nAn example of a newly popup dialog creation can be seen in the previously linked <strong>PopupWindowAction</strong> sample on <strong>HelloWorldViewModel</strong> class:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">private</span> <span style=\"color:Blue;\">void</span> OnRaiseConfirmation()\n{\n      <span style=\"color:Blue;\">this</span>.ConfirmationRequest.Raise(\n          <span style=\"color:Blue;\">new</span> Confirmation { Content = <span style=\"color:#A31515;\">&quot;Confirmation Message&quot;</span>, Title = <span style=\"color:#A31515;\">&quot;WPF Confirmation&quot;</span> },\n          (cb) =&gt; { Result = cb.Confirmed ? <span style=\"color:#A31515;\">&quot;The user confirmed&quot;</span> : <span style=\"color:#A31515;\">&quot;The user cancelled&quot;</span>; });\n}\r\n</pre></div>Also, it would be hepful If you could provide us with a repro sample of your scenario so we could reproduce the issue and be able to apply a solution.\r<br />\n<br />\nI hope you find this helpful,\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"http://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">http://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2013-10-16T07:45:16.02-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1108694",
+    "ThreadId": "445308",
+    "Html": "Hi,\r<br />\n<br />\nThanks for your reply. Today I found the issue , It was because 'WindowContent ' is set only during the first time the dialog or application launches. After that WindowContent remains same ( Meaning Scrollbar positions , etc ) each and every time the dialog gets opened.\r<br />\n<br />\nThis is how we set the windowcontent in prism during the application launches/dialog launches.,Now the issue is How can we reinitialize it again / create new instance of WindowContent each and everytime the user closes and open the dialog.\r<br />\n<br />\n&lt;prismInter:InteractionRequestTrigger SourceObject=&quot;{Binding PromptABCSnapShot,Mode=OneWay}&quot;&gt;<br />\n<pre><code>                &lt;UserSnapshot:DialogAction IsModal=&quot;False&quot; CenterOverAssociatedObject=&quot;False&quot; DialogHeight=&quot;800&quot; DialogWidth=&quot;1200&quot;&gt;\n                    &lt;UserSnapshot:DialogAction .WindowContent&gt;\n                        &lt;UserSnapshot:AddressDialogView&gt;&lt;/partnerSnapshot:AddressDialogView&gt;\n                    &lt;/UserSnapshot:DialogAction .WindowContent&gt;\n                &lt;/UserSnapshot:DialogAction &gt;\n            &lt;/prismInter:InteractionRequestTrigger&gt;\n</code></pre>\n\nneed Help in this regard.\r<br />\n<br />\nKrishna<br />\n",
+    "PostedDate": "2013-10-17T03:33:36.567-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1108962",
+    "ThreadId": "445308",
+    "Html": "Hi Krishna,\r<br />\n<br />\nI've managed to reproduce your issue successfully. In order to fix it and reinitialize the Popup dialog's information and state, you could think on the <strong>AddressDialogView</strong> as the Popup window's <strong><em>Shell</em></strong> view where you would define the region that will keep the selected view. \r<br />\n<br />\nWhat I mean to say is that you could define the <strong>AddressDialogView</strong> as a blank view which defines the region that will store the actual view you want to show. Therefore, each time the dialog is shown, you would add a new instance of the <strong>View</strong> from the container into the popup's region. This way you would show a new instance of the <strong>View</strong> every time you open the dialog. In order to get the <em>scoped region manager</em> of the dialog, you could <em>Publish</em> it from the <strong>DialogAction</strong> and handle the <em>View Activation</em> from the <strong>Main Window ViewModel</strong> before raising the dialog:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">this</span>.eventAggregator.GetEvent&lt;ScopedRegionManagerSelectedEvent&gt;().Suscribe(<span style=\"color:Blue;\">this</span>.SetDialogRegionManager);\n...\n<span style=\"color:Blue;\">private</span> <span style=\"color:Blue;\">void</span> SetDialogRegionManager(IRegionManager dialogRegionManager)\n{\n    <span style=\"color:Blue;\">this</span>.dialogRegionManager = dialogRegionManager;\n}\r\n</pre></div><div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">private</span> <span style=\"color:Blue;\">void</span> OnRaiseSelectItem()\n{\n    <span style=\"color:Blue;\">this</span>.SelectItemRequest.Raise(\n        <span style=\"color:Blue;\">new</span> SelectItemViewModel { Title = <span style=\"color:#A31515;\">&quot;Items&quot;</span> });\n    <span style=\"color:Blue;\">var</span> activeViews = <span style=\"color:Blue;\">this</span>.dialogRegionManager.Regions[<span style=\"color:#A31515;\">&quot;DialogRegion&quot;</span>].ActiveViews;\n    <span style=\"color:Blue;\">if</span>( activeViews.ElementAt(0) != <span style=\"color:Blue;\">null</span> )\n    {\n         <span style=\"color:Blue;\">this</span>.dialogRegionManager.Regions[<span style=\"color:#A31515;\">&quot;DialogRegion&quot;</span>].Remove(activeViews[0]);\n    }\n    <span style=\"color:Blue;\">this</span>.dialogRegionManager.Regions[<span style=\"color:#A31515;\">&quot;DialogRegion&quot;</span>].Add(container.Resolve&lt;SubDialogView&gt;(), <span style=\"color:#A31515;\">&quot;SubDialogView&quot;</span>);\n}\r\n</pre></div>Another alternative that would also work is to <em>reinitialize()</em> every property manually on the <strong>AddressDialogView</strong> when the dialog launches. You could implement this solution by defining an interface on the Dialog's viewModel which declares the <em>reinitialize()</em> method, and calling it before raising the dialog. This <em>reinitialize</em> method would set all the Properties to their default values.\r<br />\n<br />\nI hope this helps,\r<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2013-10-17T13:15:07.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111571",
+    "ThreadId": "445308",
+    "Html": "Thanks for your reply. I was able to solve it.<br />\n",
+    "PostedDate": "2013-10-24T05:52:12.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

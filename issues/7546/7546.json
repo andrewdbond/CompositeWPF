@@ -1,0 +1,65 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 5,
+    "Custom": "",
+    "Description": "1. Create a sample WPF application with several dynamic dlls (Note the code for the project is not in your sample app, just use the Module Manager to import them via an xaml file).\n2. Publish the application (ie ClickOnce)\n3. Install the published application on a different machine (to verify that it works)\n4. Uninstall the published app from the different machine\n5. Run \"Mage.exe -cc\" on the different machine to ensure the app is \"really\" uninstalled.\n6. Open Manifest Mananger\n7. Open the Project.application file\n8. Select Edit->Add Files\n9. Add in all the dynamic dlls (I had about 6) plus any dlls that those modules need (ie Automapper.dll)\n10. Select the latest publish version directory as the target (ie Publish_1_0_0_3)\n11. Select save and select your pfx file.\n12. Install the app again\nExpected Result: The app will install with all the dependencies.\nActual Result: The app will not install with this error message:\n \n\"Cannot continue. The application is improperly formatted.\n Contact the application vendor for assistance.\"\n \nThis is the relevant part of the log (shown when I press \"Details\" on the error message dialog):\n \n       ERROR DETAILS\n       \t       Following errors were detected during this operation.\n       \t       * [11/16/2010 11:16:39 AM] System.Deployment.Application.InvalidDeploymentException (ManifestSemanticValidation)\n\t\t       - Deployment manifest is not semantically valid.\n\t\t       - Source: System.Deployment\n\t\t       - Stack trace:\n\t\t\t       at System.Deployment.Application.PlatformDetector.VerifyPlatformDependencies(AssemblyManifest appManifest, AssemblyManifest deployManifest, String tempDir)\n\t\t\t       at System.Deployment.Application.ApplicationActivator.DownloadApplication(SubscriptionState subState, ActivationDescription actDesc, Int64 transactionId, TempDirectory& downloadTemp)\n\t\t\t       at System.Deployment.Application.ApplicationActivator.InstallApplication(SubscriptionState& subState, ActivationDescription actDesc)\n\t\t\t       at System.Deployment.Application.ApplicationActivator.PerformDeploymentActivation(Uri activationUri, Boolean isShortcut, String textualSubId, \n                                                                                                                                                           String deploymentProviderUrlFromExtension, BrowserSettings browserSettings, String& errorPageUrl)\n\t\t\t       at System.Deployment.Application.ApplicationActivator.ActivateDeploymentWorker(Object state)\n\t\t       --- Inner Exception ---\n\t\t       System.Deployment.Application.InvalidDeploymentException (InvalidManifest)\n\t\t       - Deployment manifest is missing <compatibleFrameworks>.\n\t\t       - Source: \n\t\t       - Stack trace:",
+    "LastUpdatedDate": "2013-02-21T18:38:22.3-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-11-16T10:29:35.27-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "\"Deployment manifest is not semantically valid\" when adding more than one dll in Manifest Manager",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 7546
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nThanks for your feedback. There is no similar issues reported so far. Therefore, I tried to reproduce this situation and found no issues. I followed the steps listed in http://msdn.microsoft.com/en-us/library/gg405497%28PandP.40%29.aspx, but taking into account your steps too. The first time that I installed the application it was not able to work, since the sample application contains 6 references to modules, and four of them have not been included originally. \r\nSo, after uninstalling the application and executing the command (mage.exce -cc), I added the 4 extra modules using the Manifest Manager Utility and published it. When I re-installed my application, it was able to work.\r\n\r\nI think that you can find the following link interesting, since another user has solved a similar scenario: http://forums.iis.net/p/1163911/1930100.aspx\r\n\r\nIf you continue experiencing this issue, could you please send a repro sample?\r\n\r\nThanks again,\r\n\r\nFernando Antivero\r\nhttp://blogs.southworks.net/fantivero",
+      "PostedDate": "2010-11-24T13:57:00.537-08:00",
+      "Id": 156386
+    },
+    {
+      "Message": "I still have not been able to get his to work.  I will give it another go in a bit using the info you provided.",
+      "PostedDate": "2010-11-29T09:11:18.747-08:00",
+      "Id": 156387
+    },
+    {
+      "Message": "Funny, but I had someone contact me about 2 weeks ago saying that they too could not get this to work.\r\n\r\nI urged him to report it again as the reason that this was not fixed was because no one else was reporting it.\r\n\r\nI admit that I have behind left Prism for a while.  Once I am done with the services in my project I plan to come back to it (For the client side (non-web) stuff).  \r\n\r\nIf I can't get it to work then I will open a new bug report and go from there.",
+      "PostedDate": "2011-10-12T13:20:35.223-07:00",
+      "Id": 156388
+    },
+    {
+      "Message": "Hi,\r\n\r\nI'm closing this work item as this is probably not an issue in Prism. For additional support regarding this subject, you could create a thread in the discussions section, where we will help you with your concerns.\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini\r\n\n\n** Closed by DCherubini 10/12/2011 12:38 PM",
+      "PostedDate": "2011-10-14T13:43:19.567-07:00",
+      "Id": 156389
+    },
+    {
+      "Message": "Hi,\r\n\r\nThank you for reporting this again. I'm re-opening the work item, as there is still more about this to examine. If you're unable to make this work, you can upload the repro sample and inform us of your new findings in this same work item.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-10-14T13:43:20.553-07:00",
+      "Id": 156390
+    }
+  ]
+}

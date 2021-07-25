@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1245407",
+    "ThreadId": "545346",
+    "Html": "I cannot seem to get navigation to work with unity.<br />\n<br />\nI register my view:<br />\n this.regionViewRegistry.RegisterViewWithRegion(&quot;MIPRegion&quot;, typeof(Views.Designator));<br />\n<br />\nThen I try to make the request:<br />\n  this.regionManager.RequestNavigate(&quot;MIPRegion&quot;, new Uri(&quot;Designator&quot;, UriKind.RelativeOrAbsolute));<br />\n<br />\nHowever, OnNavigatedFrom in this View Model NEVER gets called.<br />\n<br />\nIf I have one region that 10 different views can display in, do I have to call RegisterViewWithRegion() for all of those views and that region for navigation to work? And if so, how do I prevent the view from being activated with RegisterViewWithRegion. Whenever I use RegisterViewWithRegion, it automatically displays the view in it. Thanks for any help.<br />\n<br />\nEdit: I forgot to mention, a System.Object is getting added to the region after RequestNavigate() gets called. But that is all that happens.<br />\n",
+    "PostedDate": "2014-05-14T10:55:41.793-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1245410",
+    "ThreadId": "545346",
+    "Html": "Fixed:<br />\n<br />\n this.container.RegisterType&lt;Object, Views.CheckedOutIncidentMIP&gt;(&quot;WORKVIEW&quot;);<br />\n<br />\nI had to override the Object type.<br />\n<br />\nThe only issue is even though navigation is working, &quot;OnNavigatedFrom&quot; Is not getting called.<br />\n",
+    "PostedDate": "2014-05-14T11:01:57.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-05-14T11:33:17.793-07:00"
+  },
+  {
+    "Id": "1245413",
+    "ThreadId": "545346",
+    "Html": "I have nested regions, so I am wondering if that is the issue.<br />\n",
+    "PostedDate": "2014-05-14T11:13:36.39-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1245433",
+    "ThreadId": "545346",
+    "Html": "Hi Mathius,\r<br />\n<br />\nFirst, there would not be neccessary to use <strong>RegisterViewWithRegion</strong> before executing <strong>Navigation</strong>. If the <strong>View</strong> you would like to <strong>Navigate</strong> to is not previously registered, then the <strong>Region</strong> would add it to its <strong>View</strong> list. And in order to prevent activation of <strong>Views</strong> when they would get registered, you could use the Region's <strong><em>Add()</em></strong> method.\r<br />\nMoreover, for the <strong><em>OnNavigatedFrom()</em></strong> and <strong><em>OnNavigatedTo()</em></strong> methods getting called, they <strong>ViewModel</strong> would need to implement <strong>INavigationAware</strong> interface. This way, the <strong>INavigationAware</strong> <strong>ViewModels</strong> are resolved when navigation occurs, and its <strong><em>OnNavigatedFrom()</em></strong> method is called.\r<br />\n<br />\nBased on my understanding, the &quot;<em>MyViewModelBase&quot;</em> class would be implementing <strong>INavigationAware</strong> so the <strong><em>OnNavigatedFrom()</em></strong> method is called. But what derived types would you need for calling?\r<br />\n<br />\nYou can find more information about <strong><em>View-Switching Navigation</em></strong> in the following <strong>MSDN Prism Guide</strong> chapter:<br />\n<h1></h1>\n<ul>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40).aspx#sec6\" rel=\"nofollow\">View Based Navigation</a></li>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40).aspx#sec9\" rel=\"nofollow\">View and View Model Participation in Navigation</a><br />\n</li>\n</ul>\nI hope this helped you,\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-05-14T11:52:57.443-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1245813",
+    "ThreadId": "545346",
+    "Html": "Awesome. Thanks a lot!<br />\n",
+    "PostedDate": "2014-05-15T10:30:21.177-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

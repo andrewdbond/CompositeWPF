@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "481803",
+    "ThreadId": "223941",
+    "Html": "<p>Hi Experts,<br><br>I have one concern with Prism, hope you can clarify me on that.<br><br>As per my study we can not unload module in prism, once loaded. We can only deactivate module.</p>\r\n<p>Is this true?</p>\r\n<p>If yes then dont you think it will create memory related issues in enterprise level applications.<br><br>Please throw some light on this...</p>\r\n<p><br><br>Regards,<br>Harry</p>",
+    "PostedDate": "2010-08-18T04:51:38.733-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "481919",
+    "ThreadId": "223941",
+    "Html": "<p>Hi Harry,</p>\r\n<p>As you mentioned it is not possible to unload the modules of an application,&nbsp;once loaded.&nbsp;As well as it&nbsp;is not possible to deactivate them. This is because loading a module is just registering an assembly in the app domain and calling the module initialize method.</p>\r\n<p>That said, in Prism a module&nbsp;is conceived as a set of functional units (e.g. a whole&nbsp;assembly), so a module itself should not generate memory leaks into an application as this is a way to divide you application and compose it. However, its components (views, services, etc)&nbsp;might cause a memory issue.&nbsp;But&nbsp;this is&nbsp;something that you could get under control&nbsp;by removing views from a region as well as releasing references to services, so in this way the garbage collection will occur.</p>\r\n<p>For more information about these topics you could take a look at the following documentation sections on MSDN:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921069(PandP.20).aspx\">Modularity</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921071(PandP.20).aspx\">How to: Load Modules on Demand</a>&nbsp;(it could be useful if you need to delay its initialization until it is required)</li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921085(PandP.20).aspx\">View Injection Composition QuickStart</a> (see this Quickstart to know how to remove a view from a region)</li>\r\n</ul>\r\n<p>Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-08-18T08:43:11.437-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "482184",
+    "ThreadId": "223941",
+    "Html": "<p>Hi Fernando,</p>\r\n<p>Thanks for the the reply. It really helped me understanding the Prism Module loading process.</p>\r\n<p>Regards,</p>\r\n<p>Harry</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-08-19T00:43:10.057-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

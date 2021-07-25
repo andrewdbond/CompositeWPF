@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "448517",
+    "ThreadId": "214159",
+    "Html": "<p>If we load a view from a module, then if we need to unloaded the view it would be a good practice to do it from that module only.</p>\r\n<p>What would be the best approach to achieve &nbsp;this?</p>\r\n<p>ex:</p>\r\n<p>&nbsp;Initialize()</p>\r\n<p>{</p>\r\n<p>this.container.RegisterType&lt;IMenuItemView, MenuItemView.MenuItemView&gt;();<br>MenuItemViewPresenter presenter = this.container.Resolve&lt;MenuItemViewPresenter&gt;();<br>IRegion mainRegion = this.regionManager.Regions[Infrastructure.RegionNames.ManuRegion];<br>mainRegion.Add(presenter.View);</p>\r\n<p>}</p>\r\n<p>//OnClick is a event handler which keeps a watch on the view event.</p>\r\n<p>OnClick(object sender, RoutedEventArgs e)</p>\r\n<p>{</p>\r\n<p>mainRegion.Remove(presenter.View);</p>\r\n<p>}</p>\r\n<p>&nbsp;</p>\r\n<p>My question: is it a good practice for a the model to keep a watch on its view event ?</p>",
+    "PostedDate": "2010-05-27T23:15:59.29-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "450236",
+    "ThreadId": "214159",
+    "Html": "<p id=e0d2bf40-4fe1-012d-74e7-1231390f0921>Hi,</p>\r\n<p id=e0d2ce90-4fe1-012d-74e8-1231390f0921>It&rsquo;s a good practice to make a module responsible for unloading a view it has loaded; but that doesn&rsquo;t necessarily mean that the event that causes that view to be unloaded has to be published in the same module.</p>\r\n<ul>\r\n<li>If the event is originated in another module, you could have the module subscribe to an event&nbsp;through the <a href=\"http://msdn.microsoft.com/en-us/library/ff649187.aspx\">EventAggregator</a>, which unloads the view when raised.</li>\r\n<li>\r\n<div id=e0d2e7b0-4fe1-012d-74e9-1231390f0921>If the event is originated in the same module, it is ok to use RoutedEvents. As explained on <a href=\"http://msdn.microsoft.com/en-us/library/ff647218.aspx\">Separated Presentation</a> patterns, it isn&rsquo;t a good practice for the model to keep a watch on its view&rsquo;s event. However, you could have the Presenter (which would be called <strong>ViewModel </strong>if you are using the <a href=\"http://msdn.microsoft.com/en-us/magazine/dd419663.aspx\">MVVM</a> pattern) listen to that event and manage the unloading of the view.</div>\r\n</li>\r\n</ul>\r\n<p id=e0d30c60-4fe1-012d-74ea-1231390f0921>I hope you find this helpful.</p>\r\n<p id=e0d32c50-4fe1-012d-74eb-1231390f0921>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-06-01T12:53:01.887-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

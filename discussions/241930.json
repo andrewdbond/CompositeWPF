@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "549926",
+    "ThreadId": "241930",
+    "Html": "\r\n<p>Has anyone experienced latency issues with using the Prism v4 EventAggregator?</p>\r\n<p>We're noticing inconsistent delays between the time events are published and the time the subscribers consume them.</p>\r\n<p>During our latest test we fired off about 30 events (of one event type) in rapid succession, and the event subscriber showed delays of up to a few seconds between consuming the events.</p>\r\n<p>Any feedback or advice is greatly appreciated.</p>\r\n",
+    "PostedDate": "2011-01-15T13:04:48.207-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "549946",
+    "ThreadId": "241930",
+    "Html": "\r\n<p>We use this EventAggregatorFactory:</p>\r\n<p>&nbsp; public static class EventAggregatorFactory<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Singleton instance of the EventAggregator service.<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static EventAggregator _eventAggregator = null;<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Lock (sync) object.<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static object _syncLock = new object();<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static EventAggregator EventAggregator<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Lock execution thread in case of multi-threaded access.<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lock (_syncLock)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (null == _eventAggregator)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _eventAggregator = new EventAggregator();<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _eventAggregator;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp; }</p>\r\n",
+    "PostedDate": "2011-01-15T14:24:25.13-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "549949",
+    "ThreadId": "241930",
+    "Html": "\r\n<p>We changed our EventAggregatorFactory to:</p>\r\n<p><br>\r\n&nbsp;&nbsp;&nbsp; public static class EventAggregatorFactory<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Singleton instance of the EventAggregator service.<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static EventAggregator _eventAggregator = new EventAggregator();<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static EventAggregator EventAggregator<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _eventAggregator;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp; }</p>\r\n<p>Same problem - after firing off many events simultaneously, the events can take up to several seconds to be consumed.</p>\r\n",
+    "PostedDate": "2011-01-15T14:32:12.11-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "550675",
+    "ThreadId": "241930",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>We've had no similar issues reported so far. You could try debuggin the <strong>\r\nEventBase.InternalPublish</strong> method to determine which part of the event execution process is taking more time than expected. Also, you should check whether the delay is caused by an application specific cause. Note that in order to debug the\r\n<strong>EventBase</strong> class, you should reference the <strong>Prism.Desktop</strong> project instead of the\r\n<strong>Microsoft.Practices.Prism</strong> compiled assembly. Take into account that if you make a reference to a Prism Library project instead of a compiled assembly, you should do so with any other project from the Prism Library, such as the Mef Extensions\r\n or Unity Extensions. You can read more about that in <a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=239176\">\r\nthis thread</a>.</p>\r\n<p>You could also check the <a href=\"http://msdn.microsoft.com/en-us/library/ff921173%28v=PandP.40%29.aspx\">\r\nEvent Aggregation QuickStart</a> for more information on how the Event Aggregator works.</p>\r\n<p>If you can't find the cause by doing this, it would be useful if you could provide us with a repro sample so we can help you find out where the problem is.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2011-01-17T10:24:50.547-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

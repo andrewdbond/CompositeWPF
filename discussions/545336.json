@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1245363",
+    "ThreadId": "545336",
+    "Html": "On the following line, I am getting the error:\r<br />\n<br />\nError\t27\tThe non-generic method 'Microsoft.Practices.Unity.IUnityContainer.Resolve(System.Type, string, params Microsoft.Practices.Unity.ResolverOverride[])' cannot be used with type arguments\tC:\\CFETS\\CFETS\\CFETSPrism\\Bootstrapper.cs\t33\t35\tCFETSPrism<br />\n<pre><code> protected override DependencyObject CreateShell()\n    {       \n        return this.Container.Resolve&lt;Shell&gt;();\n    }\n</code></pre>\n\nWhen I load the quickstart HelloWorld example, and redownload the NuPackages, it works perfectly. Both projects(mine and the quickstart) are using the 5.0.1 UnityBootstrapper, and the code is identical, so I do not know what is causing the issue. Thanks.<br />\n",
+    "PostedDate": "2014-05-14T09:03:27.323-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1245366",
+    "ThreadId": "545336",
+    "Html": "So I forgot to say, the quickstart app seems to be able to resolve the class &quot;UnityContainerExtensions&quot;, as that is where the public static T Resolve&lt;T&gt;(this IUnityContainer container, params ResolverOverride[] overrides); is. But my own code cannot resolve this, even though it is including the &quot;using Microsoft.Practices.Prism.UnityExtensions;&quot;<br />\n",
+    "PostedDate": "2014-05-14T09:10:27.993-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1245370",
+    "ThreadId": "545336",
+    "Html": "Fixed:using Microsoft.Practices.Unity;\r<br />\n Was removed somehow.<br />\n",
+    "PostedDate": "2014-05-14T09:11:58.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

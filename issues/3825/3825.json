@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nI'm closing this work item, as it seems that this is not caused by an issue in Prism. In case you need further support about this, you could create a thread in the discussions section (http://compositewpf.codeplex.com/discussions).\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-10-18T07:47:05.58-07:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "Steps ~ \n \n1. Put the following code in Module class\n \nMenuItem aaMenu = new MenuItem()\n            {\n                Header = \"AA Menu\"\n            };\n \n            IRegion aaMenuRegion = null;\n            if (!this.regionManager.Regions.ContainsRegionWithName(\"AA-MenuRegion\"))\n            {\n                RegionManager.SetRegionName(aaMenu, \"AA-MenuRegion\");\n            }\n            else\n            {\n                aaMenuRegion = this.regionManager.Regions[\"AA-MenuRegion\"];\n            }\n \n            if (!this.regionManager.Regions.ContainsRegionWithName(\"BB-MenuRegion\"))\n            {\n                aaMenu.Items.Add(new MenuItem() { Header = \"Test\" });\n            }\n \nError : \"{System.InvalidOperationException: Operation is not valid while ItemsSource is in use. Access and modify elements with ItemsControl.ItemsSource instead.\"",
+    "LastUpdatedDate": "2013-05-16T05:29:00-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-02-17T04:45:22.947-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Bug - Using ContainsRegionWithName twice",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 3825
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "There is a workaround.. \r\n\r\nMenuItem aaMenu = new MenuItem()\r\n\r\n            {\r\n\r\n                Header = \"AA Menu\"\r\n\r\n            };\r\n\r\n \r\n\r\n            IRegion aaMenuRegion = null;\r\n\r\n            bool isAAMenuRegionRegistered = false;\r\n\r\n            if (this.regionManager.Regions.ContainsRegionWithName(\"AA-MenuRegion\"))          \r\n\r\n            {\r\n\r\n                isAAMenuRegionRegistered = true;\r\n\r\n                aaMenuRegion = this.regionManager.Regions[\"AA-MenuRegion\"];\r\n\r\n            }\r\n\r\n \r\n\r\n            if (!this.regionManager.Regions.ContainsRegionWithName(\"BB-MenuRegion\"))\r\n\r\n            {\r\n\r\n                aaMenu.Items.Add(new MenuItem() { Header = \"Test\" });\r\n\r\n            }\r\n\r\n            if(!isAAMenuRegionRegistered)\r\n\r\n                RegionManager.SetRegionName(aaMenu, \"AA-MenuRegion\")",
+      "PostedDate": "2009-02-17T05:09:34.92-08:00",
+      "Id": 156106
+    },
+    {
+      "Message": "Hi Michael,\r\n\r\nThe behavior you're mentioning happens because the ItemsControlRegionAdapter.Adapt method uses the ItemsControl.ItemsSource property to bind the Region's Views property to the items control's items. Therefore, since an ItemsControl can't have both the Items and the ItemsControl properties set, an exception is thrown.\r\n\r\nIn the workaround you've proposed, you're defining the region after adding an item to the Items collection. The ItemsControlRegionAdapter.Adapt method checks if the hosting control has items, adds them to the Region's Views collection and then empties the Items collection. To illustrate this, here's the code for the Adapt method:\r\n\r\n        protected override void Adapt(IRegion region, ItemsControl regionTarget)\r\n        {\r\n            if (region == null) throw new ArgumentNullException(\"region\");\r\n            if (regionTarget == null) throw new ArgumentNullException(\"regionTarget\");\r\n\r\n            bool itemsSourceIsSet = regionTarget.ItemsSource != null;\r\n#if !SILVERLIGHT\r\n            itemsSourceIsSet = itemsSourceIsSet || (BindingOperations.GetBinding(regionTarget, ItemsControl.ItemsSourceProperty) != null);\r\n#endif\r\n            if (itemsSourceIsSet)\r\n            {\r\n                throw new InvalidOperationException(Resources.ItemsControlHasItemsSourceException);\r\n            }\r\n\r\n            // If control has child items, move them to the region and then bind control to region. Can't set ItemsSource if child items exist.\r\n            if (regionTarget.Items.Count > 0)\r\n            {\r\n                foreach (object childItem in regionTarget.Items)\r\n                {\r\n                    region.Add(childItem);\r\n                }\r\n                // Control must be empty before setting ItemsSource\r\n                regionTarget.Items.Clear();\r\n            }\r\n\r\n            regionTarget.ItemsSource = region.Views;\r\n        }\r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworsk.net/gmaliandi",
+      "PostedDate": "2011-02-25T09:59:43.18-08:00",
+      "Id": 156107
+    }
+  ]
+}

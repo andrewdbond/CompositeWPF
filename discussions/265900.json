@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "645031",
+    "ThreadId": "265900",
+    "Html": "\r\n<p>Hey guys, <br>\r\nIn some examples we can see&nbsp;code like this:<br>\r\n<br>\r\n.......<br>\r\n// View discovery<br>\r\nthis.regionManager.RegisterViewWithRegion(&quot;MainRegion&quot;, () =&gt; this.container.Resolve&lt;EmployeeView&gt;());<br>\r\n.....<br>\r\n<br>\r\nPls correct me if I am wrong. <br>\r\n1. This code this.container.Resolve&lt;EmployeeView&gt;() resolves EmployeeView using unity.\r\n<br>\r\n2. container is&nbsp;resolved most likely in class constructor like this SomeClassConstructor(IUnityContainer unityContainer){contrainer = unityContainer}<br>\r\n<br>\r\nNow If I use MEF I should<br>\r\n1.&nbsp;use eihter [ImportingConstructor] or [ImportAttribute] public EmployeeView emplView{get;set;} and later<br>\r\n2.&nbsp;regionManager.RegisterViewWithRegion(&quot;MainRegion&quot;, () =&gt; emplView);<br>\r\n<br>\r\nIn Mef style we don't use container to resolve objects (well of cource we use, but not directly like in unity), right?<br>\r\n<br>\r\nI am sort of confused with Unity/MEF<br>\r\n<br>\r\n</p>\r\n",
+    "PostedDate": "2011-07-20T08:42:17.59-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645167",
+    "ThreadId": "265900",
+    "Html": "<p><a href=\"http://blogs.msdn.com/b/bobbrum/archive/2010/11/22/prism-4-in-silverlight-with-mef-compositioninitializer.aspx\">http://blogs.msdn.com/b/bobbrum/archive/2010/11/22/prism-4-in-silverlight-with-mef-compositioninitializer.aspx</a></p>\n<p><a href=\"http://mef.codeplex.com/wikipage?title=CompsitionInitializer&amp;version=2\">http://mef.codeplex.com/wikipage?title=CompsitionInitializer&amp;version=2</a></p>\n<p><a href=\"http://mef.codeplex.com/wikipage?title=Guide&amp;referringTitle=Documentation\">http://mef.codeplex.com/wikipage?title=Guide&amp;referringTitle=Documentation</a></p>\n<p><a href=\"http://forums.silverlight.net/p/215491/510782.aspx\">http://forums.silverlight.net/p/215491/510782.aspx</a></p>\n<p><a href=\"http://pontusmunck.com/2010/04/07/using-mef-as-an-ioc-container/\">http://pontusmunck.com/2010/04/07/using-mef-as-an-ioc-container/</a></p>\n<p><a href=\"http://www.wintellect.com/CS/blogs/jlikness/archive/2010/02/26/mef-instead-of-prism-for-silverlight-3-part-1-of-2-dynamic-module-loading.aspx\">http://www.wintellect.com/CS/blogs/jlikness/archive/2010/02/26/mef-instead-of-prism-for-silverlight-3-part-1-of-2-dynamic-module-loading.aspx</a></p>",
+    "PostedDate": "2011-07-20T13:21:33.093-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645189",
+    "ThreadId": "265900",
+    "Html": "<p>Mef can be used with a service locator just like unity....</p>\r\n<p>Mef and unity have their own IOC containers...Mef's container is&nbsp; composition initializer</p>\r\n<p>THis is is just my opinion...I like unity's container system....better than mef</p>\r\n<p>If &nbsp;are using service locator....Mef...I suspect...is better &nbsp;&nbsp;&nbsp;</p>",
+    "PostedDate": "2011-07-20T14:01:30.133-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645193",
+    "ThreadId": "265900",
+    "Html": "<p><a href=\"http://blogsprajeesh.blogspot.com/search/label/MEF\">http://blogsprajeesh.blogspot.com/search/label/MEF</a></p>\n<p><a href=\"http://csharperimage.jeremylikness.com/2010/03/viewmodel-binding-with-managed.html\">http://csharperimage.jeremylikness.com/2010/03/viewmodel-binding-with-managed.html-</a>&nbsp;&nbsp; service locator pattern&nbsp;</p>\n<p><a href=\"http://mtaulty.com/CommunityServer/blogs/mike_taultys_blog/archive/2010/08/04/experimenting-with-prism-4-silverlight-mef.aspx\">http://mtaulty.com/CommunityServer/blogs/mike_taultys_blog/archive/2010/08/04/experimenting-with-prism-4-silverlight-mef.aspx</a>&nbsp;</p>\n<p>here&nbsp;mike taulty talks about difference between mef and unity using their own ioc containers</p>\n<p>&nbsp;</p>",
+    "PostedDate": "2011-07-20T14:13:49.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645517",
+    "ThreadId": "265900",
+    "Html": "<p>Hi,</p>\r\n<p>To add to what the user billism is posting:</p>\r\n<p>What you are saying seems to be correct, when using MEF it&rsquo;s not a common practice to resolve objects using the container. Instead, the objects are commonly injected using the <strong>[ImportingConstructor]</strong> or <strong>[Import]</strong> &nbsp;attributes as you have mentioned.</p>\r\n<p>However, it is possible to resolve the objects using the <strong>CompositionContainer</strong>&rsquo;s <strong>GetExportedValue</strong> method. For example, in the <strong>Bootstrapper</strong> of the <strong>Modularity for Silverlight with MEF QuickStart</strong> this container is used to obtain an instance of the <strong>Shell</strong>, as shown in the code below:</p>\r\n<p><span style=\"font-size: 10pt;\">&nbsp;</span></p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> DependencyObject CreateShell()\r\n\r\n{\r\n\r\n    <span style=\"color: blue;\">return</span> <span style=\"color: blue;\">this</span>.Container.GetExportedValue&lt;Shell&gt;();\r\n\r\n}\r\n</pre>\r\n</div>\r\n<p><span style=\"font-size: 10pt;\">&nbsp;</span></p>\r\n<p>Note that you have to export the <strong>CompositionContainer</strong> in order to use it from another component (such as a module) and, as mentioned above, this is not a common practice.</p>\r\n<p>Another approach for this case could be using an <a href=\"http://msdn.microsoft.com/en-us/library/ff654326.aspx\">overload of the RegistryViewWithRegion</a> method which accepts a type instead of an instance:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">this</span>.regionManager.RegisterViewWithRegion(<span style=\"color: #a31515;\">\"MainRegion\"</span>, <span style=\"color: blue;\">typeof</span>(EmployedView));\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Or to use the <strong>ServiceLocator</strong> to resolve the view:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">this</span>.regionManager.RegisterViewWithRegion(<span style=\"color: #a31515;\">\"MainRegion\"</span>, () =&gt; ServiceLocator.Current.GetInstance&lt;EmployedView&gt;() );\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Note that these two approaches can be applied regardless of whether you are using MEF or Unity (as the service locator abstracts away of the container that is being used, and using the <strong>RegisterViewWithRegion </strong>method passing the type of the view will internally use the service locator to resolve an instance of it).</p>\r\n<p>I hope you find this useful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-21T05:56:19.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645613",
+    "ThreadId": "265900",
+    "Html": "<blockquote style=\"padding-bottom: 0px; font-style: italic; margin: 0.25em 1em 0px; padding-left: 0.25em; padding-right: 0.25em; padding-top: 0px; border: #ccc 0.1em solid;\"><strong>billsim wrote:</strong><br />\r\n<p><a href=\"http://blogs.msdn.com/b/bobbrum/archive/2010/11/22/prism-4-in-silverlight-with-mef-compositioninitializer.aspx\">http://blogs.msdn.com/b/bobbrum/archive/2010/11/22/prism-4-in-silverlight-with-mef-compositioninitializer.aspx</a></p>\r\n</blockquote>\r\n<p>Question related to article above:</p>\r\n<p>If instead of initializing CompositionHost with MEF&nbsp; container as it shown in the article <br />for sake of experiment I initializes CompositioniHost with deployment catalog like this:</p>\r\n<p>var deploymentCatalog = new DeploymentCatalog(); // should add all parts in current xap.<br />CompositionHost.Initialize(deploymentCatalog)</p>\r\n<p>This should be similar to sharing container with prism.<br />protected override CompositionContainer CreateContainer()&nbsp;&nbsp; <br />&nbsp;{ var container = base.CreateContainer(); <br />&nbsp;&nbsp; CompositionHost.Initialize(container);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp; return container;&nbsp;&nbsp;&nbsp; <br />}</p>\r\n<p>Now in classes initialized without help of Prism I can resolve almost all classes in Prism framework with CompositionInitializer. But If i thy to resolve ILoggerFacade&nbsp; - exception..</p>\r\n<p>Question is why code <br />var deploymentCatalog = new DeploymentCatalog();<br />CompositionHost.Initialize(deploymentCatalog)<br />doesn't see ILoggerFacade -&nbsp; Microsoft.Practices.Prism assembly is in my XAP and it means all classes with [Export] should be available. Or ILoggerFacade doesn't have [ExportAttribute]? Or I missed something?</p>",
+    "PostedDate": "2011-07-21T08:18:52.097-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645628",
+    "ThreadId": "265900",
+    "Html": "<blockquote style=\"padding-bottom: 0px; font-style: italic; margin: 0.25em 1em 0px; padding-left: 0.25em; padding-right: 0.25em; padding-top: 0px; border: #ccc 0.1em solid;\">Pls disregard this question. <br />Prism doesn't export ILoggerFacade, but creates it in Run method and after registers in Catalog, thats why I don't see it in&nbsp;&nbsp;DeploymentCatalog()\n<p><strong>&nbsp;</strong></p>\n<p><strong>vit100 wrote:</strong></p>\n<blockquote style=\"padding-bottom: 0px; font-style: italic; margin: 0.25em 1em 0px; padding-left: 0.25em; padding-right: 0.25em; padding-top: 0px; border: #ccc 0.1em solid;\"><strong>billsim wrote:</strong><br />\n<p><a href=\"http://blogs.msdn.com/b/bobbrum/archive/2010/11/22/prism-4-in-silverlight-with-mef-compositioninitializer.aspx\">http://blogs.msdn.com/b/bobbrum/archive/2010/11/22/prism-4-in-silverlight-with-mef-compositioninitializer.aspx</a></p>\n</blockquote>\n<p>Question related to article above:</p>\n<p>If instead of initializing CompositionHost with MEF&nbsp; container as it shown in the article <br />for sake of experiment I initializes CompositioniHost with deployment catalog like this:</p>\n<p>var deploymentCatalog = new DeploymentCatalog(); // should add all parts in current xap.<br />CompositionHost.Initialize(deploymentCatalog)</p>\n<p>This should be similar to sharing container with prism.<br />protected override CompositionContainer CreateContainer()&nbsp;&nbsp; <br />&nbsp;{ var container = base.CreateContainer(); <br />&nbsp;&nbsp; CompositionHost.Initialize(container);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp; return container;&nbsp;&nbsp;&nbsp; <br />}</p>\n<p>Now in classes initialized without help of Prism I can resolve almost all classes in Prism framework with CompositionInitializer. But If i thy to resolve ILoggerFacade&nbsp; - exception..</p>\n<p>Question is why code <br />var deploymentCatalog = new DeploymentCatalog();<br />CompositionHost.Initialize(deploymentCatalog)<br />doesn't see ILoggerFacade -&nbsp; Microsoft.Practices.Prism assembly is in my XAP and it means all classes with [Export] should be available. Or ILoggerFacade doesn't have [ExportAttribute]? Or I missed something?</p>\n</blockquote>\n<p>&nbsp;</p>",
+    "PostedDate": "2011-07-21T08:36:41.497-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

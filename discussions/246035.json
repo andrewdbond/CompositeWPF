@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "566220",
+    "ThreadId": "246035",
+    "Html": "\r\n<p>I just converted a desktop application from view-injection to view-navigation. It's working well for what it does right now.</p>\r\n<p>The ability to pass parameters during navigation is very useful, but now I'm looking for a way to return values (aka parameters) when the 'navigated-to' view calls GoBack(). Am I missing something obvious or is there really no support for returning parameters\r\n with GoBack()? Just being able to supply a UriQuery object to GoBack() would be good enough.</p>\r\n<p>Thanks,</p>\r\n<p>Jim</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-02-14T17:46:06.66-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "566485",
+    "ThreadId": "246035",
+    "Html": "<p>Hi Jim,</p>\r\n<p>The <strong>IRegionNavigationJournal.GoBack</strong> method doesn&acute;t support passing parameters to the last navigated view, so you could navigate again into that view (using the <strong>RequestNavigate</strong> method) supplying the new parameters with the <strong>UriQuery</strong> class.</p>\r\n<p>Additionally, you can check <a href=\"http://compositewpf.codeplex.com/discussions/244162\">this thread</a> where a similar concern is treated.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-02-15T06:55:29.493-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "566566",
+    "ThreadId": "246035",
+    "Html": "<p>Using <strong>RequestNavigate </strong>instead of<strong> IRegionNavigationJouran.GoBack </strong>doesn't work well because:</p>\r\n<ol>\r\n<li>It adds another entry the the navigation journal (instead of removing the last entry), and</li>\r\n<li>I'm trying to create a view that will be used from several other views. It can't always navigate back to the same (hardcoded) view. It needs to return to the view that it came from and&nbsp;I haven't seen a way for the view to get the Uri of the prior (GoBack) journal entry. I suppose I could pass the prior Uri as a parameter to the view and then use that to <strong>RequestNavigate </strong>back, but that's working around the journal, not working with it.</li>\r\n</ol>\r\n<p>Jim</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-02-15T09:00:58.773-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "566583",
+    "ThreadId": "246035",
+    "Html": "<p>Jim,</p>\r\n<p>Take into account that the <strong>Navigation Journal</strong> service doesn&acute;t support passing parameters out of the box.</p>\r\n<p>If your scenario requires the possibility of passing parameters to the <strong>GoBack</strong> method of the journal, one possible way to fulfill your requirement would be to extend Prism&acute;s <strong>IRegionNavigationJournal</strong> to include the necessary functionality to do so.</p>\r\n<p>Please let me know if this information helps you.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-02-15T09:32:22.55-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

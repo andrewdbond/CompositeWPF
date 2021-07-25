@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "252886",
+    "ThreadId": "73939",
+    "Html": "<p>Has anyone had any luck populating the module catalog without&nbsp;adding a&nbsp;direct references in the shell?</p>\r\n<p>This is what I have:</p>\r\n<p>var loginModuleInfo = new ModuleInfo()<br>{<br>&nbsp;&nbsp;&nbsp; Ref = &quot;<a>file://ModuleA.dll</a>&quot;,<br>&nbsp;&nbsp;&nbsp; InitializationMode = InitializationMode.WhenAvailable,<br>&nbsp;&nbsp;&nbsp; ModuleName = &quot;ModuleA&quot;,<br>&nbsp;&nbsp;&nbsp; ModuleType = &quot;CompositeApp.Modules.ModuleA.ModuleA, CompositeApp.Modules.ModuleA, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot;<br>};</p>\r\n<p>ModuleCatalog catalog = new ModuleCatalog();<br>catalog.AddModule(loginModuleInfo);<br>return catalog;</p>\r\n<p>If I add the ModuleA reference to the shell project&nbsp;this works fine. But when I remove the reference I get the following error:</p>\r\n<p>Failed to load type for module ModuleA. Error was: An exception occurred during a WebClient request</p>\r\n<p>I thought&nbsp;the shell and modules&nbsp;were able to operate without knowledge of eachother. So I guess my question is: Do I have to add&nbsp;the ModuleA.dll reference to the shell for this concept to work?&nbsp;&nbsp;&nbsp;</p>\r\n<p>Thanks</p>\r\n<p>Rob</p>",
+    "PostedDate": "2009-11-03T08:49:56.093-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "252947",
+    "ThreadId": "73939",
+    "Html": "<p>If you want to avoid having the shell reference a module then you could use a configuration file to define which modules to load.</p>",
+    "PostedDate": "2009-11-03T11:41:21.713-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "252953",
+    "ThreadId": "73939",
+    "Html": "<p id=80b9bc60-aadf-012c-d3b0-12313d006601>Hi Rob,</p>\r\n<p id=80b9cdc0-aadf-012c-d3b1-12313d006601>As you explain, the Shell and modules should operate with no references of each other. An easy way to achieve the functionality you want, without using code, is having the module&rsquo;s configuration in a separated XAML file. The <a href=\"http://msdn.microsoft.com/en-us/library/dd490828.aspx\">Remote Modularity Quickstart</a> that comes with Prism and <a href=\"http://www.codeplex.com/wikipage?ProjectName=CompositeWPF&title=Migrating Prism v2 RI from static to dynamic module loading&referringTitle=Modularity\">this port of the RI to remote module loading</a> use that approach, so you might find them useful.</p>\r\n<p>This document from the Prism-v2 RI provides some more information about this topic:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/dd458873.aspx\">How to: Populate the Module Catalog from XAML</a></li>\r\n</ul>\r\n<p id=80ba07f0-aadf-012c-d3b2-12313d006601>Please let me know if this helps.</p>\r\n<p id=80ba4210-aadf-012c-d3b3-12313d006601>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-11-03T12:00:14.81-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

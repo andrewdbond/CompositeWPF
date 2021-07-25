@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "166367",
+    "ThreadId": "49700",
+    "Html": "Hi,<br>\r\n<br>\r\nI just found out, that this xaml code <br>\r\n<br>\r\n<span style=\"color:#0000ff;font-size:16px\"><span style=\"color:#0000ff;font-size:16px\">\r\n<p>&lt;</p>\r\n</span>\r\n<p>&nbsp;</p>\r\n</span>\r\n<p><span style=\"color:#a31515;font-size:16px\">TextBox</span><span style=\"color:#ff0000;font-size:16px\"> Height</span><span style=\"color:#0000ff;font-size:16px\">=&quot;Auto&quot;</span><span style=\"color:#ff0000;font-size:16px\"> Name</span><span style=\"color:#0000ff;font-size:16px\">=&quot;TextBox1&quot;</span><span style=\"color:#ff0000;font-size:16px\"> Width</span><span style=\"color:#0000ff;font-size:16px\">=&quot;Auto&quot;</span><span style=\"color:#ff0000;font-size:16px\"> MinWidth</span><span style=\"color:#0000ff;font-size:16px\">=&quot;200&quot;</span><span style=\"color:#ff0000;font-size:16px\"> Text</span><span style=\"color:#0000ff;font-size:16px\">=&quot;{</span><span style=\"color:#a31515;font-size:16px\">Binding</span><span style=\"color:#ff0000;font-size:16px\"> Path</span><span style=\"color:#0000ff;font-size:16px\">=SearchCriteria.Text,</span><span style=\"color:#ff0000;font-size:16px\"> UpdateSourceTrigger</span><span style=\"color:#0000ff;font-size:16px\">=PropertyChanged}&quot; /&gt;\r\n<p>&nbsp;</p>\r\n</span></p>\r\ndoesnt work as expected. <br>\r\n<br>\r\nI start out verifying this issue and create a new project, new window, new textbox and it works without any problem. If its within an application using the Composite WPF and Silverlight stuff, nomore updates of the source occures. Only ofter loosing the focus, the textbox updates the source, like the default behavior.<br>\r\n<br>\r\nIs there any reason, why the framework overwrites this setting or is there any other known reason for this chabge in behavior?<br>\r\n<br>\r\nIs there a way to make it working?<br>\r\n<br>\r\nThanks a lot<br>\r\n<br>\r\nGerhard<br>\r\n",
+    "PostedDate": "2009-03-09T23:43:52.533-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "166455",
+    "ThreadId": "49700",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi Gerard,</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">There is not any known issue related with the <b>UpdateSourceTrigger</b> property and the described behavior. </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">I have tried to reproduce your scenario starting from the Hello World WPF QuickStart, but unfortunately I cannot reproduce that behavior, everything works as expected and the TextBox is updated when the presentation model’s <b>PropertyChanged</b> event is raised.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Perhaps, you may want to give us more context about your specific implementation so we can continue helping you with this problem.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Ezequiel Sculli</span></p>\r\n<span style=\"font-size:11pt;font-family:'calibri','sans-serif'\"><a href=\"http://blogs.southworks.net/esculli/\">http://blogs.southworks.net/esculli/</a></span>\r\n",
+    "PostedDate": "2009-03-10T08:18:07.673-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "166584",
+    "ThreadId": "49700",
+    "Html": "\r\n<div><span class=453401917-10032009>Hi,</span></div>\r\n<div><span class=453401917-10032009></span> </div>\r\n<div><span class=453401917-10032009>sorry, I found \r\nthe issue. I call a function but I forgot the little word 'return' \r\n...</span></div>\r\n<div><span class=453401917-10032009>This blocks the \r\nupdate mechanism. Its working now.</span></div>\r\n<div><span class=453401917-10032009></span> </div>\r\n<div><span class=453401917-10032009>Thanks</span></div>\r\n<div><span class=453401917-10032009></span> </div>\r\n<div><span class=453401917-10032009>Gerhard</span></div>",
+    "PostedDate": "2009-03-10T12:38:23.323-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

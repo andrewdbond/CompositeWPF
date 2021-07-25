@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nAs mentioned before, since Prism v4.1 the SubscriptionToken class implements the IDisposable interface. Hence, as this suggestion is already addressed, we are closing this work item.\r\n\r\nFor those who want the IDisposable pattern to be implemented in other parts of the Prism Library, you can vote or post your suggestion in the following work item:\r\n - IDisposable pattern applied to applicable areas of the framework ... (http://compositewpf.codeplex.com/workitem/7117)\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+    "ClosedDate": "2012-10-25T10:12:17.57-07:00",
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "This would make it substantially easier to unsubscribe. I just need to dispose the subscription.\n \nAll in all, I'd align the entire event aggregator with IObservable/IObserver, to make it future-proof to the Reactive Extensions. Implementing IDisposable is just one tiny bit of it.",
+    "LastUpdatedDate": "2013-05-16T05:28:49.44-07:00",
+    "PlannedForRelease": "Prism v4 - Drop 8",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-09-08T15:49:00.08-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "SubscriptionToken should implement IDisposable",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 15,
+    "Id": 7234
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Since the SubscriptionToken is instantiated by the EventBase itself, nothing would prevent it from passing itself to the token, so that upon disposing the token, it would know which event to call Unsubscribe on.\r\n\r\nThis is the way Rx extensions do it already, and the intended usage of IObservable.Subscribe.\r\n\r\nI'd strongly encourage the team to look for potential refactorings that will make event aggregator Rx-compatible and IObservable/IObserver-based. The current APIs look a little dated with what's coming out of Rx... ",
+      "PostedDate": "2010-09-08T20:25:05.45-07:00",
+      "Id": 156305
+    },
+    {
+      "Message": "See more information related information to this in the following thread:\r\nhttp://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=227114",
+      "PostedDate": "2010-09-15T20:07:55.273-07:00",
+      "Id": 156306
+    },
+    {
+      "Message": "Other thread where Reactive Extensions is mentioned as an option: http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=228208",
+      "PostedDate": "2010-09-24T08:11:34.917-07:00",
+      "Id": 156307
+    },
+    {
+      "Message": "Hi,\r\n\r\nFor those interested in this subject, you might find useful to know that since since Prism 4.1 release (http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=28950), IDisposable was implemented in the SubscriptionToken class.\r\n\r\nTo make this implementation possible, an Action is passed when constructing the SubscriptionToken, which is basically the Unsubcribe method group in the EventBase. Hence, when disposing the SubscriptionToken, this action is executed, thus unsubscribing the event.\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-03-08T11:05:23.573-08:00",
+      "Id": 156308
+    }
+  ]
+}

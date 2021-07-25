@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "696495",
+    "ThreadId": "278997",
+    "Html": "\r\n<p>Currently, CompositeCommand does two things:&nbsp;</p>\r\n<p>1) Provide an implementation of the Composite pattern for an ICommand.</p>\r\n<p>2) Listen to an IActiveAware-implementing command's IsActiveChanged event, firing each CanExecuteChanged event as a result.</p>\r\n<p>These are two separate concerns, with the latter best separated as a decorator that commands can optionally use.&nbsp;</p>\r\n<p>In addition, this decorator should not require the wrapped ICommand to implement IActiveAware, it should accept a separate IActiveAware argument, so as not to violate the Liskov substition principle.</p>\r\n",
+    "PostedDate": "2011-11-10T07:55:00.34-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "696574",
+    "ThreadId": "278997",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding implementing the <strong>IActiveAware </strong>in the underlying <strong>ICommands </strong>registered with <strong>CompositeCommand</strong>, is done to support scenarios where you need to define which child commands will be used. Hence the <strong>CompositeCommand </strong>class will consider each child command's active status when determining the return value for the <strong>CanExecute </strong>method and when executing child commands within the <strong>Execute </strong>method. This behavior is only present if the <strong>monitorCommandActivity </strong>parameter is <strong>true</strong>.</p>\r\n<p>The <strong>IsActiveChanged </strong>event does not raise the <strong>CanExecute </strong>method. This is done in the <strong>RaiseCanExecuteChanged </strong>method.</p>\r\n<p>Therefore, the design decision to place this logic (the logic for deciding which command's <strong>CanExecute </strong>value to take into account depending on its <strong>ActiveAware </strong>state) in the same place as the general <strong>CompositeCommand </strong>logic seems to account for the fact that both define the working of the <strong>CompositeCommand</strong>, which in my opinion wouldn't be complete if only one of them was present.</p>\r\n<p>If you anyway think this should be modified in Prism you could create a work item in the <a href=\"http://compositewpf.codeplex.com/workitem/list/advanced\">Issue Tracker</a> so the p&amp;p analizes it for future releases.</p>\r\n<p>Thanks,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-11-10T10:14:28.637-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

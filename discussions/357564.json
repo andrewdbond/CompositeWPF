@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "842250",
+    "ThreadId": "357564",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>I want to create an application using Prism V4 WPF which has a ribbon control on the shell with shell dedicated tabs and a region (created a region adapter for ribbon control) dedicated to modules. My application can have only one active module at a time\r\n and each module can have more than one view(ribbon tabs) to place into ribbon region. Now I am using navigation to navigate to the specific view when a module becomes active. My ribbon viewmodel implements&nbsp;<span>IRegionMemberLifetime interface and sets\r\n KeepAlive property to false to remove view from region when module becomes inactive. The problem is, I don't know how to navigate to multiple views(ribbon tabs) and keep the previously navigated ribbon view alive for the same module and when the module becomes\r\n inactive to set all KeepAlive to false. Also, the solution might be another implementation of my adapter but I can't see it...</span></p>\r\n<p>&nbsp;</p>\r\n<p>Regards,</p>\r\n<p>Bogdan</p>\r\n",
+    "PostedDate": "2012-05-29T13:08:34.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "842784",
+    "ThreadId": "357564",
+    "Html": "<p>Hi Bogdan,</p>\r\n<p>Take into account that the <strong>Prism Library </strong>provides the following region adapters out of the box that can be used as a starting point to create your custom region adapter that suits your needs:</p>\r\n<ul>\r\n<li><em><strong>ContentControlRegionAdapter</strong>. This adapter adapts controls of type System.Windows.Controls.ContentControl and derived classes</em></li>\r\n<li><em><strong>SelectorRegionAdapter</strong>. This adapter adapts controls derived from the class System.Windows.Controls.Primitives.Selector, such as the System.Windows.Controls.TabControl control.</em></li>\r\n<li><em><strong>ItemsControlRegionAdapter</strong>. This adapter adapts controls of type System.Windows.Controls.ItemsControl and derived classes</em></li>\r\n</ul>\r\n<p>You could find more information about this in the following chapter of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430866(v=pandp.40)#sec25\">Appendix E: Extending Prism, Region Adapters</a></li>\r\n</ul>\r\n<p>Particularly, note that if your region adapter's <strong>CreateRegion </strong>method returns an <strong>AllActiveRegion</strong>, this region will keep all the views in it as active and the deactivation of these views will not be allowed, hence if this is your case the <strong>RegionMemberLifetimeBehavior </strong>may not work properly. Instead you could return a <strong>Region</strong>, which is usually used for controls derived from the Selector class.</p>\r\n<p>Also, you could give additional functionality to the region by overriding the <strong>AttachBehaviors </strong>method in your region adapter. For example you could check the <strong>SelectorItemsSourceSyncBehavior </strong>used in the <strong>SelectorRegionAdapter </strong>provided with <strong>Prism</strong>, which is used for controls that derive from <strong>Selector</strong>, such as a tab control in <strong>WPF </strong>and is responsible for synchronizing the views in the region with the items of the selector, and then synchronizing the active views in the region with the selected items of the selector.</p>\r\n<p>Additionally,if you believe that ribbon region adapters should be supported by <strong>Prism </strong>out of the box, you can vote in the following work item so that the <strong>Prism</strong> team analyzes it for a future release:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/workitem/7063\">Ribbon Region</a></li>\r\n</ul>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-05-30T13:18:24.243-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "842981",
+    "ThreadId": "357564",
+    "Html": "<p>Thank you for your answer. I've implemented a custom behavior wich does what I want.&nbsp;</p>",
+    "PostedDate": "2012-05-31T02:37:28.237-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

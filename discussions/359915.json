@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "850069",
+    "ThreadId": "359915",
+    "Html": "\r\n<p><span id=\"result_box\" lang=\"en\"><span>The situation where</span> <span>one of the modules</span>\r\n<span>of the system</span> <span>generates an exception</span><span>, this leads</span>\r\n<span>to the</span> <span>collapse of</span> <span>the system, though</span><span>, from</span>\r\n<span>this module</span> <span>is independent of</span> <span>the core</span> <span>\r\nsystem.</span><br>\r\n<span>How</span> <span>to make the</span> <span>system continued to</span> <span>\r\nexist even</span> <span>when one</span> <span>of the modules of</span> <span>an exception</span><span>?</span></span></p>\r\n",
+    "PostedDate": "2012-06-17T10:53:11.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "850481",
+    "ThreadId": "359915",
+    "Html": "<p>Hi,</p>\r\n<p>As mentioned in <a href=\"http://msdn.microsoft.com/en-us/library/ff921153%28v=pandp.40%29#sec4\">Chapter 1 - Introduction - Challenges Not Addressed by Prism</a> , <strong>Prism </strong>does not provide guidance regarding error handling and fault tolerance.</p>\r\n<p>Based on my understanding, a possible approach could be to handle each exception in its corresponding module in order to prevent them from \"reaching\" the shell application when possible. Like this, each exception would be handled according to the functionality of each module. How to implement this will depend mostly of you personal preferences and the requirements of your scenario.</p>\r\n<p>On the other hand, in <strong>WPF</strong>, the <strong>App </strong>class (<strong>App.xaml.cs</strong>) has a <strong>DispatcherUnhandledException </strong>event, which is fired when an exception is thrown but it's not handled. By subscribing to this event, you could receive any unhandled exception that is thrown in your application and be able handle it appropriately to prevent the application from crashing. You can find more information about this in the following <strong>MSDN </strong>article:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/system.windows.application.dispatcherunhandledexception.aspx\">Application.DispatcherUnhandledException Event</a></li>\r\n</ul>\r\n<p>Also, I believe you could find the following threads interesting where similar topics were discussed:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/285832\">PRISM Unhandled exception handling in modules</a></li>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/36371\">How to handle exceptions in a module? </a></li>\r\n</ul>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-06-18T11:36:56.287-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

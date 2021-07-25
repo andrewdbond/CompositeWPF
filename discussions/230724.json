@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "506577",
+    "ThreadId": "230724",
+    "Html": "<p>I have two regions: Main and Details. during Module initialization I register views for Main and Details regions.</p>\r\n<p>I need to Activate and show view in Details region onle after call of RegionManager.RequestNavigate.</p>\r\n<p>Is it possible?</p>",
+    "PostedDate": "2010-10-13T04:39:02.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "506671",
+    "ThreadId": "230724",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, you have a RegionA, where two regions (Main and  Detail) are added. So when you navigate to RegionA, the views registered on both  aforementioned regions are displayed. However, your scenario requires to display  only the views in the Detail region.</p>\r\n<p>First of all, I would recommend you to design a layout to avoid needing a  programmatic control for achieving this if possible. This way, you could  navigate to the region that contains only the views that you need to display.</p>\r\n<p>Regarding to the your current scenario, you could use the callback in the  RequestNavigation method for achieving this scenario. So your code might be  similar to the following:</p>\r\n<pre><span style=\"color:blue\">this</span>.regionManager.RequestNavigate(RegionNames.RegionA, yourViewUri, nr =&gt;\r\n{\r\n    <span style=\"color:blue\">var yourView </span>= <span style=\"color:blue\">this</span>.regionManager.Regions[RegionNames.RegionA].GetView(<span style=\"color:#a31515\">&quot;YourViewName&quot;</span>);\r\n    <span style=\"color:blue\">this</span>.regionManager.Regions[RegionNames.RegionA].Deactivate(yourView);\r\n});\r\n</pre>\r\n<p>&nbsp;</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-13T08:13:23.343-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "506676",
+    "ThreadId": "230724",
+    "Html": "<p>I have to regions MainRegion and DetailRegion.</p>\r\n<p>In Module.Initialize I Register one view (MainView)&nbsp;for module MainRegion and one for DetailRegion (DetailView). I need MainView visible when application starts (it works) and DetailView visible only when I use:</p>\r\n<p><span style=\"color:blue\">this</span>.regionManager.RequestNavigate(RegionNames.DetailRegion, detailViewUri, nr =&gt; {} );</p>\r\n<p>But DetailView is visible at the begining.</p>",
+    "PostedDate": "2010-10-13T08:19:26.957-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "506799",
+    "ThreadId": "230724",
+    "Html": "<p>Hi,</p>\r\n<p>If your scenario requires to do not display DetailView before you navigate this, you have to use <strong>just in time view creation</strong>. It consists on do not add/register DetailView in DetailRegion, since it will be created or located automatically when you call the RequestNavigate method using <strong>just in time view creation</strong>. This technique requires to add the view in the container, so the DetailView view must be decorated using the Export attribute: [Export(&quot;DetailView&quot;)].<br>For more information about this you could take a look at the following documentation section in the Prism4.chm:</p>\r\n<ul>\r\n<li>View-Switching Navigation Quickstart (new), see the <em>introduction</em> section and the <em>Implementation Details</em> section</li>\r\n</ul>\r\n<p>You could note that in the Navigation Quickstart that the views are not registered. So for more information you could check the Navigation Quickstart.</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-13T11:46:36.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "507134",
+    "ThreadId": "230724",
+    "Html": "<p>View-Switching Navigation Quickstart uses MEF for mapping View types to Uri. Am I right?</p>\r\n<p>I use Unity and IUnityContainer.RegisterType(typeof(MyView),&quot;MyView&quot;) for this task. But RequestNavigate doesn't see my view. Do i miss something?</p>\r\n<p>Update. It works only when I register my view using:</p>\r\n<p>container.RegisterType&lt;<span style=\"color:#ff0000\">object,<span style=\"color:#000000\"> MyView&gt;(&quot;MyView&quot;)</span></span></p>\r\n<p><span style=\"color:#ff0000\"><span style=\"color:#000000\">If I use&nbsp;&nbsp;</span></span></p>\r\n<p>container.RegisterType&lt;<span style=\"color:#ff0000\"><span style=\"color:#000000\">MyView&gt;(&quot;MyView&quot;) </span></span></p>\r\n<p><span style=\"color:#ff0000\"><span style=\"color:#000000\">it doesn't work.</span></span></p>\r\n<p><span style=\"color:#ff0000\"><span style=\"color:#000000\">And second question: Why RequestNavigate navigates to System.Object when it can't find View? I think setting Error property of NavigationContext is better idea.</span></span></p>\r\n<p><span style=\"color:#ff0000\"><span style=\"color:#000000\">&nbsp;</span></span></p>",
+    "PostedDate": "2010-10-14T02:23:09.34-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "507988",
+    "ThreadId": "230724",
+    "Html": "<p>Hi,</p>\r\n<p>Thanks for your feedback. I will copy this as a work-item so the product will be notified. Additionally other users using Unity can vote this.</p>\r\n<p>You are right, the View-Switching Navigation Quickstart is using MEF. What do you mean with it navigates to System.Object? I tried to use a non existent URI in the Navigation Quickstart and navigation fails, keeping the UI in the current view.</p>\r\n<p>Thanks again for your feedback.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-15T13:17:32.44-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "507991",
+    "ThreadId": "230724",
+    "Html": "This discussion has been copied to a work item. Click <a href=\"http://compositewpf.codeplex.com/workitem/7383\">here</a> to go to the work item and continue the discussion.",
+    "PostedDate": "2010-10-15T13:19:00.23-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

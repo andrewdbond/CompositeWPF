@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nI'm closing the work item, as it is likely that the behavior you're mentioning is not caused by a Prism issue. For additional support regarding this subject, you could create a thread in the discussions section (http://compositewpf.codeplex.com/discussions), where we will help you with your concerns.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-08-19T07:41:54.88-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "I have an application that has a Menu region, and its views are MenuItems. It all worked well until I started using a theme for my application (it happens with both ExpressionDark and Bureau themes). After adding a theme (a ResourceDictionary line to App.xaml) all the UI looks well according to the theme except the menu. Some of the theme colors and styles are applied (for example - dark menu) but others are not (text should be white and not black).\n \nWhen I added a simple menu to my shell such that its items are specified in XAML all works well. Data-templated menus also work well.",
+    "LastUpdatedDate": "2013-05-16T05:28:45.333-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-12-07T06:02:44.943-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Menu regions + themes",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 7658
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nThe issue you're experiencing could be caused by the fact that the themes you're mentioning apply styles to instances of the MenuItem class, not to the classes that inherit from it. When you add views to your MenuItem Region, you might be adding an object that inherits from the MenuItem class (exemplified by the code below):\r\n\r\npublic partial class SomeMenuItem : MenuItem\r\n{\r\n  public SomeMenuItem\r\n  {\r\n    InitializeComponent();\r\n  }\r\n}\r\n\r\n(this assumes there is a xaml file associated to it, as you would generally do when creating a View)\r\n\r\nIn that case, the theme won't apply, since the object that you're adding to your region is an instance of SomeMenuItem, not MenuItem.\r\n\r\nIf you, for example, registered a MenuItem instance with your region, the theme for the item would be displayed correctly. An example of what I'm saying would be something like this:\r\n\r\nregionViewRegistry.RegisterViewWithRegion(\"SomeRegion\", () => new MenuItem() {Header = \"MenuItem in Region\"});\r\n\r\nAnother alternative would be to modify the theme in order to make it apply the styles to the items of your views' types.\r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2010-12-16T11:40:34.403-08:00",
+      "Id": 156396
+    }
+  ]
+}

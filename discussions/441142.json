@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1033927",
+    "ThreadId": "441142",
+    "Html": "Hi,<br />\n<br />\nI'm working for long time on a project with WPF and Prism 4, after I upgrade my OS to Win 8 I have got an exception when I Activate the second view, the same code run on Win 7 without a problem.<br />\nI upgrade the prism to 4.1 but the exception still occur<br />\nfinally I debug it with the source of Prism and what I have found is that:<br />\nIn the the activation process, the new view deactivate the old view, and what is happened is <br />\nthis.hostControl.SelectedItem = null (in SelectorItemsSourceSyncBehavior.cs)<br />\n and later GetItemMetadataOrThrow(view) (in Regions.cs) throw excpetion of null.<br />\n<br />\nIf I comment the the line this.Region.Deactivate(this.hostControl.SelectedItem);<br />\nin function ActiveViews_CollectionChanged() (in SelectorItemsSourceSyncBehavior.cs)<br />\nthere is no exception <br />\n<br />\nAnt ideas ?<br />\n<br />\nThanks <br />\n<br />\nYair<br />\n<br />\nMy code is <br />\n<pre><code>if (view != null) \n{ \n    lock (myLock)    // myLock is just a static object\n    {\n        if (view != null) \n        { \n            theRegion = (Region)s;\n            s.Activate(view);\n        }\n    }\n}</code></pre>\n\nPrism code<br />\n<br />\nThe function that throw exception<br />\n<pre><code>\n public virtual void Activate(object view)\n        {\n            ItemMetadata itemMetadata = this.GetItemMetadataOrThrow(view);\n\n            if (!itemMetadata.IsActive)\n            {\n                itemMetadata.IsActive = true;\n            }\n        }\n</code></pre>\n\nThe function that change the select item to null<br />\n<pre><code> private void ActiveViews_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)\n        {\n            if (this.updatingActiveViewsInHostControlSelectionChanged)\n            {\n                // If we are updating the ActiveViews collection in the HostControlSelectionChanged, that \n                // means the user has set the SelectedItem or SelectedItems himself and we don't need to do that here now\n                return;\n            }\n\n            if (e.Action == NotifyCollectionChangedAction.Add)\n            {\n                if (this.hostControl.SelectedItem != null\n                    &amp;&amp; this.hostControl.SelectedItem != e.NewItems[0]\n                    &amp;&amp; this.Region.ActiveViews.Contains(this.hostControl.SelectedItem))\n                {\n                    __// make exception in windows 8 \n                   this.Region.Deactivate(this.hostControl.SelectedItem);  __\n                }\n\n                this.hostControl.SelectedItem = e.NewItems[0];\n            }\n            else if (e.Action == NotifyCollectionChangedAction.Remove &amp;&amp;\n                     e.OldItems.Contains(this.hostControl.SelectedItem))\n            {\n                this.hostControl.SelectedItem = null;\n            }\n        }</code></pre>\n\n",
+    "PostedDate": "2013-04-22T05:44:22.56-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1034080",
+    "ThreadId": "441142",
+    "Html": "Hi,\r<br />\n<br />\nIt is strange that this section of the Prism library no longer works for you in <strong>Windows 8</strong>. Also,  I believe we haven't received any similar issues before. Therefore, it would be helpful if you can provide more information about the context of the application, like where and when you are executing this code so we can look at this in further detail.\r<br />\n<br />\nAlso, we noticed that you are a using a <strong>lock</strong> statement, so we assume that your code is being called by different threads. If that is the case, it would be helpful to know if those are <strong>UI</strong> threads, <strong>background</strong> threads, etc. as <strong>Prism</strong> work not work correctly in every kind of thread.\r<br />\n<br />\nRegards,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-04-22T11:04:45.147-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1034355",
+    "ThreadId": "441142",
+    "Html": "Hi Federico,\r<br />\n<br />\nThe application is kiosk, and I run the the code after user touch the screen, and  I want to show him the next view.\r<br />\nIn the shell I have the main region, when I load the modules each module add his view to the main region,\r<br />\nI show the first view (work fine) and after that when I try to activate a different view I got the exception.\r<br />\nThe <strong>lock</strong> statement is additional code trying to solve the problem, the exception occur with and without the lock statement.\r<br />\n<br />\nThe Thread is the UI thread.\r<br />\n<br />\nRegards,\r<br />\n<br />\nYair Tobi<br />\n",
+    "PostedDate": "2013-04-23T00:34:50.28-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1034715",
+    "ThreadId": "441142",
+    "Html": "Hi Yair,\r<br />\n<br />\nI haven't been able to reproduce this issue either by using the <strong>Prism QuickStarts</strong> or other samples. Hence, I believe there could be another component in your application that might be firing this problem.\r<br />\n<br />\nAs a quick test, please try to deactivate the current active view just right before activating the second one and check if this issue keeps appearing.\r<br />\n<br />\nIf this does not help, it would be useful to know if there is any custom behavior or logic that might be affecting the views, like for example, if the views are being reordered automatically inside the region using a <strong>SortComparison</strong>, etc. If this is not the case, then it would be helpful if you could provide us with a repro sample application so that we can analyze this problem in further detail.\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-04-23T11:10:08.373-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1035695",
+    "ThreadId": "441142",
+    "Html": "Hi Damian,\r<br />\n<br />\nOK I found the problem, when I initialize the application I add all my views to the main region, one of the views was null.\r<br />\nWhen I activated a view which is not null the exception occur.\r<br />\nThe strange issue is that on Windows 7 or XP there was no exception.\r<br />\n<br />\nThanks a lot\r<br />\n<br />\nYair<br />\n",
+    "PostedDate": "2013-04-25T08:20:40.687-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

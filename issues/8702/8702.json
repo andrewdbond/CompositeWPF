@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2012-04-04T10:43:18.14-07:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "There is an issue when the CreateRegion method is called via the OnSetRegionNameCallback method.\n \nIn our application, the CreateRegion method is called twice. The first time is before ServiceLocator.Current is valued. Thus the attempt to use ServiceLocator.Current.GetInstance<T> throws a NullReferenceException.\n \nTo provide some additional detail, the application we are writing plugs into a corporate Xaml shell and is thus a \"hosted\" application is this shell, so the startup sequence is not the same as a standalone application.\n \nWe got around the issue by modifying the CreateRegion method as follows:\n        private static void CreateRegion(DependencyObject element)\n        {\n            IServiceLocator locator = null;\n            \n            try\n            {\n                locator = ServiceLocator.Current;\n            }\n            catch (NullReferenceException)\n            {\n                //Service Locator not loaded yet (nom, nom)\n            }\n \n            if (locator != null)\n            {\n                DelayedRegionCreationBehavior regionCreationBehavior = locator.GetInstance<DelayedRegionCreationBehavior>();\n                regionCreationBehavior.TargetElement = element;\n                regionCreationBehavior.Attach();\n            }\n        }\n \nCan we get a fix for this prioritized for the next release?",
+    "LastUpdatedDate": "2013-05-16T05:28:40.653-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-09-20T15:09:49.387-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "RegionManager::CreateRegion",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8702
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nIn the default initialization sequence, the Service Locator provider is defined prior to the Shell creation and initialization. Before the shell is created and displayed, it is expected that no regions are defined (because there is no visual component in which the RegionManager.RegionName property can be set). Therefore, the scenario in which visual components are initialized before setting the service locator provider is not supported by Prism out of the box.\r\n\r\nSo, it would be helpful if you could provide us with a repro sample application that portrays this scenario, so that we can analyze your problem in a deeper way to find out if a fix can be applied to support this scenario.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-09-28T10:33:58.387-07:00",
+      "Id": 156509
+    },
+    {
+      "Message": "Hi,\r\n\r\nWe are closing this work item as it seems that this issue is not related to Prism, but to the implementation approach of a specific scenario that is not supported in Prism as out of the box. \r\n\r\nFor additional support regarding this subject, you could create a thread in the discussions section (http://compositewpf.codeplex.com/discussions), where we will help you with your concerns.\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini\r\n\n\n** Closed by DCherubini 3/30/2012 12:06 PM",
+      "PostedDate": "2012-03-30T12:12:29.54-07:00",
+      "Id": 156510
+    },
+    {
+      "Message": "Hi,\r\n\r\nWe are closing this work item as it seems that this issue is not related to Prism, but to the implementation approach of a specific scenario that is not supported in Prism as out of the box. \r\n\r\nFor additional support regarding this subject, you could create a thread in the discussions section (http://compositewpf.codeplex.com/discussions), where we will help you with your concerns.\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-03-30T12:12:30.327-07:00",
+      "Id": 156511
+    }
+  ]
+}

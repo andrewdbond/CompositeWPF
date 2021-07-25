@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "671618",
+    "ThreadId": "272540",
+    "Html": "<p>Hello,</p>\n<p>In one of my application service, I need to retrieve an exported type from another module which is exported on bootstrapper composition. The problem is that this service is in a different assembly than my bootstrapper and does not have any dependencies.&nbsp;I  am using the MefBootstrapper.</p>\n<p>&nbsp;</p>\n<p>How can I gracefully retrieve those types from another module?</p>\n<p>&nbsp;</p>\n<p>Thanks.</p>",
+    "PostedDate": "2011-09-14T03:03:34.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "671725",
+    "ThreadId": "272540",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding you could try decorating the class that contains the implementation of your service with the <strong>Export </strong>attribute. This way when the module is loaded, their services will be added to the container. Note that typically services are registered and retrieved from the container using common interface types as the \"contract\"; so, in order to achieve this scenario, you need to have the interface in a shared project (i.e. a project that is referenced throughout your other projects), but the project containing the concrete implementation of this interface does not need to be shared.</p>\r\n<p>For example, in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921074%28v=PandP.40%29.aspx\">StockTrader Reference Implementation</a>, interfaces for shared services are placed in the <strong>StockTraderRi.Infrastructure</strong> project. An example of this can be seen in the <strong>Market </strong>module, which provides an implementation of <strong>IMarketFeedService</strong>, that is consumed in the <strong>PositionModule</strong>.</p>\r\n<p>Also you might find the following blog post useful, which provides a sample of Prism, MEF, and Shared Services:</p>\r\n<p><a href=\"http://blogs.msdn.com/b/bobbrum/archive/2010/11/22/prism-4-in-silverlight-with-mef-compositioninitializer.aspx\">Prism 4 in Silverlight with MEF CompositionInitializer</a></p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-09-14T07:30:00.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

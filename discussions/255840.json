@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "605370",
+    "ThreadId": "255840",
+    "Html": "I'm working on a fairly large silverlight 4 app that I want to add prism to. The trouble is I need to be able to do it gradually, is there a way to leave existing pages views working at first and then add new modules bit by bit? Any help greatly appreciated!",
+    "PostedDate": "2011-04-30T16:10:06.253-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "605980",
+    "ThreadId": "255840",
+    "Html": "<p>Hi,</p>\r\n<p>As explained on the <a href=\"http://msdn.microsoft.com/en-us/library/ff921153(PandP.40).aspx\">Introductory Chapter</a> of the Prism MSDN documentation, &ldquo;<em>It is important to note that Prism was designed so that you can use any of Prism's capabilities and design patterns individually, or all together, depending on your requirements and your application scenario. Prism was designed so that it could be incrementally adopted, allowing you to use the capabilities and design patterns that make sense for your particular application without requiring major structural changes.</em>&rdquo;</p>\r\n<p>Therefore, you could adopt Prism&rsquo;s capabilities incrementally. However, there is no specific guidance on how to include legacy components into a Prism application. One possibility would be to wrap your existing functionality in a module, add your user controls as views in a region, and then start adding new components as different modules that fulfill different use cases.</p>\r\n<p>If you&rsquo;re using Silverlight Navigation Framework, you might find the following blog post by <a href=\"http://blogs.msdn.com/b/kashiffl/\">Karl Shifflett</a> useful:</p>\r\n<p><a href=\"http://blogs.msdn.com/b/kashiffl/archive/2011/03/10/prism-4-region-navigation-with-silverlight-frame-navigation-and-unity.aspx\">Prism 4 Region Navigation with Silverlight Frame Navigation</a></p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>",
+    "PostedDate": "2011-05-02T10:45:13.11-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "606193",
+    "ThreadId": "255840",
+    "Html": "<p>Yes, I like the idea of wrapping the existing functionally in a module, but I'm wondering if there is a way to leave the old code it as is, gradually putting things in modules bit by bit, Is there a way to sort of bypass the bootstrapper for some of the application? Obviously our goal is to get everything in prism, this is just so we can do it gradually.</p>",
+    "PostedDate": "2011-05-02T18:16:38.767-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "606454",
+    "ThreadId": "255840",
+    "Html": "<p>Hi,</p>\r\n<p>You could set your main view as the Shell View in the bootstrapper (by overriding the <strong>CreateShell </strong>and/or <strong>InitializeShell </strong>methods in the bootstrapper), and leave all the files of your previous application in the shell project. That would make your application behave just the same as it did before.</p>\r\n<p>Then, you could add an additional component in your application that contains a region, and that would be the point of extensibility for adding views from Prism modules.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-05-03T07:13:57.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

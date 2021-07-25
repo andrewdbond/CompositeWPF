@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1020609",
+    "ThreadId": "437887",
+    "Html": "Could someone help shed some light on how to write a customer region adapter for WPFMDI(<a href=\"http://wpfmdi.codeplex.com/\" rel=\"nofollow\">http://wpfmdi.codeplex.com/</a>) in Prism?\r<br />\nI need somethig like this for avalondock.\r<br />\n<a href=\"http://avalondock.codeplex.com/releases/view/92210\" rel=\"nofollow\">http://avalondock.codeplex.com/releases/view/92210</a><br />\n",
+    "PostedDate": "2013-03-25T05:47:07.1-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1020824",
+    "ThreadId": "437887",
+    "Html": "Hi,\r<br />\n<br />\nI have just checked the <strong>WPF MDI</strong> project, and it seems to be that its components inherit from the <strong>FrameworkElement</strong> class, so there shouldn't be a problem regarding the usage of <strong>RegionManagers</strong> with those controls. However, as you mentioned, you will need to create a custom <strong>RegionAdapter</strong> in order to use them as a regions.\r<br />\n<br />\nFirst of all, it would be helpful to know which components you want to use as regions, as different controls might require different adapters. Do you wish to adapt the <strong>MdiContainer</strong> control, the <strong>MdiChild</strong> control or a different control inside a <strong>MdiChild</strong> ?\r<br />\n<br />\nThanks,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-03-25T12:17:42.967-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1020945",
+    "ThreadId": "437887",
+    "Html": "Thank you very much, Damian.<br />\nYes, I need to adapt the MdiContainer control. Here is my situation: I want the shell app holds the mdi windows using wpfmdi control and inject each module's view in MdiChild control so that user can switch each module's view at the same time.<br />\n<br />\nDon't need to write a custom RegionAdapter to do this? <br />\n<br />\nI googled a lot and didn't find a good example to address this? if anyone could provide some code snippets, I will appreciate a lot as I am totally a newbie in Prism.<br />\n",
+    "PostedDate": "2013-03-25T17:27:26.89-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1021188",
+    "ThreadId": "437887",
+    "Html": "Finally i implemnt it as shown below:\r<br />\n<br />\npublic class MdiContainerRegionAdapter : RegionAdapterBase&lt;MdiContainer&gt;<br />\n<pre><code>{\n    /// &lt;summary&gt;\n    /// Default constructor.\n    /// &lt;/summary&gt;\n    /// &lt;param name=&quot;behaviorFactory&quot;&gt;Allows the registration of the default set of RegionBehaviors.&lt;/param&gt;\n    public MdiContainerRegionAdapter(IRegionBehaviorFactory behaviorFactory)\n        : base(behaviorFactory)\n    {\n    }\n    /// &lt;summary&gt;\n    /// Adapts a WPF control to serve as a Prism IRegion. \n    /// &lt;/summary&gt;\n    /// &lt;param name=&quot;region&quot;&gt;The new region being used.&lt;/param&gt;\n    /// &lt;param name=&quot;regionTarget&quot;&gt;The WPF control to adapt.&lt;/param&gt;\n    protected override void Adapt(IRegion region, MdiContainer regionTarget)\n    {\n        region.Views.CollectionChanged += (sender, e) =&gt;\n        {\n            switch (e.Action)\n            {\n                case NotifyCollectionChangedAction.Add:\n                    foreach (FrameworkElement element in e.NewItems)\n                    {\n                        MdiChild mdiChild = new MdiChild();\n                        mdiChild.Title = &quot;peter test&quot;;\n                        mdiChild.Content = element;\n                        regionTarget.Children.Add(mdiChild);\n                    }\n                    break;\n\n                case NotifyCollectionChangedAction.Remove:\n                    foreach (UIElement elementLoopVariable in e.OldItems)\n                    {\n                        var element = elementLoopVariable;\n\n                        //if (regionTarget.Items.Contains(element))\n                        //{\n                        //    regionTarget.Items.Remove(element);\n                        //}\n                    }\n                    break;\n            }\n        };\n    }\n\n    protected override IRegion CreateRegion()\n    {\n        return new AllActiveRegion();\n    }\n}</code></pre>\n\n",
+    "PostedDate": "2013-03-26T05:32:02.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1022046",
+    "ThreadId": "437887",
+    "Html": "Hi,\r<br />\n<br />\nI am glad you could find an approach to achieve your scenario.\r<br />\nAlso, thanks for sharing your implementation with the rest of the community as it could be useful for other users requiring a similar functionality.\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-03-27T14:29:50.38-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

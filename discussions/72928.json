@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "249127",
+    "ThreadId": "72928",
+    "Html": "<p>Hey All,</p>\r\n<p>From what I gather the general pattern to add an instance of a view to a region is to call RegisterViewWithRegion in the Initialize() method of the corresponding module like so</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>        <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">void</span> Initialize()\r\n        {\r\n            <span style=\"color:Blue\">this</span>._RegionManager.RegisterViewWithRegion(<span style=\"color:#A31515\">&quot;MainRegion&quot;</span>, <span style=\"color:Blue\">typeof</span>(MyControl));\r\n        }\r\n</pre>\r\n</div>\r\n</p>\r\n<p>However what if you want to add an instance of a view to a region sometime after the module is loaded? How would you accomplish that?</p>\r\n<p>I'm not using a presenter-first pattern but rather a Screen Factory / Conductor / whatever its called to create and orchestrate views. Given that I shouldn't be using RegisterViewWithRegion in this way anyway because then view creation falls outside of the bounds of the Screen Factory. However the overload of RegisterViewWithRegion using a delegate would necessitate that my Screen Factory have a hard reference to the view being loaded which I don't desire.</p>\r\n<p>Anybody else run into this problem?</p>",
+    "PostedDate": "2009-10-23T13:16:23.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "249133",
+    "ThreadId": "72928",
+    "Html": "<p>Can you use View Injection?</p>\r\n<p>&nbsp;</p>\r\n<p>Something like:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>IRegion reg = regionManager.Regions[<span style=\"color:#A31515\">&quot;SomeRegion&quot;</span>];\r\nView vw = ; <span style=\"color:Green\">// &lt;&lt;&lt; construct you view &gt;&gt;&gt;</span>\r\nreg.Add(vw, <span style=\"color:#A31515\">&quot;MyViewName&quot;</span>);\r\n\r\n<span style=\"color:Green\">// &lt;&lt;&lt; optional &gt;&gt;&gt;</span>\r\nreg.Activate(vw); <span style=\"color:Green\">// if the region is a tab control, this is supposed to give it the focus</span>\r\n</pre>\r\n</div>\r\n</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-23T13:41:50.62-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "249134",
+    "ThreadId": "72928",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>cmichaelgraham wrote:</strong><br>\r\n<p>Can you use View Injection?</p>\r\n<p>&nbsp;</p>\r\n<p>Something like:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>IRegion reg = regionManager.Regions[<span style=\"color:#A31515\">&quot;SomeRegion&quot;</span>];\r\nView vw = ; <span style=\"color:Green\">// &lt;&lt;&lt; construct you view &gt;&gt;&gt;</span>\r\nreg.Add(vw, <span style=\"color:#A31515\">&quot;MyViewName&quot;</span>);\r\n\r\n<span style=\"color:Green\">// &lt;&lt;&lt; optional &gt;&gt;&gt;</span>\r\nreg.Activate(vw); <span style=\"color:Green\">// if the region is a tab control, this is supposed to give it the focus</span>\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n</blockquote>\r\n<p>How do you get access to the type of the view? If I put this code in my Screen Factory (which is in the infrastructure project), the type &quot;View&quot; doesn't exist. Do I create an instance of the view with reflection or something?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-23T13:44:08.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "249168",
+    "ThreadId": "72928",
+    "Html": "<p>The way I understand the ScreenFactory pattern is that you need one for every MVVM triad, the factory knows about the View the Model and the ViewModel to be able to create them, for this to work the factory needs to reside in the same module as the triad.</p>",
+    "PostedDate": "2009-10-23T15:43:39.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "249291",
+    "ThreadId": "72928",
+    "Html": "<p>Ahhh okay that makes sense. But then would you additionally need an overall &quot;Conductor&quot; at a higher level to direct the individual Screen Factories to create and destroy individual views?</p>",
+    "PostedDate": "2009-10-24T09:09:57.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "249766",
+    "ThreadId": "72928",
+    "Html": "<p>Yes, you only need one Screen Conductor for the whole application.</p>",
+    "PostedDate": "2009-10-26T07:32:24.873-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

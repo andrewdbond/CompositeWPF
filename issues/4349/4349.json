@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Addressed in Prism 5.0",
+    "ClosedDate": "2014-05-01T11:27:37.88-07:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "User tyoung in this thread(http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=60696):\n \nThe UnityBootstrapper ConfigureDefaultRegionBehaviors() method currently adds the AutoPopulateRegionBehavior as the first default behavior in the defaultRegionBehaviorTypesDictionary. \n \nFor a Silverlight application using View Discovery, attaching the AutoPopulateRegionBehavior to a region before the other default behaviors can cause the views registered against the region to be created and added to the region before other default behaviors are attached to the region. This can result in an ActiveAware view not being informed it is active since the ActiveAware behaviour hasn&rsquo;t been attached to the region at the point where the view is created and added to the region.\n \nChanging the code to add the RegionActiveAwareBehavior ahead of the AutoPopulateRegionBehavior fixes the problem described.\n \nI haven't looked into how the other behaviors interact so I'm interested in the reason for the current order and any known problems that could be created by changing the order.",
+    "LastUpdatedDate": "2014-05-01T11:27:37.88-07:00",
+    "PlannedForRelease": "Composite Application Guidance - Feb 2009",
+    "ReleaseVisibleToPublic": true,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-06-25T13:41:05.663-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Default Region Behavior Order Problem",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 4349
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nFor those concerned with this issue, it could be helpful to know that, in both the UnityBootstrapper and MefBootstrapper the ConfigureDefaultRegionBehaviors method is called before the CreateShell, InitializeShell and InitializeModules methods, so the aforementioned timing issue shouldn't cause problems, as no Regions should be created when there are no modules nor shell yet loaded.\r\n\r\nIf you find a scenario in which this is troublesome, it would be helpful if you could provide us with more information regarding it, or possibly a sample application portraying the issue.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-04-06T10:35:21.91-07:00",
+      "Id": 156153
+    },
+    {
+      "Message": "Hi,\r\n\r\nWe've found and verified a scenario in which this is causing an undesired behavior. You can find more information about this in the following thread:\r\nhttp://compositewpf.codeplex.com/discussions/155489",
+      "PostedDate": "2011-05-20T12:04:16.03-07:00",
+      "Id": 156154
+    },
+    {
+      "Message": "Hi,\r\n \r\nI modified the prism library to see if changing the order of the ConfigureDefaultRegionBehaviors method in the Bootstrapper class would cause any problem. Therefore, I changed the code to add the AutoPopulateRegionBehavior at the end of the method.\r\n\r\nSo far I ran the following tests and they seem to work fine:\r\n\r\n*Prism Library Desktop tests\r\n*Prism Library Silverlight tests\r\n*Smoke tested RI Stocktrader\r\n*Smoke tested RI MVVM\r\n\r\nOn the other hand, if you need to change this order without modifying the prism library you could try overriding the ConfigureDefaultRegionBehaviors method in your Bootstrapper, like in the following code snippet:\r\n \r\nprotected virtual IRegionBehaviorFactory ConfigureDefaultRegionBehaviors()\r\n        {\r\n            var defaultRegionBehaviorTypesDictionary = ServiceLocator.Current.GetInstance();\r\n\r\n            if (defaultRegionBehaviorTypesDictionary != null)\r\n            {\r\n               \r\n\r\n                defaultRegionBehaviorTypesDictionary.AddIfMissing(BindRegionContextToDependencyObjectBehavior.BehaviorKey,\r\n                                                                  typeof(BindRegionContextToDependencyObjectBehavior));\r\n\r\n                defaultRegionBehaviorTypesDictionary.AddIfMissing(RegionActiveAwareBehavior.BehaviorKey,\r\n                                                                  typeof(RegionActiveAwareBehavior));\r\n\r\n                defaultRegionBehaviorTypesDictionary.AddIfMissing(SyncRegionContextWithHostBehavior.BehaviorKey,\r\n                                                                  typeof(SyncRegionContextWithHostBehavior));\r\n\r\n                defaultRegionBehaviorTypesDictionary.AddIfMissing(RegionManagerRegistrationBehavior.BehaviorKey,\r\n                                                                  typeof(RegionManagerRegistrationBehavior));\r\n\r\n                defaultRegionBehaviorTypesDictionary.AddIfMissing(RegionMemberLifetimeBehavior.BehaviorKey,\r\n                                                  typeof(RegionMemberLifetimeBehavior));\r\n\r\n                defaultRegionBehaviorTypesDictionary.AddIfMissing(AutoPopulateRegionBehavior.BehaviorKey,\r\n                                                                 typeof(AutoPopulateRegionBehavior));\r\n\r\n            }\r\n\r\n            return defaultRegionBehaviorTypesDictionary;\r\n        }\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami﻿",
+      "PostedDate": "2011-12-06T11:02:55.557-08:00",
+      "Id": 156155
+    }
+  ]
+}

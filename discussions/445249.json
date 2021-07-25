@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1049821",
+    "ThreadId": "445249",
+    "Html": "I have a region (Region M) that is Navigated To/From, inside that region, I am using the AnimatedTabControl from the StockTrader RI. The tab control loads a couple of modules. I am currently using IActiveAware in the tab control regions, that are children of Region M, to be able to load data from the file system and a database. It works fine in this scenario. However, I need to add functionality, similar to &quot;Close Solution&quot; in Visual Studio, where the user can close the current data set, and return to a screen where they select a different data set. I am achieving this by using RequestNavigate to display the data set selection page.<br />\n<br />\nThe problem arises when the user selects the new data set and the request navigate is called to navigate to Region M again. The IsActive property does not change on the children because, I assume, it is never deactivated since Region M doesn't leave scope, just is hidden.<br />\n<br />\nI tried to call region.Deactivate(...) on the child regions, but received the error message that deactivation was not allowed. After a little googling, I found that it is because of the TabControl (AnimatedTabControl) being an ItemsControl.<br />\n<br />\nI cannot use the INavigationAware interface on the children because I do not call RequestNavigate to display them, as it is handled by the TabControl. <br />\n<br />\nSo, finally, my question is, is there a way around this while still using the AnimatedTabControl?<br />\n<br />\n&lt;edit&gt;<br />\nFor now, I've hacked a work-around. In Region M's NavTo handler, I added code to activate the first region. In the NavFrom handler, I added code to activate the last region. It's a little ugly, but it works. It also activates the first region/tab every time I navigate to Region M, which is desired behavior.<br />\n&lt;/edit&gt;<br />\nThanks<br />\n-Glen<br />\n",
+    "PostedDate": "2013-05-28T14:46:06.017-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

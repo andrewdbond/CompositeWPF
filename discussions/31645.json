@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "105093",
+    "ThreadId": "31645",
+    "Html": "I am building a composite application with outlook layout. The left hand navigation (nav region)&nbsp;is a tree structure with modules as parent nodes&nbsp;and their respective views as child nodes. The right hand region (content region) should load a view when I select something from left hand tree. It should show only the selected view, hiding all other views. What's the best&nbsp;way of doing this. I saw code samples on adding views to regions but nothing about replacing views. Please provide code sample to explain the solution.<br>\r\n<br>\r\nThanks\r\n",
+    "PostedDate": "2008-07-16T07:53:56.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "105097",
+    "ThreadId": "31645",
+    "Html": "You can achieve this effect by skinning a tabcontrol that you use as a region for your outlookbar panes. A sample on how to skin the tabcontrol in such a way that it looks like an outlookbar is shown here on codeproject:&nbsp;<a href=\"http://www.codeproject.com/KB/WPF/XAML_OutlookBar.aspx\">http://www.codeproject.com/KB/WPF/XAML_OutlookBar.aspx</a><br>\r\n<br>\r\nFor the rest I can recommend on a construction where you bind the Title property of your view to the header property of a tabitem. A sample of this is shown here:&nbsp;<a href=\"http://blogs.infosupport.com/blogs/willemm/archive/2008/07/15/Customizing-regions-in-CompositeWPF.aspx\">http://blogs.infosupport.com/blogs/willemm/archive/2008/07/15/Customizing-regions-in-CompositeWPF.aspx</a>\r\n",
+    "PostedDate": "2008-07-16T08:08:01.967-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "105394",
+    "ThreadId": "31645",
+    "Html": "<p>I, perhaps, did not phrase my question correctly. The specific problem, I am trying to solve, is to load/unload views in a given region on demand. My solution can have, potentially, hundreds of views and I want to display only one or two views at a time depending on user's selection. </p>\r\n<p>One approach, I was thinking to take had to deactivate/remove views from region's activeviews collection before adding a new view. This may have performance implications though. Is there a better way of displaying only one of the activeviews at a time? while keeping all others hidden.</p>\r\n<div style=\"border-right:medium none;padding-right:0.2em;border-top:#aaa 0.1em dotted;padding-left:0.2em;padding-bottom:0.2em;margin:1em 0em 2.5em 3em;border-left:medium none;padding-top:0.2em;border-bottom:#aaa 0.1em dotted;font-style:italic\"><br>\r\nWMeints wrote:<br>\r\nYou can achieve this effect by skinning a tabcontrol that you use as a region for your outlookbar panes. A sample on how to skin the tabcontrol in such a way that it looks like an outlookbar is shown here on codeproject:&nbsp;<a href=\"http://www.codeproject.com/KB/WPF/XAML_OutlookBar.aspx\">http://www.codeproject.com/KB/WPF/XAML_OutlookBar.aspx</a><br>\r\n<br>\r\nFor the rest I can recommend on a construction where you bind the Title property of your view to the header property of a tabitem. A sample of this is shown here:&nbsp;<a href=\"http://blogs.infosupport.com/blogs/willemm/archive/2008/07/15/Customizing-regions-in-CompositeWPF.aspx\">http://blogs.infosupport.com/blogs/willemm/archive/2008/07/15/Customizing-regions-in-CompositeWPF.aspx</a> <br>\r\n<br>\r\n</div>\r\n<br>\r\n",
+    "PostedDate": "2008-07-17T07:46:11.173-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "105415",
+    "ThreadId": "31645",
+    "Html": "You can iterate over all views in a specific region and remove them. After that you can insert the views you require.<br>\r\nIt will however take a little more work to get this working cross module.<br>\r\n<br>\r\nI can think up a scenario like the following:<br>\r\n<br>\r\n1. Remove all views from the required regions<br>\r\n2. Fire a global event to indicate that a specific scenario is started<br>\r\n3. All modules that are part of a scenario add the views they require for the specified scenario<br>\r\n<br>\r\nI don't think you want this cross module, but it can be done :)\r\n",
+    "PostedDate": "2008-07-17T09:02:01.88-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "105423",
+    "ThreadId": "31645",
+    "Html": "Ok, this may sound like a dumb coding issue from my end but I really can not do something like<br>\r\n<br>\r\n<span style=\"font-size:13px;color:#0000ff\"><span style=\"font-size:13px;color:#0000ff\">\r\n<p>&nbsp;</p>\r\n<p>foreach&nbsp;(<span style=\"font-size:13px;color:#0000ff\"><span style=\"font-size:13px;color:#0000ff\">object</span></span><span style=\"font-size:13px\"> v </span><span style=\"font-size:13px;color:#0000ff\"><span style=\"font-size:13px;color:#0000ff\">in</span></span><span style=\"font-size:13px\"> _regionManager.Regions[</span><span style=\"font-size:13px;color:#2b91af\"><span style=\"font-size:13px;color:#2b91af\">RegionNames</span></span><span style=\"font-size:13px\">.Contents].Views)&nbsp;&nbsp;{\r\n<p>&nbsp;_regionManager.Regions[<span style=\"font-size:13px\"><span style=\"color:#2b91af\">RegionNames</span>.Contents].Remove(v);</span></p>\r\n</span>\r\n<p>\r\n<p>&nbsp;&nbsp;}<br>\r\n<br>\r\nThe reason being, I get following exception<br>\r\n<br>\r\n<span style=\"font-size:13px\">&quot;Collection was modified; enumeration operation may not execute.&quot;<br>\r\n<br>\r\nI was hoping&nbsp;a more straight forward way of emptying out a collection, instead of iterating through it.\r\n<p>&nbsp;</p>\r\n<p>\r\n<p>&nbsp;</p>\r\n<p>\r\n<p>Secondly, yes I do have a&nbsp;cross-module situation but I'll deal with it&nbsp;later. &nbsp;</p>\r\n</span>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n</span>\r\n<p>&nbsp;</p>\r\n<p>\r\n<p>&nbsp;</p>\r\n<p>\r\n<p>&nbsp;</p>\r\n</span>\r\n",
+    "PostedDate": "2008-07-17T09:25:29.813-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "105461",
+    "ThreadId": "31645",
+    "Html": "This is not pretty but I made it to work following way. Don't like it but can live with it for now.<br>\r\n<br>\r\n<p>System.Collections.ArrayList activeViews = new System.Collections.ArrayList();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>\r\nforeach (object v in _regionManager.Regions[RegionNames.Contents].Views)<br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp; activeViews.Add(v);<br>\r\n}</p>\r\n<p>foreach (object v in activeViews)<br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp; _regionManager.Regions[RegionNames.Contents].Remove(v);<br>\r\n}</p>\r\n<br>\r\n",
+    "PostedDate": "2008-07-17T11:44:00.527-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "105538",
+    "ThreadId": "31645",
+    "Html": "Hi zi, the reason you get the exception is because <code>IEnumerator</code> must detect alterations to the underlying collection and throw a <code>System.InvalidOperationException</code> if a call is made to any of the interface members if it has been altered since the enumerator was created.<br>\r\n<br>\r\nThe good news is that <code>System.Collections.Generic.List</code> has an overloaded constructor that takes an enumerator. Knowing this, you can do the following:<br>\r\n<br>\r\n<code>\r\n&nbsp;&nbsp;&nbsp; foreach (object v in new List&lt;object&gt;(_regionManager.Regions[RegionNames.Contents].Views)) {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _regionManager.Regions[RegionNames.Contents].Remove(v);<br>\r\n&nbsp;&nbsp;&nbsp; }<br>\r\n</code>\r\n<br>\r\nAlthough, this is just the solution to your latest problem, not your initial one, I hope it helps :)<br>\r\n-Brett.<br>\r\n<br>\r\n",
+    "PostedDate": "2008-07-17T18:53:36.25-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "106126",
+    "ThreadId": "31645",
+    "Html": "Hi guys, I've just blogged about how to use the OutlookBar in CompositeWPF applications.<br>\r\nHope you find the post useful.&nbsp;<br>\r\n<br>\r\n<ul>\r\n    <li><a href=\"http://blogs.southworks.net/ejadib/2008/07/22/use-the-outlookbar-in-your-compositewpf-prism-applications/\" rel=bookmark>Use the OutlookBar in your CompositeWPF (Prism) Applications </a><a href=\"http://blogs.southworks.net/ejadib/2008/07/22/use-the-outlookbar-in-your-compositewpf-prism-applications/\" rel=bookmark></a></li>\r\n</ul>\r\nFeeback is welcome.<br>\r\n<br>\r\nEzequiel Jadib<br>\r\n<a href=\"http://blogs.southworks.net/ejadib\">http://blogs.southworks.net/ejadib</a>\r\n",
+    "PostedDate": "2008-07-21T17:32:01.453-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "124101",
+    "ThreadId": "31645",
+    "Html": "I came up with the following.<br>\r\nOn all Views I have a interface defined (IView). This interface makes sure that all views have a property called &quot;Visibility&quot;.<br>\r\n<br>\r\nIView.cs<br>\r\n&nbsp;&nbsp;&nbsp; public interface IView<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Visibility Visibility { get; set; }<br>\r\n&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\n<br>\r\nXxxxView.cs<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public new Visibility Visibility<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return base.Visibility; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { base.Visibility = value; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\nAnyway, I now have the possiblity to hidde, collapse or make the view visible.<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (object item in new List&lt;object&gt;(this.regionManager.Regions[&quot;ListRegion&quot;].Views))<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ((IView)item).Visibility = Visibility.Collapsed;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; view.Visibility = Visibility.Visible;<br>\r\n<br>\r\n<strong>Update 10.Oct.2008:<br>\r\n</strong><br>\r\nYou can also just use the FrameworkElement, without implementing a Interface:<br>\r\n<br>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (object item in new List&lt;object&gt;(this.regionManager.Regions[&quot;DetailRegion&quot;].Views))<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (item as FrameworkElement).Visibility = Visibility.Collapsed;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (view as FrameworkElement).Visibility = Visibility.Visible;</p>\r\n<br>\r\n",
+    "PostedDate": "2008-10-09T10:07:55.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

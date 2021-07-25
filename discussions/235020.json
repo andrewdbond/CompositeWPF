@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "523214",
+    "ThreadId": "235020",
+    "Html": "\r\n<p>I want to limit the number of entries kept in the journal stack to control memory consumption.</p>\r\n<p>Is there a way to limit the the total number of Journal entries kept in a NavigationService.Journal?</p>\r\n",
+    "PostedDate": "2010-11-17T05:54:53.247-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "523448",
+    "ThreadId": "235020",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>There is no guidance on this topic in Prism out-of-the-box. The <strong>RegionNavigationJournal</strong> class is using two\r\n<a href=\"http://msdn.microsoft.com/en-us/library/3278tedw%28VS.85%29.aspx\">Stack&lt;T&gt;</a> for supporting back/forward journaling, but capacities have not been configured, as shown below. But please, take into account that the journal contains a list of\r\n uri(s) as history.</p>\r\n<pre><span style=\"color:blue\">public class </span><span style=\"color:#2b91af\">RegionNavigationJournal </span>: IRegionNavigationJournal<br>{<br>    <span style=\"color:blue\">private </span>Stack&lt;IRegionNavigationJournalEntry&gt; backStack = <strong><span style=\"color:blue\">new </span>Stack&lt;IRegionNavigationJournalEntry&gt;()</strong>;<br>    <span style=\"color:blue\">private </span>Stack&lt;IRegionNavigationJournalEntry&gt; forwardStack = <strong><span style=\"color:blue\">new </span>Stack&lt;IRegionNavigationJournalEntry&gt;()</strong>;<br>    ...<br>}</pre>\r\n<p>That said, I think that you could create your own implementation of <strong>IRegionNavigationJournal\r\n</strong>and set the capacities of your stacks. If you need guidance on how to configure the capacity of a stack, you could take a look at the following documentation section on MSDN:\r\n<a href=\"http://msdn.microsoft.com/en-us/library/ahc986x9%28VS.85%29.aspx\">Stack.Stack(Int32) Constructor</a></p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n",
+    "PostedDate": "2010-11-17T13:03:48.183-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

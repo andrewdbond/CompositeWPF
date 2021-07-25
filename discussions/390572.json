@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "896483",
+    "ThreadId": "390572",
+    "Html": "\r\n<p>The region navigation mechanism of Prism is a very powerful and flexible mechanism for navigating between views in a region.</p>\r\n<p>Unfortunately, the region navigation mechanism of Prism only supports synchronous navigation between views. Sometimes however,it is necessary that some asynchronous code is executed during the navigation from one view to another. An example is a wizard where\r\n between two wizard steps an asynchronous web service call has to be performed to validate input or to process some data.</p>\r\n<p>To overcome this limitation, I've created the IAsyncNavigationAware interface and corresponding ASyncRegionNavigationService. Similar to Prism's IConfirmNavigationRequest interface (which does execute asynchronously), the interface uses continuations to\r\n proceed the navigation process:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">interface</span> IAsyncNavigationAware\r\n{\r\n    <span style=\"color:blue\">void</span> NavigateTo(NavigationContext navigationContext, Action continuationCallback);\r\n\r\n    <span style=\"color:blue\">bool</span> IsNavigationTarget(NavigationContext navigationContext);\r\n\r\n    <span style=\"color:blue\">void</span> NavigateFrom(NavigationContext navigationContext, Action continuationCallback);\r\n}\r\n\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>As you can see, this interface uses continuations for the two navigation actions. This way, asynchronous code can be executed when navigating to or navigating from a view/viewmodel and when this code completes, calling continuationCallback() will continue\r\n the navigation process.</p>\r\n<p>I've also created the IConfirmAsyncNavigationRequest interface which is similar to IConfirmNavigationRequest but now derives from IAsyncNavigationAware.</p>\r\n<p>I've also created the AsyncNavigationAwareBehavior region behavior which takes care of attaching the RegionAsyncNavigationService to your regions.</p>\r\n<p>Please let me know if anyone is interested or if this can perhaps added to the source code of Prism.</p>\r\n<p>Kind regards,</p>\r\n<p>Merijn</p>\r\n",
+    "PostedDate": "2012-08-07T05:14:12.423-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "896618",
+    "ThreadId": "390572",
+    "Html": "\r\n<p>Hi Merijn,</p>\r\n<p>What you are describing seems to be an interesting implementation that allows the usage of asynchronous services in the\r\n<strong>OnNavigatedFrom </strong>and <strong>OnNavigatedTo</strong> methods.</p>\r\n<p>In my opinion, you could create a work item in the <a href=\"http://compositewpf.codeplex.com/workitem/list/basic\">\r\nissue tracker section</a> as a <strong>suggestion</strong>, where you can upload your implementation. There, other users could vote you suggestion and the\r\n<strong>Prism </strong>team could analyze it for future releases.</p>\r\n<p>Thanks,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2012-08-07T10:41:25.617-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "897606",
+    "ThreadId": "390572",
+    "Html": "<p>Hi Damian,</p>\r\n<p>Thanks for your reply. As you suggested I've created a <a href=\"http://compositewpf.codeplex.com/workitem/9542\">work item</a> for this.</p>\r\n<p>Kind regards,</p>\r\n<p>Merijn</p>",
+    "PostedDate": "2012-08-09T08:19:25.18-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

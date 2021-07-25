@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "517221",
+    "ThreadId": "233526",
+    "Html": "\r\n<p>I am using WPF, Unity, Prism 4 drop 10 (recompiled with fix for removing a view when using ItemControl). I am loading my modules through a ModuleCatalog and all of them are setup to be loaded on demand.</p>\r\n<p>My button command calls the following code:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">void</span> NavigateExecute(String uri)\r\n        {\r\n\r\n            <span style=\"color:blue\">if</span> (!_loadedModules.Contains(uri))\r\n            {\r\n                _loadedModules.Add(uri);\r\n                \r\n                _moduleManager.LoadModule(uri);\r\n            }\r\n\r\n            _regionManager.RequestNavigate(RegionNames.MainContentRegion, <span style=\"color:blue\">new</span> Uri(uri, UriKind.Relative), Callback);\r\n        }\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>Everything is fine if I load modules and navigate between them. I have a close button, which publishes a close event and the module to close. All the modules subscribe to this event and if they are the module being targeted for closure, they run the following\r\n code:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> OnCloseClick(<span style=\"color:blue\">string</span> viewName)\r\n        {\r\n            <span style=\"color:blue\">if</span> (viewName == <span style=\"color:#a31515\">&quot;TestModule2SummaryView&quot;</span>)\r\n            {\r\n                <span style=\"color:blue\">if</span> (_navigationJournal.CanGoBack)\r\n                {\r\n                    _keepAliveState = <span style=\"color:blue\">false</span>;\r\n                    _navigationJournal.GoBack();\r\n                }\r\n            }\r\n        }\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>where the variable _keepAliveState is used to implement IRegionMemberLifetime.KeepAlive. The module correctly appears to unload. However the problem occurs if I try to load the unloaded module a second time. In the Prism.Modularity.ModuleManager, the method\r\n LoadModuleTypes cycles through the IEnumerable&lt;ModuleInfo&gt; and checks the state. The first time through, the State = ModuleState.NotStarted, which is obviously correct. However, after it unloads, the second time it tries to load the module, the state\r\n = Initialized, and the loading fails. If I breakpoint it and manually set the state to ReadyForInitialization, everything works fine.&nbsp;</p>\r\n<p>Am I doing something wrong or is there a bug with the ModuleManager in my scenario?</p>\r\n<p>Thanks</p>\r\n",
+    "PostedDate": "2010-11-04T11:17:48.06-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "517224",
+    "ThreadId": "233526",
+    "Html": "\r\n<p>For what it's worth, if I change LoadModuleTypes in the ModuleManager.cs from this</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre> <span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> LoadModuleTypes(IEnumerable&lt;ModuleInfo&gt; moduleInfos)\r\n        {\r\n            <span style=\"color:blue\">if</span> (moduleInfos == <span style=\"color:blue\">null</span>)\r\n            {\r\n                <span style=\"color:blue\">return</span>;\r\n            }\r\n\r\n            <span style=\"color:blue\">foreach</span> (ModuleInfo moduleInfo <span style=\"color:blue\">in</span> moduleInfos)\r\n            {\r\n                <span style=\"text-decoration:underline\"><em><strong><span style=\"color:blue\">if</span> (moduleInfo.State == ModuleState.NotStarted)</strong></em></span>\r\n                {\r\n                    <span style=\"color:blue\">if</span> (<span style=\"color:blue\">this</span>.ModuleNeedsRetrieval(moduleInfo))\r\n                    {\r\n                        <span style=\"color:blue\">this</span>.BeginRetrievingModule(moduleInfo);\r\n                    }\r\n                    <span style=\"color:blue\">else</span>\r\n                    {\r\n                        moduleInfo.State = ModuleState.ReadyForInitialization;\r\n                    }\r\n                }\r\n            }\r\n\r\n            <span style=\"color:blue\">this</span>.LoadModulesThatAreReadyForLoad();\r\n        }\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>To this</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre> <span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> LoadModuleTypes(IEnumerable&lt;ModuleInfo&gt; moduleInfos)\r\n        {\r\n            <span style=\"color:blue\">if</span> (moduleInfos == <span style=\"color:blue\">null</span>)\r\n            {\r\n                <span style=\"color:blue\">return</span>;\r\n            }\r\n\r\n            <span style=\"color:blue\">foreach</span> (ModuleInfo moduleInfo <span style=\"color:blue\">in</span> moduleInfos)\r\n            {\r\n                <em><span style=\"text-decoration:underline\"><strong><span style=\"color:blue\">if</span> (moduleInfo.State == ModuleState.NotStarted || moduleInfo.State == ModuleState.Initialized)</strong></span></em>\r\n                {\r\n                    <span style=\"color:blue\">if</span> (<span style=\"color:blue\">this</span>.ModuleNeedsRetrieval(moduleInfo))\r\n                    {\r\n                        <span style=\"color:blue\">this</span>.BeginRetrievingModule(moduleInfo);\r\n                    }\r\n                    <span style=\"color:blue\">else</span>\r\n                    {\r\n                        moduleInfo.State = ModuleState.ReadyForInitialization;\r\n                    }\r\n                }\r\n            }\r\n\r\n            <span style=\"color:blue\">this</span>.LoadModulesThatAreReadyForLoad();\r\n        }\r\n</pre>\r\n</div>\r\n<p>Everything appears to work.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-04T11:30:24.733-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "517284",
+    "ThreadId": "233526",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Thanks for reporting that. Please take into account that modules can no be unloaded. You could either remove or deactivate a view from a region, but it is not possible to unload a module.</p>\r\n<p>Modules can be loaded on demand, but once a modules are loaded, they will be unloaded when closing the application.</p>\r\n<p>Are you really trying to unload a module?</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-04T12:51:59.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "517304",
+    "ThreadId": "233526",
+    "Html": "\r\n<p>Sorry, I used the wrong terminology. You are correct, I am not actually trying to unload the module. Just removing the view from the region. Thanks.</p>\r\n",
+    "PostedDate": "2010-11-04T13:15:38.437-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "517353",
+    "ThreadId": "233526",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>When you set KeepAlive to False, it will remove a view from a region if it is deactivated. As you mentioned it is working. So, based on my understanding when you call the\r\n<strong>RequestNavigate </strong>method passing a uri of a view and this was previously removed, it is not added to the region again.</p>\r\n<p>First of all, I assume that the view is not removed from the container at any time, and that the view name is equal to the module name in all your modules, since the\r\n<strong>uri </strong>variable is passed to load a module as well as to navigate a view in the\r\n<strong>NavigateExecute</strong> method.</p>\r\n<p>I am not aware how the update to the <strong>LoadModuleTypes</strong> method can help on this scenario, since it is executed only the first time that module is being loaded:</p>\r\n<pre><span style=\"color:blue\">if</span> (<strong>!_loadedModules.Contains(uri)</strong>)<br>{<br>    <strong>_loadedModules.Add(uri)</strong>;<br>    _moduleManager.LoadModule(uri);<br>}<br></pre>\r\n<p>I can not figure out how the update to the <strong>LoadModuleTypes</strong> method can help on this scenario, since it is executed only the first time that module is being loaded.</p>\r\n<p>Please, let me know if I missing something. If you continue experiencing this problem in your scenario, could you please share a repro sample (application).</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-04T14:30:27.047-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "517689",
+    "ThreadId": "233526",
+    "Html": "\r\n<p>&nbsp;</p>\r\n<p>Yes, the view deactivates and is removed from the region, but when I try to navigate to the view again, I would expect it to have a state of NotStarted, since it was deactivated. However, it has a state of Initialized, which it isn&rsquo;t.</p>\r\n<p>When I changed that line, it checks if the ModuleNeedsRetrieval, which returns false, so the state is set to ReadyForInitialization. Without that change, when it runs LoadModulesThatAreReadyForLoad, it doesn&rsquo;t get picked up in the availableModules\r\n enumerable and therefore , the InitializeModule is never called and rather than seeing a view, I see the words System.Object.</p>\r\n<p>I do have a sample application, but it is using the Infragistics XAMRibbon for some other things I am testing. If you have Infragistics, I can send you the code as-is. If not, let me know and I will make a version just using buttons.</p>\r\n<p>P.S. I don't think that my fix is solving the root of the problem, which is why the state is Initialized after it was deactivated. My solution is a band-aid over what I think is the real problem which is an incorrect state.</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2010-11-05T06:46:47.673-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "517697",
+    "ThreadId": "233526",
+    "Html": "\r\n<p>I put a button version of my test application which demonstrates the problem on dropbox.</p>\r\n<p><a title=\"Sample Navigation Application\" href=\"http://dl.dropbox.com/u/4053682/AOPC.Navigation.zip\" target=\"_blank\">http://dl.dropbox.com/u/4053682/AOPC.Navigation.zip</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-05T07:13:27.737-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "517925",
+    "ThreadId": "233526",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Thanks for sharing your repro sample. I was able to reproduce this situation and found that it is caused because in this scenario there is a mix between View Discovery and Navigation. So, you could modify the\r\n<strong>Initialize </strong>methods of your modules using the following code:</p>\r\n<pre><span style=\"color:blue\">public void </span>Initialize()<br>{<br>    <span style=\"color:blue\">this</span>.container.RegisterType&lt;Object, TestModule1SummaryView&gt;(<span style=\"color:#a31515\">&quot;TestModule1SummaryView&quot;</span>);<br>    <span style=\"color:green\">//this.regionManager.RegisterViewWithRegion(&quot;DisplayRegion&quot;, () =&gt; container.Resolve&lt;TestModule1SummaryView&gt;());<br></span>}<br></pre>\r\n<p>As your views do not implement any view interface (e.g. ITestModule1SummaryView) you have to indicate the\r\n<strong>TTo</strong> as Object in the <strong>RegisterType</strong> method. If you need more information on this topic you could take a look at the following work-item:\r\n<a href=\"http://compositewpf.codeplex.com/workitem/7383\"><span id=\"x_x_TitleLabel\">Activate View only from RegionManager.RequestNavigate</span></a>. Please, see Bob Brumfiled's comments about this.</p>\r\n<p>Please, take into account that the code is reloading Modules in some cases in the following piece of code. Once a module is loaded, it is not recommended to try to unload or reload it.</p>\r\n<pre><span style=\"color:blue\">if</span> (!_loadedModules.Contains(uri))<br>{<br>    _loadedModules.Add(uri);<br><strong>    _moduleManager.LoadModule(uri);</strong><br>}</pre>\r\n<p>Additionally, I simplified your repro sample to use only one module. You could download this from\r\n<a href=\"http://cid-60a74023ee1812bd.office.live.com/self.aspx/.Public/AOPC.NavigationSimplified.zip\">\r\nhere</a> as a reference.</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n<pre><br></pre>\r\n",
+    "PostedDate": "2010-11-05T13:41:45.157-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "518765",
+    "ThreadId": "233526",
+    "Html": "\r\n<p>Thanks for your time on this Fernando. I will try out your recommended changes.</p>\r\n",
+    "PostedDate": "2010-11-08T06:38:50.55-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "518773",
+    "ThreadId": "233526",
+    "Html": "\r\n<p>That fixed all my problems. Not only that problem, but other problems I was having that I didn't ask yet. You have saved me from another day of frustration. Thanks again.</p>\r\n",
+    "PostedDate": "2010-11-08T06:55:31.303-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

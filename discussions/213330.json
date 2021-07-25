@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "445519",
+    "ThreadId": "213330",
+    "Html": "<p>&nbsp;The current type, Microsoft.Practices.Unity.IUnityContainer, is an interface and cannot be constructed</p>\r\n<p>what this means? by the way in one of my projects it kept asking me to add a reference to Unity 1.2 otherwise did not worked although I see stocktrader RI dont need that, whats the problem with this?</p>",
+    "PostedDate": "2010-05-20T11:35:18.927-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "445995",
+    "ThreadId": "213330",
+    "Html": "<p id=6f66b860-4722-012d-a530-123139097e21>Hi,</p>\r\n<p id=6f66c090-4722-012d-a531-123139097e21>That exception means that you are  trying to instantiate an <a href=\"http://msdn.microsoft.com/en-us/library/aa664574(VS.71).aspx\">interface</a><strong>&nbsp;</strong>(<strong>IUnityContainer</strong>),  and not the <a href=\"http://msdn.microsoft.com/en-us/library/aa645599(VS.71).aspx\">class</a> that implements that interface, which in this case is  <strong>UnityContainer</strong>. If you want to create a new container, you  could write something like:</p>\r\n<p id=6f66ccd0-4722-012d-a532-123139097e21><span style=\"font-family:Consolas;font-size:small\">\r\n<div style=\"color:black;background-color:white\">\r\n<pre>IUnityContainer container = <span style=\"color:blue\">new</span> UnityContainer();\r\n</pre>\r\n</div>\r\n</span></p>\r\n<p id=6f66da40-4722-012d-a533-123139097e21>but not:</p>\r\n<p id=6f66e5a0-4722-012d-a534-123139097e21><span style=\"font-family:Consolas;font-size:small\">\r\n<div style=\"color:black;background-color:white\">\r\n<pre>IUnityContainer container = <span style=\"color:blue\">new</span> IUnityContainer();\r\n</pre>\r\n</div>\r\n</span></p>\r\n<p id=6f66f390-4722-012d-a535-123139097e21>As for the reference, in every  project that you use the Unity Container, whether it is the shell or a module,  you must add a reference to the <strong>Microsoft.Practices.Unity </strong>assembly. You can find that assembly in the LIB folder that comes with  Prism. Inside the StockTrader RI, there are&nbsp;references to it in the shell and  all&nbsp;its modules.</p>\r\n<p id=6f6705d0-4722-012d-a536-123139097e21>I hope you find this helpful.</p>\r\n<p id=6f671820-4722-012d-a537-123139097e21>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-05-21T12:36:36.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "446003",
+    "ThreadId": "213330",
+    "Html": "<p>Thanks Guido, however I did not solve the problem that way and it looks the instantiate interface error came from the previous error where it was always telling me to add 1.2 reference, once I did download and installed the 1.2 version and referened in my project, no more errors but now another&nbsp;error I don't remember poped up&nbsp;while loading the first module.</p>\r\n<p>As a final measure, what I did was to copy all the CAL projects altogether to my solution (like it is with the StockTrader app) and magic happens using the unity 2.0 and these projects references instead of the dlls I got to run my project just fine, I don't know if someone else could confirm that using the dlls causes somewhow my errors and the workaround is to add the CAL projects references directly?</p>\r\n<p>thanks</p>",
+    "PostedDate": "2010-05-21T12:55:15.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "447822",
+    "ThreadId": "213330",
+    "Html": "<p>I cannot get the Prism assemblies to build using Unity 2.0.&nbsp; I have been trying for two days.&nbsp; The problem is that the IUnityContainer.AddNewExtension&lt;TExtension&gt; no longer exists.&nbsp; There is a generic method that is gone.&nbsp; And there is no mention of it in any of the Unity 2.0 documentation.&nbsp; They did detail some of the changes and deprecation on Unity 2.0, like the merge of ObjectBuilder2 into Unity and the deprecation of the Microsoft.Practices.ObjectBuilder2.BuildFailedException.&nbsp; But there is no mention of the elimination of the AddNewExtension.&nbsp; I pulled down the Unity 2.0 source code and confirmed the method is missing.&nbsp; The Prism test projects use it extensively and they worn't build alog with the UnityBootstrapperExtension from the Composite.UnityExtensions.Desktop assembly.&nbsp; I really need a Prism for Unity 2.0.&nbsp; I have no choice but to keep trying to build it myself and the Unity 2.0 documentation has a hole in it.&nbsp; What shall I do?</p>",
+    "PostedDate": "2010-05-26T12:55:02.963-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "447903",
+    "ThreadId": "213330",
+    "Html": "<p>Hi Joe,</p>\r\n<p>We are about to drop Prism 2.2 which works with&nbsp;Unity&nbsp;2, probably next week.&nbsp; If you want, you can&nbsp;get a head start and look at change set 41709&nbsp;or 42969 in the Source Code Area.</p>\r\n<p>Larry</p>",
+    "PostedDate": "2010-05-26T16:45:24.03-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "451217",
+    "ThreadId": "213330",
+    "Html": "<p id=3c5ecb00-514d-012d-1f06-1231390f09c1>Hi guys,</p>\r\n<p id=3c5ef030-514d-012d-1f07-1231390f09c1>I though you would like to know that a couple of days ago a new drop of Prism 2.2 was just released . Therefore, you can find more information and download it from <a href=\"http://compositewpf.codeplex.com/releases/view/46046\">here</a> instead of using the change sets.<br>Additionally, you can visit the Damian Schenkelman&rsquo;s <a href=\"http://blogs.southworks.net/dschenkelman/2010/05/29/prism-22-release-available-get-it-at-codeplex/\">post</a> where there are some interesting things in this new version and links to other posts.</p>\r\n<p id=3c5f5710-514d-012d-1f09-1231390f09c1>I hope you can find this information useful.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-06-03T08:00:34.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "451221",
+    "ThreadId": "213330",
+    "Html": "<p>Thanks fantivero yes it looks like the new drop solved the problems :)</p>",
+    "PostedDate": "2010-06-03T08:03:56.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

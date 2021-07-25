@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "166933",
+    "ThreadId": "49880",
+    "Html": "I'm building a WPF desktop app using Prism v2 that communicates with a set of services via WCF.  I'm binding buttons in my views to delegatecommands.  Command execute methods in the presentationmodel classes call services which can take a few moments to return.  I don't see how to set the mouse cursor to an hourglass for the duration of the process, given the loose binding.  There's no mention of mouse cursors in the CAL docs that I can find, nor any posts on the net, and the StockTrader doesn't seem to provide this common feature. <br>\r\nThanks for any help you can provide,<br>\r\n -Will \r\n",
+    "PostedDate": "2009-03-11T09:03:22.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "166979",
+    "ThreadId": "49880",
+    "Html": "Hi Will!<br>\r\n<br>\r\nBeleive it or not we've just put together a solution for our own project, but for Silverlight.<br>\r\n<br>\r\nHere is how we had in our project which is a &quot;prerequisite&quot;:<br>\r\n- All proxies are instantiated by a factory class, so it's responsible for creating and adding the WCF related stuff to it.<br>\r\n- We've defined 3 events: ShowHourglassEvent, HideHourglassEvent, UpdateProgressStatusEvent<br>\r\n<br>\r\nOur solution is:<br>\r\nWe've implemented a class which derives from IClientMessageInspector. It has an IsHandlingHourglass property.<br>\r\nIn it's BeforeSendRequest method if IsHandlingHourglass is true we're publishing a ShowHourglassEvent, in it's AfterReceiveReply method we're publishing the HideHourglassEvent.<br>\r\nThere is a &quot;dedicated&quot; module, which has the View, Controller, ViewModel classes. It's subscribing to the events above.<br>\r\n<br>\r\nThe purpose of the IsHandlingHourglass property is let the caller decide about automatic or manual show/hide. If you've to execute a series of WCF calls then you'd like to avoid flickering AND you need to update the status text between calls. So that's where the 3rd event comes in, it's goal is obvious: display a progress update.<br>\r\n<br>\r\nHope this helps or at lest gives some ideas.<br>\r\n<br>\r\n- Attila<br>\r\n",
+    "PostedDate": "2009-03-11T10:34:49.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "193308",
+    "ThreadId": "49880",
+    "Html": "<p>attilah, sorry for the long delay.&nbsp; I didn't understand enough from your original reply to implement a solution.&nbsp;&nbsp;Other stuff came up and I&nbsp;put the whole thing on the back burner.&nbsp; But I'm now down to 'the short strokes' and need to finally&nbsp;to get this solved.&nbsp;In&nbsp;the users eyes, it is a glaring deficiency that&nbsp;I don't display a waitcursor</p>\r\n<p>It's still not clear to me where the cursor is actually getting set, in other words, in what class does the line&nbsp;&quot;<span style=\"word-spacing:0px;font:13px arial;text-transform:none;color:#000000;text-indent:0px;white-space:normal;letter-spacing:normal;border-collapse:separate\">Mouse.OverrideCursor = Cursors.Wait;&quot; reside?</span>&nbsp; Having the IClientMessageInspector publishing events to the eventaggregator implies to me that code that is calling a service would need to raise a Windows event rather than a&nbsp;CompositePresentationEvent.&nbsp; And if that were the case, who subscribes to the CompositePresentationEvent that is published from the class that derives from IClientMessageInspector?</p>\r\n<p>From what I can tell, I need a class that has both a reference to the eventaggregator and direct access to the Window.&nbsp; Our Shell.xaml.cs could do it if I could get the eventaggregator injected into it, but I don't see how the bootstrapper could accomplish that.</p>\r\n<p>Prism (desktop) has got to have some means to support controlling the mouse cursor.</p>\r\n<p>Thanks for any more clues you can provide.</p>\r\n<p>-Will</p>\r\n<p>&nbsp;</p>\r\n<p><span style=\"font-size:x-small;color:#2b91af\"></span></p>",
+    "PostedDate": "2009-05-22T10:51:20.257-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "193331",
+    "ThreadId": "49880",
+    "Html": "<p>Hi.&nbsp;</p>\r\n<p>I implemented something similar by creating a class that implements IDisposable. As an example:</p>\r\n<p>/// &lt;summary&gt;</p>\r\n<p>/// USAGE:</p>\r\n<p>/// using (OverrideCursor cursor = new OverrideCursor(Cursors.Wait))</p>\r\n<p>/// {</p>\r\n<p>/// &nbsp; &nbsp; Do work...</p>\r\n<p>/// }</p>\r\n<p>/// &lt;/summary&gt;</p>\r\n<p>public class OverrideCursor:IDisposable</p>\r\n<p>{</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public OverrideCursor(Cursor changeToCursor)</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Mouse.OverrideCursor = changeToCursor;</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;#region IDisposable Members</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public void Dispose()</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Mouse.OverrideCursor = null;</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;#endregion</p>\r\n<p>}</p>\r\n<p>- Best,</p>\r\n<div><br></div>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-05-22T11:42:59.62-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "254189",
+    "ThreadId": "49880",
+    "Html": "<p>I am also looking into how to set the cursor.&nbsp;&nbsp;&nbsp; Fo rme I want to have the wait cursor application wide so I have gone the same path as you did but without success</p>\r\n<p>I setup an ApplicationWaitCursorEvent in the Infratructure project.&nbsp;&nbsp; In the Shell Presenter I subscribe to this event.</p>\r\n<p>&nbsp;I have an abstract base presenter class used for each module in my app and I have a method in this base class that publishes a true or false parameter with the ApplicationWaitCursorEvent event.</p>\r\n<p>The problem I am having is that the Event callback method in the ShellPresenter does not fire.</p>\r\n<p>&nbsp;</p>\r\n<p>Is this a valid approach to this probem ?</p>\r\n<p>Are there any&nbsp;restrictions using&nbsp;the event aggrigator in the shell presenter?&nbsp;</p>",
+    "PostedDate": "2009-11-06T03:30:27.12-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "254190",
+    "ThreadId": "49880",
+    "Html": "<p>I am also looking into how to set the cursor.&nbsp;&nbsp;&nbsp; Fo rme I want to have the wait cursor application wide so I have gone the same path as you did but without success</p>\r\n<p>I setup an ApplicationWaitCursorEvent in the Infratructure project.&nbsp;&nbsp; In the Shell Presenter I subscribe to this event.</p>\r\n<p>&nbsp;I have an abstract base presenter class used for each module in my app and I have a method in this base class that publishes a true or false parameter with the ApplicationWaitCursorEvent event.</p>\r\n<p>The problem I am having is that the Event callback method in the ShellPresenter does not fire.</p>\r\n<p>&nbsp;</p>\r\n<p>Is this a valid approach to this probem ?</p>\r\n<p>Are there any&nbsp;restrictions using&nbsp;the event aggrigator in the shell presenter?&nbsp;</p>\r\n<p>Did you eventually get your wait cursor to work?</p>",
+    "PostedDate": "2009-11-06T03:30:29.62-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "254202",
+    "ThreadId": "49880",
+    "Html": "<p>Please ignore my post I got it working.</p>\r\n<p>I was not using the same instance of the EventAggrigator service.</p>",
+    "PostedDate": "2009-11-06T04:15:11.107-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "681513",
+    "ThreadId": "275160",
+    "Html": "<p>I've been looking everywhere for a full and complete code example that demonstrates using scoped regions and tabs. &nbsp;All I can find are snippets of code which simply isn't helping me get the entire picture.</p>\n<p>* Prism/WPF 4, MVVM, Event Aggregator</p>\n<p>(the short story)</p>\n<p>In short I'm trying to get a single view to show up on multiple tabs, think a single customer record on each tab. &nbsp;Plus I want to show other types of views on tabs, not just customers.</p>\n<p>(the longer story)</p>\n<p>The scenario I'm trying to sort out is:</p>\n<p>I have a shell with a tabbed control, region name = Workspace.</p>\n<p>I load a HomePage module that injects a view into Workspace and has a nested ItemControl region for HomePageItems - No problem.</p>\n<p>I load a Customer module with MEF that has a HomePageItemView that I inject into the HomePageItems region - No problem.</p>\n<p>That view has a button which when clicked, raises an event subscribed to by my event service - No problem.</p>\n<p>That event service gets the event, generates a GUID (my session key) and raises another event with that session key as the payload - No problem.</p>\n<p>My Customer module has a controller class that subscribes to and gets the event. &nbsp;Then it injects a new instance of the CustomerWorkspace view into the Shell's Workspace region, this shows up as a new tab as it should - No problem.</p>\n<p>In the UI, I click back to the HomePage tab, click the Customer.HomePageItemView button again, events are handled properly and my Customer controller gets the event asking it to create another customer workspace (this is what I want, a new tab everytime  I load a new customer view). &nbsp;This is where it doesn't work.</p>\n<p>At that point I get the expected \"View already exists\" error which I understand. &nbsp;I inject the prism RegionManager into the Customer module and know I can't add a view with the same name to the RegionManager twice.</p>\n<p>My probelm is in trying to figure out where to use scoped regions.</p>\n<p>A working code example (not just the 5 lines on how to overload the Region.Add() method to return a new regionmanager) would really help.</p>\n<p>I tried reviewing the Stock TRader RI but that both uses Unity and is way overkill with indirection that I don't care to figure out at this time. &nbsp;Plus, I don't see any use of scoped regions there nor does it use tabs.</p>\n<p>Anyways, at this point I'm hoping to find some good sample projects if anyone knows of anything.</p>\n<p>Otherwise I'll keep posting more detail about this since I simply can't seem to get it working.</p>\n<p>Cheers</p>",
+    "PostedDate": "2011-10-07T15:47:34.823-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "681653",
+    "ThreadId": "275160",
+    "Html": "<p>Big sigh...</p>\r\n<p>Looks like my only problem was not having the NonShared attribute on my view.</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>[PartCreationPolicy(System.ComponentModel.Composition.CreationPolicy.NonShared)]\r\n</pre>\r\n</div>\r\n</p>\r\n<p>The worst part was the error and my research into all led me down the road of scoped regions. &nbsp;That had nothing to do with my actual problem which is why I couldn't find anything that worked.</p>\r\n<p>I still wasn't able to find any good code examples that dealt specifically with what I was looking for.</p>\r\n<p>Cheers</p>\r\n<p>&nbsp;</p>\r\n<p>\r\n<pre><br /></pre>\r\n<pre><br /></pre>\r\n</p>",
+    "PostedDate": "2011-10-08T09:58:51.867-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "682808",
+    "ThreadId": "275160",
+    "Html": "<p>Hi,</p>\r\n<p>I&rsquo;m glad that you&rsquo;ve found a solution to your original problem; thank you for sharing it with the rest of the community.</p>\r\n<p>Regarding the sample with a tabbed control, you might find the <strong>UI Composition QuickStart</strong> of the Prism library useful. This <strong>QuickStart</strong> contains a view named <strong>EmployeeSummaryView</strong> which has a <strong>TabControl</strong> and is injected in the shell. The aforementioned <strong>TabControl</strong> is also registered as a region where the <strong>EmployeeDetailsView</strong> view and the <strong>EmployeeProjectsView</strong> view are later injected.</p>\r\n<p>I hope you find it useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-10-11T13:59:14.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

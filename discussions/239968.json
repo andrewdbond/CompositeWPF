@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "542026",
+    "ThreadId": "239968",
+    "Html": "\r\n<p>I've been playing around with Prism,&nbsp; there is a lot of really cool stuff in there.</p>\r\n<p>But there are a few details that bug me a bit.&nbsp; The above question being one of them.</p>\r\n<p>Since there can only be one shell... what's the advantage or the beauty of loading it using MEF or Unity?</p>\r\n<p>Or... are you just doing that to be consistent with how you are handling things?</p>\r\n<p>Sorry if it seems like a silly question, but since this is patterns &amp; practices, understanding why something is implemented in a certain way can help me a lot with understanding it.</p>\r\n<p>When I look at it, it auto discovery and loading for somethings is great.&nbsp; But for some things like this, it just seems like excess overhead.&nbsp; Am I missing something?</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-29T22:19:57.163-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "542099",
+    "ThreadId": "239968",
+    "Html": "\r\n<p>A couple of things come to mind:</p>\r\n<ol>\r\n<li>The shell can have dependencies that need to be resolved, just like any part of the system.&nbsp; Things like loggers, the event aggregator, Region Managers, or any services set up at the app level that need to be used by the shell, so using DI to load\r\n the shell allows for the same abstractions to be used with it that you would use anywhere else in the application.\r\n</li><li>The shell itself could be different depending some criteria of the logged in user.&nbsp; The configuration could use different shells based upon the users login.&nbsp; This config could be managed through DI.&nbsp;\r\n</li></ol>\r\n<p>Does that help?</p>\r\n<p>Paul</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-30T04:18:24.847-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "542238",
+    "ThreadId": "239968",
+    "Html": "\r\n<p>Yes, very helpful, thanks!</p>\r\n",
+    "PostedDate": "2010-12-30T10:21:16.727-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "542295",
+    "ThreadId": "239968",
+    "Html": "\r\n<p>OK... So lets say I do have multiple shells defined.</p>\r\n<p>Let's say, I export an IShell from my base class library.&nbsp; This would be a default Shell that would be used if no other shell is found.</p>\r\n<p>I then create an IShell in my main project.&nbsp; This is meant to override the default.</p>\r\n<p>Is there any built in mechanism to allow one export to override another export?</p>\r\n<p>Obviously I can work around this by exporting ShellBase and Shell instead of IShell.&nbsp; But I was curious if there was any built in mechanism to allow for overrides.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-30T12:03:14.397-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "542333",
+    "ThreadId": "239968",
+    "Html": "\r\n<p>And probably to your surprise, there are several approaches to this too.&nbsp; &lt;grin&gt;</p>\r\n<p>Take a look at the unity documentation for Resolving Objects in the Unity documentation.</p>\r\n<p><a href=\"http://unity.codeplex.com/releases/view/31277\">http://unity.codeplex.com/releases/view/31277</a></p>\r\n<p>All of those are available to you.</p>\r\n<p>You will need to add code to your bootstrapper to provide the disciminator you will need to use in the resolve, or resolution because the Container is created within the bootstrapper.&nbsp;</p>\r\n<p>Particularly look at the Resolve options in &quot;<span id=\"x_x_nsrTitle\">Resolving an Object by Type and Registration Name&quot;</span></p>\r\n",
+    "PostedDate": "2010-12-30T13:19:00.36-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "542406",
+    "ThreadId": "239968",
+    "Html": "\r\n<p>Interesting, thanks.</p>\r\n<p>Took me forever to find something equivalent to Resolve in MEF.&nbsp;</p>\r\n<p>Edit:&nbsp; It looks like I could do something using ExportMetaData</p>\r\n<p>Edit2: Found a few ways to go on this... <a href=\"http://msdn.microsoft.com/en-us/library/dd833288.aspx\">\r\nContainer.GetExports(Type, Type, String)</a> looks the most promising at the moment.</p>\r\n<p>Edit3: GetExports worked for Injection and is probably the simplest solution.&nbsp; For auto discovery I think you would have to create a filtered catalog.</p>\r\n",
+    "PostedDate": "2010-12-30T17:39:32.637-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "542501",
+    "ThreadId": "239968",
+    "Html": "\r\n<p>Good,</p>\r\n<p>Then all you need to do is to figure out which mechanism you want to use, which will drive what kind of data you will need to provide on the &quot;Resolve&quot;, to get the appropriate shell.</p>\r\n<p>You could have preconfigured unity with several shells that resolve using different names.&nbsp; I.E. a manager shell and an employee shell.&nbsp; The app.cs then passes the appropriate value to the bootstrapper, where you do your resolve using that data\r\n to get the appropriate shell.</p>\r\n<p>MEF would work in a similar fashion, I would assume. Not being&nbsp;a MEFHead, I cant say without some research.</p>\r\n<p>Paul</p>\r\n",
+    "PostedDate": "2010-12-31T04:43:10.133-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "542531",
+    "ThreadId": "239968",
+    "Html": "\r\n<p>As long as the class has been exported and satisfied into the container it will work.&nbsp; If it can't find the contract it will simply error out and you have to hunt down where the error exists.&nbsp; So in theory you could have multiple shells to work\r\n with in a single project it all depends how you construct everything to make it work.</p>\r\n",
+    "PostedDate": "2010-12-31T08:20:40.267-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "542763",
+    "ThreadId": "239968",
+    "Html": "\r\n<p>Enjoying this discussion, learning a lot!</p>\r\n<p>I did get a demo of multiple shells working, if I was going to use it in production, I would probably write my own resolver class for it.</p>\r\n<p>In case someone happens across this thread, here's a hint (very quick and dirty) on how to do it:</p>\r\n<pre>[Export(typeof(Window))]<br>[ExportMetadata(&quot;Priority&quot;,5)]<br>public partial class Shell : Window<br><br>public interface IPriorityMetadata<br>    {<br>    int Priority { get; }<br>    }<br><br>protected override DependencyObject CreateShell()<br>    {<br>    var shells = this.Container.GetExports&lt;Window, IPriorityMetadata&gt;();    <br>    Window shl = shells.FirstOrDefault(w =&gt; w.Metadata.Priority == shells.Max(m =&gt; m.Metadata.Priority)).Value;<br>    return shl;<br>    }<br></pre>\r\n<p>I also played with creating a new service, I wrote one for persisting the UI using an attached behavior.&nbsp; Works well, and was easy to write. :-)</p>\r\n<p>Now I'm on to playing with the region manager and figuring out how to do hierarchical view models.&nbsp; So far that looks the same as how I have been doing it in MVVM (Using data templates)</p>\r\n<p>I'll let you know if I end up with more questions.&nbsp; Thanks!</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-01T16:22:02.443-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

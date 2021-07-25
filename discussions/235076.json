@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "523424",
+    "ThreadId": "235076",
+    "Html": "\r\n<p>I am not sure if I understanding what is going on when the event aggregator is injected into the constructor.<br>\r\n<br>\r\nIn TrendLineViewModel.cs I added the following line to the constructor after the GetEvent&lt;&gt;.</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> ieventAggregator = Microsoft.Practices.ServiceLocation.ServiceLocator.Current.GetInstance&lt;Microsoft.Practices.Prism.Events.IEventAggregator&gt;();\r\n</pre>\r\n</div>\r\n<br>\r\nBoth the eventAggregator and ieventAggregator have <strong>1 event</strong> each, which makes sense.\r\n<p></p>\r\n<p>Now on my project I have the following code.</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>[ImportingConstructor]\r\n<span style=\"color:blue\">public</span> ShellViewModel(IEventAggregator eventAggregator)\r\n{\r\n    eventAggregator.GetEvent&lt;LogOnEvent&gt;().Subscribe(<span style=\"color:blue\">this</span>.OnAccountLogOn, ThreadOption.UIThread, <span style=\"color:blue\">true</span>);\r\n    eventAggregator.GetEvent&lt;LogOffEvent&gt;().Subscribe(<span style=\"color:blue\">this</span>.OnAccountLogOff, ThreadOption.UIThread, <span style=\"color:blue\">true</span>);\r\n\r\n    <span style=\"color:blue\">var</span> ieventAggregator = Microsoft.Practices.ServiceLocation.ServiceLocator.Current.GetInstance&lt;Microsoft.Practices.Prism.Events.IEventAggregator&gt;();\r\n}\r\n</pre>\r\n</div>\r\n<br>\r\nThe eventAggregator is showing a count of <strong>2 events</strong> while ieventAggregator is showing\r\n<strong>0 events</strong>.\r\n<p></p>\r\n<p>How is it that the eventAggregator being injected is not the same as the current Instance?<br>\r\nI am using the ported CompositionInitializer code from Silverlight to use in my WPF project, could this be part of the issue?</p>\r\n<p>For some background on what I am doing you can see this post.<br>\r\nhttp://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=234536</p>\r\n",
+    "PostedDate": "2010-11-17T12:15:12.103-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "523834",
+    "ThreadId": "235076",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>There is no similar issues reported so far. I tried to reproduce this scenario and found no issues. I am using the following code in the View-Switching Navigation Quickstart:</p>\r\n<pre>[ImportingConstructor]<br><span style=\"color:blue\">public </span>InboxView(IEventAggregator eventAggregator)<br>{<br>    InitializeComponent();<br>    var eventAggregatorTest = eventAggregator.GetEvent&lt;EventAggregatorTest&gt;();<br>    eventAggregatorTest.Subscribe(<span style=\"color:blue\">this</span>.Test1, ThreadOption.UIThread, <span style=\"color:blue\">true</span>);<br>    eventAggregatorTest.Subscribe(<span style=\"color:blue\">this</span>.Test2, ThreadOption.UIThread, <span style=\"color:blue\">true</span>);<br>    var eventAggregatorFromSL = Microsoft.Practices.ServiceLocation.ServiceLocator.Current.GetInstance&lt;IEventAggregator&gt;();<br>    var eventAggregatorTestFromSL = eventAggregatorFromSL.GetEvent&lt;EventAggregatorTest&gt;();<br>}<br></pre>\r\n<p>In the following image you can see my two reference to the EventAggregator:</p>\r\n<p><img src=\"http://pqht8w.bay.livefilestore.com/y1pjlJeVRW7rLWCir-n_DhKwZCljFSfFIhoxPqnkmyMmu3jff2tvAu5Q19PR_pKb7JoPRU6LBaxUauGunEfJBomp4vwXBKmlAbv/eventAggregator.PNG?psid=1\" alt=\"\"></p>\r\n<p>If you continue experiencing this situation, could you please send a repro sample?</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero<br>\r\n<a href=\"http://blogs.southworks.net/fantivero\"><span style=\"color:#0066cc\">http://blogs.southworks.net/fantivero</span></a></p>\r\n",
+    "PostedDate": "2010-11-18T07:28:29.55-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "523854",
+    "ThreadId": "235076",
+    "Html": "\r\n<p>If you're using CompositionInitializer, you'll need to make sure that, during bootstrapping, you're setting the container the CompositionInitializer knows about by calling CompositionHost.Initialize with the same MEF composition container that Prism is using.</p>\r\n<p>HTH,</p>\r\n<p>-b</p>\r\n",
+    "PostedDate": "2010-11-18T07:53:25.193-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "524433",
+    "ThreadId": "235076",
+    "Html": "\r\n<p>Thanks brumfb,<br>\r\nI was not initializing CompositionHost with the CompositionContainer.</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:green\">// Bootstrapper.cs</span>\r\n<span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> CompositionContainer CreateContainer()\r\n{\r\n    <span style=\"color:blue\">var</span> container = <span style=\"color:blue\">base</span>.CreateContainer();\r\n\r\n    CompositionHost.Initialize(container);\r\n\r\n    <span style=\"color:blue\">return</span> container;\r\n}\r\n\r\n<span style=\"color:green\">// ShellViewModel.cs</span>\r\n[ImportingConstructor]\r\n<span style=\"color:blue\">public</span> ShellViewModel(IEventAggregator eventAggregator)\r\n{\r\n    <span style=\"color:blue\">if</span> (eventAggregator != <span style=\"color:blue\">null</span>)\r\n    {\r\n        eventAggregator.GetEvent&lt;LogOnEvent&gt;().Subscribe(<span style=\"color:blue\">this</span>.OnAccountLogOn, ThreadOption.UIThread, <span style=\"color:blue\">true</span>);\r\n        eventAggregator.GetEvent&lt;LogOffEvent&gt;().Subscribe(<span style=\"color:blue\">this</span>.OnAccountLogOff, ThreadOption.UIThread, <span style=\"color:blue\">true</span>);\r\n    }\r\n\r\n    <span style=\"color:blue\">var</span> ieventAggregator = ServiceLocator.Current.GetInstance&lt;IEventAggregator&gt;();\r\n}\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>I am not sure if this would be the proper way to do it but this also worked.</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:green\">// ShellViewModel.cs</span>\r\n[ImportingConstructor]\r\n<span style=\"color:blue\">public</span> ShellViewModel()\r\n{\r\n    <span style=\"color:blue\">var</span> eventAggregator = ServiceLocator.Current.GetInstance&lt;IEventAggregator&gt;();\r\n\r\n    <span style=\"color:blue\">if</span> (eventAggregator != <span style=\"color:blue\">null</span>)\r\n    {\r\n        eventAggregator.GetEvent&lt;LogOnEvent&gt;().Subscribe(<span style=\"color:blue\">this</span>.OnAccountLogOn, ThreadOption.UIThread, <span style=\"color:blue\">true</span>);\r\n        eventAggregator.GetEvent&lt;LogOffEvent&gt;().Subscribe(<span style=\"color:blue\">this</span>.OnAccountLogOff, ThreadOption.UIThread, <span style=\"color:blue\">true</span>);\r\n    }\r\n\r\n    <span style=\"color:blue\">var</span> ieventAggregator = ServiceLocator.Current.GetInstance&lt;IEventAggregator&gt;();\r\n}\r\n</pre>\r\n</div>\r\n<p></p>\r\n",
+    "PostedDate": "2010-11-19T09:51:34.57-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "524483",
+    "ThreadId": "235076",
+    "Html": "\r\n<p>So there are two things here.&nbsp; Using the service locator vs. constructor injection can come down to a bit of a preference, but I tend to prefer the explicit dependency you get when it's done through constructor injection.&nbsp;</p>\r\n<p>With MEF, there is something else to consider regarding using constructor injection.&nbsp; Using constructor injection in MEF means you can't re-compose the inject contracts/interfaces.&nbsp; If you wanted this you would need to use property injection.&nbsp;</p>\r\n<p>HTH,</p>\r\n<p>-b</p>\r\n",
+    "PostedDate": "2010-11-19T12:02:50.297-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

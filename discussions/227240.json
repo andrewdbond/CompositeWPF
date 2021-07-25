@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "493598",
+    "ThreadId": "227240",
+    "Html": "<p>My app is calling a WCF service that returns a list of Module Names to load.</p>\r\n<p>In this particular case, 5 module names are being returned.</p>\r\n<p>Here is the odd part, when I load the modules from the following callback, only the last one in the list appears to load:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> OnGetAllowedModulesComplete(IEnumerable&lt;<span style=\"color:blue\">string</span>&gt; moduleList)\r\n{\r\n    <span style=\"color:blue\">foreach</span> (<span style=\"color:blue\">var</span> name <span style=\"color:blue\">in</span> moduleList)\r\n    {\r\n        Deployment.Current.Dispatcher.BeginInvoke(() =&gt; _moduleManager.LoadModule(name));\r\n    }\r\n}<br><br><p>However, if I change the call to the following...they all load!</p></pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> OnGetAllowedModulesComplete(IEnumerable&lt;<span style=\"color:blue\">string</span>&gt; moduleList)\r\n{\r\n    moduleList.ToList().ForEach(\r\n        m =&gt; Deployment.Current.Dispatcher.BeginInvoke(() =&gt; _moduleManager.LoadModule(m)));\r\n}<br><br></pre>\r\n</div>\r\n</p>\r\n<p>This has been driving me crazy - any explanations anyone may have would be fantastic! Maybe something to do with the use of IEnumerable&lt;string&gt;??</p>",
+    "PostedDate": "2010-09-14T17:50:40.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "495064",
+    "ThreadId": "227240",
+    "Html": "<p>Hi,</p>\r\n<p>This is certainly strange, it should be working. I would suggest you to reproduce this in an isolated scenario, since it might help you on finding a reason. If you continue experiencing this, could you send a repro solution of your scenario?</p>\r\n<p id=d3f5c200-a272-012d-a8cc-12313b101d47>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-09-17T08:57:27.253-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

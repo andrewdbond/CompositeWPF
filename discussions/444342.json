@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1046208",
+    "ThreadId": "444342",
+    "Html": "Hi, \r<br />\nI want to handle close event of document pane in order to remove the closed view from the prism region. How could i do that?<br />\n",
+    "PostedDate": "2013-05-20T14:32:30.487-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1046652",
+    "ThreadId": "444342",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding, the close event is raised in your <strong>View</strong>, so you will need to tell your <strong>ViewModel</strong> that you want to handle it and remove the closed <strong>View</strong>. In order to do that, you can use the <strong>InvokeCommandAction</strong> from Prism, which executes a command whenever the desired event is raised. The following code is an example on how to use <strong>InvokeCommandAction</strong> in your <strong>View</strong>. Based on your scenario, your <em>EventName</em> will be the close event of the document pane, and the binding of the <em>Command</em> will be the command from your <strong>ViewModel</strong> which will remove the <strong>View</strong> from the prism region. <br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">&lt;</span><span style=\"color:#A31515;\">i</span><span style=\"color:Blue;\">:</span><span style=\"color:#A31515;\">Interaction.Triggers</span><span style=\"color:Blue;\">&gt;</span>\n      <span style=\"color:Blue;\">&lt;</span><span style=\"color:#A31515;\">i</span><span style=\"color:Blue;\">:</span><span style=\"color:#A31515;\">EventTrigger</span> <span style=\"color:Red;\">EventName</span><span style=\"color:Blue;\">=</span><span style=\"color:Black;\">&quot;</span><span style=\"color:Blue;\">MyEventName</span><span style=\"color:Black;\">&quot;</span><span style=\"color:Blue;\">&gt;</span>\n           <span style=\"color:Blue;\">&lt;</span><span style=\"color:#A31515;\">prism</span><span style=\"color:Blue;\">:</span><span style=\"color:#A31515;\">InvokeCommandAction</span> <span style=\"color:Red;\">Command</span><span style=\"color:Blue;\">=</span><span style=\"color:Black;\">&quot;</span><span style=\"color:Blue;\">{Binding MyCommand}</span><span style=\"color:Black;\">&quot;</span> <span style=\"color:Blue;\">/&gt;</span>\n      <span style=\"color:Blue;\">&lt;/</span><span style=\"color:#A31515;\">i</span><span style=\"color:Blue;\">:</span><span style=\"color:#A31515;\">EventTrigger</span><span style=\"color:Blue;\">&gt;</span>\n<span style=\"color:Blue;\">&lt;/</span><span style=\"color:#A31515;\">i</span><span style=\"color:Blue;\">:</span><span style=\"color:#A31515;\">Interaction.Triggers</span><span style=\"color:Blue;\">&gt;</span>\r\n</pre></div>Take into account that <strong>InvokeCommandAction</strong> does not receive any parameter. Therefore, if you need to pass <strong>EventArgs</strong> to the command, you can use <a href=\"https://mvvmlight.codeplex.com/\" rel=\"nofollow\">MVVM Light Toolkit</a>, which provides an <strong>EventToCommand</strong> event trigger that lets you pass <strong>EventArgs</strong> as a command parameter.\r<br />\n<br />\nHope this helps,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-05-21T11:00:01.147-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "182152",
+    "ThreadId": "54079",
+    "Html": "<p>Hi all,</p>\r\n<p>I have a view that has several regions with static region names.  This view is reused many times to define layouts of other views.  I’m using scoped region managers to avoid errors related to the reuse of same region names.  We are also using dependency injection to inject the region manager into our classes, it appears the region manager that is injected each time is the primary region manager registered by the shell.  The problem is we don’t always want the primary region manager, instead we want a scoped region manager.</p>\r\n<p>For each module we have the module initialiser class, it’s here where we create a scoped region manager, we would like all presentation model classes from this point on for this module to use the scoped region manager, I doubt dependency injection is going to work to give us the scoped manager each time, so I’m wondering if its ok to register the scoped manager instance with the container so it can be accessed by our presentation model classes, or it there a more appropriate way?</p>\r\n<p>Here’s an example:</p>\r\n<p>IRegionManager region2 = mRegionManager.Regions[RegionNames.MainZone].Add(layout.View, RegionNames.ServiceRegion, true);<br>\r\nthis.container.RegisterInstance(&quot;ServiceRegionManager&quot;, region2);</p>\r\n<p>Thanks</p>\r\n<p>Paul</p>\r\n",
+    "PostedDate": "2009-04-21T23:08:15.823-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "182254",
+    "ThreadId": "54079",
+    "Html": "Hi Paul,<br>\r\n<br>\r\nI've created a LayoutManager for Prism v2, which may help.<br>\r\n<br>\r\n<a href=\"http://www.codeproject.com/KB/WPF/PrismLayoutManager.aspx\">http://www.codeproject.com/KB/WPF/PrismLayoutManager.aspx</a><br>\r\n<br>\r\nI'm getting ready to post an update which allows you to define layouts in Xaml as well as in the app.config.<br>\r\n<br>\r\nIf you're interested I can send you the source code.<br>\r\n<br>\r\nCheers<br>\r\n<br>\r\nRon<br>\r\n",
+    "PostedDate": "2009-04-22T04:07:21.233-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "182292",
+    "ThreadId": "54079",
+    "Html": "<p>Thanks Ron, I downloaded your Layout Manager and it’s very cool indeed, however I’m not sure it solves my issue, ultimately I would like to know how I can change a region name at runtime successfully, when I’ve tried the region manager never becomes aware of the changed region name and an exception is thrown stating the region name is already registered and digging deeper the region name I changed doesn’t appear in the region manager anywhere.</p>\r\n<p>For example I have a layout view which consists of a tab control with a region name of TabRegion, I have a starting module which registers the layout view with the main shell region, my 24 other modules are required to create a new instance of the layout view and push it into the TabRegion creating a tab control in each tab item in TabRegion.  I would like for each module to be able to create a new instance of the layout view, change the region name so there are no conflicts.  I tried Binding etc without any success.  To date to get around this I create scoped region manager to avoid region name conflicts and then I have no option to then register the scoped region manager in the container so module controllers etc can access it HOWEVER this is purely crazy as each module can potentially reuse the layout view 9 times.</p>\r\n<p>Do you know how to change a region name for a new layout view instance at runtime or a better approach??</p>\r\n<p>Thanks</p>\r\n<p>Paul</p>\r\n",
+    "PostedDate": "2009-04-22T05:40:23.157-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "182343",
+    "ThreadId": "54079",
+    "Html": "Hey Paul,<br>\r\n<br>\r\nI think I understand what it is you're trying to do.  It would help if I had some code to look at.  Anyway... I'm assuming you are using the RegionManager.RegionName attached properties on your layout controls?  If so, have you tried not using them and instead use the RegionManager.SetRegionName method to specify the region name on the target control.  I suspect all the regions have already been registered by the time you are attempting to change them.  I found there is much more happening behind-the-scenes when regions are registered (behaviours, listeners, adapters, etc).  Setting them in code is not ideal, but it's worth a try just to see what happens.<br>\r\n<br>\r\nIf you want to send me some sample code I'm at: ron at gramann dot co dot uk<br>\r\n<br>\r\nGood luck!<br>\r\n<br>\r\nrg<br>\r\n",
+    "PostedDate": "2009-04-22T07:29:41.073-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "250558",
+    "ThreadId": "54079",
+    "Html": "<p>I'm thinking that you can try the following:&nbsp; (please feel free to replace the word unity with the IoC container brand you favor ;) )</p>\r\n<ol>\r\n<li>Inject a view (which will function as a host control) into the parent region, which returns a scoped region manager.&nbsp; </li>\r\n<li>Create a child unity container from the main unity container.</li>\r\n<li>Place the scoped region manager in the child unity container</li>\r\n<li>Use the child unity container to construct your view &amp;/or view model &amp;/or model (etc.)</li>\r\n<li>Attach the resulting &quot;your view&quot; to the &quot;host view&quot; (or replace it if you prefer)</li>\r\n</ol>\r\n<p>Code (not compiled, let alone tested :) )</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>IRegion detailsRegion = this.regionManager.Regions[&quot;DetailsRegion&quot;];<br><br>HostView hostView = this.container.Resolve&lt;HostView&gt;();<br>IRegionManager scopedRegionManager = detailsRegion.Add(hostView, null, true);<br><br>// optionally activate the view (if DetailsRegion is a tab control, this gives the new hostView's tab the focus)<br>detailsRegion.Activate(hostView);<br><br>UnityContainer childContainer = this.container.CreateChildContainer();<br>childContainer.RegisterInstance&lt;IRegionManager&gt;(scopedRegionManager);<br>hostView.ChildContainer = childContainer; // someone should look after the new child container<br><br>MyView myView = childContainer.Resolve&lt;MyView&gt;();<br>hostView.Content = myView;</pre>\r\n</div>\r\n<p>The HostView guy can display loading visuals for the user while things are loading up...&nbsp; especially good for delayed module loading strategies not shown here...</p>\r\n<p>I'm thinking that this approach will work recursively, implementing the <em>Composite View</em> pattern in which a recursive UI structure of views is composed by a mechanism at runtime...</p>",
+    "PostedDate": "2009-10-28T03:13:18.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "459453",
+    "ThreadId": "54079",
+    "Html": "<p>I dont understand this line:</p>\r\n<pre>hostView.ChildContainer = childContainer;</pre>\r\n<pre>Is this some property in hostview? How can you reuse childcontainer in multiple modules because I need to use layoutView in different modules who inject their views?</pre>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-06-24T05:07:55.32-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

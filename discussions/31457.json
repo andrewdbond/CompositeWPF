@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "104545",
+    "ThreadId": "31457",
+    "Html": "I'm using CAB for over a year and got used to the container hierarchy concept using WorkItems with Sub-WorkItems. This is very helpful if you have i.e. to create multiple instances of the same view working with their own local services of the same type. Using separate WorkItems comes here very handy because you can create the service instance and the view in the same WorkItem. The view uses the local service from its WorkItem and can still use the global services of the RootWorkItem.&nbsp; Does Prism also support a container hierarchy using Unity by default? Or do we have to implement this support by ourselfs?<br>\r\n<br>\r\nRegards,<br>\r\nTschaena<br>\r\n",
+    "PostedDate": "2008-07-14T07:50:38.82-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "105961",
+    "ThreadId": "31457",
+    "Html": "Hi tschaena,<br>\r\n<br>\r\nIt is possible to create child container in prism, this is a default feature of Unity and allows the same scheme to be implemented as provided in CAB. <br>\r\nOne possible scenario would be something like this:<br>\r\n<br>\r\npublic class MyModule: IModule<br>\r\n{<br>\r\n&nbsp; private IUnityContainer _container;<br>\r\n<br>\r\n&nbsp; public MyModule(IUnityContainer parentContainer)<br>\r\n&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp; _container = parentContainer.CreateChildContainer();<br>\r\n&nbsp; }<br>\r\n<br>\r\n&nbsp; protected UnityContainer Container<br>\r\n&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp; get { return _container; }<br>\r\n&nbsp; }<br>\r\n<br>\r\n&nbsp; public void Initialize()<br>\r\n&nbsp; {<br>\r\n<br>\r\n&nbsp; }<br>\r\n}<br>\r\n",
+    "PostedDate": "2008-07-21T04:35:37.863-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "106331",
+    "ThreadId": "31457",
+    "Html": "Hi WMeints,<br>\r\n<br>\r\nSure, Unity does support a container hierarchy. But since Composite WPF does not seem to support multiple containers with special classes, I'm forced to write my own kind of &quot;WorkItemController&quot; for Unity (Let's call it UnityContainerController ;-)). Anyway, this problem seems solvable...<br>\r\n<br>\r\n",
+    "PostedDate": "2008-07-22T12:40:36.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "106531",
+    "ThreadId": "31457",
+    "Html": "I'm considering to implement a module base class an workitem base class for CompositeWPFContrib, I will keep you posted on the progress.<br>\r\n",
+    "PostedDate": "2008-07-23T07:10:27.563-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "106555",
+    "ThreadId": "31457",
+    "Html": "Hi&nbsp;Tschaena &amp;&nbsp;WMeints,<br>\r\n<br>\r\nYou can implement the equivalent the equivalent of the WorkItemController in your Composite WPF App.&nbsp; Simply implement a plain old C# class and add in to your container.&nbsp; If using the Unity Container and you want only one instance within the container, just register your type with a ContainerControlledLifetimeManager.&nbsp; See the OrdersController in the StockTraderRI.Modules.Position project for an example.&nbsp; You can accomplish all the equivalent functionality as provided by the WorkItemController in this manner.<br>\r\n<br>\r\n<br>\r\nRegistering your controller...<br>\r\n<br>\r\n<p>_container.RegisterType&lt;<span style=\"color:#2b91af\">IOrdersController</span>, <span style=\"color:#2b91af\">OrdersController</span>&gt;(<span style=\"color:#0000ff\">new</span> <span style=\"color:#2b91af\">ContainerControlledLifetimeManager</span>());<br>\r\n<br>\r\nInjecting dependecies needed by your controller...<br>\r\n<span style=\"color:#0000ff\"><br>\r\npublic</span> <span style=\"color:#0000ff\">class</span> <span style=\"color:#2b91af\">OrdersController</span> : <span style=\"color:#2b91af\">IOrdersController<br>\r\n</span>{ ...<br>\r\n<span style=\"color:#0000ff\">public</span> OrdersController(<span style=\"color:#2b91af\">IRegionManager</span> regionManager, <span style=\"color:#2b91af\">IUnityContainer</span> container, <br>\r\n<span style=\"color:#2b91af\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; StockTraderRICommandProxy</span> commandProxy, <span style=\"color:#2b91af\">IAccountPositionService</span> accountPositionService)</p>\r\n<p>{ ...} <br>\r\n}<br>\r\n<br>\r\nUsing the controller...<br>\r\n<br>\r\n<span style=\"color:#0000ff\">public</span> <span style=\"color:#0000ff\">class</span> <span style=\"color:#2b91af\">PositionSummaryPresentationModel</span> : <span style=\"color:#2b91af\">IPositionSummaryPresentationModel</span>, <span style=\"color:#2b91af\">INotifyPropertyChanged <br>\r\n</span><span style=\"color:#0000ff\"><span style=\"color:#000000\">{ </span>...</span></p>\r\n<p><span style=\"color:#0000ff\">public</span> PositionSummaryPresentationModel(<span style=\"color:#2b91af\">...</span>, <span style=\"color:#2b91af\">IOrdersController</span> ordersController...) { ...} <br>\r\n}<br>\r\n<br>\r\nHope this helps.&nbsp; Jim</p>\r\n",
+    "PostedDate": "2008-07-23T08:39:53.043-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "106871",
+    "ThreadId": "31457",
+    "Html": "Hi Jim,<br>\r\n<br>\r\nThanks for the reference to the StockTrader example. Yep, I will do it in such a way.<br>\r\n<br>\r\ntschaena<br>\r\n",
+    "PostedDate": "2008-07-24T12:36:44.477-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

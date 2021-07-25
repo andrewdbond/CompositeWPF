@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "525312",
+    "ThreadId": "235585",
+    "Html": "\r\n<p>I'm really new in prism so maybe it's just stupid's question. (and sorry about my english, it's not my natural).</p>\r\n<p>I'm tring to build wpf application who use view-switching navigation framework and i got this problem: when ever i use NavigateRequest it's works only if the region is empty, else it just don't doing anything. Am i forgetting to add somthing?</p>\r\n<p>thanx</p>\r\n",
+    "PostedDate": "2010-11-22T06:55:38.733-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "525718",
+    "ThreadId": "235585",
+    "Html": "\r\n<p>Not sure about WPF, but in silverlight you need to implement INavigationAware and IRegionMemberLifetime in your view/viewmodel. The KeepAlive and IsNavigationTarget need to return true for you to be able to navigate between views.</p>\r\n<p>IRegionMemberLifetime helps you decide whether you want to remove the deactivated view from the region or just mark it as decativated. IsNavigationTarget in INavigationAware helps you specify that the view can be naviagted to using the RequestNavigate.</p>\r\n<p>Try the above and let me know.</p>\r\n",
+    "PostedDate": "2010-11-23T01:03:15.48-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "525728",
+    "ThreadId": "235585",
+    "Html": "\r\n<p>Thank you for the answer.&nbsp;I'm all ready implemanting IConfirmNavigationRequest (and&nbsp;it got the same methods as INavigationReqwest). I've tried to Implement IRegionMemberLifetime. but still when ever region is filled it's view can't be replaced.</p>\r\n",
+    "PostedDate": "2010-11-23T01:17:25.647-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "525744",
+    "ThreadId": "235585",
+    "Html": "\r\n<p>Can you post the code for the requestnavigate?</p>\r\n",
+    "PostedDate": "2010-11-23T01:53:32.787-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "525745",
+    "ThreadId": "235585",
+    "Html": "\r\n<div style=\"color:black; background-color:white\">\r\n<pre>        <span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> RequestNavigate(<span style=\"color:blue\">string</span> RegionName, <span style=\"color:blue\">string</span> ViewName)\r\n        {\r\n            <span style=\"color:blue\">this</span>.RegionManager.RequestNavigate(RegionName,\r\n                    <span style=\"color:blue\">new</span> Uri(ViewName, UriKind.Relative));\r\n        }\r\n</pre>\r\n</div>\r\n<p>this is the code i'm using. I got baseView class and this is it prototype:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> BaseView : UserControl, IConfirmNavigationRequest, IActiveAware, INavigateAsync, IRegionMemberLifetime\r\n</pre>\r\n</div>\r\n",
+    "PostedDate": "2010-11-23T02:01:03.99-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

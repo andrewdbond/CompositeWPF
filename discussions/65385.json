@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "222681",
+    "ThreadId": "65385",
+    "Html": "<p>Hi</p>\r\n<p>I would like to skin dynamically my application. What&nbsp; i mean is that the user can click on a menuitem and the color of the application change.</p>\r\n<p>I did this very well in my application and when i move on Prism i dont have no idea to do that.&nbsp;Here is my approach.</p>\r\n<p>To spread my resources in all modules, i put them in the shell (application resource). The application has a menu that is come from a separate module. The user click on a menuitem to select his color.</p>\r\n<p>I would like to use IEventAggregator to publish this event from the menu module and subscribe to this same event in the shell in order to change my resource. But there is no way to access the IEventAggregator from the shell.</p>\r\n<p>Does anybody has a nice solution to do that?</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2009-08-12T12:38:02.54-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "223026",
+    "ThreadId": "65385",
+    "Html": "<p>Hi blochaou,&nbsp;</p>\r\n<p>Using the EventAggregator is a good idea for the scenario you described.<br>To access the <strong>IEventAggregator</strong> from the Shell you can do it using constructor DI. You can do it directly in the shell view or use a presenter:</p>\r\n<p style=\"padding-left:30px\"><span style=\"font-size:10pt;color:blue\" lang=EN-US>public</span><span style=\"font-size:10pt\" lang=EN-US> Shell(<span style=\"color:#2b91af\">IEventAggregator</span> eventAggregator)</span></p>\r\n<p>For this approach to work, you will have to delegate the creation of the shell in the bootstrapper to the DI container. This approach is used in the <a href=\"http://msdn.microsoft.com/en-us/library/cc707869.aspx\">Event</a> Aggregator Quickstart:&nbsp;</p>\r\n<p style=\"padding-left:30px\"><span style=\"font-size:10pt;color:blue\" lang=EN-US>protected</span><span style=\"font-size:10pt\" lang=EN-US> <span style=\"color:blue\">override</span> DependencyObject CreateShell()<br></span><span style=\"font-size:10pt\" lang=EN-US>{<br></span><span style=\"font-size:10pt\" lang=EN-US>&nbsp;&nbsp;&nbsp; <span style=\"color:#2b91af\">Shell</span> shell = Container.Resolve&lt;<span style=\"color:#2b91af\">Shell</span>&gt;();<br></span><span style=\"font-size:10pt\" lang=EN-US>&nbsp;&nbsp;&nbsp; shell.Show();</span><span style=\"font-size:10pt;color:blue\" lang=EN-US>&nbsp;</span></p>\r\n<p style=\"padding-left:30px\"><span style=\"font-size:10pt\" lang=EN-US>&nbsp;&nbsp;&nbsp; <span style=\"color:blue\">return</span> shell;<br></span><span style=\"font-size:10pt\">}</span><span style=\"font-size:10pt;color:blue\" lang=EN-US>&nbsp;&nbsp;&nbsp;&nbsp; </span></p>\r\n<p><span style=\"font-size:10pt\" lang=EN-US>&nbsp;</span></p>\r\n<p><span style=\"font-size:10pt\" lang=EN-US>&nbsp;</span></p>\r\n<p>Hope it helps!&nbsp;</p>\r\n<p>Matias Bonaventura<br><a href=\"http://blogs.southworks.net/matiasb\">http://blogs.southworks.net/matiasb</a></p>",
+    "PostedDate": "2009-08-13T10:05:41.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "223053",
+    "ThreadId": "65385",
+    "Html": "<p>Thanks Matiasbonaventura</p>\r\n<p>It works very well.&nbsp;</p>",
+    "PostedDate": "2009-08-13T11:07:26.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "223185",
+    "ThreadId": "65385",
+    "Html": "<p>For those that may want to know &quot;how&quot; to Skin in PRISM (Desktop) I blog on the topic</p>\r\n<p><a href=\"http://www.global-webnet.net/blogengine/post/2009/08/13/Creating-Desktop-Skins-in-WPF-for-PRISM-Desktop.aspx\">http://www.global-webnet.net/blogengine/post/2009/08/13/Creating-Desktop-Skins-in-WPF-for-PRISM-Desktop.aspx</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-13T17:11:13.18-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

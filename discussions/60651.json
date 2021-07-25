@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "205443",
+    "ThreadId": "60651",
+    "Html": "<p>I am trying to inject views in to a region that is a TransitioningContentControl from the Silverlight Toolkit and there is a problem with the way in which SingleActiveRegion would work with TransitioningContentControl.</p>\r\n<p>The SingleActiveRegion will cause a change in the content from current view to null and then null to new view because it first deactivates the current view and then activates the new view. &nbsp;I think this means that I can't get a smooth transition from current view to new view.</p>\r\n<p>However if SingleActiveRegion found the current view, then activated the new one, before deactivating the former current view then it would work, because ContentControlRegionAdapter uses FirstOrDefault() to find the active view. &nbsp;Whether the new view comes before the current view in the collection or not there would only be one change to the content of the content control.</p>\r\n<p>I could fix this by creating a region adapter for TransitioningContentControl that returns something similar to SingleActiveRegion from CreateRegion(), however it might be worth considering changing the behaviour of SingleActiveRegion.</p>",
+    "PostedDate": "2009-06-25T07:19:41.91-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "205591",
+    "ThreadId": "60651",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-family:Calibri\"><span style=\"font-size:small\">Hi</span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-family:Calibri\"><span style=\"font-size:small\">&nbsp;</span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-family:Calibri\"><span style=\"font-size:small\">Although I have not used the <strong>TransitioningContentControl</strong> &nbsp;to transition between views, you are right when you say that there is a moment when the <strong>ContentControl</strong> content is null. If for some reason you require the view to always have content, you can inherit from the <strong>SingleActiveRegion</strong> and override its Activate method (you will find that Prism-v2 was built to be easily extended). </span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-family:Calibri\"><span style=\"font-size:small\">&nbsp;</span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-family:Calibri\"><span style=\"font-size:small\">Of course, if you want this <strong>TransitionSingleActiveRegion</strong> to adapt only controls of type TranstioningContentControl, you will have to register the required region behaviors and adapter mappings.</span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-family:Calibri\"><span style=\"font-size:small\">You can get more information about this in the following articles from the Prism-v2 documentation:</span></span></span></p>\r\n<p style=\"text-indent:-18pt;margin:0cm 0cm 0pt 36pt\"><span style=\"font-family:Symbol\" lang=EN-US><span style=\"\"><span style=\"font-size:small\">&middot;</span><span style=\"font:7pt &quot;Times New Roman&quot;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style=\"\" lang=EN-US><a href=\"http://msdn.microsoft.com/en-us/library/dd458901.aspx\"><span style=\"font-family:Calibri;font-size:small\">How to: Create a Custom Region Adapter</span></a></span></p>\r\n<p style=\"text-indent:-18pt;margin:0cm 0cm 0pt 36pt\"><span style=\"font-family:Symbol\"><span style=\"\"><span style=\"font-size:small\">&middot;</span><span style=\"font:7pt &quot;Times New Roman&quot;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style=\"\" lang=EN-US><a href=\"http://msdn.microsoft.com/en-us/library/dd458944.aspx\"><span style=\"font-family:Calibri;font-size:small\">UI Composition</span></a></span></p>\r\n<p style=\"margin:0cm 0cm 0pt -1.2pt\"><span style=\"\" lang=EN-US><span style=\"font-family:Calibri;font-size:small\">&nbsp;</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt -1.2pt\"><span style=\"\" lang=EN-US><span style=\"font-family:Calibri;font-size:small\">If you believe your suggestion could be useful for the community, you can create a new item in the </span><a href=\"http://compositewpf.codeplex.com/WorkItem/List.aspx\"><span style=\"font-family:Calibri;font-size:small\">Prism-v2 Issue Tracker</span></a><span style=\"font-size:small\"><span style=\"font-family:Calibri\"> so people can vote for it. Perhaps it might be taken into account for a future version.</span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-size:small\"><span style=\"font-family:Calibri\">&nbsp;</span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-size:small\"><span style=\"font-family:Calibri\">Please let me know if this helps.</span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"\" lang=EN-US><span style=\"font-size:small\"><span style=\"font-family:Calibri\">&nbsp;</span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"\" lang=EN-US><span style=\"font-size:small\"><span style=\"font-family:Calibri\">Damian Schenkelman</span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><a href=\"http://blogs.southworks.net/dschenkelman\"><span style=\"font-family:Calibri;font-size:small\">http://blogs.southworks.net/dschenkelman</span></a></span></p>",
+    "PostedDate": "2009-06-25T11:40:18.763-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "636417",
+    "ThreadId": "60651",
+    "Html": "<p>Rich, did you ever do this?&nbsp; If so, I'd like to talk to you about it.&nbsp; <a href=\"mailto:RANGERD@MICROSOFT.com\">RANGERD@MICROSOFT.com</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-07-02T07:44:04.54-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "637060",
+    "ThreadId": "60651",
+    "Html": "<p>Damian,</p>\r\n<p>&nbsp;</p>\r\n<p>This is the post to which I was referring.</p>\r\n<p>&nbsp;</p>\r\n<p>range</p>",
+    "PostedDate": "2011-07-04T07:56:37-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

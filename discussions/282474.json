@@ -1,0 +1,138 @@
+[
+  {
+    "Id": "710213",
+    "ThreadId": "282474",
+    "Html": "\r\n<p>There is a piece of code which has stopped working after upgrading SL4 project to SL5.</p>\r\n<p>Compilation&nbsp;shows an&nbsp;error mesage: &quot;A value of type InteractionRequestTrigger cannot be added to a collection or dictionary of type 'TriggerCollection'.</p>\r\n<p>Could anybody, pls, help to find any workaround? InteractionRequest pattern for dialogs is very useful.</p>\r\n<p>Thanks, Prism4Uer.</p>\r\n<p>&nbsp;</p>\r\n<p>...</p>\r\n<p>xmlns:i=&quot;clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity&quot;<br>\r\nxmlns:prism=&quot;clr-namespace:Microsoft.Practices.Prism.Interactivity.InteractionRequest;assembly=Microsoft.Practices.Prism.Interactivity&quot;<br>\r\n...</p>\r\n<p>&lt;i:Interaction.Triggers&gt;<br>\r\n&nbsp;&nbsp; &lt;prism:InteractionRequestTrigger SourceObject=&quot;{Binding LoginRegistrationRequest}&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp; &lt;prism:PopupChildWindowAction&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;prism:PopupChildWindowAction.ChildWindow&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Views:LoginRegistrationWindow/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/prismPopupChildWindowAction.ChildWindow&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp; &lt;/prismPopupChildWindowAction&gt;<br>\r\n&nbsp;&nbsp; &lt;/prismInteractionRequestTrigger&gt;<br>\r\n&nbsp;&lt;/i:Interaction.Triggers&gt;&quot;</p>\r\n",
+    "PostedDate": "2011-12-10T02:00:16.983-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "710312",
+    "ThreadId": "282474",
+    "Html": "<p>I think the issue is the Prism library was built for Silverlight 4, and in a couple spots (like interactivity) that causes trouble. I haven't dug into why - perhaps because the interactivty library itself references types from Silverlight 4, and those referenced types are now upgraded to Silverlight 5?</p>\r\n<p>In any case, here's&nbsp;what I did to workaround the problem</p>\r\n<p>First I built the interactivity&nbsp;assembly in&nbsp;prism.&nbsp;</p>\r\n<ol>\r\n<li>Download and unzip the source for Prism.</li>\r\n<li>Set&nbsp;the Microsoft.Practices.Prism.Interactivity project to compile for Silverlight 5 and build it</li>\r\n</ol>\r\n<p>Since I didn't strong name my newly built library, I did this to my project that uses it:</p>\r\n<ol>\r\n<li>Remove the reference to Microsoft.Practices.Prism.Interactivity</li>\r\n<li>Browse to my application /bin folder and manually delete the copy of Microsoft.Practices.Prism.Interactivity.dll that's there (don't forget this step).</li>\r\n<li>Add a new referece to Microsoft.Practices.Prism.Interactivity by browsing to the newly built version from above.</li>\r\n<li>Rebuild solution.</li>\r\n</ol>",
+    "PostedDate": "2011-12-10T10:54:02.863-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "710333",
+    "ThreadId": "282474",
+    "Html": "<p>Thanks a lot for the clear explanation - the project works fine now!</p>\r\n<p>Additionaly in PrismLibrary (before recompilation for Silverlight 5) I've updated Microsoft.Windows.Interactivity and Microsoft.Expression.Interactions references (both to new versions 5.0.5.0).</p>\r\n<p>Then in my project I have used namespaces: ﻿﻿﻿﻿</p>\r\n<p>xmlns:i=http://schemas.microsoft.com/expression/2010/interactivity</p>\r\n<p>xmlns:prism=http://www.codeplex.com/prism</p>\r\n<p>instead of previous one.</p>\r\n<p>There is a problem with loading modules (MEF), but this is another story.</p>\r\n<p>Thank you!</p>",
+    "PostedDate": "2011-12-10T12:43:58.703-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "710355",
+    "ThreadId": "282474",
+    "Html": "<p>Jolly good. I just hope they release an official&nbsp;Silveright 5 (signed) build of PRISM soon.</p>",
+    "PostedDate": "2011-12-10T13:52:57.223-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "711014",
+    "ThreadId": "282474",
+    "Html": "<p>For those interested: I found these new DLLs here:&nbsp;<a href=\"http://www.microsoft.com/download/en/details.aspx?displaylang=en&amp;id=9503\">http://www.microsoft.com/download/en/details.aspx?displaylang=en&amp;id=9503</a></p>",
+    "PostedDate": "2011-12-12T10:13:57.523-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "711047",
+    "ThreadId": "282474",
+    "Html": "<p>Hey.. I've also run into trouble loading modules(MEF)... curious if you have figured anything out / where you are at on this...&nbsp;</p>\n<p>My work so far indicates that the issue is with dynamically loading modules with MEF.</p>\n<p>Maybe start a&nbsp;separate&nbsp;thread for this discussion?</p>",
+    "PostedDate": "2011-12-12T11:26:23.527-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "711049",
+    "ThreadId": "282474",
+    "Html": "\r\n<div>\r\n<div style=\"font-family:Calibri,sans-serif; font-size:11pt\">Im using Unity rather than med... Haven't seen any change in behavior in SL5 there.<br>\r\n</div>\r\n</div>\r\n<hr>\r\n<span style=\"font-family:Tahoma,sans-serif; font-size:10pt; font-weight:bold\">From:\r\n</span><span style=\"font-family:Tahoma,sans-serif; font-size:10pt\">acanadian</span><br>\r\n<span style=\"font-family:Tahoma,sans-serif; font-size:10pt; font-weight:bold\">Sent:\r\n</span><span style=\"font-family:Tahoma,sans-serif; font-size:10pt\">12/12/2011 11:26 AM</span><br>\r\n<span style=\"font-family:Tahoma,sans-serif; font-size:10pt; font-weight:bold\">To:\r\n</span><span style=\"font-family:Tahoma,sans-serif; font-size:10pt\">stalbert@exploreconsulting.com</span><br>\r\n<span style=\"font-family:Tahoma,sans-serif; font-size:10pt; font-weight:bold\">Subject:\r\n</span><span style=\"font-family:Tahoma,sans-serif; font-size:10pt\">Re: SL5 InteractionRequestTrigger [CompositeWPF:282474]</span><br>\r\n<br>\r\n<p>From: acanadian</p>\r\n<div id=\"ThreadNotificationPostBody\">\r\n<p>Hey.. I've also run into trouble loading modules(MEF)... curious if you have figured anything out / where you are at on this...\r\n</p>\r\n<p>Maybe start a separate thread for this discussion?</p>\r\n</div>\r\n",
+    "PostedDate": "2011-12-12T11:32:03.95-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "711052",
+    "ThreadId": "282474",
+    "Html": "<p>Alright.. we I'll fire up a new thread to get a discussion going on that topic.</p>",
+    "PostedDate": "2011-12-12T11:41:50.36-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "711055",
+    "ThreadId": "282474",
+    "Html": "<p>I've got stuck with MEF, unfortunatelly.</p>\r\n<p>Tried using Microsoft.Practices.Prism.MefExtensions from Prism4 and recompiled for SL5. Treid changing 'Copy Local' to True/False for this dll&nbsp;(in Prism 4 it&nbsp;was to&nbsp;be set up to 'False').</p>\r\n<p>Nothing helped,&nbsp;no idea.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-12-12T11:45:36.947-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "711061",
+    "ThreadId": "282474",
+    "Html": "<p>That is what I did so far. &nbsp;Recompiled MefExtensions DLL to SL 5. &nbsp;Updated references in my solution. &nbsp;Ensured that copy local was true in the main project and false in all others.&nbsp;</p>\r\n<p>MEF is loading correctly in the boot strapper. I've even been able to load one of my modules dynamically, which suggested that MEF is working. There just might be an assembly in the XAP's that is not SL 5 friendly. &nbsp;Currently investigating..</p>",
+    "PostedDate": "2011-12-12T11:53:11.837-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "711091",
+    "ThreadId": "282474",
+    "Html": "\r\n<div>\r\n<p><span style=\"font-size:11.0pt; font-family:\">You might try manually cleaning your build directory for your app. That is, make sure no copies of Silverlight4 DLLs still exist in your bin/debug.\r\n</span></p>\r\n<p><span style=\"font-size:11.0pt; font-family:\"></span></p>\r\n<p><span style=\"font-size:11.0pt; font-family:\">That’s why I mentioned the manual delete step in the original post, since I think Silverlight picks up the strong-named (signed) DLLs in the bin folder before it will use your recompiled (not strong-named) version.</span></p>\r\n<p><span style=\"font-size:11.0pt; font-family:\"></span></p>\r\n<p><span style=\"font-size:11.0pt; font-family:\"></span></p>\r\n<div>\r\n<div style=\"border:none; border-top:solid #B5C4DF 1.0pt; padding:3.0pt 0in 0in 0in\">\r\n<p><b><span style=\"font-size:10.0pt; font-family:\">From:</span></b><span style=\"font-size:10.0pt; font-family:\"> Prism4User [email removed]\r\n<br>\r\n<b>Sent:</b> Monday, December 12, 2011 11:46 AM<br>\r\n<b>To:</b> stalbert@exploreconsulting.com<br>\r\n<b>Subject:</b> Re: SL5 InteractionRequestTrigger [CompositeWPF:282474]</span></p>\r\n</div>\r\n</div>\r\n<p></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">From: Prism4User</span></p>\r\n<div id=\"ThreadNotificationPostBody\" style=\"margin-bottom:24.0pt\">\r\n<p><span style=\"font-size:9.0pt; font-family:\">I've got stuck with MEF, unfortunatelly.</span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">Tried using Microsoft.Practices.Prism.MefExtensions from Prism4 and recompiled for SL5. Treid changing 'Copy Local' to True/False for this dll (in Prism 4 it was to be set up to 'False').</span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">Nothing helped, no idea.</span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\"></span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\"></span></p>\r\n</div>\r\n</div>\r\n",
+    "PostedDate": "2011-12-12T12:56:23.687-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "711104",
+    "ThreadId": "282474",
+    "Html": "<p>Yes, I remember that&nbsp;(I've described it a bit earlier&nbsp;in the&nbsp;new thread started by 'Acanadian': <a href=\"http://compositewpf.codeplex.com/discussions/282685\">http://compositewpf.codeplex.com/discussions/282685</a>).</p>\r\n<p>But error still exists and I don't know which setting of&nbsp;'Copy Local' for MefExtension is better:&nbsp;'False' (as in Prism 4) or&nbsp;'True'.</p>\r\n<p>Both settings&nbsp;give an error, but setting 'True' loads the shell&nbsp;at least and shows ' ... initialization error ... ' instead of '...MEF assembly loading ...'&nbsp;error.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-12-12T13:42:55.43-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "716977",
+    "ThreadId": "282474",
+    "Html": "<p>Is there any info from PRISM team on when PRISM for SL5 will be released? Even PRISM4 compiled/tested and signed will be great for now. We just can't upgrade and use SL5 because of this...</p>",
+    "PostedDate": "2011-12-24T17:18:09.347-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "717200",
+    "ThreadId": "282474",
+    "Html": "<p>Hi,</p>\n<p>You might find useful information regarding the future of Prism in the following links:</p>\n<ul>\n<li><a href=\"http://blogs.msdn.com/b/blaine/archive/2011/12/14/starting-work-on-prism-4-1.aspx\">Starting work on Prism 4.1</a> </li>\n<li><a href=\"http://msdn.microsoft.com/en-us/practices/bb232643\">Upcoming Release Roadmap</a> </li>\n</ul>\n<p>I hope you find this handy,</p>\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-12-26T08:19:33.443-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "717222",
+    "ThreadId": "282474",
+    "Html": "<p>Thank you, I've seen 4.5 roadmap but that was something too far away. 4.1 is exactly what I needed to know. Hopefully it will be relased in Jan 2012</p>",
+    "PostedDate": "2011-12-26T10:26:43.247-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "722048",
+    "ThreadId": "282474",
+    "Html": "<p>I went through the same process of converting a SL 4 Prism app to SL 5 and encountered similar problems as discussed here.&nbsp; I finally got it all working and wrote up the procedure in my blog at <a href=\"http://dotnetsilverlightprism.wordpress.com/\">http://dotnetsilverlightprism.wordpress.com/</a>&nbsp; I hope this helps.</p>",
+    "PostedDate": "2012-01-08T03:00:40.917-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "794654",
+    "ThreadId": "282474",
+    "Html": "<p>I found that by inalling Expression Blend preview for silverlight 5 solved the issue.&nbsp; It ships with the dlls versions&nbsp;required.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-02-22T04:16:29.537-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

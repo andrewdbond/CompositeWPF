@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "144513",
+    "ThreadId": "43487",
+    "Html": "Is it possible to specify a view interface in the XAML which would be automatically loaded into a region?  That is, the shell might say &quot;in this region I know I want to have an IMyView loaded here&quot;, rather than just giving it a name and then having the module say &quot;load me into a region named XYZ&quot;.<br>\r\n",
+    "PostedDate": "2009-01-05T13:28:45.107-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "145038",
+    "ThreadId": "43487",
+    "Html": "<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Hi</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">If you are using the<span style=\"color:#1f497d\"> <a href=\"http://www.codeplex.com/CompositeWPF/Release/ProjectReleases.aspx?ReleaseId=20738\">Prism v2 drops</a> </span>you could find useful the<b> Pull-based Composition</b> QuickStart (located at <i>Quickstarts\\Visual Composition\\TopDown\\TopDownUIComposition.sln</i> in the latest Prism v2 drop). This quickstart uses RegisterViewWithRegion method from the RegionViewRegistry to register a view with a particular region name, so whenever a region is created, it queries the RegionViewRegistry to obtain the views associated to that name. Besides, the region subscribes to the registry, therefore when a new view is registered for that region, it will be notified and the view will be loaded in it. </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">This quickstart also uses RegionContext attached property in order to share some context with the view that gets added to the region.</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">For more information related to this check the <b>Pull-based Composition QuickStart</b> article in the Prism v2 documentation.</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Please, let me know if this helps.</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Mariano Converti</span></p>\r\n<span style=\"font-size:11pt;font-family:'calibri','sans-serif'\"><a href=\"http://blogs.southworks.net/mconverti\">http://blogs.southworks.net/mconverti</a></span>\r\n",
+    "PostedDate": "2009-01-07T06:45:12.31-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "145715",
+    "ThreadId": "43487",
+    "Html": "Thanks.  I'll take a closer look at that.  From my first look at it, at least from the sample, it still required the module to know the name of the region it was to be loaded into.  I am looking for a way for the module not to need know the name of the region.  But I need to do some more playing around.<br>\r\n<br>\r\nFor example, say I want to display the same module twice in the same Shell.  Currently to do that, as far as I can tell, you have to fiddle with C# since otherwise you'd need to be able to give two different ContentControl's the same region name.  So what I was thinking is that if you could specify an view interface in the XAML for a ContentControl instead of a region name, that would be one way to solve the problem.\r\n",
+    "PostedDate": "2009-01-09T07:57:56.807-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

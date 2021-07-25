@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Issue closed as the behavior described has been updated in the current release.",
+    "ClosedDate": "2011-03-01T12:03:44.847-08:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "While using the ConfigurationStore module enumerator is very easy to make a mistake during the configuration, so I'm sure not the first one to report this problem.\n \nConsider this configuration line <module assemblyFile=\"Modules/module.dll\" moduleType=\"module.myType\" moduleName=\"myModule\"/>\n \nIf the module.myType can't be resolved in the specified module the NullReference exception is thrown from the ModuleLoader class \n(function \"public void Initialize(ModuleInfo[] moduleInfos)\" \nline: \"HandleModuleLoadError(moduleInfo, type.Assembly.FullName, e);\")",
+    "LastUpdatedDate": "2013-05-16T05:29:03.287-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-09-02T21:30:33.627-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "NullReferenceException is thrown when configured module doesn't contain a configured type",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 2944
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\nThe ModuleLoader class no longer exists on Prism Library v4. Now you will find the ModuleInitializer class (which implements the IModuleInitializer interface), where the Initialize method accepts a ModuleInfo as a single parameter.\r\nThe new HandleModuleInitializationError method is throwing a ModuleInitializeException when can´t resolve the module type.\r\nThanks,\r\n\r\nMiguel Bronzovic\r\nhttp://blogs.southworks.net/mbronzovic\r\n",
+      "PostedDate": "2011-03-01T11:48:31.993-08:00",
+      "Id": 156026
+    }
+  ]
+}

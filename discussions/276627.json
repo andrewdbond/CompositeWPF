@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "687054",
+    "ThreadId": "276627",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I have read very carefully the prism MSDN documentation on &quot;Communicating Between Loosely Coupled Components&quot; but I want to be sure that I understood correctly when &amp; how to use the event aggregator and the shared service.</p>\r\n<p>I hope that you can help me checking my understanding. I am taking a simple example for that purpose:</p>\r\n<p>I suppose that I want to develop an application that is able to load a list of records and expose several subsets (eventually overlapping) of the loaded data in various views (interacting differently with the user). Once the loading is done, if the user\r\n select a record in a view, the other views are notified in order to react if they are also containing the record.</p>\r\n<p>To my mind, it can be done with:</p>\r\n<p>- a <strong>shared service</strong> which manage the data loding</p>\r\n<p>- three GUI modules respecting the <strong>MVVM </strong>pattern</p>\r\n<p>The shared service exposes an interface in the<strong> infrastructure library</strong> which defines an event\r\n<strong>DataLoaded(List&lt;Record&gt; data)</strong>.</p>\r\n<p>As it is a shared service, the <strong>view model</strong> class of the GUI modules can use dependency injection in order to access it (<strong>[ImportingConstructor]</strong>) and have the possibility to subscribe to this event. When they receive the event,\r\n they can populate the associated <strong>models </strong>(ObservableCollection?) with a subset of the data (depending on some criterion).</p>\r\n<p>Besides that, there is a class (defined in the <strong>Infrastructure library</strong>)\r\n<strong>RecordSelected : CompositePresentationEvent&lt;Record&gt;. </strong>The three view module can have access to the shared service\r\n<strong>EventAggregator </strong>through dependency injection and subscribe this event. They are also publishing it when there is a click on a record. In this case, the other modules receive it and can react accordingly by checking if they contain the record\r\n too.</p>\r\n<p>I hope my example is clear enough so you can help me...</p>\r\n<p>Does this structure seems ok to you? Can you provide me some corrections/advice if not?</p>\r\n<p>Thanks a lot,</p>\r\n<p>Best,</p>\r\n",
+    "PostedDate": "2011-10-20T12:25:23.21-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "687390",
+    "ThreadId": "276627",
+    "Html": "<p>Hi,</p>\r\n<p>From the description of this structure, the approach you're following seems like a valid possibility to achieve your scenario:</p>\r\n<p>For loading the data asynchronously, it looks reasonable to have a shared service, which also defines an event for when the data has been loaded completely. In this case using the event aggregator would be a bit of an overkill, since you're already sharing this service, thus allowing communication between decoupled components, none of which need to know the implementation of the service.</p>\r\n<p>Then, for notifying that a record has been selected, using the event aggregator seems to be a good choice in my opinion, since you're only transmitting an event (\"This item has been selected\").</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-10-21T05:35:19.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "688060",
+    "ThreadId": "276627",
+    "Html": "<p>Hi Guido,</p>\n<p>&nbsp;</p>\n<p>Thanks a lot for your quick answer (and sorry for my late reply :)). Your explanations confirm my thoughts.</p>\n<p>I take advantage of your kindness and ask you complementary questions:</p>\n<p>- In the case that I want to handle multiple selection, It seems to me that I can create a selection manager as a shared service or group the selection manager into the data loading shared service. What is your opinion on this?</p>\n<p>- Another question concerns the identification of records. For you, is it better to identify the records with an id property (and introduce an id manager as a shared service) or only consider the reference for comparison? This is a more general question  but if you can help me on this too, I will be grateful :)</p>\n<p>Thanks a lot,</p>\n<p>Best,</p>",
+    "PostedDate": "2011-10-23T08:03:19.567-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "688419",
+    "ThreadId": "276627",
+    "Html": "<p>Hi,</p>\n<p>Both of the decisions you're mentioining here will depend on your personal preference and project requirements. On the other hand, here are some recommendations based on my understanding of your scenario:</p>\n<p>I believe that, for your first concern, it would be better to divide the functionality of managing selection of items and retrieving data, especially if you might some day modify the implementation of your data access service. This would on instance imply  separating the responsibilities of your classes.</p>\n<p>As for your second one, I believe having an <strong>Id </strong>property is a good idea, since you can also use it later to serialize the object and store it in a database, for example. You could also override the <strong>Equals </strong>method of your entities to check whether they're the same instance by checking only the <strong>Id </strong>property.</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-10-24T06:32:47.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "688786",
+    "ThreadId": "276627",
+    "Html": "\r\n<p>Thanks again for your answer!<br>\r\nIt helps me a lot choosing the right solution. I totally agree with you regarding the ID. But the associated issue is the attribution of new ID. To my mind, in this case I should also introduce a shared service that is managing the IDs. Maybe delegate the record\r\n creation in this shared service in order to affect the ID at the same time. What's your opinion on this?<br>\r\nThanks again,<br>\r\nBest,<br>\r\nThibaut<br>\r\n</p>\r\n",
+    "PostedDate": "2011-10-24T23:46:22.177-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "689263",
+    "ThreadId": "276627",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, using a shared service (akin to a factory) to manage the attribution of the <strong>Ids </strong>seems to be a valid approach, this way you will keep separating the responsibilities of your classes, but as Guido mentioned above, remember that having an <strong>Id </strong>property is<span style=\"font-size: 9pt;\" lang=\"EN-US\"> </span>in my opinion useful if you are planning to serialize your data and store it in a database, xml or similar.</p>\r\n<p>Thanks,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-10-25T13:50:25.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "689710",
+    "ThreadId": "276627",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Thanks for your answer. I am likely to use serialization so I will definitely use this.\r\n</p>\r\n<p>I will abuse of your kindness and ask you other questions. Just tell me when you're tired of my questions :).</p>\r\n<p>- coming back to the dataloader shared service, if I want to handle several several loading in parallel. I was thinking of creating this service as a factory that provides DataLoaderThread. Is it the right way to do it?</p>\r\n<p>- I have another different concern regarding the logger shared service. Prism is providing a ILoggerInterface so that you can use your own implementation. I want to use NLog and take advantage of its filtering capabilities (you can get the currentClassLogger\r\n and in the configuration file use a rule to filter on namespace). I am facing difficulties to integrate it into prism because the logger is a singleton so the principle of getting the current class loggers does not seem obvious to set up. Have someone used\r\n NLog before with prism? Or do you have an idea how I can do it?</p>\r\n<p>Thanks again,<br>\r\nBest</p>\r\n<div>Le 25 oct. 2011 22:50, &quot;aadami&quot; &lt;<a href=\"mailto:notifications@codeplex.com\" target=\"_blank\">notifications@codeplex.com</a>&gt; a écrit :<br type=\"attribution\">\r\n</div>\r\n",
+    "PostedDate": "2011-10-26T09:10:32.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "689737",
+    "ThreadId": "276627",
+    "Html": "<p>Hi,</p>\r\n<p>For your first question, using a background thread to handle several loading operations in paralell makes sense. You might find this article useful, where the WPF threading model is explained:</p>\r\n<p><a href=\"http://msdn.microsoft.com/en-us/library/ms741870.aspx\">Threading Model</a></p>\r\n<p>Also, in case you find some difficulties regarding specifically to WPF's threading model, you might find better support in the <a href=\"http://social.msdn.microsoft.com/forums/en-US/wpf/threads/\">WPF forum</a>, as it is not strictly related to Prism's guidance.</p>\r\n<p>As for your second one, I haven't tried <strong>NLog </strong>with Prism. Yet, based on my understanding of what you've mentioned, it seems that, in order to integrate the custom <strong>NLog </strong>mechanism with Prism's <strong>ILoggerFacade</strong>, it would be better to rely on <strong>NLog</strong>'s custom features (since they exceed the <strong>Log </strong>method exposed in the <strong>ILoggerFacade </strong>interface), and create a custom implementation of the <strong>ILoggerFacade</strong> interface that calls the <strong>NLog </strong>basic logging methods. That is to say, you could use <strong>NLog </strong>for your general purpose logging needs (using the current class logger and such features), and on the other hand make the Prism logger communicate its events (such as the bootstrapper's events) to <strong>NLog</strong>.</p>\r\n<p>To this end, you could override the <strong>CreateLogger </strong>method in your bootstrapper to provide this implementation of the <strong>ILoggerFacade </strong>interface.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-10-26T09:53:26.533-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "689750",
+    "ThreadId": "276627",
+    "Html": "\r\n<div>Hi Guido,</div>\r\n<div></div>\r\n<div>Thanks for your quick answer.</div>\r\n<div></div>\r\n<div>For the threading stuff, thanks for the link. I will have a deep look soon.</div>\r\n<div></div>\r\n<div>As for NLog, I am not sure I am inderstanding correctly your explanation:</div>\r\n<div>You suggestion consists in:</div>\r\n<div>- For prism general purpose, wrapping NLog into a custom implementation of ILoggerFacade</div>\r\n<div>- For specific class purpose:</div>\r\n<div>* Using NLog directly by adding a reference to NLog in the modules and calling the getCurrentClassLogger</div>\r\n<div><strong>OR</strong></div>\r\n<div>* Extending the wrapper and use the shared service to access the currentClassLogger?</div>\r\n<div></div>\r\n<div>Sorry for asking further explanation,</div>\r\n<div>Best<br>\r\n<br>\r\n</div>\r\n<div>2011/10/26 GuidoMaliandi <span dir=\"ltr\">&lt;<a href=\"mailto:notifications@codeplex.com\">notifications@codeplex.com</a>&gt;</span><br>\r\n<blockquote style=\"padding-left:1ex; margin:0px 0px 0px 0.8ex; border-left:#ccc 1px solid\">\r\n<div>\r\n<p>From: GuidoMaliandi</p>\r\n<div>\r\n<p>Hi,</p>\r\n<p>For your first question, using a background thread to handle several loading operations in paralell makes sense. You might find this article useful, where the WPF threading model is explained:</p>\r\n<p><a href=\"http://msdn.microsoft.com/en-us/library/ms741870.aspx\" target=\"_blank\">Threading Model</a></p>\r\n<p>Also, in case you find some difficulties regarding specifically to WPF's threading model, you might find better support in the\r\n<a href=\"http://social.msdn.microsoft.com/forums/en-US/wpf/threads/\" target=\"_blank\">\r\nWPF forum</a>, as it is not strictly related to Prism's guidance.</p>\r\n<p>As for your second one, I haven't tried <strong>NLog </strong>with Prism. Yet, based on my understanding of what you've mentioned, it seems that, in order to integrate the custom\r\n<strong>NLog </strong>mechanism with Prism's <strong>ILoggerFacade</strong>, it would be better to rely on\r\n<strong>NLog</strong>'s custom features (since they exceed the <strong>Log </strong>\r\nmethod exposed in the <strong>ILoggerFacade </strong>interface), and create a custom implementation of the\r\n<strong>ILoggerFacade</strong> interface that calls the <strong>NLog </strong>basic logging methods. That is to say, you could use\r\n<strong>NLog </strong>for your general purpose logging needs (using the current class logger and such features), and on the other hand make the Prism logger communicate its events (such as the bootstrapper's events) to\r\n<strong>NLog</strong>.</p>\r\n<p>To this end, you could override the <strong>CreateLogger </strong>method in your bootstrapper to provide this implementation of the\r\n<strong>ILoggerFacade </strong>interface.</p>\r\n<div>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\" target=\"_blank\">http://blogs.southworks.net/gmaliandi</a></p>\r\n</div>\r\n</div>\r\n<div>\r\n<p>Read the <a href=\"http://compositewpf.codeplex.com/discussions/276627#post689737\" target=\"_blank\">\r\nfull discussion online</a>.</p>\r\n<div>\r\n<p>To add a post to this discussion, reply to this email (<a href=\"mailto:CompositeWPF@discussions.codeplex.com?subject=[CompositeWPF:276627]\" target=\"_blank\">CompositeWPF@discussions.codeplex.com</a>)</p>\r\n<p>To start a new discussion for this project, email <a href=\"mailto:CompositeWPF@discussions.codeplex.com\" target=\"_blank\">\r\nCompositeWPF@discussions.codeplex.com</a></p>\r\n<p>You are receiving this email because you subscribed to this discussion on CodePlex. You can\r\n<a href=\"https://compositewpf.codeplex.com/discussions/276627/unsubscribe/\" target=\"_blank\">\r\nunsubscribe</a> on CodePlex.com.</p>\r\n<p>Please note: Images and attachments will be removed from emails. Any posts to this discussion will also be available online at CodePlex.com</p>\r\n</div>\r\n</div>\r\n</div>\r\n</blockquote>\r\n</div>\r\n<br>\r\n",
+    "PostedDate": "2011-10-26T10:18:51.83-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "689770",
+    "ThreadId": "276627",
+    "Html": "<p>Hi,</p>\n<p>In my previous suggestion I recommended you to use <strong>NLog </strong>directly, not to extend the wrapper and use the shared service to access the current class logger. This seems to be the most easy approach to follow, since it doesn't imply the necessity  of a deep knowledge of <strong>NLog</strong>, nor it needs you to extend the <strong> ILoggerFacade </strong>interface. All this, while allowing to centralize your logging features in <strong>NLog</strong>, by \"forwarding\" Prism's logs to it.</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-10-26T10:49:06.82-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "689777",
+    "ThreadId": "276627",
+    "Html": "\r\n<p>Ok. That what I was thinking. Thanks again. I will certainly come back to you soon:)</p>\r\n<div>Le 26 oct. 2011 19:49, &quot;GuidoMaliandi&quot; &lt;<a href=\"mailto:notifications@codeplex.com\">notifications@codeplex.com</a>&gt; a écrit :<br type=\"attribution\">\r\n<blockquote style=\"margin:0 0 0 .8ex; border-left:1px #ccc solid; padding-left:1ex\">\r\n<div>\r\n<p>From: GuidoMaliandi</p>\r\n<div>\r\n<p>Hi,</p>\r\n<p>In my previous suggestion I recommended you to use <strong>NLog </strong>directly, not to extend the wrapper and use the shared service to access the current class logger. This seems to be the most easy approach to follow, since it doesn't imply the necessity\r\n of a deep knowledge of <strong>NLog</strong>, nor it needs you to extend the <strong>\r\nILoggerFacade </strong>interface.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\" target=\"_blank\">http://blogs.southworks.net/gmaliandi</a></p>\r\n</div>\r\n<div>\r\n<p>Read the <a href=\"http://compositewpf.codeplex.com/discussions/276627#post689770\" target=\"_blank\">\r\nfull discussion online</a>.</p>\r\n<p>To add a post to this discussion, reply to this email (<a href=\"mailto:CompositeWPF@discussions.codeplex.com?subject=[CompositeWPF:276627]\" target=\"_blank\">CompositeWPF@discussions.codeplex.com</a>)</p>\r\n<p>To start a new discussion for this project, email <a href=\"mailto:CompositeWPF@discussions.codeplex.com\" target=\"_blank\">\r\nCompositeWPF@discussions.codeplex.com</a></p>\r\n<p>You are receiving this email because you subscribed to this discussion on CodePlex. You can\r\n<a href=\"https://compositewpf.codeplex.com/discussions/276627/unsubscribe/\" target=\"_blank\">\r\nunsubscribe</a> on CodePlex.com.</p>\r\n<p>Please note: Images and attachments will be removed from emails. Any posts to this discussion will also be available online at CodePlex.com</p>\r\n</div>\r\n</div>\r\n</blockquote>\r\n</div>\r\n",
+    "PostedDate": "2011-10-26T10:57:21.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

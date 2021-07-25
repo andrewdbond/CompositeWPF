@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "673867",
+    "ThreadId": "273124",
+    "Html": "\r\n<p>Hi Guys,</p>\r\n<p>&nbsp;</p>\r\n<p>I have started a project using the Prism Navigation Framework. So far all is going well.<br>\r\nThough experiencing some strange troubles. I decided to add a simple logging line in the destructor<br>\r\nfor my viewmodel. Even after closing the window, by setting the _keepalive to false. This is creating<br>\r\nsome strange problems for me and my domain context.</p>\r\n<p>It is only one specific type of view that I would like to completely terminate the item.</p>\r\n<p>Is this possible or am I perhaps something a greater picture?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>\r\n<p>&nbsp;</p>\r\n<p>Louis</p>\r\n",
+    "PostedDate": "2011-09-19T13:42:42.62-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "674301",
+    "ThreadId": "273124",
+    "Html": "<p>Hi Louis,</p>\r\n<p>Basically, if the view does not get disposed, it means that something is holding an strong reference to the view. There are several reasons because this could happen.</p>\r\n<p>For example, if you register the view as a <strong>Singleton</strong>, the container will hold an instance (the singleton instance) of the view as long as the container itself is kept alive.</p>\r\n<p>Also, a strong reference to the view could be holded if your are using <strong>Interaction Requests</strong>, as there is <a href=\"http://compositewpf.codeplex.com/workitem/8532\">a known issue</a> where using <strong>Interaction Requests</strong> creates memory leaks, so the view is never destroyed.</p>\r\n<p>If this does not solve your problem, it would be helpful if you could provide us with a repro-sample application portraying this problem, so we could get a better understanding of your scenario and help you find the cause behind this problem.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-09-20T10:53:04.9-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "675113",
+    "ThreadId": "273124",
+    "Html": "\r\n<div>\r\n<p>Hi <span style=\"font-size:9.0pt; font-family:\">DCherubini,</span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\"></span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">Thanks for your reply. I tested the code after having taken out the interaction request. I</span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">still only see the destructors getting called once I close the browser. I will work on creating a\r\n</span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">sample that I can post, It is just a little hard doing it at the moment with the current code.</span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">As it involves all the normal stuff, like domain contexts and loading etc. So the line count at this</span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">stage is sitting at 2200. But I will indeed create something smaller and send it so it could be looked at.</span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\"></span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">Sorry for the long delay, was busy installing our new servers the last day or so.</span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\"></span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">Thanks</span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\"></span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">Louis</span></p>\r\n</div>\r\n",
+    "PostedDate": "2011-09-22T00:17:59.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "676432",
+    "ThreadId": "273124",
+    "Html": "\r\n<div>\r\n<p>Hi There,</p>\r\n<p></p>\r\n<p>I have been trying to find the trouble again for the best part of today.</p>\r\n<p>So what I did just now, was to test on another program and see if the same trouble exists.</p>\r\n<p>I used the example application SLPrismv4NavigationUnity. I went into the ItemViewModel</p>\r\n<p>added a destructor code block and just in there I send a message to Debug.WriteLine(), a small test</p>\r\n<p>I further removed the interaction request code and started testing. From this I could see that the destructor is</p>\r\n<p>only called once I close Internet Explorer.</p>\r\n<p></p>\r\n<p>I hope you can help me out with this one. I used the Telerik Just Trace on my application and I cannot see anything\r\n</p>\r\n<p>that holds a reference that would cause the class not to be destroyed.</p>\r\n<p></p>\r\n<p>Thanks</p>\r\n<p></p>\r\n<p>Louis Lewis</p>\r\n</div>\r\n",
+    "PostedDate": "2011-09-25T13:53:39.237-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "676786",
+    "ThreadId": "273124",
+    "Html": "<p>Hi Louis,</p>\r\n<p>It would be helpful if you could provide us with a repro-sample application that portrays this problem considering your findings regarding this subject, so we could get a better understanding of why is it happening and help you find a possible solution for it.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-09-26T10:35:36.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "678526",
+    "ThreadId": "273124",
+    "Html": "\r\n<div>\r\n<p><span style=\"font-size:11.0pt; font-family:\">Hi Damian,</span></p>\r\n<p><span style=\"font-size:11.0pt; font-family:\"></span></p>\r\n<p><span style=\"font-size:11.0pt; font-family:\">Any idea where I can upload the project too?</span></p>\r\n<p><span style=\"font-size:11.0pt; font-family:\"></span></p>\r\n<p><span style=\"font-size:11.0pt; font-family:\">Thanks</span></p>\r\n<p><span style=\"font-size:11.0pt; font-family:\"></span></p>\r\n<p><span style=\"font-size:11.0pt; font-family:\">Louis</span></p>\r\n<p><span style=\"font-size:11.0pt; font-family:\"></span></p>\r\n<div>\r\n<div style=\"border:none; border-top:solid #B5C4DF 1.0pt; padding:3.0pt 0cm 0cm 0cm\">\r\n<p><b><span lang=\"EN-US\" style=\"font-size:10.0pt; font-family:\">From:</span></b><span lang=\"EN-US\" style=\"font-size:10.0pt; font-family:\"> DCherubini [email removed]\r\n<br>\r\n<b>Sent:</b> 26 September 2011 07:36 PM<br>\r\n<b>To:</b> louis.lewis@pinelakemarina.co.za<br>\r\n<b>Subject:</b> Re: Destructor Not Getting Called in ViewModel [CompositeWPF:273124]</span></p>\r\n</div>\r\n</div>\r\n<p></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">From: DCherubini</span></p>\r\n<div id=\"ThreadNotificationPostBody\" style=\"margin-bottom:24.0pt\">\r\n<p><span style=\"font-size:9.0pt; font-family:\">Hi Louis,</span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">It would be helpful if you could provide us with a repro-sample application that portrays this problem considering your findings regarding this subject, so we could get a better understanding of why is it happening\r\n and help you find a possible solution for it.</span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">Regards,</span></p>\r\n<p><span style=\"font-size:9.0pt; font-family:\">Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></span></p>\r\n</div>\r\n</div>\r\n",
+    "PostedDate": "2011-09-30T00:37:58.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "678628",
+    "ThreadId": "273124",
+    "Html": "<p>Hi,</p>\r\n<p>You could upload your sample to <a href=\"http://skydrive.live.com/\">SkyDrive</a>, or any similar site for sharing files.</p>\r\n<p>Regards,</p>\r\n<p>﻿Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-09-30T05:52:32.42-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "679137",
+    "ThreadId": "273124",
+    "Html": "\r\n<div>\r\n<p>Hi Guys,</p>\r\n<p></p>\r\n<p>I always try to look into matter in depth before I just ask others.</p>\r\n<p>I took a deeper look into the problem I have been facing with the destruction</p>\r\n<p>of classes. I come from a C&#43;&#43; background and I am used to when I use the delete operator</p>\r\n<p>on instantiated items, I can see the destructor called as soon as I call delete on the object.</p>\r\n<p></p>\r\n<p>I kept a watchful eye on the items that I am creating in this Silverlight project.</p>\r\n<p>I then see after I drive the program a bit and go about my tasks in it, I now and then see the line</p>\r\n<p>I have been looking for in the output window of Visual Studio. Just a simple line of text saying item</p>\r\n<p>destructed. When I first saw this I was indeed very happy. But looking into the matter further, I again see that</p>\r\n<p>the amount of items I instantiate are not directly equal to the amount destructed. There is also no way of knowing when an</p>\r\n<p>item is going to be destructed. For example if I quickly open 10 editors and play around a bit and close them all one by one,</p>\r\n<p>I can expect to see two or three being destructed and perhaps over time another one.</p>\r\n<p></p>\r\n<p>I would like to have it that when I push close on a window, I would like it right then to be destructed.</p>\r\n<p></p>\r\n<p>I will upload the default prism navigation with unity project to skydrive for those who do not have it.</p>\r\n<p>The only change I have made to the entire application is adding a destructor to the itemviewviewmodel.</p>\r\n<p>In it I simply write a line to the output window.</p>\r\n<p></p>\r\n<p>Hopefully someone can help see how to better this.</p>\r\n<p></p>\r\n<p>Thanks</p>\r\n<p></p>\r\n<p>Louis</p>\r\n</div>\r\n",
+    "PostedDate": "2011-10-02T12:34:39-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

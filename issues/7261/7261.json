@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Hi Fernando\n \nThanks for your input, it is much appreciated. On your points:\n \n \nI'm not convinced anymore that specifying constructor parameters when resolving with Unity 2.0 will work - for one thing, it requires specifying the name of the constructor parameter that you want to provide, which means that it kind of breaks dependency injection. For another, it doesn't work in the more general case where you want the parameter to be null when it isn't specified - Unity throws an exception when it doesn't know how to resolve one of the constrcutor parameters (as I discovered when I tried to approximate the constructor parameter passing with child containers and RegisterInstance in Unity 1.2).\nI did consider using property injection briefly, but it seemed both from the Unity documentation and the DI community that this approach is frowned upon because it isn't as \"clean\" as constructor injection, i.e. you are specifying an dependency through container-specific attributing as opposed to container-agnostic constructor parameters.Even if I used it, it would mean I used one way (constructor injection) for parent ViewModels and another (property injection) for child ViewModels and I would have to adapt my application services to support both constructor injection through Resolve and property injection through BuildUp. I guess I could change everything to use property injection, but that would mean I have to change all my interfaces which currently rely just on specifying ViewModel types which are then resolved as needed.\n \nIn the end I adapted the State Management feature in the MVVM RI in the latest drop to Unity, once I figured out what it was doing (with my limited knowledge of MEF and all). It is quite a clever way to get around the limitation of providing data to types that are resolved through a DI container in a disconnected manner.\n \nStill, I can't help but feel that in all the articles and posts I read about MVVM and DI nobody seemed to explain the challenges in doing master-detail MVVM with DI for both the parent and child. Don't know if that means there's something wrong with my design, but it seems to be something that should be quite common.",
+    "LastUpdatedDate": "2013-02-21T18:38:29.717-08:00",
+    "PlannedForRelease": "Prism v4 - Drop 8",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-09-20T12:51:44.1-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "MVVM, Unity and wrapping model objects",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 1,
+    "Id": 7261
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "For more information: http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=225959",
+      "PostedDate": "2010-09-20T12:53:10.33-07:00",
+      "Id": 156311
+    }
+  ]
+}

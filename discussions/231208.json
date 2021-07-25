@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "508432",
+    "ThreadId": "231208",
+    "Html": "<p>Hi all,</p>\r\n<p>I&nbsp;just changed to drop 10&nbsp; from drop 9 and&nbsp;Import is not worked properly for dynamically downloaded dll.&nbsp; I traced and found&nbsp; changed code&nbsp;in HandleDownloadCompleted&nbsp;as following;</p>\r\n<p>before drop 9 :</p>\r\n<p>&nbsp;&nbsp;&nbsp; this.AggregateCatalog.Catalogs.Add(deploymentCatalog);</p>\r\n<p>drop 10 :</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (ModuleInfo moduleInfo in moduleInfos)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.downloadedPartCatalogs.Add(moduleInfo, deploymentCatalog);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>Is there any thread or blog I can look into what's in&nbsp;the behind story ?</p>\r\n<p>Thank you in advance.</p>\r\n<p>HK.Lee</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-17T05:34:21.98-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "508969",
+    "ThreadId": "231208",
+    "Html": "<p>Hi HK.Lee,</p>\r\n<p>I do not know the exact error in your application, but if you are receiving a <strong>ChangedRejectedException</strong>, when using MEF you must mark the <strong>Microsoft.Practices.Prism.MefExtensions.dll</strong> with <strong>Copy Local = False</strong> in your modules. It avoids duplicate imports.</p>\r\n<p>For more information on this topic you could take a look at the following documentation section in the Prism4.chm: <strong>Chapter 4: Modular Application Development</strong>, see the <strong><em>Preparing a Module for remote download using MEF </em></strong>section.</p>\r\n<p>Additionally, you could check this configuration in the Modularity Quickstart with MEF.</p>\r\n<p>If your problem is not related with this, could you please share a repro sample?</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-18T13:23:49.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "511513",
+    "ThreadId": "231208",
+    "Html": "\r\n<p>Hi Fernando,</p>\r\n<p>Thank you for your reply and sorry for being my lazyness, bcz I still use drop 9 for current project.</p>\r\n<p>&quot;Copy Local = False&quot; already set and it works without problem in drop 9.0.</p>\r\n<p>The difference is drop 9 uses&nbsp;AggregateCatalog and adds&nbsp;deploymentCatalog after xap downloading completed as such;</p>\r\n<p><strong>this.AggregateCatalog.Catalogs.Add(deploymentCatalog);</strong></p>\r\n<p>however, drop 10 add downloadcatalog into it's own colelction without adding into AggegateCatalog &nbsp;as such;</p>\r\n<p>&nbsp;foreach (ModuleInfo moduleInfo in moduleInfos)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<strong>this.downloadedPartCatalogs.Add(moduleInfo, deploymentCatalog);</strong><br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>so all Parts of downloaded xap can't be&nbsp;seen in AggregateCatalog, though&nbsp;existing in deplocatalog.</p>\r\n<p>Should I take additional acton to add deploymentCatalog to AggregateCatalog ?</p>\r\n<p>RGDS</p>\r\n<p>HK.Lee</p>\r\n",
+    "PostedDate": "2010-10-23T08:14:42.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "511547",
+    "ThreadId": "231208",
+    "Html": "\r\n<p>Thanks for posting the issue and the details.&nbsp; I will ensure someone from the team (probably myself of Larry) looks into this early this week.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-10-23T11:12:34.4-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "512396",
+    "ThreadId": "231208",
+    "Html": "\r\n<p>We changed this due to a bug that was discovered: if you have two (or more) modules in a XAP, you only get notified when one of them is loaded.<br>\r\n&nbsp; <br>\r\nTo fix this bug, we moved the responsibility (and the code) for registering the types discovered in a xap with the AggregateCatalog from the MefXapModuleTypeLoader's HandleDownloadCompleted method to the MefModuleInitializer's CreateModule method.&nbsp; If\r\n you look at the CreateModule method, you will see the registration with the AggregateCatalog. This change also fixed a few timing issues that come up in rare cases with downloads and cross xap dependencies and a few other edge cases.</p>\r\n<p>Do you have a small repro case we can look at to help track this down?</p>\r\n<p>Thanks,<br>\r\nMichael Puleio</p>\r\n",
+    "PostedDate": "2010-10-25T14:11:53.257-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "515985",
+    "ThreadId": "231208",
+    "Html": "\r\n<p>Hi Michael,</p>\r\n<p>Thank you for your kind reply and sorry for my late reply,due to customer demonstration I had to stick to drop 9.</p>\r\n<p>I just changed to drop 10 and read line by line and find what I missed.</p>\r\n<p>As you mentioned CreateModule method of MefModuleInitializer was changed&nbsp;&nbsp;that was the problem,bcz&nbsp;I&nbsp;wrongly used&nbsp;assembly&nbsp;name instead of module name.</p>\r\n<p>Thank you again for your kind attention.</p>\r\n<p>RGDS</p>\r\n<p>HK.Lee</p>\r\n",
+    "PostedDate": "2010-11-02T08:54:58.853-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

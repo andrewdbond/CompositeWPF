@@ -1,0 +1,91 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Thanks sharing your repro sample! We looked into this and found no issues related to Prism.\r\n\r\nThe implementation of Adorner (ControlAdorner) exposes a Child property that allows you to add a control to the adorned control. However, this property does not add the child control (ContentControl from your shell) to the same logical tree. \r\nTherefore, when you try to retrieve the region, it does not work, since the ContentControl was not created as a region and therefore not registered in the RegionManager.\r\nAs a workaround we assigned the ContentControl (from your shell) to the Content property of the adorned control in the AdornerContent property. It worked as expected.\r\n\r\nI adapted your ControlAdorner class to work with this workaround. Please let us know if you have any comment.\r\n\r\npublic partial class ThirdPartyControl : UserControl\r\n{\r\n    public ThirdPartyControl()\r\n    {\r\n        InitializeComponent();\r\n    }\r\n    public object NonAdornerContent\r\n    {\r\n        get { return nonAdornerContentControl.Content; }\r\n        set { nonAdornerContentControl.Content = value; }\r\n    }\r\n    public Control AdornerContent\r\n    {\r\n        set\r\n        {\r\n            adornerContentControl.Content = value;\r\n            ControlAdorner adorner = new ControlAdorner(adornerContentControl);\r\n\r\n            AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(adornerContentControl);\r\n            adornerLayer.Add(adorner);\r\n        }\r\n    }\r\n\r\n    class ControlAdorner : Adorner\r\n    {\r\n        public ControlAdorner(UIElement adornedElement)\r\n            : base(adornedElement) { }\r\n\r\n        protected override Size MeasureOverride(Size constraint)\r\n        {\r\n            this.AdornedElement.Measure(constraint);\r\n            return this.AdornedElement.DesiredSize;\r\n        }\r\n\r\n        protected override Size ArrangeOverride(Size finalSize)\r\n        {\r\n            this.AdornedElement.Arrange(new Rect(new Point(0, 0), finalSize));\r\n            return new Size(this.AdornedElement.RenderSize.Height, this.AdornedElement.RenderSize.Width);\r\n        }\r\n    }\r\n}\r\n\r\n\r\n",
+    "ClosedDate": "2010-10-28T14:09:59.15-07:00",
+    "CommentCount": 7,
+    "Custom": "",
+    "Description": "Hi,\n \nLet me clarify and simplify. Assume there's a third party control that presents some of my UI in a special adorner:\n \n<UserControl x:Class=\"ThirdPartyControl\" ...>    <AdornerDecorator>        <ContentPresenter />     </AdornerDecorator></UserControl>\nIn that part of my UI I want to put a region:\n \n<Window x:Class=\"MyMainWindow\" ...>    <ThirdPartyControl>        <ItemsControl RegionManager:RegionName=\"MyRegion\" />    </ThirdPartyControl></Window>\n \nProblem: The above attached property RegionManager:RegionName=\"MyRegion\" will not work. (Assuming only MyMainWindow is registered with RegionManager.SetRegionManager( myMainWindowShell, regionMgr); )\n \n \nReason: The attached property event handler searches for regionMgr by walking up the logical tree. The adorner prevents this from working, Since the adorner content (the region) is not in the same logical tree as the container (myMainWindowShell).\n \n \nMy solution so far: Call RegionManager.SetRegionManager(uiElementInAdorner, regionMgr); where uiElementInAdorner is the ItemsControl in the adorner.\n \n \nDownside of this solution: There are actually multiple regions in that adorner. Attaching the regionMgr to each region seems like a weak solution. A slight improvement would be to attach regionMgr to a common parent of all regions. (The parent would still have to be inside the adorner for this to work.) The ThirdPartyControl does currently not expose or allow for such a parent, so this is nont possible however.\n \n \n \n \nMy preferred solution: The Prism regions library is changed to work natively with adorners. (Not sure if this is feasible or realistic.)\n \n \n \n \nRegarding your proposal of a Region Adapter: I'm not sure how that would help. My UI control that should become a region already has a working region adapter. I don't think it would make sense or help to write a region adapter for the ThirdPartyControl.\n \nCheers.",
+    "LastUpdatedDate": "2013-05-16T05:28:46.713-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-10-18T10:06:24.797-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Region in adorner (Fluent  Ribbon Backstage)",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 2,
+    "Id": 7391
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897972,
+      "FileName": "PrismAdornerIssue7391.zip",
+      "DownloadUrl": ".\\897972"
+    },
+    {
+      "FileId": 897973,
+      "FileName": "ThirdPartyControl.xaml.cs",
+      "DownloadUrl": ".\\897973"
+    },
+    {
+      "FileId": 897974,
+      "FileName": "HelloWorldWithFluent.zip",
+      "DownloadUrl": ".\\897974"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Attached is a full Repro project.\r\nIt includes \r\n* a simple mock-ThirdParty control with pluggable content in an Adorner (and for comparison purposes the same without the Adorner)\r\n* a simple Shell with three regions\r\n** Region1 directly in the shell\r\n** Region2 indirectly inside the mock-ThirdParty control, but not in an Adorner\r\n** and Region3 in the Adorner\r\n* a simple RegionView UserControl to populate the regions\r\n* a simple Bootstrapper that sets up the scenario\r\n\r\nIt throws an exception in the bootstrapper because Region3 (in the adorner) can't be found.",
+      "PostedDate": "2010-10-19T02:08:20.177-07:00",
+      "Id": 156340
+    },
+    {
+      "Message": "Please find attached the ThirdPartyControl.xaml.cs adapted.",
+      "PostedDate": "2010-10-28T14:11:57.447-07:00",
+      "Id": 156341
+    },
+    {
+      "Message": "Thanks for investigating.\r\n\r\nHowever your \"solution\" changes the third party control. It is, as the name implies, by a third party and can not be changed. Your \"solution\" does not place the region in the adorner anymore, so it \"works\". But the third party control works correctly without this (outside of prism) and requires the use of this adorner as in my original example. The real issue, as you say and as I mentioned in the original post (http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=222709), is that Prism only supports regions in the same logical tree, so regions in adorners are broken.\r\n\r\nIf I misunderstand any of this please let me know.",
+      "PostedDate": "2010-10-29T04:44:26.407-07:00",
+      "Id": 156342
+    },
+    {
+      "Message": "Thanks for your feedback, \r\n\r\nBased on your response, I decided to go with the third-party (Fluent) control to see how it works with Prism. But first of all, if you want to expose a UI Control as a region, this control must be located in the same logical tree of your DependecyObject (e.g. Shell window), as you mentioned.\r\nTherefore, if you implement a custom control or you are using a third-party control, and this prevents adding your UI Controls exposed as regions to the logical tree, the regions will not be created and therefore not registered in the RegionManager.\r\n\r\nThat said, I updated the HelloWorld Quickstart provided in Prism 2 using the Fluent controls and found no issues when using regions. The Backstage control is using the BackstageAdorner and it does not prevent adding the child controls to the logical tree.\r\n\r\nPlease find attached the HelloWorldWithFluent.zip. Note: click File menu and then click the New button to see the HelloWorld view in the MainRegion.\r\n\r\nPlease let me know if I missing something.",
+      "PostedDate": "2010-10-29T08:31:41.257-07:00",
+      "Id": 156343
+    },
+    {
+      "Message": "> if you want to expose a UI Control as a region, this control must be located in the same logical tree of your DependecyObject (e.g. Shell window)\r\nOK, so that's a hard \"limitation\" of Prism that probably won't be changed? It was a bit surprising to me as I don't recall reading this anywhere in the (otherwise excellent) documentation. Maybe I missed it.\r\n\r\nYour HelloWorld example indeed seems unaffected by this. Great! (And a bit strange, given the above.) Looks like you used a really new (unreleased) version of Fluent, right? They still use an adorner though. Did they now somehow manage to keep it in the same logical tree as the Shell?\r\n\r\nAnyway, I guess I'll have to switch to the next version of Fluent. Thanks very much for looking into this!\r\nCheers.",
+      "PostedDate": "2010-11-01T01:32:54.923-07:00",
+      "Id": 156344
+    },
+    {
+      "Message": "Thanks for your feedback,\r\n\r\nI am glad that you find useful the HelloWorld Quickstart with Fluent.\r\n\r\nRegarding to the Fluent version, I used the Fluent Ribbon Control Suite 1.3 (http://fluent.codeplex.com/releases/view/45484). If I am not wrong there is a newer version too. \r\n\r\nThanks,",
+      "PostedDate": "2010-11-03T14:16:18.397-07:00",
+      "Id": 156345
+    },
+    {
+      "Message": "You can inherit from the third party control.\r\nIn the static cto'r override the Backstage metadata with a property changed callback handler that adds the Backstage from the NewValue property of the event args, to the control's logical children.\r\nIn the public cto'r register to loaded event in which you can remove the Backstage from the logical children.\r\nOverride the LogicalChildren property so that get returns the control's Items and Backstage properties.\r\n",
+      "PostedDate": "2012-03-26T03:16:32.633-07:00",
+      "Id": 156346
+    }
+  ]
+}

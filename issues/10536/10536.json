@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "Hi,\nI am trying to learn WPF with Prism and using Modern UI Template. I have Problem with region Manager, unable to find the region in collections but the views are getting injected properly.\nHere is what i am doing \nStep A : Shell Window\n```\n<mui:ModernWindow x:Class=\"SimpleAccounting.Shell\"\n        xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"\n        xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"\n        xmlns:mui=\"http://firstfloorsoftware.com/ModernUI\"\n        xmlns:prism=\"http://www.codeplex.com/prism\"\n        ContentSource=\"/PlaceHolders/AccountModulePlaceHolders/AccountListPlaceHolder.xaml\"\n       >\n   \n    <mui:ModernWindow.MenuLinkGroups>\n        <mui:LinkGroup DisplayName=\"Accounts\">\n            <mui:LinkGroup.Links>\n                <mui:Link DisplayName=\"New Account\" Source=\"/PlaceHolders/AccountModulePlaceHolders/NewAccountPlaceHolder.xaml\">\n                </mui:Link>\n                <mui:Link DisplayName=\"Available Accounts\" Source=\"/PlaceHolders/AccountModulePlaceHolders/AccountListPlaceHolder.xaml\" />\n            </mui:LinkGroup.Links>\n        </mui:LinkGroup>\n    </mui:ModernWindow.MenuLinkGroups>\n   \n</mui:ModernWindow>\n```\nStep 2 : Page Source or Region Definitions\n```\n<UserControl x:Class=\"SimpleAccounting.PlaceHolders.AccountModulePlaceHolders.AccountListPlaceHolder\"\n             xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"\n             xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"\n             xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\" \n             xmlns:d=\"http://schemas.microsoft.com/expression/blend/2008\" \n             xmlns:mui=\"http://firstfloorsoftware.com/ModernUI\"\n             xmlns:prism=\"http://www.codeplex.com/prism\"\n             mc:Ignorable=\"d\" \n             d:DesignHeight=\"300\" d:DesignWidth=\"300\">\n  \n    <ContentControl Name=\"NameAccountListPlaceHoldersRegion\" prism:RegionManager.RegionName=\"AccountListPlaceHoldersRegion\" Grid.Row=\"0\" Grid.Column=\"0\"></ContentControl>\n\n</UserControl>\n```\nStep 3 : I am having Module which have\n\n```\npublic class SimpleAccountingModule : IModule\n    {\n        private readonly IRegionManager regionManager;\n        private readonly IUnityContainer container;\n\n        public SimpleAccountingModule(IRegionManager regionManager, IUnityContainer container)\n        {\n            this.regionManager = regionManager;\n            this.container = container;\n        }\n\n        public void Initialize()\n        {\n           regionManager.RegisterViewWithRegion(\"AccountListPlaceHoldersRegion\", typeof(Views.AccountList));\n        }\n    }\n```\nStep 4 : Run the application works perfect no issues.\nStep 5: While debugging in Step 3 my region manager count is always zero, and when i am trying to find an element in it getting error region not found. However Views are getting injected properly.\nAny help is appreciated",
+    "LastUpdatedDate": "2014-02-27T21:01:54.31-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2014-02-27T03:53:08.6-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "WPF Prism Region Manager Issue",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 10536
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nThe reason why you would be experiencing this behavior would be related to the fact that the __View__ which defines the proper __Region__ would not initialize until its Module's ___initialize()___ method finishes executing. The __AccountList__ view is defined in that __SimpleAccountingModule__ and the regions that it defines would be registered at the end of the __Module__ initialization. \r\n\r\nYou may be confused by expecting the __RegisterViewWithRegion()__ call initializes the __View__ with the specified type, registering then the corresponding __Region__ in the __RegionManager__. However, the __RegionManager__ would work as a proxy for the __RegionViewRegistry__ class in that case, where the __RegionViewRegistry__ would register the __View__ with the corresponding __RegionName__ in a dictionary for future requests.\r\n\r\nIn order to troubleshoot this issue, try to define the corresponding __Region__ outside the current __Module__ like in the __Shell__ view for example. \r\n\r\nI hope this helped you,Regards.\r\n\r\nGabriel Ostrowskyhttps://blogs.southworks.net/gostrowsky",
+      "PostedDate": "2014-02-27T11:48:31.66-08:00",
+      "Id": 156686
+    },
+    {
+      "Message": "Thanks for the response, however i wanted to use current Modern UI Links along with Place Holder, is there any work around. Is it possible to add regions dynamically so that i will have reference for regions.",
+      "PostedDate": "2014-02-27T21:01:54.31-08:00",
+      "Id": 156687
+    }
+  ]
+}

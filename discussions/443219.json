@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1041767",
+    "ThreadId": "443219",
+    "Html": "Anyone know how to use Prism (UnityExtension) 4.5 together with Unity 3.0(1304 which is the newly and only official release of Unity 3.0) ?<br />\n",
+    "PostedDate": "2013-05-10T02:20:40.53-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1041983",
+    "ThreadId": "443219",
+    "Html": "Hi,\r<br />\n<br />\nWe downloaded both <strong>Prism for NET 4.5</strong> and <strong>Unity 3.0 (1304)</strong> from the NuGet Package Restore. We tried to build the solution but it seems that <strong>Prism for NET 4.5</strong> is targeted to <strong>Unity 3.0.1204.0</strong>, and the one that comes from NuGet, opposite to what its description says, it is signed as version <strong>3.0.0.0</strong> instead of <strong>3.0.1304.0</strong>. Therefore, the build fails as <strong>Microsoft.Practices.Prism.UnityExtensions</strong> expects a higher version of <strong>Unity</strong>.\r<br />\n<br />\nIf you think this is a bug, feel free to open a new issue on the Issue Tracker in order for this to be considered on future releases.\r<br />\n<br />\nRegards,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-05-10T10:09:36.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1042003",
+    "ThreadId": "443219",
+    "Html": "Thanks, I will enter an issue.\r<br />\n<br />\nYour observation is exactly same as mine except mine demands 3.0.1208.0.\r<br />\n<br />\nAny fast workaround possible ? E.g. manipulation by ILDASM or similar ?<br />\n",
+    "PostedDate": "2013-05-10T10:38:53.967-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1042969",
+    "ThreadId": "443219",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding, the <strong>Prism for .NET 4.5</strong> assemblies are simply the <strong>Prism 4.1</strong> projects targeting the <strong>.NET 4.5</strong> framework and compiled against the updated versions of the <strong>ServiceLocator</strong> and <strong>Unity</strong> assemblies. Hence, a possible workaround could be to re-compile these <strong>Prism</strong> assemblies using <strong>Prism 4.1</strong> as the base. Basically, you will need to:<br />\n<h1></h1>\n<ul>\n<li>Change the target framework of the projects to <strong>.NET 4.5</strong></li>\n<li>Change the <strong>Microsoft.Practices.ServiceLocator</strong> references to use the the <a href=\"https://commonservicelocator.codeplex.com/releases/view/17694\" rel=\"nofollow\">portable class library of the ServiceLocator</a></li>\n<li>\nChange the <strong>Microsoft.Practices.Unity</strong> references use the <a href=\"https://unity.codeplex.com/releases/view/75720\" rel=\"nofollow\">latest Unity release</a><br />\n</li>\n</ul>\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-05-13T10:43:25.267-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1043498",
+    "ThreadId": "443219",
+    "Html": "Here is some ILDASM magic that worked for me:\r<br />\n<br />\n<a href=\"http://stackoverflow.com/questions/16313287/error-with-unity-framework-in-net-wpf\" rel=\"nofollow\">http://stackoverflow.com/questions/16313287/error-with-unity-framework-in-net-wpf</a><br />\n<pre><code>1)&quot;C:\\Program Files\\Microsoft SDKs\\Windows\\v6.0A\\Bin\\x64\\ildasm.exe&quot; Microsoft.Practices.Prism.UnityExtensions.dll /out:Microsoft.Practices.Prism.UnityExtensions.il\n\n2) Edit the Microsoft.Practices.Prism.UnityExtensions.il Line 21 to: &quot;.ver 3:0:1208:0&quot;-&gt;&quot;.ver 3:0:0:0&quot; 3) save the .il file 4)&quot;C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\ilasm.exe&quot; Microsoft.Practices.Prism.UnityExtensions.il /dll /out:Microsoft.Practices.Prism.UnityExtensions.dll\n\nUse the new .dll which has a reference to the version 3.0.0 and not 3.0.1208..\n\nHope it help ;)\n\nUpdate: Probably you will also need to do a new sign on the new assembly:\n\n&quot;C:\\Program Files\\Microsoft SDKs\\Windows\\v6.0A\\Bin\\ildasm.exe&quot; Microsoft.Practices.Prism.UnityExtensions.dll /out:.\\Signed\\Microsoft.Practices.Prism.UnityExtensions.il\n\n&quot;C:\\Windows\\Microsoft.NET\\Framework\\v4.0.30319\\ilasm.exe&quot; .\\Signed\\ Microsoft.Practices.Prism.UnityExtensions.il /dll /key=&quot;C:\\MyPublicPrivateKeyFile.snk&quot; /output=.\\Signed\\ Microsoft.Practices.Prism.UnityExtensions.dll</code></pre>\n\n",
+    "PostedDate": "2013-05-14T11:37:47.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1043989",
+    "ThreadId": "443219",
+    "Html": "Thank you\r<br />\n<br />\nI will try to work with MEF instead of Unity (after all it is now part of .Net framework).\r<br />\nAnyway I hope that Prism or Unity (don't know which one is wrong actually) will be matched soon.<br />\n",
+    "PostedDate": "2013-05-15T10:04:48.453-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

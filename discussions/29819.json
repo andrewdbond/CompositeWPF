@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "99355",
+    "ThreadId": "29819",
+    "Html": "<p>Hi all,</p>\r\n<p>I have two ItemsControls that are within a stackpanel. Each specifies a value\r\nfor the RegionManager.RegionName dependency property. When I run my\r\napplication in this way, everything works fine. The Prism framework ends up\r\nadding a ValueChanged delegate to the dependencypropertydescriptor and it\r\nexecutes some functionality for me. </p>\r\n<p>However, when I change the nesting of my controls and put the 2nd\r\nItemsControl into a stackpanel, like below:</p>\r\n<p>&lt;StackPanel&gt;</p>\r\n<p>&nbsp;&nbsp;&nbsp; &lt;ItemsControl\r\nprism:RegionManager.RegionName=&quot;{x:Static\r\nRegions:ShellRegionRegistry.GlobalCommandsRegion}&quot; /&gt;</p>\r\n<p>&nbsp;&nbsp;&nbsp; &lt;StackPanel&gt;</p>\r\n<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;ItemsControl\r\nprism:RegionManager.RegionName=&quot;{x:Static\r\nRegions:ShellRegionRegistry.MainRegion}&quot; /&gt;<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; &lt;/StackPanel&gt;</p>\r\n<p>&lt;/StackPanel&gt; </p>\r\n<p>Then, the delegate that was added to the ValueChanged event never fires,\r\nthus never creating the 'MainRegion' region. As a result, any module that attempt to reference the region ends up raising an exception. </p>\r\n<p>Can anyone explain why placing my control, that references a dependency property,\r\ninto a parent control seems to change the behavior of that dependency property\r\nbeing applied?</p>\r\n<p>Thanks,</p>\r\n<span style=\"font-size:12pt;font-family:'Times New Roman','serif'\">Matt Walters&nbsp; <br style=\"\">\r\n&lt;!--[if !supportLineBreakNewLine]--&gt;<br style=\"\">\r\n&lt;!--[endif]--&gt;</span>\r\n",
+    "PostedDate": "2008-06-17T12:40:19.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99373",
+    "ThreadId": "29819",
+    "Html": "Hi Matt, thanks for the feedback.<br>\r\n<br>\r\nThe code you are using is a little old. We are not using the ValueChanged event&nbsp;anymore.&nbsp;Can you please check if&nbsp;this&nbsp;still happens with the <a href=\"http://www.codeplex.com/CompositeWPF/Release/ProjectReleases.aspx?ReleaseId=14367\">latest drop</a>?.<br>\r\n<br>\r\nThanks,<br>\r\n<br>\r\nEzequiel Jadib<br>\r\n<a href=\"http://blogs.southworks.net/ejadib\">http://blogs.southworks.net/ejadib</a>\r\n",
+    "PostedDate": "2008-06-17T13:23:53.963-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99414",
+    "ThreadId": "29819",
+    "Html": "I am using the latest drop and am having similar issues.&nbsp; I cannot get the OnSetRegionManagerCallback to see my regions even if I set the cal:RegionManager.RegionName attribute on the main grid.&nbsp; At first I assumed it had to do with being unable to traverse the visual tree because the control I was using did not inherity from ContentControl, but then I tried the Grid, StackPanel, and Canvas all to no avail.&nbsp; Any help would be greatly appreciated.&nbsp;\r\n",
+    "PostedDate": "2008-06-17T19:14:01.89-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99753",
+    "ThreadId": "29819",
+    "Html": "Hi Matt,<br>\r\n<br>\r\nJulian is helping me on another thread with my issue and in that thread he states that panels are not supported because there is no included RegionAdapter for those.&nbsp; You could override ConfigureRegionAdapterMappings in your custom BootStrapper and then create your own RegionAdapter to deal with this &quot;I think&quot;.&nbsp; What I did was this.<br>\r\n<br>\r\npublic override void ConfigureRegionAdapterMappings(){<br>\r\n&nbsp;&nbsp;&nbsp; RegionAdapterMappings mappings = base.ConfigureRegionAdapterMappings();<br>\r\n&nbsp;&nbsp;&nbsp; if(mappings != null){<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  mappings.RegisterMapping(typeof(StackPanel), new StackPanelAdapter());<br>\r\n&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; return mappings;<br>\r\n}<br>\r\n<br>\r\nthen&nbsp; you just need to implement a StackPanelAdapter, which should be pretty straight forward if you look at the ContentControlAdapter and the ItemsControlAdapter in the reference implementation.<br>\r\n<br>\r\nHope this helps,<br>\r\n<br>\r\nZul<br>\r\n<br>\r\n",
+    "PostedDate": "2008-06-19T07:35:56.833-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99792",
+    "ThreadId": "29819",
+    "Html": "Hi Zul,<br>\r\n<br>\r\nMy problem was actually related to a bug in the RegionManager that has apparently been fixed, as Ezequiel suggested (Thanks, Ezequiel!). However, I'm having a similar issue understanding RegionAdapters. My scenario is that I'm trying to determine how to use a 3rd party docking panel solution with Prism / cWPF. If anyone has any samples for implementing RegionAdapters (especially for a docking solution such as DevComponent's or SyncFusion's :P ) I would love to see them. <br>\r\n<br>\r\nThanks,<br>\r\n<br>\r\nMatt Walters<br>\r\n",
+    "PostedDate": "2008-06-19T10:40:53.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99863",
+    "ThreadId": "29819",
+    "Html": "Check the code in <a href=\"http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=27947\">this thread</a> to see if it helps you instead of creating an adapter for a panel:<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n&lt;ItemsControl cal:RegionManager.RegionName=&quot;YourRegionName&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsControl.ItemsPanel&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsPanelTemplate&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;<strong>YourCustomPanel </strong>/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsPanelTemplate&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsControl.ItemsPanel&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsControl&gt;<br>\r\n",
+    "PostedDate": "2008-06-19T16:29:23.267-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "100078",
+    "ThreadId": "29819",
+    "Html": "Thanks for the lead.&nbsp; I read through the post.&nbsp; I was able to write my own adapter no problem prior to receiving this post so, I guess I have my problem solved for the moment.&nbsp; Is there a reason you would recommend NOT writing your own RegionAdapters?&nbsp; <br>\r\n",
+    "PostedDate": "2008-06-20T18:28:14.093-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "100157",
+    "ThreadId": "29819",
+    "Html": "Hi, not really, I <strong>do </strong>recommend to write your own custom adapters for different controls. But in the case of panels, I think of them as mainly layout controls (to add look &amp; feel), that can be an implementation detail (in most cases, but maybe not all) of an ItemsControl (which are lookless). In the cases were setting the ItemsControl.ItemsPanel property is enough, I would prefer to use that one instead of using a custom RegionAdapter, but that's just personal preference.<br>\r\n",
+    "PostedDate": "2008-06-21T13:20:52.663-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "251469",
+    "ThreadId": "73582",
+    "Html": "<p>Hello,</p>\r\n<p>In my application we are using MVVM with WPF, I wanted to find out what is the right to send the UI objects in the form of sender &amp; eventargs to ViewModel?</p>\r\n<p>As per my understanding ViewModel has to be independant of View, so in future if the new UI comes it shoud be easily integretable to ViewModel.</p>\r\n<p>I tried to identify the ways to avoid passing the Sender &amp; Eventargs from UI to ViewModel, but realised some rich UI features need those arguments to be passed to ViewModel.</p>\r\n<p>Does it mean this application is not feasible for MVVM? I went through lot of articles on net but didn't get any clue about this question.</p>\r\n<p>&nbsp;</p>\r\n<p>It would be really nice if anyone can put light on this.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks in advance.</p>",
+    "PostedDate": "2009-10-29T23:29:46.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "251490",
+    "ThreadId": "73582",
+    "Html": "<p>Yes. You should never pass the Sender or EventArgs to ViewModel.</p>\r\n<p>&gt;&gt;realised some rich UI features need those arguments to be passed to ViewModel.</p>\r\n<p>Could you please let us know the details of your scenario? There are only two problems that we used to face. a) you can to pass the object or data more than one. b) your control doesn't have any bindable property. In order to solve both cases, you can use the custom <strong>attached property</strong> .</p>\r\n<p>If your problem is different one then please let us know. We are very interested to know more scenerio.</p>\r\n<p>Regards,<br>Michael Sync</p>\r\n<p>Silverlight MVP &amp; Microsoft WPF/Silverlight Insider.</p>\r\n<p>Blog: http://michaelsync.net</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-30T01:04:46.423-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "251502",
+    "ThreadId": "73582",
+    "Html": "<p>Hi Michael,</p>\r\n<p>Thanks for your reply. Few scenerios which I can recollect now are :</p>\r\n<p>1) On button click I want to show the messagebox &amp; I want to assign the owner to that messagebox(that is parent window).</p>\r\n<p>2) How can I set the DataContext on UserControl?</p>\r\n<p>3) Sometime you need to focus on a particular action say when a user clicks on OK, we want to save the data &amp; focus has to go to Contro1 on the form.</p>\r\n<p>4) There is a datagrid in which 1st column is the drop down, user selects some type of transaction code(functional term), based on that 2nd column is populated with data for that transaction code.</p>\r\n<p>5) How to put DataContext change event in ViewModel, requirement is when the datacontext is changed, I want to refresh particular section of the form.</p>\r\n<p>Regards</p>\r\n<p>Deepak</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-30T02:13:31.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "251513",
+    "ThreadId": "73582",
+    "Html": "<p>&gt;&gt;1) On button click I want to show the messagebox &amp; I want to assign the owner to that messagebox(that is parent window).</p>\r\n<p>There are two ways for that.</p>\r\n<p>1. You can take a look&nbsp; at this article. <a href=\"http://www.codeproject.com/KB/architecture/MVVM_Dialogs.aspx?display=Print\">http://www.codeproject.com/KB/architecture/MVVM_Dialogs.aspx?display=Print</a></p>\r\n<p>2. You can have View interface in your ViewModel and use the constructor injection to inject the view.&nbsp; (You shouldn't have strong view reference in VM but you can have an interface of your view if needed.)&nbsp; then, you can set it like view.ShowMessage(yourmessage); Then, you can set the owner in your concrete view.&nbsp;</p>\r\n<p>Example:</p>\r\n<p>interface IView{</p>\r\n<p>&nbsp; void ShowMessage(string message);</p>\r\n<p>}</p>\r\n<p>class View : IView {</p>\r\n<p>&nbsp;&nbsp;&nbsp; public void ShowMessage(string message){</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(this, message);</p>\r\n<p>&nbsp;&nbsp;&nbsp; }</p>\r\n<p>}</p>\r\n<p>class ViewModel{</p>\r\n<p>private IView view;</p>\r\n<p>public ViewModel(IVew view){</p>\r\n<p>&nbsp; this.view = view;</p>\r\n<p>}</p>\r\n<p>///Call this in On Command.</p>\r\n<p>view.ShowMessage(&quot;This is a msg&quot;);</p>\r\n<p>}</p>\r\n<p>&nbsp;</p>\r\n<p>&gt;&gt;2) How can I set the DataContext on UserControl?</p>\r\n<p>Normally, you can set the ViewModel to the DataContext of View at Controller or Module. You can read how to do this in UI Composition Sample.</p>\r\n<p>&gt;&gt;3) Sometime you need to focus on a particular action say when a user clicks on OK, we want to save the data &amp; focus has to go to Contro1 on the form.</p>\r\n<p>You can use the way that I mentioned in my #1 answer.</p>\r\n<p>&gt;&gt;4) There is a datagrid in which 1st column is the drop down, user selects some type of transaction code(functional term), based on that 2nd column is populated with data for that transaction code.</p>\r\n<p>- Bind the selected item of Combobox of 1st column to the Property1 of ViewModel</p>\r\n<p>- Bind the ItemSource of combobox of 2nd column to the Property2 of ViewModel</p>\r\n<p>- In the setter of Property1, you can repopulate the data to Property2.</p>\r\n<p>&gt;&gt;5) How to put DataContext change event in ViewModel, requirement is when the datacontext is changed, I want to refresh particular section of the form.</p>\r\n<p>Why do you want to change the DataContext of ViewModel? I don't understand this question. Could you please tell me more for this one? I may be able to suggest other alternative way to achieve it.</p>\r\n<p>Regards,<br>Michael Sync</p>\r\n<p>Silverlight MVP &amp; Microsoft WPF/Silverlight Insider.</p>\r\n<p>Blog: http://michaelsync.net</p>",
+    "PostedDate": "2009-10-30T03:07:08.543-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "251519",
+    "ThreadId": "73582",
+    "Html": "<p>Firstly thank uuuuuuuuu so muchhhh for replies. I am still going through the articles which you have mentioned.</p>\r\n<p>About DataContext change of ViewModel question: Sorry for the confusion. Currently we have a view which has a container,which contains few controls &amp; we have a datacontext change event which refereshed that container. Currently this code is in code behind &amp; we want to move it to ViewModel, can you propose approach for that.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-30T03:30:25.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "251736",
+    "ThreadId": "73582",
+    "Html": "<p>Hi</p>\r\n<p>take a look to this thread.</p>\r\n<p><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=66164\">http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=66164</a></p>\r\n<p>I explained how to get EventArgs in your viewModel. May this can hel you get also the sender.</p>\r\n<p>Let me know</p>\r\n<p>Thanks</p>\r\n<p>&nbsp;</p>\r\n<p>Blochaou Francois</p>",
+    "PostedDate": "2009-10-30T12:30:26.163-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

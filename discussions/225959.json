@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "488885",
+    "ThreadId": "225959",
+    "Html": "<p>Hi</p>\r\n<p>One of the things I'm watching closely in Prism 4 is the development of the MVVM documentation, QuickStarts and Reference Implemenatation. I have used Prism 2 in the past, and really struggled with MVVM combined with Dependency Injection.</p>\r\n<p>In particular, I wasn't able to figure out a strategy of how to create a ViewModel which wraps a particular model object and use constructor injection to resolve dependencies at the same time.</p>\r\n<p>I've been looking at the MVVM QuickStarts and RI in Prism 4 Drop 6, and I haven't yet seen a resolution for this question. Could someone please help me with this?</p>\r\n<p>I'll illustrate with the following example from the RI: The QuestionnaireViewModel creates a collection of QuestionViewModels that wraps each of the Question model objects. For this purpose each QuestionViewModel derived type has a constructor that takes a Question model object as a parameter which is used to create the ViewModel.</p>\r\n<p>My dilemma is this: If I now have some dependencies to add to the QuestionViewModel using constructor injection (I'm using Unity at the moment), I can't find a way to marry that with the above approach of passing in the model object in the constructor.</p>\r\n<p>If I do something like this:</p>\r\n<pre style=\"font-family:consolas\"><pre><span style=\"color:blue\">private</span> <span style=\"color:blue\">readonly</span> myDependency;<br><br><span style=\"color:blue\">public</span> NumericQuestionViewModel(NumericQuestion question, IMyDependency myDependency) : <span style=\"color:blue\">base</span>(question)<br>{<br>  <span style=\"color:blue\">this</span>.myDependency = myDependency;<br>}\r\n</pre>\r\n</pre>\r\n<p>then if I try to resolve the child ViewModel with Unity, then Unity will invariably inject a new instance of the model object (NumericQuestion) into my ViewModel along with the other dependencies, even though I haven't registered the model object with the Unity container. I can't find a way to <em>both</em> provide the model object to wrap in the ViewModel <em>and</em> resolve dependencies when I have hierarchical ViewModels.</p>\r\n<p>I've played around with various options - having multiple constructors, using property injection instead, just newing up the viewModel and passing in the dependencies from the parent to the child, etc. - but none of them feel right to me.</p>\r\n<p>I would like to keep the dependency injection consistent between all my ViewModels and not be forced to use one method of resolving for the parent and another for the children.</p>\r\n<p>I'm aware that Unity 2.0 allows you to provide instances for certain parameters when resolving, but I'm limited to Unity 1.2 at the moment.</p>\r\n<p>Thanks<br>Riko</p>",
+    "PostedDate": "2010-09-03T07:50:18.873-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "495190",
+    "ThreadId": "225959",
+    "Html": "<p><span style=\"font-size:10pt;color:black\">Hi Riko,</span></p>\r\n<p><span style=\"font-size:10pt;color:black\">As you said there is no example in Prism which shows this scenario. However, you could copy this as a work-item, so the product team can take this into account.</span></p>\r\n<p><span style=\"font-size:10pt;color:black\">Nevertheless, Prism targets Unity 2.0 that as you stated it can provide solutions for this scenario.&nbsp;</span></p>\r\n<p><span style=\"font-size:10pt;color:black\">If your scenario require to use Unity 1.2 the property injection approach seems reasonably fine. Why don't you like this approach? &nbsp;</span></p>\r\n<p><span><span style=\"color:#3c3c3c\">Fernando Antivero</span></span><span><span style=\"color:#3c3c3c\">&nbsp;</span></span><span style=\"color:#3c3c3c\"><br> <span><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></span></span></p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-17T13:15:32.823-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "496044",
+    "ThreadId": "225959",
+    "Html": "<p>Hi Fernando</p>\r\n<p>Thanks for your input, it is much appreciated. On your points:</p>\r\n<ul>\r\n<li>I'm not convinced anymore that specifying constructor parameters when resolving with Unity 2.0 will work - for one thing, it requires specifying the name of the constructor parameter that you want to provide, which means that it kind of breaks dependency injection. <br><br>For another, it doesn't work in the more general case where you want the parameter to be null when it isn't specified - Unity throws an exception when it doesn't know how to resolve one of the constrcutor parameters (as I discovered when I tried to approximate the constructor parameter passing with child containers and RegisterInstance in Unity 1.2).</li>\r\n<li>I did consider using property injection briefly, but it seemed both from the Unity documentation and the DI community that this approach is frowned upon because it isn't as &quot;clean&quot; as constructor injection, i.e. you are specifying an dependency through container-specific attributing as opposed to container-agnostic constructor parameters.<br><br>Even if I used it, it would mean I used one way (constructor injection) for parent ViewModels and another (property injection) for child ViewModels and I would have to adapt my application services to support both constructor injection through Resolve and property injection through BuildUp. I guess I could change everything to use property injection, but that would mean I have to change all my interfaces which currently rely just on specifying ViewModel types which are then resolved as needed.</li>\r\n</ul>\r\n<p>In the end I adapted the State Management feature in the MVVM RI in the latest drop to Unity, once I figured out what it was doing (with my limited knowledge of MEF and all). It is quite a clever way to get around the limitation of providing data to types that are resolved through a DI container in a disconnected manner.</p>\r\n<p>Still, I can't help but feel that in all the articles and posts I read about MVVM and DI nobody seemed to explain the challenges in doing master-detail MVVM with DI for both the parent and child. Don't know if that means there's something wrong with my design, but it seems to be something that should be quite common.</p>",
+    "PostedDate": "2010-09-20T08:17:07.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "496162",
+    "ThreadId": "225959",
+    "Html": "<p>Hi,</p>\r\n<p>There is guidance how to implement master-detail MVVM using MEF as DI in the MVVM RI provided by Prism. Nevertheless there is no guidance about your exact scenario. Thus, I'm copying this as a work-item. So that the product team can may take this scenario into account.</p>\r\n<p>Probably there is not an only IoC implementation that fits for all users' scenarios, and it is probably one of the reasons because Prism is agnostic of any implementation. It means that you could use those recommended like Unity 2.0 or MEF as well other of your choice.&nbsp;</p>\r\n<p>I completely understand your point about property injection and how your code becomes non-container agnostic. But in my opinion, if your scenario requires to use a particular container, should your code be agnostic of it?</p>\r\n<p>I hope this helps,</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\"><span style=\"color:#0066cc\">http://blogs.southworks.net/fantivero</span></a></p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-20T12:29:52.563-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "496173",
+    "ThreadId": "225959",
+    "Html": "This discussion has been copied to a work item. Click <a href=\"http://compositewpf.codeplex.com/workitem/7261\">here</a> to go to the work item and continue the discussion.",
+    "PostedDate": "2010-09-20T12:51:55.61-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

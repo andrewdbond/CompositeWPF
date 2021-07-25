@@ -1,0 +1,64 @@
+Index: ApplicationBarButtonCommand.cs
+===================================================================
+--- ApplicationBarButtonCommand.cs	(revision 65363)
++++ ApplicationBarButtonCommand.cs	(working copy)
+@@ -108,7 +108,7 @@
+             }
+ 
+             this.binding = new ClickCommandBinding(
+-                this.AssociatedObject.ApplicationBar.FindButton(this.ButtonText),
++                this.AssociatedObject.ApplicationBar.FindMenuItem(this.ButtonText),
+                 (ICommand)this.CommandBinding,
+                 () => this.CommandParameter);
+         }
+@@ -119,7 +119,7 @@
+         private class ClickCommandBinding
+         {
+             private readonly ICommand command;
+-            private readonly ApplicationBarIconButton iconButton;
++            private readonly IApplicationBarMenuItem iconButton;
+             private readonly Func<object> parameterGetter;
+ 
+             /// <summary>
+@@ -128,7 +128,7 @@
+             /// <param name="iconButton"></param>
+             /// <param name="command"></param>
+             /// <param name="parameterGetter"></param>
+-            public ClickCommandBinding(ApplicationBarIconButton iconButton, ICommand command, Func<object> parameterGetter)
++            public ClickCommandBinding(IApplicationBarMenuItem iconButton, ICommand command, Func<object> parameterGetter)
+             {
+                 this.command = command;
+                 this.iconButton = iconButton;
+Index: ApplicationBarExtensions.cs
+===================================================================
+--- ApplicationBarExtensions.cs	(revision 65363)
++++ ApplicationBarExtensions.cs	(working copy)
+@@ -38,5 +38,28 @@
+             return (from object button in appBar.Buttons 
+                     select button as ApplicationBarIconButton).FirstOrDefault(btn => btn != null && btn.Text == text);
+         }
++
++        ///<summary>
++        /// Finds an <see cref="IApplicationBarMenuItem"/> by its name.
++        ///</summary>
++        ///<param name="appBar"></param>
++        ///<param name="text"></param>
++        ///<returns></returns>
++        [CLSCompliant(false)]
++        public static IApplicationBarMenuItem FindMenuItem(this IApplicationBar appBar, string text)
++        {
++            if (appBar == null) throw new ArgumentNullException("appBar");
++
++            var resultMenuItem = (from object menuItem in appBar.MenuItems
++                            select menuItem as IApplicationBarMenuItem).FirstOrDefault(btn => btn != null && btn.Text == text);
++
++            if (resultMenuItem == null)
++            {
++                resultMenuItem = (from object menuItem in appBar.Buttons
++                                  select menuItem as IApplicationBarMenuItem).FirstOrDefault(btn => btn != null && btn.Text == text);
++            }
++
++            return resultMenuItem;
++        }
+     }
+ }

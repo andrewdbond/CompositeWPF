@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1060955",
+    "ThreadId": "448183",
+    "Html": "HI! Im trying to collapse a region if the region contains no views. I tried to make a custom region behaviour like this one below. But my problem is that i cant get the host control of my region to change the Visiblity property of it. How can i achive this ? or is there any better way to do this?<br />\n<pre><code>    [Export(typeof(CollapseRegionBehavior))]\n    [PartCreationPolicy(CreationPolicy.NonShared)]\n    public class CollapseRegionBehavior : RegionBehavior, IHostAwareRegionBehavior\n    {\n\n        public DependencyObject HostControl { get; set; }\n\n        protected override void OnAttach()\n        {\n            this.Region.ActiveViews.CollectionChanged += ActiveViews_CollectionChanged;\n        }\n\n        void ActiveViews_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)\n        {\n            var viewCount = this.Region.Views.Count();\n\n            if (viewCount &gt; 0)\n            {\n                //Show the region\n            }\n            else\n            {\n                //hide the region\n            }\n        }\n    }</code></pre>\n\n",
+    "PostedDate": "2013-06-25T08:29:43.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1061023",
+    "ThreadId": "448183",
+    "Html": "Hi\r<br />\n<br />\nIf you wish to obtain the host control of the region inside your <strong>RegionBehavior</strong> you can make it implement the <strong>IHostAwareRegionBehavior</strong> interface, which defines a <strong>HostControl</strong> property. Said property should be automatically populated with the host control of the region when the behavior is attached to it.\r<br />\n<br />\nHowever, using a <strong>RegionBehavior</strong> to implement this functionality might be an overkill, specially if you need this behavior in only one specific region of your application. Another possible approach is to implement the logic to show / hide the region in the code behind of the view where it's defined. This can be implemented in the same way: subscribing to the <strong>CollectionChanged</strong> event of the <strong>Views</strong> collection and then modifying the host control properties. In this case, you will have access to the host control and the logic to change the view will be contained in the view itself.\r<br />\n<br />\nOn the other hand, if you need to implement this functionality in other regions of your application or you don't want to add code in your views' code behind, using a <strong>RegionBehavior</strong> might be a more suitable approach.\r<br />\n<br />\nI hope you find it useful,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-06-25T10:42:26.493-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1061041",
+    "ThreadId": "448183",
+    "Html": "Thanks for the reply DCherubini!\r<br />\nYes i implemented the <strong>IHostAwareRegionBehavior</strong> and got the HostControl property as in my code post. But the property is always null.\r<br />\nIt doesn't set the property automatically. I´m mapping my region with a ItemsControl maybe that is the reason that it doesn´t set the property ?.\r<br />\n<br />\nYes i´m trying to get this behavior to many regions i´m trying to make it collapse with animations etc.... Is there any other ways to get the region parent ? Or i´m i doing it wrong ? <br />\n",
+    "PostedDate": "2013-06-25T11:24:54.303-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1061079",
+    "ThreadId": "448183",
+    "Html": "Hi,\r<br />\n<br />\nThat is strange. Usually the <strong>HostControl</strong> property is be set by the corresponding <strong>RegionAdapter</strong> when the region is created, unless the region has no host control.\r<br />\n<br />\nIt would be useful if you could post the code of your <strong>region behavior</strong> along with how you are adding the behavior to the region, so that we can find why the <strong>HostControl</strong> property is not being set.\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-06-25T12:53:54.29-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1061091",
+    "ThreadId": "448183",
+    "Html": "Thanks for the help here is the codes.<br />\n<br />\nMy behavior.<br />\n<pre><code>\n[Export(typeof(CollapseRegionBehavior))]\n[PartCreationPolicy(CreationPolicy.NonShared)]\npublic class CollapseRegionBehavior : RegionBehavior, IHostAwareRegionBehavior\n{\n\n    public DependencyObject HostControl { get; set; }\n\n    protected override void OnAttach()\n    {\n        this.Region.ActiveViews.CollectionChanged += ActiveViews_CollectionChanged;\n    }\n\n    void ActiveViews_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)\n    {\n        var viewCount = this.Region.Views.Count();\n        var control = this.HostControl as FrameworkElement;\n\n        if (viewCount &gt; 0)\n        {\n            //Show the region\n            control.Visibility = Visibility.Visible;\n        }\n        else\n        {\n            //hide the region\n            control.Visibility = Visibility.Collapsed;\n        }\n    }\n}\n</code></pre>\n\nHere is the module i load then i add the behavior.<br />\n<pre><code>[ModuleExport(typeof(MenuModule), InitializationMode = InitializationMode.WhenAvailable)]\n[Module(ModuleName = &quot;MenuModule&quot;)]\npublic class MenuModule : IModule\n{\n    private readonly IRegionManager _regionManager;\n\n    [ImportingConstructor]\n    public MenuModule(IRegionManager regionManager)\n    {\n        _regionManager = regionManager;\n    }\n\n    public void Initialize()\n    {\n        var region = _regionManager.Regions[RegionNames.SideMenuRegion];\n        region.Behaviors.Add(&quot;CollapseRegionBehavior&quot;, new CollapseRegionBehavior());\n    }\n}</code></pre>\n\nMy bootstrapper<br />\n<h1></h1>\npublic class Bootstrapper : MefBootstrapper<br />\n{<br />\n<pre><code>protected override DependencyObject CreateShell()\n{\n    return this.Container.GetExportedValue&lt;Shell&gt;();\n}\n\nprotected override void InitializeShell()\n{\n    base.InitializeShell();\n\n    Application.Current.MainWindow = (Shell)this.Shell;\n    Application.Current.MainWindow.Show();\n}\n\nprotected override void ConfigureAggregateCatalog()\n{\n    base.ConfigureAggregateCatalog();\n\n    //Add this main assembly to the catalog\n    this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(Bootstrapper).Assembly));\n\n    //Add Base modules for the app that is referenses in the project.\n    this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(MenuModule.MenuModule).Assembly));\n    this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(AuthenticationModule.AuthenticationModule).Assembly));\n    this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(AutoPopulateExportedViewsBehavior).Assembly));\n}\n\nprotected override void ConfigureContainer()\n{\n    base.ConfigureContainer();\n}\n\nprotected override IModuleCatalog CreateModuleCatalog()\n{\n    return base.CreateModuleCatalog();\n}\n\nprotected override Microsoft.Practices.Prism.Regions.IRegionBehaviorFactory ConfigureDefaultRegionBehaviors()\n{\n    var factory = base.ConfigureDefaultRegionBehaviors();\n\n    factory.AddIfMissing(&quot;AutoPopulateExportedViewsBehavior&quot;, typeof(AutoPopulateExportedViewsBehavior));\n    return factory;\n}</code></pre>\n\n}<br />\n",
+    "PostedDate": "2013-06-25T13:37:37.787-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1061602",
+    "ThreadId": "448183",
+    "Html": "Hi,\r<br />\n<br />\nThe problem seems to be that the behavior is added to the <strong>Region</strong> after the <strong>Region</strong> was created:\r<br />\nWhen a region is created by the corresponding <strong>RegionAdapter</strong> it will obtain the list of default behaviors and add them to the region. If one of those behaviors implement the <strong>IHostAwareRegionBehavior</strong> interface, the <strong>RegionAdapter</strong> will set its <strong>HostControl</strong> property by itself since the adapter is the only component that is aware of the control.  Hence, any <strong>IHostAwareRegionBehavior</strong> that is added after the creation of the region will not have its <strong>HostControl</strong> property set.\r<br />\n<br />\nA possible workaround for this could be to obtain the <strong>HostControl</strong> from a default behavior (like for example the <strong>SyncRegionContextWithHostBehavior</strong>) and set it manually to your <strong>CollapseRegionBehavior</strong>:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">public</span> <span style=\"color:Blue;\">void</span> Initialize()\n{\n    <span style=\"color:Blue;\">var</span> region = _regionManager.Regions[RegionNames.SideMenuRegion];\n    <span style=\"color:Blue;\">var</span> syncBehavior = region.Behaviors[SyncRegionContextWithHostBehavior.BehaviorKey] <span style=\"color:Blue;\">as</span> IHostAwareRegionBehavior;\n    <span style=\"color:Blue;\">var</span> collapseBehavior = <span style=\"color:Blue;\">new</span> CollapseRegionBehavior();\n    collapseBehavior.HostControl = syncBehavior.HostControl;\n    region.Behaviors.Add(<span style=\"color:#A31515;\">&quot;CollapseRegionBehavior&quot;</span>, collapseBehavior);\n}\r\n</pre></div>I hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-06-26T11:35:24.1-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1061661",
+    "ThreadId": "448183",
+    "Html": "Hi thanks for the help. now it works like a charm. thanks so much.<br />\n",
+    "PostedDate": "2013-06-26T13:44:02.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

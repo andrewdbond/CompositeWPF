@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "530011",
+    "ThreadId": "236849",
+    "Html": "\r\n<p>I'm trying to swich my WPF4 app over to using the Navigation methods but am running into some potential&nbsp;road blocks.&nbsp; I have a Tab based application, with the same view being opened multiple times in the Tab and that view having&nbsp;a region inside\r\n it.&nbsp; Basic views - CustomerListView as the initial&nbsp;tab, click on Customer name to open CustomerEditView as other tab(s).&nbsp; Customer edit has a contentcontrol as a Region that hosts many different&nbsp;CustomerDetailViews.&nbsp; Currently I am\r\n using scoped regions to accomplish this.&nbsp; In trying to switch to the Navigation methods I don't know how to get the RequestNavigate to create a ScopedRegion that my CustomerEditView can use.&nbsp; I need the ScopedRegionManager in my CustomerEditViewModel\r\n since the detail views are loaded on demand and therefor injected (as opposed to discovered).&nbsp; I could have 10-12 different detail views and don't think I want to load them all up at the initial opening of the CustomerEditView.</p>\r\n<p>Can I do this with Navigation?&nbsp; Are there any other suggestions?&nbsp; One thought I had was rather than using a scoped region in my CustomerEditView I could use a content control that points to a property in my CustomerEditViewModel that has the currently\r\n selected DetailViewModel and use DataTemplates to re-load the DetailView each time the DetailViewModel changes but that seems like a lot of overhead.</p>\r\n<p>Any thoughts or suggestions are appreciated!!</p>\r\n",
+    "PostedDate": "2010-12-02T05:05:13.073-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "530174",
+    "ThreadId": "236849",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Prism Region Navigation does not provide a way of using Scoped Regions out-of-the-box. However, you might use an alternative approach to achieve the scoped regions scenario while keeping the benefits of navigation.</p>\r\n<p>When you use Scoped Regions, it means that you have multiple RegionManager instances across your views. When you add a view to a region through the View Injection approach specifying that you want to create a scoped\r\n<strong>RegionManager</strong>, your region internally calls the <a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.prism.regions.regionmanager.setregionmanager%28PandP.40%29.aspx\">\r\nRegionManager.SetRegionManager</a> method adding a new instance of an object that implements\r\n<strong>IRegionManager</strong> (generally a <strong>RegionManager</strong>).</p>\r\n<p>In this case, since you're not using the View Injection approach, you could call the\r\n<strong>RegionManager.SetRegionManager</strong> method by yourself, as in the following code:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>RegionManager.SetRegionManager(viewInstance, <span style=\"color:blue\">new</span> RegionManager());<br></pre>\r\n</div>\r\n<p>for example in your view's constructor, or in a method subscribed to the Region's\r\n<strong>ViewCollection CollectionChanged </strong>event.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-02T09:31:40.363-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "534665",
+    "ThreadId": "236849",
+    "Html": "\r\n<p>Hi hnolan and Guido,</p>\r\n<p>I'm facing exactly the same case as descrobed by hnolan.</p>\r\n<p>I tried adding this at the view's c'tor:</p>\r\n<pre style=\"font-family:consolas\"><div style=\"color:black; background-color:white\"><pre>\t<span style=\"color:blue\">public</span> JobPlanningView(JobPlanningViewModel viewModel)\r\n\t{\r\n\t\tm_scopedRegionsManager = <span style=\"color:blue\">new</span> RegionManager();\r\n\t\tRegionManager.SetRegionManager(<span style=\"color:blue\">this</span>, m_scopedRegionsManager);\r\n</pre>\r\n<pre>\t\tInitializeComponent();\r\n\r\n\t\t<span style=\"color:green\">// Set the ViewModel as this View's data context.</span>\r\n\t\t<span style=\"color:blue\">this</span>.DataContext = viewModel;</pre>\r\n<pre>\t} </pre>\r\n</div>\r\n<br></pre>\r\n<pre style=\"font-family:consolas\">But still no good - same exception by RegionManager.</pre>\r\n<pre style=\"font-family:consolas\">Do you have any further insights?...</pre>\r\n<pre style=\"font-family:consolas\">Thanks,<br>Ziev</pre>\r\n",
+    "PostedDate": "2010-12-12T09:36:16.007-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "535098",
+    "ThreadId": "236849",
+    "Html": "\r\n<p>I am having the same problem. I need use scoped regions in many views so it would be interesting to know what to do in this scenario (Region Navigation).</p>\r\n<p>Thanks in advance.</p>\r\n<p>Anti</p>\r\n",
+    "PostedDate": "2010-12-13T09:33:49.75-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "535125",
+    "ThreadId": "236849",
+    "Html": "<p>Hi Ziev and Anti,</p>\n<p>When you navigate to a view inside a region, the <strong>RegionNavigationService </strong>internally calls the <strong>LoadContent</strong> method of the <strong> RegionNavigationContentLoader</strong> it has associated. As explained on this article by <a href=\"http://blogs.msdn.com/b/kashiffl/archive/2010/10/04/prism-v4-region-navigation-pipeline.aspx\"> Karl Shifflett</a>, there are two possibilities:</p>\n<p>A) If there is an active view in the region that can handle the navigation request, the <strong>LoadContent </strong>method will return that view, and</p>\n<p>B) If there isn't, the <strong>LoadContent </strong>method will create the view and add it to the region.</p>\n<p>This can be seen in the following code (which is a fragment of the <strong>LoadContent </strong>method inside the default <strong>RegionNavigationContentLoader</strong>:</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">object</span> LoadContent(IRegion region, NavigationContext navigationContext)<br /><br />{<br /><br />(...)<br /><br /> <span style=\"color: blue;\">var</span> view = acceptingCandidates.FirstOrDefault();<br /><br />            <span style=\"color: blue;\">if</span> (view != <span style=\"color: blue;\">null</span>)<br />            {<br />                <span style=\"color: blue;\">return</span> view;<br />            }<br /><br />            view = <span style=\"color: blue;\">this</span>.CreateNewRegionItem(candidateTargetContract);<br /><br />            region.Add(view);<br /><br />            <span style=\"color: blue;\">return</span> view;<br /><br />}<br /></pre>\n</div>\n<p>In case you want to use Scoped Regions with Navigation and you want the view to be created and added to the region by the <strong>RequestNavigate</strong> method (that is, case B), you will need to create a new <strong>RegionNavigationContentLoader </strong>that adds the views using a Scoped Region Manager. The <strong>LoadContent</strong> method of that custom <strong>RegionNavigationContentLoader </strong>could look like this:</p>\n<pre><pre><pre><span style=\"color: blue;\"></span></pre>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">object</span> LoadContent(IRegion region, NavigationContext navigationContext)\n\n{\n\n(...)\n\n\n<span style=\"color: blue;\">var</span> view = acceptingCandidates.FirstOrDefault();\n\n<span style=\"color: blue;\">if</span> (view != <span style=\"color: blue;\">null</span>)\n{\n<span style=\"color: blue;\">return</span> view;\n}\n\nview = <span style=\"color: blue;\">this</span>.CreateNewRegionItem(candidateTargetContract);\nregion.Add(view, <span style=\"color: blue;\">null</span>, <span style=\"color: blue;\">true</span>);\n\n<span style=\"color: blue;\">return</span> view;\n}\n</pre>\n</div>\n</pre>\n<br /></pre>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-12-13T10:47:52.067-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "535469",
+    "ThreadId": "236849",
+    "Html": "\r\n<p>Thank you Guido, for the detailed answer.</p>\r\n<p>It does make sense now. If I'll decide to implement it in my system I will post feedback here.</p>\r\n<p>Regards,<br>\r\nZiev</p>\r\n",
+    "PostedDate": "2010-12-14T03:40:28.397-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "536079",
+    "ThreadId": "236849",
+    "Html": "\r\n<p>Thank you too, Guido.</p>\r\n<p>I have realized that my application was a little bit confusing due to the use of scoped regions. I think is better to use the whole power of the Region Navigation API and to activate - deactivate views instead of clearing the region and reconstructing the\r\n views (that was the reason why i decided to use scoped regions).</p>\r\n<p>Perhaps, I am implementing this mechanism in the future, so as Ziev have said, I will let you know.</p>\r\n<p>Thanks again</p>\r\n<p>Anti</p>\r\n",
+    "PostedDate": "2010-12-15T04:50:32.207-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "557940",
+    "ThreadId": "236849",
+    "Html": "\r\n<p>I ran into the same scenario where I needed to use the scoped region. This is how I implemented in my solution:</p>\r\n<p>The application can create multiple instances of RecordView. Here the xaml of the RecordView</p>\r\n<p>...<br>\r\n&lt;ContentControl Prism:RegionManager.RegionManager=&quot;{Binding Path=ScopedRegionManager}&quot; Prism:RegionManager.RegionName=&quot;RecordMenuRegion&quot; /&gt;<br>\r\n&lt;ContentControl Prism:RegionManager.RegionManager=&quot;{Binding Path=ScopedRegionManager}&quot; Prism:RegionManager.RegionName=&quot;RecordMainRegion&quot; /&gt;<br>\r\n...</p>\r\n<p>In RecordViewModel</p>\r\n<p>private IRegionManager scopedRegionManager;<br>\r\n[ImportingConstructor]<br>\r\npublic RecordViewModel(IRegionManager regionManager, ....)<br>\r\n{<br>\r\n&nbsp;...<br>\r\n&nbsp;this.scopedRegionManager = regionManager.CreateRegionManager();<br>\r\n&nbsp;//then register this scopedRegionManager with private Dictionary Collection to be used later<br>\r\n&nbsp;//in my case I created an IScopedRegionManagerCollection to track registrations with Add and Remove methods<br>\r\n&nbsp;//whenever the instance of this RecordView is destroy, remove scoped region&nbsp;manager from the collection<br>\r\n}</p>\r\n<p>public IRegionManager ScopedRegionManager<br>\r\n{<br>\r\n&nbsp;get{return this.scopedRegionManager;}<br>\r\n}</p>\r\n<p>I hope this makes some sense.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-31T01:53:03.52-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "578856",
+    "ThreadId": "236849",
+    "Html": "<p>Hmm, I havent been looking at the discussion board for some time, I needed scoped regions with navigation API back in December. It wasnt an elegant solution but I added the the scoped region manager functionality by forking Prism code.</p>\r\n<p>&nbsp;</p>\r\n<p>1. Added IRegionManager property to NavigationContext class (this was to let every view know about its region manager as Navigation context is passed into OnNavigatedTo(..) )</p>\r\n<p>2. Modified LoadContent method of RegionNavigationContentLoader</p>\r\n<p>public class RegionNavigationContentLoader : IRegionNavigationContentLoader<br />{</p>\r\n<p>...</p>\r\n<p>&nbsp;public object LoadContent(IRegion region, NavigationContext navigationContext, bool createScopedRegionManager)<br />&nbsp;{</p>\r\n<p>...</p>\r\n<p>navigationContext.RegionManager = region.Add(view, view.GetHashCode().ToString(), createScopedRegionManager);</p>\r\n<p>return view;</p>\r\n<p>&nbsp;}</p>\r\n<p>...</p>\r\n<p>}</p>\r\n<p>3. Added an overloaded method to RegionManagerExtensions to include the bool for regionScope</p>\r\n<p>&nbsp;</p>\r\n<p>public static void RequestNavigate(this IRegionManager regionManager, string regionName, Uri source, Action&lt;NavigationResult&gt; navigationCallback, bool createScopedRegion)<br />{</p>\r\n<p>...</p>\r\n<p>}</p>\r\n<p>&nbsp;</p>\r\n<p>But now I see some interesting suggestions in this post, will see if I could use these \"external\" ways so I can stick to Prism codebase. Anyone had any luck?</p>",
+    "PostedDate": "2011-03-10T20:29:43.707-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "818425",
+    "ThreadId": "236849",
+    "Html": "<p>I came up with simpler solution for the scope problem. In short I am using custom attribute to determine if scope is required when view is created and using RegionManager.RegionManager attached attribute to access correct instance of RegionManager within the view.<br />More information is available at this link:<br /><a rel=\"nofollow\" href=\"http://www.codeproject.com/Articles/320673/PrismScopedRegions\">http://www.codeproject.com/Articles/320673/PrismScopedRegions</a></p>",
+    "PostedDate": "2012-04-01T10:50:13.727-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

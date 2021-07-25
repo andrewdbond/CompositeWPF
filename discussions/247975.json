@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "573751",
+    "ThreadId": "247975",
+    "Html": "<p>Can anyone point me at a sample that shows how to create nested containers using Prism with MEF?</p>\n<p>In my main module, I'd like to be able to define a container that provides a common set of services globally. Then in another module, I'd like to be able to create a child container that provides services locally (and only locally) to that module. Scoped containers are easy to set up in CAB and Unity.</p>\n<p>What I do&nbsp;NOT want is for every service, view and view model in my app to end up in the same container where anyone can get hold of them. Unfortunately, this is exactly what you get as soon as you do this:</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: green;\"><div style=\"color: black; background-color: white;\"><pre><span style=\"color: green;\"><div style=\"color: black; background-color: white;\"><pre><span style=\"color: green;\">// In main module...</span>\r\n<span style=\"color: blue;\">this</span>.Container.ComposeExportedValue&lt;CompositionContainer&gt;(<span style=\"color: blue;\">this</span>.Container);\r\n\r\n<span style=\"color: green;\">// In ModuleA</span>\r\n﻿﻿[ModuleExport(<span style=\"color: blue;\">typeof</span>(ModuleA))]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> ModuleA : IModule\r\n{\r\n  [ImportingConstructor]\r\n  <span style=\"color: blue;\">public</span> ModuleA(CompositionContainer parentContainer)\r\n  {\r\n    <span style=\"color: green;\">// too late! - container catalog has already been populated with Module A exports</span>\r\n  }</pre>\n</div>\n</span></pre>\n</div>\n</span></pre>\n</div>\n<p>Should I even try to use MEF here or go with something else?</p>\n<p>&nbsp;</p>",
+    "PostedDate": "2011-03-01T03:07:41.187-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573909",
+    "ThreadId": "247975",
+    "Html": "<p>Hi,</p>\n<p>You might find the <a href=\"http://mef.codeplex.com/wikipage?title=FAQ\">MEF FAQ in Codeplex</a> useful, specifically into the section titled \"How do I use Nested Containers?\".</p>\n<p>Also, as this is not strictly related to Prism, you might find better support in the MEF forums:</p>\n<ul>\n<li><a href=\"http://mef.codeplex.com/discussions\">Codeplex Forum</a></li>\n<li><a href=\"http://social.msdn.microsoft.com/Forums/eu/MEFramework/threads\">MSDN Forum</a></li>\n</ul>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-01T08:47:19.343-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573999",
+    "ThreadId": "247975",
+    "Html": "<p>Thanks for the reply.</p>\r\n<p>Unfortunately, that link doesn't really help. I already understand how to create nested containers in MEF.</p>\r\n<p>What I'm looking for is an explanation or code sample of how to have a Prism module (other than the module that creates the default container) create a MEF child container on a parent container. Without this, you end up with everything in a single container.</p>",
+    "PostedDate": "2011-03-01T11:16:20.493-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "574438",
+    "ThreadId": "247975",
+    "Html": "<p id=\"ccbdc670-266c-012e-5401-12313d05056c\">Hi,</p>\r\n<p id=\"ccbdda80-266c-012e-5403-12313d05056c\">Based  on my understanding, one possible workaround for that would be to  declare the exports imperatively instead of using the declarative Export  attribute. Therefore, you would guarantee that the parts are exported  into the child container instead of the parent one. You might find the following articles useful to that purpose:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/system.componentmodel.composition.hosting.compositioncontainer.aspx\">CompositionContainer Class</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/system.componentmodel.composition.hosting.compositioncontainer_methods.aspx\">CompositionContainer Methods</a></li>\r\n</ul>\r\n<p>Take into account that the <strong>ModuleExport </strong>attribute, needed to load modules, loads them (along with the child containers) into the parent container, so you shouldn't replace it by an imperative alternative.</p>\r\n<p>If you don't find the imperative use of MEF comfortable, you could use other dependency injection mechanisms, such as Unity, which is supported by Prism out of the box.</p>\r\n<p id=\"ccbde5a0-266c-012e-5404-12313d05056c\">I hope you find this helpful.</p>\r\n<p id=\"ccbdf2c0-266c-012e-5405-12313d05056c\">Guido Leandro Maliandi   <br /><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-02T06:49:01.66-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "575217",
+    "ThreadId": "247975",
+    "Html": "<p>OK, so if I go the imperative route, I have to make sure I do NOT have [Export] on the types I want only in the child container.</p>\r\n<p>But then they're not exports, so how can I add them to a child container?</p>\r\n<p>This sort of thing</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>[ImportingConstructor]\r\n<span style=\"color: blue;\">public</span> ModuleA(CompositionContainer parent)\r\n{\r\n    <span style=\"color: blue;\">this</span>.container =\r\n        <span style=\"color: blue;\">new</span> CompositionContainer(\r\n            <span style=\"color: blue;\">new</span> TypeCatalog(\r\n                <span style=\"color: blue;\">typeof</span>(ModuleAView),\r\n                <span style=\"color: blue;\">typeof</span>(ModuleAViewModel)),\r\n        parent);\r\n}</pre>\r\n</div>\r\n<p>won't work because ModuleAView and ModuleAViewModel are not exports any more.</p>\r\n<p>And it still leaves me with&nbsp;this problem when it comes to registering a view:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> Initialize()\r\n{\r\n    <span style=\"color: green;\">// The region view registry knows nothing about the child container so this fails</span>\r\n    <span style=\"color: blue;\">this</span>.RegionViewRegistry.RegisterViewWithRegion(RegionNames.Main, <span style=\"color: blue;\">typeof</span>(ModuleAView));\r\n}</pre>\r\n</div>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-03-03T12:15:51.887-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "594417",
+    "ThreadId": "247975",
+    "Html": "<p>Hi,</p>\n<p>You can create your own IModuleInitializer that uses a child container to resolve instances of your modules.</p>\n<p>I had to do something similar with the UnityContainer. &nbsp;Here is the code:</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre>    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> NestedModuleInitializer : ModuleInitializer\n    {\n        <span style=\"color: blue;\">private</span> IUnityContainer _unityContainer;\n\n        <span style=\"color: blue;\">public</span> NestedModuleInitializer(IUnityContainer unityContainer, ILoggerFacade loggerFacade)\n            : <span style=\"color: blue;\">base</span>(<span style=\"color: blue;\">new</span> UnityServiceLocatorAdapter(unityContainer), loggerFacade)\n        {\n            _unityContainer = unityContainer;\n        }\n\n        <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> IModule CreateModule(<span style=\"color: blue;\">string</span> typeName)\n        {\n            Type moduleType = Type.GetType(typeName);\n            <span style=\"color: blue;\">if</span> (moduleType == <span style=\"color: blue;\">null</span>)\n            {\n                <span style=\"color: blue;\">throw</span> <span style=\"color: blue;\">new</span> ModuleInitializeException(<span style=\"color: blue;\">string</span>.Format(CultureInfo.CurrentCulture, Properties.Resources.FailedToGetType, typeName));\n            }\n\n            IUnityContainer childContainer = _unityContainer.CreateChildContainer();\n            <span style=\"color: blue;\">object</span> module = childContainer.Resolve(moduleType);\n            <span style=\"color: blue;\">return</span> (IModule)module;\n        }\n    }\n\n</pre>\n</div>\n<p>Cheers,</p>\n<p>Andrew Michell</p>",
+    "PostedDate": "2011-04-08T13:57:33.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "595717",
+    "ThreadId": "247975",
+    "Html": "<p>Hi,</p>\r\n<p>Thanks for the reply.</p>\r\n<p>I guess that's one way to make it work but as I wrote earlier, I was really looking for a way to have a Prism module (other than the module that creates the default container) create a MEF child container on a parent container, and populate it with services that are then available only to parts within the child container. (Otherwise you end up with everything in one big bucket.)</p>\r\n<p>This is really easy to do in CAB and Unity.</p>\r\n<p>I could use Unity, but then I've got two DI frameworks to deal with. OK,&nbsp;those frameworks may have slightly different goals (as Glenn has pointed out many many many times) but they do have a lot of overlap, and&nbsp;that worries me. If you're setting out on a large project with different developers in different timezones, you want everybody working on that project to be completely clear about precisely what responsibilities they're going to hand off to each technology. Right now, it looks to me like you can't really use MEF for container management inside Prism unless you've got only a simple app (which, given you're using Prism in the first place, you probably haven't). I'd like to be wrong about that but I haven't come across any code yet which proves otherwise.</p>\r\n<p>(I've got a feeling you could do something clever with export providers but that's the sort of thing I'd like to see in the core, not something I want to go off and write myself.)</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-04-12T00:52:11.457-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

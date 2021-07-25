@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "I ran this batch file from Windows Explorer and the path it used was wrong.  It ends up using the path rooted where cmd.exe is rather than where Prism was installed to.  The net effect is that the assembly path stored in the registry is wrong.    The current workaround is that you have to open a command prompt, change to the Prism directory and then run the batch file - keeping in mind that UAC may get in the way so this is even more annoying.",
+    "LastUpdatedDate": "2013-02-21T18:38:20.21-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-01-07T09:26:44.82-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "RegisterPrismBinaries doesn't work properly",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 7782
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nI've tried to reproduce your issue but I was unable to do so. It could be helpful if you could provide us with additional information regarding your scenario, such as the OS version you're using, the Prism release, etc.\r\n\r\nIn case it helps, I'll provide you some information about the RegisterPrismBinaries.cmd file, so that you can examine it and check where it is failing:\r\n\r\nThe RegisterPrismBinaries.cmd calls the script in Scripts/RegisterPrismLibrary.proj passing the %BinDir% variable as an argument (which is the directory in which the prism compiled assemblies are located). That script creates a temporary file with the lines to register the assemblies to the GAC, then executes RegEdit /s passing that file as an argument, and deletes the file.\r\n\r\nYou could remove the following line from the final part of the RegisterPrismLibrary.proj file:\r\n\r\n\r\nand then check the temp file generated (whose directory is shown in the console) to see which is the problem.\r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-01-10T11:18:28.987-08:00",
+      "Id": 156401
+    },
+    {
+      "Message": "I'm running Windows 7 x64.  I right-clicked the .bat and said Run as Administrator so it'd have write access.  The working directory it is using is the path to cmd.exe and not the batch file.  This matches what the generated batch file says.  \r\n\r\nThe key here is UAC.  When you Run As Administrator (which you have to in order to write to the registry) the working directory is going to be System32 and not where the batch file is.  Presumably this is because RunAs is being called and therefore isn't inheriting the envvars of the calling process.  If you run the batch file w/o admin then the path is correct but, of course, the registry write will fail.",
+      "PostedDate": "2011-01-11T06:27:43.203-08:00",
+      "Id": 156402
+    },
+    {
+      "Message": "Rather than right-clicking and selecting \"Run as administrator\", just double click it.  You should then get prompted for admin permissions (at least I have seen this behavior on the Win7 x64 boxes I have installed Prism on).  When you grant permission to change the system, it should set things with the proper paths.  \r\n\r\nIf this does not work, then you can open a command prompt as an admin, change to the folder, and manually run the script from there.  \r\n\r\nLet me know if that solves the issue,\r\nMichael Puleio\r\n",
+      "PostedDate": "2011-01-11T10:39:57.683-08:00",
+      "Id": 156403
+    },
+    {
+      "Message": "I solved my issue before I posted originally.  The point of this post wasn't to get help on resolving my specific problem but rather to report the issue that this batch file might or might not work properly and you will have absolutely no way of knowing until the assemblies don't show up in VS.  The script itself certainly won't complain.\r\n\r\nIdeally this issue should be fixed by the Prism team for a future release because it can impact anybody using UAC.  We shouldn't have to do magic like opening cmd prompts and browsing for folders to do something this common.",
+      "PostedDate": "2011-01-11T11:16:16.863-08:00",
+      "Id": 156404
+    }
+  ]
+}

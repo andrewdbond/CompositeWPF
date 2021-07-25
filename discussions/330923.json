@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "783742",
+    "ThreadId": "330923",
+    "Html": "\r\n<p>Hi List,</p>\r\n<p>if i correctly understand the documentation for <span style=\"color:#2b91af\">IRegionMemberLifetime Interface then an view and the correspondening ViewModel should be disposed if KeepAlive is set to false.</span></p>\r\n<p><span style=\"color:#2b91af\">What i have:</span></p>\r\n<p><span style=\"color:#2b91af\">add ViewA-ViewModelA to Region set KeepAlive&nbsp;= false; -&gt; View is removed from Region</span></p>\r\n<p><span style=\"color:#2b91af\">Show another ViewB_ViewModelB</span></p>\r\n<p><span style=\"color:#2b91af\">Show ViewA_ViewModelA again&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n -&gt; Constructor of ViewA and ViewModelA isn't called again</span></p>\r\n<p><span style=\"color:#2b91af\">but the View is added to the region.</span></p>\r\n<p><span style=\"color:#2b91af\">Is ther aomething wrong with my idea?</span></p>\r\n<p><span style=\"color:#2b91af\">Thanks</span></p>\r\n<p><span style=\"color:#2b91af\">Peter</span></p>\r\n<p><span style=\"color:#2b91af\">&nbsp;</span></p>\r\n<p><span style=\"color:#2b91af\">&nbsp;</span></p>\r\n<p><span style=\"color:#2b91af\">&nbsp;</span></p>\r\n<p><span style=\"color:#2b91af\">&nbsp;</span></p>\r\n<p><span style=\"color:#2b91af\">&nbsp;</span></p>\r\n<p><span style=\"color:#2b91af\">&nbsp;</span></p>\r\n",
+    "PostedDate": "2012-02-20T04:32:05.383-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "790251",
+    "ThreadId": "330923",
+    "Html": "<p>Peter, are you using Unity or MEF? If using MEF, what PartCreationPolicy attributes are you using on your View and ViewModel? I think you need to use CreationPolicy.NonShared. Also, are you using RequestNavigate to navigate to your views or are you using RegisterViewWithRegion. If using RequestNavigate, what code do you have in IsNavigationTarget?</p>",
+    "PostedDate": "2012-02-21T08:12:32.92-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "794485",
+    "ThreadId": "330923",
+    "Html": "<p>Hi Pedro,</p>\r\n<p>i'm using MEF.</p>\r\n<p>The Exports of my ViewModels are definied as follows:</p>\r\n<pre style=\"font-family: Consolas; background: white; color: black; font-size: 13px;\">&nbsp;[<span style=\"color: #2b91af;\">Export</span>(<span style=\"color: blue;\">typeof</span>(<span style=\"color: #2b91af;\">IUserControl2ViewModel</span>))]</pre>\r\n<pre style=\"font-family: Consolas; background: white; color: black; font-size: 13px;\"> [<span style=\"color: #2b91af;\">PartCreationPolicy</span>(<span style=\"color: #2b91af;\">CreationPolicy</span>.NonShared)]\r\n&nbsp;<span style=\"color: blue;\">public</span>&nbsp;<span style=\"color: blue;\">class</span>&nbsp;<span style=\"color: #2b91af;\">UserControl2ViewModel</span>&nbsp;:&nbsp;<span style=\"color: #2b91af;\">IUserControl2ViewModel</span>,&nbsp;<span style=\"color: #2b91af;\">INavigationAware</span>,<span style=\"color: #2b91af;\">IRegionMemberLifetime</span>\r\n&nbsp;{</pre>\r\n<pre style=\"font-family: Consolas; background: white; color: black; font-size: 13px;\"><pre style=\"font-family: Consolas; background: white; color: black; font-size: 13px;\">&nbsp;</pre>\r\n<pre style=\"font-family: Consolas; background: white; color: black; font-size: 13px;\"><span style=\"color: blue;\">public</span>&nbsp;<span style=\"color: blue;\">bool</span>&nbsp;IsNavigationTarget(<span style=\"color: #2b91af;\">NavigationContext</span>&nbsp;navigationContext)\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;logger.Log(<span style=\"color: #2b91af;\">String</span>.Format(<span style=\"color: #a31515;\">\"Model2&nbsp;-&nbsp;IsNavigationTarget&nbsp;&lt;</span><span style=\"color: mediumseagreen;\">{0}</span><span style=\"color: #a31515;\">&gt;\"</span>,&nbsp;navigationContext.Uri),&nbsp;<span style=\"color: #2b91af;\">Category</span>.Info,&nbsp;<span style=\"color: #2b91af;\">Priority</span>.Low);\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color: blue;\">return</span>&nbsp;<span style=\"color: blue;\">true</span>;\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>\r\n<pre style=\"font-family: Consolas; background: white; color: black; font-size: 13px;\"><pre style=\"font-family: Consolas; background: white; color: black; font-size: 13px;\">&nbsp;<span style=\"color: blue;\">public</span>&nbsp;<span style=\"color: blue;\">bool</span>&nbsp;KeepAlive\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color: blue;\">get</span>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;logger.Log(<span style=\"color: #a31515;\">\"Model2&nbsp;-&nbsp;KeepAlive\"</span>,<span style=\"color: #2b91af;\">Category</span>.Info,&nbsp;<span style=\"color: #2b91af;\">Priority</span>.Low);\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color: blue;\">return</span>&nbsp;<span style=\"color: blue;\">false</span>;\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>\r\n<pre style=\"font-family: Consolas; background: white; color: black; font-size: 13px;\"><span style=\"color: gray;\">///</span><span style=\"color: green;\">&nbsp;</span><span style=\"color: gray;\">&lt;summary&gt;</span>\r\n<span style=\"color: gray;\">///</span><span style=\"color: green;\">&nbsp;Interaction&nbsp;logic&nbsp;for&nbsp;UserControl1.xaml</span>\r\n<span style=\"color: gray;\">///</span><span style=\"color: green;\">&nbsp;</span><span style=\"color: gray;\">&lt;/summary&gt;</span>\r\n[<span style=\"color: #2b91af;\">Export</span>(<span style=\"color: #a31515;\">\"UserControl1\"</span>)]\r\n<span style=\"color: blue;\">public</span>&nbsp;<span style=\"color: blue;\">partial</span>&nbsp;<span style=\"color: blue;\">class</span>&nbsp;<span style=\"color: #2b91af;\">UserControl1</span>&nbsp;:&nbsp;<span style=\"color: #2b91af;\">UserControl</span>\r\n{</pre>\r\n</pre>\r\n<pre style=\"font-family: Consolas; background: white; color: black; font-size: 13px;\"><pre style=\"font-family: Consolas; background: white; color: black; font-size: 13px;\">.......</pre>\r\n<pre style=\"font-family: Consolas; background: white; color: black; font-size: 13px;\">}</pre>\r\n</pre>\r\n</pre>\r\n<p>The Constructor UserControlXY and UserControlXYViewmodel are called only once when i'm navigation to the View/Model the first time,</p>\r\n<p>for all usages of the Views/ViewModels there is no more Constructor call.</p>\r\n<p>Peter</p>",
+    "PostedDate": "2012-02-22T02:18:26.31-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "796087",
+    "ThreadId": "330923",
+    "Html": "<p>I think you will also need PartCreationPolicy.NonShared on your views. I also think you need to return false in IsNavigationTarget. As far as I understand, if you return true you are saying the existing viewmodel instance can deal with the navigation request. If you return false, a new viewmodel/view should get created and the old one should then get disposed.</p>\r\n<p>There is a useful diagram showing the navigation flow here: <a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40).aspx\">http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40).aspx</a></p>\r\n<p>Hope this helps - I've been through the pain!</p>",
+    "PostedDate": "2012-02-22T11:54:36.097-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "796970",
+    "ThreadId": "330923",
+    "Html": "<p>Hi pedro,</p>\r\n<p>you are right, the problem was the PartCreationPolicy.NonShared Attribute in View and ViewModel</p>\r\n<p>I got it to work</p>\r\n<p>Thanks for the help</p>\r\n<p>Peter</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-02-22T22:58:07.86-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

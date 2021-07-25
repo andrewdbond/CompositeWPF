@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "603918",
+    "ThreadId": "255502",
+    "Html": "\r\n<p>Hello, I have the following problem: when loading module on demand (or not) there is some delay before module loaded and during this delay UI is unresponsible.</p>\r\n<p>How can I prevent this?</p>\r\n<p>&nbsp;</p>\r\n<p>I've created test solution with empty but working module and tried to load it. Module was loaded nearly instantly. This is good.</p>\r\n<p>Next, I put some large file in module project (some data file just to enlarge size of xap) and set it build action to Content to add this file in xap.</p>\r\n<p>Then tried to load this module and get significant delay and UI was freezed while module loading. This is bad.</p>\r\n<p>&nbsp;</p>\r\n<p>I looked in weblogger and saw this:</p>\r\n<p><a title=\"pic\" href=\"http://img810.imageshack.us/img810/479/49170950.png\" target=\"_blank\">http://img810.imageshack.us/img810/479/49170950.png</a></p>\r\n<p>Whole time UI is freezed was module loading time.</p>\r\n<p>Isn't supposed that SL connections are asynchronous and don't hang UI thread?</p>\r\n<p>How I can workaround this?</p>\r\n<p>&nbsp;</p>\r\n<p>Here is test solution, just add some large file in module project and set build action to content.</p>\r\n<p>http://www.megaupload.com/?d=TVO5GCAZ .</p>\r\n<p>&nbsp;</p>\r\n<p>Sorry for my English.</p>\r\n<p>Regards.</p>\r\n",
+    "PostedDate": "2011-04-27T20:41:58.177-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "604106",
+    "ThreadId": "255502",
+    "Html": "<p>Hi,</p>\r\n<p>We've checked the sample application you've sent us, and found that the module loading process is done asynchronously. This is because the <strong>MefXapModuleTypeLoader </strong>calls the <strong>DeploymentCatalog.DownloadAsync</strong> method to download the modules that are being downloaded in the background.</p>\r\n<p>You could check the <a href=\"http://msdn.microsoft.com/en-us/library/ff921163%28PandP.40%29.aspx\">Modularity QuickStart</a>, where you might find a possible way to load modules in the background without hanging the UI thread.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-04-28T06:27:25.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "614338",
+    "ThreadId": "255502",
+    "Html": "<p>Thank you. The problem seems to be with the <strong>DeploymentCatalog.DownloadAsync.</strong></p>",
+    "PostedDate": "2011-05-17T20:55:14.283-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

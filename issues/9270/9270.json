@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Hi,\n \nAs reported by the user Volokos in this thread (http://compositewpf.codeplex.com/discussions/350153).\n \nWhen removing a view with nested regions inside using the ClearChildViews attached property (feature added since Prism 4.1), we found that that the Region_PropertyChanged method of the ClearChildViewsRegionBehavior was not being call until another change was made (for example adding another view to a region.) \n \nAfter analyzing this behavior, we found that the reason seems to be that the Region.Remove method doesn't call the RegionManager.UpdateRegions method which notifies the attached behaviors to update the region managers appropriately, if needed. For example, this method is invoked when indexing the regions collection or when adding a new view.\n \nSo far we didn't find any other undesired behavior than the aforementioned one. We found that a quick workaround could be to call the RegionManager.UpdateRegions() static method after removing the views, to achieve the proper notification to the attached behaviors.\n \nRegards,\n \nAgustin Adami\nhttp://blogs.southworks.net/aadami",
+    "LastUpdatedDate": "2013-02-21T18:38:01.013-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-03-28T09:57:54.023-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ClearChildViewsRegionBehavior strange behavior (Prism v4.1)",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9270
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Also, we believe a possible code fix, based on the aforementioned work around, could be to modify the Remove method in the Region class provided by Prism to add the invocation to the UpdateRegions method like in the following code snippet:\r\n\r\npublic virtual void Remove(object view)\r\n        {\r\n            ItemMetadata itemMetadata = this.GetItemMetadataOrThrow(view);\r\n\r\n            this.ItemMetadataCollection.Remove(itemMetadata);\r\n\r\n            DependencyObject dependencyObject = view as DependencyObject;\r\n            if (dependencyObject != null && Regions.RegionManager.GetRegionManager(dependencyObject) == this.RegionManager)\r\n            {\r\n                dependencyObject.ClearValue(Regions.RegionManager.RegionManagerProperty);\r\n            }\r\n            Regions.RegionManager.UpdateRegions();\r\n        }  \r\n\r\nSo far we run the all tests in the Prism Library with these modifications, and all passed.\r\n\r\nRegards,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2012-03-30T11:22:18.26-07:00",
+      "Id": 156596
+    }
+  ]
+}

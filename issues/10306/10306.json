@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "PropertySuport.ExtractPropertyName is not supported when you want to extract property:\na, from other class then the caller's class\nb, from static method/constructor\n\n```\npublic class ClassA \n{\n\tpublic string Property1 { get; set; }\n}\n\npublic class ClassB \n{\n\tpublic string Property2\t{ get; set; }\n\t\n\tpublic string GetClassBPropertyName() \n\t{\n\t\treturn PropertySupport.ExtractPropertyName(() => Property2)\n\t}\n\t\n\tpublic string GetClassAPropertyName() \n\t{\n\t\tthrow new NotImplementedException();\n\t}\n}\n```\n\nIf you add new method to PropertySupprt:\n\n```\npublic static string ExtractPropertyName<TPropertyType, TClassType>(Expression<Func<TClassType, TClassType, TPropertyType>> propertyExpression)\n{\n\tif (propertyExpression == null)\n\t{\n\t\tthrow new ArgumentNullException(\"propertyExpression\");\n\t}\n\n\tvar memberExpression = propertyExpression.Body as MemberExpression;\n\tif (memberExpression == null)\n\t{\n\t\tthrow new ArgumentException(\"The expression is not a member access expression.\", \"propertyExpression\");\n\t}\n\n\tvar property = memberExpression.Member as PropertyInfo;\n\tif (property == null)\n\t{\n\t\tthrow new ArgumentException(\"The member access expression does not access a property.\", \"propertyExpression\");\n\t}\n\n\tvar getMethod = property.GetGetMethod(true);\n\tif (getMethod.IsStatic)\n\t{\n\t\tthrow new ArgumentException(\"The referenced property is a static property.\", \"propertyExpression\");\n\t}\n\n\treturn memberExpression.Member.Name;\n}\n```\nthen it could be used like this:\n```\npublic string GetClassAPropertyName() \n{\n\tPropertySupport.ExtractPropertyName<string, ClassA>((x, y) => x.Property2)\n}\n\n```",
+    "LastUpdatedDate": "2013-08-30T11:37:37.527-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2013-08-28T04:58:20.947-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ExtractPropertyName can be used only for properties in current class",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 10306
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nThanks for posting this suggestion.However, I am not aware of how this change could be useful in Prism.\r\n\r\nIt could be useful if you could describe a couple of scenarios where this could be used and what kind of problems could be tackled with this in a Prism application.\r\n\r\nThanks,\r\n\r\nDamian Cherubinihttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2013-08-28T11:22:31.96-07:00",
+      "Id": 156668
+    },
+    {
+      "Message": "Hi,\r\n\r\nI used this in my project where I needed to listen to notifications in other class. there are other solutions when you can create:1, custom events 2, attach to NotifyPropertyChanged event a check e.PropertyName = \"NameOfProperty\".\r\n\r\nFirst case unnecessarily fills code with lots of single-purpose events and the second one is ugly because you need to specify changed property by it's string name. Why not to use existing NotifyPropertychanged event and handle it's callbacks more elegant.\r\n\r\nSo I added the overload method into PropertySupport and I can handlle NotifyPropertychanged event wherever I want. \r\n\r\nSee my sample scenario - you have viemodel with collection of Items that contain informatoin about it's sorting state (direction and sorting index). When you set any item as sorted/unsorted or change it's sorting index, you need to catch this event and reindex other items in collection.\r\n\r\n```public class SortableItem : NotificationObject{\tprivate ListSortDirection? _direction;\tprivate int _sortIndex;\t\tpublic ListSortDirection? Direction \t{ \t\tget { return _direction; } \t\tset { _direction = value; RaisePropertyChanged(() => Direction); }\t}\tpublic int SortIndex \t{ \t\tget { return _sortIndex; }\t\tset { _sortIndex = value; RaisePropertyChanged(() => SortIndex); }\t}}\r\n\r\npublic class SortableItemsViewModel : BaseViewModel{\tprivate static readonly string SortDirectionPropertyName;\tprivate static readonly string SortSequenceNoPropertyName;\tprivate readonly ObservableCollection _items;\r\n\r\n\tstatic SortableItemsProvider()\t{\t\tSortDirectionPropertyName = PropertySupport.ExtractPropertyName((x, y) => x.Direction);\t\tSortSequenceNoPropertyName = PropertySupport.ExtractPropertyName((x, y) => y.SortIndex);\t}\t\tpublic SortableItemsViewModel()\t{ \t\t_items = new ObservableCollection();\t\t_items.CollectionChanged += OnItemsCollectionchanged;\t}\t\tpublic ObservableCollection Items \t{ \t\tget { return _items; }\t}\t\tprivate void OnItemsCollectionchanged(object sender, NotifyCollectionChangedEventArgs e)\t{\t\tswitch (e.Action)\t\t{\t\t\tcase NotifyCollectionChangedAction.Add:\t\t\t\tforeach (SortableItem newItem in e.NewItems) {\t\t\t\t\tnewItem.PropertyChanged += OnSortableItemPropertyChanged;\t\t\t\t}\t\t\t\tbread;\t\t\tcase NotifyCollectionChangedAction.Remove:\t\t\t\tforeach (SortableItem oldItem in e.OldItems) {\t\t\t\t\toldItem.PropertyChanged -= OnSortableItemPropertyChanged;\t\t\t\t}\t\t\t\tbread;\t\t\t// TODO\t\t}\t}\t\tprivate void OnSortableItemPropertyChanged(object sender, PropertyChangedEventArgs e)\t{\t\tvar changedItem = (SortableItem)sender;\r\n\r\n\t\tif (e.PropertyName == SortDirectionPropertyName) {\t\t\tGenerateSortIndexes();\t\t}\t\telse if (e.PropertyName == SortSequenceNoPropertyName) {\t\t\tReindex(changedItem);\t\t}\t}\t\tprivate void GenerateSortIndexes()\t{ \t\t// TODO\t}\t\tprivate void Reindex(SortableItem changedItem)\t{\t\t// TODO\t}\r\n\r\n}```\r\n\r\n",
+      "PostedDate": "2013-08-30T06:23:05.723-07:00",
+      "Id": 156669
+    },
+    {
+      "Message": "Hello,Thank you for describing us the scenario. A simple change of calling the ___extractPropertyName___ from the __SortableItem__ class would avoid doing the overload you suggest. I believe that the overload method you propose tends to couple the classes and it gets misaligned with the _Single Responsibility principle._ \r\n\r\nA good alternative of what you could do without the need of overloading the ___extractPropertyName___ method, is to call a new method on __SortableItem__ which it would return the name of their properties. This way, the __SortableItem__ would use the ___extractPropertyName___ method implemented in __PRISM__:\r\n\r\n```C# private void OnSortableItemPropertyChanged(object sender, PropertyChangedEventArgs e)    {        var changedItem = (SortableItem)sender;\r\n\r\n        if (e.PropertyName == changedItem.getDirectionPropertyName()) {            GenerateSortIndexes();        }        else if (e.PropertyName == changedItem.getIndexPropertyName()) {            Reindex(changedItem);        }    }```\r\n\r\n```C#public class SortableItem{\r\n\r\npublic ListSortDirection? Direction {..}public int Index {..}\r\n\r\npublic string getDirectionPropertyName(){      return PropertySupport.ExtractPropertyName( ( ) => Direction);}\r\n\r\npublic string getIndexPropertyName(){      return PropertySupport.ExtractPropertyName( ( ) => Index);}...}```\r\n\r\nThanks.",
+      "PostedDate": "2013-08-30T11:37:37.527-07:00",
+      "Id": 156670
+    }
+  ]
+}

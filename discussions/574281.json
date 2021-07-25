@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1329567",
+    "ThreadId": "574281",
+    "Html": "Hello,\r<br />\n<br />\nI already know how to replace the &quot;build-in&quot; region manager (or other framework classes) with a custom region manager in Prism 5.0 framework.\r<br />\n<br />\nBut is it also possible to replace the &quot;build-in&quot; Unity container with a custom Unity container?\r<br />\n<br />\nI already have overwritten the CreateContainer() method in the bootstrapper like this:<br />\n<pre><code>    protected override Microsoft.Practices.Unity.IUnityContainer CreateContainer()\n    {\n             return new MyNamespace.Prism.UnityContainer();\n     } \n</code></pre>\n\nBut the issue is, that I cannot use my own container when creating modules and so on.\r<br />\n<br />\nFor example this fails:\r<br />\n<br />\n```<br />\n<pre><code>         public LoginModule(MyNamespace.Prism.IUnityContainer container, IRegionManager regionManager)\n {\n     _container = container;\n     _regionManager = regionManager;\n }\n\n</code></pre>\n\nMy question is: What do I need to tell the bootstrapper or the module catalogue, that they use my custom implementation of a IUnityContainer?\r<br />\n<br />\nThe background for this question is, that I want to register my classes with enums, instead of strings or class types- I want to iterate over all my module enums in my unit tests, without always having to extend my unit tests with new module classes or strings. \r<br />\n<br />\nI guess this case is just a &quot;one-liner&quot;, like with the region manager, but I just can't figure out, where to it.\r<br />\n<br />\nThank you.<br />\n",
+    "PostedDate": "2014-12-07T13:28:59.11-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

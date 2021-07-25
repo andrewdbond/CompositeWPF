@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "522475",
+    "ThreadId": "234826",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>When to use the below with MEF</p>\r\n<ul>\r\n<li>RegionManager.RequestNavigate : <em>as per my understanding this is only for views within the same project where the Region is defined</em>\r\n</li><li>ModuleCatalog : <em>for downloading views in another silverlight application within the same project solution?</em>\r\n</li><li>DeploymentCatalog : <em>for external xap's</em> </li></ul>\r\n<p>What would be the best way? Can we use Request.Navigate for navigating to views in another silverlight application in the same project solution?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-15T20:10:41.15-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "522698",
+    "ThreadId": "234826",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>In Prism the <strong>DeploymentCatalog</strong> class helps on downloading the .xap files and discover assemblies/types within those xap files. From the documentation:</p>\r\n<ul>\r\n<li>&quot;<em>Managed Extensibility Framework (MEF) does not provide a mechanism for associating modules with the XAP file to download. Prism's\r\n<strong>ModuleCatalog</strong> continues to be used even when using the MEF container to support on-demand and background downloading.\r\n</em><br>\r\n<em>Behind the scenes, the MEF <strong>DeploymentCatalog</strong> is used to download XAP files, and Prism keeps the\r\n<strong>ModuleCatalog</strong> updated as MEF discovers new modules.</em>&quot; </li></ul>\r\n<p>If you want more guidance on this topic, you could take a look at the following documentation sections:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921163%28PandP.40%29.aspx\" target=\"_top\">Chapter 4: Modular Application Development</a>\r\n</li><li><a href=\"http://msdn.microsoft.com/en-us/library/ff921163%28PandP.40%29.aspx\" target=\"_top\">Modularity QuickStarts for Silverlight</a>\r\n</li></ul>\r\n<p>Regarding to the Navigation in Prism, you could navigate to a particular view, which resides in a ModuleX and displays it in a Region declared in the Shell project. If you need more guidance on this topic, you could check the\r\n<a href=\"http://msdn.microsoft.com/en-us/library/gg430881%28PandP.40%29.aspx\">View-Switching Navigation Quickstart</a>.</p>\r\n<p>You can find below that in the aforementioned quickstart you have 3 project with different views and that they are displayed in the MainContentRegion in the Shell project.</p>\r\n<p><img src=\"http://pqht8w.bay.livefilestore.com/y1pq5VKMhQcimhYhDIrVI5EN8kjZXYnV4AKQNa1TQ_jD_EzHDOX9b_wrfMr6jqbEZikznM47GH2jGv1Cwd-XqNLaYdU6CoJ3V1f/xaps.PNG?psid=1\" alt=\"\" width=\"668\" height=\"354\"></p>\r\n<p>Please let me know if I missing something. If you have any problem implementing this in your application, could you please share a repro sample?</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero<br>\r\n<a href=\"http://blogs.southworks.net/fantivero\"><span style=\"color:#0066cc\">http://blogs.southworks.net/fantivero</span></a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-16T06:58:14.587-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "522727",
+    "ThreadId": "234826",
+    "Html": "\r\n<p>Thanks Fernando. That was helpful.</p>\r\n<p>I actually figured this out with looking at the help documents and few of the quick starts.</p>\r\n<p>I had to work out 3 different scenarios by making use of <strong>RequestNavigate,</strong> as I needed to pass parameters to the views, without having to use event aggregators</p>\r\n<ul>\r\n<li>Load a view in the same project as the Shell : <em>this was straight forward as I did a Export on the view with a contract name and then just did a _regionManager.RequestNavigate(&quot;RegionName&quot;, new Uri(&quot;ViewExportName&quot; &#43; query, UriKind.Relative))</em>\r\n</li><li>Load view&nbsp;from another silverlight application under the same project solution :\r\n<em>for this I added the module in the modulecatalog. Once the module got downloaded did the same as above by using the views export name.</em>\r\n</li><li>Load a view in an external silverlight application under a completely separate virtual directory :\r\n<em>for this I downloaded the xap using a DeploymentCatalog and did the above on download completed.</em>\r\n</li></ul>\r\n<p>The idea was to, as I said, to make use of the Navigation framework and eliminate the use of event aggregators for passing parameters between modules. Also I didnt want to predefine the modules to load in specific regions in their IModule implementation.\r\n In effect the modules being downloaded&nbsp;need not know anything about regions.&nbsp;I wanted the Shell to have full control on deciding where each view should be placed in the regions defined.</p>\r\n<p>Doing the above gave me the flexibility.</p>\r\n<p>Not sure if I'm on the right track, but I guess it does resolve my concerns :) . Also with this implementation i was able to implement nested regions. Let me know your opinion !!</p>\r\n",
+    "PostedDate": "2010-11-16T07:52:06.83-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

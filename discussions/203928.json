@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "414541",
+    "ThreadId": "203928",
+    "Html": "<p>Two questions in one post, about v2 WPF.</p>\r\n<p>I want the user to select an import module from a listbox in a dialog before they can use the shell.</p>\r\n<p>Now I can't figure out what is the way to go, to get the module list, and how to register a type in the viewmodel?</p>\r\n<p>Can I get some guidance what is good design practice for this?</p>",
+    "PostedDate": "2010-03-05T04:05:11.817-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "414656",
+    "ThreadId": "203928",
+    "Html": "<p id=45bb2ee0-0a9f-012d-d3fe-1231390a7601>Hi,</p>\r\n<p id=45bb38f0-0a9f-012d-d3ff-1231390a7601>If I understand correctly your two  questions are:</p>\r\n<ol>\r\n<li>Is is possible to list all available modules before loading the Shell and  showing them in a dialog for the user to perform some action? <br>The answer is  yes. <a href=\"View.aspx?ThreadId=203471\">This  thread</a> should help you getting the list of modules names. The following  threads should provide some guidance on how to show a dialog before the Shell is  loaded:   \r\n<ul>\r\n<li><a href=\"View.aspx?ThreadId=58292\">Show  login modal form before</a> </li>\r\n<li><a href=\"View.aspx?ThreadId=65777\">Best  practice to launch login modal before the shell</a> </li>\r\n</ul>\r\nAfter that, you  will probably <a href=\"http://msdn.microsoft.com/en-us/library/dd458932.aspx\">load the selected  module on demand</a> based on the user&rsquo;s choice. </li>\r\n<li>How to register a type in the Unity Container in my  <strong>ViewModel</strong> class? <br>To achieve this you must have an instance  (probably <a href=\"(probably injected)\">constructor injected</a>) of your  application&rsquo;s container in your VM class. <a href=\"http://msdn.microsoft.com/en-us/library/dd203172.aspx\">This document</a> provides more information about type registration. You can check how this is  done in some of the <a href=\"http://msdn.microsoft.com/en-us/library/dd458858.aspx\">Quickstarts</a> or  <a href=\"http://msdn.microsoft.com/en-us/library/dd458919.aspx\">Reference  Implementation</a> as this is usually done to register views and view models  mappings.</li>\r\n</ol>\r\n<p id=45bb44d0-0a9f-012d-d400-1231390a7601>Please let me know if this helps.</p>\r\n<p id=45bb64b0-0a9f-012d-d401-1231390a7601>Damian Schenkelman <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-03-05T08:39:11.45-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "414744",
+    "ThreadId": "203928",
+    "Html": "<p>Thanks Damian. You understood me well and your answers are clear.</p>\r\n<p>But I was doing MVVM with binding the VM in the XAML, that way no constructor injection is possible, right? Do I have to change the way I work or is there another option?</p>\r\n<p>Jasper</p>",
+    "PostedDate": "2010-03-05T13:13:34.107-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "415925",
+    "ThreadId": "203928",
+    "Html": "<p>Hi Jasper,</p>\r\n<p>In that case you can use the<strong> <a href=\"http://msdn.microsoft.com/en-us/library/cc707905.aspx\">ServiceLocator</a></strong> to resolve the UnityContainer, or you could&nbsp;even resolve&nbsp;the type&nbsp;you need  directly through the ServiceLocator,&nbsp;without&nbsp;using the UnityContainer itself.  You can find more information about this specific usage&nbsp;in <a href=\"View.aspx?ThreadId=155539\">this  thread</a>.</p>\r\n<p>I hope you find this answer helpful.</p>\r\n<p>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-03-09T06:28:47.517-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "736447",
+    "ThreadId": "290281",
+    "Html": "\r\n<p>I have a region behaviour which applies security to views, when security is denied it removes any added views.</p>\r\n<p>I am experiencing an exception when the Region is a SingleActiveRegion, or a Region, but not when the Region is an AllActiveRegion. The exception being thrown is this:</p>\r\n<p>InvalidOperationException<br>\r\nCannot change ObservableCollection during a CollectionChanged event.</p>\r\n<p>A dumbed down version of the behaviour which still causes the issue is as follows:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> CheckSecurityBehaviour : RegionBehavior\r\n{\r\n\t<span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> <span style=\"color:blue\">void</span> OnAttach()\r\n\t{\r\n\t\tRegion.Views.CollectionChanged &#43;= ViewsChanged;\r\n\t\tCheckViewsHaveSecurity(Region.Views);\r\n\t}\r\n\r\n\t<span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> ViewsChanged(<span style=\"color:blue\">object</span> sender, NotifyCollectionChangedEventArgs e)\r\n\t{\r\n\t\t<span style=\"color:blue\">if</span> (e.Action == NotifyCollectionChangedAction.Add)\r\n\t\t\tCheckViewsHaveSecurity(e.NewItems);\r\n\t\t<span style=\"color:blue\">else</span> <span style=\"color:blue\">if</span> (e.Action == NotifyCollectionChangedAction.Reset)\r\n\t\t\tCheckViewsHaveSecurity(Region.Views);\r\n\t}\r\n\r\n\t<span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> CheckViewsHaveSecurity(IEnumerable views)\r\n\t{\r\n\t\t<span style=\"color:blue\">foreach</span> (<span style=\"color:blue\">var</span> view <span style=\"color:blue\">in</span> views)\r\n\t\t{\r\n\t\t\t<span style=\"color:blue\">bool</span> hasSecurity = <span style=\"color:blue\">false</span>; <span style=\"color:green\">// Usually service call</span>\r\n\t\t\t<span style=\"color:blue\">if</span> (!hasSecurity)\r\n\t\t\t   Region.Remove(view); <span style=\"color:green\">// This is where the exception is thrown</span>\r\n\t\t}\r\n\t}\r\n}\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>As I say, this works when the Region is an AllActiveRegion (exposing Views through ActiveViews), but not when it is a Region or SingleActiveRegion.</p>\r\n<p>Does anyone have any ideas why this would be working in some situations, but not all?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p>Luke</p>\r\n",
+    "PostedDate": "2012-02-02T02:57:29.853-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "737293",
+    "ThreadId": "290281",
+    "Html": "<p>Hi Luke,</p>\r\n<p>As far as I know, this exception appears because you are trying to modify a collection (the <strong>Views </strong>collection) inside its <strong>CollectionChanged </strong>event handler. The <strong>ViewsChanged </strong>method is invoked when the <strong>CollectionChanged </strong>event is raised and usually, it is not possible to modify the collection inside this event.</p>\r\n<p>So far, we were unable to find why this exception is not being thrown when the the region is defined in an <strong>ItemsControl</strong>; however, as a possible approach to use this behavior with other types of region, you could wrap the code used to remove the view in a delegate, and invoke it on a different thread.</p>\r\n<p>Take into account that, in my opinion, this is not the recommended approach when handling this kind of scenarios: following this approach, you first create the view, its view model, all the other dependencies, subscribe to events, etc, and then if the view is not \"secured\" the view is removed, making all the previously steps meaningless.</p>\r\n<p>I believe that another approach could be to check if a specific view should be added to the region <em><strong>before </strong></em>creating it (for example using a shared service), avoiding unnecessary processing. For example, you could create an extension method for the <strong>Region </strong>class that could internally check if the view should be created and add it (through the <strong>Add </strong>method) when required. If you are using the view discovery approach, you can register the view using a delegate and check if the view should be added or not in it. However, the implementation of such approaches would depend mostly of your personal preferences and the requirements of your scenario.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-02-02T13:00:33.107-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "737632",
+    "ThreadId": "290281",
+    "Html": "<p>Hi Damien,</p>\r\n<p>I agree with what you're saying, creating it first then immediately removing it isn't ideal, however my knowledge is lacking in how to achieve either of the two alternatives. I am currently using view discovery, yet by using a delegate <strong>InjectionFactory </strong>to resolve the view, I can't think of any way to actually cancel the resolve and tell the region it is being cancelled.</p>\r\n<p>If I alternatively went for the other approach, of creating an extension method for <strong>Region</strong> which checks the security before creating it, I am not sure of the best way to do this, I am assuming you mean I should call this new method instead of <strong>RequestNavigate</strong>? Then only continue the navigate if security is granted? That sounds like a good approach, but my security is based upon attributes on the concrete types, so I would need to find out what type it is mapped to in the unity container first which I am not sure can be achieved without resolving.</p>\r\n<p>Thanks for your help though Damian, given me some steps in the right direction.</p>\r\n<p>Regards,</p>\r\n<p>Luke</p>",
+    "PostedDate": "2012-02-03T02:08:51.5-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "737636",
+    "ThreadId": "290281",
+    "Html": "<p>A quick update to my last post, throwing an exception inside the <strong>InjectionFactory</strong> method would cancel the resolve and the exception gets internally caught/handled by the navigation service, this doesn't seem ideal, but a possible solution. If there are any other ways to do this, I'd love to hear about them.</p>\r\n<p>Thanks,</p>\r\n<p>Luke</p>",
+    "PostedDate": "2012-02-03T02:18:43.273-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

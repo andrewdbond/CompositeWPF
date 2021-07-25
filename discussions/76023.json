@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "260028",
+    "ThreadId": "76023",
+    "Html": "<p>Hi,</p>\r\n<p>I have a problem with my modular UI application where I need to be notified when a Region is available so that I can call AddViewToRegion/Region.Add etc. The reason I have this problem is that I am using Silverlight Navigation with Regions and calling AddViewToRegion from within my ViewModel. The problem is that there seems to be no readily available notification that I can use to determine that the region is loaded and ready to accept views. What ends up happening is that I get intermittent errors when I try to add views to the region due to the region not having been loaded yet.</p>\r\n<p>Has anyone else come against this problem and solved it or found a different solution to the problem? Basically I want to add a view to a region from my ViewModel (View Injection) but I need to make sure the Region is available to accept views first.</p>\r\n<p>Regards,</p>\r\n<p>Mark.</p>",
+    "PostedDate": "2009-11-23T15:34:43.507-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "260073",
+    "ThreadId": "76023",
+    "Html": "<p>Update,</p>\r\n<p>I've made some progress. I was thinking that in order to keep in the spirit of what Regions were designed to do, the Region itself should load the view once it (the region that is)&nbsp;was available. Therefore, I can use the AutoPopulateBehaviour with RegisterViewWithRegion and use the Func&lt;object&gt; parameter to pass my ViewModel instance to the the region (I'm using some of the concepts fron Erwin van der Valk's blog at <a href=\"http://blogs.msdn.com/erwinvandervalk/archive/2009/04/29/how-to-build-an-outlook-style-application-with-prism-v2-part-2.aspx\">http://blogs.msdn.com/erwinvandervalk/archive/2009/04/29/how-to-build-an-outlook-style-application-with-prism-v2-part-2.aspx</a>).</p>\r\n<p>The problem I am having now is that I only want to call RegisterViewWithRegion in my ViewModel once however there appears to be no way to remove the registration or to check if a registration has already been peformed. Does anyone have any ideas how I can overcome this without change the guidance code or an alternative suggestion to solve my problem?</p>\r\n<p>Regards,</p>\r\n<p>Mark.</p>",
+    "PostedDate": "2009-11-23T19:36:30.153-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "260307",
+    "ThreadId": "76023",
+    "Html": "<p>Hi Mark,</p>\r\n<p>You could use the <strong>GetContents </strong>method provided by the <strong>RegionViewRegistry </strong>to get the views registered for a particular region.</p>\r\n<p id=3e07c950-bb49-012c-2d0e-12313b030c61>Please let me know if this helps.</p>\r\n<p id=3e07e000-bb49-012c-2d0f-12313b030c61>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-11-24T11:03:09.72-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "260451",
+    "ThreadId": "76023",
+    "Html": "<p>I ended up with two pieces of functionality to solve my problem.</p>\r\n<p>1. Create PageController view that the Navigation service calls that takes care of creating a scoped UnityContainer and RegionManager and sets the RegionManager attached property on the page control. The page controller then creates the ViewModel in the scoped container (and hence I don't get region name conflicts by navigating to the same page more than once).</p>\r\n<p>2. I create a custom behaviour that inherits from IHostAwareRegionBehaviour that checks that the host datacontext object (ViewModel) implements IRegionManagerAware. If it does, it calls OnRegionAttach and send through the region name as a parameter. My ViewModel can then listen for a particular region and safely load views into it.</p>\r\n<p>All this is just a variation on post I found although finding IHostAwareRegionBehaviour was the key to getting this all to work.</p>\r\n<p>Thanks,</p>\r\n<p>Mark.</p>",
+    "PostedDate": "2009-11-24T19:30:14.69-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

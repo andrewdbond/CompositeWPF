@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1417375",
+    "ThreadId": "632586",
+    "Html": "Dear all,\r<br />\n<br />\nHow do I know that the Bootstrapper has all Modules and the Shell initialized? \r<br />\nIn the documentation is is explained how the initialization of the bootstrapper is handled. (<a href=\"https://msdn.microsoft.com/en-us/library/gg430868%28v=pandp.40%29.aspx\" rel=\"nofollow\">https://msdn.microsoft.com/en-us/library/gg430868%28v=pandp.40%29.aspx</a>)\r<br />\n<br />\nIn my case I want to show the a login view, as soon the shell &amp; the modules are initialized, but I do not know where I should do this.\r<br />\n<br />\nThank you,\r<br />\nManullino<br />\n",
+    "PostedDate": "2015-04-24T05:57:28.253-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1417395",
+    "ThreadId": "632586",
+    "Html": "To understand it better, I recommend you just check out the sequence of calls that happen in the Bootstrapper base class Run() method. \r<br />\n<br />\nBut to answer your question, the sure fire way is to override Run in your bootstrapper, call the base.Run() method and then put whatever code you need after that as the stuff that has to happen after the Shell and Modules are initialized. Just realize that does not guarantee they are completely finished loading and being presented on screen. Only way to be sure of that is to handle Loaded events in the Shell itself and in whatever Module screens are loaded by the Initialize methods in the Modules.<br />\n",
+    "PostedDate": "2015-04-24T07:08:56.587-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1417907",
+    "ThreadId": "632586",
+    "Html": "Hi Brian,<br />\n<br />\nthank you for your answer.<br />\n<br />\nI got it, I am using the Window_ContentRendered event, everything works now! <br />\n<br />\nThank you,<br />\nManullino<br />\n",
+    "PostedDate": "2015-04-25T04:36:13.81-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

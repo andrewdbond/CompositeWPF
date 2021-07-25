@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "__Description__\r\nThere is a bug in the PopupWindowAction class that causes the dialog to not center on its AssociatedObject. In some cases the dialog can appear completely of the screen. It is particularly noticeable on when the system dpi is set to 200% or more on Windows 8.1 systems.\r\n\r\n__Steps to reproduce.__\r\nTested on Windows 8/8.1, though will be reproducible on any windows system.\r\nMake sure the Windows Text size in the Windows Display settings is set to 200% (192dpi).\r\nOpen up the Prism InteractivityQuickStart project and run. Click on the buttons to show the dialogs.\r\n\r\nNotice the dialogs that appear are not being centered to the owner dialog.\r\n\r\n__Cause__\r\nThe code in the PopupWindowAction.Invoke method calls \r\nview.PointToScreen(new Point(0, 0));\r\nThe PointToScreen mothod returns the true location on the screen in pixels. This value needs to be converted back to WPF's 96.0 Dpi Coords before being used.\r\n\r\n__Fix__:\r\nSomething like:\r\n\r\n        Point position = ScreenPointToWpfPoint(view.PointToScreen(new Point(0, 0)));\r\n\r\n        public Point ScreenPointToWpfPoint(Point location)\r\n        {\r\n            PresentationSource source = PresentationSource.FromVisual(Application.Current.MainWindow);\r\n            if (source != null && source.CompositionTarget != null)\r\n            {\r\n                double dpiX = 96.0 * source.CompositionTarget.TransformToDevice.M11;\r\n                double dpiY = 96.0 * source.CompositionTarget.TransformToDevice.M22;\r\n                return new Point(location.X * 96.0 / dpiX, location.Y * 96.0 / dpiY);\r\n            }\r\n            return location;\r\n        }\r\n\r\nAlso note that the Owner of the new dialog is also not being set, which it should be.\r\nSomething like\r\n\r\n            PresentationSource ps = PresentationSource.FromVisual(this.AssociatedObject);\r\n            if (ps != null && ps.RootVisual is Window)\r\n            {\r\n                wrapperWindow.Owner = ((Window)ps.RootVisual);\r\n            }\r\n",
+    "LastUpdatedDate": "2014-11-04T18:22:46.663-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2014-11-04T11:40:14.557-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "PopupWindowAction does not center the window correctly when the dpi is set higher than 96",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 10717
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

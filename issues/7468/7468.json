@@ -1,0 +1,75 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nI'm closing this issue so as to centralize the discussion on this subject, as well as the votes, in this other work item, which portrays the same problem:\r\n\r\nhttp://compositewpf.codeplex.com/workitem/8121\r\n\r\nYou might also find the following blog post useful, in which a possible solution for this problem is proposed:\r\nhttp://blogs.southworks.net/aadami/2011/10/14/matching-contract-names-and-view-names-in-prism-region-navigation/\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-10-28T10:16:10.663-07:00",
+    "CommentCount": 7,
+    "Custom": "",
+    "Description": "I believe this is a bug since the other methods of INavigationAware (OnNavigatedTo/From) DO get called on my TestTabView and TestTabViewModel classes. \n \nI am using Prism v4 Drop 10 and MEF in my navigation scenario. My TestTabView, a UserControl, has attributes:\n \n \n[Export(\"TestTab\")]\n[PartCreationPolicy(System.ComponentModel.Composition.CreationPolicy.NonShared)]\n \n \nI navigate to it like this: \n \nregionManager.Regions[ShellRegions.Tabs].RequestNavigate(\"/TestTab\");\n \nThis works (the view appears in the tab control), except every time I call RequestNavigate, a new TestTabView is created and the existing one is never queried via INavigationAware.IsNavigationTarget. The TestTabViewModel also implements INavigationAware and it is not queried either. I also tried changing to CreationPolicy.Shared, but all that does is keep re-using the same view instance and the INavigationAware.IsNavigationTarget is still not queried on the view or view-model.",
+    "LastUpdatedDate": "2013-05-16T05:28:46.13-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-10-31T01:40:36.63-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "INavigationAware.IsNavigationTarget never gets called for TabControl region views or viewmodels.",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 5,
+    "Id": 7468
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "I also tried adding parameters to the Uri string, just in case. (\"/TestTab?id=0\")",
+      "PostedDate": "2010-10-31T01:41:35.557-07:00",
+      "Id": 156353
+    },
+    {
+      "Message": "So, I just figured out the problem and made it work after looking at RegionNavigationContentLoader.GetCandidatesFromRegion. It seems that GetCandidatesFromRegion is looking for views with a type name the same as the candidateNavigationContract string.\r\n\r\nI fixed the problem by changing my export attribute to [Export(\"TestTabView\")] to match the name of the TestTabView UserControl class. This still seems like a bug to me though since the other aspects of navigation worked fully without the type name having to match the contract name.",
+      "PostedDate": "2010-10-31T01:49:22.147-07:00",
+      "Id": 156354
+    },
+    {
+      "Message": "The work-around that I used works, but it limits you to either using the type name or the full type name (name.space.typename) as the navigation contract string. A bare [Export] attribute will force you to use the full type name when you call RequestNavigate. (i.e. RequestNavigate(\"/name.space.typename\");)",
+      "PostedDate": "2010-10-31T02:03:18.753-07:00",
+      "Id": 156355
+    },
+    {
+      "Message": "Wayne,\r\n\r\nPlease have a look at this blog post:  http://blogs.msdn.com/b/kashiffl/archive/2010/10/04/prism-v4-region-navigation-pipeline.aspx\r\n\r\nIt fully explains the Navigation API's and the options for Uri and view mapping.\r\n\r\nThank you for comments and feedback,\r\n\r\nKarl Shifflett - Prism Team",
+      "PostedDate": "2010-10-31T05:15:42.58-07:00",
+      "Id": 156356
+    },
+    {
+      "Message": "molenator,\r\n\r\nI've read that document and that is why I reported this issue. The document says \"The string in the Export attribute or IOC object registration, must match the string or object of the Uri.\"\r\n\r\nIt doesn't say anything about the Type name of the view or viewmodel having to match the string or object of the Uri. Yet, this seems to be the case.",
+      "PostedDate": "2010-10-31T09:54:17.15-07:00",
+      "Id": 156357
+    },
+    {
+      "Message": "I agree this is a bug. ",
+      "PostedDate": "2011-09-27T00:52:21.56-07:00",
+      "Id": 156358
+    },
+    {
+      "Message": "Using the standard [Export] will export using the type name. When calling \"RequestNavigate\", use the full name (to avoid partial name conflicts with other modules) using static resolution of the view's full name from it's type. (e.g. \"static string MyViewName = typeof(MyView).FullName;\"). With this, you can simply call \"RequestNavigate(new Uri(MyViewName, UriKind.Relative))\"",
+      "PostedDate": "2012-02-09T16:04:07.01-08:00",
+      "Id": 156359
+    }
+  ]
+}

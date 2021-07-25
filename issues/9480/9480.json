@@ -1,0 +1,66 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nWe are closing this work item as this is not an issue in Prism.\r\nFor additional support regarding this topic, you can create a thread in the discussion section, where we will help you with your concerns.\r\n\r\nThanks,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+    "ClosedDate": "2012-07-06T12:51:40.677-07:00",
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "Opening ViewSwitchingNavigation.Infrastructure from quickstarts (SL5, Prism 4.1).\nApp works fine in browser, changing to OOB also fine, but back again to browser crashes the app.",
+    "LastUpdatedDate": "2013-05-16T05:28:38.06-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-07-03T15:06:59.37-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Crashing when setting OOB and back again",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9480
+  },
+  "FileAttachments": [
+    {
+      "FileId": 898008,
+      "FileName": "SL5 Crash.PNG",
+      "DownloadUrl": ".\\898008"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nSo far we couldn't reproduce the issue you are mentioning. It would be helpful if you could provide us with more information about how you changed the View-Switching Navigation QuickStart to be OOB and back. \r\nAlso, it would be helpful if you could provide us with the \"version\" of the QuickStart solution that portrays this problem (that is, after changing back from OOB to browser,) so that we can help you further with this.\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-07-04T11:40:05.607-07:00",
+      "Id": 156607
+    },
+    {
+      "Message": "Downloaded Prism 4.1 (for Silverlight 5 and .net 4.0, http://www.microsoft.com/en-us/download/details.aspx?displaylang=en&id=28950)\r\n\r\nOpened (Windows 7 SP1, VS2010, SP1) ...Quickstarts\\View-Switching Navigation\\Silverlight\\View-Switching Navigation\\ViewSwitchingNavigation.Silverlight.sln.\r\nStarted debugging (F5), all ok.\r\n\r\nSetting the \"Enable running applicatioon out of the browser\" for The ViewSwitchingNavigation project from the Project/Properties/Silverlight tab, no changes in the settings dialog for OOB.\r\nF5, all ok as OOB application.\r\n\r\nResetting the \"Enable running applicatioon out of the browser\" for The ViewSwitchingNavigation project from the Project/Properties/Silverlight tab.\r\nF5, crash as indicated in earlier attachment.",
+      "PostedDate": "2012-07-05T06:56:36-07:00",
+      "Id": 156608
+    },
+    {
+      "Message": "Hi,\r\n\r\nThanks for your explanation. I could reproduce the behavior you are describing and find the reason behind it, which is very simple:\r\n\r\n1.  When opening the View-Switching Navigation QuickStart as out of the box (without any modifications) you will see that the ViewSwitchingNavigation.Web project is set as the \"StartUp Project\" of the solution (its name will be bold). As far as I know, this is the usual configuration for \"in browser\" Silverlight applications.\r\n\r\n2.  When the \"Enable running application out of the browser\" option is set for the ViewSwitchingNavigation project, you will see that this project is automatically set as the \"StartUp Project\" of the solution (its name will change to bold).\r\n\r\n3.  Finally, when the \"Enable running application out of the browser\" option is disabled again in the ViewSwitchingNavigation project, this project will remain as the \"StartUp Project\" instead of the ViewSwitchingNavigation.Web project, causing the application to crash.\r\n\r\nAfter setting the ViewSwitchingNavigation.Web project back as the \"StartUp Project\" the solution will run correctly again (this can be done by right-clicking the ViewSwitchingNavigation.Web project and selecting \"Set as StartUp Project.)\r\n\r\nTherefore, it seems that this is not an issue in the aforementioned QuickStart.\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini\r\n\r\n",
+      "PostedDate": "2012-07-05T11:20:17.443-07:00",
+      "Id": 156609
+    },
+    {
+      "Message": "Damian,\r\nThank you very much, of course you are right (though I wish the error message could be a bit clearer).\r\nReally I want to use WPF, but as I understand, Silverlight is more close to WinRT for later porting/migration,\r\nI have close to no experience using Silverlight and I apologize for your waste of time :)",
+      "PostedDate": "2012-07-05T12:41:08.12-07:00",
+      "Id": 156610
+    }
+  ]
+}

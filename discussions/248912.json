@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "577364",
+    "ThreadId": "248912",
+    "Html": "<p>Can someone list the steps of how to add a new tab&nbsp;to the AnimatedTabControl in StockTraderRI (WPF) ? Even just to add an empty/blank new view(tab). I created a new view (with module etc)&nbsp;that I want to display as a new tab but I seem to be missing some step that I can't see to register&nbsp;the view. Can someone list the steps even to add a blank tab/view so I can check if I missed something ?</p>\n<p>Much appreciated</p>\n<p>Gary</p>",
+    "PostedDate": "2011-03-08T12:25:51.94-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "577632",
+    "ThreadId": "248912",
+    "Html": "<div id=\"_mcePaste\" class=\"mcePaste\" style=\"position: absolute; width: 1px; height: 1px; overflow: hidden; top: 0px; left: -10000px;\">﻿</div>\n<p>Just to be clearer on what I'm doing: I'm adding a new model+view to the StockTrader MainRegion (i.e. a new tab). I thought it was simply a matter of registering my new module in the StockTraderRIBootStrapper as follows:</p>\n<div style=\"background-color: white; color: black;\">\n<pre><span style=\"color: blue;\">this</span>.AggregateCatalog.Catalogs.Add(<span style=\"color: blue;\">new</span> AssemblyCatalog(<span style=\"color: blue;\">typeof</span>(NewModule).Assembly));\r\n</pre>\n</div>\n<p>And use declarative attributes on the module's View class to register/associate&nbsp;the view with MainRegion so it can be discovered at runtime</p>\n<div style=\"background-color: white; color: black;\">\n<pre>[ViewExport(RegionName = RegionNames.MainRegion)]\r\n[PartCreationPolicy(CreationPolicy.NonShared)]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> NewModuleView : UserControl\r\n{\r\n</pre>\n</div>\n<p>But while the module does initialise, the view is not being discovered by the ImportMany in&nbsp;AutoPopulateExportedViewsBehavior in the StockTraderRI InfraStructure library. Debugging tells me that RegisteredViews filled by the following ImportMany is not populating with my new view.</p>\n<div style=\"background-color: white; color: black;\">\n<pre>[ImportMany(AllowRecomposition = <span style=\"color: blue;\">true</span>)]\r\n<span style=\"color: blue;\">public</span> Lazy&lt;<span style=\"color: blue;\">object</span>, IViewRegionRegistration&gt;[] RegisteredViews { <span style=\"color: blue;\">get</span>; <span style=\"color: blue;\">set</span>; }\r\n</pre>\n</div>\n<p>What am I missing? Or how can I debug further? I don't know how to get inside RegisteredViews to debug how its being populated</p>",
+    "PostedDate": "2011-03-09T02:41:43.053-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "577895",
+    "ThreadId": "248912",
+    "Html": "<p>Hi Gary,</p>\r\n<p>Following the approach described in <a href=\"http://compositewpf.codeplex.com/discussions/65361\">this thread</a>, the views that are placed inside the <strong>AnimatedTabControl</strong> must have a <strong>HeaderInfo </strong>property defined inside the View Model, as it is done in the <strong>PositionSummaryView</strong>.</p>\r\n<p>You might find the <strong>TabItemResource.xaml</strong> file inside the <strong>Resources </strong>folder of the <strong>StockTraderRI </strong>project useful to clarify more about this.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-09T09:50:31.497-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "577915",
+    "ThreadId": "248912",
+    "Html": "<p>Hi Guido,</p>\r\n<p>Yes, I have the HeaderInfo property defined as you describe already. It would probably throw an error if I didn't have it defined?</p>\r\n<p>At the moment this is looking like an MEF composition discovery problem as the [ImportMany] is not discovering the View that I marked with the [ViewExport] attribute. This kind of thing seems to be not uncommon with MEF according to this guide: <a href=\"http://mef.codeplex.com/wikipage?title=Debugging%20and%20Diagnostics&amp;referringTitle=Guide\">http://mef.codeplex.com/wikipage?title=Debugging%20and%20Diagnostics&amp;referringTitle=Guide</a></p>\r\n<p>Any other ideas? I'm working through the MEF debugging &amp; diagnostics steps at the moment: <a href=\"http://msdn.microsoft.com/en-us/library/ff603380.aspx\">http://msdn.microsoft.com/en-us/library/ff603380.aspx</a></p>\r\n<p>Has anyone successfully added another tab to the StockTraderRI? (just to confirm it does work - that would at least tell me it is my code rather than any bug in StockTraderRI)</p>\r\n<p>Gary</p>",
+    "PostedDate": "2011-03-09T10:25:42.84-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "577923",
+    "ThreadId": "248912",
+    "Html": "<p>Gary,</p>\r\n<p>In that case, you should confirm whether your module is being correctly loaded. I was able to add a custom view to the <strong>MainRegion</strong> in the <strong>StockTraderRI</strong> (which is an <strong>AnimatedTabControl</strong>) by using the <strong>ViewExport </strong>attribute, but I have defined the <strong>HeaderInfo</strong> property in the <strong>ViewModel</strong>. If the property is defined in the view, then I had to add the following line in the view's constructor in order for it to work:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">this</span>.DataContext = <span style=\"color: blue;\">this</span>;\r\n</pre>\r\n</div>\r\nOn the other hand, if I omitted that property, no error was thrown; the view was added but the header for the tab was empty, so there was a \"blank space\" in the tab control's header, which sent me to that view if I clicked it.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-09T10:36:20.37-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "577979",
+    "ThreadId": "248912",
+    "Html": "<p>Guido,</p>\r\n<p>Thats great to hear! If I could even get a \"blank space\" tab, I could work out the rest. Can you share what route/steps you took to build the blank tab? Did you start with blank class library project/files? Or copy existing module project or files? etc.</p>\r\n<p>i.e. tell me how to recreate the steps you took.</p>\r\n<p>Many thanks,</p>\r\n<p>Gary</p>",
+    "PostedDate": "2011-03-09T12:11:36.86-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "578304",
+    "ThreadId": "248912",
+    "Html": "<p>Guido,</p>\r\n<p>good news: I got it working. After you said you had no issue, I started again with a very basic almost \"empty\" module and built up the classes again and it worked. The only signifigant change between it and the previous version was the XAML code. I think something in my previous view XAML was the cause.</p>\r\n<p>Thank you for your help</p>\r\n<p>Gary</p>",
+    "PostedDate": "2011-03-10T02:24:46.52-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

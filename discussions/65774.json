@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "223782",
+    "ThreadId": "65774",
+    "Html": "<p>Hi</p>\r\n<p>I use the popup approach to show my modals windows and everything works well. Now i would like to close the windows when the user click on a &nbsp;button in the popup.</p>\r\n<p>This should be done in the viewmodel as i use MVVM pattern. Before Prism i used a mediator and an attached property but this&nbsp;approach fails</p>\r\n<p>in Prism as the the view&nbsp;is now a UserControl and not a Windows. When i try to access the parent of the view i get null in the mediator.</p>\r\n<p>Any help will be appreciate.</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2009-08-15T00:02:35.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "225066",
+    "ThreadId": "65774",
+    "Html": "<p>Hi</p>\r\n<p>&nbsp;</p>\r\n<p>I can think of two possible ways to get the owner window (popup) from the <strong>ViewModel</strong>. One is using a recursive call, which is useful for any way you are placing the view in the region:<br><span style=\"color:Blue\">private</span> Window owner&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br><span style=\"color:Blue\">public</span> Window Owner <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"color:Blue\">get</span> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"color:Blue\">if</span> (owner == <span style=\"color:Blue\">null</span>) <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; owner = GetOwnerWindow(<span style=\"color:Blue\">this</span>.View <span style=\"color:Blue\">as</span> DependencyObject);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"color:Blue\">return</span> owner;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br><span style=\"color:Blue\">private</span> <span style=\"color:Blue\">static</span> Window GetOwnerWindow(DependencyObject container)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Window window;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"color:Blue\">var</span> parent = LogicalTreeHelper.GetParent(container);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; window = parent <span style=\"color:Blue\">as</span> Window;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"color:Blue\">if</span> (window != <span style=\"color:Blue\">null</span>) <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"color:Blue\">return</span> window;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"color:Blue\">return</span> GetOwnerWindow(parent);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br></p>\r\n<p>If you are using the <strong>RegionPopupBehavior</strong> from the RI you can simply ask for the view&rsquo;s parent, which should be the Window.</p>\r\n<p>As you are using the MVVM pattern, you might implement this using<span style=\"color:#1f497d\"> <a href=\"http://msdn.microsoft.com/en-us/library/cc707894.aspx\">Commands</a> </span>and have the view directly bind to it.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-08-18T11:02:26.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "225076",
+    "ThreadId": "65774",
+    "Html": "<p>Thank Damian</p>\r\n<p>I do pure MVVM so the viewmodel know nothing about the view. I set the DataContext of the view&nbsp;in its constructor or in Xaml.</p>\r\n<p>This means no way to have access to the&nbsp;view from the viewmodel&nbsp;so i can not request its parent nor do&nbsp;a recursive call.</p>\r\n<p>I don't know if using pure MVVM is a good practice. May be i'll change</p>\r\n<p>But as i use <strong>RegionPopupBehavior </strong>from RI i realize that i could simply remove the view from the region and the window closes.</p>\r\n<p>Thank you very much.</p>\r\n<p>Francois Blochaou</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-18T11:36:57.81-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "225095",
+    "ThreadId": "65774",
+    "Html": "<p>Hi Blochaou,</p>\r\n<p>I blog on the topic on the following link (note Presentation Model and MvVM are <a href=\"http://en.wikipedia.org/wiki/MVVM\"><span style=\"color:#3e62a6\">synomonous</span></a>):&nbsp;&nbsp;</p>\r\n<p><a href=\"http://www.global-webnet.net/blogengine/post/2008/09/08/Composite-WPF-Obtaining-View-reference-with-Presentation-Model.aspx\">http://www.global-webnet.net/blogengine/post/2008/09/08/Composite-WPF-Obtaining-View-reference-with-Presentation-Model.aspx</a></p>",
+    "PostedDate": "2009-08-18T12:12:19.35-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "225113",
+    "ThreadId": "65774",
+    "Html": "<p>Hi Billkrat</p>\r\n<p>It is a nice solution.</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2009-08-18T12:49:43.163-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "275405",
+    "ThreadId": "65774",
+    "Html": "<p>My ViewModel raises an event that the View subscribes to.&nbsp; The event handler in the View closes itself.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-10T11:59:58.637-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "473413",
+    "ThreadId": "65774",
+    "Html": "<p>&nbsp;</p>\r\n<p>I have implemented the RegionPopupBehavior as in the RI of Prism. I want to bring up a new window pop up on a button click. I am activating the view in a Secondary region as RI. How to command bind a button command to open this new window vie</p>",
+    "PostedDate": "2010-07-27T16:17:59.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "502075",
+    "ThreadId": "65774",
+    "Html": "<p>Hi,</p>\r\n<p>You can find interesting the following documentation section on MSDN: <a href=\"http://msdn.microsoft.com/en-us/library/ff921126(PandP.20).aspx\">Commands</a>&nbsp;(see  the <em>Binding Commands to a View</em> section).</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-04T08:18:52.95-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

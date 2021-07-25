@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "703933",
+    "ThreadId": "280983",
+    "Html": "\r\n<p>I am building a prism application that has a TreeViewRegion on the left to handle views created by each module.&nbsp; Each module add's thier own treeview to the TreeViewRegion.&nbsp; When the application initializes and after all modules are loaded I want\r\n to select a default view in the treeview.&nbsp; I have noticed that the views and the treeview does not display until after the bootstrapper.Run().&nbsp; It seems the binding I am using gets called afterwards to set the collection in the treeview.&nbsp; I\r\n thought I would be able to make the selection in the App.OnLoadCompleted method but noticed that it is never called.&nbsp; How can I select a treeview item after the applicaton has initialized and created all it's default views?</p>\r\n<p>Thanks</p>\r\n",
+    "PostedDate": "2011-11-27T14:51:14.357-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "704780",
+    "ThreadId": "280983",
+    "Html": "<p>Hi,</p>\n<p>Based on my understanding you could raise an event at the end of the <strong>Bootstraper </strong>initialization sequence (once your <strong>Bootstrapper </strong>has finished Initializing all your modules). In your module, you can subscribe to this event and define the logic to select the view of your choice. For example you could call a <strong>RequestNavigate </strong>method to a specific view in your region.</p>\n<p>To achieve this you could override the <strong>Bootstrapper.Run</strong> method and raise the event after calling the <strong>base.Run</strong> method, an example of this can be seen in the following code snippet:</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> Run(<span style=\"color: blue;\">bool</span> runWithDefaultConfiguration)<br />        {<br />            <span style=\"color: blue;\">base</span>.Run(runWithDefaultConfiguration);<br />          <br />            <span style=\"color: blue;\">var</span> eventAggregator = Container.Resolve&lt;IEventAggregator&gt;();<br /><br />            eventAggregator.GetEvent&lt;ApplicationHasBeenInitializedEvent&gt;().Publish();<br />        } <br /></pre>\n</div>\n<p>&nbsp;</p>\n<p>Also you might find useful information in <a href=\"http://msdn.microsoft.com/en-us/library/gg430868%28v=PandP.40%29.aspx\"> Chapter 2: Initializing Prism Applications</a> of the Prism documentation at MSDN, where the different stages of the bootstrapping process is explained.</p>\n<p>I hope you find this helpful.</p>\n<p>﻿Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-11-29T07:03:59.653-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "705095",
+    "ThreadId": "280983",
+    "Html": "<p>Hi,</p>\r\n<p>As I mentioned in my initial post, I put a breakpoint at the end of the Bootstrapper.Run() method.&nbsp; When the compiler breaks I notice that the shell and regions are created but the views are not shown in the regions.&nbsp; The views have been created when the modules load and they are registered with RegisterViewWIthRegion but they are not shown in the regions at this point.&nbsp; The debugger then steps into the CanExecuteChanged event in DelegateCommandBase then Commands.AddWeakReferenceHandler() then it steps into my viewmodel Items property that is bound to the treeviewview in the treeview region.&nbsp; After this the views are shown in the regions.&nbsp; Why does a call to eventAggregator as you have recoomend&nbsp;get called after the views are shown.&nbsp; Why wouldn't it be called first?&nbsp;What is the ordering of when binding is completed versus&nbsp;a eventAggregator call? &nbsp;In the meantime, I will try to implement what you said to see if makes a difference.</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2011-11-29T20:03:48.177-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "705245",
+    "ThreadId": "280983",
+    "Html": "<p>Hi,</p>\r\n<p>If you can't find a solution to your problem after implementing the aforementioned suggestion, it would be helpful if you could provide us with a repro sample application, so that we can help you further with this.</p>\r\n<p>Thanks,</p>\r\n<p>﻿Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-11-30T05:14:41.62-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

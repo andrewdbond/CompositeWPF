@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "118327",
+    "ThreadId": "35597",
+    "Html": "Hi<br>\r\nI just started a new application using the Composite WPF and I like it very much. There's only two things that I don't understand yet.<br>\r\n1) The UnityContainer dependency. Why the UnityBootstrapper have a reference to IUnityContainer? I have to use Spring.NET as IoC Container and I remove Unity but it was not simple! Wouldn't be better if the bootsrapper have a reference to a generic IContainer interface with some simple&nbsp;methods like Resolve&lt;T&gt;, Register&lt;T&gt; and so on...? So everyone can implement this interface using his preferred IoC Fx. What do you think?<br>\r\n2) I like the DelegateCommands? They are the best way to communicate with Presenters/Views in other regions. But, they are not easy testable? Has anyone fill the same problem? How did you solve it?<br>\r\n<br>\r\nBTW nice work.<br>\r\nthanks<br>\r\nemanuele <br>\r\nhttp://blog.codiceplastico.com<br>\r\n",
+    "PostedDate": "2008-09-13T07:17:37.323-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "118378",
+    "ThreadId": "35597",
+    "Html": "Re #1<br>\r\n<br>\r\n(this is straight from the documentation supplied)<br>\r\n<br>\r\nThe Stock Trader Reference Implementation (Stock Trader RI) QuickStarts rely on\r\nthe <a href=\"http://msdn.microsoft.com/en-us/library/cc468366.aspx\">Unity\r\nApplication Block</a> as the container. The Composite Application Library itself\r\nis not container-specific, and you can use its services and patterns with other\r\ncontainers, such as <a href=\"http://www.castleproject.org/container/index.html\">Castle Windsor</a>, <a href=\"http://structuremap.sourceforge.net/Default.htm\">StructureMap</a>, and <a href=\"http://www.springframework.net/\">Spring.NET</a>. <br>\r\n<h3>Container and Bootstrapper</h3>\r\n<p>The Composite Application Library comes with the Unity container; however,\r\nbecause the container is accessed through the <strong>IContainerFacade</strong> interface,\r\nthe container can be replaced. To do this, your container will need to satisfy\r\nthe <strong>IContainerFacade</strong> interface. Usually, if you are replacing the\r\ncontainer, you will also need to provide your own container-specific\r\nbootstrapper. To provide this, examine the <strong>UnityBootstrapper</strong> to ensure\r\nthe container is setup and registered with the services needed for the Composite\r\nApplication Library.</p>\r\n<br>\r\n",
+    "PostedDate": "2008-09-13T16:49:06.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "118402",
+    "ThreadId": "35597",
+    "Html": "Hi PandaWood<br>\r\nI read the documentation and I replaced the UnityBootstapper with my SpringNetBootstrapper but it was not so simple as they say. What I&nbsp;want to say is that&nbsp;&nbsp;IMHO i would be better if there is a GenericBootstrapper that use the IContainerFacade so the only thing that we have to do is to implement IContainerFacade.<br>\r\nBTW it's only my opinion, I would like to know if other have tried and how they feel doing it.<br>\r\n<br>\r\nthanks<br>\r\nemanuele<br>\r\nhttp://blog.codiceplastico.com\r\n",
+    "PostedDate": "2008-09-13T23:53:22.487-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "118495",
+    "ThreadId": "35597",
+    "Html": "emanuele,<br>\r\n<br>\r\nI also have a different container besides IUnityContinaer, and could not find a simple or intuitive way to adapt my container. Could there be a sample of this somewhere, not an update to the sources/binaries, just an example? Like @emanuele, I understand the documentation of both Unity and CAL, but a simple example would be useful.<br>\r\n<br>\r\nThank @emanuele for your posting,<br>\r\n<br>\r\nAndres Olivares\r\n",
+    "PostedDate": "2008-09-14T19:40:20.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "118507",
+    "ThreadId": "35597",
+    "Html": "Replacing the IoC container isn't indeed a simple task, but it is doable, I replaced the standard Unity container with a Spring.NET version in less than two hours. Writing a sample application that uses the container however takes a bit more time.<br>\r\n<br>\r\nThere is an implementation of the SpringBootstrapper waiting on my computer at home to be checked in to the CompositeWPFContrib project. I will also be writing a blogpost about it very soon.<br>\r\nI will post an update on the progress here with an URL to the blogpost.<br>\r\n<br>\r\n",
+    "PostedDate": "2008-09-14T23:53:19.607-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

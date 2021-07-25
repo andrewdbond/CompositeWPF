@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "607307",
+    "ThreadId": "256365",
+    "Html": "\r\n<p>I've got a DelegateCommand wired to a button in a View.&nbsp; The command executes the&nbsp;RequestNavigate method to load a View into another&nbsp;Region:</p>\r\n<pre style=\"font-family:Consolas; background:white; color:black; font-size:13px\"><span style=\"color:blue\">public</span>&nbsp;<span style=\"color:blue\">class</span>&nbsp;<span style=\"color:#2b91af\">ModuleAViewTwoTaskButtonViewModel</span>\r\n{ \r\n&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">public</span>&nbsp;ModuleAViewTwoTaskButtonViewModel()\r\n&nbsp;&nbsp;&nbsp;&nbsp;{\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">this</span>.ShowModuleAViewTwo&nbsp;=&nbsp;<span style=\"color:blue\">new</span>&nbsp;<span style=\"color:#2b91af\">DelegateCommand</span>(()&nbsp;=&gt;\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:green\">//&nbsp;Initialize</span>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">var</span>&nbsp;regionManager&nbsp;=&nbsp;<span style=\"color:#2b91af\">ServiceLocator</span>.Current.GetInstance&lt;<span style=\"color:#2b91af\">IRegionManager</span>&gt;();\r\n \r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:green\">//&nbsp;Show&nbsp;Workspace</span>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;regionManager.RequestNavigate(<span style=\"color:#a31515\">&quot;WorkspaceRegion&quot;</span>,&nbsp;<span style=\"color:#a31515\">&quot;ModuleAViewTwo&quot;</span>);\r\n \r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});\r\n&nbsp;&nbsp;&nbsp;&nbsp;}\r\n \r\n&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">public</span>&nbsp;<span style=\"color:#2b91af\">DelegateCommand</span>&nbsp;ShowModuleAViewTwo&nbsp;{&nbsp;<span style=\"color:blue\">get</span>;&nbsp;<span style=\"color:blue\">set</span>;&nbsp;}\r\n}</pre>\r\n<p>The ModuleAViewTwo view has a ViewModel that implements the&nbsp;INavigationAware interface.</p>\r\n<p>The above code&nbsp;all works well and loads the View as expected, except that&nbsp;the first time the ModuleAViewTwo View is loaded, the OnNavigateTo method in the Views ViewModel class&nbsp;does not run.&nbsp; If I click the button again, which causes\r\n the command to run again, thus executing the RequestNavigate method again,&nbsp;the OnNavigatedTo method runs.</p>\r\n<p>Any ideas why its not executing the first time the View is navigated to?</p>\r\n<p>Devin</p>\r\n",
+    "PostedDate": "2011-05-04T10:53:22.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "607337",
+    "ThreadId": "256365",
+    "Html": "<p>Hi Devin,</p>\r\n<p>It&nbsp;will be helpful if you could provide us with a full repro sample of your solution, so that we can help you to identify the cause of this beahvior you are mentioning.</p>\r\n<p>You could upload your solution to SkyDrive and post the link here.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>",
+    "PostedDate": "2011-05-04T11:27:47.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "607373",
+    "ThreadId": "256365",
+    "Html": "<p>OK, nevermind.&nbsp; I knew I should have created the sample first :)</p>\r\n<p>I was connecting my VMs to my Views wrong, which was causing the problem.&nbsp; I did it the right way in my sample and everything worked.&nbsp; Changed it in my real project and everything worked as well.</p>\r\n<p>Devin</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-04T12:20:03.72-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1251188",
+    "ThreadId": "256365",
+    "Html": "Hi Devin.<br />\n<br />\nNot sure if you will get this so many years after, but I try:<br />\n<br />\nI have the exact same problem as you described: <br />\nI have two view that will be shown in the same region. A button on each view will navigate to the other view (and it will be replaced in the region).<br />\nThe first time i do this operation, the OnNavigatedTo will not get fired (but view is shown). If I then in this view navigate back to the original view, the OnNavigatedTo in that ViewModel will fire. And if I then try the first navigation again, that too will fire the OnNavigatedTo.<br />\n<br />\nCould you please show me what you did wrong first and how you fixed it?<br />\n(I should add that my code is in WPF).<br />\n(I know this is a long time ago, so I understand if you don't have that code..)<br />\n<br />\nGert<br />\n",
+    "PostedDate": "2014-05-30T03:38:23.777-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1251381",
+    "ThreadId": "256365",
+    "Html": "Hi ghauan,\r<br />\n<br />\nIf you could provide us with a full repro sample of your solution, we can help you identify the issue and be able to troubleshoot it.\r<br />\n<br />\nYou could upload your solution to <strong>OneDrive</strong> for example and post the link here.\r<br />\n<br />\nRegards.\r<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-05-30T11:50:25.367-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1251459",
+    "ThreadId": "256365",
+    "Html": "Hi Gabriel.\r<br />\n<br />\nThx for your reply. What would such a full repro sample need to include?\r<br />\nThe solution I am working on (inherited) is kind of big, and I am not sure how to wire it all together just like that in a sample solution..\r<br />\n<br />\nRegards\r<br />\nGert<br />\n",
+    "PostedDate": "2014-05-30T14:42:15.577-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1251471",
+    "ThreadId": "256365",
+    "Html": "Hello again.\r<br />\n<br />\nIt seems that I have found a solution, like Devin.\r<br />\n<br />\nMy problems also seem to have with the way the viewmodel was connected to the View.\r<br />\nOriginally that connection was made first after the view was loaded, like this (from the code-behind-file):<br />\n<pre><code>public partial class BillValidationInvoiceControlView : UserControl\n    {\n        public BillValidationInvoiceControlView(BillValidationInvoiceControlViewModel model)\n        {\n            InitializeComponent();\n\n            Loaded += (s, e) =&gt;\n                {\n                    DataContext = model;\n                };           \n        }\n    }</code></pre>\n\nWhen I changed it to the following, the OnNavigatedTo will fire also the first time:<br />\n<pre><code> public partial class BillValidationInvoiceControlView : UserControl\n    {\n        public BillValidationInvoiceControlView(BillValidationInvoiceControlViewModel model)\n        {\n            InitializeComponent();\n\n            DataContext = model;            \n        }\n    }</code></pre>\n\nThis also seems to have solved some RunTimeBinderExceptions that I have been getting.\r<br />\n<br />\nThx anyway.\r<br />\n<br />\nRegards\r<br />\nGert<br />\n",
+    "PostedDate": "2014-05-30T15:39:49.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

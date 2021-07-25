@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "883592",
+    "ThreadId": "382677",
+    "Html": "\r\n<p>I'm studying Karl Shifflett's article&nbsp;<span lang=\"EN-US\" style=\"color:#2a2a2a; font-size:8.5pt\">Prism 4 Region Navigation with Silverlight Frame Navigation and Unity,\r\n</span>and found that he somehow bundles the view with the viewmodel along with the view.cs:</p>\r\n<p><img src=\"http://s10.postimage.org/6etdhrcyx/Sin_t_tulo.jpg\" alt=\"\"></p>\r\n<p>How does he do that?</p>\r\n<p>The project is in SL4 Prism 4, but I'd like to have it also in SL5.</p>\r\n",
+    "PostedDate": "2012-07-21T11:17:28.233-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "888945",
+    "ThreadId": "382677",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, in the case you mentioned the view model is set in the view's code behind by using <strong>Unity </strong>property injection, by defining the [<strong>Dependency</strong>] attribute to its view model property, like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>[Dependency]\r\n<span style=\"color: blue;\">public</span> InventoryViewModel ViewModel {\r\n<span style=\"color: blue;\">get</span> { <span style=\"color: blue;\">return</span> <span style=\"color: blue;\">this</span>.DataContext <span style=\"color: blue;\">as</span> InventoryViewModel; }\r\n<span style=\"color: blue;\">set</span> { <span style=\"color: blue;\">this</span>.DataContext = value; }\r\n</pre>\r\n</div>\r\n</p>\r\n<p>On the other hand, the view uses the <strong>DesignInstance </strong>to Bind to Data in the <strong>Silverlight </strong>Designer, in order to provide a good design-time experience in <strong>XAML</strong>, this is mainly because the view is unaware of its <strong>DataContext</strong>'s which will be assigned at run time.</p>\r\n<p>You could find more information about this, in the following resources:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098(v=pandp.40)#sec63\">Chapter 7: Composing the User Interface, Guidelines for Creating Designer Friendly Views</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff602276%28v=vs.95%29\">Data Binding in the Silverlight Designer</a></li>\r\n</ul>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-07-23T06:01:03.137-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "889085",
+    "ThreadId": "382677",
+    "Html": "\r\n<p>Hi Agustin. There must be something else, because I did it and didn't get the ViewModel bundled in the explorer as in Karl's project.</p>\r\n<p>Using my version of the UI Composition QuickStart, I did this with the EmployeeSummaryView:</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre>&#65279;<span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">Grid</span> <span style=\"color:red\">x:Name</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">LayoutRoot</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">d:DataContext</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">{d:DesignInstance ViewModels:EmployeeSummaryViewModel}</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">&gt;</span>\r\n</pre>\r\n</div>\r\n<p>And in the corresponding .cs file:</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">partial</span> <span style=\"color:blue\">class</span> EmployeeSummaryView : UserControl {\r\n    <span style=\"color:blue\">public</span> EmployeeSummaryView() {\r\n        <span style=\"color:blue\">this</span>.InitializeComponent();\r\n    }\r\n\r\n    [Dependency]\r\n    <span style=\"color:blue\">public</span> EmployeeSummaryViewModel ViewModel {\r\n        <span style=\"color:blue\">get</span> {\r\n            <span style=\"color:blue\">return</span> <span style=\"color:blue\">this</span>.DataContext <span style=\"color:blue\">as</span> EmployeeSummaryViewModel;\r\n        }\r\n        <span style=\"color:blue\">set</span> {\r\n            <span style=\"color:blue\">this</span>.DataContext = value;\r\n        }\r\n    }\r\n}\r\n</pre>\r\n</div>\r\n<p>But the explorer shows this:</p>\r\n<p><img src=\"http://s12.postimage.org/a50rsvp9p/Sin_t_tulo.jpg\" alt=\"\"></p>\r\n<p>As you can see the ViewModel is not bundled to the View. I built the solution, even quit VS and entered again with no success.</p>\r\n<p>But I run the project and it works properly.</p>\r\n<p>What could I be missing here?</p>\r\n",
+    "PostedDate": "2012-07-23T08:26:29.03-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "889127",
+    "ThreadId": "382677",
+    "Html": "<p>Hi,</p>\r\n<p>I believe, I have misunderstood your question. As far as I know, if what you want to do is group files in the <strong>Solution explorer</strong>, so far I'm not aware on how to achieve this directly from the <strong>Visual Studio IDE</strong>. However, based on my understanding this could be achieved by manually editing the corresponding .<strong>csproj</strong> file of the corresponding&nbsp; <strong>Visual Studio</strong> project, for example with Notepad.</p>\r\n<p>As an example, you could edit the <strong>ThePhoneCompany.Inventory.csproj</strong> and check how this is defined in the aforementioned solution:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">ItemGroup</span><span style=\"color: blue;\">&gt;</span>\r\n(...)\r\n<span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">Compile</span> <span style=\"color: red;\">Include</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">Views\\InventoryView.xaml.cs</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">&gt;</span>\r\n      <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">DependentUpon</span><span style=\"color: blue;\">&gt;</span>InventoryView.xaml<span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">DependentUpon</span><span style=\"color: blue;\">&gt;</span>\r\n    <span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">Compile</span><span style=\"color: blue;\">&gt;</span>\r\n    <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">Compile</span> <span style=\"color: red;\">Include</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">Views\\InventoryViewModel.cs</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">&gt;</span>\r\n      <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">DependentUpon</span><span style=\"color: blue;\">&gt;</span>InventoryView.xaml<span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">DependentUpon</span><span style=\"color: blue;\">&gt;</span>\r\n<span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">Compile</span><span style=\"color: blue;\">&gt;</span>\r\n(...)\r\n</pre>\r\n</div>\r\nHence, you should be able to achieve this scenario by adding the following line to the files you desire to group:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">DependentUpon</span><span style=\"color: blue;\">&gt;</span>YourViewFile.xaml<span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">DependentUpon</span><span style=\"color: blue;\">&gt;</span>\r\n</pre>\r\n</div>\r\nNote, that as this is not strictly related to <strong>Prism</strong>, perhaps you could find better guidance regarding this topic for example in the <a href=\"http://social.msdn.microsoft.com/Forums/en-US/category/visualstudio,vsarch,vsdbg,vstest,vstfs,vsdata,vsappdev,visualbasic,visualcsharp,visualc\">Visual Studio forums</a>.</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-07-23T10:18:21.887-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "889212",
+    "ThreadId": "382677",
+    "Html": "\r\n<p>Thank you Agustin. You're answer have been very helpful.</p>\r\n<p>Nevertheless, Having the Views depend on the ViewModel using the [Dependency] attribute, seems to me more elegant than placing the ViewModel as a parameter to the view.</p>\r\n<p>Is there some disadvantage to this approach or they are equivalent?</p>\r\n",
+    "PostedDate": "2012-07-23T11:41:15.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "889278",
+    "ThreadId": "382677",
+    "Html": "<p>Hi,</p>\r\n<p>I'm glad you find it useful.</p>\r\n<p>Regarding your last concern, based on my understanding the main benefit of using property injection instead of constructor injection when resolving your dependencies from the container, is that this will allow you to have a <strong>parameter-less constructor</strong> which is necessary to allow the view to work with design-time tools, such as <strong>Visual Studio</strong> and <strong>Expression Blend</strong>, like shown above, in order to promote a designer friendly scenario.</p>\r\n<p>On the other hand, note that when using this approach you cannot access the injected values of each property in the constructor of the class. This is because, at this time the property hasn't been instantiated.</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-07-23T13:14:18.493-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "889446",
+    "ThreadId": "382677",
+    "Html": "\r\n<p>Hi Agustin.</p>\r\n<p>Could you give an example of the injected values I could be interested in accessing?</p>\r\n",
+    "PostedDate": "2012-07-23T22:04:51.2-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "889656",
+    "ThreadId": "382677",
+    "Html": "<p>Hi Rafael,</p>\r\n<p>The value could be any dependency that you want to inject trough the container. For example the <strong>EventAggregator</strong>, <strong>RegionManager</strong>, etc...</p>\r\n<p>Also, in the <a href=\"http://msdn.microsoft.com/en-us/library/gg405494(v=pandp.40)#sec15\">Advanced Construction and Wire-Up</a> section of the <strong>Prism </strong>documentation shows how to achieve this using the constructor injection approach, and explains that you will have to maintain two constructors, as any additional constructors that you define should ensure that the  default constructor is called so that the view can be properly initialized  via the <strong>InitializeComponent</strong> method.</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-07-24T05:54:18.37-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "889809",
+    "ThreadId": "382677",
+    "Html": "<p>Thank you Agustin.</p>",
+    "PostedDate": "2012-07-24T09:58:20.49-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

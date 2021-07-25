@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "642479",
+    "ThreadId": "265198",
+    "Html": "<p>I am trying to use the Prism ServiceLocator but require lazy loading.&nbsp; Normally I use option 1 below and every works.&nbsp; However in my case class A&nbsp; is not part of the import chain that starts with Shell (CompaseParts(Shell)).&nbsp; Therefore I turned to the Prism  ServiceLocator, but do not understand how to lazy load.&nbsp; I do not know how to correct Option 2 below to have the correct Contract (IContract) and Lazily load.<br /> <br /> If absolutely necessary there may be an option3, which involves importing the container using ServiceLocator within the encompassing Class B.&nbsp; Then calling container.ComposeExportedValue&lt;IContract&gt;(new Class A) which will resolve the ImportMany of Option 1.&nbsp;  I believe I read in the Prism forum that is best practice not to pass around the container as is defeats the ServiceLocator abstraction intent.<br /> <br /> Class A<br /> {<br /> // Option 1: Works (Contract=IContract)<br /> [ImportMany]<br /> IEnumerable&lt;Lazy&lt;IContract, IContractMetaData&gt;&gt; operations;<br /> &nbsp;<br /> // Option 2: Does not work (operations=null) because contract is wrong (Contract=Lazy&lt;IContract, IContractMetaData&gt;)<br /> IEnumerable&lt;Lazy&lt;IContract, IContractMetaData&gt;&gt; operations;<br /> operations = MyServiceLocator.GetAllInstances&lt;Lazy&lt;IContract, IContractMetaData&gt;&gt;();<br /> }<br /> <br /> Thanks,<br /> aidesigner</p>",
+    "PostedDate": "2011-07-14T10:42:49.247-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "642541",
+    "ThreadId": "265198",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding of the <strong>ServiceLocator </strong>mechanism, it currently does not support lazy loading. Therefore, you could extend the service locator implementation to provide support for lazy loading, or you could go ahead with option 3. Although it might not be the best practice, it could serve as a proper workaround for your scenario.</p>\r\n<p>You might find the <a href=\"http://commonservicelocator.codeplex.com/\">CommonServiceLocation forums</a> useful, in case you want to go deeper into the <strong>ServiceLocator </strong>mechanisms.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-14T11:54:48.28-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

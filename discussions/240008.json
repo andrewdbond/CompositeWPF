@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "542189",
+    "ThreadId": "240008",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>We&rsquo;re planning to develop a completely new application using Prism. So I started reading the Prism documentation on the Codeplex site. Most of the things are clear except for one thing. What if there&rsquo;s a model object which has to be shared amongst\r\n different modules? Should an interface be created containing the &ldquo;shared&rdquo; functionality needed by the modules or should a reference to the assembly containing the model be created ?</p>\r\n<p>Any help is appreciated!</p>\r\n",
+    "PostedDate": "2010-12-30T07:55:34.897-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "542200",
+    "ThreadId": "240008",
+    "Html": "\r\n<p>The direction I have gone with my app, was through the use of the EFv4 and then creating an EntityService class and an interface respectively.&nbsp; The entire entity model is contained in its own project, it is referenced by the infrastructure and shell\r\n projects.&nbsp; <br>\r\nI also use a controller pattern to initialize the Entities with MEF exports.&nbsp;&nbsp; The 3 individual modules have references to the Data project as well for model access.&nbsp; I don't know if this is the best way but it works at present.&nbsp; Using observablecollection&lt;T&gt;,\r\n and some additional partial classes in the EF data project I take advantage of the data validation which bubbles up thru and into the views.</p>\r\n",
+    "PostedDate": "2010-12-30T08:21:28.413-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "542205",
+    "ThreadId": "240008",
+    "Html": "\r\n<p>Wow thanks for the quick reply.</p>\r\n<p>The EFv4 is something we're considering to use. Does this mean that the entity model project contains all the model data for the complete application? It does look like a usable solution, maybe there isn't another good alternative.</p>\r\n",
+    "PostedDate": "2010-12-30T08:32:58.603-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "542216",
+    "ThreadId": "240008",
+    "Html": "\r\n<p>There are always alternatives but I wanted to give EF a try since they did some amazing updates to it... Recently reading they are about to release another version soon that is more POCO based so if you already have the database made you can do a code first\r\n approach which wouldn't necessarily increase the code work but make it more readable.&nbsp; at least from the examples I have seen so far.&nbsp; DataAnotations could then be used for input validation which they have taken time fully support.</p>\r\n<p>In answer to your question, yes all model information is in a singular project for the complete app.</p>\r\n",
+    "PostedDate": "2010-12-30T09:14:49.877-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

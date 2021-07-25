@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "834293",
+    "ThreadId": "355173",
+    "Html": "\r\n<p>Hello all,</p>\r\n<p>I have a shell with 2 regions, one is main region, the other is menu region where I would place Icons for the user to launch the appropriate module.&nbsp;</p>\r\n<p>I am struggling with the following. &nbsp;I am trying to load a default view (standard user control) that can be treated as a dashboard for the user when they log into the application. &nbsp;This view is in the same assembly as the Shell. &nbsp;</p>\r\n<p>I know I can handle this using the Loaded event on the shell window, but I do not want to do that since I am trying to use MVVM and I do not want to do that in the view. &nbsp;</p>\r\n<p>Any suggestions on how I can load the view automatically into main region of the shell?</p>\r\n<p>Thank you in advance.</p>\r\n",
+    "PostedDate": "2012-05-09T14:54:03.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "834564",
+    "ThreadId": "355173",
+    "Html": "<p>Hi,</p>\n<p>Based on my understanding of your scenario, as your <strong>UI </strong>components are not loosely coupled (as they are located on the same assembly) using a region for this view might not be necessary, as you should be able to directly compose your shell  view with your default view.</p>\n<p>An example of this can be seen in the <a href=\"http://msdn.microsoft.com/en-us/library/gg430857%28v=pandp.40%29\"> Basic MVVM Quickstart</a> which compose its <strong>MainPage </strong>with an <strong> Usercontrol </strong>(<strong>QuestionnaireView</strong>) which is located in the same assembly.</p>\n<p>If placing this view in a region is required for your scenario, then I believe you could benefit from the \"<em>view discovery approach</em>\" provided by <strong>Prism </strong>to register your view in the region, this way your view will be shown when that location is displayed at run time. For example this registration could be done from your <strong>shell </strong>view model.</p>\n<p>You could find more information about this approach in the following chapter of the <strong>Prism </strong>documentation:</p>\n<ul>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28v=pandp.40%29#sec37\">Chapter 7: Composing the User Interface, Displaying Views in a Region When the Region Loads</a> </li>\n</ul>\n<p>Regards,</p>\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-05-10T06:29:08.133-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

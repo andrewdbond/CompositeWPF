@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "893201",
+    "ThreadId": "389589",
+    "Html": "\r\n<p>Hi</p>\r\n<p><span>I'm using prism and MVVM architecture for my silverlight application and I have a problem with&nbsp;</span></p>\r\n<p><span>interavtivity,here is the code on xaml in my module:</span></p>\r\n<p><span>&lt;i:Interaction.Triggers&gt; &nbsp; &nbsp;&nbsp;</span></p>\r\n<p>&nbsp; &nbsp; &nbsp;&lt;i:EventTrigger EventName=&quot;Loaded&quot;&gt;&nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;cmd:EventToCommand Command=&quot;{Binding Path=LoadedCommand, &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}&quot; PassEventArgsToCommand=&quot;True&quot;/&gt;\r\n &nbsp; &nbsp;&nbsp;</p>\r\n<p>&nbsp; &lt;/i:EventTrigger&gt;&nbsp; &nbsp;</p>\r\n<p>&lt;/i:Interaction.Triggers&gt;</p>\r\n<p>when loading the module in my shell proect i get this error:</p>\r\n<p>&quot;The attachable property 'Triggers' was not found in type 'Interaction'.&quot;</p>\r\n<p>i used interactivity in my wpf application before and i didn't have any problem...</p>\r\n<p>can anybody help me with this plzzzz....????</p>\r\n",
+    "PostedDate": "2012-07-30T11:26:12.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "893250",
+    "ThreadId": "389589",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on your description, it seems that you have a problem related with references.</p>\r\n<p>Please take into account that you need to add a reference to the <span style=\"color:#000000\">\r\n<strong>System.Windows.Interactivity</strong> assembly in <span style=\"text-decoration:underline\">\r\nboth</span> the <strong>Shell </strong>and the <strong>Module </strong>projects of your application in order to use interactions in\r\n<strong>Prism</strong>. If the aforementioned assembly is only referenced in the <strong>\r\nModule</strong>, but not in the <strong>Shell</strong>, the &quot;interactions&quot; declared in views in the modules might not be resolved during runtime.<br>\r\n</span></p>\r\n<p><span style=\"color:#000000\">Also, you could check that the <strong>&quot;i&quot;</strong> namespace you are using</span><span style=\"color:#000000\"> in your view is declared\r\n</span><span style=\"color:#000000\">like thi</span><span style=\"color:#000000\">s</span><span style=\"color:#000000\">:</span></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><strong>xmlns:i=&quot;http://schemas.microsoft.com/expression/2010/interactivity&quot;</strong>\n</pre>\r\n</div>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2012-07-30T12:53:57.853-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "893262",
+    "ThreadId": "389589",
+    "Html": "<p>I've added the&nbsp;<strong>System.Windows.Interactivity </strong>refrence to shell project and it just worked,</p>\r\n<p>thenks that was a big help...</p>",
+    "PostedDate": "2012-07-30T13:15:31.737-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

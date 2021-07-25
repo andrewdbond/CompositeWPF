@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "851620",
+    "ThreadId": "360337",
+    "Html": "\r\n<p>I'm defining my BootStrapper class as:</p>\r\n<p><img src=\"http://i50.tinypic.com/5zqkjb.jpg\" alt=\"a\"></p>\r\n<p>But as you can see, <strong>I get this error saying that IModuleCatalog does no contain a method called CreateFromXaml</strong>.</p>\r\n<p>I'm following the Documentation <a href=\"http://msdn.microsoft.com/en-us/library/gg405479(v=PandP.40).aspx\">\r\nhttp://msdn.microsoft.com/en-us/library/gg405479(v=PandP.40).aspx</a></p>\r\n<p>What could I be missing here?</p>\r\n",
+    "PostedDate": "2012-06-20T09:30:09.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "852107",
+    "ThreadId": "360337",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding, to avoid this error you may have to specify the &quot;<em>Microsoft.Practices.Prism.Modularity</em>&quot; namespace to return the correct\r\n<strong>ModuleCatalog</strong> class in the <strong>CreateModuleCatalog </strong>\r\noverride method, as currently you are returning the <strong>ModuleCatalog </strong>\r\nproperty defined in the <strong>Bootstrapper </strong>class which doesn't contain a\r\n<strong>CreateFromXaml </strong>method.</p>\r\n<p>For example your&nbsp; <strong>CreateModuleCatalog </strong>override method could look similar to this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> IModuleCatalog CreateModuleCatalog()\n        {\n            <span style=\"color:blue\">return</span>\n                Microsoft.Practices.Prism.Modularity.ModuleCatalog.CreateFromXaml(\n                   <span style=\"color:blue\">new</span> Uri(<span style=\"color:#a31515\">&quot;/MyModularityProject;component/ModulesCatalog.xaml&quot;</span>, UriKind.Relative));       \n        } <br></pre>\r\n</div>\r\n<p>Also you could find an example of this in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921163%28v=pandp.40%29\">\r\nModularity QuickStart</a> provided with <strong>Prism</strong>.</p>\r\n<p>On the other hand, as you mentioned, it seems that the <strong>Prism </strong>\r\ndocumentation example does not portrays this, hence if you believe this should be changed, you could create a work item in the\r\n<a href=\"http://compositewpf.codeplex.com/workitem/list/advanced\">issues tracker</a> section notifying about it.<br>\r\n<br>\r\nRegards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-06-21T06:38:13.19-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "852144",
+    "ThreadId": "360337",
+    "Html": "<p>&nbsp;</p>\r\n<p>Thank you. it solved it.</p>\r\n<p>Maybe later I'll create the item in the issue tracker.</p>",
+    "PostedDate": "2012-06-21T07:45:56.047-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

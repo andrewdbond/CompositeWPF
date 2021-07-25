@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "665524",
+    "ThreadId": "270953",
+    "Html": "\r\n<p>Hello,&nbsp;</p>\r\n<p>I am trying to implement &quot;ConfirmNavigation&quot;, which I was able to do.&nbsp;</p>\r\n<p>In one of my modules, if they user try to navigate but there are changes to the object, I want to confirm that the user wants to save the data before navigation.&nbsp;</p>\r\n<p>I have the confirmation working, and I have it saving, <strong><span style=\"text-decoration:underline\">but since I use &quot;Confirm Navigation&quot; it moves to the next page, before the saving is done.</span></strong></p>\r\n<p>In Chapter 8: Navigation of the PRISM documentation on MSDN:</p>\r\n<p><strong><span style=\"text-decoration:underline\">If you want to defer navigation, you can store a reference to the continuation callback you can then call when the interaction with the user (or web service) completes. The navigation operation will be pending\r\n until you call the continuation callback.</span></strong></p>\r\n<p>I am not sure I am following this correctly, <strong><span style=\"text-decoration:underline\">can someone please post a simple code on how you can defer navigation please.</span></strong></p>\r\n<p>Thank you in advance.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-08-30T15:21:50.08-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "665780",
+    "ThreadId": "270953",
+    "Html": "<p>Hi,</p>\r\n<p>You can find more information about this in this <a href=\"http://blogs.msdn.com/b/kashiffl/archive/2010/10/04/prism-v4-region-navigation-pipeline.aspx\">article</a> from Karl Shifflett.</p>\r\n<p>Also you might find this samples helpful:</p>\r\n<ul>\r\n<li><a href=\"http://prismtk.codeplex.com/releases/56048/download/169718\">Prism Training Kit</a> (<strong>Navigation Lab Exercise 3</strong>: Confirming and Cancelling Navigation)</li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430881%28v=PandP.40%29.aspx\">View-Switching Navigation QuickStart</a></li>\r\n</ul>\r\n<p>I hope you find this useful.</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-08-31T07:29:46.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "665801",
+    "ThreadId": "270953",
+    "Html": "<p>Thanks for your response.</p>\r\n<p>I am able to get the confirmation to show; <strong>that is not the issue.</strong>&nbsp;</p>\r\n<p>I want to save the data on the view <strong>before </strong>it navigates to the next page. &nbsp; What is currently taking place is that the confirmation message shows up, I ask the user if they want to save the data, if yes, I want to <strong>pause </strong>until the saving is done, just in case there is an error so we can inform the user.</p>\r\n<p>I am able to save the data, but since the call is async, the completion of saving takes place after the user navigated, I want to stop that.&nbsp;</p>\r\n<p>The example and the links you sent (I already had completed the training kit) only explains how to show the confirmation and act accordingly.&nbsp;</p>\r\n<p>I am looking for example to defer the navigation till the save is complete.&nbsp;</p>\r\n<p>Below is what I am trying to implement but I am not successful.</p>\r\n<p>In Chapter 8: Navigation of the PRISM documentation on MSDN:</p>\r\n<p><strong><span>If you want to defer navigation, you can store a reference to the continuation callback you can then call when the interaction with the user (or web service) completes. The navigation operation will be pending until you call the continuation callback.</span></strong></p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-08-31T08:32:44.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "666356",
+    "ThreadId": "270953",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding of your scenario, you could subscribe to the <strong>completed  event</strong> for your save data async method, and make the call to the <strong>continuation  callback</strong> in the handler for this event. This way the navigation operation will  be pending until you have finished saving the data.</p>\r\n<p>We've created a  sample application that portrays this (based on the Prism Training Kit,  Navigation HOL, Exercise 3). In our sample, we have a <strong>sample database service</strong>,  which simulates a save operation. In the <strong>ConfirmNavigationRequest </strong>method, we  call the sample <strong>SaveDataAsync </strong>method instead of the <strong>continuation callback</strong>, and  in the handler of the <strong>SaveDataCompleted </strong>event, we do call the <strong>continuation  callback</strong> (which we previously stored).</p>\r\n<p>You can find the sample <a href=\"https://skydrive.live.com/?ppud=4#!/?cid=7890102b5b8bc928&amp;sc=documents&amp;uc=1&amp;id=7890102B5B8BC928!103\">in my Skydrive account</a>, under the&nbsp;<strong></strong> name <strong>ConfirmationCallbackSample</strong>.</p>\r\n<p>Please let us know if we have  misunderstood your scenario.</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-09-01T09:53:26.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "666367",
+    "ThreadId": "270953",
+    "Html": "<p>Thank you so much for your prompt response. &nbsp; I have not had a chance to look at the solution, but I really appreciate your help.&nbsp;</p>\r\n<p>Have a great weekend.</p>\r\n<p>And thanks again.</p>",
+    "PostedDate": "2011-09-01T10:15:35.953-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

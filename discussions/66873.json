@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "227373",
+    "ThreadId": "66873",
+    "Html": "<p>Hi folks,</p>\r\n<p>&nbsp;I use this code to add a view to a tabregion (practicly add a new tabitem)</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>IRegion tabRegion = _regionManager.Regions[RegionNames.CommonTraineeTabRegion];\r\n\r\n            _personalInfo = _unityContainer.Resolve&lt;PersonalInfoUserControl&gt;();\r\n            _personalInfo.UnityContainer = _unityContainer;\r\n            _personalInfo.DataContext = CurrentTrainee.NatPersonByNatPersonId;\r\n            tabRegion.Add(_personalInfo);\r\n</pre>\r\n</div>\r\n<p>The problem here is that the added view has an object that gets validated in xaml using ValidatesOnDataErrors=&quot;True&quot;, but I don't see any of the validation notification icons.</p>\r\n<p>I've dealed with a problem of this kind before the simple solution was to ass &lt;AdornerDecorator&gt; to the tabItem, but how do I do this in Prism ?</p>\r\n<p>&nbsp;</p>\r\n<p>Any help will be greatly apreaciated !</p>\r\n<p>Thank you,</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-25T01:46:21.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "227671",
+    "ThreadId": "66873",
+    "Html": "<p>Hi</p>\r\n<p>Are you getting any errors when trying to perform the validation? Although I do not know you entire scenario, if you would like to take a look at a possible validation approach in a Prism application, you can take a look at the <a href=\"http://msdn.microsoft.com/en-us/library/dd458919.aspx\">Reference Implementation application</a> solution.</p>\r\n<p>Validation is performed on the textboxes were the user must populate the amount of orders to buy/sell, and set the price.</p>\r\n<p>I hope this is useful for you.</p>\r\n<p>Damian Schenkelman<br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-08-25T15:10:43.413-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "227817",
+    "ThreadId": "66873",
+    "Html": "<p>Hi Damian, thank you for your reply</p>\r\n<p><span style=\"white-space:pre\"> </span>The problem is in the demo also. Here is how you reproduce it:</p>\r\n<p><span style=\"white-space:pre\"> </span>- open a buy see that the submit button is disabled</p>\r\n<p><span style=\"white-space:pre\"> </span>- type in something in the share textbox and delete it then, you will notice that a red border appears (the default error template)</p>\r\n<p><span style=\"white-space:pre\"> </span>- I have a custom error template (!) and <strong>I need it to appear when the form is opened so that the use sees what are the mandatory fields. </strong>I had the same issue in the normal tabitem but this solved easily by adding a <em>AdornerDecorator </em>like this:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">TabItem</span><span style=\"color:Blue\">&gt;</span>\r\n <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">AdornerDecorator</span><span style=\"color:Blue\">&gt;</span>\r\n ........\r\n <span style=\"color:Blue\">&lt;/</span><span style=\"color:#A31515\">AdornerDecorator</span><span style=\"color:Blue\">&gt;</span>\r\n<span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">TabItem</span><span style=\"color:Blue\">&gt;</span>\r\n</pre>\r\n</div>\r\n<p>Regards,</p>\r\n<p>Calin,</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-26T01:15:38.72-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

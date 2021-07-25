@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "692895",
+    "ThreadId": "278087",
+    "Html": "\r\n<p>I am trying to build the MVVM Quickstart solution. I have referenced the Microsoft.Practices.Prism.GuidanceTools assembly.</p>\r\n<p>When I try to build, I get an error:<br>\r\nThe tag 'InfoTipToggleButton' does not exist in XML namespace 'clr-namespace:Microsoft.Practices.Prism.GuidanceTools;assembly=Microsoft.Practices.Prism.GuidanceTools'.</p>\r\n<p>I&rsquo;ve searched the &lsquo;Net thoroughly but can&rsquo;t find anyone else with this problem. Looking at the assembly in reflector indicates that the button does indeed exist.</p>\r\n<p>Help, please?</p>\r\n<p>TIA!</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-11-02T12:01:56.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "693465",
+    "ThreadId": "278087",
+    "Html": "<p>Hi,</p>\r\n<p>I tried to reproduce the scenario you mentioned but without success. Have you check for all the requirements needed before you can use the Prism Library?<br />This requirements are specified in the Prism documentation, <a href=\"http://msdn.microsoft.com/en-us/library/gg405471(v=PandP.40).aspx#sec2\">Installing Prism</a> at MDSN:</p>\r\n<ul>\r\n<li>Microsoft .NET Framework 4.0 (installed with Visual Studio 2010)</li>\r\n<li>Microsoft Visual Studio 2010 Professional, Premium, or Ultimate editions</li>\r\n</ul>\r\n<p>Additionally if you are developing Silverlight applications like the MVVM Quickstart, the following must be installed:&nbsp;</p>\r\n<ul>\r\n<li><a href=\"http://www.microsoft.com/download/en/details.aspx?displaylang=en&amp;id=18149\">Microsoft Silverlight 4 Tools for Visual Studio 2010</a> (required for Silverlight development; includes the developer Silverlight runtime)</li>\r\n</ul>\r\n<p>I hope you find this useful.</p>\r\n<p>﻿Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-11-03T10:53:43.417-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "693494",
+    "ThreadId": "278087",
+    "Html": "<p>I&rsquo;ve installed all of the requirements. I&rsquo;ve got:</p>\r\n<p>Silverlight 4 SDK, Version 4.0.60310.0<br />Silverlight 4 Toolkit April 1020, Version 4.0.40413.2020<br />Silverlight Tools for VS 2010, Version 10.0.30319.400<br />VS 2010 Ultimate with SP1<br />Microsoft.Practices.Prism.GuidanceTools.dll, Version 1.0.0.0</p>\r\n<p>I&rsquo;ve registered the Prism assemblies via the batch file, and I think I&rsquo;ve followed all of the other instructions properly.</p>\r\n<p>When I examine the dll in Reflector, I see that InfoTipToggleButton is in the dll.</p>\r\n<p>I have no idea how to proceed. Could you send me the button&rsquo;s source code so I can include it in the projects (several need access to the button)?</p>\r\n<p>Best regards,</p>\r\n<p>Leroy</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-11-03T11:38:25.953-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "693985",
+    "ThreadId": "278087",
+    "Html": "<p>Hi,</p>\n<p>Based on our findings, as mentioned in this <a href=\"266054\">thread</a> the <strong> GuidanceTools</strong> source code isn't provided in the Prism download. So far, we tried to reproduce the error in a scenario with the same versions you mentioned, and couldn't achieve it. Until now that error only appears to us if we remove the reference  to the <strong>Microsoft.Practices.Prism.GuidanceTools</strong> assembly.</p>\n<p>Also we disassembled the file and found that these are its references:</p>\n<ul>\n<li><em><strong>System.Windows</strong>, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e</em> </li>\n<li><em><strong>mscorlib,</strong> Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e</em> </li>\n</ul>\n<p>You could, for example, check if your assemblies versions match with those.</p>\n<p>Other than that, we believe this problem could be related to your environment, therefore you could try running the Quickstart on a different environment, from a fresh installation.</p>\n<p>I hope you find this useful.</p>\n<p>﻿﻿Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-11-04T09:54:33.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "694049",
+    "ThreadId": "278087",
+    "Html": "<p>Thanks, Agustin, I appreciate your help.&nbsp;I'm <span style=\"color: black; font-size: 10pt;\">desperate </span>to work through the examples which depend on this button.</p>\r\n<p>When you mention Microsoft.Practices.GuidanceTools, do&nbsp;you mean Microsoft.Practices.Prism.GuidanceTools?</p>\r\n<p>I don't have a Microsoft.Practices.GuidanceTools. When I examine Microsoft.Practices.Prism.GuidanceTools (ver 1.0.0.0) I do find InfoTipToggleButton.</p>\r\n<p>I don't have System.Windows.dll&nbsp;2.0.5.0; the lowest version I have is 3.x.</p>\r\n<p>I don't have mscorlib.dll 2.0.5.0, but I do have lots of other 2.0.5x.x's (listed below).</p>\r\n<p>Perhaps this is the problem? If so, where can I get the correct versions of mscorlib &amp; System.Windows?</p>\r\n<p>2.0.50727.3074<br />C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v3.5\\Profile\\Client\\mscorlib.dll</p>\r\n<p><br />2.0.50727.4927<br />C:\\Windows\\winsxs\\amd64_mscorlib_b77a5c561934e089_6.1.7600.16385_none_54909cf4692b5b3c\\mscorlib.dll<br />C:\\Windows\\winsxs\\x86_mscorlib_b77a5c561934e089_6.1.7600.16385_none_9c3dd3cb7da78442\\mscorlib.dll</p>\r\n<p>2.0.50727.4952<br />C:\\Windows\\winsxs\\amd64_mscorlib_b77a5c561934e089_6.1.7600.16597_none_54916f66692aa877\\mscorlib.dll<br />C:\\Windows\\winsxs\\x86_mscorlib_b77a5c561934e089_6.1.7600.16597_none_9c3ea63d7da6d17d\\mscorlib.dll</p>\r\n<p>2.0.50727.5018<br />C:\\Windows\\winsxs\\amd64_mscorlib_b77a5c561934e089_6.1.7600.20717_none_3dbbc63282d93e16\\mscorlib.dll<br />C:\\Windows\\winsxs\\x86_mscorlib_b77a5c561934e089_6.1.7600.20717_none_8568fd099755671c\\mscorlib.dll</p>\r\n<p>2.0.50727.5420<br />C:\\Windows\\winsxs\\amd64_mscorlib_b77a5c561934e089_6.1.7601.17514_none_5465aa786982a1f2\\mscorlib.dll<br />C:\\Windows\\winsxs\\x86_mscorlib_b77a5c561934e089_6.1.7601.17514_none_9c12e14f7dfecaf8\\mscorlib.dll</p>\r\n<p>2.0.50727.5444<br />C:\\Windows\\winsxs\\amd64_mscorlib_b77a5c561934e089_6.1.7601.17559_none_546939b8697f8773\\mscorlib.dll<br />C:\\Windows\\winsxs\\x86_mscorlib_b77a5c561934e089_6.1.7601.17559_none_9c16708f7dfbb079\\mscorlib.dll</p>\r\n<p>2.0.50727.5446<br />C:\\Windows\\winsxs\\amd64_mscorlib_b77a5c561934e089_6.1.7601.17587_none_546c6826697ca036\\mscorlib.dll<br />C:\\Windows\\winsxs\\x86_mscorlib_b77a5c561934e089_6.1.7601.17587_none_9c199efd7df8c93c\\mscorlib.dll</p>\r\n<p>2.0.50727.5448<br />C:\\Windows\\Microsoft.NET\\Framework64\\v2.0.50727\\mscorlib.dll<br />C:\\Windows\\Microsoft.NET\\Framework\\v2.0.50727\\mscorlib.dll<br />C:\\Windows\\assembly\\GAC_32\\mscorlib\\2.0.0.0__b77a5c561934e089\\mscorlib.dll<br />C:\\Windows\\assembly\\GAC_64\\mscorlib\\2.0.0.0__b77a5c561934e089\\mscorlib.dll<br />C:\\Windows\\winsxs\\amd64_mscorlib_b77a5c561934e089_6.1.7601.17648_none_54685012698054cc\\mscorlib.dll<br />C:\\Windows\\winsxs\\x86_mscorlib_b77a5c561934e089_6.1.7601.17648_none_9c1586e97dfc7dd2\\mscorlib.dll<br /><br />2.0.50727.5653<br />C:\\Windows\\winsxs\\amd64_mscorlib_b77a5c561934e089_6.1.7601.21660_none_3d9d604a83251a27\\mscorlib.dll<br />C:\\Windows\\winsxs\\x86_mscorlib_b77a5c561934e089_6.1.7601.21660_none_854a972197a1432d\\mscorlib.dll<br /><br />2.0.50727.5662<br />C:\\Windows\\winsxs\\amd64_mscorlib_b77a5c561934e089_6.1.7601.21693_none_3da01cd08322b30f\\mscorlib.dll<br />C:\\Windows\\winsxs\\x86_mscorlib_b77a5c561934e089_6.1.7601.21693_none_854d53a7979edc15\\mscorlib.dll<br /><br />2.0.50727.5681<br />C:\\Windows\\winsxs\\amd64_mscorlib_b77a5c561934e089_6.1.7601.21768_none_3d9ca9e68325e780\\mscorlib.dll<br />C:\\Windows\\winsxs\\x86_mscorlib_b77a5c561934e089_6.1.7601.21768_none_8549e0bd97a21086\\mscorlib.dll</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-11-04T12:26:56.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "694703",
+    "ThreadId": "278087",
+    "Html": "<p>Hi,</p>\r\n<p>Thanks for the clarification, I was refering to <strong>Microsoft.Practices.Prism.GuidanceTools</strong>.</p>\r\n<p>Regarding the aforementioned assemblies you should be able to find them in the following locations:</p>\r\n<p><em>C:\\Program Files (x86)\\Microsoft SDKs\\Silverlight\\v4.0\\Libraries\\Client\\System.Windows.Controls.dll</em><br /><em>C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\Silverlight\\v4.0\\mscorlib.dll</em><br /><br />It would be worth noting that the assemblies you mentioned are for .NET Framework, whereas you should be checking for the Silverlight ones.</p>\r\n<p>Regards,</p>\r\n<p>﻿﻿Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-11-07T05:27:04.797-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "694751",
+    "ThreadId": "278087",
+    "Html": "<p>Now I'm confused. In a previous message you suggested that I verify that I have assemblies which match the versions you mentioned:</p>\r\n<p>&nbsp;&nbsp; \"Also we disassembled the file and found that these are its references:</p>\r\n<ul>\r\n<li><em><strong>System.Windows</strong>, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e</em> </li>\r\n<li><em><strong>mscorlib,</strong> Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e</em> </li>\r\n</ul>\r\n<p>&nbsp;&nbsp; \"You could, for example, check if your assemblies versions match with those.\"</p>\r\n<p><span style=\"color: black; font-size: 10pt;\">I replied that I don't have exact matches for any of those assemblies. In your latest reply you directed me to check for Silverlight 4 assemblies, which leads me to believe that it doesn&rsquo;t matter if I&rsquo;ve got the 2.x versions installed. Is this correct?</span></p>\r\n<p>I don&rsquo;t have another system to try this on; short of removing and reinstalling everything, is there something else I can do to get things working?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-11-07T07:32:28.99-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "694775",
+    "ThreadId": "278087",
+    "Html": "<p>Hi,</p>\n<p>The assemblies we're mentioning are the Silverlight ones; Silverlight assemblies also have a <em>Version</em>, as shown in the following article from MSDN:</p>\n<ul>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/system.type.assemblyqualifiedname%28VS.95%29.aspx\">Type<span class=\"cs\">.</span>AssemblyQualifiedName Property</a> </li>\n</ul>\n<p>Therefore, what we're saying when mentioning that you should check for the Silverlight assemblies, we mean that you should look for<strong><em> </em></strong><em><strong>System.Windows</strong>, Version=2.0.5.0, </em>and <strong> </strong><em><strong>mscorlib,</strong> Version=2.0.5.0 </em>in the Silverlight folders. Thus, you should check if you have the following files (in the path specified):</p>\n<ul>\n<li><em>C:\\Program Files (x86)\\Microsoft SDKs\\Silverlight\\v4.0\\Libraries\\Client\\System.Windows.Controls.dll</em> </li>\n<li><em>C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\Silverlight\\v4.0\\mscorlib.dll</em> </li>\n</ul>\n<p>The assemblies you mentioned in your previous post are the .NET ones, which aren't used in Silverlight.</p>\n<p>Other than that, in case the aforementioned does not suffice to make the QuickStart work in your current environment, as a workaround you could remove the occurences of the <strong>InfoTipToggleButton </strong>in the QuickStart code, so that you can check the remaining functionality of the QuickStart.</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-11-07T08:21:49.793-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "694923",
+    "ThreadId": "278087",
+    "Html": "<p><span style=\"font-family: 'Segoe UI','sans-serif'; color: black; font-size: 10pt;\">Thanks, Guido. </span></p>\r\n<p><span style=\"font-family: 'Segoe UI','sans-serif'; color: black; font-size: 10pt;\">I was referring to the Silverlight assemblies above, but misunderstanding the version numbers. When I was looking at version numbers earlier, I was doing so via Windows Explorer/Properties dialog. When I look at the version from within VS I see the versions that you have been recommending. </span></p>\r\n<p><span style=\"font-family: 'Segoe UI','sans-serif'; color: black; font-size: 10pt;\">Since I am using the recommended versions of the assemblies without success, and don't want to uninstall/reinstall, I'll follow your recommendation to remove the InfoTipToggleButton references.</span></p>\r\n<p><span style=\"font-family: 'Segoe UI','sans-serif'; color: black; font-size: 10pt;\">Thanks once again,</span></p>\r\n<p><span style=\"font-family: 'Segoe UI','sans-serif'; color: black; font-size: 10pt;\">Leroy</span></p>",
+    "PostedDate": "2011-11-07T12:58:01.53-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "225984",
+    "ThreadId": "66520",
+    "Html": "<p>Our program is using Prism 2.0.&nbsp; The program defines the &quot;Application&quot; class somewhere else and then calling the Prism bits.&nbsp; I can't seem to get this to work.&nbsp; I have narrowed the problem to the following simple steps:</p>\r\n<p>- Take the HelloWorld.Desktop example that is in the QuickStart folder.</p>\r\n<p>- Exclude the App.xaml (and corresponding cs) file.</p>\r\n<p>- Instead put the following Program.cs file.&nbsp; What is really interesting is that the application works if I use the &quot;dummy&quot; App2 class.&nbsp; If I use the &quot;Application&quot; class, the program does not display the contents of the shell window.&nbsp; Can anyone please help explain what is the connection between Prism and the Application class?</p>\r\n<p>using System;<br>using System.Windows;<br><br>namespace HelloWorld.Desktop<br>{<br>&nbsp;&nbsp;&nbsp; public class App2 : Application<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; class Program<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [STAThread]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; static void Main(string[] args)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Program does not work if I use Application()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var app = new Application();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Program works if I use App2().&nbsp; App2 derived from Application but does nothing in and of itself.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //var app = new App2();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var bs = new Bootstrapper();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bs.Run();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; app.Run();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br>}</p>",
+    "PostedDate": "2009-08-20T12:05:49.72-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "226427",
+    "ThreadId": "66520",
+    "Html": "<p>Hi</p>\r\n<p>The Application class is the entry point in any WPF/Silverlight application. To create Prism applications, you&nbsp; create a new instance of your application&rsquo;s <strong>Bootstrapper</strong> in the <strong>OnStartup</strong> method of the application class. This in turns creates the Shell of your application. You can read more about that here:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/dd458922.aspx\">How to: Create a Solution Using the Composite Application Library for WPF</a></li>\r\n</ul>\r\n<p>If you have a console application that is in charge of launching the Prism application, you can run the bootstrapper directly from it (without using the Application class), which will launch the Shell. The following thread deals with a similar situation (launching a Prism app from a console app) and talks about some possible limitations about this:</p>\r\n<ul>\r\n<li><span style=\"font-size:11pt\" lang=EN-US><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=56456\">Running CompositeWPF without Application.Current</a></span></li>\r\n</ul>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-08-21T10:29:33.673-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

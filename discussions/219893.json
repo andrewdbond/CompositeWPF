@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "468965",
+    "ThreadId": "219893",
+    "Html": "Just today I found a problem I would like to discuss here: After creating an instance of a DelegateCommand, I would like to replace the delegate I passed in for CanExecute.\r\nI haven't yet found out how to do this.\r\n\r\nFirst a small description of the WHY:\r\nI have a WPF4 app with a standard Microsoft Ribbon and I use PRISM MVVM v2.2. The application consists of more than one module and each module will add its tab to the ribbon. Each tab has its own viewmodel, which should act as a controller and respond to RibbonButton clicks by showing/hiding views. The Ribbon contains groups of buttons that belong together. Simply put, they are groups of 4 actions like Open, Add, Edit, Delete that work on the same items.\r\n\r\nI want the buttons to be enabled only when relevant, which means that the state of the Add, Edit and Delete actions should be managed by the ViewModel of Editor, which shows up after clicking the Open button. Depending on state of that view  (is an item selected?), the Add, Edit and Delete actions shall be enabled. \r\n\r\nNow I implemented all 4 commands in the ViewModel of the ribbon and each command gets a default CanExecute delegate. When the Open command gets fired, it shows the view and binds a viewmodel to it. From that moment on, I would like the CanExecute methods to point to a method in the ViewModel. I don't see how to do this, since the CanExecute can only be passed in the constructor.\r\n\r\nCan anyone please advice if this is a handy way of working or how I can achieve my objectives more simple? I feels like it's all too complex and I learned that's generally an indication it should be done differently, but I do net yet see how...\r\n\r\nTIA,\r\nJeroen",
+    "PostedDate": "2010-07-19T04:56:08.83-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "469855",
+    "ThreadId": "219893",
+    "Html": "<p>This is one of the key scenarios that CompositeCommand was designed for. Hook your ribbon controls up to a CompositeCommand, make that accessible globally through a static or as named instances in the container, and then the modules can register and unregister new instances of DelegateCommands as needed to point to the transient actions that you want both called for CanExecute and called for Execute.</p>\r\n<p>Have you looked into using CompositeCommand to address your needs?</p>",
+    "PostedDate": "2010-07-20T11:57:24.97-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "470072",
+    "ThreadId": "219893",
+    "Html": "<p>Thanks Brian, didn't think of that option yet. I saw the CompositeCommand in some places but had not yet realized it would be helping me here.<br>I already use DelegateCommands all over the application. Putting it as a named instance in the container is indeed the key to the solution. Thanks again!</p>",
+    "PostedDate": "2010-07-20T23:23:10.743-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "472859",
+    "ThreadId": "219893",
+    "Html": "<p>Hi Jeroen,</p>\r\n<p>This is something not supported by the Prism&rsquo;s DelegateCommand implementation out-of-the-box.&nbsp;That said,&nbsp;I think it&nbsp;might be achieved&nbsp;if you&nbsp;provide your own command class by&nbsp;implementing ICommand interface. This way, you would make accessible&nbsp;a CanExecuteMethod property, which&nbsp;can be&nbsp;updated with the method of you choice at anytime.</p>\r\n<p>In addition, <a href=\"http://msdn.microsoft.com/en-us/library/ff648296.aspx\">Globally Available Commands</a>&nbsp;is the recommended approach&nbsp;by&nbsp;Prism, that&nbsp;could&nbsp;give you the ability of making your commands available, both in a module and&nbsp;cross-module.&nbsp;It might help you as this is not strictly necessary to use CompositeCommands, so you could&nbsp;provide your own implementation by exposing 4 instances of your custom ICommand over there. The&nbsp;implementation could be similar to the following code lines:</p>\r\n<pre><span style=\"color:blue\">public static class </span><span style=\"color:#2b91af\">GlobalCommands \r\n</span>{\r\n    <span style=\"color:blue\">public static </span><span style=\"color:#2b91af\">ChangeableCanExecuteCommand </span>OpenCommand = <span style=\"color:blue\">new </span><span style=\"color:#2b91af\">MyCustomCommand</span>(myOpenMethod);\r\n    <span style=\"color:blue\">public static </span><span style=\"color:#2b91af\">ChangeableCanExecuteCommand </span>AddCommand = <span style=\"color:blue\">new </span><span style=\"color:#2b91af\">MyCustomCommand</span>(myAddMethod);\r\n    <span style=\"color:blue\">public static </span><span style=\"color:#2b91af\">ChangeableCanExecuteCommand </span>EditCommand = <span style=\"color:blue\">new </span><span style=\"color:#2b91af\">MyCustomCommand</span>(myEditMethod);\r\n    <span style=\"color:blue\">public static </span><span style=\"color:#2b91af\">ChangeableCanExecuteCommand </span>DeleteCommand = <span style=\"color:blue\">new </span><span style=\"color:#2b91af\">MyCustomCommand</span>(myDeleteMethod)<br>}\r\n</pre>\r\n<p>Additionally, take into account that if you have two of your editors open at the same time and you switch between them, you would need to update the CanExecuteMethod property and call the RaiseCanExecuteChanged method.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-07-26T14:58:33.67-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "472985",
+    "ThreadId": "219893",
+    "Html": "<p>Hi Fernando,</p>\r\n<p>Thanks for following up on my post. I think your suggestion is a good one, using the Globally available<br>commands pattern does make sense, using either a static class or a IoC container.</p>\r\n<p>Thank,<br>Jeroen</p>",
+    "PostedDate": "2010-07-26T23:18:06.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

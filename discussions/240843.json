@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "545408",
+    "ThreadId": "240843",
+    "Html": "\r\n<p>I am wondering if the following is a practical or realistic problem.</p>\r\n<p>When using&nbsp;Prism (CAL) to build an application, it is possible and likely the component being plugged in or discovered&nbsp;also uses DI with a UnityContainer (or any other DI container they use).&nbsp; If that component has initialization code to ServiceLocator.SetLocationProvider(\r\n () =&gt; someDelegate), wouldn't that wipeout the IServiceLocator reference used within Prism itself, or at least the calls to ServiceLocator.Current would now return an object whose container is from the plug-in component.&nbsp; Thus, your references, and\r\n everything Prism set up on initialization, are no longer accessible from ServiceLocator.Current.<br>\r\n<br>\r\nThere are many parts of Prism source code that call ServiceLocator.Current.&nbsp; This is the concern.</p>\r\n<p>I'm probably missing something obvious here, but other than hoping the component is playing nicely, it seems possible to accidentally or intentionally mess up the DI container.&nbsp;</p>\r\n<p>Could someone explain if I am correct or not, and if I am, is there any way to protect against this?</p>\r\n<p>Thank you.</p>\r\n<p>Jason</p>\r\n",
+    "PostedDate": "2011-01-07T07:09:51.2-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "545463",
+    "ThreadId": "240843",
+    "Html": "\r\n<p>Hi Jason,</p>\r\n<p>As you're mentioning, Prism internally uses the Service Locator in many components, so you should avoid calling\r\n<strong>ServiceLocator.SetLocationProvider</strong> in your components. You might find better support on Service Location in the\r\n<a href=\"http://commonservicelocator.codeplex.com/discussions\">Common Service Locator Codeplex forum</a>.</p>\r\n<p>Thanks,</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2011-01-07T08:45:10.92-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "545584",
+    "ThreadId": "240843",
+    "Html": "\r\n<p>Thanks.&nbsp; I made a post there, but as it relates to prism, I wonder why prism specifically calls out to ServiceLocator.Current.&nbsp;<br>\r\n<br>\r\nFrom an older posting here -- <a href=\"http://commonservicelocator.codeplex.com/Thread/View.aspx?ThreadId=36957\">\r\nhttp://commonservicelocator.codeplex.com/Thread/View.aspx?ThreadId=36957</a>&#65279;, it seems that someone else had the same concern I had, and I would have hoped the prism library would hold on to IServiceLocatorReferences rather than calling out to ServiceLocator.Current.</p>\r\n<p>There are 3 or 4 classes in the prism library which call out to ServiceLocator.Current.&nbsp; Either it was an oversight or it was absolutely essential. To me, it seems risky.&nbsp; I do agree, calling SetLocatorProvider should be handled delicately, but\r\n it does have to be called.</p>\r\n<p>I would suggest some of this code be reviewed or refactored, or if you could explain that the sections of code it is in is not risky if another container is injected, I'd be happy to know that.&nbsp; I am a proponent of the library, I'm just asking for clarification\r\n on a key detail of pluggable components.</p>\r\n<p>The classes I see with this reference are</p>\r\n<p>Bootstrapper - this one probably has to be there.<br>\r\nRegion<br>\r\nRegionManager<br>\r\nand some extensions class.</p>\r\n",
+    "PostedDate": "2011-01-07T11:26:06.467-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "546686",
+    "ThreadId": "240843",
+    "Html": "\r\n<p>Hi Jason,</p>\r\n<p>You could add this as a work item in the <a href=\"http://compositewpf.codeplex.com/workitem/list/basic\">\r\nIssue Tracker</a>, for it to be considered in future releases.</p>\r\n<p>Thanks for your feedback,</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2011-01-10T06:29:22.157-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

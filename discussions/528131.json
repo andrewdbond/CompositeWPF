@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1200077",
+    "ThreadId": "528131",
+    "Html": "I have a view that defines a view model in xaml:<br />\n<pre><code>&lt;UserControl.DataContext&gt;\n        &lt;VM:MainMenuViewModel /&gt;\n    &lt;/UserControl.DataContext&gt;ext&gt;</code></pre>\n\nThen my VM:<br />\n<pre><code>   public class MainMenuViewModel\n    { \n        private readonly IUnityContainer container;\n\n        public MainMenuViewModel(IUnityContainer _container)\n        {\n            container = _container; \n        }\n.......</code></pre>\n\nI get an error saying that no accessible constructor exists when the view runs because it isn't injecting the IUnityContainer. What is the &quot;proper&quot; way to access the container from a view model? Thanks.<br />\n",
+    "PostedDate": "2014-01-28T11:42:25.277-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1200449",
+    "ThreadId": "528131",
+    "Html": "Hello Mathius,\r<br />\n<br />\nYou may find this similar question already answered in the following <strong>Stack Overflow</strong> post:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://stackoverflow.com/questions/3781205/accessing-unity-container-in-view-model-class\" rel=\"nofollow\">Accessing unity container in view model class</a><br />\n</li>\n</ul>\nYou would properly get the container from the <strong>ViewModel</strong> constructor by previously resolving the <strong>ViewModel</strong> instance from the container.\r<br />\n<br />\nI hope this helps, Regards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-01-29T05:39:51.47-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1200501",
+    "ThreadId": "528131",
+    "Html": "I guess I am confused. If I am creating my view model in xaml, how would I properly &quot;instantiate&quot; this view model using the container if I can't get access to the container? I just can't see how the workflow is supposed to work with containers and view models. I tried &quot;BuildUp&quot; with method injection, and the container gets injected in on new VM(), but then it is lost because a new VM is created when the xaml runs(as it creates a new VM). Is there any small example someone could give about a simple way to accomplish this? Am I not supposed to create the VM in xaml with Unity? Thanks.<br />\n",
+    "PostedDate": "2014-01-29T07:41:58.637-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1200530",
+    "ThreadId": "528131",
+    "Html": "I am using the Common Service Locator library, which allows you to use a static singleton class to access your global container. Works really well. Thanks!<br />\n",
+    "PostedDate": "2014-01-29T08:30:21.25-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "915340",
+    "ThreadId": "396304",
+    "Html": "\r\n<p>I am using the following code to remove a specific view from a region.&nbsp; There is only this one view in the region, but when it is removed, I get an error message that says, &quot;The region does not contain the specified view.&nbsp; Parameter name: view&quot;.</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>          <span style=\"color:blue\">try</span>\r\n          {\r\n              <span style=\"color:green\">// Get the regions views</span>\r\n              <span style=\"color:blue\">var</span> regionManager = ServiceLocator.Current.GetInstance&lt;IRegionManager&gt;();\r\n              List&lt;<span style=\"color:blue\">object</span>&gt; views = <span style=\"color:blue\">new</span> List&lt;<span style=\"color:blue\">object</span>&gt;();\r\n              List&lt;<span style=\"color:blue\">object</span>&gt; removeViews = <span style=\"color:blue\">new</span> List&lt;<span style=\"color:blue\">object</span>&gt;();\r\n\r\n              <span style=\"color:blue\">if</span> (regionManager.Regions[<span style=\"color:#a31515\">&quot;WorkspaceRegion&quot;</span>] != <span style=\"color:blue\">null</span>)\r\n              {\r\n                  <span style=\"color:blue\">foreach</span> (<span style=\"color:blue\">object</span> view <span style=\"color:blue\">in</span> regionManager.Regions[<span style=\"color:#a31515\">&quot;WorkspaceRegion&quot;</span>].ActiveViews)\r\n                  {\r\n                      views.Add(view);\r\n                  }\r\n                  <span style=\"color:blue\">for</span> (<span style=\"color:blue\">int</span> i = 0; i &lt; views.Count; i&#43;&#43;)\r\n                  {\r\n                      <span style=\"color:blue\">if</span> (views[i].GetType().Name == <span style=\"color:#a31515\">&quot;ModuleEquipmentTabs&quot;</span>)\r\n                          removeViews.Add(views[i]);\r\n                  }\r\n\r\n                  <span style=\"color:blue\">if</span> (removeViews.Count &gt; 0)\r\n                      <span style=\"color:blue\">for</span> (<span style=\"color:blue\">int</span> i = 0; i &lt; removeViews.Count; i&#43;&#43;)\r\n                      {\r\n                          regionManager.Regions[<span style=\"color:#a31515\">&quot;WorkspaceRegion&quot;</span>].Remove(removeViews[i]);\r\n                      }\r\n              }\r\n          }\r\n          <span style=\"color:blue\">catch</span> (Exception x)\r\n          {\r\n            MessageBox.Show(x.Message.ToString());\r\n          }\r\n</pre>\r\n</div>\r\n",
+    "PostedDate": "2012-09-20T12:36:42.05-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "915656",
+    "ThreadId": "396304",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding, this behavior could be caused if you are implementing the\r\n<strong>IRegionMemberLifetime </strong>interface in your views, and returning false in its\r\n<strong>KeepAlive </strong>property. Which could cause that when you remove the view, the region manages to remove the view successfully. However, as your view implements\r\n<strong>IRegionMemberLifetime</strong>, it gets notified that it's not the active view anymore and then, as the\r\n<strong>KeepAlive </strong>property returns <strong>false</strong>, <strong>Prism\r\n</strong>tries to remove the view from the region again. For more information about this and possible approaches on how to avoid this kind of behavior I believe you could check the following related resources:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/272855\">Problem when remove view from region</a>\r\n</li><li><a href=\"http://compositewpf.codeplex.com/workitem/8224\">Silverlight - Add/Remove view - ArgumentException</a>\r\n</li></ul>\r\n<p>I hope you find this helpful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-09-21T05:08:56.91-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "915703",
+    "ThreadId": "396304",
+    "Html": "<p>Agustin, thank you for your reply.&nbsp; Your explanation sounds plausible, so followed the link and subsequently&nbsp;changed my code to deactivate the view instead of removing it.&nbsp; However, I then got an error message which says, \"Deactivation is not possible in this type of region\".&nbsp; Of course, the region is of type \"ItemsControl\" and does not allow deactivation.&nbsp; So I think that I could change my code back to my original solution and ignore the error when it is trapped in my \"catch\".&nbsp; Do you know of any unforseen problems with this solution, or do you know of a solution that is a bit more elegant?</p>",
+    "PostedDate": "2012-09-21T07:02:27.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "915775",
+    "ThreadId": "396304",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Have you considered changing the <strong>RegionMemberLifetimeBehavior </strong>\r\nclass as mentioned in the work item in the second link (<a href=\"http://compositewpf.codeplex.com/workitem/8224\">Silverlight - Add/Remove view - ArgumentException</a>), as far as I know this approach should also work for\r\n<strong>WPF </strong>applications, and seems to be a more elegant solution.</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-09-21T09:21:27.577-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "915860",
+    "ThreadId": "396304",
+    "Html": "\r\n<div style=\"background-color:white; color:black\">I suppose the fix in my app would go something like this?</div>\r\n<div style=\"background-color:white; color:black\">\r\n<div style=\"color:black; background-color:white\">\r\n<pre> <span style=\"color:blue\">if</span> (removeViews.Count &gt; 0)\r\n     <span style=\"color:blue\">for</span> (<span style=\"color:blue\">int</span> i = 0; i &lt; removeViews.Count; i&#43;&#43;)\r\n     {\r\n           <span style=\"color:blue\">if</span> (!ShouldKeepAlive(removeViews[i]))\r\n          regionManager.Regions[<span style=\"color:#a31515\">&quot;WorkspaceRegion&quot;</span>].Remove(removeViews[i]);\r\n     }\r\n</pre>\r\n</div>\r\n</div>\r\n<div style=\"background-color:white; color:black\">... but the linked example references Region instead of regionManager:</div>\r\n<div style=\"background-color:white; color:black\">\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">private</span> <span style=\"color:blue\">bool</span> ShouldKeepAlive(<span style=\"color:blue\">object</span> inactiveView)\r\n {\r\n <span style=\"color:blue\">if</span> (<span style=\"color:blue\">this</span>.Region.Views.Contains(inactiveView))\r\n {\r\n IRegionMemberLifetime lifetime = GetItemOrContextLifetime(inactiveView);\r\n <span style=\"color:blue\">if</span> (lifetime != <span style=\"color:blue\">null</span>)\r\n {\r\n <span style=\"color:blue\">return</span> lifetime.KeepAlive;\r\n }\r\n\r\n RegionMemberLifetimeAttribute lifetimeAttribute = GetItemOrContextLifetimeAttribute(inactiveView);\r\n <span style=\"color:blue\">if</span> (lifetimeAttribute != <span style=\"color:blue\">null</span>)\r\n {\r\n <span style=\"color:blue\">return</span> lifetimeAttribute.KeepAlive;\r\n }\r\n }\r\n\r\n <span style=\"color:blue\">return</span> <span style=\"color:blue\">true</span>;\r\n }\r\n</pre>\r\n</div>\r\n</div>\r\n<div style=\"background-color:white; color:black\">How would I make that conversion?</div>\r\n",
+    "PostedDate": "2012-09-21T11:57:58.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917300",
+    "ThreadId": "396304",
+    "Html": "<p>Hi,</p>\r\n<p>Take into account that the second approach aims to change the default <strong>Prism RegionMemberLifetimeBehavior</strong>, this behavior is applied to all regions and changing this approach like mentioned in the work item should fix the second removal of the view from the region when using the remove method. In other words, once you applied the changes in the work item and no additional logic, you should be able to use the remove method like in your first post without receiving the error message.</p>\r\n<p>Take into account that in order to apply this changes you should have to change the <strong>Prism </strong>source code or if you want to avoid this you could replace the existing <strong>Region Behavior</strong> with a new implementation which will be the same as the default one, but including the changes mentioned in the aforementioned work item, for more information on how to achieve this I recommend you to check the following section of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430866(v=pandp.40).aspx#sec31\">Appendix E: Extending Prism, Replacing an Existing Region Behavior</a></li>\r\n</ul>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-09-25T08:08:23.71-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

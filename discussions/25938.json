@@ -1,0 +1,106 @@
+[
+  {
+    "Id": "86842",
+    "ThreadId": "25938",
+    "Html": "\r\nHi and first of all thanks to Glenn and the Prism team for starting to provide the drops.<br />I have tried out the reference implementation a little bit and have some questions. In the reference implementation you are using layered user controls. I find that this is very often insufficient. Often there is a requirement to load different windows (dynamically) that needs to be positioned and that have to communicate. So my question is: Will you add more windows (WPF) to the RI? When you got more windows the command and event routing starts to be a pain.<br />So any solutions about how to add more windows to the shell etc would be very much appreciated.<br /><br />Thanks<br />",
+    "PostedDate": "2008-04-15T03:32:44.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "86971",
+    "ThreadId": "25938",
+    "Html": "\r\nThere's no support for it as far as I know.<br /><br />I've been working on my own customized version where I've added a few new abstractions:  workbenches and workspaces.  A workbench is like a window or form, and can have many workspaces.  A workspace is a collection of several regions.  Startup &gt; bootstrapper &gt; shell &gt; workbench &gt; workspace &gt; region &gt; (module) view<br />",
+    "PostedDate": "2008-04-15T11:51:29.863-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "86991",
+    "ThreadId": "25938",
+    "Html": "\r\nHi,<br />i'm working on the same issue, so i'm very interested in this thread.<br />Would or can you share the code with us????<br />Peter<br />",
+    "PostedDate": "2008-04-15T13:05:30.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "87309",
+    "ThreadId": "25938",
+    "Html": "\r\nIn the newest drop of Prism we have added an extensible region mechanism, and we have a notion of local regions. <br /><br />Region extensibility makes it very easy for you to create your own regions. You simply create a customer region class that implements IRegion&lt;T&gt; where T is the type of UIElement that should use that region.<br /><br />Local regions allow you to have region managers that are scoped to a specifc view. This allows you to have say an OrderView that contains an OrderHeaderRegion. Each instance of OrderView will have it's own local instance of OrderHeaderRegion it can inject into.<br /><br />As to the commanding, we've done a ton of work in the last two drops related to using commands to fire actions on a specific instance of a view. You can see this in the RI with our new Buy/Sell screen. We're using a new CompositeCommand and ActiveAwareCompositeCommand. Both commands take a collection of child commands that are invoked whenever the composite command's Execute is called. In the same way, calling CanExecute on the composite, will call CanExecute on the children. The difference between the ActiveAware command, is that in this case we have multiple views each contributing a child command, but only one is active at a time. In the case of the Buy/Sell this is what is used when you press the submit button in the toolbar and only the current order gets submitted.<br /><br />You can see more about this in our <a href=\"http://www.codeplex.com/prism/Wiki/View.aspx?title=Releases&amp;referringTitle=Home\" class=\"externalLink\">release notes<span class=\"externalLinkIcon\" style=\"font-family:Consolas, Courier New, Courier, Monospace;\"></span></a><br /> section, by looking at the past iterations notes.<br /><br />",
+    "PostedDate": "2008-04-17T02:13:39.8-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "95173",
+    "ThreadId": "25938",
+    "Html": "Has anyoen had any success with adding multiple instances of a module to the same same Region in the root application. Not matter what I try to tend to get &quot;Region with the given name is already registered&quot; exceptions for the the region that exists within my module. This is driving me nuts, so any help would be greatly appreciated.<br>\r\n<br>\r\nGlenn, can you please point me towards some documentation or some example code on how the local regions work? <br>\r\n<br>\r\nCheers<br>\r\n<br>\r\nJustin <br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2008-05-28T03:38:13.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "96085",
+    "ThreadId": "25938",
+    "Html": "<p>HI Justin</p>\r\n<p>The UI Composition Quickstart illustrates an example of using Local Regions. Additionally we demonstrate local regions in the Stock Trader RI with the Buy/Sell screens.<br>\r\n<br>\r\nIn the EmployeeDetailsView.xaml in the Quickstart you will see the following<br>\r\n<br>\r\n<span style=\"font-family:courier new\">&lt;UserControl x:Class=&quot;UIComposition.Modules.Employee.EmployeesDetailsView&quot;<br>\r\n    xmlns=&quot;</span><a href=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"><span style=\"font-family:courier new\">http://schemas.microsoft.com/winfx/2006/xaml/presentation</span></a><span style=\"font-family:courier new\">&quot;<br>\r\n    xmlns:x=&quot;</span><a href=\"http://schemas.microsoft.com/winfx/2006/xaml\"><span style=\"font-family:courier new\">http://schemas.microsoft.com/winfx/2006/xaml</span></a><span style=\"font-family:courier new\">&quot;<br>\r\n    xmlns:local=&quot;clr-namespace:UIComposition.Modules.Employee&quot;<br>\r\n    xmlns:prism=&quot;</span><a href=\"http://www.codeplex.com/prism\"><span style=\"font-family:courier new\">http://www.codeplex.com/prism</span></a><span style=\"font-family:courier new\">&quot;&gt;<br>\r\n    &lt;StackPanel&gt;<br>\r\n        &lt;TabControl x:Name=&quot;DetailsTabControl&quot; prism:RegionManager.RegionName=&quot;{x:Static local:RegionNames.TabRegion}&quot;&gt;<br>\r\n            &lt;TabControl.ItemContainerStyle&gt;<br>\r\n                &lt;Style TargetType=&quot;{x:Type TabItem}&quot; BasedOn=&quot;{StaticResource RoundedTabItem}&quot;&gt;<br>\r\n                    &lt;Setter Property=&quot;Header&quot; Value=&quot;{Binding Content.DataContext.HeaderInfo}&quot; /&gt;<br>\r\n                &lt;/Style&gt;<br>\r\n            &lt;/TabControl.ItemContainerStyle&gt;</span><br>\r\n<br>\r\nThe TabRegion in this case is a local region that is scoped to an instance of this view that is associated with an employee.<br>\r\n<br>\r\nRegards<br>\r\nGlenn</p>\r\n",
+    "PostedDate": "2008-06-01T12:27:23.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "281774",
+    "ThreadId": "25938",
+    "Html": "<p>Hi all, I don't know whether I am missing something or not? Coz as I recognized, the question is can we have multiple windows in a Shell (or multiple Shells) in PRISM?</p>\r\n<p>The reason is that I am interested in multiple windows in a WPF Composite App. However, I haven't found one, any one is having one yet??</p>\r\n<p>Thank you.</p>",
+    "PostedDate": "2010-01-26T03:00:54.98-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "281790",
+    "ThreadId": "25938",
+    "Html": "<p>Hi, about, asked when I didnt really try the thing yet. As I can see, we can use a work around is that we can mark the DockPane to be floating. However, that is still a workaround. Is there anyway that we can have multiple windows, as the CAL Documentation mentioned.</p>\r\n<p>&nbsp;</p>\r\n<p>Thank you.</p>",
+    "PostedDate": "2010-01-26T04:00:46.053-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "281928",
+    "ThreadId": "25938",
+    "Html": "<p id=f5cff070-ecba-012c-e5f5-12313d01ad31>Hi Arthur,</p>\r\n<p id=f5cffe30-ecba-012c-e5f6-12313d01ad31>I have created a blog post that discusses this scenario and provides a small repro sample. You can read more about it <a href=\"http://blogs.southworks.net/dschenkelman/2010/01/26/creating-a-multi-shell-application-in-prism-v2/\">here</a>.</p>\r\n<p id=f5d01050-ecba-012c-e5f7-12313d01ad31>Please let me know if this helps.</p>\r\n<p id=f5d022d0-ecba-012c-e5f8-12313d01ad31>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-26T10:03:00.833-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "433427",
+    "ThreadId": "25938",
+    "Html": "<p>Hi Damian,</p>\r\n<p>I went through the post you had provided for the Multiple shell and regarding that I have a question for you.&nbsp;</p>\r\n<p>In my application I have a requirement to load multiple shell windows based on how many of them, user had opened before quitting the application last time.&nbsp;</p>\r\n<p>I have Prism to load different modules at runtime and then load different views into regions. So, looking at the sample provided by you I think it is not possible for me to create multiple instances. Can you pls help me out on this?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p>Vijay</p>",
+    "PostedDate": "2010-04-20T18:54:45.107-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "433827",
+    "ThreadId": "25938",
+    "Html": "<p id=c38f72b0-2f7d-012d-2273-12313b023581>Hi Vijay,</p>\r\n<p id=c38f8340-2f7d-012d-2274-12313b023581>As creating the Shell(s) is  part of the Bootstrapper&rsquo;s responsibilities (explained in <a href=\"http://msdn.microsoft.com/en-us/library/dd490820.aspx\">this  article</a>), there should be no problem in adding some specific  functionality to load multiple Shells in the <strong>CreateShell</strong> method.</p>\r\n<p id=c38f9910-2f7d-012d-2275-12313b023581>For example,  assume you are saving the Shell windows from a previous run (in any kind  of storage), which a service implementing <strong>IShellPersitencyService</strong> is in charge of retrieving. The following simplified pseudo-code is a  viable implementation:</p>\r\n<p id=c38fbb80-2f7d-012d-2276-12313b023581>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> DependencyObject CreateShell() {\r\n    ShellConfig config = Container.Resolve&lt;IShellPersitencyService&gt;().GetPreviousShellConfiguration();\r\n    Shell1 shell;\r\n    <span style=\"color:blue\">if</span> (config.Count == 2)\r\n    {\r\n        <span style=\"color:green\">//do something</span>\r\n        shell = <span style=\"color:blue\">new</span> Shell1();\r\n        Shell2 shell2 = <span style=\"color:blue\">new</span> Shell2();\r\n        shell.Show();\r\n        shell2.Show();\r\n        shell.Activate();\r\n        RegionManager.SetRegionManager(shell2, <span style=\"color:blue\">this</span>.Container.Resolve&lt;IRegionManager&gt;());\r\n        RegionManager.UpdateRegions();\r\n    }\r\n    ...\r\n<span style=\"color:blue\">return</span> shell; \r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p id=c38fda20-2f7d-012d-2277-12313b023581>Take into account that  the component in charge of retrieving the old configuration should be  fast, since the user is probably expecting a quick application startup.</p>\r\n<p id=c38ff010-2f7d-012d-2278-12313b023581>Please let me know if this  helps.</p>\r\n<p id=c39006c0-2f7d-012d-2279-12313b023581>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-21T12:30:59.403-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "435732",
+    "ThreadId": "25938",
+    "Html": "<p>Hi Damian,</p>\r\n<p>Apologies for a delayed response. I was off for a week.</p>\r\n<p>I understand what you are saying in the sample (similar what you have done previously) but is it that I need to load the regions and the modules (DLLs) again?&nbsp;</p>\r\n<p>To be more specific, my&nbsp;Shell Window has a region called as &quot;ShellMainRegion&quot;, which is loaded with a view which in turn has &quot;FloatingConsoleRegion&quot; or &quot;ListsRegion&quot; (this is to identify the different user controls), this floating console region loads the Tab control which itself has two regions for 2 tabs on it. The individual tab items themselves have regions of&nbsp;their&nbsp;own to load multiple views respectively.&nbsp;</p>\r\n<p>So in your scenario above, do I need to load all those DLLs again to show the views in the respective windows of shell (in case of multiple instances).</p>\r\n<p>Thanks,</p>\r\n<p>Vijay</p>",
+    "PostedDate": "2010-04-26T17:25:32.337-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "446532",
+    "ThreadId": "25938",
+    "Html": "Hi,\r\n\r\nYou can use the Window region adapter, when adding views to that region it shows a new window (that window itself will have its own scoped regions)",
+    "PostedDate": "2010-05-24T01:19:45.443-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

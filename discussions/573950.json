@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1328577",
+    "ThreadId": "573950",
+    "Html": "Hi, <br />\nI was referring to the thread <a href=\"https://compositewpf.codeplex.com/discussions/238009\" rel=\"nofollow\">View not connecting to ViewModel using MEF</a>. I have  similar scenario but a few addons. The application is composed of several modules and the Shell has defined main regions. Each module has a view(userControl) and viewmodel and the views are loaded in the shell regions <strong>on demand</strong>. The problem is the Views are composed of child usercontrols each having their own ViewModel. So I chose to  inject the child controls in a scope region defined in the view as I could have mulitple instances of the View.  But somehow I am not getting through using MEF. The following is pseudo code and app structure.<br />\n<ol>\n<li>\nShell has Mainregion defined. Parent View(s) load in this MainRegion on demand.<br />\n</li>\n<li>\nParent View which FooParent has a xaml where in I define a region.<br />\n&lt;ContentControl prism:RegionManager.RegionName =&quot;FooChildRegion&quot;  /&gt;<br />\n</li>\n<li>\nThe FooChildUsercontrol code behind class is marked with [Export] attribute.<br />\n</li>\n<li>\nFooParentModule has a initialize method with a regionmanager importing constructor<br />\n</li>\n<li>\nCode in Initialize method of Module<br />\n</li>\n</ol>\nIRegion foochildregion = this._regionManager.Regions[&quot;FooChildRegion&quot;]; //This blows.<br />\n FooChildView fooChildView = new FooChildView();<br />\n IRegionManager allocationViewRegionManager =  foochildregion .Add(fooChildView , null, true);<br />\n foochildregion .Activate(fooChildView );<br />\n<br />\n<br />\nThe first line for getting the instance for FooChildRegion blows as the module is initialized on startup and the view is loaded on demand.<br />\n<br />\nAny idea what I am missing here?<br />\n<br />\nRegards<br />\nMN<br />\n",
+    "PostedDate": "2014-12-03T15:18:58.187-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1328880",
+    "ThreadId": "573950",
+    "Html": "I got a work around for this. \r<br />\n<br />\nIn Parent I defined the ContentControl as \r<br />\n&lt;ContentControl x:Name=&quot;FooChildContentControl&quot; /&gt;\r<br />\n<br />\nThen in the Code behind of Parent Control I create a new instance of regionManager and set to  Child control as under<br />\n<pre><code>        IRegionManager regionManager = ServiceLocator.Current.GetInstance&lt;IRegionManager&gt;();\n        RegionManager rm = new RegionManager();\n        RegionManager.SetRegionManager(this.FooChildContentControl, rm);\n        RegionManager.SetRegionName(this.FooChildContentControl, &quot;FooChildRegion&quot;);\n        rm.RegisterViewWithRegion(&quot;FooChildRegion&quot;, typeof(fooChildView ));</code></pre>\n\n",
+    "PostedDate": "2014-12-04T11:54:40.923-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

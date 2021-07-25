@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "672486",
+    "ThreadId": "272758",
+    "Html": "\r\n<pre><span>public</span>&nbsp;<span>InteractionRequest</span>&lt;<span>ConfirmationChildWindow</span>&gt;&nbsp;<span>xxx</span>&nbsp;=&nbsp;<span>new</span>&nbsp;<span>InteractionRequest</span>&lt;<span>ConfirmationChildWindow</span>&gt;();\r\n</pre>\r\n<pre><br></pre>\r\n<pre>Hello,</pre>\r\n<pre>I have a childwindow, which the user can launch and do somethings in there and I want to be able to launch the window and get back if the user confirmed the action he/she did in the child window.</pre>\r\n<pre>I try using <pre><span>public</span>&nbsp;<span>InteractionRequest</span>&lt;<span>ConfirmationChildWindow</span>&gt;&nbsp;<span>xxx</span>&nbsp;=&nbsp;<span>new</span>&nbsp;<span>InteractionRequest</span>&lt;<span>ConfirmationChildWindow</span>&gt;();</pre>\r\n</pre>\r\n<p>but the compiler did not like it?</p>\r\n<p>How can I do this please? &nbsp;Sample code would be fantastic.</p>\r\n",
+    "PostedDate": "2011-09-15T16:13:51.257-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "672499",
+    "ThreadId": "272758",
+    "Html": "<p>Hello,</p>\r\n<p>I am sorry I didn't ask my question clearly. &nbsp;<strong>Please ignore the previous post.</strong></p>\r\n<p>This is my business requirement: We have an object that contains many properties, we are required to have a \"Save As\" functionality. &nbsp;</p>\r\n<p>We need to pop a child window, where the user can enter the new name of the object.</p>\r\n<p>My question, is how I<span style=\"text-decoration: underline;\"><strong> pass and get back the name from the child window.</strong></span> &nbsp;I am using SL4, MVVM, RIA Services, and obviously PRISM.</p>\r\n<p>Any code sample would be great.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p><strong><br /></strong></p>",
+    "PostedDate": "2011-09-15T17:15:33.963-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "672730",
+    "ThreadId": "272758",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding you might find the region popup behaviours useful for your scenario. These behaviors allow you to define a <strong>Popup Region</strong>, which is a region that shows its active view as a popup. Therefore, once you define that region, you only need to add a view to that region in order for it to be shown in the popup. Note that this view can implement its own behavior, have its own view model, and so forth; so you can process the data introduced in that view in the way that better suits your requirements and preferences (through a shared service, event aggregator, etc.)</p>\r\n<p>You can find an a example of the usage of the <strong>Popup Region</strong> in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921074%28v=PandP.40%29.aspx\">StockTrader RI</a>,which implements this approach to show the <strong>NewsReader Article </strong>as a popup window.<br /><br />Particularly you might take a look at the following code files:</p>\r\n<ul>\r\n<li>&nbsp;&nbsp;&nbsp;&nbsp; <strong>StockTraderRI_Desktop</strong>\\StockTraderRI.Infrastructure\\Behaviors\\<strong>RegionPopupBehavior.cs</strong></li>\r\n<li>&nbsp;&nbsp;&nbsp;&nbsp; <strong>StockTraderRI</strong>\\StockTraderRI.Infrastructure\\Behaviors\\<strong>PopupDialogActivationBehavior.cs</strong></li>\r\n<li>&nbsp;&nbsp;&nbsp;&nbsp; <strong>StockTraderRI_Desktop</strong>\\StockTraderRI.Infrastructure\\Behaviors\\<strong>WindowsDialogActivationBehavior.cs</strong></li>\r\n</ul>\r\n<p>Also you can check how this region is define in the shell, in the following code snippet:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>xmlns:infBehaviors=\"clr-namespace:StockTraderRI.Infrastructure.Behaviors;assembly=StockTraderRI.Infrastructure\"\r\ninfBehaviors:RegionPopupBehaviors.CreatePopupRegionWithName=\"SecondaryRegion\"\r\ninfBehaviors:RegionPopupBehaviors.ContainerWindowStyle=\"{StaticResource PopupStyle}\" \r\n</pre>\r\n</div>\r\n</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-09-16T07:19:23.367-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

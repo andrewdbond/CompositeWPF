@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "97883",
+    "ThreadId": "29373",
+    "Html": "I've started a google code project here at <a title=\"Composite WPF samples google code project home\" href=\"http://code.google.com/p/cwpfsamples/\">Composite WPF samples</a> with the goal of sharing sample applications. There's source code up along with a binary for you to see what\r\nthe project does, at the moment the actual project itself doesn't do a\r\nlot but it does give some examples on how to use Composite WPF. <a title=\"Wiki about page\" href=\"http://code.google.com/p/cwpfsamples/wiki/About\">This link</a>\r\nshows a screen shot of what the sample application looks like, I'm no\r\ndesigner so it's a bit rough, but that's where the design team are\r\nmeant to come in right? :)<br>\r\n<br>\r\nI hope this at least helps one person, better still, I'd like comments\r\non what I've done. If you want to contribute to the existing sample or create your own\r\nsample app under this umbrella just let me know, the more we get\r\ncommunicating ideas and samples we collect the better all our products will become.<br>\r\n<br>\r\nInternally here we're using CVS which is where I initially created the project, I just need to strip out the CVS components before loading in to the project.<br>\r\n<br>\r\n-Brett\r\n",
+    "PostedDate": "2008-06-10T02:15:34.793-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "97888",
+    "ThreadId": "29373",
+    "Html": "Hello people, I've added my companies sample to the SVN repository on the project<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; <em>svn checkout http://cwpfsamples.googlecode.com/svn/trunk/ cwpfsamples-read-only</em><br>\r\n<br>\r\nIf you want to help out please by all means let me know.<br>\r\n<br>\r\n-Brett<br>\r\n",
+    "PostedDate": "2008-06-10T02:41:50.297-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "97963",
+    "ThreadId": "29373",
+    "Html": "I checked out your project.&nbsp; It basically looks like the way I am/was heading.&nbsp; However, after studying the ViewModelCompositionSpike I finally &quot;get it&quot; when it comes to DataTemplates.&nbsp; For example, in your app, take the <strong>LinePlanEditorModel</strong> class.&nbsp; I would create a DataTemplate for that class (essentially move the XAML from <strong>LinePlanEditor</strong>).&nbsp; Then you can remove the view and DataContext code from the constructor.&nbsp; This creates a true separation of code and presentation.&nbsp; Wherever you display the view in a region display the <strong>LinePlanEditorModel</strong> <em>instance</em> and not the <em>instance.view</em> (since it's now gone).&nbsp; The clr will grab the DataTemplate and use it for display.<br>\r\n<br>\r\nI don't know if it's possible to use DataTemplates in every situation but I've found that it actually reduces the amount of code and makes the app easier to understand.&nbsp; My .02.\r\n",
+    "PostedDate": "2008-06-10T09:53:24.657-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "97970",
+    "ThreadId": "29373",
+    "Html": "@jmodzel<br>\r\n<br>\r\nThanks for the tip, I need to study a bit more but what your saying does sound like a good approach, to tell you the truth I've been getting lost in the Stock Trader RI project, it's a complex piece of work that I've found instead of learning what's going on I'm fumbling about missunderstanding a lot of the concepts being used.<br>\r\n<br>\r\nI'll check out the ViewModelCompositionSpike once again and see if I can do what you're suggesting.<br>\r\n<br>\r\nI'm thinking of creating a basic sample project that may take some real world use-cases for the samples project, maybe something simple like a recipe database or something.<br>\r\n<br>\r\nI've gotta get to bed, it's 3:17am here in Aus, but I'll see what I can do tomorrow evening, I didn't get much done tonight, was again reading the Stock Trader RI tonight.<br>\r\n<br>\r\nThanks so much for taking the time to check out my solution,<br>\r\n-Brett.<br>\r\n",
+    "PostedDate": "2008-06-10T10:18:14.727-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "97987",
+    "ThreadId": "29373",
+    "Html": "Oh frig, this is the second time I have to write this, screen just refreshed and I lost the post.<br>\r\n<br>\r\n@jmodzel<br>\r\n<br>\r\nOkay, I <strong>finally</strong> get all this DataTemplate thing *pats self on back*. After studying the spike sample and following your guidance I've now got it working on the LinePlanEditor as you described. I'll soon finish this on the rest of the views and submit them to SVN for everyone to see. I love this, though there is one problem I haven't quite figured out yet, for views where there is a Content Control (like a ListView) where an &quot;Activate&quot; action needs to envoke a command, how do you perform this sort of action? Or any event invokation for any UI component? I haven't gotten to the events bits of Prism yet so maybe this is where it's all done?<br>\r\n<br>\r\nOkay, now 5am and I gotta get up in a couple of hours for work,<br>\r\n-Brett<br>\r\n<br>\r\n",
+    "PostedDate": "2008-06-10T11:58:51.91-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "98532",
+    "ThreadId": "29373",
+    "Html": "I'm creating a new app in my samples project called &quot;LateNight&quot; I don't know what the app's use-cases will be just yet, but it's going to be a reiteration of ProductPrism with all refs to my company removed and I'm writing a script document that anyone can use to reproduce the solution,&nbsp; this should help me document how to create a sample project in the future.<br>\r\n<br>\r\nHope this is handy for someone.<br>\r\n-Brett<br>\r\n",
+    "PostedDate": "2008-06-12T12:44:53.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "98534",
+    "ThreadId": "29373",
+    "Html": "Forgot to mention, I'm using the new Microsoft.Practices.Composite libraries. Can anyone tell me what CAL means? Composite Application Library?<br>\r\n<br>\r\n-Brett.<br>\r\n",
+    "PostedDate": "2008-06-12T12:47:40.243-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "98539",
+    "ThreadId": "29373",
+    "Html": "<p>@brett</p>\r\n<p>Nice job! You may want to consider putting this in the Prism Contrib project. Thanks for your effort!</p>\r\n",
+    "PostedDate": "2008-06-12T13:06:49.763-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "98605",
+    "ThreadId": "29373",
+    "Html": "@gblock<br>\r\n<br>\r\nThankyou gblock, For sure I don't see why that would be a bad thing at all. I'll post on the prism-contrib page soon.<br>\r\n<br>\r\n-Brett<br>\r\n",
+    "PostedDate": "2008-06-12T20:23:35.973-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99150",
+    "ThreadId": "29373",
+    "Html": "New sample up on project page <em>Late Night</em>. This project stems from the <em>Product Prism</em> project and has the following new features<br>\r\n<ul>\r\n    <li>A new login screen that demonstrates how one might implement a login screen. Use <em>admin</em> for the username and <em>pass</em> for the password when the application starts up (this is written on the dialog itself). </li>\r\n    <li>A\r\n    new splash screen demonstrating how one might show a borderless window\r\n    with a progress bar and message text while the application starts. I\r\n    haven't perfected this yet as I need a way for modules to register\r\n    messages as they are starting up, the problem I'm facing is that\r\n    modules must be started on the UI thread which is not practicle for\r\n    sending messages to this dialog. </li>\r\n    <li>An about screen that can be found from <em>Help&gt;About</em>\r\n    which demonstrates presenting IModule data for modules found from the\r\n    applications IModuleEnumerator. I'd like to extend this further by\r\n    getting some of the assembly information which could be useful in order\r\n    to show the assembly version and an icon if it exists.</li>\r\n    <li>Document\r\n    model has been enhanced to provide feedback via events for\r\n    opening/closing documents, a cancellable event can be used while\r\n    closing a document which will abandon a close operation.</li>\r\n    <li>Any System.Windows.FrameworkElement object can be used for a document view, it no longer needs to be a System.Windows.Controls.UserControl. </li>\r\n    <li>Tabs now have a close button with functionality that reflects the IE7 tabbed browsing mechanism.</li>\r\n</ul>\r\nPlease provide your feedback as it's much appreciated.<br>\r\n<br>\r\n-Brett.\r\n",
+    "PostedDate": "2008-06-16T12:24:23.737-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "125248",
+    "ThreadId": "29373",
+    "Html": "<p>Hi Brett,</p>\r\n<p>Thanks for gr8 information.</p>\r\n<p>But as of now am facing small problem with the code shared in the above link. </p>\r\n<p>Problem Description: ProgressBar in the splash screen donot get updated, even if it's &quot;IsIndeterminate&quot; property is set to true. Am not able to show any animation in the splash screen.<br>\r\nAm running this on XP machine.<br>\r\n<br>\r\nPlease suggest me how to handle this issue.<br>\r\n<br>\r\n-Ram</p>\r\n",
+    "PostedDate": "2008-10-15T04:00:20.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

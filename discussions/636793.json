@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1423123",
+    "ThreadId": "636793",
+    "Html": "Hi<br />\n<br />\nI am getting my head around RX and introducing it into our WPF MVVM designed application.<br />\n<h2>The problem</h2>\nThe problem that I have is that data is appearing too fast into the GRID and I would like a way to buffer the data so that the grid and ultimately the UI is responsive. Ideally I would like a way to (say) update the grid every 'x' seconds with only 'y' records at a time.<br />\n<br />\nI realise we can use :<br />\n<br />\nsequenceOfTradeUpdates.Buffer(TimeSpan.FromSeconds(1),10)... etc but this will not ensure that we release exactly 10 updates to the grid ONLY within a 1 (say second window) because this version of Buffer will wait at most 1 seconds OR if it gets 10 items. If 10 items (say) occurs within less that 1 second it will run the subscription code which isnt what we want. We need to ensure EXACTLY 'x' milliseconds is waited and then release at most 10 rows and thats the part where I'm stuck.<br />\n<h2>Our Shared Service Process</h2>\nWe have a process that is constantly running which produces trade level information based on latest pricing information for one or more ticker codes. The process raises an event for which one or more subscribers subscribe to. This process can produce (say) 1000 updates of new pricing information every 300-1000 milliseconds.<br />\n<br />\nThe event that this process raises is defined as :<br />\n<pre><code>public IObservable&lt;IBlotter&gt; BlotterUpdates\n    {\n        get\n        {\n            return Observable.FromEventPattern&lt;IBlotter&gt;(\n                evt =&gt; BlotterEvent += evt,\n                evt =&gt; BlotterEvent -= evt\n                ).Select(i=&gt;i.EventArgs).AsObservable&lt;IBlotter&gt;();\n        }\n    }\n</code></pre>\n\nWhere IBlotter can be some thing as simple as :<br />\n<br />\ndouble LatestPrice<br />\nstring   Ticker<br />\n<h2>Our ViewModel</h2>\nOur ViewModel subscribes to this shared service in this way ;<br />\n<br />\n var obs = services.BlotterUpdates<br />\n<pre><code>                  .Buffer(TimeSpan.FromSeconds(1000), 10)                     \n                  .SubscribeOn(Scheduler.Default)\n                  .Subscribe(item=&gt;{\n                      foreach (var i in item)\n                      {                           \n                         UpdateGridWithThisBlotterItem((i);\n                      }\n\n</code></pre>\n\nRunning the code above , the UI updates but the UI is almost non responsive. We still get too many updates every second. If we change the above to :<br />\n<br />\n<br />\n<br />\n var obs = services.BlotterUpdates<br />\n<pre><code>                  .Buffer(TimeSpan.FromSeconds(1000), 10)                     \n                  .SubscribeOn(Scheduler.Default)\n                  .Subscribe(item=&gt;{\n                      foreach (var i in item)\n                      {                           \n                         Thread.Sleep(600);\n                         UpdateGridWithThisBlotterItem((i);\n                      }\n</code></pre>\n\ni.e we add an IMPLICIT SLEEP before the update , then the UI is responsive and updates without causing any issue BUT this isnt the desired functionality as we need to ensure we update every 'x' milliseconds and at most 'y' records. <br />\n<br />\nFurthermore, if we changed the shared service to Sleep (say) every second after it posts an event then this also allows the grid to become responsive but again , this defeats the object of the original problem and we dislike adding artificial sleeps within a pub/sub designed application.<br />\n<br />\n<br />\nIs there something we are missing ?<br />\n<br />\nThanks<br />\n<br />\nStella<br />\n",
+    "PostedDate": "2015-05-05T14:37:36.64-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1423155",
+    "ThreadId": "636793",
+    "Html": "If you're using Reactive (RX), why not use PRISM with ReactiveUI? <a href=\"http://reactiveui.net/\" rel=\"nofollow\">http://reactiveui.net/</a> I use ReactiveUI + PRISM for software that I develop for work. If you use IObserver or IObservable, why not consider using a framework built around that? Reactive has mechanisms built in that handle updates via the IObservable / IObserver pattern.\r<br />\n<br />\nTo answer your question, you may want to use <a href=\"https://msdn.microsoft.com/en-us/library/system.reactive.linq.observable.throttle%28v=vs.103%29.aspx\" rel=\"nofollow\">https://msdn.microsoft.com/en-us/library/system.reactive.linq.observable.throttle%28v=vs.103%29.aspx</a> Throttle, as it is designed to throttle the number of updates. Linq for RX is very powerful.<br />\n",
+    "PostedDate": "2015-05-05T20:04:44.697-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1423179",
+    "ThreadId": "636793",
+    "Html": "<h2>Issue with throttling</h2>\nCant use throttle as each update that comes in must be used in a further computation that is required for a graphing component , so throttling in this situation is not useful as we cant miss a single update .<br />\n",
+    "PostedDate": "2015-05-05T23:45:30.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

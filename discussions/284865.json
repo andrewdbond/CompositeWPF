@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "719979",
+    "ThreadId": "284865",
+    "Html": "\r\n<p>Hi there, I've spent a day going through the examples and using the prism 4 templates and wondering if I'm on the right track and have a question on the .xaps and loading them in.</p>\r\n<p>I and my coworkers have just started using Prism 4 (with MEF &amp; MVVM) and one thing that we need to do is beable to load new modules applied to the server without recompiling the web side project. Essentially if we could do what WPF does with a directory\r\n search of XAP files for the project would be perfect; but from my understanding silverlight is sandboxed (even with evaluated permissions) and requires a service implementation.</p>\r\n<p>Now I assume this is more MEF and the way todo this is building a custom ModuleCatalog that uses &quot;Dynamic&quot; (LazyLoading) Modules that get their ModuleInfo from a Service linked to a database (since silverlight is sandboxed and can't access a config file).\r\n So my question is what of the .Xap files? I have to reference every assembly's .Xap in my .Web project every time I add a new project (Module) to my solution, do those need to be stored in a database and loaded in or can I just store it locally and access\r\n them without a reference within the web? Or are these no longer needed to be referenced when we pass in the ModuleInfo to the ModuleCatalog; and if this is the case where does the .Xap files go?</p>\r\n<p>Based on - http://mef.codeplex.com/wikipage?title=DeploymentCatalog&amp;referringTitle=Recomposition<br>\r\nI'd want to use a DeploymentCatalog for Dynamic Modules<br>\r\n<br>\r\nBased on - http://blogs.msdn.com/b/jimmytr/archive/2010/02/25/dynamically-loading-modulecatalog-in-composite-prism-silverlight-application.aspx<br>\r\nSnippet of code where a List of Modules is loaded in; its unity but same concept.</p>\r\n<p>Thank you for any help you can give me,<br>\r\nSuiko6272</p>\r\n",
+    "PostedDate": "2012-01-03T11:45:46.293-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "720048",
+    "ThreadId": "284865",
+    "Html": "<p>So I feel dumb for not rereading the one chapter I skimmed has some of the answers. So I can put my Module's .Xap in a common folder that my shell has access to, and then use a service to return a ModuleInfo for a Module from my database. Now I'm head home for the day so I can't test publish so I'm going to just ask for any tips you can give me on this. I'd have todo the 1st bullet point below to effectively do this correct?<br /><br />[Copied from <a title=\"Chapter 11\" href=\"http://msdn.microsoft.com/en-us/library/gg430856%28v=pandp.40%29.aspx\">Chapter 11</a>: Prism]</p>\r\n<p><span style=\"font-size: 11px;\">\r\n<p>To deploy a Silverlight application and the modules that are  remotely loaded, the XAP files must be made accessible on the web  server. There are several ways to accomplish this:</p>\r\n<ul>\r\n<li>You can manually copy all the XAP files to a public folder on the web server.</li>\r\n<li>You can include the Silverlight XAP files in a web project  or website and publish from Microsoft Visual Studio. To do this with a  Web Application project, the project needs to be part of the same  solution as the Silverlight projects that create the XAP files. You then  add the Silverlight projects to the <strong>Silverlight Applications</strong> tab in the web project settings, as shown in the following  illustration. A copy of the XAP files from the included Silverlight  projects will be placed in a \\ClientBin subfolder of the published site.  These files are synchronized in the web project each time you build.</li>\r\n</ul>\r\n<span>\r\n<p>&nbsp;</p>\r\n</span></span></p>",
+    "PostedDate": "2012-01-03T14:05:04.54-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "720373",
+    "ThreadId": "284865",
+    "Html": "<p>Hi,</p>\n<p>I'm glad you found the information you needed, thanks for sharing your findings with the rest of the community.</p>\n<p>Based on my understanding, the approach that suits your scenario, as you mentioned, is to <em>\"manually copy all the XAP files to a public folder on the web server\".</em></p>\n<p>Also, you may consider, as mentioned in the documentation, that the hosting web page will need to refer to the shell application XAP file in its object tag source parameter.</p>\n<p>Thanks,</p>\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-01-04T09:14:25.383-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

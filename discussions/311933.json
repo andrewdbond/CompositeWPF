@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "762500",
+    "ThreadId": "311933",
+    "Html": "\r\n<p>Hi There,</p>\r\n<p>In my LoginViewModel, the method to login returns on successful login a IUser which I would like to register with my MEF container so that it can be injected into other viewmodels created. How should I do this?</p>\r\n",
+    "PostedDate": "2012-02-14T03:08:28.497-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "763214",
+    "ThreadId": "311933",
+    "Html": "<p>Hi James,</p>\n<p>I believe you might find the following thread useful, where a similar concern is addressed:</p>\n<ul>\n<li><a href=\"http://compositewpf.codeplex.com/discussions/263641\"></a><a href=\"http://compositewpf.codeplex.com/discussions/263641\">Dynamically export constructor args from imported container</a> </li>\n</ul>\n<p>I hope you find this handy,</p>\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-02-14T06:28:45.597-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "767132",
+    "ThreadId": "311933",
+    "Html": "<p>Ahhh I see so this enables me to access the container. How exactly would I register the container in the&nbsp;<strong>ConfigureContainer </strong>method?</p>",
+    "PostedDate": "2012-02-15T01:34:39.383-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "767399",
+    "ThreadId": "311933",
+    "Html": "<p>Hi James,</p>\r\n<p>I suggested the aforementioned thread as I believe this could be a possible way to register an instance dynamically when using <strong>MEF</strong>. You will still need to create and configure the container in your Bootstrapper when initializing your application as usual. There you will also have the option to create an instance of a class and register that particular instance with the container, by overriding the <strong>ConfigureContainer </strong>method, and also using the <strong>ComposeExportedValue</strong> method, like in the following code snippet:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> ConfigureContainer()\r\n\r\n{\r\n\r\n    <span style=\"color: blue;\">base</span>.ConfigureContainer();\r\n\r\n    <span style=\"color: blue;\">this</span>.Container.ComposeExportedValue&lt;CallbackLogger&gt;(<span style=\"color: blue;\">this</span>.callbackLogger);\r\n\r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p>For more information about this you can check the section <a href=\"http://msdn.microsoft.com/en-us/library/ff921140(v=pandp.40).aspx#sec6\">Registering Types With MEF</a> of <a href=\"http://msdn.microsoft.com/en-us/library/ff921140(v=pandp.40).aspx\">Chapter 3: Managing Dependencies Between Components</a> of the Prism documentation at MSDN.</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-02-15T04:35:36.517-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "767439",
+    "ThreadId": "311933",
+    "Html": "<p>I understand I have my bootstrapper as it was etc. I thought the solution was to register the Composition Container so I could access it via the ServiceLocator later in my ViewModel? Then I could compose the type when I have the required data to.</p>\r\n<p>Therefore I wanted to know how to register the Composition Container in this ConfigureContainer method.</p>\r\n<p>So in my viewmodel I can do this:</p>\r\n<pre><span>var</span> container = ServiceLocator.Current.GetInstance(CompositionContainer);</pre>\r\n<pre><br /></pre>\r\n<pre>and then compose my component. I was just confused with how to do the&nbsp;</pre>\r\n<pre>\"<span>register the Composition Container, by overriding the </span><strong>ConfigureContainer</strong><span>&rsquo;s method in the&nbsp;</span><strong>Boostrapper\" </strong>part.</pre>",
+    "PostedDate": "2012-02-15T05:02:04.797-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "783425",
+    "ThreadId": "311933",
+    "Html": "<p>Any help with this?</p>",
+    "PostedDate": "2012-02-20T00:51:17.213-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "799474",
+    "ThreadId": "311933",
+    "Html": "<p>Hi James,</p>\r\n<p>Based on my understanding, you can register the current <strong>CompositionContainer </strong>instance in the <strong>ConfigureContainer </strong>method of your bootstrapper doing, for example, something like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> ConfigureContainer()\r\n{\r\n    <span style=\"color: blue;\">base</span>.ConfigureContainer();\r\n\r\n    <span style=\"color: green;\">// Registers the current composition container.</span>\r\n    <span style=\"color: blue;\">this</span>.Container.ComposeExportedValue&lt;CompositionContainer&gt;(<span style=\"color: blue;\">this</span>.Container);\r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Then, you can resolve the <strong>CompositionContainer </strong>through the <strong>ServiceLocator </strong>as you mentioned, or inject it as a dependency in the constructor of your view model:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>[ImportingConstructor]\r\n<span style=\"color: blue;\">public</span> MyViewModel(CompositionContainer container)\r\n{\r\n    ...\r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-02-24T09:07:02.007-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "804227",
+    "ThreadId": "311933",
+    "Html": "<p>Yep sorted thank you</p>",
+    "PostedDate": "2012-03-02T00:35:23.117-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

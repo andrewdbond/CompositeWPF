@@ -1,0 +1,194 @@
+[
+  {
+    "Id": "531504",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>I am looking for a simple example that demonstrates mvvm and modularity concepts using MEF. Looking at examples provided in Prism 4.0, the MVVM examples don't use modularity and the modularity examples do not use MVVM. The Stock Trader RI uses both, but\r\n is too complex for MEF newbies. Is there anything in between?</p>\r\n<p>I started out with a simple module that has one view and one view model, but I am not sure if I have used MEF in the best way possible. For example, is there a better way to create the view instead of using ServiceLocator in the module's Initialize( ) method?&nbsp;Here's\r\n are some code snippets from my application.</p>\r\n<pre>---------- HomeModule ----------\r\n[ModuleExport(typeof(HomeModule))]\r\npublic class HomeModule : IModule\r\n{\r\n    IRegionManager _regionManager;\r\n\r\n    [ImportingConstructor]\r\n    public HomeModule(IRegionManager regionManager)\r\n    {\r\n        _regionManager = regionManager;\r\n    }\r\n\r\n    public void Initialize()\r\n    {\r\n        // Create the view\r\n        IHomeView homeView = ServiceLocator.Current.GetInstance&lt;IHomeView&gt;();\r\n\r\n        // Add it to the region\r\n        IRegion region = _regionManager.Regions[&quot;MainRegion&quot;];\r\n        region.Add(homeView, &quot;HomeView&quot;);\r\n        region.Activate(homeView);\r\n    }\r\n}\r\n\r\n---------- IHomeView (so that MEF can export HomeView) ----------\r\npublic interface IHomeView\r\n{\r\n}\r\n\r\n---------- HomeView.xaml ----------\r\n&lt;UserControl ...&gt;\r\n    &lt;StackPanel x:Name=&quot;LayoutRoot&quot; Margin=&quot;10&quot;&gt;\r\n        &lt;StackPanel Orientation=&quot;Horizontal&quot; VerticalAlignment=&quot;Top&quot;&gt;\r\n            &lt;TextBlock Text=&quot;Name&quot; VerticalAlignment=&quot;Center&quot; /&gt;\r\n            &lt;TextBox Width=&quot;100&quot; VerticalAlignment=&quot;Center&quot; Margin=&quot;10 0 0 0&quot;\r\n                     Text=&quot;{Binding Path=Name, Mode=TwoWay}&quot; /&gt;\r\n            &lt;Button Content=&quot;Submit&quot; VerticalAlignment=&quot;Center&quot; Margin=&quot;10 0 0 0&quot;\r\n                    Command=&quot;{Binding SubmitCommand}&quot;/&gt;\r\n        &lt;/StackPanel&gt;\r\n        &lt;TextBlock Text=&quot;{Binding Message}&quot; Margin=&quot;0 10 0 0&quot; Foreground=&quot;Red&quot; /&gt;\r\n    &lt;/StackPanel&gt;\r\n&lt;/UserControl&gt;\r\n\r\n---------- HomeView.xaml.cs ----------\r\n[Export(typeof(IHomeView))]\r\n[PartCreationPolicy(CreationPolicy.NonShared)]\r\npublic partial class HomeView : UserControl, IHomeView\r\n{\r\n    public HomeView()\r\n    {\r\n        InitializeComponent();\r\n    }\r\n\r\n    [Import]\r\n    public IHomeViewModel ViewModel\r\n    {\r\n        set { this.DataContext = value; }\r\n    }\r\n}\r\n\r\n---------- IHomeViewModel (so that MEF can export HomeViewModel) ----------\r\npublic interface IHomeViewModel\r\n{\r\n}\r\n\r\n---------- HomeViewModel.cs ----------\r\n[Export(typeof(IHomeViewModel))]\r\n[PartCreationPolicy(CreationPolicy.NonShared)]\r\npublic class HomeViewModel : NotificationObject, IHomeViewModel\r\n{\r\n    public HomeViewModel()\r\n    {\r\n        this.SubmitCommand = new DelegateCommand&lt;object&gt;(this.OnSubmit);\r\n    }\r\n\r\n    private void OnSubmit(object obj)\r\n    {\r\n        Message = &quot;Hello &quot; &#43; Name;\r\n    }\r\n\r\n    private string _name;\r\n    public string Name\r\n    {\r\n        get { return _name; }\r\n        set\r\n        {\r\n            if (value != _name)\r\n            {\r\n                _name = value;\r\n                this.RaisePropertyChanged(&quot;Name&quot;);\r\n            }\r\n        }\r\n    }\r\n\r\n    private string _message;\r\n    public string Message\r\n    {\r\n        get { return _message; }\r\n        set\r\n        {\r\n            if (value != _message)\r\n            {\r\n                _message = value;\r\n                this.RaisePropertyChanged(&quot;Message&quot;);\r\n            }\r\n        }\r\n    }\r\n\r\n    public ICommand SubmitCommand { get; private set; }\r\n}\r\n</pre>\r\n",
+    "PostedDate": "2010-12-05T17:30:24.453-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "531829",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>You might find the following <a href=\"http://karlshifflett.wordpress.com/2010/11/07/in-the-box-ndash-mvvm-training/\">\r\nblog post</a> from <a href=\"http://karlshifflett.wordpress.com/\">Karl Shifflett</a>, as well as the\r\n<a href=\"http://prismtk.codeplex.com/\">Prism Training Kit</a> useful to learn more about MEF in conjunction with MVVM and other topics of interest. You could also find the\r\n<a href=\"http://mef.codeplex.com/\">MEF Codeplex project</a> useful to your purpose.</p>\r\n<p>As for the approach you have taken for adding your view into a region, it isn't incorrect, but you could also use any of the other ways of Composing the UI, such as View Discovery. Obtaining a reference to the view and explicitly adding it to the region\r\n prgramatically (which is called View Injection) is only needed on scenarios where you can benefit from that complexity (that is to say, when you need explicit programmatic control of when views are added into regions). You can read more about this in\r\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28PandP.40%29.aspx\">this chapter</a> from the Prism documentation.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-06T09:37:34.363-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "531891",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>they way I have done it and its annotated in the code snippet in HomeModule.cs.&nbsp;</p>\r\n<p>[Export(typeof(IHomeView))]<br>\r\npublic class HomeView : UserControl, IHomeView<br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp; //etc...<br>\r\n}</p>\r\n<p>&nbsp;</p>\r\n<pre>---------- HomeModule ----------<br>[ModuleExport(typeof(HomeModule))]<br>public class HomeModule : IModule<br>{<br>    IRegionManager _regionManager;<br><br>    [ImportingConstructor]<br>    public HomeModule(IRegionManager regionManager)<br>    {<br>        _regionManager = regionManager;<br>    }<br><br>    public void Initialize()<br>    {<br>        // Create the view<br>        //IHomeView homeView = ServiceLocator.Current.GetInstance&lt;IHomeView&gt;();<br><br>        [Import(typeof(IHomeView))]<br>        private IHomeView homeView {get;set;}<br><br><br>        // Add it to the region<br>        IRegion region = _regionManager.Regions[&quot;MainRegion&quot;];<br>        region.Add(homeView, &quot;HomeView&quot;);<br>        region.Activate(homeView);<br>    }<br>}<br><br><br>I have this working in my current project now and it works just fine. The one difference from what I have is I use import/export in this fashion.   <br>[Import(&quot;HomeView&quot;, typeof(IHomeView))] and the corresponding view has the Export equivalent. A concrete implementation of the import/export<br><br></pre>\r\n",
+    "PostedDate": "2010-12-06T11:13:28.12-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "534340",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>Guido and mvermef, thanks for pointing me in the right direction.</p>\r\n",
+    "PostedDate": "2010-12-11T05:29:52.85-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "540303",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>HI Naresh,</p>\r\n<p>&nbsp;</p>\r\n<p>I am also looking for the same thing. since i am new to it can you please send me your sample working code so that i can also check how thngs are working. thnx</p>\r\n",
+    "PostedDate": "2010-12-24T10:41:21.547-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "540698",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>Hi Guys,</p>\r\n<p>Hope <a href=\"http://cid-0b3d61b7a214f81a.office.live.com/self.aspx/.Documents/MefPrism.rar\" target=\"_blank\">\r\nthis</a> sample helps.</p>\r\n",
+    "PostedDate": "2010-12-26T22:01:21.437-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "540879",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>Hi gan_s,</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks for the example but its throwing runtime exception</p>\r\n<p>An unhandeled exception&nbsp;</p>\r\n<p>Microsfot.practices.prism. modularitay.ModuleTypeLoadingException Failed to load type for module moduleA and Module B</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-27T09:57:58.207-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "541038",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>I'll have a look tonight. It was running fine on my machine though !!</p>\r\n",
+    "PostedDate": "2010-12-27T20:28:57.27-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "541101",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>at my side i can only see ModuleA and ModuleB button and underneath i see the text &quot;Authencating&quot; and after almost 2 second above mentioned exception comes up automatically.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-28T01:54:12.693-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "541102",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>Can you see two sl projects ModuleA and ModuleB? Make sure they are loaded. And also ModuleA.xap and ModuleB.xap should be there in the ClientBin. If not just clean the solution and rebuild.</p>\r\n",
+    "PostedDate": "2010-12-28T01:56:21.153-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "541137",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>Everything is there but in Iexplorer i am getting this url C:/Downloads/MefPrism/MefPrism/MefPrism/Bin/Debug/MefPrismTestPage.html#/moduleA</p>\r\n<p>Might be UAC issue? any idea? furthermore, i am running visual studio in administrator mode&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-28T04:09:24.613-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "541138",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>That is fine. That is how the sl navigation framework builds uris. Is the app working now?</p>\r\n",
+    "PostedDate": "2010-12-28T04:17:21.7-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "541145",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>no still its giving me same exception. :-(</p>\r\n",
+    "PostedDate": "2010-12-28T04:28:15.593-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "541148",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>Do you have IIS installed? If yes go to the Web project properties -&gt; Web tab -&gt; and create a virtual dierctory\r\n<a href=\"http://localhost/mef\">http://localhost/mef</a></p>\r\n<p>Then set start url to <a href=\"http://localhost/mef/#/moduleA\">http://localhost/mef/#/moduleA</a> and then run your app. I'm checking the app locally in the meanwhile.</p>\r\n",
+    "PostedDate": "2010-12-28T04:34:13.413-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "541153",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>Just checked. The app is working just fine. You'll need to figure out whats happening at your end.\r\n<a href=\"http://cid-0b3d61b7a214f81a.office.live.com/self.aspx/.Documents/sample.PNG\">\r\nHere</a> is a screenshot of the running app.</p>\r\n",
+    "PostedDate": "2010-12-28T04:39:58.72-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "541156",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>same exception as before :-(</p>\r\n",
+    "PostedDate": "2010-12-28T04:50:53.33-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "541157",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>Whats the full exception with stacktrace?</p>\r\n",
+    "PostedDate": "2010-12-28T04:57:22.327-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "541163",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>you can find the complete exception here...</p>\r\n<p>&nbsp;</p>\r\n<p>http://i1216.photobucket.com/albums/dd377/sirfmemon/exception.jpg</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-28T05:11:02.583-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "541171",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>No idea what the issue could be. You are all by yourself on this one :)</p>\r\n",
+    "PostedDate": "2010-12-28T05:43:46.313-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "541245",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>It worked on my desktop but not working on laptop though its was also not working on desktop as well i fixed by enabling directory browsing from iis manager. working fine at desktop but not on laptop dont know why..</p>\r\n<p>&nbsp;</p>\r\n<p>anyways, thanks</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-28T08:37:33.417-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "541255",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>is the web application set as the start up project, if one of the modules is setup as the start up project it could lead to this behavior.</p>\r\n",
+    "PostedDate": "2010-12-28T08:57:53.113-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "541490",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>Glad I could help !</p>\r\n",
+    "PostedDate": "2010-12-28T22:09:10.313-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "541825",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>Yes it was already set to startup project. but no luck. as i menteion its working on my desktop</p>\r\n",
+    "PostedDate": "2010-12-29T11:18:51.037-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "542021",
+    "ThreadId": "237221",
+    "Html": "\r\n<p>Could it be because of the clientaccesspolicy.xml missing in the Web project?</p>\r\n",
+    "PostedDate": "2010-12-29T22:05:40.38-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

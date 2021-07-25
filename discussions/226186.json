@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "489647",
+    "ThreadId": "226186",
+    "Html": "<p>Hi,</p>\r\n<p>I am attempting to use the child container feature of Unity to pass some context (a customer entity) to the view model for a region, and also for any view models for any nested regions.</p>\r\n<p>In the snippet below I create the child container, register the customer with the child container and then resolve the view.</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">using</span> (<span style=\"color:blue\">var</span> childContainer = m_Container.CreateChildContainer())\r\n{\r\n\tchildContainer.RegisterInstance(customer.GetType(), customer);\r\n\tview = childContainer.Resolve&lt;ITabItemView&gt;(viewType.ToString());\r\n}\r\n</pre>\r\n</div>\r\n<p>This works fine with the view model on the parent view and the customer entity is passed into its constructor.&nbsp; However, the customer entity is not passed into the view models for the nested child regions.</p>\r\n<p>I understand that this is because the nested regions are resolved later on by the region manager and by this time the child container is out of scope.&nbsp; I tried looking for a method on the scoped region manager I used to register any context, but couldn't find anything that could help.&nbsp;</p>\r\n<p>How do I pass this customer entity to any nested view models?&nbsp;</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2010-09-06T03:20:40.337-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "490527",
+    "ThreadId": "226186",
+    "Html": "<p>Can anyone help with this?</p>\r\n<p>Matt</p>",
+    "PostedDate": "2010-09-08T01:21:23.533-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "495229",
+    "ThreadId": "226186",
+    "Html": "<p>Hi,</p>\r\n<p>I do not know your exact scenario, but it seems that it could be achieved  with <a href=\"http://msdn.microsoft.com/en-us/library/ff921158(v=PandP.20).aspx\">RegionContext</a>,  since&nbsp;it allows you to share&nbsp;an object context between&nbsp;different views, from the  MSDN documentation:</p>\r\n<p><em>There are a lot of scenarios where you might want to share contextual  information between the view that is hosting a region and a view that is inside  a region</em></p>\r\n<p>Then&nbsp;you could pass&nbsp;that object from the viewHosted&nbsp;to the VM. There is an  example about this&nbsp;in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921174(v=PandP.20).aspx\">ViewInjection  Quickstart</a>.</p>\r\n<p>As for your&nbsp;approach, I&rsquo;m not sure how ChildContainer could be affecting this scenario. If you consider that RegionContext doesn't fit in your scenario, could you send a repro solution?</p>\r\n<p>Please let me know if this helps.</p>\r\n<p id=d66dbd10-9c25-012d-83b0-123139181858>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-09-17T15:03:37.327-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "495853",
+    "ThreadId": "226186",
+    "Html": "<p>Hi,</p>\r\n<p>Thank you for replying.</p>\r\n<p>I currently use the RegionContext approach, but I found that in each nested view I had to have the same piece of code that listened to when the region context changed;</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><div style=\"color:black;background-color:white\"><pre><span style=\"color:blue\">var</span> viewRegionContext = RegionContext.GetObservableContext(<span style=\"color:blue\">this</span>);\r\nviewRegionContext.PropertyChanged += <span style=\"color:blue\">this</span>.ViewRegionContext_OnPropertyChangedEvent;\r\n\r\n---\r\n\r\n<span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> ViewRegionContext_OnPropertyChangedEvent(<span style=\"color:blue\">object</span> sender, PropertyChangedEventArgs args)\r\n{\r\n\t<span style=\"color:blue\">if</span> (args.PropertyName == <span style=\"color:#a31515\">&quot;Value&quot;</span>)\r\n\t{\r\n\t\tm_ViewModel.Customer = (Customer)RegionContext.GetObservableContext(<span style=\"color:blue\">this</span>).Value;\r\n\t}\r\n}\r\n</pre>\r\n</div>\r\n</pre>\r\n</div>\r\n<p>While this approach does work, I wasn't keen on copying and pasting this code into each of my views - I though that injecting the customer directly into my view models would be a lot cleaner.</p>\r\n<p>In our application I use the View Discovery approach as this seemed to be the most elegant.&nbsp; I'm wondering if I should switch to using View Injection where I would have more control over when the nested views are actually created (so I can create them with the child container).&nbsp; The thing I don't like about this approach is that now my application needs to know which views to create rather than 'just working' with View Discovery.</p>\r\n<p>Matt</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<div id=\"_mcePaste\" style=\"width:1px;height:1px;overflow:hidden;top:0px;left:-10000px\">﻿</div>",
+    "PostedDate": "2010-09-20T01:18:04.947-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "496108",
+    "ThreadId": "226186",
+    "Html": "<p>Hi Matt,</p>\r\n<p>Based on my understanding your scenario contains multiple views added in  nested regions for showing&nbsp;one customer. Therefore, they have a View Model, which is injected with the same object model (customer) in all the cases  (here is when you are copying and pasting the same code).</p>\r\n<p>First of all,&nbsp;I completely agree with you that it&nbsp;does not make sense  to&nbsp;repeat the same code lines. Your approach seems to be possible, but without  having&nbsp;more context it is not possible to know&nbsp;why this could&nbsp;be failing. If you  believe this is an issue mostly related to unity you could use the <a href=\"http://unity.codeplex.com/\">Unity forum</a> as well.</p>\r\n<p>On the other hand, I was thinking in some different approaches that might  help in your scenario:</p>\r\n<p>1)&nbsp;View Model Hierarchy. For more information download the <a href=\"../releases/view/51993\">latest drop of  prism</a>, so you could check the following section in the CHM:</p>\r\n<ul>\r\n<li>MVVM Quickstart (new), &nbsp;see the <em>View/ViewModel Structure </em>section.</li>\r\n</ul>\r\n<ol> </ol>\r\n<p>You could&nbsp;see this implemented in&nbsp;MVVM&nbsp;Quickstart.</p>\r\n<p>2) View Model locator for using the same ViewModel shared for all customer  views: <a href=\"http://johnpapa.net/silverlight/simple-viewmodel-locator-for-mvvm-the-patients-have-left-the-asylum/\"></a></p>\r\n<ul>\r\n<li><a href=\"http://johnpapa.net/silverlight/simple-viewmodel-locator-for-mvvm-the-patients-have-left-the-asylum/\">Simple  ViewModel Locator for MVVM: The Patients Have Left the Asylum</a></li>\r\n</ul>\r\n<ol> </ol>\r\n<p>Some of them could not fit in your scenario (a couple of modifications might be necessary but the ideas should guide you).</p>\r\n<p>If you need more information when to use View&nbsp;Discovery vs View Injection,  you could&nbsp;take a look at the following documentation section on&nbsp;MSDN:</p>\r\n<ul>\r\n<li>&nbsp;<a href=\"http://msdn.microsoft.com/en-us/library/ff921075(PandP.20).aspx\">UI-Composition</a>,  see the <em>When to Use View Discovery vs. View Injection</em> section</li>\r\n</ul>\r\n<p>I hope this helps,</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\"><span style=\"color:#0066cc\">http://blogs.southworks.net/fantivero</span></a></p>",
+    "PostedDate": "2010-09-20T10:14:31.993-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "496384",
+    "ThreadId": "226186",
+    "Html": "<p>Hi Fernando,</p>\r\n<p>First of all thank you for continuing to help me with my problem.</p>\r\n<p>I don't believe this is a problem with Unity as such, its just that Prism appears to defer creating the nested views until they are needed by which time my child container is out of scope.</p>\r\n<p>I had a look at the latest drop of Prism as you suggested.&nbsp; I can see how the MVVM Quick Start instantiates the child view models but I'm not sure this will work in my current scenario because in the Quick Start the parent view has hard-wired references to each of the child views.&nbsp; Ideally I wanted to use regions throughout the application and let Prism manage the creation of views&nbsp;for me.</p>\r\n<p>I also had a look at the ViewModel Locator which, although smart, I can't see how can help me in this situation.</p>\r\n<p>Would you still be happy for me to send you a cut-down project which illustrates my scenario?&nbsp; If so, where do I sent it to?</p>\r\n<p>Thanks</p>\r\n<p>Matt</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-21T02:10:43.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "496595",
+    "ThreadId": "226186",
+    "Html": "<p>Hi Matt,</p>\r\n<p>I think you could upload this to the cloud, for example you could use <a href=\"http://skydrive.live.com/\">skydrive</a>. Then you could answer this thread  for sharing the URL.&nbsp;So all the community could contribute as well.</p>\r\n<p>Regarding to the quickstarts, take into account that they could provide  guidance in a particular scenario, but if they do not fit exactly with your  scenario, you could extend them.</p>\r\n<p>ViewModel locator could help in your scenario to share an only one ViewModel  (using some index) for all customer views, so it might be easy to inject the  object model (customer) in an only one ViewModel. This way you could avoid using  region context or other mechanisms for communication.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-09-21T09:46:35.433-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "499870",
+    "ThreadId": "226186",
+    "Html": "<p>Hi Fernando,</p>\r\n<p>I have uploaded a test project (VS2010) to;</p>\r\n<p><a href=\"http://cid-0c8cdd49ad12a64a.skydrive.live.com/redir.aspx?resid=C8CDD49AD12A64A!114&authkey=QyT1Vs*4HJw$\">http://cid-0c8cdd49ad12a64a.skydrive.live.com/redir.aspx?resid=C8CDD49AD12A64A!114&amp;authkey=QyT1Vs*4HJw%24</a></p>\r\n<p>Hopefully the project is easy to understand.&nbsp; It is basically a shell with a tab control.&nbsp; Clicking either of the add buttons creates a new tab with parent view.&nbsp; The parent view contains a child view.</p>\r\n<p>What I am trying to do is pass a Customer entity to the view models for both the views (parent and child) when a tab is created.&nbsp; Each view displays the ID of the customer to show whether it is working or not.</p>\r\n<p>There are two 'add tab' buttons, one for the ideal way of implementing this which I am hoping to achieve, and the other for our current implementation which is far from ideal.</p>\r\n<p><strong>Ideal</strong></p>\r\n<p>From this button I create a child unity container and register the Customer entity.&nbsp; I then use the child container to create the parent view and add it to the tab.&nbsp; Unity correctly passes the Customer entity into the constructor&nbsp;of the parent view, but does not pass it to the child view.&nbsp; This is because I think that the unity child container is no longer in scope when the child view is created.</p>\r\n<p><strong>Current</strong></p>\r\n<p>This button is similar to the Ideal button, but instead of using a child container, I instead loop round each region and pass the customer into the Context for the region.&nbsp; The child view listens to the PropertyChanged event of the region context, and when it fires passes the context into the View Model.&nbsp; You can see this in the code-behind for the child view, and this is the code that I have to cut/paste into all of my nested views for it to work.&nbsp; I also then expose a method on the Parent view to pass in the customer manually.</p>\r\n<p>Hope this makes sense</p>\r\n<p>Matt</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-29T03:47:02.96-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "500225",
+    "ThreadId": "226186",
+    "Html": "<p>Hi Matt,</p>\r\n<p>Thanks for sharing this repro sample, I found that it is really clear. It  seems that it is not supported to use child containers&nbsp;when discovering views  using <a href=\"http://msdn.microsoft.com/en-us/library/ff921103(PandP.20).aspx\">View  Discovery</a>&nbsp;in Prism.&nbsp;The View Discovery technique is using the main container  of the application for injecting dependencies.</p>\r\n<p>Even if you use the <strong>RegisterViewWithRegion</strong> method overload  which supports indicating a delegate, it does not work as you expected.</p>\r\n<p>In this type of scenarios, the recommended approach is to use <a href=\"http://msdn.microsoft.com/en-us/library/ff921076(PandP.20).aspx\">View  Injection</a> which is the other technique for UI-Composition. From the <a href=\"http://msdn.microsoft.com/en-us/library/ff921098(PandP.20).aspx\">MSDN  documentation</a>&nbsp;(see <em>When to Use View Discovery vs. View Injection </em>section):</p>\r\n<p><em>You can use view injection if you need one of the following:</em></p>\r\n<ul>\r\n<li><em><strong>Explicit or programmatic control over when a view is created and  displayed, or when you need to remove a view from a region, for example, as a  result of application logic.</strong></em></li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n<p>Therefore, as you need programmatic control, you could use View  Injection&nbsp;with&nbsp;child containers. So your code might look like the following:</p>\r\n<pre>private void btnAddTabIdeal_Click(object sender, RoutedEventArgs e)\r\n{\r\n    IRegion mainTabRegion = m_RegionManager.Regions[RegionNames.TabControlRegion];            \r\n\r\n    m_ID += 1;\r\n    var customer = new Customer() { ID = m_ID };           \r\n\r\n    using (var childContainer = m_Container.CreateChildContainer())\r\n    {                \r\n        childContainer.RegisterInstance(customer.GetType(), customer);                                \r\n        var view = childContainer.Resolve&lt;Parent_Ideal_View&gt;();\r\n        var childView = childContainer.Resolve&lt;Child_Ideal_View&gt;();\r\n<strong>        var regionManager = mainTabRegion.Add(view, customer.ID.ToString(), true);\r\n        var childRegion = regionManager.Regions[RegionNames.Child_Ideal_Region];\r\n        childRegion.Add(childView);\r\n</strong>        mainTabRegion.Activate(view);\r\n    }\r\n}</pre>\r\n<p>If you would like to continue using View Discovery, you&nbsp;can avoid using child  containers, since I could not find a reason of the need for creating a child  container in this scenario.</p>\r\n<p>I hope this help.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-29T14:18:36.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "500382",
+    "ThreadId": "226186",
+    "Html": "<p>Hi Fernando,</p>\r\n<p>Thank you for your quick response.&nbsp; Your answer makes sense and to be honest was something that I was starting to suspect would be the only solution.</p>\r\n<p>Our application uses ﻿View Discovery throughout and I feel that this is one of the great benefits of Prism, especially as we use the same regions in different parts of our application.</p>\r\n<p>At&nbsp;this point ﻿I'm not sure whether I want to lose the niceness of View Discovery for the benefit of removing some duplicated code.</p>\r\n<p>I guess that I might have to take a pragmatic viewpoint and keep with View Discovery for now and see how it goes.</p>\r\n<p>Thanks for your help</p>\r\n<p>Matt</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-30T01:11:00.08-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "987037",
+    "ThreadId": "226186",
+    "Html": "\r\n<p>I have exactly the same requirement - I want modules to be able to use a view-discovery like mechanism to specify what types should be used when creating views for a given region and we also want certain regions (or region managers) to use child unity containers\r\n to allow us to inject specific dependencies for those scoped regions.&nbsp; View injection won't work as at the point where the module is initialised these regions have not yet been created and using the region context is cumbersome in comparison - to start with\r\n it requires that each region be individually tagged with the appropriate unity container.</p>\r\n<p>My solution was to extend Prism and replace the view discovery mechanism with one that searches the logical tree for a scoped injection container which is then used to resolve the view (rather than using the globally scoped injection container). I've hosted\r\n the source code here</p>\r\n<p><a href=\"http://code.google.com/p/container-scoped-prism-regions/\">http://code.google.com/p/container-scoped-prism-regions/</a></p>\r\n<p>Its not perfect but it seems to work well enough.</p>\r\n",
+    "PostedDate": "2013-01-15T05:52:21.67-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

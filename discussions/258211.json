@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "615098",
+    "ThreadId": "258211",
+    "Html": "\r\n<p>Hi guys,</p>\r\n<p>&nbsp;</p>\r\n<p>I am converting the extisting WPF 4 project in our company to Prism and I have come across a big challenge. &nbsp;I wonder if you may help me with that.</p>\r\n<p>&nbsp;</p>\r\n<p>Within the App.xaml a Service is instantiated and initialized. &nbsp;This takes up to 2 min. &nbsp;At the same time a Splashscreen is shown on a different thread.</p>\r\n<p>Once the Service is loaded an Event is raised that starts the Shell on a different thread. &nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>I need to create an instance of this Service as a singleton within IoC, so that whenever I need the service I would get the same instance.</p>\r\n<p>Theoretically thats easy to so. &nbsp;However I won't be able to do this in App.xaml, since I have no access to the Container yet. So I need to do this later within the Bootstrapper.</p>\r\n<p>&nbsp;But once the Bootstrapper is instantiated and running, it would execute the method InitializeShell(), which in turn starts off the Shell.<br>\r\n<br>\r\nBut the Shell needs the Service to be injected in its ViewModel and the Service is not even ready yet. &nbsp;I need to make this method wait until the Service is successfully registered as a singleton within the ConfigureContainer() method, and only then once\r\n the Service's OnCompleted has been raised it should execute the InitializeShell() method.</p>\r\n<p>How do I achieve this? :)</p>\r\n<p>Many Thanks for your advice,</p>\r\n<p>Houman</p>\r\n",
+    "PostedDate": "2011-05-19T02:53:11.53-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "615221",
+    "ThreadId": "258211",
+    "Html": "<p>Hi Houman,</p>\r\n<p>The approach you're following of registering the service is the recommended possibility for having a service available in Prism, rather than creating it in the App.xaml.</p>\r\n<p>As for deferring the initialization of the Shell, you could follow one of the following approaches:</p>\r\n<ul>\r\n<li>You could override the <strong>Run </strong>method in your <strong>Bootstrapper</strong> to alter the application's initialization sequence so as to avoid calling the <strong>CreateShell </strong>and <strong>InitializeShell</strong>, and make your bootstrapper subscribe to the <strong>OnCompleted </strong>event in your service, so that when it's fully initialized, these methos are called.</li>\r\n<li>You could also override the <strong>CreateShell </strong>and <strong>InitializeShell</strong> in your <strong>Bootstrapper</strong>, so that, instead of creating and showing the shell, they subscribe to your service's<strong> OnCompleted </strong>event to defer the aforementioned processes.</li>\r\n</ul>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-05-19T06:58:22.047-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "615950",
+    "ThreadId": "258211",
+    "Html": "<p>Hi Guido,</p>\r\n<p>&nbsp;</p>\r\n<p>Many thanks for the tip. &nbsp;I ended up abusing the ConfigureContainer() for my purpose and run a different method to run the Shell, whenever the Service is ready. &nbsp;<br /><br />I agree with you its better having the Service in Prism proper. &nbsp;However due the nature of our application, where the service is not a real service but a Remoting object that the MainViewModel is subscribing to, I had no choice than doing it there for now without refactoring the application too much.</p>\r\n<p>I am so happy that I suceeded introducing the Bootstrapper in our project. &nbsp;We have so far used Prism as a MVVM framework, and the Bootstrapper with IoC would have been the next logical step. &nbsp;That already would give us so much more power. &nbsp;Hopefully in near future we start introducing the modules and make more use of Prism. &nbsp;The learning curve is just a bit steep and it needs convincing. ;-) &nbsp;<br /><br />But we are getting there...</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p>Houman</p>",
+    "PostedDate": "2011-05-20T09:18:02.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

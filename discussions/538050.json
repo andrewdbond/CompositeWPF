@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1219524",
+    "ThreadId": "538050",
+    "Html": "I've got a background thread that is raising events every once in a while. I've added a Debug.WriteLine to confirm that this is indeed reaching that bit of code.<br />\n<br />\nI have a separate class that subscribes to this event, but its delegate only gets called once, then never again. Any idea what might be going on? I've used Event Aggregator in a past project without issues, and I'm publishing and subscribing in exactly the same way.<br />\n<br />\n<strong>Edit</strong><br />\nI've found that it works if I set &quot;keepSubscriberReferenceAlive&quot; to true. I never had to do this in my previous project so I don't understand what's different this time around. The subscription is being created in the constructor of a view model (something I did many times in the previous project), and this VM clearly isn't being destroyed, so why am I having to set this parameter to true? And what are the possible implications of setting this property to true?<br />\n",
+    "PostedDate": "2014-03-05T08:27:21.547-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1220335",
+    "ThreadId": "538050",
+    "Html": "Hi,\r<br />\n<br />\nIt would be helpful if you could describe us how are you Publishing and Subscribing the <strong>Event.</strong> Also, you could provide us with a small sample so we could get a better understanding of the scenario and give you better support.\r<br />\n<br />\nYou may find useful information about <strong>EventAggregator's</strong> behavior in the following <strong>MSDN Prism Guide</strong> chapter :<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921122(v=pandp.40).aspx#sec11\" rel=\"nofollow\">Communicating Between Loosely Coupled Components</a><br />\n</li>\n</ul>\nThe main implication for keeping the <strong>Subscriber Reference</strong> alive would be that the event creates a strong reference, making it neccessary to manually <strong><em>unsubscribe()</em></strong> the <strong>Event</strong> in order to prevent memory leaks.\r<br />\nOne possible cause could be the filtering of the <strong>Event</strong> that may be denying every future <strong>Event</strong> handling. Did you configure the filter delegate on that <strong>Event</strong> <strong>Subscription</strong>? If that is the case, how would the filter validation be?\r<br />\n<br />\nRegards.\r<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-03-07T07:53:05.567-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1220348",
+    "ThreadId": "538050",
+    "Html": "Hi Gabriel, thanks for the reply. I'm publishing and subscribing in the standard way, like this:-<br />\n<pre><code>        eventAggregator.GetEvent&lt;CompositePresentationEvent&lt;MyEvent&gt;&gt;().Publish(new MyEvent());\n\n        eventAggregator.GetEvent&lt;CompositePresentationEvent&lt;MyEvent&gt;&gt;().Subscribe(MyEventHandler);\n</code></pre>\n\n(where &quot;MyEvent&quot; is a POCO class that may or may not contain additional information about the event). I've never had to use any filter predicates when subscribing.\r<br />\n<br />\nI've been using the EventAggregator fine in another project, but I am doing something a little different with this particular view/view-model (the VM subscribes to the event in its ctr). After the view (and in turn the view-model) are resolved by my IoC container, the view is then added to the &quot;Children&quot; collection of a FrameworkElement control that lives in my main window (rather than being, typically, added to a Region like my other views). I can only assume that this is somehow causing the problem - perhaps something is &quot;losing&quot; a reference to the view/view-model once it has been created?<br />\n",
+    "PostedDate": "2014-03-07T08:46:46.647-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1224093",
+    "ThreadId": "538050",
+    "Html": "Hi,\r<br />\n<br />\nIf the issue you are experiencing is being solved by adding the <strong><em>keepSubscriberReferenceAlive</em></strong> parameter then it's most likely that the view model is being garbage collected.\r<br />\n<br />\nUsually you should be able to create and add a view to the visual tree like you are mentioning without problems. However, it might be possible that the view is being separated from its view model if the <strong>DataContext</strong> property is set to different value. As an example, this is the case when working with <strong>DataTemplates</strong> where the <strong>DataContext</strong> is set to refer the &quot;model&quot; the view is &quot;rendering.&quot;\r<br />\n<br />\nPlease check if there is any element that would change the <strong>DataContext</strong> of the view (like if the FrameworkElement you are mentioning modifies the elements that are added to it) and if the view is keeping the view model after being added to the visual tree. A simple way of testing the later is to add a button to the view with a simple handler in the code-behind, then add a breakpoint in the handler and check the <strong>DataContext</strong> property.\r<br />\n<br />\nThanks,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2014-03-18T11:32:55.743-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

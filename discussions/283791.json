@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "715626",
+    "ThreadId": "283791",
+    "Html": "\r\n<p>I am new to the Composite, i am developing application in that i want to create menu after loading modules and separate that under particular header menu.</p>\r\n<p>As we seen&nbsp;</p>\r\n<p>File &nbsp; &nbsp; &nbsp; &nbsp; Edit</p>\r\n<p>New &nbsp; &nbsp; &nbsp; Cut</p>\r\n<p>Open &nbsp; &nbsp; Copy</p>\r\n<p>Exit</p>\r\n<p>Like this but it has to be done dynamically, So how we can do that, please answer me if anyone know.</p>\r\n",
+    "PostedDate": "2011-12-21T10:32:19.137-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "715660",
+    "ThreadId": "283791",
+    "Html": "<p>Hi,</p>\r\n<p>In <strong>WPF </strong>the controls <strong>Menu </strong>and <strong>MenuItem </strong>inherit from <strong>ItemsControl</strong>. Based on my understanding, as Prism provides a region adapter for <strong>ItemsControls</strong>, you could define the <strong>Menu </strong>(or <strong>MenuItem</strong>) where you want to add the <strong>MenuItems </strong> of the modules as a region. Then, you could inject or register a <strong>MenuItem </strong> in the region (like you would do with a view).</p>\r\n<p>For example, suppose that the shell has a menu which we registered as a region with the name \"MenuRegion\" and we want to add a <strong>MenuItem </strong> to the aforementioned menu when a module initializes. This could be achieved doing something like this:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> Initialize()\r\n{\r\n    <span style=\"color: green;\">// We create a MenuItem to register in the \"MenuRegion.\"</span>\r\n\r\n     MenuItem subItem = <span style=\"color: blue;\">new</span> MenuItem();\r\n     subItem.Header = <span style=\"color: #a31515;\">\"Click Me\"</span>;\r\n     subItem.Click += (<span style=\"color: blue;\">object</span> sender, RoutedEventArgs e) =&gt; { MessageBox.Show(<span style=\"color: #a31515;\">\"You clicked the \\\"Click Me\\\" button.\"</span>); };\r\n     \r\n     <span style=\"color: blue;\">this</span>.regionManager.RegisterViewWithRegion(<span style=\"color: #a31515;\">\"MenuRegion\"</span>, () =&gt; subItem);\r\n}\r\n</pre>\r\n</div>\r\n<p>You can find more information about injecting and registering views in regions in the following chapter of the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28PandP.40%29.aspx\">Chapter 7: Composing the User Interface on MSDN</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-12-21T11:37:30.443-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "943745",
+    "ThreadId": "403744",
+    "Html": "\r\n<p>I have an application i.e an exe when ran loads 2-3 modules.</p>\r\n<p>For e,g:</p>\r\n<p>When Exe is ran ,</p>\r\n<p>A,B,C,D modules/views get loaded. suppose if an exception occurs in 'A'Module , B,C,D should still work and vice versa. I am using prism to load these modules.</p>\r\n<p>&nbsp;</p>\r\n<p>How can we make sure other modules are running still even after the other modules are crashed.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks for help.</p>\r\n<p>Kind regards</p>\r\n<p>Krishna</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-11-18T22:01:10.373-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "944186",
+    "ThreadId": "403744",
+    "Html": "\r\n<p>Hi Krishna,</p>\r\n<p>As a starting point, I would like to mentioned that actually, the modules do not &quot;run&quot; in a Prism application. Based on my understanding, after a module is loaded an initialized, the &quot;components&quot; (let's call them like that for now) of that module became\r\n components of the rest of your application. For example, its classes will be exported to the application container, the views will be created and injected in other regions, etc. So, the module itself is not &quot;running,&quot; what is in an &quot;execution&quot; state are the\r\n components provided by the module: for example, a view, view model, shared service, etc. And those &quot;components&quot; are the ones who can throw an exception (and crash).</p>\r\n<p>Taking this into account, you cannot catch the exception of a module, but exceptions of the components separately. How to do this will depend on your personal preferences and the requirements of your scenario.</p>\r\n<p>Also, I believe you could find the following thread interesting were a similar topic was already discussed before:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/359915\">Error in one secondary module</a>\r\n</li></ul>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2012-11-19T12:38:39.39-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

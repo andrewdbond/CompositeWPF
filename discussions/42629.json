@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "141696",
+    "ThreadId": "42629",
+    "Html": "I am a little lost on loading modules on demand, and I hope you guys can enlighten me. I am using v2 #7. <br>\r\n<br>\r\n<span style=\"text-decoration:underline\">Here's what I want to accomplish:</span><br>\r\n1) I have 2 regions - one for buttons that instantiate the modules (MenuRegion), another to show the modules (MainRegion). Only one module is to be visible at a time in MenuRegion.<br>\r\n2) Modules are to be found in a directory<br>\r\n3) The MenuModule module is associated with MenuRegion and is to create buttons showing the module names. When one of the buttons is clicked, the corresponding module is to be loaded and displayed in MainRegion. <br>\r\n4) Behavior:<br>\r\n&nbsp;&nbsp;&nbsp; a) ModuleA button is clicked and ModuleA is displayed. User enters data in ModuleA and data is left in an unsaved state.<br>\r\n&nbsp;&nbsp; &nbsp;b) ModuleB button is clicked and ModuleA is displayed. User enters data in ModuleB and data is left in an unsaved state.<br>\r\n&nbsp;&nbsp; &nbsp;c) ModuleA button is click and ModuleA is displayed with the information previously entered.<br>\r\n<br>\r\n<span style=\"text-decoration:underline\">Please correct me if I am wrong in my assumptions, and please give me other suggestions:</span><br>\r\n1) MainRegion should be a ContentControl, so only one module is visible at a time.<br>\r\n2) I think I need to enumerate the &quot;GrouplessModules&quot; of my Catalog to get the ModuleInfo for the modules available in the directory<br>\r\n3) To load the module I think I need to call myModuleManager.LoadModule(moduleName)<br>\r\n<br>\r\n<span style=\"text-decoration:underline\">Finally, my questions:<br>\r\n</span>1) Should I have the moduleManager as a parameter in my MenuModuleView's constructor? <br>\r\n2) How do I get the catalog accessible from inside MenuModuleView, in order to enumerate the available modules? <br>\r\n3) From MenuModuleView, as I enumerate through the modules, I create the buttons, assigning the ModuleInfo to the button's Tag property. This way, I have only one click event to load the module. Is this correct? It smells a bit work-aroundish to me...<br>\r\n<br>\r\nThanks a lot for your help!!!<br>\r\n<br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2008-12-18T13:58:40.647-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "141721",
+    "ThreadId": "42629",
+    "Html": "I think that you shoudn't use the module manager for that purpose. Remember, a module is an unit of deployment and development. Within a module, you can have several views. <br>\r\n<br>\r\nA module can only be loaded &amp; initialized once, and there is no way to unload or uninitialize a module.<br>\r\n<br>\r\nWhat you are looking for is some form of navigation manager, which unfortunately we don't have time for to build. But the way I would build it is:<br>\r\n1 Create a form of button view that you can easily put in the button region. (It doesn't have to be a usercontrol, it can also just be a button)<br>\r\n2 Put some logic on the buttoncontrol that, when clicked will instantiate a view and add it to the region. It should also remember that it has created the view <br>\r\n3 In the initialize of the modules, register the buttontype (configured for the specific viewtype) with the buttonregion. <br>\r\n<br>\r\nSo the code would look something like this (in pseudocode)<br>\r\n<br>\r\nClass MenuButtonControl&lt;ViewType&gt; : Button<br>\r\n{<br>\r\n<br>\r\n    ViewType view;  <br>\r\n  <br>\r\n     void OnButtonClick()<br>\r\n{<br>\r\n    if (view == null)<br>\r\n        view = ServiceLocator.Current.Resolve(typeof(ViewType));<br>\r\n<br>\r\n    IRegion mainRegion = RegionManager.Regions[&quot;MainRegion&quot;]<br>\r\n    if (!mainRegion.Views.Contains(view))<br>\r\n        mainRegion.Add(view);<br>\r\n    mainRegion.Activate();<br>\r\n}<br>\r\n}<br>\r\n}<br>\r\n<br>\r\n// Then in the Initialize of the module<br>\r\npublic void Initialize()<br>\r\n{<br>\r\n    // This code will show this button everytime the &quot;ButtonRegion&quot; gets loaded and shown. <br>\r\n    RegionManager.RegisterTypeWithRegion(&quot;ButtonRegion&quot;, typeof(MenuButtonControl&lt;MyOwnViewThatIsAssociatedWithThisButton&gt;));<br>\r\n}<br>\r\n<br>\r\nIn the next couple of weeks, we might look at some ways to make this scenario a bit easier. Or at least put out some blog posts on how to do this scenario. <br>\r\n<br>\r\nHope this helps. <br>\r\n_Erwin\r\n",
+    "PostedDate": "2008-12-18T17:31:41.2-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "141776",
+    "ThreadId": "42629",
+    "Html": "Thanks Erwin, I am looking forward to what you guys can come up to make this scenario easier.<br>\r\nOne question: Doesn't XAML have a problem with generic classes?<br>\r\n",
+    "PostedDate": "2008-12-19T00:03:31.313-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "142003",
+    "ThreadId": "42629",
+    "Html": "I would also suggest looking at implementing a controller for this sort of scenario.  DON'T put any knowledge about the module manager/catalog or other views in a view -- i.e. your MenuModuleView (that is a view, right, and not a module?).  <br>\r\n<br>\r\nYou should have at least a presenter or model for each view, in your scenario, that know only about their views, the container and possibly other &quot;global&quot; services.  In order to communicate between views -- as you suggest -- you would typically use a controller to handle the coordination.  If you look, you'll see examples of controllers within the RI as well as within, I think, at least a couple of the Quickstarts.  Actually, you might want to take a close look at the TopDownUIComposition quickstart --see the EmployeesController.  In that example, the controller receives an employee selection event from one view and then loads another view into a different region (different from the source of the event) -- creating the view if necessary.<br>\r\n<br>\r\nGranted, the specifics of your case are different but it sounds conceptually similar.  Note, you can still use dynamic loading in your situation but just recognize, as Erwin states above, that you don't load and unload modules.  You can delay loading it but you typically wouldn't unload it then.  Whether your view, model or presenter preserves its data within activations is entirely up to how you manage the view.  Are you recreating it or storing and just reloading it into your region?  The choice is yours...\r\n",
+    "PostedDate": "2008-12-20T00:19:30.05-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "142064",
+    "ThreadId": "42629",
+    "Html": "<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">I raised this (region and controls visibility) previously in similar context, see the thread </span><a href=\"http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=41066\"><span style=\"font-family:calibri\">http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=41066</span></a> </p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">I had some private email exchanges with Erwin van der Valk’s about this, and currently there is no way to manage this as out of the box in PrismV2. There may be something coming up later phase of PrismV2 but is not certain. </span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">I am using controller to manage this currently, and you can find a concept in SL2WithPrism sample. The Authentication module has this behavior implemented by controller. You can find SL2WithPrism sample refresh with PrismV2 code drop 7 from tread link </span><a href=\"http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=42393\"><span style=\"font-family:calibri\">http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=42393</span></a><br>\r\n<br>\r\nRegards,<br>\r\nAlexander</p>\r\n",
+    "PostedDate": "2008-12-20T11:42:59.743-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

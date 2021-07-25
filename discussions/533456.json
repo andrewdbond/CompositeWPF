@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1211883",
+    "ThreadId": "533456",
+    "Html": "I am running the latest PRISM 4.2. Unfortunately the Event Aggregator tutorial in the documentation is driven via Unity instead of MEF. And I can't get it running under MEF.\r<br />\n<br />\nIf you may be so kind and have a look at my question here on Stackoverflow.<br />\n\r<br />\n<a href=\"http://stackoverflow.com/questions/21943396/how-to-utilise-event-aggregator-in-mef\" rel=\"nofollow\">http://stackoverflow.com/questions/21943396/how-to-utilise-event-aggregator-in-mef</a>\r<br />\n<br />\nMany Thanks for your help,\r<br />\nHouman<br />\n",
+    "PostedDate": "2014-02-21T12:41:37.063-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1213480",
+    "ThreadId": "533456",
+    "Html": "There is a MefEventAggregator which is used by MEF. You have to add the parameter IEventAggregator to your MainViewModel.<br />\n<pre><code>[ModuleExport(typeof(MainViewModel))]\npublic class MainViewModel : BindableBase, IServiceCallback\n{\n    [ImportingConstructor]\n    public MainViewModel(IEventAggregator eventAggregator)\n    {            \n        eventAggregator.GetEvent&lt;AppExitEvent&gt;().Publish(&quot;&quot;);\n    }\n}</code></pre>\n\nI think that's it.<br />\n",
+    "PostedDate": "2014-02-24T00:13:00.033-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

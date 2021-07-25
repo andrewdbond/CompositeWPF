@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "212938",
+    "ThreadId": "62733",
+    "Html": "<p>Hello,</p>\r\n<p>I've been using the Composite Application Library guidance for long time.</p>\r\n<p>One things that I think is not well covered there or in the sample application themselves is how to build and deploy the application.</p>\r\n<p>&nbsp;</p>\r\n<p>1. Because of the dynamic nature of the application there is no static references between the application host (exe) and the modules (dlls). This create the first problem: <strong>How to get the module build products (dll, resources, etc) to the shell application's build directory?</strong></p>\r\n<p>The solution you have in your sample application (also my current solution) is to have a Post-build event (go into each module's project properties page and select Build Events tab) of xcopy from the bin directory of the module to the bin directory of the shell.</p>\r\n<p>This works, but don't you think have MSBuild task will be much better. For start, since this done &quot;out-of-band&quot; when we run CleanSolution task, it does not clean the copied module files from the shell project directory since it doesn't know about them.</p>\r\n<p>&nbsp;</p>\r\n<p>2. ClickOnce deployment: due to the first things we talked about, the current ClickOnce generation script of MSBuild relay only on static references, and so when we create ClickOnce installation for our shell application we only get the shell applicaiton, without the modules.</p>\r\n<p>I think it's time to create some kind of deployment project in which we will be able to specify which shell project as well as module project we want to package to create our deployment project.</p>\r\n<p>In the same deployment project we will be able to specify the ClickOnce parameters such as name, urls, version etc.</p>\r\n<p>This will give us the ability to have several different deployment project, for each combination of modules.</p>\r\n<p>&nbsp;</p>\r\n<p>Hope this will make Prism even better than it already is,</p>\r\n<p>Ido.</p>\r\n<p><strong><br></strong></p>",
+    "PostedDate": "2009-07-17T02:13:13.013-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213150",
+    "ThreadId": "62733",
+    "Html": "<p>Hi Ido,</p>\r\n<p>First or all, thanks for your feedback about the guidance. If you believe this suggestion could be useful for the community, please suggest it in the <a href=\"http://compositewpf.codeplex.com/WorkItem/List.aspx\">Issue Tracker</a>, so people can vote for it. The team might take it into account for a future version.&nbsp;</p>\r\n<p>You can also check this article from the documentation about Click Once deployment which might provide some useful information:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/dd458921.aspx\">Deploying WPF Applications with ClickOnce</a></li>\r\n</ul>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-07-17T11:18:20.193-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213190",
+    "ThreadId": "62733",
+    "Html": "<p>Hi,</p>\r\n<p>I've open an issue in hope it will be handled.</p>\r\n<p>I've also read that part about deployment in the guidance - it provide basic information but not a solution.</p>\r\n<p><a href=\"http://blog.gatosoft.com/PermaLink,guid,d0a0dd1e-c9ac-4fa9-a408-615454d49702.aspx\">This site of Mike Bouck </a>does provide a solution, something close to my suggestion of deployment project which can be a start point.</p>\r\n<p>&nbsp;</p>\r\n<p>Thank you.</p>\r\n<p>Ido.</p>",
+    "PostedDate": "2009-07-17T13:36:31.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

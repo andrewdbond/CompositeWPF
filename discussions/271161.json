@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "666318",
+    "ThreadId": "271161",
+    "Html": "\r\n<p>I am using this XAML to have a variable number of &quot;Products&quot; displayed, but realized that if I switch the StackPanel Orientation from Vertical to Horizontal, this has no effect, all the &quot;Products&quot; are still added vertically.</p>\r\n<p>Is there anyway to have it working horizontally?</p>\r\n<p>Thanks for your help</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>&lt;StackPanel Orientation=<span style=\"color:#a31515\">&quot;Horizontal&quot;</span>&gt;\r\n\r\n                    &lt;ItemsControl IsTabStop=<span style=\"color:#a31515\">&quot;False&quot;</span> ItemsSource=<span style=\"color:#a31515\">&quot;{Binding Products}&quot;</span>&gt;\r\n                        &lt;ItemsControl.ItemTemplate&gt;\r\n                            &lt;DataTemplate&gt;\r\n                                &lt;prism:DataTemplateSelector Content=<span style=\"color:#a31515\">&quot;{Binding}&quot;</span> IsTabStop=<span style=\"color:#a31515\">&quot;False&quot;</span>&gt;\r\n                                    &lt;prism:DataTemplateSelector.Resources&gt;\r\n                                        &lt;DataTemplate x:Key=<span style=\"color:#a31515\">&quot;ProductViewModel&quot;</span>&gt;\r\n                                            &lt;Views:ProductView DataContext=<span style=\"color:#a31515\">&quot;{Binding}&quot;</span>/&gt;\r\n                                        &lt;/DataTemplate&gt;\r\n                                    &lt;/prism:DataTemplateSelector.Resources&gt;\r\n                                &lt;/prism:DataTemplateSelector&gt;\r\n                            &lt;/DataTemplate&gt;\r\n                        &lt;/ItemsControl.ItemTemplate&gt;\r\n                    &lt;/ItemsControl&gt;\r\n\r\n                &lt;/StackPanel&gt;\r\n</pre>\r\n</div>\r\n<p></p>\r\n",
+    "PostedDate": "2011-09-01T08:47:16.96-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "666392",
+    "ThreadId": "271161",
+    "Html": "<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>Let me reply myself: You need to use ItemsPanelTemplate as in the below example<br /><br /><br />                    &lt;ItemsControl IsTabStop=<span style=\"color: #a31515;\">\"False\"</span> ItemsSource=<span style=\"color: #a31515;\">\"{Binding Products}\"</span>&gt;\r\n                        <strong>&lt;ItemsControl.ItemsPanel&gt;\r\n                            &lt;ItemsPanelTemplate&gt;\r\n                                &lt;StackPanel Orientation=<span style=\"color: #a31515;\">\"Horizontal\"</span> /&gt;\r\n                            &lt;/ItemsPanelTemplate&gt;\r\n                        &lt;/ItemsControl.ItemsPanel&gt;</strong>\r\n                        &lt;ItemsControl.ItemTemplate&gt;\r\n                            &lt;DataTemplate&gt;<br />                            [.......]<br /><br /><br />&nbsp;</pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2011-09-01T10:57:50.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

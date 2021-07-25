@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "192356",
+    "ThreadId": "56913",
+    "Html": "<p>I'm trying to write a region adapter for the ribbon control and I'm stuck at the first hurdle.</p>\r\n<p>Here's the stub for my class....</p>\r\n<p>using Microsoft.Practices.Composite.Presentation.Regions;<br>using Microsoft.Practices.Composite.Regions;<br>using Microsoft.Windows.Controls.Ribbon;</p>\r\n<p>namespace My.Composite.Presentation.Regions<br>{<br>&nbsp;&nbsp;&nbsp; public class RibbonRegionAdapter : RegionAdapterBase&lt;Ribbon&gt;<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void Adapt(IRegion region, Ribbon regionTarget)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new System.NotImplementedException();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override IRegion CreateRegion()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new System.NotImplementedException();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br>}</p>\r\n<p>and here's the error I get when trying to compile it....</p>\r\n<p>'Microsoft.Practices.Composite.Presentation.Regions.RegionAdapterBase&lt;Microsoft.Windows.Controls.Ribbon.Ribbon&gt;' does not contain a constructor that takes '0' arguments</p>\r\n<p>I think this means the ribbon class does not have a constructor that takes 0 args?</p>\r\n<p>When I look at the ribbon class the only constructor it has does infact take 0 args but having said that, the class is annotated with the following...</p>\r\n<p>[ContentProperty(&quot;Tabs&quot;)]</p>\r\n<p>Is this the problem?</p>\r\n<p>How do I fix it?</p>\r\n<p>&nbsp;</p>\r\n<p>In case anyone has any advice what I'm trying to do here is create a region adapter for the ribbon control such that a module could inject a view onto the ribbon.</p>\r\n<p>That view would take the form of a RibbonTab. For now I'd be more than happy if each of my modules could have a tab on the ribbon.</p>\r\n<p>&nbsp;</p>\r\n<p>Many thanks,</p>\r\n<p>&nbsp;</p>\r\n<p>MQCA.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-05-20T07:00:32.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "192359",
+    "ThreadId": "56913",
+    "Html": "<p>Scratch that, I figured it out just after posting (always the way).</p>\r\n<p>The error did infact relate to my ribbonregionadapter class.</p>\r\n<p>I stole this bit of code from&nbsp;a different region adapter and it fixed the issue.</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public RibbonRegionAdapter(IRegionBehaviorFactory regionBehaviorFactory)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : base(regionBehaviorFactory)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-05-20T07:05:34.69-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

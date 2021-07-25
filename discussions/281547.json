@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "706147",
+    "ThreadId": "281547",
+    "Html": "<p>Hello.</p>\n<p>I have several questions regarding the use os shared resources in a modular application, can anybody help me?</p>\n<p>&nbsp;</p>\n<p>I have a modular project divided in three main concepts, like this:</p>\n<p>Application (project shell)</p>\n<p>Modules (projects MainModule and ScannerModule)</p>\n<p>Infrastructure (projects Infrastructure and Resources)</p>\n<p>&nbsp;</p>\n<p>In order to organize and reuse resources, all common resources and default styles are placed in the Resources project. The Application (Shell) has a reference to it and my modules too, but the modules does not have a reference to the Shell and either the  Shell has a reference to them, the modules (Main and Scanner) are discovered through an app.config file.</p>\n<p>In my App.xaml (in Shell) i merge the DefaultTheme.xaml resourcedictionary from Resources so that all the resources files merged in DefaultTheme are loaded in the application.</p>\n<p>Until now i believe this is the common approach for sharing resources right? Or am I wrong?</p>\n<p>Now comes the problem. When i load the main view of the application (ShellView) in the Visual Studio Designer, all is fine. All my default styles are loaded correctly in the designer (of course the views from the module does not appear yet). But when I run  the application, only the elements in the ShellView that are not composed (and appeared correctly in the designer) applies the default style defined in the Resources project, none of the elements in the views of my modules load the style.</p>\n<p>The bizarre part is that when I open the module views in the designer, the default styles are applied in it! Even without any reference to it in any of the views, Visual Studio appears to consider the resources merged in the App.xaml resources of the StartUp  Project and load them just fine, only during runtime they do not load.</p>\n<p>I tried to convert the Resource project into an module and make the logic modules depend on it but makes no diference. I put the default styles directly in the App.xaml of the Application but that doesn't help either. The ONLY way to make them work on runtime  was:</p>\n<p>- create named styles and apply it as staticresources (this demonstrates that they CAN find the resources merged in the App.xaml) but is frustrating referencing the style for every single element.</p>\n<p>- keep the default style in the resources and reference in the module views with a staticresource to the {x:Type TargetType}.</p>\n<p>ex: &lt;Button Style={StaticResource {x:Type Button}} /&gt; in the module view. This also shows that the default styles are defined and acessible! (because they create implicit names with the TargetType names).</p>\n<p>I don't know what else I can do. Merge the theme in every module view is not an option because it will create it for every element. Also, it didn't work either without the workaround described before!</p>\n<p>PS: I've already read of the optimization bug in the MergedResources logic and the App.xaml has a dummy style in it. And also sorry for the bad english!</p>\n<p>Any suggestions?</p>\n<p>&nbsp;</p>\n<p>Thanks!!</p>",
+    "PostedDate": "2011-12-01T15:08:05.93-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "706289",
+    "ThreadId": "281547",
+    "Html": "<p>Hello</p>\r\n<p>&nbsp;</p>\r\n<p>Can you post your project ???</p>",
+    "PostedDate": "2011-12-02T00:25:10.207-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "706572",
+    "ThreadId": "281547",
+    "Html": "<blockquote style=\"border: solid .1em #ccc; font-style: italic; margin: .25em 1em 0 1em; padding: 0 .25em 0 .25em;\"><strong>mkadoussi wrote:</strong><br />\r\n<p>Hello</p>\r\n<p>&nbsp;</p>\r\n<p>Can you post your project ???</p>\r\n</blockquote>\r\n<p>Unfortunately it's a company project and I can't post the project. But i made a new solution with the same concept of the original project to demonstrate what is happening.</p>\r\n<p>I uploaded it the example to skydrive: <a title=\"Example Link\" href=\"https://skydrive.live.com/redir.aspx?cid=49864079fb66498c&amp;resid=49864079FB66498C!159&amp;parid=49864079FB66498C!143&amp;authkey=!AIVy8qSkANHENWI\" target=\"_blank\"></a><a title=\"Example Link\" href=\"https://skydrive.live.com/redir.aspx?cid=49864079fb66498c&amp;resid=49864079FB66498C!159&amp;parid=49864079FB66498C!143&amp;authkey=!AIVy8qSkANHENWI\" target=\"_blank\">Example Link</a></p>\r\n<p>Please let me know what you find.</p>\r\n<p>I saw a post in a blog where someone claims that some regionadapters (itemscontrol and selectors) break the style hierarchy because they do not verify in the item has an null itemcontainerstyle before setting it as the item style in the Adapt method, so it overrides the current item inherited style with null.</p>\r\n<p>I inspected the Prism code and couldn't find such line of code in the Adapt method.</p>\r\n<p>Thanks in advance.</p>",
+    "PostedDate": "2011-12-02T09:51:34.17-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

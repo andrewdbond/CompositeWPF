@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "94228",
+    "ThreadId": "28243",
+    "Html": "<p>I've found that the <strong>DelegateCommand&lt;T&gt;</strong> isn't updating the enabled/disabled status for my buttons.  One caveat, it does the appropriate enabling/disabling the very first time the xaml is displayed, but after that it stays in whatever state it was when loaded.</p>\r\n<p>What's strange is that my <em>canExecuteMethod</em> is returning the correct bool value and the <em>executeMethod</em> will only fire when appropriate.  It's just that the button's visual enabled state never changes.</p>\r\n<p>One thing I did notice (through the use Debug.WriteLines) is that the <em>canExecuteMethod</em> is only being called when the button is clicked.  I compared this to other implementations of commanding I have and I think that the <em>canExecuteMethod</em> should be getting called alot more frequently than that - like whenever there's a UI change.</p>\r\n",
+    "PostedDate": "2008-05-22T11:56:39.437-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "94247",
+    "ThreadId": "28243",
+    "Html": "Hi jmodzel,<br>\r\nDelegateCommand&lt;T&gt;, in comparison to RoutedCommand, does not respond to user input directly. You need to explicitly call a method on it (<strong>RaiseCanExecuteChanged</strong>) whenever your model changes (or the things that your command depends on).<br>\r\nAs soon as you call that method, all your buttons will requery the command in order to see if the command can execute.<br>\r\nI hope this helps,<br>\r\n<br>\r\nJulian Dominguez<br>\r\n",
+    "PostedDate": "2008-05-22T14:05:36.833-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "96251",
+    "ThreadId": "28243",
+    "Html": "That worked, thanks.<br>\r\n",
+    "PostedDate": "2008-06-02T08:33:52.463-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "104523",
+    "ThreadId": "28243",
+    "Html": "<p>Hello All,</p>\r\n<p>I witness similar behavior. I fixed an initial problem with my button because the CanExecute execution was not enabling my button whenever an item on my ListView was selected. This was resolved by calling the RaiseCanExecuteChanged for the DelegateCommand in the SelectionChanged event.<br>\r\n<br>\r\nMy latest issue with this is the following:<br>\r\n<br>\r\nI have a ListView, Button, and ContextMenu on the ListView. I created a DelegateCommand which is implemented by the button and a menu item in the context menu. I also added a checkbox to monitor the availability of my menu item.</p>\r\n<p>Observation:</p>\r\n<ul>\r\n    <li>At start, button and menu item (indicated by the checkbox) are disabled.</li>\r\n    <li>A selection is made.</li>\r\n    <li>The button is enabled and the menu item (as well as the checkbox) is disabled.</li>\r\n    <li>I make other selections, the menu item/checkbox is still disabled/unchecked</li>\r\n    <li>I make a selection by right clicking [accessing the context menu a second time], the checkbox/menuitem is enabled/checked.</li>\r\n    <li>As soon as I make another selection [left click an item], the menu item/checkbox is disabled/unchecked again.</li>\r\n</ul>\r\n<p>This behavior is reoccurring. I do not understand why this occurs. I would think that the CommandParamenter is always observed upon invoking the CanExecute method. <br>\r\n<br>\r\nYour advice is very much appreciated.<br>\r\n<br>\r\nAndres Olivares</p>\r\n",
+    "PostedDate": "2008-07-14T06:41:01.367-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

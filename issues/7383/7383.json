@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "View-Switching Navigation Quickstart uses MEF for mapping View types to Uri. Am I right?\n \nI use Unity and IUnityContainer.RegisterType(typeof(MyView),\"MyView\") for this task. But RequestNavigate doesn't see my view. Do i miss something?\n \nUpdate. It works only when I register my view using:\n \ncontainer.RegisterType<object, MyView>(\"MyView\")\n \nIf I use  \n \ncontainer.RegisterType<MyView>(\"MyView\") \n \nit doesn't work.\n \nAnd second question: Why RequestNavigate navigates to System.Object when it can't find View? I think setting Error property of NavigationContext is better idea.",
+    "LastUpdatedDate": "2014-02-03T05:10:39.853-08:00",
+    "PlannedForRelease": "Prism v4 - Drop 10",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Medium",
+      "Severity": 100,
+      "Id": 2
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-10-15T13:18:48.037-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Activate View only from RegionManager.RequestNavigate",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 5,
+    "Id": 7383
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Thanks for the feedback.\r\n\r\nSince we're using the container to resolve the view, we need to request something from the container.  Since we don't know any specific view types, we end up requesting an object to get get the view or view-model.  If there is nothing registered, Unity will attempt a build up of object which is why we end up with this.  In the future, we can look into providing an error if we get an object type out.\r\n\r\n",
+      "PostedDate": "2010-11-01T10:05:07.49-07:00",
+      "Id": 156338
+    },
+    {
+      "Message": "Hi,\r\n\r\nA possible approach to change the aforementioned behavior could be to modify the LoadContent method of the RegionNavigationContentLoaded class to throw an exception if the view is of type object (after the CreateNewRegionItem method is invoked):\r\n\r\n[ . . . ]\r\nview = this.CreateNewRegionItem(candidateTargetContract);\r\n\r\n// If the view returned is of type object we assume that the view was not found.\r\nif (view.GetType() == typeof(object))\r\n{\r\n    // The NavigationService will catch this exception, and assign it to the Error property of the NavigationResult.\r\n    throw new Exception(\"No view with the contract name \\\"\"+ candidateTargetContract +\"\\\" was found.\");\r\n}\r\n\r\nregion.Add(view);\r\n[ . . . ]\r\n\r\n\r\nThis exception will be caught by the NavigationService and will be assigned to the Error property of the NavigationResult passed as a parameter to the navigation callback. Also, the NavigationFailed event of the NavigationService will be fired.\r\n\r\nIf you wish to implement this approach without modifying the Prism library, you could create your own RegionNavigationContentLoaded class with the aforementioned modifications and register it in the container overloading the ConfigureContainer method of the bootstrapper:\r\n\r\nprotected override void ConfigureContainer()\r\n{\r\n    RegisterTypeIfMissing(typeof(IRegionNavigationContentLoader), typeof(HelloWorld.RegionNavigationContentLoader), true); \r\n    base.ConfigureContainer();\r\n}\r\n\r\n\r\nAs a side note, we are leaving this work item open, so that the team can analyze this suggestion for future releases.\r\n\r\nI hope you find this useful,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-03-13T12:54:17.987-07:00",
+      "Id": 156339
+    }
+  ]
+}

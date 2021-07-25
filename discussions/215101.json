@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "452160",
+    "ThreadId": "215101",
+    "Html": "<p>Hi,&nbsp;</p>\r\n<p>I didn't understand how we can register view/presenter to the new MEF container, that the view/presenters use injection or MEF 'Import'?</p>\r\n<p>In the MEF ex. there is no explanation on how we can register views presenters &amp; services in the module.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-06-06T07:14:08.51-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "452673",
+    "ThreadId": "215101",
+    "Html": "<p>Same here, how can we inject the views using mef modules? :(</p>",
+    "PostedDate": "2010-06-07T13:53:15.21-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "454130",
+    "ThreadId": "215101",
+    "Html": "<p id=8ae29fa0-5561-012d-4693-12313d00b9f1>Hi,</p>\r\n<p>As this is the first drop of Prism v4 (and is in alpha state), there is  currently no guidance on using MEF for MVVM/MVP. As regards to MEF, the current  drop only contains guidance for modularity.</p>\r\n<p>You can, however, use MEF&rsquo;s &lsquo;Export&rsquo; and &lsquo;Import&rsquo; capabilities to register  your views, presenters and services in the <strong>CompositionContainer</strong> (you can check  the&nbsp;<a href=\"http://mef.codeplex.com/wikipage?title=Overview&referringTitle=Documentation\">MEF  documentation</a> to see how this is done).</p>\r\n<p id=8ae37f60-5561-012d-4695-12313d00b9f1>I hope you find this helpful.</p>\r\n<p id=8ae38e50-5561-012d-4696-12313d00b9f1>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-06-10T11:27:06.03-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "457476",
+    "ThreadId": "215101",
+    "Html": "<p>@keoz, @hilla_benita</p>\r\n<p>With MEF there's no need to do an explicit registration of views / services. You simply annotate your views as Exports and they will be automatically registered when the module is loaded. As to writing up VMs to views there are several possibilities including the following common approaches.</p>\r\n<ul>\r\n<li>You can import the ViewModel&nbsp;into a controller /&nbsp;the application and wire it up manually to the DC, such as in our wiki here: <a href=\"http://mef.codeplex.com/wikipage?title=CompsitionInitializer&referringTitle=Guide\">http://mef.codeplex.com/wikipage?title=CompsitionInitializer&amp;referringTitle=Guide</a></li>\r\n<li>You can import the ViewModel directly into the view and wire it up in the property setter. <a href=\"http://codebetter.com/blogs/glenn.block/archive/2010/03/08/building-hellomef-part-v-refactoring-to-viewmodel.aspx\">http://codebetter.com/blogs/glenn.block/archive/2010/03/08/building-hellomef-part-v-refactoring-to-viewmodel.aspx</a></li>\r\n<li>If you are in Silverlight, you can use ExportFactory&lt;T&gt; to&nbsp;create a new View/VM dyamically and wire them that way such as in this link: <a href=\"http://mef.codeplex.com/wikipage?title=PartCreator&referringTitle=Guide\">http://mef.codeplex.com/wikipage?title=PartCreator&amp;referringTitle=Guide</a></li>\r\n<li>Use an attached property similar to what MefedMVVM uses: <a href=\"http://mefedmvvm.codeplex.com/\">http://mefedmvvm.codeplex.com/</a></li>\r\n</ul>\r\n<p>Regradless of which approach you use the import thing is that the Views and VMs do not have to be manually registered. They are simply exported.</p>\r\n<p>Regards</p>\r\n<p>Glenn</p>",
+    "PostedDate": "2010-06-18T19:44:14.337-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "457697",
+    "ThreadId": "215101",
+    "Html": "<p>Thanks for your answer.</p>\r\n<p>If I understand right there is no need for Prism if we use MEF,</p>\r\n<p>There is no need in unity container and aggregation events...</p>\r\n<p>so what the&nbsp;benefit&nbsp;that Prism get me&nbsp;except of regions?&nbsp;&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>Hilla</p>",
+    "PostedDate": "2010-06-20T02:08:47.67-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "457775",
+    "ThreadId": "215101",
+    "Html": "<p>I don't think I said that :-) I was pointing out that you don't need to specifically register views and view models as they can be exported and MEF will discover them.</p>\r\n<p>On the top of MEF and Prism, they are really orthagonal to one another. There is some overlap from a library perspective but Prism is more than just libraries, and&nbsp;the two can&nbsp;be blended. Check this thread: <a href=\"http://mef.codeplex.com/Thread/View.aspx?ThreadId=216547\">http://mef.codeplex.com/Thread/View.aspx?ThreadId=216547</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-06-20T11:09:29.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "457892",
+    "ThreadId": "215101",
+    "Html": "thanks",
+    "PostedDate": "2010-06-20T23:17:42.27-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "460308",
+    "ThreadId": "215101",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>hilla_benita wrote:</strong><br>\r\n<p>Hi,&nbsp;</p>\r\n<p>I didn't understand how we can register view/presenter to the new MEF container, that the view/presenters use injection or MEF 'Import'?</p>\r\n<p>In the MEF ex. there is no explanation on how we can register views presenters &amp; services in the module.</p>\r\n<p>Thanks</p>\r\n</blockquote>\r\n<p>&nbsp;I wrote a sample that utilizes the MVPVM pattern (presenter handles business logic) using Prism V4 Drop 2; perhaps it might give you some ideas on how you could address your requirements.</p>\r\n<p><a href=\"http://www.global-webnet.net/blogengine/post/2010/06/26/PRISM-V4-Drop-2-MVPVM-Modularity-with-MEF.aspx\">http://www.global-webnet.net/blogengine/post/2010/06/26/PRISM-V4-Drop-2-MVPVM-Modularity-with-MEF.aspx</a></p>",
+    "PostedDate": "2010-06-26T22:32:27.577-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "90525",
+    "ThreadId": "27125",
+    "Html": "\r\nWhat is the driving force behind the PrismContainerProvider? It looks like it was introduced to support the RegionManagerService, but I would argue that RegionManagerService could accept an IPrismContainer in its ctor.<br /><br />Looking through the code, it looks like PrismContainerProvider holds the only non-circular reference to the IPrismContainer (and its underlying IUnityContainer/IWhateverContainer), since Bootstrapper classes are dismissed after they perform their duties. Will we continue to rely on the PrismContainerProvider to keep the container alive or will this responsibility lie elsewhere?<br />",
+    "PostedDate": "2008-05-05T06:05:16.637-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "91150",
+    "ThreadId": "27125",
+    "Html": "\r\n@braagh<br /><br />The PrismContainerProvider is needed by the region static properties. Attached properties in WPF are static, so we can't inject anything in to them. Using the PrismProviider allows the attached property to access the container. The cases where we woud use it are those where we cannot perform injection.<br /><br />Glenn<br />",
+    "PostedDate": "2008-05-08T00:28:21.577-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "253889",
+    "ThreadId": "74222",
+    "Html": "<p>Hello</p>\r\n<p>I am fairly new to prism/composite applications.&nbsp; To test my understanding of the concepts, I am building a sample application and I have run into a scenario that I would very much like to get feedback on.</p>\r\n<p>My shell exposes two regions that are populated by modules exposing a treeview user control and a listview user control (respectively).&nbsp; These controls display different types of data.&nbsp; I would like to implement some functionality that would allow the content displayed in these controls to be filtered based on text input into a text box (similar to iTunes search).</p>\r\n<p>Visually, I am picturing the two &quot;filter boxes&quot; being present, one directly below the treeview and another directly below the listview.&nbsp;</p>\r\n<p>If I were to implement a module to host the FilterBox and create two new regions in the shell to host two instances of FilterBox, how would I coordinate communication to the treeview and listview modules??&nbsp; I have considered using the Event Aggregator to allow the FilterBox to publish an event when the value in the Filter Box changes (FilterCriteriaChangedEvent).&nbsp; The treeview and listview controls would then subscribe to this event and do the filtering.&nbsp; However, this presents a problem since typing in either filterbox would cause both controls to be filtered.</p>\r\n<p>This leads me to believe that I wouldn't want to define the filter box regions directly in the shell....&nbsp;</p>\r\n<p>Instead of defining the FilterBox in its own module, I would place its components in my Infrastructure project and then explicitly instantiate each filter box in a scoped region in each of the controls (treeview and listview).&nbsp; Then I could use the region context to communicate the changes, but this seems awkward.&nbsp; Does the event aggregator also have a concept of scope??</p>\r\n<p>Any feedback would be greatly appreciated!&nbsp; Thanks in advance!</p>",
+    "PostedDate": "2009-11-05T10:57:41.883-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "254929",
+    "ThreadId": "74222",
+    "Html": "<p>Since the filterbox is so tightly bound to the list it's supposed to filter I would have put that in the same View &amp; ViewModel as your list.<br>And then you won't need to use the EventAggregator, but can rely on databinding.</p>\r\n<p>Any specific reason you wanted to have the filteboxes directly in the shell instead (or in it's own module)&nbsp;? If you wanted to do that I guess you would simply pass on some object/value as a parameter when you fire your aggregated event, and have your different listboxes/treeviews whatever to filter only if that parameter matches its own.</p>\r\n<p>Cheers,<br>Ted</p>",
+    "PostedDate": "2009-11-08T23:43:58.913-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

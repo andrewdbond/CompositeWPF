@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "237205",
+    "ThreadId": "69680",
+    "Html": "<p>Hi,</p>\r\n<p>I guess I'm missing something obvious here, but I just can't understand how to load views into region on demand.</p>\r\n<p>Say I have a button, and when it clicked I want to display ViewA in RegionA. What should I do in order to accomplish that?</p>\r\n<p>All of the samples in the docs demonstrates how to register a view in a region to be displayed immediately, but this is not what I'm looking for.</p>\r\n<p>So - how can that be done?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks!</p>",
+    "PostedDate": "2009-09-22T01:32:40.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "238447",
+    "ThreadId": "69680",
+    "Html": "<p>Hi,</p>\r\n<p>If you want to show a view in a region when a button is clicked you can use code similar to this (assuming view is a ViewA instance):</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">if</span> (!regionManager.Regions[<span style=\"color:#A31515\">&quot;RegionA&quot;</span>].Views.Contains(view)) \r\n{ \r\n   regionManager.Regions[<span style=\"color:#A31515\">&quot;RegionA&quot;</span>].Add(view);\r\n} \r\nregionManager.Regions[<span style=\"color:#A31515\">&quot;RegionA&quot;</span>].Activate(view);\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Take into account that the activate method only works if the region is attached to a ContentControl or Selector.</p>\r\n<p>You can find more information on this topic <a href=\"http://blogs.southworks.net/matiasb/2009/07/02/how-to-hide-views-inside-composite-application-guidance-aka-prism-v2-regions/\">here</a>.</p>\r\n<p id=0e1382a0-89d6-012c-0af6-12313b009c21>Please let me know if this helps.</p>\r\n<p id=0e13bd60-89d6-012c-0af7-12313b009c21>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-09-24T12:03:12.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

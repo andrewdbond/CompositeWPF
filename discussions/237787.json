@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "533617",
+    "ThreadId": "237787",
+    "Html": "\r\n<p>Hi,&nbsp;</p>\r\n<p>i wanted to put my command in a separate file, but this seems to be harder than expected. When i write my EditContactCommand and i inherit from DelegateCommand, i get an compiler error. it sais that i have to use the constructor that gets the delegates of\r\n the methods. but its not possible to use the methods in my command class for the constructor of the base class. Do i always have to put my commands in my viewmodel???</p>\r\n",
+    "PostedDate": "2010-12-09T13:20:06.893-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533857",
+    "ThreadId": "237787",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>In order to create a Delegate command, you need to &quot;<em>instantiate a <strong>\r\nDelegateCommand</strong> field in the constructor of your view model, and then expose it as an\r\n<strong>ICommand</strong> property</em>&quot;, according to the Commanding section of <a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28PandP.40%29.aspx\">\r\nthis chapter</a> from the Prism MSDN documentation.</p>\r\n<p>Take into account that, when using Delegate Commands, you don't need to write a new class for each command that you are implementing. You just need to create a new instance of\r\n<strong>DelegateCommand </strong>and pass different delegates to the instance. As for placing the commands in the View Model, you don't necessarily have to put it there for the Delegate Command to work, but that's the recommended scenario. What you do need\r\n to have is the possibility to bind to that command from your view. Generally, the View Model is the view's DataContext, so that's why it's recommended to place the Delegate Command in your View Model.</p>\r\n<p>You might find the <a href=\"http://msdn.microsoft.com/en-us/library/ff921082%28PandP.40%29.aspx\">\r\nCommanding QuickStart</a> useful to learn more about <strong>DelegateCommands</strong>.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-10T05:27:07.437-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "534345",
+    "ThreadId": "237787",
+    "Html": "\r\n<p>Well, thanks for answering, but i cannot find any separate command in this sample. And the documentation also creates commands always in the viewmodel.</p>\r\n<p>The solution ist just do create a separate class, implement the ICommand interface raise the CanExecuteChanged event to refresh al bound GUI-Parts...</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-11T05:47:49.153-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

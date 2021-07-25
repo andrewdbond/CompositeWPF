@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "916288",
+    "ThreadId": "396566",
+    "Html": "\r\n<p>Building an addin component for a Prism/WPF project using VSTO/MEF</p>\r\n<p>and running into a ServiceLocator.Current throws a NullReferenceException</p>\r\n<p>&nbsp;</p>\r\n<p>defined container in VSTO using MEF as follows<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var catalog = new AggregateCatalog();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catalog.Catalogs.Add(new AssemblyCatalog(this.GetType().Assembly));<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catalog.Catalogs.Add(...);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; container = new CompositionContainer(catalog);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; container.SatisfyImportsOnce(this);<br>\r\n<br>\r\nall's working well using various libraries/Imports except where the code uses <br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp; ServiceLocator.Current.GetInstance&lt;MyInterface&gt;()<br>\r\n<br>\r\nwhich ofcourse throws a NullReferenceException<br>\r\n<br>\r\n</p>\r\n<p>Looking into it some more - ServiceLocator is in it's own dll,</p>\r\n<p>&nbsp;</p>\r\n<p>Question is how is it wired up in Prism/MEF so i can do the same in the addin</p>\r\n<p>thanks</p>\r\n",
+    "PostedDate": "2012-09-23T08:05:49.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917468",
+    "ThreadId": "396566",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding in <strong>Prism </strong>this wiring is achieved in the <strong>ConfigureServiceLocator </strong>method in both the <strong> MefBootstrapper</strong> and <strong>UnityBootstrapper</strong>, where the <strong>LocatorProvider </strong>is set for for the <strong>ServiceLocator</strong>, e.g. like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> ConfigureServiceLocator()\r\n        {\r\n            IServiceLocator serviceLocator = <span style=\"color: blue;\">this</span>.Container.GetExportedValue&lt;IServiceLocator&gt;();\r\n            ServiceLocator.SetLocatorProvider(() =&gt; serviceLocator);\r\n        }\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Also, as mentioned in the following chapter of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921140(v=pandp.40).aspx#sec10\">3: Managing Dependencies Between Components, Using Dependency Injection Containers and Services in Prism</a></li>\r\n</ul>\r\n<p>In order to replace the container, your container must implement the <strong>IServiceLocator </strong>interface. The <strong>Prism </strong>Library provides the <strong>UnityServiceLocatorAdapter </strong>and the <strong>MefServiceLocatorAdapter</strong>, and both adapters implement the <strong>ISeviceLocator</strong> interface by extending the <strong>ServiceLocatorImplBase</strong> type, in order to leverage <strong>IoC </strong>and <strong>Service Location</strong> without tying to a specific implementation.</p>\r\n<p>I hope you find this helpful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-09-25T13:18:30.163-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918207",
+    "ThreadId": "396566",
+    "Html": "<p>Thanks, I'm using the MEF container</p>\r\n<p>System.ComponentModel.Composition.Hosting.CompositionContainer</p>\r\n<p>vanilla style which does not implement IServiceLocator</p>\r\n<p>For now, I adopted the q&amp;d ( quick &amp; dirty ) approach to meet our deadlines, will revisit it later</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks again</p>",
+    "PostedDate": "2012-09-26T19:56:01.717-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1306935",
+    "ThreadId": "396566",
+    "Html": "Hi,My code like this  \n<br />\n<pre><code>        MainWindowNavViewModel mainWindowNavViewModel1 = ServiceLocator.Current.GetInstance&lt;MainWindowNavViewModel&gt;();\n\n           [Export(typeof(MainWindowNavViewModel))]\n           public class MainWindowNavViewModel \n           {}\n</code></pre>\n\nServiceLocator.Current.GetInstance  work  well.<br />\n<br />\nif  code like this ,it  dose now work.<br />\n<pre><code>        MainWindowNavViewModel mainWindowNavViewModel1 = ServiceLocator.Current.GetInstance&lt;MainWindowNavViewModel&gt;();\n\n[Export(typeof(MainWindowNavViewModel))]\npublic class MainWindowNavViewModel : BaseNavViewModel\n{   \n}\n\n\npublic abstract class BaseNavViewModel\n{\n    [Import]\n    public BaseMainViewModel MainViewModel { get; set; }\n    public ObservableCollection&lt;BaseNavViewModel&gt; NavViewModelCollection { get; set; }\n    public BaseNavViewModel()\n    {\n        NavViewModelCollection = new ObservableCollection&lt;BaseNavViewModel&gt;();\n    }\n}\n\n</code></pre>\n\nBaseNavViewModel、MainWindowNavViewModel   in diffrent namespace<br />\n<br />\nDo you kown  the reason,thanks<br />\n",
+    "PostedDate": "2014-09-22T01:54:45.69-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

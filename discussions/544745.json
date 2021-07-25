@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1243216",
+    "ThreadId": "544745",
+    "Html": "Hi, <br />\ni have a composite application that loads dynamically an external assembly using prism 5 and MEF, the module contains an image, how can i show this image on my shell? <br />\nThe module is loaded dynamically by using DirectoryCatalog and it's not referenced on the start-up project.<br />\ni tried the following but it doesn't work: <br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">&lt;</span><span style=\"color:#A31515;\">Image</span> <span style=\"color:Red;\">Source</span><span style=\"color:Blue;\">=</span><span style=\"color:Black;\">&quot;</span><span style=\"color:Blue;\">pack://application:,,,/MyDllFileName;component/Images/icon.png</span><span style=\"color:Black;\">&quot;</span> <span style=\"color:Blue;\">/&gt;</span>\r\n</pre></div>and <br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">&lt;</span><span style=\"color:#A31515;\">Image</span> <span style=\"color:Red;\">Source</span><span style=\"color:Blue;\">=</span><span style=\"color:Black;\">&quot;</span><span style=\"color:Blue;\">/MyDllFileName;component/Images/icon.png</span><span style=\"color:Black;\">&quot;</span> <span style=\"color:Blue;\">/&gt;</span>\r\n</pre></div>how can i solve this problem please?<br />\n",
+    "PostedDate": "2014-05-08T11:26:05.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1243506",
+    "ThreadId": "544745",
+    "Html": "Hi, \r<br />\n<br />\nI have tried to reproduce your problem, but both approaches you mentioned worked successfully on my solution.\r<br />\nFor <em>Runtime</em> execution, you would not need any other implementation rather than the <strong><em>Image</em></strong> control definition in the <strong>Shell</strong> or <strong>UserControl</strong> View. If you would like to see the image in <em>DesignTime</em> instead, you would need to additionally reference the external assembly on the specific project.\r<br />\n<br />\nAnyway, regarding your problem I would suggest you to verify the external assembly location:<br />\n<h1></h1>\n<ul>\n<li><strong><em>Assembly file</em></strong> should be placed on the <strong><em>Debug</em></strong> or <strong><em>Release</em></strong> folder where the solution builds and runs.</li>\n<li>\nThe path of the image inside the assembly would be <em>relative to the root assembly</em>. So if you have the <strong><em>Image</em></strong> folder placed on the root of the project assembly, the source path would be as you correctly described.<br />\n</li>\n</ul>\nif this did not help you, it would be helpful if you could explain what in particular would not work.\r<br />\n<br />\nRegards.\r<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-05-09T07:59:16.047-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-05-12T07:01:44.267-07:00"
+  },
+  {
+    "Id": "1244369",
+    "ThreadId": "544745",
+    "Html": "Thanks a lot <a href=\"https://www.codeplex.com/site/users/view/GOstrowsky\" rel=\"nofollow\">GOstrowsky</a>\r<br />\n<br />\nThe problem was in my the property AssemblyName, it returns the assembly name with the extension .dll \r<br />\nI solved the problem by using the function Path.GetFileNameWithoutExtension() \r<br />\n<br />\nThank you. <br />\n",
+    "PostedDate": "2014-05-12T07:01:37.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

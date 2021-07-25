@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "238684",
+    "ThreadId": "70069",
+    "Html": "<p>Hi all!</p>\r\n<p>I'm on a team developing a RIA using Silverlight 3 and PRISM v2.</p>\r\n<p>We're still in sort of a prototyping mode, and the application is contantly growing in size - which is starting to become a problem.<br>A lot of the same DLLs are referenced in the different modules (projects), and all these are compiled into the different xaps which makes them bigger than really&nbsp;necessary.</p>\r\n<p>We can avoid this ofcourse by setting the &quot;Copy Local&quot;-property on the different references to &quot;No&quot;, and make sure the component is referenced in another part of the solution (ie. the Shell).<br>This is not the best&nbsp;approach&nbsp;in my opinion, because it will soon end up being a mess trying to control which DLLS are used at any given time.</p>\r\n<p>Another approach I've considered is to make a post-compile script, which extracts all the &quot;module-xaps&quot; and copies all content into a new xap - hence making sure there are only one copy of each DLL.<br>If doing so, I have to change the ModulesCatalog to reference the new xap, and put all modules in the same group (modulegroup).&nbsp;<br>I think this will work, but it doesn't feel quite right...&nbsp;</p>\r\n<p>Does anyone have any thoughts on, or experience with this??</p>\r\n<p>Regards,<br>Jon</p>",
+    "PostedDate": "2009-09-25T01:38:02.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "238996",
+    "ThreadId": "70069",
+    "Html": "<p id=4b4261a0-8c48-012c-d5e6-12313b003871>Hi Jon,</p>\r\n<p id=4b4277d0-8c48-012c-d5e7-12313b003871>The recommended approach in the Prism documentation is the first one you mentioned. You can find that explanation in this article:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/dd458937.aspx\">Deploying Silverlight Applications</a> </li>\r\n</ul>\r\n<p id=4b428eb0-8c48-012c-d5e8-12313b003871>At a first glance, if you take the second approach you would be losing some benefits of loading modules remotely greatly increasing the download size of your application (thus increasing the time to load).</p>\r\n<p id=4b42ac10-8c48-012c-d5e9-12313b003871>For example (and this is just one of the things you will not be able to do), if you have a module that is <a href=\"https://wolof.southworksinc.com/fiyianswers/stories/For example, if you have a module that is loaded on demand, it will only be loaded when it is requested. If you make it part of a single .xap file, you would be losing this capability, plus\">loaded on demand</a>, with the first approach it will only be loaded when it is requested, while using the second approach will load it with the rest of the application.</p>\r\n<p id=4b42d2b0-8c48-012c-d5ea-12313b003871>Please let me know if this helps.</p>\r\n<p id=4b42f8b0-8c48-012c-d5eb-12313b003871>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-25T15:02:52.643-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

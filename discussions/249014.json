@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "577709",
+    "ThreadId": "249014",
+    "Html": "\r\n<p>Hi there,</p>\r\n<p>We've run into a problem which I think may have something to do with WeakReferences being held when adding Regions to the RegionManager, and was wondering if anyone else had seen similar.</p>\r\n<p>Occasionally, we are finding that our regions aren't available in the RegionManager. We have written a custom adapter for the DevExpress LayoutGroups and the Adapt method on that is not being called. We're using the UnityBootstrapper. We have two regions\r\n to be added.</p>\r\n<p>Tracing it through, the call to RegionManager.UpdateRegions() which subsequently calls WeakDelegatesManager.Raise(). There are two listeners in the listeners collection, but both of their Targets are null, and are then removed from the listeners collection.\r\n This means that our Adapt method is never called and the regions aren't available. The xaml to configure the regions is this:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>                        <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">dxdo</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">LayoutGroup</span> <span style=\"color:red\">Width</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">250</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">Orientation</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">Horizontal</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">cal:RegionManager.RegionName</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">PortfolioRegion</span><span style=\"color:black\">&quot;</span> <span style=\"color:blue\">/&gt;</span>\r\n                        <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">dxdo</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">LayoutGroup</span> <span style=\"color:red\">cal:RegionManager.RegionName</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">MainRegion</span><span style=\"color:black\">&quot;</span> <span style=\"color:blue\">/&gt;</span>\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>I can force this to happen all the time by changing the following code in UnityBootstapper.cs:102 and adding a call to GC.Collect() :</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>                <span style=\"color:blue\">this</span>.Logger.Log(Resources.SettingTheRegionManager, Category.Debug, Priority.Low);\r\n                RegionManager.SetRegionManager(<span style=\"color:blue\">this</span>.Shell, <span style=\"color:blue\">this</span>.Container.Resolve&lt;IRegionManager&gt;());\r\n\r\n                <strong>GC.Collect();\r\n</strong>\r\n                <span style=\"color:blue\">this</span>.Logger.Log(Resources.UpdatingRegions, Category.Debug, Priority.Low);\r\n                RegionManager.UpdateRegions();\r\n\r\n</pre>\r\n</div>\r\n<p>I can also prevent it happening by specializing DelayedRegionCreationBehavior to keep a reference to each DelayedRegionCreationBehavior. Or I can create a Unity LifetimeManager that keeps the reference. I can't use the ContainerControlledLifetimeManager\r\n as DelayedRegionCreationBehavior needs to be a unique instance as the TargetElements are different.</p>\r\n<p>Can anyone suggest what I am doing wrong or whether it is expected behavior from Prism? Or if it isn't expected behavior, is there a fix for it?</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2011-03-09T05:55:46.303-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "577956",
+    "ThreadId": "249014",
+    "Html": "<p>Hi,</p>\r\n<p>I've tried adding the <strong>GC.Collect</strong> method in the line you've specified using the <strong>ItemsControlRegionAdapter</strong>, and I didn't experience the behavior you're mentioned. There is a strong reference to the <strong>DelayedRegionCreationBehavior</strong> in the event handler that is defined for the <strong>Loaded</strong> event of the target element. Therefore, if the target element is kept alive, the <strong>DelayedRegionCreationBehavior </strong>should also be kept alive (unless the <strong>UnWireTargetElement</strong> method has been called, since that method unregisters the aforementioned event handler).</p>\r\n<p>If you can't find the reason why this is happening, it would be helpful if you could provide us with a repro sample so that we can help you further with this.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-09T11:31:28.087-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "578260",
+    "ThreadId": "249014",
+    "Html": "<p>Hi Guido,</p>\r\n<p>Yes. That's it. The DevExpress LayoutGroups derive from ContentElement rather than FrameworkElement so do not have the Loaded event, no strong reference is being held and they are being collected.</p>\r\n<p>Can you suggest a way to work around this? Is there a RegionCreationBehavior that can deal with ContentElement rather than FrameworkElements?</p>\r\n<p>Thanks.</p>",
+    "PostedDate": "2011-03-10T00:45:19.093-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "578440",
+    "ThreadId": "249014",
+    "Html": "<p>Hi,</p>\r\n<p>There's no region creation behavior made for <strong>ContentElement</strong>; however, you could create your own one that would listen for another event, or even create the region as soon as the behavior is attached.</p>\r\n<p>You can find more information on Region Behaviors and how to create them in the following chapters from the Prism MSDN documentation:</p>\r\n<ul>\r\n<li><a class=\"tocSelected\" href=\"http://msdn.microsoft.com/en-us/library/ff921098%28PandP.40%29.aspx\" target=\"_top\">Chapter 7: Composing the User Interface</a></li>\r\n<li><a class=\"tocSelected\" href=\"http://msdn.microsoft.com/en-us/library/gg430866%28PandP.40%29.aspx\" target=\"_top\">Appendix E: Extending Prism</a></li>\r\n</ul>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-10T06:55:01.307-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

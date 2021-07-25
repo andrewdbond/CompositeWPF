@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "509104",
+    "ThreadId": "231403",
+    "Html": "<p>To get started with Prism I took the UICompostion QS and added a new bottom region. Then I created a new module project based very closely after the included employee module project. I updated the catalog and set the module to inject into the new bottom region. When it ran the left and right regions loaded but the bottom region remained empty. When I debugged I got the message I have seen here on the boards about setting your project to copy its xap.&nbsp; From what I read, using xaml config removes the need to add module references to the shell but after much frustration I added a reference to my new module. BAM, it worked. I went back and checked if I had missed the shell referencing the employee module - nope. Then I thought maybe the new entry in the catalog had a typo and was being ignored. Removing my new module from the xaml catalog caused the module to fail to load.</p>\r\n<p>So it seems the catalog is getting populated with the new module info but when thee boostrapper tries to actually load the xap file the references fails. I'm guessing adding the reference is making up for an error in my xaml. Does anyone see an issue with the following entry?</p>\r\n<p>Note: The module project, the namespace and the module class are all named ProjectInfoModule following the examples of modules like ModuleA used in other quick starts.</p>\r\n<p>&nbsp;&nbsp;&nbsp;\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">prism</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">ModuleInfo</span> <span style=\"color:red\">Ref</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">ProjectInfoModule.xap</span><span style=\"color:black\">&quot;</span>\r\n                      <span style=\"color:red\">ModuleName</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">ProjectInfoModule</span><span style=\"color:black\">&quot;</span>\r\n                      <span style=\"color:red\">ModuleType</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">ProjectInfoModule.ProjectInfoModule, ProjectInfoModule, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</span><span style=\"color:black\">&quot;</span>\r\n                      <span style=\"color:red\">InitializationMode</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">WhenAvailable</span><span style=\"color:black\">&quot;</span> <span style=\"color:blue\">/&gt;</span>  \r\n</pre>\r\n</div>\r\n</p>\r\n<p>Thank you,</p>\r\n<p>Gary&nbsp;</p>",
+    "PostedDate": "2010-10-18T19:12:35.44-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509527",
+    "ThreadId": "231403",
+    "Html": "<p>Hi Gary,</p>\r\n<p>Nice to see that you started using Prism. Based on my understanding you added a new module in the UI Composition Quickstart, but it is not loaded. So I think that you can find interesting the following forum thread where user reported a similar scenario:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=221865\"><span>Problems loading ModuleCatalog from XAML</span></a></li>\r\n</ul>\r\n<p>Please, take into account that in the aforementioned thread the user tried to load its module on demand, so you could avoid the step 3 over there.</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-19T10:50:23.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "510285",
+    "ThreadId": "231403",
+    "Html": "<p>Sorry for my delay in responding. Another project had my attention for the last day. The reason my module was not loading was that the web project's SL tab did not have a reference. here is the helpful line from the linked post for any readers.</p>\r\n<p>&nbsp;</p>\r\n<p>Finally, and one of the most important parts, add a reference to your <strong>ModuleA.xap</strong> file in the <strong>Silverlight Application</strong> tab from the  properties page of the <strong>RemoteModuleLoading.Silverlight.Web</strong> project.</p>\r\n<p>&nbsp;</p>\r\n<p>Thank you for your patient help. Any plans for a VS integrated project template in the future? It seems much of the pain, at least for a newbie is undoing much of what VS does to help you create a non prism application. The learning curve would be a bit easier if we were not fighting against what VS thinks our intent is.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-20T22:17:19.63-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

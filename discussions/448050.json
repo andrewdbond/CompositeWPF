@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1060388",
+    "ThreadId": "448050",
+    "Html": "Hi,<br />\n<br />\nI have a Tab control , in which tab item must be generated dynamically (i.e. when I click some button need to add tab item with region ) .<br />\n<br />\nWe have a WPF UI , where in there are multiple regions.<br />\n<br />\n1.Top region where we have the search functionaility (we can have an expander to close/open)<br />\n<ol>\n<li>To the Left we have Tab region, where we have to load the Tabs dynamicallay I mean<br />\nOnce a view  gets opened in One tab , clicking on the link present on that Tab  should load another View (A1) as a TabA1 .<br />\nIf user clicks on another link , another Tab should Open (same View) but another instance View(A2) .<br />\nAnd we have Comments region to the extreme right .</li>\n<li>\nWe have status bar in the below . <br />\nThe Tab region,NOtes,are all dockable .<br />\nHow can we start with architecture, How many regions , How can we load multiple tabs. please suggest .<br />\n</li>\n</ol>\nHow can I achieve this functionality using Prism and MVVM.<br />\n<br />\nThanks and Regards<br />\nDeepak<br />\n",
+    "PostedDate": "2013-06-24T06:54:39.63-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1060528",
+    "ThreadId": "448050",
+    "Html": "Hi Deepak,\r<br />\n<br />\nIf you define your <strong>TabControl</strong> as a region, then each view you inject in it will be represented as a new tab. So basically, when you click the Button to add a view, the corresponding Command would be executed in the corresponding view model, adding the view to the region; for example, doing something like this:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">this</span>.regionManager.Regions[<span style=\"color:#A31515;\">&quot;TabRegion&quot;</span>].Add( viewA1 );\n<span style=\"color:Blue;\">this</span>.regionManager.Regions[<span style=\"color:#A31515;\">&quot;TabRegion&quot;</span>].Activate( viewA1 ); <span style=\"color:Green;\">// Optional, if you want to select the viewA1 as the active tab </span>\r\n</pre></div>The injected view should be automatically wrapped in a <strong>TabItem</strong> and added to the <strong>TabControl</strong>.\r<br />\n<br />\nPlease let us know if you have any doubts.\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-06-24T12:08:56.947-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

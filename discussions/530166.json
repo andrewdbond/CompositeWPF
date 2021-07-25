@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1205010",
+    "ThreadId": "530166",
+    "Html": "Hi,\r<br />\n\t\r<br />\nThis is an analogy for my case (where i use Model-View-Controller-ViewModel approach where most VM logic implemented in controller)\r<br />\n : i have CustomerViewModel which is the VM for CustomerView. now when i select certain customerID from a list (in another view)\r<br />\nso the details of that customer are displayed (CustomerName, Address, ....) in a new tap in the main region. i use MEF to inject CustomerViewModel into the CustomerController <br />\n<pre><code>&gt;in the controller how i get reference to the CustomerViewModel instance of the active CustomerView as i need to get data from that instance to use it in another scenario\n\n&gt;if a command (AddCustomerCommand) in the VM is fired how to handle that command in the controller so that the Commands in the VM are only placeholders for the view and controller listen to the event of command firing and handle it and return the result to the VM via the injected instance.\n</code></pre>\n\nThank you very much for bearing with us.<br />\n",
+    "PostedDate": "2014-02-08T07:54:14.48-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1206416",
+    "ThreadId": "530166",
+    "Html": "Hi jivara,\r<br />\n<br />\nIf I understood correctly, you would want to get the reference of the active <strong>CustomerViewModel</strong> instance when a command on the <strong>CustomerView</strong> is fired and then, handle the command on the <strong>CustomerController</strong>.\r<br />\n<br />\nOne possible and decoupled-simple way to do this is by using <strong>EventAggregation</strong> service. To do this, you would need to Subscribe the <strong>CustomerController</strong> to an event, which it then will be published by the <strong>CustomerViewModel</strong> active instance. You could raise the event in the <strong>CustomerViewModel's</strong> Command handler method so the <strong>Controller</strong> is notified that the corresponding command to be handled was fired. Therefore, you would finally handle the command on the <strong>CustomerController's</strong> event handler.\r<br />\n<br />\nIn addition, you would be able to pass the <strong>ViewModel</strong> reference as a parameter on the published event, which should be defined with a specified parameter type. \r<br />\n<br />\nYou may find more related information on the following <strong>MSDN Prism Guide</strong> section:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921122(v=pandp.40).aspx#sec11\" rel=\"nofollow\">Creating and Publishing Events</a><br />\n</li>\n</ul>\nI hope this helped you,\r<br />\n<br />\nRegards.\r<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-02-10T09:00:54.653-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1207368",
+    "ThreadId": "530166",
+    "Html": "Hi Gabriel,\r<br />\nsorry for being late due hard circumstances. your answer is ok just one thing: how to get reference to the VM of the current active view in the controller but without command triggering from within VM? Sometimes i need this reference to get data that i use in calculations that concern another VM.\r<br />\n<br />\nThanks <br />\n",
+    "PostedDate": "2014-02-12T08:07:11.293-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1208499",
+    "ThreadId": "530166",
+    "Html": "Hi jivara,\r<br />\n<br />\nI am afraid I don't completely understand the flow of your <strong>App</strong>. Based on my understanding, there would be some scenarios where the active <strong>View's ViewModel</strong> reference would be needed, but without having triggered any command on its corresponding <strong>View</strong>. Then, the action may come from other concerning <strong>ViewModel</strong>.\r<br />\n<br />\nDoes the <strong>Controller</strong> present a reference to the active <strong>View</strong>? If that is the case, you could simply call <strong><em>View.DataContext()</em></strong> from the Controller and retreive the active <strong>View's ViewModel</strong>. Otherwise, I would like to know how is your app structured in order to have a better understanding on communication. \r<br />\n<br />\nIf there is anything I am not considering, I would appreciate if you could describe me a detailed specific scenario you would need to solve.\r<br />\n<br />\nRegards.\r<br />\nGabriel Ostrowsky.\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-02-14T10:17:06.413-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1212350",
+    "ThreadId": "530166",
+    "Html": "Hi Gabriel,\r<br />\nSorry for being late for reply.Your Answer is satisfactory, Thanks for your valuable help.<br />\n",
+    "PostedDate": "2014-02-22T08:20:11.967-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

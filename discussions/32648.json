@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "108259",
+    "ThreadId": "32648",
+    "Html": "Hey Everybody.<br>\r\n<br>\r\nI'm kind of a newbie, so I appologize if the question is stupid.<br>\r\n<br>\r\nI'm getting weird behavior in command registration - if the &quot;CommandHandler&quot; is declared in a &quot;WorkItem&quot;, then the CABUI Framework, does not look for it in Parent.Command, but instead adds it to the current WorkItem commands. Meaning that when the event was suppose to be fired, MyWorkItem wasn't register to it.<br>\r\n<br>\r\npublic class MyWorkItem : WorkItem<br>\r\n{<br>\r\n...<br>\r\n&nbsp;&nbsp;&nbsp; [CommandHandler(&quot;...&quot;)]<br>\r\n&nbsp;&nbsp;&nbsp; public void foo(object, EventArgs)<br>\r\n}<br>\r\n<br>\r\n<br>\r\nWhen I created a Controller class, registered a handle from there, but added the controller from MyWorkItem::InitializeServices(), suddenly both foo &amp; foo2 <br>\r\ngot called.<br>\r\n<br>\r\npublic class MyController: Controller<br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp; [CommandHandler(&quot;...&quot;)]<br>\r\n&nbsp;&nbsp;&nbsp; public void foo2(object, EventArgs)<br>\r\n}<br>\r\n<br>\r\npublic class MyWorkItem  : WorkItem<br>\r\n{<br>\r\n...<br>\r\n&nbsp;&nbsp;&nbsp; [CommandHandler(&quot;...&quot;)]<br>\r\n&nbsp;&nbsp;&nbsp; public void foo(object, EventArgs)<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; protected&nbsp; override InitializeServices()<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  this.Parent.Services.AddNew&lt;MyController&gt;();<br>\r\n&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\n}<br>\r\n<br>\r\nWhat should I do ? <br>\r\nShould Commands be handled NOT in WorkItems ?<br>\r\nShould I hack the CABUI code to always register the event in the parent workitem (CommandStrategy::RegisterCommandHandlers)?<br>\r\nAny other suggestions ? <br>\r\n<br>\r\nThanks alot in advance<br>\r\nYoav S.<br>\r\n<br>\r\nP.S<br>\r\nI'm currently using the CABUI and not prism (I understood that the only difference was with the Workspaces.... hope it's right and I didn't bother the wrong discussion board...)<br>\r\n",
+    "PostedDate": "2008-07-31T08:12:36.053-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "108285",
+    "ThreadId": "32648",
+    "Html": "Hi Yoav S,<br>\r\n<br>\r\nThere are more differences between the CompositeWPF (aka Prism) and CAB/SCSF than the Workspace (it's a totally different infrastructure), e.g. doesn't have WorkItems.<br>\r\n<br>\r\nIf your a newbie I would highly recommend the Smart Client Software Factory at <a href=\"http://www.CodePlex.com/SmartClient\">http://www.CodePlex.com/SmartClient</a> - it is a higher level than CAB and has code generators (guidance packages) to do the bulk of the work for you.<br>\r\n<br>\r\nOnce you create your SCSF application you will want to register your command handlers in the ModuleController.<br>\r\n<br>\r\nI learned a great deal from the gurus in the Smart Client forum - I trust they'll help you get started!<br>\r\n<br>\r\n",
+    "PostedDate": "2008-07-31T09:44:02.493-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

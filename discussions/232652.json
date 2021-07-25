@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "513969",
+    "ThreadId": "232652",
+    "Html": "\r\n<p>Hi, I using Prism (MVVM) to develops a Silverlight Application.</p>\r\n<p>I have many views display like wizard.And a button Print (in toolbox)</p>\r\n<p>So how can I print all views or only view that I want?</p>\r\n<p>I think I use Event Aggregation to Publish and Subscriber event Print. Anybody have any suggestion.</p>\r\n<p>Thank you.</p>\r\n",
+    "PostedDate": "2010-10-28T06:47:08.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514130",
+    "ThreadId": "232652",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>There is no guidance on this topic in Prism out-of-the-box. But there is a document of\r\n<a href=\"http://msdn.microsoft.com/en-us/library/ee671023%28VS.95%29.aspx\">Printing</a> in Silverlight. Based on this documentation section, you will be able print your views using the following code or something similar(pseudo-code):</p>\r\n<pre>PrintDocument pd; <br><span style=\"color:blue\">public </span>PrintService()<br>{        <br>    pd = <span style=\"color:blue\">new </span>PrintDocument();<br>    pd.PrintPage &#43;= <span style=\"color:blue\">new </span>EventHandler&lt;PrintPageEventArgs&gt;(pd_PrintPage);<br>}<br><br><span style=\"color:blue\">private void </span>PrintButton_Click(<span style=\"color:blue\">object </span>sender, RoutedEventArgs e)<br>{        <br>    pd.Print(<span style=\"color:#a31515\">&quot;Wizard&quot;</span>);<br>}<br><br><span style=\"color:blue\">void </span>pd_PrintPage(<span style=\"color:blue\">object </span>sender, PrintPageEventArgs e)<br>{<br>    e.HasMorePages = <span style=\"color:blue\">true</span>; <span style=\"color:green\">//event occurs multiple times until HasMorePages is false (whether there are more pages to print).<br>    </span>e.PageVisual = views[viewIndex]; <span style=\"color:green\">// you need to find the way of assigning a different page when the handler is called multiple times.<br>    </span><span style=\"color:blue\">if</span>(IsTheLastPage) <span style=\"color:green\">//If this is the last page to print<br>        </span>e.HasMorePages = <span style=\"color:blue\">false</span>; <span style=\"color:green\">//it prevents to continue occurring<br></span>}<br></pre>\r\n<p>For more information you could also take a look at the <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.printing.printdocument%28VS.95%29.aspx \">\r\nPrintDocument </a>class documentation section on MSDN.</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-10-28T11:07:43.07-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "77646",
+    "ThreadId": "23196",
+    "Html": "\r\nHi, I have downloaded 6267. Nice start!<br /><br />I want to discuss the way commands are handled.<br />As I can see, the Shell class binds commands through its XAML file, therefore commands are handled in the .cs code behind: Shell.xaml.cs, which is part of the View and not the Presenter. I think that it will be more appropriate to handle commands in the presenter layer (which is what done so far), but why should one direct the Shell or View to call the presenter? Why should I bind commands through XAML?<br /><br />Since there is no option to redirect XAML to call handlers in a code file other than the Shell.xaml.cs, I think that it will be more appropriate to let the presenter to bind commands, or use a helper class to do the job.<br /><br />Tomer<br />",
+    "PostedDate": "2008-03-02T04:01:40.493-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "78022",
+    "ThreadId": "23196",
+    "Html": "\r\nHi Tomer<br /><br />Commands are necessary for allowing human designers to function with Expression Blend. When we think about composite apps build with \"Prism\" we are also thinking about the role that designers play. In absence of a designer, the person doing the desigining will probably be the developer. The classic story is that the designer will own the UI and decide how things look while the developer will write the business logic (UI-Level) that those UI components will call. The way designer does this is by wiring up to call a command. WPF bubbles up commands so that any of the parents above the focused element that initiated the command, can handle it. <br /><br />There actually is another option we are looking at for commanding which won't involve hitting the code behind, which is to use custom ICommands which are exposed off a Presentation (View) model. We will be exploring both possbilities of handling commands.<br /><br />Thanks<br />",
+    "PostedDate": "2008-03-04T02:15:26.093-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "78039",
+    "ThreadId": "23196",
+    "Html": "\r\nHi Glenn,<br /><br />Implementing ICommand sounds great. In this case, one can implement its own command in the presenter layer (or where the logic should sit of course, so the command), exposing the command through it. This way the designer will be able to bind to the desired command, using a simple binding expression:<br /><br />&lt;Button Command=”{Binding Path=DesiredCommandExposedByTheViewModel}” … /&gt;<br /><br />One pitfall for using this mechanism is that custom commands implementing ICommand are not routed in the visual tree. This can cause a problem for updating the availability (Enabled/Disabled) of the control binds to this command while the state changes.<br /><br />There are several ways to work around this problem<br />1.\tOne can implement a third command-adapter object to expose and handle a Routed Command Binding from one side, and to handle custom command from the other side.<br />2.\tOne can implement an old fashion OnIdle mechanism for invalidating relevant commands, or by demanding a change notification <br />on any observed state (which may be difficult for the programmer to implement).<br /><br />Note that on several cases WPF is not invalidating element availability bind to commands: For example when state changes are not triggered by the UI, and other cases where state changes triggered by the UI but somehow are not invalidated. In these cases, the second option will do the job.<br /><br />Regards<br />",
+    "PostedDate": "2008-03-04T03:50:22.62-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "78141",
+    "ThreadId": "23196",
+    "Html": "\r\nHi Tomer<br /><br />\"One pitfall for using this mechanism is that custom commands implementing ICommand are not routed in the visual tree. This can cause a problem for updating the availability (Enabled/Disabled) of the control binds to this command while the state changes.\"<br /><br />We actually are working through that. You'll notice if you look in the spike, it has a Presenter hierarchy. We actually see that the handling for commands will reside in Presenters (IPresenter). Because they are in a hierarchy, we can walk up and walk down via our own internal routing. This does not use WPF's visual or logical tree, but we found that Presenters often don't relate to these constructs.<br /><br />We think potentially we can use the internal commanding to handle enable/disable, visible as well. <br />",
+    "PostedDate": "2008-03-04T10:44:37.137-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "78680",
+    "ThreadId": "23196",
+    "Html": "\r\nI'm interested in which mechanism (CommandDispatcher or EventBroker) should be used to send messages between different components.<br /><br />All commands in smart clients as I see are divided into the following types:<br /><br />1. user gesture commands <br />___a. from shared UI elements (e.g. application menu or toolbar)<br />___b. from concrete view (e.g. button on form)<br />___c. request to other presenter from current as result of user gestures (e.g. showing detailed information in some view about selected item from combobox in other view. Note that I cannot subscribe other presenter to this view event because I want to do smth before and then make a decision about firing event for other presenter.)<br /><br />2. domain commands (to encapsulate requests to model as described in Potel's paper about MVP)<br /><br />All commands of (1) are sent to presenters. For (1a) presenter would be application class or shell presenter (BTW: What responsibilities does shell presenter have in spikes? Why don't you use application class? e.g. Acropolis uses application class as \"Part\" for Shell). Before presenter the user gesture is passed to view, which signals to appropriate presenter. The question is what should be used for this signal. For (1a) Spikes project uses CommandDispatcher and for (1b) it's EventBroker. Obviously EventBroker will be used for (1c). Why cannot you use single mechanism for (1) - user gesture commands?<br /><br />The enable/disable logic is other responsibility and I think mixing its with commanding doesn't sound good. For example, Jeremy Miller uses MicroControllers like MenuController. <a href=\"http://codebetter.com/blogs/jeremy.miller/archive/tags/Build+your+own+CAB/default.aspx\" class=\"externalLink\">http://codebetter.com/blogs/jeremy.miller/archive/tags/Build+your+own+CAB/default.aspx<span class=\"externalLinkIcon\" style=\"font-family:Consolas, Courier New, Courier, Monospace;\"></span></a><br />",
+    "PostedDate": "2008-03-06T05:24:02.047-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "78806",
+    "ThreadId": "23196",
+    "Html": "\r\nHi,<br />We are now using CAB + SCSFcontrib (WPF port) as the basis for a WPF composite app.<br />1) Developed our own RoutedEvents mechanism (similar synatx to WPF) which routs over the WorkItemControllers &amp; Presenters tree. ( we don't use CAB's)<br />2) Used that mechanism to route our implementation of ICommand / RoutedCommand: a command which routs over that (WorkItemControllers &amp; Presenters) tree.<br />3) Added functionality to the routing nodes (WorkItemControllers &amp; Presenters) to enable command binding (same syntax as WPF command binding) so the CanExecute and Execute logic seats in controllers and presenters. <br />4) Since our commands are ICommands we can bind via XAML - no command stuff in the view code behind<br />5) Our command manager pulls the CanExecute status of the commands on IDLE<br /><br /><br />Problems &amp; Solutions:<br />A)   ICommand interface methods do not get a source argument - no way to pass the real source (i.e the button) to the command handler - a drawback comparing to WPF RoutedCommand. On a composite application I'm not sure that's a problem (the presenter does not want to know the button anyway).<br />B) Command target management is problematic - Can't use the ICommandSource.CommandTarget property because of its type and because it does not get passed to a ICommand implementation anyway...  Would use a map which maps a (source,command)-&gt;target but because of issue (A) that is not possible either<br />    Solution:<br />     1) Added a Target property to the command (value can be any item on our routing tree), this is off course a very big limitation on how generic the command is.<br />     2)  If no target is set on the command then the default target is the currently active presenter. (This is a routed command so the actual handling can be in any parent of that presenter)  <br /><br /><br /><br /><br />If you have good directions on solving (B) for Prism, I’d really love to hear them…<br /><br />Waiting fot Tech-ED2008@Eilat, Israel!<br />Amit<br />",
+    "PostedDate": "2008-03-06T11:42:50.197-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "91747",
+    "ThreadId": "23196",
+    "Html": "Hi Amit<br>\r\n<br>\r\nDelegateCommand&lt;T&gt; can be used for targetting. You pass two delegates one for CanExecute, and the other for Execute in other words you can determine the target of the delegate. The other thing you may want to look at is the ActiveAwareCompositeDelegate, which targets the &quot;Active&quot; command. \r\n",
+    "PostedDate": "2008-05-10T23:52:41.61-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

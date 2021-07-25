@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "520684",
+    "ThreadId": "234343",
+    "Html": "\r\n<p>So I've got the whole MEF / PRISM / SL thing setup great. Modules load, views are injected into the appropriate regions, cross module&nbsp;communication&nbsp;works great, but I've run into a small caveat and I'm not sure how to solve it.</p>\r\n<p>When I remove a view from a region the code in the ViewModel (MVVM)&nbsp;for the removed view is still executing (timers, events ext.). My regions are ContentControls and not ItemControls. Is this expected behavior? It seems to me like it might be and perhaps\r\n I just don't fully understand the execution model for Prism. Will I just have to add code to my ViewModel for the removed view to check if it is currently in the region? Does&nbsp;anyone&nbsp;know what I'm talking about even? :)</p>\r\n<p>Thanks<br>\r\nDML&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-11T09:54:12.717-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "520708",
+    "ThreadId": "234343",
+    "Html": "\r\n<p>Hi DML,</p>\r\n<p>In Prism there are two techniques for stop displaying a view in a particular region. The first one is calling the\r\n<strong>Deactivate </strong>method and the other is calling the <strong>Remove </strong>\r\nmethod in the <strong>Region </strong>class. The two techniques causes the same result in the UI. But when you deactivate a view, the view collection do not remove the reference to that view unless you use a particular region behavior named\r\n<strong>RegionMemberLifetimeBehavior</strong>.</p>\r\n<p>If you need more guidance on this topic, you could take a look at the <strong>\r\nUI-Composition</strong> Quickstart as well as in the <strong>Stock Trader</strong> RI.</p>\r\n<p>Other possible reason for this is that your application keeps a reference to the view in some place after removing it.</p>\r\n<p>I think that you can find the following forum thread interesting:&nbsp;<a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=229036\">How to Remove A View From Memory When Closed</a><br>\r\n<br>\r\nIf you continue experiencing this situation, could you please share the code for removing views in your application?&nbsp;</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero&nbsp;<br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n",
+    "PostedDate": "2010-11-11T10:51:55.313-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

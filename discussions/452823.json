@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1078242",
+    "ThreadId": "452823",
+    "Html": "Hi,\r<br />\nIs it possible to have an EventAggregator scoped to a Region ?\r<br />\nA bit like the scoped RegionManager.\r<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2013-08-08T07:42:51.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1078329",
+    "ThreadId": "452823",
+    "Html": "Hi,\r<br />\n<br />\nAs far as I know, I´m afraid that feature is not supported in Prism. Nevertheless, what you can do instead is to define a <strong>Child Container</strong>, create a new <strong>EventAggregator</strong>, and then register it in that <strong>Child Container</strong>, as this is equivalent to have a scoped <strong>EventAggregator</strong>. However, this is not a straightforward solution as the <strong>Child Container</strong> should be seen as an extension of the main container and this may generate undesired effects depending on how your solution is designed.\r<br />\n \r<br />\nTherefore, it would be helpful if you could explain us why do you need this scoped <strong>EventAggregator</strong> and how your application is designed so we can further analyze your scenario to give you a better approach.\r<br />\n<br />\nRegards,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a> <br />\n",
+    "PostedDate": "2013-08-08T10:22:55.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1082512",
+    "ThreadId": "452823",
+    "Html": "Hi,\r<br />\nThanks for the answer.\r<br />\nI'm using the scoped Region implementation of Agustín Adami.\r<br />\n<a href=\"http://www.example.com\" rel=\"nofollow\">http://blogs.southworks.net/aadami/2011/11/30/prism-region-navigation-and-scoped-regions/</a><br />\n<pre><code>regionManager.RequestNavigate(RegionNames.MainRegion, new Uri(&quot;MainWorkspaceView&quot; + query.ToString(), UriKind.Relative),\n            (NavigationResult nr) =&gt;\n            {\n                 if (nr.Error != null)\n                     throw nr.Error;\n                else\n                {\n                        var myRegionManager = nr.ExtractRegionManager();\n                        myRegionManager.RequestNavigate(&quot;Header&quot;, new Uri(&quot;MainWorkspaceHeaderView&quot;, UriKind.Relative));\n                        myRegionManager.RequestNavigate(&quot;Menu&quot;, new Uri(&quot;SearchMenuView&quot;, UriKind.Relative));\n                }\n           });\n</code></pre>\n\nI'd like to have 4 different EventAggregators :<br />\n<ol>\n<li>The usual EventAggregator (global message)</li>\n<li>An EA that would send a message to the scoped region (MainWorkspaceView) + all sub regions (Header, Menu)</li>\n<li>An EA that would send a message to a specific region within the scoped region.</li>\n<li>\nAn EA that would send a message to a specific view in a region.<br />\n</li>\n</ol>\nThat makes a lot of different EA.\r<br />\nThanks<br />\n",
+    "PostedDate": "2013-08-19T23:32:20.767-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1082695",
+    "ThreadId": "452823",
+    "Html": "Hi,\r<br />\n<br />\nBased on your scenario, I believe that what you want is to raise an equal event on a scoped <strong>EventAggregator</strong> so it doesn't affect other <strong>Views globally</strong>. If that is the case, it would be better for you to change your approach of implementing several <strong>EventAggregators</strong> (since it is much more complicated to implement) for a simpler one: <strong>subscription filtering</strong>. This filtering lets you decide if the handler of the subscriber gets executed based on the payload from the event. The following is an example where the <strong>Filter</strong> parameter (the last parameter of the subscription), every time the event is published, <strong>determines if the payload of the event matches a criteria</strong> to decide if the subscriber callback get executed or not:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\nFundAddedEvent fundAddedEvent = <span style=\"color:Blue;\">this</span>.eventAggregator.GetEvent&lt;FundAddedEvent&gt;();\n\nfundAddedEvent.Subscribe(FundAddedEventHandler, ThreadOption.UIThread, <span style=\"color:Blue;\">false</span>, fundOrder =&gt; fundOrder.CustomerId == <span style=\"color:Blue;\">this</span>.customerId);\r\n</pre></div>This way you won't need more <strong>EventAggregators</strong> than the one provided by your container and, when you raise an event (global message), you will be able to decide which of the subscribers of that event will handle it and which not. \r<br />\n<br />\nFor more information on how to implement subscription filtering, you can refer to the following section of the <strong>Prism</strong> documentation:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921122(v=pandp.40).aspx#sec16\" rel=\"nofollow\">Chapter 9: Communicating Between Loosely Coupled Components - Section: Suscription filtering</a><br />\n</li>\n</ul>\nHope this helps,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a> <br />\n",
+    "PostedDate": "2013-08-20T07:23:08.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

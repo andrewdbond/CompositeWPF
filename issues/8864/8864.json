@@ -1,0 +1,56 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "Hello.\nI'm trying to use UpdateTextBindingOnPropertyChanged Behavior with DataGridTemplateColumn.CellEditingTemplate.\nBut, InvalidOperationException is thrown when I edit TextBox (that has this behavior ).\n \nI added a repro sample that confirms this behavior.\n(This only happened when using the behavior in a TextBox control inside a DataTemplate.) \n \n \nI think, this code instead of current can avoid the problem.\n//\n    public class UpdateTextBindingOnPropertyChanged : Behavior<TextBox>\n    {\n        private BindingExpression expression;\n \n        protected override void OnAttached()\n        {\n            base.OnAttached();\n \n            //  Comment out\n \n            //this.expression = this.AssociatedObject.GetBindingExpression(TextBox.TextProperty);\n            this.AssociatedObject.TextChanged += this.OnTextChanged;\n        }\n \n \n        private void OnTextChanged(object sender, EventArgs args)\n        {\n            // Get BindingExpression after TextBox has shown.\n            if (this.expression == null)\n            {\n                this.expression = this.AssociatedObject.GetBindingExpression(TextBox.TextProperty);\n            }\n            this.expression.UpdateSource();\n        }\n.........................\n//\nThanks.",
+    "LastUpdatedDate": "2013-02-21T18:38:06.677-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-10-31T06:48:50.86-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "UpdateTextBindingOnPropertyChanged Behavior in a TextBox control inside a DataTemplate cause InvalidOperationException",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8864
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897992,
+      "FileName": "SilverlightApplication8.zip",
+      "DownloadUrl": ".\\897992"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nI downloaded your sample and was able to reproduce the problem you're mentioning. I also tried the workaround you proposed and found that it worked properly.\r\n\r\nDeep into the problem, I believe this might be caused by the fact that the DataItem property of the BindingExpression obtained inside the UpdateTextBindingOnPropertyChanged behavior is null in the default implementation. Please note that this only happened when using the behavior in a TextBox control inside a DataTemplate. When trying this outside a DataTemplate, the behavior worked correctly.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-11-01T10:18:04.69-07:00",
+      "Id": 156530
+    },
+    {
+      "Message": "Hi Guido,\r\nThank you for your verification.\r\nI ,too, understand that the problem only happened when using the behavior in a TextBox control inside a DataTemplate.\r\nI added a note.\r\n\r\nThanks,\r\n",
+      "PostedDate": "2011-11-01T15:27:07.337-07:00",
+      "Id": 156531
+    }
+  ]
+}

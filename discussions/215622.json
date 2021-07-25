@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "454067",
+    "ThreadId": "215622",
+    "Html": "<p>Hi all,</p>\r\n<p>a quick question about how you would do that. I try to have some sort of lacy loading where the views only get created once the region is actually loaded into the visual tree. Is that possible at all with PRISM (thinking of some kind of Regionbehavior) or would I have to go outside Prism and do it seperatly which would be a shame.</p>\r\n<p>thanks,</p>\r\n<p>Christoph</p>",
+    "PostedDate": "2010-06-10T09:18:58.717-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "454587",
+    "ThreadId": "215622",
+    "Html": "<p id=6e5c1b10-57a6-012d-152e-12313b04bdf1>Hi Cristoph,</p>\r\n<p>If you use View Discovery to register the views into regions, they will be  created and displayed only&nbsp;when the region is created. You can find more  information about View Discovery in <a href=\"http://msdn.microsoft.com/en-us/library/ff650182.aspx\">this  article</a>.</p>\r\n<p id=6e5c2b30-57a6-012d-152f-12313b04bdf1>The scenario that you are describing  is possible to achieve because of the  <strong>DelayedRegionCreationBehavior</strong>, which is attached to regions by  default. You can find&nbsp;it&nbsp;in the the <strong>Behaviors </strong>folder in the  <strong>Regions</strong> folder inside the  <strong>Composite.Presentation</strong> project of the <a href=\"http://msdn.microsoft.com/en-us/library/ff650533.aspx\">CAL</a>. That  behavior creates the <strong>IRegion </strong>only when the control that will  host it is actually loaded into the visual tree.</p>\r\n<p id=6e5c4530-57a6-012d-1530-12313b04bdf1>I hope you find this helpful.</p>\r\n<p id=6e5c83c0-57a6-012d-1532-12313b04bdf1>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-06-11T14:10:46.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "455102",
+    "ThreadId": "215622",
+    "Html": "<p>Hi Guido,</p>\r\n<p>thanks for the reply. I tried the described approach and it works nicely after some changes.</p>\r\n<p>However, there is one open question left: Is there any way I can remove the registered view again? Using the &quot;view injection&quot; method I am able to simply call Region.Remove(object view) and the view is removed from the UI. However, using &quot;view discovery&quot; I cannot guarantee that the view has already been added to the region and therefore want to remove the registered view from the region before it gets added once the region gets displayed.</p>\r\n<p>Christoph</p>",
+    "PostedDate": "2010-06-14T02:37:46.17-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "464415",
+    "ThreadId": "215622",
+    "Html": "<p>Hi Christoph,</p>\r\n<p>As mentioned in <a href=\"View.aspx?ThreadId=214602\">this  thread</a>, view discovery isn&rsquo;t designed for when you need to have programmatic  control over when you add or remove views. However, there are some possibilities  for achieving your scenario.</p>\r\n<p>One of these would be to iterate through the views assigned to a region, and  delete one that fulfills certain criteria. That would be possible since, even if  you use the <strong>RegionViewRegistry</strong> to register views with regions  following the View Discovery approach, you can also access a region through the  <strong>RegionManager</strong>. The code for that would look like this (assuming  that you have already created the region named MyRegion):</p>\r\n<p>IRegion region = this.regionManager.Regions[&ldquo;MyRegion&rdquo;]; <br>foreach (var  view in region.Views) <br>{ <br>&nbsp;&nbsp;&nbsp;  if(view.GetType()==typeof(MyView))region.Remove(view); <br>}</p>\r\n<p>In case you want to remove the registered view from the region before the  region is displayed, take into account that Prism offers no possibility to  unregister a view from a region in the <strong>RegionViewRegistry </strong>out  of the box, so you would have to wait for the region to be added to the visual  tree in order to remove views from it. If you need to do so, you would have to  modify the <strong>RegionViewRegistry&nbsp;</strong>or the  <strong>AutoPopulateBehavior&nbsp;</strong>to support this (for example,&nbsp;adding an  <strong>UnregisterViewWithRegion</strong> method to the  <strong>RegionViewRegistry</strong>).</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-07-07T11:02:53.633-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

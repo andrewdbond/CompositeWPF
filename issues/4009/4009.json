@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "As reported by the user who proposed the issue, this behavior is fixed as of Silverlight 3.",
+    "ClosedDate": "2011-02-04T11:01:45.81-08:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "Guidance say you set the TabControl header by providing a HeaderInfo property on the ViewModel (or whatever is in the View's DataContext). It does not mention the timing issues and the fact that the header cannot change.\n \nThis works IF AND ONLY IF you set the DataContext in the view's constructor and if the value of the HeaderInfo property is known at that moment. If you wait to set the DataContext ... say when handling the view's Loaded event, you are too late.\n \nPerhaps more importantly, you can't change the tab header. Changing the value coming from HeaderInfo and raising PropertyChanged on \"HeaderInfo\" has no effect. Which means I can't change the tab header to reflect changes in the ViewModel (e.g., the name of the Employee currently displayed in the tab).\n \nExample xaml here (taken from a Prism video):\n \n    <basics:TabControl \n      Regions:RegionManager.RegionName=\"MainRegion\"  \n      Margin=\"3\">\n      \n      <Regions:TabControlRegionAdapter.ItemContainerStyle>\n        \n        <Style TargetType=\"basics:TabItem\">\n          <Setter Property=\"HeaderTemplate\">\n            <Setter.Value>\n              <DataTemplate>\n                <TextBlock Text=\"{Binding HeaderInfo}\" />\n              </DataTemplate>\n            </Setter.Value>\n          </Setter>\n        </Style>\n        \n      </Regions:TabControlRegionAdapter.ItemContainerStyle>\n      \n    </basics:TabControl>\n \nChanging the binding  Mode or using something other than a TextBlock doesn't help.\n \nI hope I'm wrong about this.",
+    "LastUpdatedDate": "2013-05-16T05:28:58.553-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-04-25T21:28:07.937-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "HeaderInfo is extremely weak",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 4,
+    "Id": 4009
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Been awhile since I revisited this, but as of today, if I raise OnPropertyChanged for HeaderInfo, the tab header does get updated.",
+      "PostedDate": "2009-08-12T12:59:18.4-07:00",
+      "Id": 156130
+    },
+    {
+      "Message": "It works as of Silverlight 3 RTM",
+      "PostedDate": "2009-08-12T19:52:08.607-07:00",
+      "Id": 156131
+    },
+    {
+      "Message": "As reported by the user who proposed the issue, this behavior is fixed as of Silverlight 3.",
+      "PostedDate": "2011-02-04T10:59:55.07-08:00",
+      "Id": 156132
+    }
+  ]
+}

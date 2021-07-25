@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "728855",
+    "ThreadId": "286988",
+    "Html": "\r\n<p><span style=\"font-size:12pt\">I am looking for some patterns and infrastructure for helping me manage state of buttons and menu items in a composite application.</span></p>\r\n<p><span style=\"font-size:12pt\">I have a <strong>shared ribbon bar with shared commands\r\n</strong>and each module injects additional button and menus</span></p>\r\n<p><span style=\"font-size:12pt\">When an <em>item</em> is selected in a module I need to enable some shared items and disable others</span></p>\r\n<p><span style=\"font-size:12pt\">What is the suggested approach?</span></p>\r\n<p><span style=\"font-size:12pt\">My current thinking is the following</span></p>\r\n<p><span style=\"font-size:12pt\">Every View Model which can handle commands from the ribbon bar will define those commands</span></p>\r\n<p><span style=\"font-size:12pt\">The commands state&nbsp; implementation(<strong>CanExecute)</strong> will forward state management to the ribbon commands</span></p>\r\n<p><span style=\"font-size:12pt\">through ashared service</span></p>\r\n<p><span style=\"font-size:12pt\">Thanks in advance</span></p>\r\n",
+    "PostedDate": "2012-01-22T00:47:29.85-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "729442",
+    "ThreadId": "286988",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding of your scenario, I believe you might benefit from the <strong>IActiveAware </strong>interface, which can be implemented on child views or view models. This interface is primarily used to track the <strong>active </strong>state of a child view within a region. This way when a view is selected, you could react updating the status of the corresponding commands, for example using a shared service as you mentioned.</p>\r\n<p>Additionally <strong>DelegateCommand </strong>class also implements the <strong>IActiveAware </strong>interface, which can be useful if you are using <strong>CompositeCommands</strong>, as these can be configured to evaluate the active <strong>status </strong>of child <strong>DelegateCommands </strong>(in addition to the <strong>CanExecute </strong>status) allowing to define which child commands <strong>CanExecute </strong>status will be considered when enabling the shared command.</p>\r\n<p>If this approach is useful for your scenario, you can find more related information about in the following links:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405494(v=pandp.40).aspx#sec4\">Chapter 6: Advanced MVVM Scenarios, Executing Commands on Active Child Views</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405494(v=pandp.40).aspx#sec2\">Chapter 6: Advanced MVVM Scenarios, Composite Commands</a></li>\r\n<li><a href=\"http://www.softinsight.com/bnoyes/2009/12/08/DetectingTheActiveViewInAPrismApp.aspx\">Detecting the Active View in a Prism App</a></li>\r\n</ul>\r\n<p>Also, I believe you might find the following threads interesting:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/224701?ProjectName=compositewpf\">CompositeCommand for ANY registered DelegateCommand that CanExecute</a></li>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/277463\">Sample prism app using IActiveAware?</a></li>\r\n</ul>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2012-01-23T10:57:33.677-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "731558",
+    "ThreadId": "286988",
+    "Html": "<p>Thanks.i will give it a try.</p>",
+    "PostedDate": "2012-01-27T02:46:49.78-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "159484",
+    "ThreadId": "47705",
+    "Html": "Hi All,<br>\r\n   Anyone has a solution for splash screen display before loading the module especially for Prism v2 Drop 9. I foound few articles based on the prism v1. I dont find the IModuleLoader in Prism v2 drop 9. <br>\r\n",
+    "PostedDate": "2009-02-19T03:47:36.097-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "159671",
+    "ThreadId": "47705",
+    "Html": "I haven't looked at this yet but have it bookmarked for when I've met core requirements<br>\r\n<br>\r\n<a href=\"http://www.codeplex.com/SilverlightLoader\">http://www.codeplex.com/SilverlightLoader</a><br>\r\n<br>\r\n",
+    "PostedDate": "2009-02-19T05:03:41.31-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "159674",
+    "ThreadId": "47705",
+    "Html": "Hi Bill,<br>\r\n   Thank you for the reply. Actually i am looking for WPF application not for silverlight. I can see code which inherit from IModuleLoader and add a event to the module loader before the module loads and handle the events <a href=\"http://blog.hightech.ir/2008/10/splash-screen-with-prism.html\">http://blog.hightech.ir/2008/10/splash-screen-with-prism.html</a>. But in Prism v2 Drop 9 how do we do that? Is there any in built functionality to do the asynchronous splash screen in prism v2? <br>\r\n",
+    "PostedDate": "2009-02-19T05:10:27.36-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "159676",
+    "ThreadId": "47705",
+    "Html": "In that case it is extremely easy using one of Visual Studio's best kept secrets for WPF applications!<br>\r\n<br>\r\n<ol>\r\n    <li>Add your image to your WPF application. </li>\r\n    <li>Right Click on the image and select Properties </li>\r\n    <li>Change the &quot;Build Action&quot; in properties to &quot;SplashScreen&quot; </li>\r\n</ol>\r\n<p>Walla!  You have a splash screen :)</p>\r\n",
+    "PostedDate": "2009-02-19T05:20:39.903-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "159678",
+    "ThreadId": "47705",
+    "Html": "In case you don't have Visual Studio...  I provide the auto-generated code below - see static void Main()<br>\r\n<br>\r\nNote: If in your Visual Studio application - you have your App.xaml's <strong>Build Action</strong> (Properties) set to &quot;ApplicationDefinition&quot; an App.g.cs file will be auto-generated for you in the hidden obj\\debug\\ folder.  If we have to apply attributes to Main then we have to turn this off (switch to Compile) and manually manage the App.g.cs file.<br>\r\n<br>\r\n<br>\r\n<br>\r\n<p>using System.Windows.Markup;<br>\r\nusing System.Windows.Media;<br>\r\nusing System.Windows.Media.Animation;<br>\r\nusing System.Windows.Media.Effects;<br>\r\nusing System.Windows.Media.Imaging;<br>\r\nusing System.Windows.Media.Media3D;<br>\r\nusing System.Windows.Media.TextFormatting;<br>\r\nusing System.Windows.Navigation;<br>\r\nusing System.Windows.Shapes;</p>\r\n<p>namespace StreetDocDesktop {<br>\r\n    <br>\r\n    <br>\r\n    /// &lt;summary&gt;<br>\r\n    /// App<br>\r\n    /// &lt;/summary&gt;<br>\r\n    public partial class App : System.Windows.Application {<br>\r\n        <br>\r\n        /// &lt;summary&gt;<br>\r\n        /// InitializeComponent<br>\r\n        /// &lt;/summary&gt;<br>\r\n        [System.Diagnostics.DebuggerNonUserCodeAttribute()]<br>\r\n        public void InitializeComponent() {<br>\r\n            <br>\r\n            #line 4 &quot;..\\..\\App.xaml&quot;<br>\r\n            this.StartupUri = new System.Uri(&quot;Window1.xaml&quot;, System.UriKind.Relative);<br>\r\n            <br>\r\n            #line default<br>\r\n            #line hidden<br>\r\n        }<br>\r\n        <br>\r\n        /// &lt;summary&gt;<br>\r\n        /// Application Entry Point.<br>\r\n        /// &lt;/summary&gt;<br>\r\n        [System.STAThreadAttribute()]<br>\r\n        [System.Diagnostics.DebuggerNonUserCodeAttribute()]<br>\r\n        public static void Main() {<br>\r\n            SplashScreen splashScreen = new SplashScreen(&quot;streetdoclogo.jpg&quot;);<br>\r\n            splashScreen.Show(true);<br>\r\n            StreetDocDesktop.App app = new StreetDocDesktop.App();<br>\r\n            app.InitializeComponent();<br>\r\n            app.Run();<br>\r\n        }<br>\r\n    }<br>\r\n}</p>\r\n",
+    "PostedDate": "2009-02-19T05:26:39.22-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "159688",
+    "ThreadId": "47705",
+    "Html": "Hi Bill,<br>\r\n   thank you for the post, but i am using the composite application library to load as a module. Shell will have the container which in turn loads the Module using the Module Manager. So my question is whether Splash Screen will be a Shell or Module. If it is a Shell then i should have a 2 shell one for splash screen and another for Main Module. If it is a module then i dont know how to load asynchronous.<br>\r\n",
+    "PostedDate": "2009-02-19T05:51:27.187-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "159702",
+    "ThreadId": "47705",
+    "Html": "Sorry, I don't have a solution for your requirement then...  My next two sprints are for Mobile and Website so it may be a while before I encounter a requirement that puts me in a position where I'll need to address this.  Please be sure to post your solution here when you get it figured out!!  \r\n",
+    "PostedDate": "2009-02-19T06:20:12.1-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "160327",
+    "ThreadId": "47705",
+    "Html": "What I would do is something like this:<br>\r\n<br>\r\nprivate YourSplashScreensplash;<br>\r\nprivate YourShell shell;<br>\r\n<br>\r\nOverride void CreateShell()<br>\r\n{<br>\r\n    // Create the shell but DONT SHOW IT YET!<br>\r\n    this.shell = new YourCustomShell();<br>\r\n<br>\r\n    // Create the splash and show it<br>\r\n    this.splash = new YourSplashScreen();<br>\r\n    this.splash.Show();<br>\r\n<br>\r\n    // Return the shell as usual. This will hook up the correct regionmanager, but it will be hidden. <br>\r\n    return this.shell;<br>\r\n<br>\r\n}<br>\r\n<br>\r\nOverride void InitializeModules()<br>\r\n{<br>\r\n    // Load all modules (only the background modules (that will be downloaded async) will not be ready.. but you WANT those to be downloaded on a background thread.<br>\r\n    base.InitializeModules();<br>\r\n<br>\r\n    // Hide and unload the splash screen. <br>\r\n    this.splash.Close();<br>\r\n    this.splash = null;<br>\r\n<br>\r\n    // Show the shell<br>\r\n    this.shell.Show();<br>\r\n}\r\n",
+    "PostedDate": "2009-02-20T16:05:54.723-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "160635",
+    "ThreadId": "47705",
+    "Html": "I’m using billkrat’s approach to show a splash screen in my project <a href=\"http://www.codeplex.com/CompositeExtensions\">www.codeplex.com/CompositeExtensions</a>. Unfortunately, the splash screen doesn’t stay on top. It is shown at startup then it hides for some seconds and comes back again. That’s not what I expect from a splash screen.<br>\r\n<br>\r\nAnyone an idea to keep the splash screen on top?\r\n",
+    "PostedDate": "2009-02-22T09:41:30.703-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "499602",
+    "ThreadId": "47705",
+    "Html": "<p>I'm experiencing the same thing as the previous poster, where the splash screen &quot;hides&quot; for a few seconds and comes back. does anyone know a solution for this?</p>",
+    "PostedDate": "2010-09-28T12:16:44.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "499631",
+    "ThreadId": "47705",
+    "Html": "<p>Hi,</p>\r\n<p>There is no guidance on this topic in Prism out-of-the-box. I do not know your exact scenario, but you could try something similar to the vallekie's approach, since it seems to use Prism. If you continue experiencing this problem, could you please send a repro sample?</p>\r\n<p>Additionally, if you have more question related to WPF or Silverlight, you could also use the following forums:</p>\r\n<ul>\r\n<li><a href=\"http://forums.silverlight.net/forums/\">Silverlight Forum</a></li>\r\n<li><a href=\"http://social.msdn.microsoft.com/forums/en/wpf/threads/\">WPF Forum</a></li>\r\n</ul>\r\n<p><span><span style=\"color:#3c3c3c\">Fernando Antivero</span></span><span><span style=\"color:#3c3c3c\">&nbsp;</span></span><span style=\"color:#3c3c3c\"><br><span><a href=\"http://blogs.southworks.net/fantivero\"><span style=\"color:#0066cc\">http://blogs.southworks.net/fantivero</span></a></span></span></p>",
+    "PostedDate": "2010-09-28T13:27:03.847-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

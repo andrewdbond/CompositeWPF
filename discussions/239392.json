@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "539859",
+    "ThreadId": "239392",
+    "Html": "\r\n<p>Hi one more time ^^</p>\r\n<p>I have a viewmodel, that i changed [PartCreationPolicy(CreationPolicy.Shared)] to [PartCreationPolicy(CreationPolicy.NonShared)], to use the KeepAlive in my view. Thats ok,&nbsp; but now i have a new problem, how can i pass my view model from the grid view\r\n to the Edit View (thats a childwindow) ?</p>\r\n<p>I tryed the EventAggregator but recive an exception:</p>\r\n<p>1 -&nbsp;thats my view model:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre> [Export]\r\n    [PartCreationPolicy(CreationPolicy.NonShared)]\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> LinhasViewModel : ViewModelBase&lt;Linha&gt;\r\n    {\r\n        <span style=\"color:blue\">private</span> HeaderGridControl _headerGrid;<span style=\"color:green\">// = new HeaderGridControl();</span>\r\n        <span style=\"color:blue\">private</span> IEventAggregator _eventAggregator;\r\n\r\n        [ImportingConstructor]\r\n        <span style=\"color:blue\">public</span> LinhasViewModel(IDataService dataService, IRegionManager regionManager, IEventAggregator eventAggregator)\r\n            : <span style=\"color:blue\">base</span>(dataService, regionManager)\r\n        {\r\n             _eventAggregator = eventAggregator;\r\n\r\n            <span style=\"color:blue\">this</span>.ScreenDescriptionSingular = <span style=\"color:#a31515\">&quot;Linha&quot;</span>;\r\n            <span style=\"color:blue\">this</span>.ScreenDescriptionPlural = <span style=\"color:#a31515\">&quot;Linhas&quot;</span>;\r\n            <span style=\"color:blue\">this</span>.EditViewName = <span style=\"color:#a31515\">&quot;LinhasEdit&quot;</span>;\r\n\r\n            InitializePermissions(<span style=\"color:#a31515\">&quot;Linhas&quot;</span>);\r\n         }\r\n\r\n.......\r\n<span style=\"color:green\">// Thats my Edit Command</span>\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">override</span> <span style=\"color:blue\">void</span> EditCommand(<span style=\"color:blue\">object</span> sender, EventArgs e)\r\n        {\r\n            LoadEntities(() =&gt;\r\n                             {\r\n                                 IsNew = <span style=\"color:blue\">false</span>;\r\n                                 CurrentItem = SelectedEntity;\r\n\r\n                                 <span style=\"color:green\">// Behavior that call an Edit window  </span>\r\n                                 ShowEditWindow(<span style=\"color:blue\">typeof</span>(ILinhasEditWindow), EditViewName);\r\n\r\n                                 _eventAggregator.GetEvent&lt;EditLinhasEvent&gt;().Publish(<span style=\"color:blue\">this</span>);\r\n                             });\r\n        }\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>2 - My Event</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>    <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> EditLinhasEvent : CompositePresentationEvent&lt;LinhasViewModel&gt;\r\n    { }\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>3 - my edit windows</p>\r\n<pre>   [Export(typeof(ILinhasEditWindow))]\r\n    [PartCreationPolicy(CreationPolicy.NonShared)]\r\n    [RegionMemberLifetime(KeepAlive = false)]\r\n    public partial class LinhasEdit : UserControl, ILinhasEditWindow, IContentTitle\r\n    {\r\n        private LinhasViewModel _linhasViewModel;\r\n        private IEventAggregator _eventAggregator;\r\n\r\n\r\n        [ImportingConstructor]\r\n        public LinhasEdit(IEventAggregator eventAggregator)\r\n        {\r\n            InitializeComponent();\r\n            _eventAggregator = eventAggregator;\r\n\r\n            Loaded &#43;= (s, o) =&gt;\r\n                          {\r\n\r\n                              EditLinhasEvent evt = eventAggregator.GetEvent();\r\n\r\n                              // Get ERROR HERE  \r\n                              evt.Subscribe(EditLinhasEventSubs);\r\n\r\n                              dataForm.CurrentItem = _linhasViewModel.CurrentItem;\r\n\r\n                              dataForm.BeginEdit();\r\n                          };\r\n\r\n        private void EditLinhasEventSubs(LinhasViewModel model)\r\n        {\r\n            _linhasViewModel = model;\r\n        }</pre>\r\n<pre>4 - Error message</pre>\r\n<pre><strong><span style=\"color:#ff0000\">Attempt by method 'Microsoft.Practices.Prism.Events.DelegateReference.TryGetDelegate()' to access method 'Art.Solution.Module.Shared.Views.Edit.LinhasEdit.EditLinhasEventSubs(Art.Solution.Module.Shared.ViewModels.LinhasViewModel)' failed.</span></strong></pre>\r\n<pre>What am i doing wrong?</pre>\r\n",
+    "PostedDate": "2010-12-23T04:33:00.69-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "539876",
+    "ThreadId": "239392",
+    "Html": "\r\n<p>My fault ^^</p>\r\n<p>Found the Solution.</p>\r\n<p>&nbsp;private void EditLinhasEventSubs(LinhasViewModel model)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _linhasViewModel = model;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>That method need to be public</p>\r\n<p>&nbsp;public void EditLinhasEventSubs(LinhasViewModel model)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _linhasViewModel = model;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-23T05:16:03.127-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "539900",
+    "ThreadId": "239392",
+    "Html": "\r\n<p>Hi Luciano,</p>\r\n<p>I'm glad that you've found a solution to your problem. Thanks for sharing your findings with the community!</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-23T06:25:19.017-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1017579",
+    "ThreadId": "239392",
+    "Html": "To anyone that has come across this problem\r<br />\n<br />\nI had the same problem today. The subscribing method need <strong>not</strong> be made public. Another (and in my case better) option was:\r<br />\n<br />\nea.GetEvent(Of CustomerSelectedEvent).Subscribe(AddressOf Me.test, True)\r<br />\n<br />\nThat second boolean specifies that you wish to keep the subscriber reference alive. This fixed the issue.\r<br />\n<br />\nKurren.<br />\n",
+    "PostedDate": "2013-03-19T03:40:50.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1017807",
+    "ThreadId": "239392",
+    "Html": "Hi,\r<br />\n<br />\nJust to add some light to this topic, here is a note contained in the <strong>Prism</strong> documentation regarding some &quot;requirements&quot; to take into account when using the <strong>EventAggregator</strong>:\r<br />\n<br />\nFrom <a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28v=pandp.40%29.aspx#sec14\" rel=\"nofollow\">Chapter 9 - Communicating Between Loosely Coupled Components - Subscribing to Events</a>:<br />\n<blockquote>\nDue to Silverlight's security model, the methods supplied to <strong>Subscribe</strong> must be publicly accessible methods if you want a weakly-held subscription (which is the default <strong>CompositePresentationEvent</strong> behavior). Because lambda expressions and anonymous delegates are generated as private classes and methods, these cannot be used in conjunction with weak subscriptions. Instead, you will either need to use public methods or subscribe to the event with a <strong>keepSubscriberReferenceAlive</strong> option to force a strongly-held subscription (see example below).<br />\n</blockquote>\n'\r<br />\nHence, if you wish to use weakly-held subscriptions your method needs to be <strong>public</strong>. However, when using strongly-held subscriptions you can use private / protected methods but you will need to unsubscribe manually from the event in order to prevent memory leaks.\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-03-19T10:17:21.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

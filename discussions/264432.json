@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "639480",
+    "ThreadId": "264432",
+    "Html": "\r\n<p><strong>Environment</strong>: Windows XP SP3, Visual Studio 2010 Ultimate, .NET 4.0, PRISM, MEF</p>\r\n<p>We use RelayCommands for intermodule communication.</p>\r\n<p>The modules register the commands in the ViewModel and unregister the commands in the EndModuleCommand called when the module is closed.</p>\r\n<p>Is there an established &nbsp;way to track the number of times a RelayCommand was registered by a module and disallow a second registration?</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-07-08T07:52:55.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "639500",
+    "ThreadId": "264432",
+    "Html": "<p>Hi,</p>\n<p>You could create a service that tracks the number of times your RelayCommand was registered in each module, so that you allow/reject subsequent registrations.</p>\n<p>About commanding, Prism supports <strong>DelegateCommands</strong> and <strong> CompositeCommands</strong> (for which you can read more in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28PandP.40%29.aspx\"> Communication chapter</a> of the Prism MSDN documentation). There's probably no limitation that would halt you from using <strong>RelayCommands</strong> in Prism, but there is no intentional integration between them an the Prism mechanisms for modularity, UI composition, and so forth.</p>\n<p>Also, for matters specifically related to the <strong>RelayCommand</strong> functionality, you might find better support about it in the <a href=\"http://social.msdn.microsoft.com/forums/en/wpf/threads/\">WPF forums</a>.</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-08T08:15:04.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "639508",
+    "ThreadId": "264432",
+    "Html": "<p>Thanks Guido - I was using Composite Commands. I wrote RelayCommands by mistake.</p>\r\n<p>Is there any demo or implementation of the service for tracking registrations?</p>",
+    "PostedDate": "2011-07-08T08:23:03.173-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "639561",
+    "ThreadId": "264432",
+    "Html": "<p>Hi Ranjith,</p>\r\n<p>The <strong>CompositeCommand</strong> class has a property called <strong>RegisteredCommands</strong>, which might be helpful for your scenario.</p>\r\n<p>As of my knowledge, there are no code samples demonstrating this kind of service available.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-08T10:14:30.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

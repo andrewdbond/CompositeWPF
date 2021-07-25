@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "450147",
+    "ThreadId": "214602",
+    "Html": "<p>I am new to Prism and am still learning. I have a question about views/regions/modules. Is it possible to remove modules and/or&nbsp;unregister views from a region&nbsp;at runtime? I don't necessarily need to unload the .NET assembly containing the modules to be removed, I simply need to deactivate them from the prism framework.&nbsp;</p>\r\n<p>The reason is that I have a document-based application where different modules need to be loaded for different documents. For example, Document1 may use modules A, B, and C, and Document2 may use modules B, E, and F. Which modules are required for each document is specified within the document itself. When Document1 is opened, I will need to load modules A, B, and C. When Document1 is closed and then Document2 is opened, I would like to 'unload' modules A and C and then load modules E and F. Effectively, I no longer want modules A and C to participate in the application anymore. If they have views registered with regions, I no longer want those views to be visible.</p>",
+    "PostedDate": "2010-06-01T09:40:42.313-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "450247",
+    "ThreadId": "214602",
+    "Html": "<p id=34beec30-4fd7-012d-609b-1231390f0921>Hi Simon,</p>\r\n<p id=34bef6d0-4fd7-012d-609c-1231390f0921>Once a module has been loaded and initialized, it can&rsquo;t be unloaded, as explained on a note in <a href=\"http://msdn.microsoft.com/en-us/library/ff649346.aspx\">this article</a>.</p>\r\n<p>On the other hand, you can unregister views from regions and services from the container. The code for unregistering a view from a region would be something like this:</p>\r\n<p><span style=\"font-family:consolas\">\r\n<div style=\"color:black;background-color:white\">\r\n<pre>_regionManager.Regions[<span style=\"color:#a31515\">&quot;RegionName&quot;</span>].Remove(yourView);\r\n</pre>\r\n</div>\r\n</span></p>\r\n<p>If I understood your scenario correctly, you need to remove&nbsp;certain module&rsquo;s views from a different module. A possible way to&nbsp;achieve this communication between modules would be to&nbsp;publish an event through the <a href=\"http://msdn.microsoft.com/en-us/library/ff649187.aspx\">EventAggregator</a> for the modules to known that they have to unregister their views. You can find more information on this on the following threads:</p>\r\n<p><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=213269\">Membership in Prism</a></p>\r\n<p><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=212991\">Login / Logout View Switching</a></p>\r\n<p id=34bf4560-4fd7-012d-60a1-1231390f0921>I hope you find this helpful.</p>\r\n<p id=34bf5590-4fd7-012d-60a2-1231390f0921>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-06-01T13:01:05.153-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "450757",
+    "ThreadId": "214602",
+    "Html": "<p>Thank you. That information definitely helped.&nbsp;</p>\r\n<p>It looks like the above approach would work if using view-injection, but if you used view-discovery (i.e., IRegionManager.RegisterViewWithRegion()) I wasn't&nbsp;able to find a way to unregister a particular view with a region. I would have to use the view-injection approach. Thanks again.&nbsp;</p>",
+    "PostedDate": "2010-06-02T11:36:37.263-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "459029",
+    "ThreadId": "214602",
+    "Html": "<p>Hi Simon,</p>\r\n<p>That&rsquo;s because View Discovery is generally not used&nbsp;when it is needed to  remove a&nbsp;specific view from a region. In such cases you could use View  Injection, which is better suited to this purpose. For more information, you can  check <a href=\"http://msdn.microsoft.com/en-us/library/ff648265.aspx\">this  article</a>&nbsp;(under the section &ldquo;When to Use View Discovery vs. View  Injection&rdquo;).</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-06-23T09:22:03.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

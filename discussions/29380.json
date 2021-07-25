@@ -1,0 +1,162 @@
+[
+  {
+    "Id": "97916",
+    "ThreadId": "29380",
+    "Html": "<div class=radEditorContent id=\"ctl00_ctl00_Content_TabContentPanel_Content_PostRepeater_ctl00_BodyDiv\">Is it possible to take advantage of what MAF has to offer, without rewriting the framework?<br>\r\n<br>\r\nVersion&nbsp;<span style=\"font-size:9pt;line-height:115%;font-family:'segoe ui','sans-serif'\">Resilience</span>, Isolation etc... </div>\r\n",
+    "PostedDate": "2008-06-10T06:29:37.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "97943",
+    "ThreadId": "29380",
+    "Html": "I only discovered MAF last night but often wondered the same thing, then I started reading up on MAF got tired and went to sleep, lol. If I get a chance I'll have a look and see what I can do about creating a sample. If you do manage to create a sample app let us know.<br>\r\n<br>\r\n-Brett<br>\r\n",
+    "PostedDate": "2008-06-10T08:23:33.223-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "97955",
+    "ThreadId": "29380",
+    "Html": "Dumb question...what's MAF?\r\n",
+    "PostedDate": "2008-06-10T09:24:23.543-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "97958",
+    "ThreadId": "29380",
+    "Html": "MAF is the Managed Add-in Framework, this is found in .NET 3.5 in\r\nSystem.Addin.dll. From what I've learned so far it is a form of a\r\npluggable architecture that has concerns similar to Prism but also has\r\nconcerns about security and module containment. It's more than just\r\ndependency injection and resource location, it's more of a contract and\r\nproxy based implementation where modules are running in an isolation\r\nboundary, they can be unloaded and replaced at runtime.<br>\r\n<br>\r\nI need to learn a bit more about it and of course how to use it, though\r\nI think there is a definite difference in concerns between&nbsp; Prism and\r\nMAF, even though they might sound similar on the bookshelf.<br>\r\n<br>\r\nCheck out the <a href=\"http://blogs.msdn.com/clraddins/\">add-in blog</a>.<br>\r\n<br>\r\nI hope I didn't confuse you further,<br>\r\n-Brett\r\n",
+    "PostedDate": "2008-06-10T09:43:20.943-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "97999",
+    "ThreadId": "29380",
+    "Html": "<br>\r\n<div style=\"border-right:medium none;padding-right:0.2em;border-top:#aaa 0.1em dotted;padding-left:0.2em;padding-bottom:0.2em;margin:1em 0em 2.5em 3em;border-left:medium none;padding-top:0.2em;border-bottom:#aaa 0.1em dotted;font-style:italic\"><br>\r\nbrettryan wrote:<br>\r\nMAF is the Managed Add-in Framework, this is found in .NET 3.5 in System.Addin.dll. From what I've learned so far it is a form of a pluggable architecture that has concerns similar to Prism but also has concerns about security and module containment. It's more than just dependency injection and resource location, it's more of a contract and proxy based implementation where modules are running in an isolation boundary, they can be unloaded and replaced at runtime.<br>\r\n<br>\r\nI need to learn a bit more about it and of course how to use it, though I think there is a definite difference in concerns between&nbsp; Prism and MAF, even though they might sound similar on the bookshelf.<br>\r\n<br>\r\nCheck out the <a href=\"http://blogs.msdn.com/clraddins/\">add-in blog</a>.<br>\r\n<br>\r\nI hope I didn't confuse you further,<br>\r\n-Brett <br>\r\n<br>\r\n</div>\r\n<br>\r\nThanks for yor responce.<br>\r\n<br>\r\nThere are many aspects to MAF. Using MAF to load the Add-ins should be possible (not much benifit in of its self). To get the full benift you need to&nbsp;load&nbsp;Add-ins into seperate AppDomains,&nbsp;and use&nbsp;an IContract derived interface to describe your &quot;Framework API&quot;, in this case Prism. Is this possible using Prism? Would the benifit of starting with the Prism codebase be lost?<br>\r\n",
+    "PostedDate": "2008-06-10T12:28:30.253-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "98080",
+    "ThreadId": "29380",
+    "Html": "Using Prism is not mutually exclusive with using MAF, and we have several members of our Prism advisory board that are planning to use both. Prism uses an IModuleLoader and IModuleEnumerator for performing it's discovery and loading of modules. For a MAF implementation you will most likely replace one or both of these services with MAF&nbsp;specific versions that will load the modules into the correct app domains using MAF. <br>\r\n<br>\r\nOne challenge around using MAF is in regards to how contracts are declared. MAF requires you to specifically expose everything you want to pass across the wire via a set of contracts (<a href=\"http://msdn.microsoft.com/en-us/library/bb384205.aspx\">http://msdn.microsoft.com/en-us/library/bb384205.aspx</a>). This is different than the way we customarily access services in a non-MAF world, which is by simply injecting them in the constructor.&nbsp; There are other ways with&nbsp;MAF to expose types (services) without being as explicit, though there is not alot out there documenting this approach.<br>\r\n<br>\r\nGlenn\r\n",
+    "PostedDate": "2008-06-10T22:02:35.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "98509",
+    "ThreadId": "29380",
+    "Html": "Using Prism is not mutually exclusive with using MAF, and we have several members of our Prism advisory board that are planning to use both.&nbsp;<br>\r\n<br>\r\nIs it likely that&nbsp;the combination of Prism &amp; MAF&nbsp;be made public, or at least a white paper on how to go about it.\r\n",
+    "PostedDate": "2008-06-12T10:48:40.85-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "98538",
+    "ThreadId": "29380",
+    "Html": "<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:Calibri\">The design of&nbsp;Prism seems to lend itself better to integrating MAF than SmartClient. Is this a true statement?<br>\r\n<br>\r\nWould refactoring SmartClient CAB&nbsp;SCSF&nbsp;to use MAF, mean basically a re-write?<br>\r\n<br>\r\nOr if we want to make full use of MAF are we better writing our own Application Framework, but still making use of the design patterns demonstrated in Prism?<br>\r\n<br>\r\nTo load Add-ins using MAF is one thing, to implement the full pipeline is quite another.</span></p>\r\n",
+    "PostedDate": "2008-06-12T13:05:49.553-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99318",
+    "ThreadId": "29380",
+    "Html": "Here's yet another&nbsp;acronym and framework to throw into the mix: Does <em>MAF</em> have anything to do with <em>MEF</em> (<a href=\"http://code.msdn.microsoft.com/mef\">http://code.msdn.microsoft.com/mef</a>)? Would Prism (or developers utilizing Prism) have any use for it? Just wondering... I have no experience with either one of these Managed [whatever] Frameworks.\r\n",
+    "PostedDate": "2008-06-17T09:49:19.36-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99383",
+    "ThreadId": "29380",
+    "Html": "Not another one :(<br>\r\n<br>\r\nIt looks like some sort of module locator and dependancy injection framework where dependancies are exposed by attributes instead of explicit interface contracts.<br>\r\n<br>\r\n-Brett<br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2008-06-17T15:01:48.107-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99920",
+    "ThreadId": "29380",
+    "Html": "MEF is actually different. MAF's focus is around versioning and app-domain isolation. MEF is focused purely on extensibility and using composition as an extensibility mechanism. As to the attributes, they are one way to use MEF. There are other&nbsp;was to use MEF&nbsp;that are&nbsp;are non-attribute based.\r\n",
+    "PostedDate": "2008-06-19T23:31:19.563-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99921",
+    "ThreadId": "29380",
+    "Html": "ID10T Prism could absolutely use MEF. At the Composite Application Library level, you would need to implement an IContainerFacade to MEF's&nbsp; CompositionContainer. You would also need to create a custom ModuleLoader and override CreateModule to use MEF's facilities. If you ported over the RI itself, you would need to change wherever we register with the container, to register using MEF. <br>\r\n<br>\r\nI am planning to do&nbsp;a port of Prism with MEF. In a few weeks I am heading over to the MEF team&nbsp;as a new PM. ;)<br>\r\n<br>\r\nRegards<br>\r\nGlenn\r\n",
+    "PostedDate": "2008-06-19T23:36:49.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99927",
+    "ThreadId": "29380",
+    "Html": "Thanks Glenn<br>\r\n<br>\r\nCan you tell us what the goals of Composite WPF and MEF are? I still haven't found time to get into MEF just yet but do want to introduce it to my sample. I'm finding the lines blured between MEF and Composite WPF with regards to responsibility and what they are both trying to acheive.<br>\r\n<br>\r\nFrom what I've gathered from the MEF samples, anything that MEF addresses can be done with Composite WPF, though I haven't verified the reverse.<br>\r\n<br>\r\nSo will you still be working with Composite WPF or exclusively on MEF?<br>\r\n<br>\r\n-Brett<br>\r\n",
+    "PostedDate": "2008-06-20T00:16:50.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "100089",
+    "ThreadId": "29380",
+    "Html": "Hi Brett<br>\r\n<br>\r\nMEF and&nbsp;Prism are two very different animals. You can think of MEF relating to Prism similar to the way you think about Unity relating to Prism. MEF would be used for discovering and composing dependencies, i.e. it provides the extensbility hooks and plumbing. Prism adds a whole bunch of services that can live in a container such as MEF, and then are injected to&nbsp;support composite application scenarios.<br>\r\n<br>\r\nWhen I get to the MEF team, I'll be focused completely on MEF. However, I'll still be in close contact with the Prism team, and doing plenty of Prism blog post, talks, etc.<br>\r\n<br>\r\nGlenn\r\n",
+    "PostedDate": "2008-06-20T20:45:57.873-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "100165",
+    "ThreadId": "29380",
+    "Html": "Thanks for the update Glenn, I'll certainly be keeping an eye on your blog.<br>\r\n<br>\r\n-Brett<br>\r\n",
+    "PostedDate": "2008-06-21T15:21:14.727-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "105560",
+    "ThreadId": "29380",
+    "Html": "<p style=\"text-align:justify\"><span style=\"font-family:Calibri;color:black\">Hi Glenn,<br>\r\n<br>\r\nThanks for the details you provided in this thread but still I want some more\r\ndetails on &quot;<strong>Integration Capabilities of Prism with MAF and MEF</strong>&quot; and &quot;<strong>How to integrate code developed in MFC/C++\r\n(Winforms) in to Prism(WPF) ?</strong>&quot;<br>\r\n<br>\r\n- Harry</span></p>\r\n",
+    "PostedDate": "2008-07-17T22:52:59.543-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "117198",
+    "ThreadId": "29380",
+    "Html": "Hi all,<br>\r\ncould please someone explain what are the key points that differ CompositeWPF&nbsp;from MAF (CLR Add-in) and vice-versa?<br>\r\nWe could use together or take advantage from one in the other?<br>\r\n<br>\r\nWe need to start an enterprise composite desktop application in WPF, and we don't want to miss anything around here.<br>\r\n<br>\r\nThank you very much<br>\r\n<br>\r\n- Riccardo\r\n",
+    "PostedDate": "2008-09-09T07:07:24.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "117217",
+    "ThreadId": "29380",
+    "Html": "<span style=\"font-family:Calibri\">\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:Calibri\">Hi,<br>\r\n<br>\r\nWe also need to integrate MFC/C++ code and have been evaluating MFCAdapter (</span><a href=\"http://www.codeproject.com/KB/mcpp/MfcAppContainer.aspx\"><span style=\"color:#800080;font-family:Calibri\">http://www.codeproject.com/KB/mcpp/MfcAppContainer.aspx</span></a><span style=\"font-family:Calibri\">). Our wonderful IT department blocks the main website.<br>\r\n<br>\r\nWe see MAF only solving some of the low level problems that we are facing, where as the CompositeWPF provides higher level building blocks. The main feature of MAF that is important to us is version resilience. With CompositeWPF all the modules are version locked with the application (host). For us a group of modules make up a product and we want the host to be able to load multiple products, without forcing the user to upgrade all the products each time a new version is released.<br>\r\n<br>\r\n</span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:Calibri\">Kent Boogaart has an excellent blog dealing with MAF and composite applications.</span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:Calibri\">See MAF Gymnastics.</span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:Calibri\">http://kentb.blogspot.com/search/label/System.AddIn</span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:Calibri\">Thanks,<br>\r\n<br>\r\nJohn</span></p>\r\n</span>\r\n",
+    "PostedDate": "2008-09-09T07:44:22.12-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "117233",
+    "ThreadId": "29380",
+    "Html": "John, why are you saying CompositeWPF isn't version resilience?<br>\r\nIf you design all with interfaces and let consume each module services of other modules or of the shell by contracts, only if you break the compatibility in these interfaces you need to upgrade all the products.<br>\r\nProbably I miss something in your scenario.<br>\r\n<br>\r\n- Riccardo\r\n",
+    "PostedDate": "2008-09-09T08:16:32.523-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "117248",
+    "ThreadId": "29380",
+    "Html": "We want to be able to change the interfaces or behaviour&nbsp;without requiring all the products to be upgraded, yet be hosted in the same application and allow the products to interact with each other.<br>\r\n<br>\r\nJohn\r\n",
+    "PostedDate": "2008-09-09T09:00:05.69-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

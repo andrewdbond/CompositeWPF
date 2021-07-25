@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1428703",
+    "ThreadId": "639156",
+    "Html": "I have implemented Prism event Aggregators on my server where a service publishes an event and another one listens to it.\r<br />\nMy subscription code:<br />\n<pre><code> my_aggregator.GetEvent&lt;MyEvent&gt;().Subscribe(Handler,true);\n</code></pre>\n\nwhereas I publish my event as:<br />\n<pre><code>my_aggregator.GetEvent&lt;MyEvent&gt;().Publish(Payload);\n</code></pre>\n\n<blockquote>\n<blockquote>\nThe thing is that if the subscriber is alive then, everything works fine. But, lets say an event is published and the subscriber (is a service) somehow shuts down. Is there a way by which when the subscriber comes alive again it can respond to the event that was fired.<br />\n</blockquote>\n</blockquote>\nI have looked at netmsmq binding and how it provides a queue between services so even if the server shuts down loss of data can be avoided. \r<br />\n<br />\nWill I have to hook it up with my current mechanism?? \r<br />\nOr is there any other way this can be achieved??\r<br />\n And are there any standard mechanisms of handling this?<br />\n",
+    "PostedDate": "2015-06-03T22:19:12.717-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1428705",
+    "ThreadId": "639156",
+    "Html": "I'm afraid you are cleanly outside what Prism pub-sub events were designed for. They were designed for loosely coupled components that are all in memory at the same time on the client side but you don't want to introduce coupling between those client components for them to communicate. For the kind of scenario you are talking about server side queues of some sort are the right answer, whether they are MSMQ-based, RabbitMQ, or Service Bus queues for Service Bus for Windows Server (or many other options along those lines depending on whether you want the queue to be on premise or in the cloud).\r<br />\n<br />\nBut bottom line if you want process isolation and independent process lifetimes, queueing technologies are the only way I know to solve that and sit cleanly outside the realm of what Prism was designed to address.<br />\n",
+    "PostedDate": "2015-06-03T22:26:26.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2015-06-03T23:32:01.503-07:00"
+  },
+  {
+    "Id": "1428713",
+    "ThreadId": "639156",
+    "Html": "Thanks Brian for pointing me in the right direction.  I have already taken a look at MSMQ based queues and they look promising for what I want to do.<br />\n",
+    "PostedDate": "2015-06-03T23:31:45.247-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

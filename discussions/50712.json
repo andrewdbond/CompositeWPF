@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "170046",
+    "ThreadId": "50712",
+    "Html": "I am creating a default placeholder view, that my main application will populate all regions with on app start. As modules load each region will be populated again by the correct module. The idea being, I am working on ModuleX and it successfully replaced the Content region but didn't put any content in the Title region. This would be very obvious by seeing the &quot;Title Region Place Holder&quot; message in that region.<br>\r\n<br>\r\nTrick is I want a single place holder view and for it to tell me what region it was loaded into. I tried the obvious:<br>\r\n<br>\r\nvar parent = VisualTreeHelper.GetParent(this) as FrameworkElement;<br>\r\nthis.PlaceHolderText.Text = parent.Name ?? &quot;Placeholder&quot;;<br>\r\n<br>\r\nBut this gives me a reference to the stack panel outer container. It seems that the regions are outright replaced by view is that correct? Anyone have a suggestion on how I can accomplish this?<br>\r\n",
+    "PostedDate": "2009-03-19T17:11:13.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "170878",
+    "ThreadId": "50712",
+    "Html": "Wanted to come back and put an answer to this question as I was able to get a pointer from Glenn Block via Twitter. He suggested I iterate over the Regions collection of the regionManager. At first I wasn't thinking of this approach because I didn't want my views having any knowledge of prism as Glenn pointed out this was a violation of encapsulation. But this was a special case and intended to be a developer tool for viewing information about the region a &quot;placeholder&quot; view was displayed in.<br>\r\n<br>\r\nMy code ended up looking something like this:<br>\r\n<br>\r\npublic partial class PlaceholderView : UserControl, IPlaceholderView<br>\r\n&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp; private IRegionManager regionManager;<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; public PlaceholderView(IRegionManager regionManager)<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeComponent();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.regionManager = regionManager;<br>\r\n&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; private void UserControl_Loaded(object sender, RoutedEventArgs e)<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (IRegion region in regionManager.Regions)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (UserControl view in region.Views)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (view == this)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PlaceHolderText.Text =<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string.Format(&quot;{0} PlaceHolder : {1}x{2}&quot;,<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; region.Name, view.RenderSize.Width, view.RenderSize.Height);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp; }<br>\r\n",
+    "PostedDate": "2009-03-23T08:17:26.937-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

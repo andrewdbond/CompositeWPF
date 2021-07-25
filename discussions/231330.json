@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "508813",
+    "ThreadId": "231330",
+    "Html": "<p>Hi,</p>\r\n<p>I need to display multiple instances&nbsp;of a&nbsp;OrdersDetailsView.xaml within a region placed in OrdersView.xaml.</p>\r\n<p>I have an OrdersView XAML that contains an ItemsControl tag defined like this:</p>\r\n<pre>&lt;ItemsControl x:Name=&quot;OrdersItemsControl&quot; BorderThickness=&quot;0&quot; cal:RegionManager.RegionName=&quot;OrdersRegion&quot; Margin=&quot;0,10,0,10&quot; /&gt;</pre>\r\n<p><br>Within the ItemsControl in my OrdersView I want to display multiple instances of a OrderDetailsView. I'm able to add _one_ OrderDetailsView, but as soon as I try to add more than one it fails with &quot;View already exists&quot; or similar errormsg... This is how I add an instance of OrderDetailsView:</p>\r\n<pre>Dim OrdersRegion = _RegionManager.Regions(&quot;OrdersRegion&quot;)\r\nDim view = _Container.Resolve(Of OrdersDetailsView)()\r\nDim viewmodel = _Container.Resolve(Of OrdersDetailsViewModel)()\r\n\r\nview.ApplyModel(viewmodel)\r\nOrdersRegion.Add(view, &quot;OrdersDetailsView&quot;)\r\nOrdersRegion.Activate(view)</pre>\r\n<p><br>I understand that replicating this code for each orderdetailsview I'm creating is not correct, but I dont see clearly how to do it. I somehow need a collection of views or something? Any help is appreciated!</p>",
+    "PostedDate": "2010-10-18T07:18:10.763-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "508917",
+    "ThreadId": "231330",
+    "Html": "<p>Hi,</p>\r\n<p>The problem that you are experiencing is because you are using the same name for all views instances (&quot;OrdersDetailsView&quot;). So, if you need to identify your view in the region, you could use a different name for each instance or avoid passing a name as shown below.</p>\r\n<p>Option 1:</p>\r\n<p><strong>var mainRegion = this.RegionManager.Regions[&quot;MainRegion&quot;];</strong><br><strong>mainRegion.Add(new OrdersDetails(), &quot;OrdersDetails1&quot;);</strong><br><strong>mainRegion.Add(new </strong><strong>OrdersDetails()</strong><strong>, &quot;</strong><strong>OrdersDetails2</strong><strong>&quot;);</strong><br><strong></strong><br>Option 2:</p>\r\n<p><strong>var mainRegion = this.RegionManager.Regions[&quot;MainRegion&quot;];</strong><br> <strong>mainRegion.Add(new </strong><strong>OrdersDetails()</strong><strong>);</strong><br> <strong>mainRegion.Add(new </strong><strong>OrdersDetails()</strong><strong>);</strong><br> <strong></strong><br>Hope this helps.</p>\r\n<p>Fernando Antivero    <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-18T11:29:38.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509196",
+    "ThreadId": "231330",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>fantivero wrote:</strong><br>\r\n<p>Hi,</p>\r\n<p>The problem that you are experiencing is because you are using the same name for all views instances (&quot;OrdersDetailsView&quot;). So, if you need to identify your view in the region, you could use a different name for each instance or avoid passing a name as shown below.</p>\r\n<p>Option 1:</p>\r\n<p><strong>var mainRegion = this.RegionManager.Regions[&quot;MainRegion&quot;];</strong><br><strong>mainRegion.Add(new OrdersDetails(), &quot;OrdersDetails1&quot;);</strong><br><strong>mainRegion.Add(new </strong><strong>OrdersDetails()</strong><strong>, &quot;</strong><strong>OrdersDetails2</strong><strong>&quot;);</strong><br><strong>&nbsp;</strong><br>Option 2:</p>\r\n<p><strong>var mainRegion = this.RegionManager.Regions[&quot;MainRegion&quot;];</strong><br><strong>mainRegion.Add(new </strong><strong>OrdersDetails()</strong><strong>);</strong><br><strong>mainRegion.Add(new </strong><strong>OrdersDetails()</strong><strong>);</strong><br><strong></strong><br>Hope this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n</blockquote>\r\n<p>&nbsp;Thanx, that solved my problem! :)</p>\r\n<p>I'm really wondering about if my approach to this is correct/the best way to do it. Each instance of OrderDetails view must have it's own set of data from the attached viewmodel. So - if I have a few OrderDetails view's in my region in the ItemsControl will I be able to access the data in each one of them or is there a way I should structure this better?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-19T01:21:13.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509330",
+    "ThreadId": "231330",
+    "Html": "<p>Hi,</p>\r\n<p>This is a possible approach for your scenario, since a similar scenario is implemented in the Stock Trader RI when buying different stocks simultaneously.</p>\r\n<p>So, if you need more guidance on this topic, you could also take a look at this Reference Implementation application.</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero    <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-19T05:55:06.787-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509351",
+    "ThreadId": "231330",
+    "Html": "<p>Hi,</p>\r\n<p>Yes, the Stock Trader RI is acually where I got my idea from :)</p>\r\n<p>But, I'm having trouble following the code in the Reference Implementation, I find it hard to read. So I was looking for a simpler solution, or simpler solution of the approach in the Stock Trader... Preferably in VB.NET, but no luck so far.</p>\r\n<p>I will continue my approach, but if someone can come up with a simple sample or better way for me to look at it I will be happy! :)</p>",
+    "PostedDate": "2010-10-19T06:22:51.607-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509359",
+    "ThreadId": "231330",
+    "Html": "<p>Hi,</p>\r\n<p>I think that you can find interesting the following download link, since it contains the Prism v2 (old version), but in Visual Basic .Net. I am not sure whether it contains the Reference Implementation or not, but I think that it might help you.</p>\r\n<p><a href=\"http://www.microsoft.com/downloads/en/details.aspx?displaylang=en&FamilyID=537da1cd-43e1-4799-88e7-a1da9166fb46\">http://www.microsoft.com/downloads/en/details.aspx?displaylang=en&amp;FamilyID=537da1cd-43e1-4799-88e7-a1da9166fb46</a></p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero    <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-19T06:33:16.523-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509385",
+    "ThreadId": "231330",
+    "Html": "<p>Thanx, I already have that VB version of PRISM v2, sadly the Stock Trader app is only in C# in v2 and the latest release.</p>\r\n<p>If you have time, can you please help me understand this..:</p>\r\n<p>Why is this code giving me 2 OrdersDetailsView BOTH with Orders ZZZ, I would have hoped that I got one view with Orders XXX and one with Orders ZZZ:</p>\r\n<pre><code><span>&nbsp; &nbsp; </span><span>Dim</span><span> </span><span>OrdersRegion</span><span> </span><span>=</span><span> _RegionManager</span><span>.</span><span>Regions</span><span>(</span><span class=str>&quot;OrdersRegion&quot;</span><span>)</span><span>&nbsp;\r\n&nbsp;\r\n&nbsp; &nbsp; </span><span>Dim</span><span> viewX </span><span>=</span><span> _Container</span><span>.</span><span>Resolve</span><span>(</span><span>Of</span><span> </span><span>OrdersDetailsView</span><span>)()</span><span>&nbsp;\r\n&nbsp; &nbsp; </span><span>Dim</span><span> viewmodelX </span><span>=</span><span> _Container</span><span>.</span><span>Resolve</span><span>(</span><span>Of</span><span> </span><span>OrdersDetailsViewModel</span><span>)()</span><span>&nbsp;\r\n&nbsp;\r\n&nbsp; &nbsp; viewmodelX</span><span>.</span><span>OrdersName</span><span> </span><span>=</span><span> </span><span class=str>&quot;Orders XXX&quot;</span><span>&nbsp;\r\n&nbsp; &nbsp; viewX</span><span>.</span><span>ApplyModel</span><span>(</span><span>viewmodelX</span><span>)</span><span>&nbsp;\r\n&nbsp;\r\n&nbsp;\r\n&nbsp; &nbsp; </span><span>Dim</span><span> viewZ </span><span>=</span><span> _Container</span><span>.</span><span>Resolve</span><span>(</span><span>Of</span><span> </span><span>OrdersDetailsView</span><span>)()</span><span>&nbsp;\r\n&nbsp; &nbsp; </span><span>Dim</span><span> viewmodelZ </span><span>=</span><span> _Container</span><span>.</span><span>Resolve</span><span>(</span><span>Of</span><span> </span><span>OrdersDetailsViewModel</span><span>)()</span><span>&nbsp;\r\n&nbsp;\r\n&nbsp; &nbsp; viewmodelZ</span><span>.</span><span>OrdersName</span><span> </span><span>=</span><span> </span><span class=str>&quot;Orders ZZZ&quot;</span><span>&nbsp;\r\n&nbsp; &nbsp; viewZ</span><span>.</span><span>ApplyModel</span><span>(</span><span>viewmodelZ</span><span>)</span><span>&nbsp;\r\n&nbsp;\r\n&nbsp; &nbsp; </span><span>OrdersRegion</span><span>.</span><span>Add</span><span>(</span><span>viewX</span><span>,</span><span> </span><span class=str>&quot;OrdersDetailsViewX&quot;</span><span>)</span><span>&nbsp;\r\n&nbsp; &nbsp; </span><span>OrdersRegion</span><span>.</span><span>Add</span><span>(</span><span>viewZ</span><span>,</span><span> </span><span class=str>&quot;OrdersDetailsViewZ&quot;</span><span>)</span><span>&nbsp;\r\n</span></code></pre>",
+    "PostedDate": "2010-10-19T07:12:12.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509399",
+    "ThreadId": "231330",
+    "Html": "<p>Hi,</p>\r\n<p>The code seems to be ok. I mean, it should be displaying two different views, one for for &quot;Orders XXX&quot; and another different for &quot;Orders ZZZ&quot;.<br><br>The only thing that might cause this behavior is the way that you used to register OrdersDetailsView and OrdersDetailsViewModel in the container. For achieving this scenario, they must be registered using the <strong>RegisterType </strong>method, so it will create a new instance when resolving OrdersDetailsViews/OrdersDetailsViewModel.<br><br>Additionally, in the ApplyModel method, is it just for setting the DataContext property?<br><br>Hope this helps.</p>\r\n<p>Fernando Antivero    <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-19T07:29:57.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509406",
+    "ThreadId": "231330",
+    "Html": "<p>Thanx so far!</p>\r\n<p>This is how I register the View and Viewmodels in my module definition:</p>\r\n<p>&nbsp;&nbsp;&nbsp; Public Sub Initialize() Implements Microsoft.Practices.Composite.Modularity.IModule.Initialize<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterServices()</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; container.Resolve(Of IOrdersView)()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; container.Resolve(Of IOrdersViewModel)()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; container.Resolve(Of IOrdersDetailsView)()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; container.Resolve(Of IOrdersDetailsViewModel)()</p>\r\n<p>&nbsp;&nbsp;&nbsp; End Sub</p>\r\n<p>&nbsp;&nbsp;&nbsp; Private Sub RegisterServices()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; container.RegisterType(Of IOrdersViewModel, OrdersViewModel)(New ContainerControlledLifetimeManager())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; container.RegisterType(Of IOrdersView, OrdersView)()</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; container.RegisterType(Of IOrdersDetailsViewModel, OrdersDetailsViewModel)(New ContainerControlledLifetimeManager())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; container.RegisterType(Of IOrdersDetailsView, OrdersDetailsView)()<br>&nbsp;&nbsp;&nbsp; End Sub</p>\r\n<p>&nbsp;</p>\r\n<p>The applyModel method is just:</p>\r\n<p>Public Sub ApplyModel(ByVal datasource As Object) Implements Common.Interfaces.IView.ApplyModel<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataContext = datasource<br>End Sub</p>\r\n<p>The DataContext/Source is right now empty/nothing. I'm just testing my views/viewmodels by setting a property to &quot;Orders ZZZ&quot; and &quot;Orders XXX&quot; on the viewmodel that bind to my view.</p>\r\n<p><span style=\"font-family:Consolas;color:#0000ff;font-size:small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:small\"><font face=Consolas size=3 color=\"#0000ff\">\r\n<p>&nbsp;</p>\r\n</font></span></span></span><span style=\"font-family:Consolas;color:#0000ff;font-size:small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:small\">&nbsp;</span></span></span></span></span></span></span><span style=\"font-family:Consolas;color:#0000ff;font-size:small\"></span></span></span></span></span><span style=\"font-family:Consolas;color:#0000ff;font-size:small\"></span></p>",
+    "PostedDate": "2010-10-19T07:38:31.123-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509411",
+    "ThreadId": "231330",
+    "Html": "<p>Hi,</p>\r\n<p>That is the problem, when you use a unity Lifetime Manager (ContainerControlledLifetimeManager), the container will be providing a singleton instance of your types. So, you could use the following code:</p>\r\n<p><strong>Private Sub RegisterServices()</strong><br><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; container.RegisterType(Of IOrdersViewModel, OrdersViewModel)()</strong><br><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; container.RegisterType(Of IOrdersView, OrdersView)() </strong></p>\r\n<p><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; container.RegisterType(Of IOrdersDetailsViewModel, OrdersDetailsViewModel)()</strong><br><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; container.RegisterType(Of IOrdersDetailsView, OrdersDetailsView)()</strong><br><strong>End Sub</strong></p>\r\n<p>Fore more information about Lifetime Managers, you could take a look at the following documentation section: <a href=\"http://msdn.microsoft.com/en-us/library/ff647854.aspx\">Using Lifetime Managers</a></p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero    <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-19T07:45:36.917-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "510418",
+    "ThreadId": "231330",
+    "Html": "\r\n<p>Thank you very much, you're post is spot on. My problem was related to the singleton instance.</p>\r\n<p>Please see my new problem in this thread:</p>\r\n<p><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=232334\">http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=232334</a></p>\r\n<p>:)</p>\r\n",
+    "PostedDate": "2010-10-21T03:31:04.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

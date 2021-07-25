@@ -1,0 +1,61 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2009-03-10T11:32:05.72-07:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "Hi,\n \nWhen running the StockTraderRI application (Prism-2008-03-12 release) the DI container apparently cannot resolve the PositionSummaryPresenter.  It throws an exception on \n \n            PositionSummaryPresenter presenter = _container.Resolve<PositionSummaryPresenter>();\n \nMessage:\nResolution of the dependency failed, type = \"PositionSummaryPresenter\", name = \"\". See the InnerException for more details.\n \nI tried to register PositionSummaryPresenter but that did not work.\n \nThanks for any help.",
+    "LastUpdatedDate": "2013-05-16T05:29:06.463-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-03-20T05:59:52.533-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ResolutionFailedException",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 1468
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897953,
+      "FileName": "PositionModuleInitializer.JPG",
+      "DownloadUrl": ".\\897953"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi\r\n\r\nIt sounds like the PositionSummaryPresenter did not get registered.  Did you try putitng a break point in the Position module to see if it is getting registered?",
+      "PostedDate": "2008-03-20T19:06:00.323-07:00",
+      "Id": 155980
+    },
+    {
+      "Message": "Thanks for your reply.\r\n\r\nThe PositionSummaryPresenter does not get registered. There is no code statement to do it. Please find in attachment a screenshot of the PositionModuleInitializer with below it the results of a search for \".RegisterType\". As you can see, the view gets registered but the presenter does not. I tried to add \r\n\r\n            _container.RegisterType\r\n();\r\n\r\n(since I do not find an IPositionSummaryPresenter interface) but that does not resolve the issue.\r\n\r\nThanks\r\nJoris\r\n\r\n",
+      "PostedDate": "2008-03-25T00:46:39.91-07:00",
+      "Id": 155981
+    },
+    {
+      "Message": "The problem seems to be resolved in the 2008-03-25 drop. Thanks for your help.",
+      "PostedDate": "2008-03-26T05:04:25.363-07:00",
+      "Id": 155982
+    }
+  ]
+}

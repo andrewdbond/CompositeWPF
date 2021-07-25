@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "704649",
+    "ThreadId": "281151",
+    "Html": "\r\n<p>Hi All,</p>\r\n<p>Is there any possibility to collapse the particular view?</p>\r\n<p>Thanks and Regards,</p>\r\n<p>Sakthi</p>\r\n",
+    "PostedDate": "2011-11-29T02:16:33.303-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "704865",
+    "ThreadId": "281151",
+    "Html": "<p>Hi Sakthi,</p>\n<p>If your view is a <strong>FrameworkElement</strong>, you could directly get the view from the <strong>Region </strong>and set the <strong>Visibility </strong>property of the view to Collapsed.</p>\n<p>For example, if the view was injected in a <strong>Region </strong>with a name, you could do something similar to this:</p>\n<div style=\"color: black; background-color: white;\">\n<pre>IRegion region = regionManager.Regions[<span style=\"color: #a31515;\">\"MyRegion\"</span>];\nFrameworkElement view = region.GetView(<span style=\"color: #a31515;\">\"MyView\"</span>) <span style=\"color: blue;\">as</span> FrameworkElement;\nview.Visibility = Visibility.Collapsed;\n</pre>\n</div>\n<p>Also, you could get the view directly from the <strong>Views </strong>collection of the <strong>Region</strong>.</p>\n<p>Take into account that, depending of the type of <strong>Region </strong>where the view is hosted, you could also deactivate the view using the <strong>Deactivate </strong>method of the <strong>Region </strong>instead of changing the <strong>Visibility </strong>property of the view.</p>\n<p>I hope you find this useful,</p>\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-11-29T09:32:23.937-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "705098",
+    "ThreadId": "281151",
+    "Html": "<p>Hi DCherubini,</p>\r\n<p>I have tried both methods TypeCasting with FrameWorkElement and ViewDeactivate method. Both the methods are&nbsp;not giving the proper solution what i am expecting .</p>\r\n<p>First method :</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre> <span style=\"color: blue;\">while</span> (myRegion.Views.Count() &gt; 2)\r\n            {\r\n                TabControl view = myRegion.GetView(RegionNames.MainViewRegion) <span style=\"color: blue;\">as</span> TabControl;\r\n                view.Visibility = Visibility.Collapsed;\r\n                ++count;\r\n            }\r\n</pre>\r\n</div>\r\n<p>Second Method :</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>  <span style=\"color: blue;\">while</span> (myRegion.Views.Count() &gt; 2)\r\n            {\r\n                myRegion.Deactivate(RegionNames.MainViewRegion);\r\n              \r\n            }</pre>\r\n<pre>Please suggest me with valuable solution.</pre>\r\n<pre>Thanks and Regards,</pre>\r\n<pre>Sakthi</pre>\r\n</div>",
+    "PostedDate": "2011-11-29T20:21:27.5-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "705265",
+    "ThreadId": "281151",
+    "Html": "<p>Hi,</p>\n<p>Based on my understanding of your scenario, you could try using (for example) the <strong>foreach </strong>statement instead of the <strong>while </strong>statement, as I believe this can be causing an infinite loop, based on my understanding of the code you provided. <br /> An example of this could be like in the following code snippet:</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">foreach</span> (<span style=\"color: blue;\">object</span> view <span style=\"color: blue;\">in</span> myRegion.Views)<br />            {<br />                TabControl myView = view <span style=\"color: blue;\">as</span> TabControl;<br />                myView.Visibility = Visibility.Collapsed;<br />             <br />            }<br /></pre>\n</div>\n<p>&nbsp;</p>\n<p>I hope you find this helpful</p>\n<p>﻿Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-11-30T06:09:23.303-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "706373",
+    "ThreadId": "281151",
+    "Html": "<p>Hi Aadami,</p>\r\n<p>I also want to know how to activate and deactivate the views.&nbsp;When i fire the particular events like click.</p>\r\n<p>Thanks and Regards,</p>\r\n<p>Sakthi</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-12-02T03:07:12.703-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "706506",
+    "ThreadId": "281151",
+    "Html": "<p>Hi,</p>\r\n<p>You might find the following resources useful, where similar issues are addressed:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/matiasb/2009/07/02/how-to-hide-views-inside-composite-application-guidance-aka-prism-v2-regions/\">How-to Hide Views inside Composite Application Guidance (aka Prism-v2) regions.</a></li>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/239016\">Show / Hide Views?&nbsp;</a></li>\r\n</ul>\r\n<p>I hope you find this handy</p>\r\n<p>﻿Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-12-02T08:28:25.207-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

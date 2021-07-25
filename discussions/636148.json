@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1421903",
+    "ThreadId": "636148",
+    "Html": "Having the following TabControl I am not able to bind the &quot;Caption&quot;-Property to the HeaderTemplate, while it is working as commented for the &quot;Header&quot;-Property. Since i want to provide a Close-Command to close the TabItem, I do need the Header Template.<br />\n<pre><code>&lt;TabControl Grid.Row=&quot;1&quot; region:RegionManager.RegionName=&quot;TabRegion&quot; SelectedItem=&quot;{Binding SelectedItem}&quot;&gt;\n            &lt;TabControl.ItemContainerStyle&gt;\n                &lt;Style TargetType=&quot;{x:Type TabItem}&quot;&gt;\n                    &lt;!--&lt;Setter Property=&quot;Header&quot; Value=&quot;{Binding Content.DataContext.Caption}&quot; /&gt;--&gt;\n                    &lt;Setter Property=&quot;HeaderTemplate&quot;&gt;\n                        &lt;Setter.Value&gt;\n                            &lt;DataTemplate&gt;\n                                &lt;StackPanel Orientation=&quot;Horizontal&quot;&gt;\n                                    &lt;TextBlock Text=&quot;{Binding Caption}&quot;/&gt;\n                                    &lt;Button Content=&quot;X&quot; Command=&quot;{Binding RelativeSource=\n                                        {RelativeSource FindAncestor,\n                                        AncestorType={x:Type TabControl}},\n                                        Path= DataContext.CloseTabCommand}&quot;/&gt;\n                                &lt;/StackPanel&gt;\n                            &lt;/DataTemplate&gt;\n                        &lt;/Setter.Value&gt;\n                    &lt;/Setter&gt;\n                &lt;/Style&gt;\n            &lt;/TabControl.ItemContainerStyle&gt;\n        &lt;/TabControl&gt;</code></pre>\n\nI'm generating the TabItems as follows:<br />\n<pre><code>private void AddTabItem(Type tabItemViewModelType, string caption, string name)\n        {\n            var existsItem = TabRegion.GetView(name) != null;\n\n            if (!existsItem)\n            {\n                var view = App.Bootstrapper.Container.Resolve&lt;AdministrationControl&gt;();\n                TabItemViewModel tabItemViewModel = (TabItemViewModel)App.Bootstrapper.Container.Resolve(tabItemViewModelType);\n                view.DataContext = tabItemViewModel;\n                tabItemViewModel.Caption = caption;\n                tabItemViewModel.Name = name;\n                tabItemViewModel.Visibility = System.Windows.Visibility.Visible;\n                TabRegion.Add(view, name);\n                TabRegion.Activate(view);\n            }\n        }</code></pre>\n\n",
+    "PostedDate": "2015-04-30T14:46:55.93-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1421958",
+    "ThreadId": "636148",
+    "Html": "<pre><code>&lt;TextBlock Text=&quot;{Binding RelativeSource=\n                                        {RelativeSource FindAncestor,\n                                        AncestorType={x:Type TabItem}},\n                                        Path= DataContext.Caption}&quot;/&gt;</code></pre>\n\nIs not working either.<br />\n",
+    "PostedDate": "2015-05-01T02:10:39.867-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1422060",
+    "ThreadId": "636148",
+    "Html": "The way I normally do it is to set the ItemTemplate on the TabControl itself, that is used for rendering the tab.<br />\n",
+    "PostedDate": "2015-05-01T13:06:06.137-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1422666",
+    "ThreadId": "636148",
+    "Html": "Could you please provide a sample?\r<br />\n<br />\nHow far does the ItemTemplate differ from the HeaderTemplate? Isn't the ItemTemplate meant to cover the styles for the TabItem-Content?<br />\n",
+    "PostedDate": "2015-05-04T01:44:27.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1422707",
+    "ThreadId": "636148",
+    "Html": "Sorry, did not read closely there, forgot you were talking about a TabControl that is a region, so ItemTemplates don't apply since there is no data binding going on for the items.\r<br />\n<br />\nDon't know the exact answer off the top of my head, but think the issue is that your {Binding Caption} presumes that the DataContext for the TabItem is the ViewModel itself, which I don't think is the case. The ViewModel would be the DataContext for the View that you plug into the Content of the TabItem, but would not be the DataContext for the TabItem as a whole. So you would need a RelativeSource binding to get to the TabItem, then use a path of Content.DataContext.Caption like your commented out setter.<br />\n",
+    "PostedDate": "2015-05-04T05:31:23.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1422806",
+    "ThreadId": "636148",
+    "Html": "Thanks for your input. It lead me right to the core of the problem. In addition I found another <a href=\"http://stackoverflow.com/a/4976010\" rel=\"nofollow\">post</a> covering a similar problem. I adopted its solution for my problem as follows:<br />\n<pre><code>&lt;TabControl.ItemContainerStyle&gt;\n                &lt;Style TargetType=&quot;{x:Type TabItem}&quot;&gt;\n                    &lt;Setter Property=&quot;Header&quot; Value=&quot;{Binding Content.DataContext}&quot;/&gt;\n                    &lt;Setter Property=&quot;HeaderTemplate&quot;&gt;\n                        &lt;Setter.Value&gt;\n                            &lt;DataTemplate&gt;\n                                &lt;StackPanel Orientation=&quot;Horizontal&quot;&gt;\n                                    &lt;TextBlock Text=&quot;{Binding Caption}&quot;/&gt;\n                                    &lt;Button Content=&quot;X&quot; Command=&quot;{Binding RelativeSource=\n                                        {RelativeSource FindAncestor,\n                                        AncestorType={x:Type TabControl}},\n                                        Path= DataContext.CloseTabCommand}&quot;/&gt;\n                                &lt;/StackPanel&gt;\n                            &lt;/DataTemplate&gt;\n                        &lt;/Setter.Value&gt;\n                    &lt;/Setter&gt;\n                &lt;/Style&gt;\n            &lt;/TabControl.ItemContainerStyle&gt;</code></pre>\n\nSeems like the Header-property is placed somewhere higher in the tree so that i can reference the contents DataContext which makes it available for the HeaderTemplate as well.<br />\n",
+    "PostedDate": "2015-05-04T11:12:11.577-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1427722",
+    "ThreadId": "636148",
+    "Html": "I too am having this issue but the above code works well. How did you write your  CloseTabCommand\r<br />\n<br />\n Path= DataContext.CloseTabCommand}&quot;/&gt;<br />\n",
+    "PostedDate": "2015-05-26T19:01:39.573-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1137077",
+    "ThreadId": "474368",
+    "Html": "Hi,\r<br />\n<br />\nI'm working on a WPF application with Prism.\r<br />\n<br />\nI have a wrapper around IEventAggregator similar to the one described here: <a href=\"http://rachel53461.wordpress.com/2011/06/05/communication-between-viewmodels-with-mvvm/\" rel=\"nofollow\">http://rachel53461.wordpress.com/2011/06/05/communication-between-viewmodels-with-mvvm/</a>\r<br />\n<br />\nI have a multi step process with a progress tab. As I navigate through the process, the progress bar gets populated. As I complete a step, I dispatch a message to the progress tab so that it can update progress accordingly. First way round this works fine. Once the process is complete, I close the window and send user to the home screen.\r<br />\n<br />\nI then start the same process again and this is where the problem starts. View models subscribe to the events, however, the old subscriptions are still alive, so as I navigate through the steps, the same message gets published twice, which is a massive problem.\r<br />\n<br />\nI use weak references as I expect Prism to dispose of old subscriptions. \r<br />\n<br />\nIf I were to unsubscribe from all the events, I would have to do this at the very end of the process (final confirmation screen). This is not feasible as final confirmation screen isn't aware of all the components (view models) that are already subscribed. I would also argue and say that it shouldn't be aware of these components as it makes the design tightly coupled. \r<br />\n<br />\nI have tried implementing IDisposable on the view models, but it's not being called. \r<br />\n<br />\nI have also tried implementing a destructor and then manually calling GC.Collect() - this also did nothing.\r<br />\n<br />\nI have also read the following blog post: <a href=\"https://compositewpf.codeplex.com/workitem/4925\" rel=\"nofollow\">https://compositewpf.codeplex.com/workitem/4925</a> - it says that subscriptions don't get cleared unless the filter is specified. This didn't help either.\r<br />\n<br />\nWith regards to infrastructure, my event broker (wrapper around IEventAggregator) gets injected by structure map on the application startup. The same instance of the event broker is used throughout the application.\r<br />\n<br />\nView models get injected into the window. I then set window's data context to the view model that has been injected.\r<br />\n<br />\nI currently don't use any other feature of Prism, just the event aggregator.\r<br />\n<br />\nI'm unable to post the project as it's very large and has many dependencies (both hardware and software). I've spent over a day on this so far and I would be most grateful for any advise/suggestions.\r<br />\n<br />\nThank you<br />\n",
+    "PostedDate": "2013-12-17T04:42:43.387-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1137142",
+    "ThreadId": "474368",
+    "Html": "Hello vikpea,\r<br />\n<br />\nBased on my understanding there wouldn't be an exact time or interval of time where the <strong>Garbage Collector</strong> would execute. Therefore the <strong>ViewModels</strong> could remain alive the application lifetime, and its <strong>Event's</strong> weak reference would still be handled. \r<br />\n<br />\nRegarding the destructor you implemented for calling the <strong>Garbage Collector</strong>, I suggest you to verify if strong references were held like the registration of the <strong>ViewModels</strong> in the corresponding <strong>Region</strong>.\r<br />\n<br />\nNevertheless, a possible workaround without using strong references would be by raising an event after the process ended in order to <strong><em>unsubscribe()</em></strong> each <strong>ViewModel's Subscription</strong>. You could accomplish this by subscribing to an event on each <strong>process's ViewModel</strong>, which its <strong>EventHandler</strong> would <em>unsubscribe</em> its proper event of progress update. \r<br />\nThis way the old <strong>Event Subscriptions</strong> would be removed, although the <strong>ViewModels</strong> objects may still be alive.\r<br />\n<br />\n<br />\nI hope this helped you,\r<br />\n \r<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2013-12-17T07:34:40.343-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2013-12-17T08:19:58.583-08:00"
+  },
+  {
+    "Id": "1137168",
+    "ThreadId": "474368",
+    "Html": "Hi Gabriel,\r<br />\n<br />\nThank you for your reply. \r<br />\n<br />\nI don't yet use regions, but I will have a look into them.\r<br />\n<br />\nYour second suggestion was a very good idea. I have implemented this and it works. Thanks a lot for that. I will now try to make the solution a bit more generic as it appears a little hacky to me.<br />\n",
+    "PostedDate": "2013-12-17T08:19:53.653-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

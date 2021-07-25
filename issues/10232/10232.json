@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Turns out PRISM won't load modules correctly from a folder that contains a pound character in the name. I was experiencing a crash error like the following:\n\n>Failed to load type for module _MyModuleClass_. \n\n>If this error occurred when using MEF in a Silverlight application, please ensure that the CopyLocal property of the reference to the MefExtensions assembly is set to true in the main application/shell and false in all other assemblies. \n\n>Error was: Unable to locate the module with type '_MyModuleNameSpace.MyModuleClass_, _MyModuleAssembly_, Version=2.0.2.3361, Culture=neutral, PublicKeyToken=nullamong the exported modules. Make sure the module name in the module catalog matches that specified on ModuleExportAttribute for the module type.\n\n\nUntil I realized my project was placed in a folder with a pound character, like _C:\\Whatever\\\\#Whatever\\MySolutionHere_\n\nAfter renaming the _#Whatever_ folder to _Whatever_ without the pound character, my modules were loaded again without issues and everything worked fine again.\n\nI am using Visual Studio 2012 Update 3 and my solution is a Prism WPF + MEF Shell application with all modules being loaded from the application folder. This is the configuration in the bootstrapper:\n\n```\nprotected override IModuleCatalog CreateModuleCatalog()\n{\n    // When using MEF, the existing Prism ModuleCatalog is still the place to configure modules via configuration files.\n    return new DirectoryModuleCatalog() { ModulePath = @\".\\\" };\n}\n```",
+    "LastUpdatedDate": "2013-07-03T09:50:23.513-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2013-07-02T15:55:16.183-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Modules won't load from folders with a pound (#) character.",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 10232
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nThis seems to be a known issue in Prism. You can find more information about it in the following Work Item:#+ [Error when place Modularity sample to directory with # in name](https://compositewpf.codeplex.com/workitem/8029)\r\n\r\nRegards,\r\n\r\nFederico Martinez http://blogs.southworks.net/fmartinez ",
+      "PostedDate": "2013-07-03T09:50:23.513-07:00",
+      "Id": 156665
+    }
+  ]
+}

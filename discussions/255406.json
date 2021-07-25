@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "603456",
+    "ThreadId": "255406",
+    "Html": "\r\n<p>Was just wondering why INavigationAware can be attached to view models, but IActiveAware cannot (i.e. IActiveAware only seems to work if attached to the view).</p>\r\n<p>Any ideas why this is or should I be able to attach IActiveAware to views?</p>\r\n<p>Thanks Liam.</p>\r\n",
+    "PostedDate": "2011-04-27T02:51:24.66-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "603624",
+    "ThreadId": "255406",
+    "Html": "<p><span style=\"color: #30332d; font-size: 10pt;\" lang=\"EN-US\">Hi Liam,</span></p>\r\n<p><span style=\"color: #30332d; font-size: 10pt;\" lang=\"EN-US\">The <strong>RegionActiveAwareBehavior</strong> behavior, which can be found in the <strong>Regions/Behaviors</strong> folder in the <strong>Prism.Silverlight</strong> project, monitors the region's <strong>ActiveViews </strong>collection to see if a view or view model is added or removed (by subscribing to its <strong>CollectionChanged </strong>event), and modifies the <strong>IsActive</strong> property of the View and/or ViewModel accordingly.</span></p>\r\n<p><span style=\"font-size: 10pt;\" lang=\"EN-US\">From the Prism MSDN documentation, <em>&ldquo;You can implement the IActiveAware interface on child views or view models. It is primarily used to track the active state of a child view within a region (&hellip;)&rdquo;</em></span></p>\r\n<p><span style=\"color: #30332d; font-size: 10pt;\" lang=\"EN-US\">To illustrate the aforementioned, here&rsquo;s the code from the </span><strong>RegionActiveAwareBehavior .InvokeOnActiveAwareElement </strong>method, which updates the <strong>IsActive</strong> property of both the View and the <strong>ViewModel</strong> (the invocation action that is passed as a parameter updates the <strong>IsActive</strong> property):</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">private</span> <span style=\"color: blue;\">static</span> <span style=\"color: blue;\">void</span> InvokeOnActiveAwareElement(<span style=\"color: blue;\">object</span> item, Action&lt;IActiveAware&gt; invocation)\r\n       {\r\n           <span style=\"color: blue;\">var</span> activeAware = item <span style=\"color: blue;\">as</span> IActiveAware;\r\n           <span style=\"color: blue;\">if</span> (activeAware != <span style=\"color: blue;\">null</span>)\r\n           {\r\n               invocation(activeAware);\r\n           }\r\n \r\n           <span style=\"color: blue;\">var</span> frameworkElement = item <span style=\"color: blue;\">as</span> FrameworkElement;\r\n           <span style=\"color: blue;\">if</span> (frameworkElement != <span style=\"color: blue;\">null</span>)\r\n           {\r\n               <span style=\"color: blue;\">var</span> activeAwareDataContext = frameworkElement.DataContext <span style=\"color: blue;\">as</span> IActiveAware;\r\n               <span style=\"color: blue;\">if</span> (activeAwareDataContext != <span style=\"color: blue;\">null</span>)\r\n               {\r\n                   invocation(activeAwareDataContext);\r\n               }\r\n           }\r\n}\r\n</pre>\r\n</div>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-04-27T08:01:56.733-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "604074",
+    "ThreadId": "255406",
+    "Html": "<p>Hi Miguel</p>\r\n<p>thanks for the response. You are correct - both IActiveAware and iNavigationAware can be implemented in either the view or the viewmodel. This is good - means I can move more code out of the view and into the viewmodel.</p>\r\n<p>Liam</p>",
+    "PostedDate": "2011-04-28T04:46:43.53-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

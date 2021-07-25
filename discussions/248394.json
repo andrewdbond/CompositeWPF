@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "575339",
+    "ThreadId": "248394",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>I was wondering if anyone knows how to obtain the module instance for which ModuleManager.LoadModuleCompleted fires? In other words, when the ModuleManager.LoadModuleCompleted event fires, it fires for a module. In the event args I have access to the ModuleInfo\r\n for which the event fired but I don't have access to the actual IModule instance. This is what I need. It's not clear to me on how to acheive this. The ModuleInfo.ModuleType does not really help me because most of my modules will be of the same type. You see\r\n I don't use PRISM exactly how it should be used. Because most of my modules consist of simply an entry level view/viewmodel that gets displayed in a window, I basically have one type that implements IModule and my various modules use this same type. But I\r\n nonetheless need to keep track of these instances. For me it would be ideal to somehow obtain the IModule instance from within LoadModuleCompleted. I know I can achive this in other ways, like for example, having my common module type call something within\r\n its Initialize method passing itself in, which is what I have done in the past with PRISM, but now I am looking to do this inside LoadModuleCompleted. Anyone know how? I am not a PRISM expect by far so perhaps I am missing something obvious, but I feel there\r\n is a disconnect between ModuleInfo and the IModule instance created for it at runtime. Another option that would work well for me is being able to obtain within IModule.Initialize the corresponding ModuleInfo. Anyone have any ideas? Thank you very much</p>\r\n",
+    "PostedDate": "2011-03-03T18:01:56.673-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "575684",
+    "ThreadId": "248394",
+    "Html": "<p>Hi,</p>\r\n<p>Take into account that your scenario is not taking advantage of modular application development proposed by Prism. You should separate your functionality into modules in order to make your application architecture flexible and maintainable. Each of these pieces encapsulates specific functionality, and is integrated through clear but loosely coupled communication channels.</p>\r\n<p>On the other hand, as Prism documentation shows &ldquo;<em>Module instance lifetime is short-lived by default. After the Initialize method is called during the loading process, the reference to the module instance is released. If you do not establish a strong reference chain to the module instance, it will be garbage collected. </em></p>\r\n<p><em>This behavior may be problematic to debug if you subscribe to events that hold a weak reference to your module, because your module just \"disappears\" when the garbage collector runs.</em>&rdquo;</p>\r\n<p>One possible way to fulfill your requirement is to use <strong>Event Aggregator</strong> mechanism, by publishing an event on in the <strong>LoadModuleCompleted</strong> handler and subscribing to that event in your module, for example to register something in your container.</p>\r\n<p>You can read about these topics in the following links:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405479(v=PandP.40).aspx\">Chapter 4: Modular Application Development</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122(v=PandP.40).aspx\">Chapter 9: Communicating Between Loosely Coupled Components</a>&nbsp;</li>\r\n</ul>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-03-04T10:12:22.6-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "575815",
+    "ThreadId": "248394",
+    "Html": "<p>Thank you</p>\r\n<p>Indeed you have provided the info I need...</p>",
+    "PostedDate": "2011-03-04T14:15:01.857-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

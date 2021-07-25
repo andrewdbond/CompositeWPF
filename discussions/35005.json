@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "116320",
+    "ThreadId": "35005",
+    "Html": "We're building a CompositeWPF app delivered via xbap to internal customers. We're taking the road of driving it using an inductive UI so everything is a task right now. Tasks load up into a main region where the user selects them. That would launch the view/presentationmodel for that task so we're emulating a modal type of view (you only work on that screen and when you're done you go back to the home screen).<br>\r\n<br>\r\nI'm not quite sure how to finish the task and remove the view? I don't want to do this in the presentation model as it doesn't really control the view and we're trying to keep our views uber-thin with only xaml markup&nbsp;(i.e. no code so far). The closing would be triggered by say a button or something, I'm just not sure in CompositeWPF how to close the view as it seems to want to keep the view around for the lifetime of the app.\r\n",
+    "PostedDate": "2008-09-05T05:52:35.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "116330",
+    "ThreadId": "35005",
+    "Html": "Hi bsimser,&nbsp; in the source code example in&nbsp;<a href=\"http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=34298\">this message thread</a> I show how to remove a view.&nbsp; On the click of a button the view is moved to a different region; to do this it removes it from the current region.&nbsp; <br>\r\n<br>\r\nIn case you are not aware&nbsp;- XBAP runs in partial trust, but not when running from the debugger.&nbsp;&nbsp;&nbsp;I Blog on the topic <a href=\"http://www.global-webnet.net/BlogEngine/?tag=/xbap\">HERE</a>.<br>\r\n<br>\r\n",
+    "PostedDate": "2008-09-05T06:52:10.073-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "117002",
+    "ThreadId": "35005",
+    "Html": "@Bill<br>\r\n<br>\r\nThanks. Looks good. We're doing something like that now. One wrikle that I'm trying to figure (which might be more WPF than CAF). In our user control we have a way to close the view (which calls a method on the PresentationModel). We've separated out our presentation model and view so the two don't know about each other (blog on this coming soon) so we only do binding in the xaml to presentation model methods.<br>\r\n<br>\r\nIn our xaml I have something like this:<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; &lt;Grid&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;StackPanel&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextBlock Width=&quot;auto&quot; Margin=&quot;50&quot;&gt;All your base are belong to us.&lt;/TextBlock&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button Margin=&quot;10&quot; <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Content=&quot;Click Me To Close This View&quot; <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Command=&quot;{Binding models.CreateSubmissionPresentationModel.Close}&quot; <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CommandParameter=&quot;{Binding Self}&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/StackPanel&gt;<br>\r\n&nbsp;&nbsp;&nbsp; &lt;/Grid&gt;<br>\r\n<br>\r\nSo there's a method on our presentation model called Close which calls a DelegateCommand to execute. It needs the view to be passed into it but a) I'm not sure if I can pull the view class out of the xaml (it's there in the declaration of the user control) and b) the fire event doesn't seem to be called.<br>\r\n<br>\r\nI'm sure it's a xaml mismatch but not sure.<br>\r\n",
+    "PostedDate": "2008-09-08T14:04:06.927-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "117071",
+    "ThreadId": "35005",
+    "Html": "I provide XAML, source w/flash demo showing how to set the CommandParameter to the View's reference so that you can close it from the Presentation Model.<br>\r\n<br>\r\nBlogged about <a href=\"http://www.global-webnet.net/BlogEngine/post/2008/09/08/Composite-WPF-Obtaining-View-reference-with-Presentation-Model.aspx\">HERE </a>.\r\n",
+    "PostedDate": "2008-09-08T18:51:57.023-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "117166",
+    "ThreadId": "35005",
+    "Html": "@Bill<br>\r\n<br>\r\nThat's great. Exactly what I need. Much appreciated!\r\n",
+    "PostedDate": "2008-09-09T05:33:43.207-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

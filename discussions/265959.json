@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "645255",
+    "ThreadId": "265959",
+    "Html": "\r\n<p>I have a UnityBootstrapper derived bootstrapper class, with an overridden ConfigureContainer function. When calling this.Container.RegisterInstance or this.Container.RegisterType, I get the following exception message:</p>\r\n<p><em>A first chance exception of type 'System.Threading.SynchronizationLockException' occurred in Microsoft.Practices.Unity.dll</em><br>\r\n<br>\r\n<em>Additional information: Object synchronization method was called from an unsynchronized block of code.</em></p>\r\n<p>Any ideas on why this might be happening and how I might go about fixing it?</p>\r\n<p><em><br>\r\n</em></p>\r\n",
+    "PostedDate": "2011-07-20T17:22:17.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645660",
+    "ThreadId": "265959",
+    "Html": "<p>Hi,</p>\r\n<p>We've tried overriding that method and we've experienced no errors. The exception you're experiencing might be happening due to the fact that some code that involves synchronization locks might be placed in your class's constructor, and when you use the <strong>RegisterType</strong> method, that code is being called, thus throwing the exception.</p>\r\n<p>If you can't find a cause for your problem, it would be helpful if you could provide us with a repro sample (for example, uploading it to SkyDrive), so that we can help you solve this issue.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-21T09:43:27.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "713706",
+    "ThreadId": "265959",
+    "Html": "<p>&nbsp;</p>\n<p>Hi!</p>\n<p>&nbsp;</p>\n<p>The same...</p>\n<p><span class=\"hps\">It's too late</span><span>, but if</span>&nbsp;<span class=\"hps\">I have</span>&nbsp;<span class=\"hps\">understood correctly</span><span>, I have the</span>&nbsp;<span class=\"hps\">problem in my</span><span class=\"hps\">BootstrapperGestionAplicacion</span><br /><span class=\"hps\">Is it right</span><span>?</span></p>\n<p><span class=\"hps\">The</span>&nbsp;<span class=\"hps\">million dollar question</span><span>.</span>&nbsp;<span class=\"hps\">Is</span>&nbsp;<span class=\"hps\">this important?</span>&nbsp;<span class=\"hps\">How</span>&nbsp;<span class=\"hps\">concerned?</span><br /><span class=\"hps\">thank you very much</span></p>\n<p><span class=\"hps\"><br /></span></p>\n<div style=\"color: black; background-color: white;\">\n<pre>    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> App : Application\n    {\n        <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> OnStartup(StartupEventArgs e)\n        {\n            <span style=\"color: blue;\">base</span>.OnStartup(e);\n            BootstrapperGestionAplicacion b = <span style=\"color: blue;\">new</span> BootstrapperGestionAplicacion();\n            b.Run();\n        }\n    }\n</pre>\n</div>",
+    "PostedDate": "2011-12-17T17:20:12.667-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "714303",
+    "ThreadId": "265959",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, the problem described in this thread, as Guido Maliandi suggested, might be located in the constructor of the class you are trying to register when overriding the <strong>ConfigureContainer </strong>method, possibly due to some code that involves synchronization locks in it.</p>\r\n<p>Regarding the code snippet you provided, it seems to be a valid approach to initialize your bootstrapper and doesn't seems to be related to the problem.</p>\r\n<p>If you are still experiencing this undesired behavior it would be helpful if you could provide us with a repro sample application, so that we can help you further with this.</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-12-19T08:53:20.653-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "780286",
+    "ThreadId": "265959",
+    "Html": "<p>Hi,</p>\r\n<p>I think this is related to a known issue in Unity [running the Modularity with Unity quickstart in debug&nbsp;repros the issue]</p>\r\n<p>see <a href=\"http://unity.codeplex.com/workitem/7019?ProjectName=unity\">http://unity.codeplex.com/workitem/7019?ProjectName=unity</a><br />and <a href=\"http://unity.codeplex.com/discussions/270846\">http://unity.codeplex.com/discussions/270846</a><br />and <a href=\"http://unity.codeplex.com/discussions/51337\">http://unity.codeplex.com/discussions/51337</a></p>\r\n<p>A 'handled' exception arises in SynchronizedLifetimeManager.cs:</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void TryExit()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Monitor.Exit(lockObj);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (SynchronizationLockException)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Noop here - we don't hold the lock and that's ok.<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>which is called by SetValue.</p>\r\n<p>Monitor.Enter(lockobj) is called by GetValue, but SetValue can be called without a previous call to GetValue with the result that a SynchronizationLockException is generated.</p>\r\n<p>There are some workarounds possible for users of Unity outside of Prism on [see stackoverflow.com].&nbsp;</p>",
+    "PostedDate": "2012-02-19T09:24:46.02-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

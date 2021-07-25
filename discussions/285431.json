@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "722313",
+    "ThreadId": "285431",
+    "Html": "\r\n<p>I have a region which contains multiple instances of the Patient View. And I am wanting to deactivate Patient Views from the ViewModel, based on which ever one the user clicks close on. So I have the following bit of code, but wondering how I access the\r\n correct view when trying to remove. Obviously here I am just removing the first in the views collection.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;IRegion region = _regionManager.Regions[RegionNames.SelectedPatientRegion];</p>\r\n<p>region.Deactivate(region.Views.ElementAt(0));</p>\r\n",
+    "PostedDate": "2012-01-09T01:45:56.163-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "722597",
+    "ThreadId": "285431",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, if your region only shows one active view (for example, a <strong>ListControl </strong>in which you can have only one item selected at the same time or a <strong>TabControl</strong>) you can obtain this view from the <strong>ActiveViews </strong>collection of the region and do something like this:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>IRegion region = regionManager.Regions[<span style=\"color: #a31515;\">\"MainRegion\"</span>];\r\nregion.Deactivate(region.ActiveViews.FirstOrDefault());\r\n</pre>\r\n</div>\r\n<p>If this is not the case and your region can shown more than one active view at the same time, then you might benefit from the possibility of passing a parameter from the view to the command in the view model. For example, in the <strong>DelegateCommand </strong>used to deactivate the view, you could accept a parameter that could be used to recognize the correct view that needs to be removed from the region or the view itself.</p>\r\n<p>You can find more information about this in the following chapter of the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405484%28PandP.40%29.aspx#sec12\">Chapter 5: Implementing the MVVM Pattern - Invoking Command Objects from the View</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-01-09T09:13:36.67-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "722923",
+    "ThreadId": "285431",
+    "Html": "<p>Yes sorry didn't explain that very clearly, and probably still won't... I am using a content control, and then just navigate between patient views, keeping them alive unless they are closed.</p>\r\n<p>&nbsp;</p>\r\n<p>The close command is not coming from the view itself is another slight problem, I'm not sure what parameter to identify the view I would send?</p>",
+    "PostedDate": "2012-01-10T00:36:05.383-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "723261",
+    "ThreadId": "285431",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, when using <strong>ContentControl </strong>as a region, the <strong>ContentControlRegionAdapter </strong>will adapt the region as a <strong>SingleActiveRegion </strong>by default. This means that it will only have one active view at a time (the one that is being shown) and all of its other views will be deactivated. Also, when navigating to a view, this view will be the active one and all of the other views in the region will be deactivated.</p>\r\n<p>If I understood your scenario correctly, you want to <em><strong>remove </strong></em>the current view that the user is seeing in the aforementioned <strong>ContentControl</strong>. If that is the case, that view will be the active one, and you could retrieve it and remove it, doing something like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>IRegion region = regionManager.Regions[<span style=\"color: #a31515;\">\"MainRegion\"</span>];\r\nregion.Remove(region.ActiveViews.FirstOrDefault());\r\n</pre>\r\n</div>\r\n</p>\r\n<p>For example, if your region has three views (<em>patient1</em>, <em>patient2</em>, <em>patient3</em>) and the region is currently showing the <em>patient2 </em>view, invoking the <strong>FirstOrDefault </strong>method (which is an extension method provided by <strong>LinQ</strong>) on the <strong>ActiveViews </strong>collection of the region, should return the <em>patient2 </em>view, as <em>patient1 </em>and <em>patient3 </em>are deactivated.</p>\r\n<p>Please let us know if we have misunderstood your scenario.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-01-10T10:36:16.2-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "723530",
+    "ThreadId": "285431",
+    "Html": "<p>Yes thank you for clearing that up, that makes sense.</p>\r\n<p>So if the ViewModel IsActive is false, I will just change the KeepAlive flag to false and unsubscribe from events. If it IsActive then I will also deactivate as you have shown.</p>\r\n<p>Thanks again.</p>",
+    "PostedDate": "2012-01-11T01:33:14-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "723540",
+    "ThreadId": "285431",
+    "Html": "<p>So now the issue just seems to be with the one that isn't active. I presume it isn't deactivated properly because I have the KeepAlive set to true, is there something I need to do to force refresh this deactivation? What happens at the moment is I have two views active, I search for James and it opens up and becomes active, I then search for James1 and it becomes active. So then when I try to close James which is inactive, it isn't properly deactivated, because if I search for James again it navigates to the ViewModel that is already there. If I then navigate away from it back to James1, it is then deactivated and removed.</p>\r\n<p>&nbsp;</p>\r\n<p>Hope that makes sense...</p>",
+    "PostedDate": "2012-01-11T01:45:59.603-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "723851",
+    "ThreadId": "285431",
+    "Html": "<p>Hi,</p>\r\n<p>Usually, when a view is deactivated, this means that the view will be not visible in the region, but it will be still \"stored\" in the region without being modified. Based on my understanding, other behaviors like removing a deactivated view are not performed by default.</p>\r\n<p>If I understood your scenario correctly, you are expecting that, after performing a navigation request, the previous view (which will be deactivated) is removed from the region instead of just being hidden. As far as I know, when a navigation request is performed, if the previous view or its view model implements the <strong>IRegionMemberLifetime </strong>interface and the <strong>KeepAlive </strong>property of the view return <strong><em>false</em></strong>, the view will be automatically removed from the region. However, if the <strong>KeepAlive </strong>property of the view or its view model return <em><strong>true</strong></em>, then the view will be deactivated (that is, the view will not be visible in the region) but the view will not be removed from the region by default.</p>\r\n<p>You can find more information about the <strong>IRegionMemberLifetime </strong>interface in the following link:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.prism.regions.iregionmemberlifetime%28PandP.38%29.aspx\">IRegionMemberLifetime Interface</a></li>\r\n</ul>\r\n<p>If for some reason you need to explicitly <em><strong>remove </strong></em>or <em><strong>deactivate </strong></em>the previous view when performing navigation, as a possible approach you can could implement the <strong>INavigationAware </strong>interface in your view, and then, in the <strong>OnNavigatedFrom </strong>method, you could make the view <em><strong>remove </strong></em>or <em><strong>deactivate </strong></em>itself from the region.</p>\r\n<p>You can find more information about this in the following chapter of the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28PandP.40%29.aspx\">Chapter 8: Navigation</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-01-11T11:30:49.753-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "724337",
+    "ThreadId": "285431",
+    "Html": "<p>Apologies I have not been very clear because I think I have mislead you.</p>\r\n<p>Basically I am using my single contentcontrol (SelectedPatientViewRegion) combined with a side panel that lists all of the patients that are KeptAlive as an alternative to a tabcontrol. My Side Panel has each patient view which still exists with a close button next to it, much like tab headers.</p>\r\n<p>So if I click close in my side panel on a patientview that is not the selectedpatientview, how do remove it completely?</p>\r\n<p>By reading your last comment I would have to remove the view myself, as this has been bypassed in the deactivation because its keepalive flag would have been true. Simply changing the KeepAlive flag is not enough it then needs to be removed.</p>\r\n<p>At the moment my CloseCommand will run the following Method:</p>\r\n<p>&nbsp;</p>\r\n<p>void Close(string patient)&nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>{&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p><span style=\"white-space: pre;\"> </span>if (patient == this.PatientID)&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p><span style=\"white-space: pre;\"> </span>{&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p><span style=\"white-space: pre;\"> </span>KeepAlive = false;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p><span style=\"white-space: pre;\"> </span>_eventAggregator.GetEvent&lt;PatientAddAppEvent&gt;().Unsubscribe(AddApp);&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p><span style=\"white-space: pre;\"> </span>_eventAggregator.GetEvent&lt;PatientOpenAppEvent&gt;().Unsubscribe(OpenApp);&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p><span style=\"white-space: pre;\"> </span>_eventAggregator.GetEvent&lt;PatientClosedEvent&gt;().Unsubscribe(Close);</p>\r\n<p><br /><span style=\"white-space: pre;\"> </span>if (IsActive)&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p><span style=\"white-space: pre;\"> </span>{&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p><span style=\"white-space: pre;\"> </span>IRegion region = _regionManager.Regions[RegionNames.SelectedPatientRegion];&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p><span style=\"white-space: pre;\"> </span>region.Deactivate(region.ActiveViews.FirstOrDefault());&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p><span style=\"white-space: pre;\"> </span>}</p>\r\n<p><span style=\"white-space: pre;\"> </span>else //Is not the selected view and needs to be removed.</p>\r\n<p><span style=\"white-space: pre;\"> </span>{</p>\r\n<p><span style=\"white-space: pre;\"> </span>//Need to remove View</p>\r\n<p><span style=\"white-space: pre;\"> </span>//But like the original problem I don't know how to get reference to this view</p>\r\n<p><span style=\"white-space: pre;\"> </span>}</p>\r\n<p><span style=\"white-space: pre;\"> </span>}&nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>}</p>",
+    "PostedDate": "2012-01-12T09:01:13.75-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "724342",
+    "ThreadId": "285431",
+    "Html": "<p>So to summarise I am not navigating here I am just wanting to remove views completely. If I click close on the selectedview that works fine.</p>\r\n<p>If after clicking close I search for the patient I just closed, it should create a new view.</p>",
+    "PostedDate": "2012-01-12T09:06:28.803-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "724407",
+    "ThreadId": "285431",
+    "Html": "<p>Hi,</p>\r\n<p>Thanks for providing us with more information, I believe I have a better understanding of your scenario now.</p>\r\n<p>As a possible approach for this case, I believe that you could create a <strong>Command </strong>which accepts a parameter used to identify the <em><strong>patient </strong></em>(similar to the <strong>Close </strong>method you posted above). This command could be, for example, in the view model of the side panel that contains the list of patients that are being kept alive. Then, supposing that each view has a view model with the corresponding <em><strong>patient </strong></em>identifier, you could iterate through the <strong>Views </strong>collection of the region, retrieving the view model and comparing the patient passed as a parameter with the patient of the view model. For example:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">void</span> Close(<span style=\"color: blue;\">int</span> patient)\r\n{\r\n    <span style=\"color: blue;\">var</span> viewToClose = <span style=\"color: blue;\">null</span>;\r\n    IRegion region = _regionManager.Regions[RegionNames.SelectedPatientRegion];\r\n\r\n    <span style=\"color: blue;\">foreach</span>(<span style=\"color: blue;\">var</span> view <span style=\"color: blue;\">in</span> region.Views)\r\n    {\r\n        <span style=\"color: green;\">/* For the purpose of this example we will assume that the view models \r\n         * for the patient views implement this interface or something similar.\r\n         */</span>\r\n        IPatientViewModel viewModel = view.DataContext <span style=\"color: blue;\">as</span> IPatientViewModel;\r\n         <span style=\"color: blue;\">if</span>( viewModel != <span style=\"color: blue;\">null</span> &amp;&amp; viewModel.PatientId == patient )\r\n         {\r\n             <span style=\"color: green;\">// We found the view we want to close.</span>\r\n             viewToClose = view;\r\n         }\r\n    }\r\n\r\n    <span style=\"color: blue;\">if</span>( viewToClose != <span style=\"color: blue;\">null</span> )\r\n    {\r\n        <span style=\"color: green;\">// ... logic to remove or deactivate the view ...</span>\r\n    }\r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-01-12T11:24:13.853-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "725647",
+    "ThreadId": "285431",
+    "Html": "<p>Yes very useful thanks a lot for your help!</p>",
+    "PostedDate": "2012-01-16T02:01:07.033-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

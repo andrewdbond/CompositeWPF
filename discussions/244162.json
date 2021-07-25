@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "558773",
+    "ThreadId": "244162",
+    "Html": "\r\n<p>&nbsp;</p>\r\n<div id=\"x_x_x_gt-form-c\">\r\n<div id=\"x_x_x_gt-res-c\">\r\n<div id=\"x_x_x_gt-res-p\">\r\n<div id=\"x_x_x_gt-res-data\">\r\n<div id=\"x_x_x_gt-res-content\">\r\n<div dir=\"ltr\"><br>\r\nHi everyone!</div>\r\n<div dir=\"ltr\">I have a small question about navigation parameters.</div>\r\n<div dir=\"ltr\">There are two views in my program: Customers and EditCustomer.</div>\r\n<div dir=\"ltr\">The EditCutomer view has two buttons: Save and Cancel. When I click the Save button, I send through the navigation parameters [ResetView] = true</div>\r\n<div dir=\"ltr\">(regionManager.RequestNavigate(RegionNames.MainContentRegion, new Uri(builder.ToString(), UriKind.Relative)))</div>\r\n<div dir=\"ltr\">and update the list of customers in the Customers view. If after that I'll be editing the second customer and press Cancel, then Customers view again get [ResetView] = true</div>\r\n<div dir=\"ltr\">(navigationContext.GoBack()).</div>\r\n<div dir=\"ltr\">How do I clear the navigation parameters in the second case?</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-02-01T08:53:36.113-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "558971",
+    "ThreadId": "244162",
+    "Html": "\r\n<p id=\"x_c42dcc30-105f-012e-8b7d-12313918024c\">Hi,</p>\r\n<p id=\"x_c42dd560-105f-012e-8b7e-12313918024c\">Based on my understanding of your scenario, you need to refresh the list of customers only when you save them on the edit\r\n<strong>CustomerEditView,</strong> by passing <em>ResetView</em> parameter.</p>\r\n<p id=\"x_c42de010-105f-012e-8b7f-12313918024c\">Please take into account, is not possible to clear the NavigationContext\r\n<strong>Parameters</strong>&acute;s property since is <strong>read-only</strong>.</p>\r\n<p id=\"x_c42deb00-105f-012e-8b80-12313918024c\">In case you need to go back without sending the refresh parameter, you could navigate to the\r\n<strong>CustomerView</strong> by simply retrieving the RegionManager and navigate again to the view.</p>\r\n<p id=\"x_c42df760-105f-012e-8b81-12313918024c\">For example:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> regionManager = ServiceLocator.Current.GetInstance&lt;IRegionManager&gt;();\r\nregionManager.RequestNavigate(RegionNames.CustomerRegion, CustomerView);\r\n</pre>\r\n</div>\r\n<p>In the other hand, regarding <strong>NavigationService.GoBack()</strong> method, as documentation shows &ldquo;<em>Navigates to the most recent entry in back navigation history, if there is one</em>&rdquo;. That says, your first view is going to be loaded\r\n exactly the same way when you start the navigation process.</p>\r\n<p>You can read more about Navigation, in Prism documentation <a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=PandP.40).aspx\">\r\nChapter 8: Navigation</a>.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-02-01T13:38:01.977-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "558992",
+    "ThreadId": "244162",
+    "Html": "\r\n<p>Thanks for the answer!</p>\r\n",
+    "PostedDate": "2011-02-01T14:09:16.42-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

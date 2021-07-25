@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "532493",
+    "ThreadId": "237504",
+    "Html": "\r\n<p>I am a bit unsure how to bring a querystring value from the view into the view model.&nbsp;</p>\r\n<p>I am so far using a very simple method of specifying the viewmodel as the datacontext of the view.&nbsp;</p>\r\n<p>In my situation I have a ModuleFrameView that has a menu control on it. The menu is populated from data returned from a RIA data service. There really is no easy way to build the UI control in the viewmodel (or is there) so I am building it in the code behind.</p>\r\n<p>The ModuleFrameView is reused based and the module name is passed to it. The moduleId is passed to it in the query string. All of the code to get data from the service (or just build some sample data if in design mode) is in the view. I can see a way to\r\n get the querystring data in the viewmodel.&nbsp;</p>\r\n<p>So what I did was expose a method in the view model called LoadMenus that accepts the model id and also the collection of entities. I also exposed an event that is raised once the RIA service returns the data. In the code behind of the View I cast the Datacontext\r\n to the ViewModel type, assign a handler to the MenusLoaded event and then call the menus loaded passing in the value from the query string. (This is done in the OnNavigatedTo event handler, I'm using basic SL4 navigation not prism regions).</p>\r\n<p>This all seems to work but is also seems wrong and brittle. Is there a better way to get the querystring data in the view model?&nbsp;</p>\r\n<p>It seems to me that there would be a lot less event gymnastics if I just did everything in the code behind. If there is a way to build the menu control in the viewmodel I just don't see it. Ingragistics has not been able to get me a sample of binding the\r\n menu to a property in the viewmodel.&nbsp;</p>\r\n<p>BOb</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-07T13:10:10.47-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533555",
+    "ThreadId": "237504",
+    "Html": "\r\n<p>Hi Bob,</p>\r\n<p>As explained in <a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28PandP.40%29.aspx\">\r\nthis chapter</a> from the Prism documentation, there is no guidance on how to use\r\n<strong>Silverlight Navigation</strong> with <strong>MVVM </strong>in Prism out of the box.</p>\r\n<p>From the documentation, &ldquo;<em>By default, the Silverlight navigation framework does not directly support the use of the MVVM pattern or the user of a dependency injection container or MEF. However, you can implement a custom content loader&mdash;the\r\n component used by the frame to load the content associated with a specific URI&mdash;which can instantiate and initialize the view and its associated view model as appropriate and display it in the Frame. You can also implement a custom content loader to more\r\n fully integrate Silverlight's navigation framework with the Prism region navigation mechanisms.</em>&rdquo;</p>\r\n<p>You can, however, read more about <em>Silverlight Navigation with MVVM pattern</em>\r\n<a href=\"http://blogs.msdn.com/b/ukadc/archive/2010/10/05/silverlight-navigation-with-the-mvvm-pattern.aspx\">\r\nhere</a>.</p>\r\n<p>Additionally, take into account that <strong>Prism Region Navigation</strong> is not designed to replace your\r\n<strong>Silverlight Navigation</strong> approach, so you might benefit from it while keeping your current scenario.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-09T11:09:14.713-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533575",
+    "ThreadId": "237504",
+    "Html": "\r\n<p>You can also look at Karl's article on Prism Navigation with Silverlight here:\r\n<a href=\"http://blogs.msdn.com/b/kashiffl/archive/2010/10/05/integrating-prism-v4-region-navigation-with-silverlight-frame-navigation.aspx\">\r\nhttp://blogs.msdn.com/b/kashiffl/archive/2010/10/05/integrating-prism-v4-region-navigation-with-silverlight-frame-navigation.aspx</a></p>\r\n<p>There is a little bit of work involved in doing this, but we ensured that we included all the necessary hooks to allow this to work and did a lot of proof of concept work as well. Unfortunately due to time constraints, we could not move the ideas from the\r\n proof of concept into a real quickstart and get it up to our ship quality bar.</p>\r\n<p>I hope this helps,<br>\r\nMike</p>\r\n",
+    "PostedDate": "2010-12-09T11:52:36.19-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533664",
+    "ThreadId": "237504",
+    "Html": "\r\n<p>I'm not sure how this info addresses how to pass data from a view to a viewmodel? The navigation is working fine. Would I need to use the EventAggragation in prism or is there a better way to get querystring data from the view to the view model?</p>\r\n<p>From what I've seen any method of MVVM in Silverlight is always View first... in other words... the view is what silverlight loads as opposed to say MVC where the controler is instantiated first and it specifies what view to render.</p>\r\n<p>I am NOT using Prism Regions btw.</p>\r\n<p>BOb</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-09T14:43:13.037-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

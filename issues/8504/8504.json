@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "It is said in documentation somewhere that RequestNavigate(\"RegionName\", \"ViewName\") works only if ViewName exported like this\n[Export(\"ViewName\")]\npublic class ViewName {...}\n \nBut lets review situation if Module needs to _RegionManager.RegisterViewWithRegion(\"SomeRegion\",typeof(ViewName)). This code will fail, because RegionManager will not be able to create ViewName. I think the only way is to inject View ViewName.\n \nCan Prism framework be changed that it can \n1._RegionManager.RegisterViewWithRegion(\"SomeRegion\",typeof(ViewName)) even if ViewName exported with contractName\nor \n2. NavigationManager.RequestNavigate(\"RegionName\", \"ViewName\") worked with View withOUT registering with contract name.",
+    "LastUpdatedDate": "2013-02-21T18:38:10.88-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-07-20T11:08:41.797-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "RequestNavigate doesn't work if View is not Exported with ContractName",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8504
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nI've created an extension method that allows you to use the contract name in the RegisterViewWithRegion method. You can find the code for that method below. Note that you will be able to use this method on the IRegionManager whenever you import the namespace in which this extension method is declared with a using statement. For example:\r\n\r\nnamespace RegionManagerCustomExtensions\r\n{\r\n    public static class RegionManagerExtensions\r\n    {\r\n        public static void RegisterViewWithRegion(this IRegionManager regionManager, string regionName, string viewName)\r\n        {\r\n            var serviceLocator = ServiceLocator.Current;\r\n\r\n            var registry = serviceLocator.GetInstance();\r\n\r\n            registry.RegisterViewWithRegion(regionName, () => serviceLocator.GetInstance(viewName));\r\n        }\r\n    }\r\n}\r\n\r\nI'm leaving this issue as active, however, so that the Prism team considers adding support for this (or the other possibilities you've mentioned) on a future version.\r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-07-26T07:07:00.693-07:00",
+      "Id": 156486
+    },
+    {
+      "Message": "Yes, it will do the trick.\r\nPls add this method into next version of the framework - it really useful with navigation.\r\n",
+      "PostedDate": "2011-09-09T10:07:00.093-07:00",
+      "Id": 156487
+    }
+  ]
+}

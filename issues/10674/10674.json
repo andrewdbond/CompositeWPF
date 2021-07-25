@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": "",
+    "Description": "Getting following error when using Prism 4.1 and MEF.\\\nType 'AutoPopulateExportedViewsBehavior' does not implement from IRegionBehavior.\n\nAlthough I have implemented the IRegionBehavior interface, still getting the same error. \n\nCode sample:\nFollowing is the code of Bootstrapper.cs\n protected override IRegionBehaviorFactory ConfigureDefaultRegionBehaviors()\n        {\n            var factory = base.ConfigureDefaultRegionBehaviors();\n            var defaultRegionBehaviorTypeDictionary = Microsoft.Practices.ServiceLocation.ServiceLocator.Current.GetInstance<Microsoft.Practices.Prism.Regions.IRegionBehaviorFactory>();\n            if(defaultRegionBehaviorTypeDictionary!=null)\n            {\n                defaultRegionBehaviorTypeDictionary.AddIfMissing(\"AutoPopulateExportedViewBehavior\", typeof(ExampleWPF_PrismMEF.Infrastructure.AutoPopulateExportedViewBehavior));\n                          }\n\n           // factory.AddIfMissing(\"AutoPopulateExportedViewsBehavior\", typeof(AutoPopulateExportedViewsBehavior));\n\n            return defaultRegionBehaviorTypeDictionary;\n        }\n\n\nAnd this is the ..AutoPopulateExportedViewBehavior .. class\npublic class AutoPopulateExportedViewBehavior : RegionBehavior,IPartImportsSatisfiedNotification\n    {\n\n        protected override void OnAttach()\n        {\n            AddRegisteredView();\n        }\n\n\n\n        public void OnImportsSatisfied()\n        {\n            AddRegisteredView();\n        }\n\n        private void AddRegisteredView()\n        {\n            if (this.Region == null) return;\n\n            foreach (var registeredView in this.RegisteredViews)\n            {\n                var view = registeredView.Value;\n                if (registeredView.Metadata.RegionName == this.Region.Name)\n                {\n                    //if (!this.Region.Views.Contains(view))\n                    {\n                        this.Region.Add(view);\n                    }\n                }\n                \n\n            }\n        }\n        \n        [System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Performance\", \"CA1819:PropertiesShouldNotReturnArrays\", Justification = \"MEF injected values\"), ImportMany(AllowRecomposition = true)]\n        public Lazy<object, IViewRegionRegistration>[] RegisteredViews { get; set; }\n}\n\nPlease tell me what is wrong I am doing here. This is my first post so please forgive if anyone found question incomplete or devoid of code. Please let me know I will post the whole project then.",
+    "LastUpdatedDate": "2014-07-16T04:44:49.737-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2014-07-16T04:44:49.737-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Getting  error when using Prism 4.1 and MEF.",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 10674
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

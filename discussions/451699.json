@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1074126",
+    "ThreadId": "451699",
+    "Html": "Is there a recommended way to hook up a prism application to a WCF service? I've tried adding a service reference to my project (it has Prism.UnityExtensions installed via nuget), but whenever I try to update the service references, it throws an error stating that it didn't update.\r<br />\n<br />\nOn investigating the warnings associated with it, it appears like it's unable to import the wsdl:porttype because it's looking for unity v2.1.505.<br />\n",
+    "PostedDate": "2013-07-28T14:27:37.447-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1074368",
+    "ThreadId": "451699",
+    "Html": "Hi, <br />\n<br />\nAs far as I know, there's no official guidance regarding <strong>WCF</strong> services in <strong>Prism</strong>, since Prism is <strong>client-side oriented</strong>. However, I believe there are examples of how to consume a <strong>WCF</strong> service from a <strong>Prism</strong> application. For example, the following blog post by <strong>Guido Maliandi</strong> portrays such scenario:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://blogs.southworks.net/gmaliandi/2011/10/using-wcf-services-in-prism-silverlight-applications/\" rel=\"nofollow\">Using WCF services in Prism Silverlight applications</a><br />\n</li>\n</ul>\nAlthough the sample is implemented in <strong>Silverlight</strong> I believe you might find it useful in order to apply the same concepts in a <strong>WPF</strong> application. <br />\n<br />\nRegarding your error message, it would be helpful if you can provide the full error message you are receiving and which version of <strong>Unity</strong> you are using in your application.<br />\n<br />\nRegards,<br />\n<br />\nFederico Martinez <br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a> <br />\n",
+    "PostedDate": "2013-07-29T09:35:43.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1074472",
+    "ThreadId": "451699",
+    "Html": "Thanks Federico. That link looks to be a winner - I'm not trying to use prism on the WCF side (I'll handle that separately), just consume it from a Prism client.<br />\n<br />\nEdit: Scratch that, they aren't really doing anything different <em>per se</em>. I haven't set up settings in the shell app.config yet, but these issues are at design time.<br />\n<br />\nIn terms of the error(s), I've install prism.unityextensions via nuget (and let it install prism and unity as necessary), then ran an update-package on the solution to bring everything up to the current version on nuget. When I attempt to perform an &quot;Update Service Reference&quot; on the reference, I get the below warnings (sorry for the dump):<br />\n<blockquote>\nWarning\t1\tCustom tool warning: Cannot import wsdl:portType<br />\nDetail: An exception was thrown while running a WSDL import extension: System.ServiceModel.Description.DataContractSerializerMessageContractImporter<br />\nError: Could not load file or assembly 'Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35' or one of its dependencies. The system cannot find the file specified.<br />\nXPath to Error Source: <a href=\"mailto://wsdl:definitions[@targetNamespace='http://tempuri.org/']/wsdl:portType[@name='IService1']\tD:\\User\" rel=\"nofollow\">//wsdl:definitions[@targetNamespace='http://tempuri.org/']/wsdl:portType[@name='IService1']\tD:\\User</a> Folders\\MyUser\\Documents\\Visual Studio 2013\\Projects\\PrismWithServiceTest\\PrismWithServiceTest\\Service References\\ServiceReference1\\Reference.svcmap\t1\t1\tPrismWithServiceTest<br />\nWarning\t2\tCustom tool warning: Cannot import wsdl:binding<br />\nDetail: There was an error importing a wsdl:portType that the wsdl:binding is dependent on.<br />\nXPath to wsdl:portType: <a href=\"mailto://wsdl:definitions[@targetNamespace='http://tempuri.org/']/wsdl:portType[@name='IService1']\nXPath\" rel=\"nofollow\">//wsdl:definitions[@targetNamespace='http://tempuri.org/']/wsdl:portType[@name='IService1']\nXPath</a> to Error Source: <a href=\"mailto://wsdl:definitions[@targetNamespace='http://tempuri.org/']/wsdl:binding[@name='BasicHttpBinding_IService1']\tD:\\User\" rel=\"nofollow\">//wsdl:definitions[@targetNamespace='http://tempuri.org/']/wsdl:binding[@name='BasicHttpBinding_IService1']\tD:\\User</a> Folders\\MyUser\\Documents\\Visual Studio 2013\\Projects\\PrismWithServiceTest\\PrismWithServiceTest\\Service References\\ServiceReference1\\Reference.svcmap\t1\t1\tPrismWithServiceTest<br />\nWarning\t3\tCustom tool warning: Cannot import wsdl:port<br />\nDetail: There was an error importing a wsdl:binding that the wsdl:port is dependent on.<br />\nXPath to wsdl:binding: <a href=\"mailto://wsdl:definitions[@targetNamespace='http://tempuri.org/']/wsdl:binding[@name='BasicHttpBinding_IService1']\nXPath\" rel=\"nofollow\">//wsdl:definitions[@targetNamespace='http://tempuri.org/']/wsdl:binding[@name='BasicHttpBinding_IService1']\nXPath</a> to Error Source: <a href=\"mailto://wsdl:definitions[@targetNamespace='http://tempuri.org/']/wsdl:service[@name='Service1']/wsdl:port[@name='BasicHttpBinding_IService1']\tD:\\User\" rel=\"nofollow\">//wsdl:definitions[@targetNamespace='http://tempuri.org/']/wsdl:service[@name='Service1']/wsdl:port[@name='BasicHttpBinding_IService1']\tD:\\User</a> Folders\\MyUser\\Documents\\Visual Studio 2013\\Projects\\PrismWithServiceTest\\PrismWithServiceTest\\Service References\\ServiceReference1\\Reference.svcmap\t1\t1\tPrismWithServiceTest<br />\nWarning\t4\tCustom tool warning: Cannot import wsdl:binding<br />\nDetail: There was an error importing a wsdl:portType that the wsdl:binding is dependent on.<br />\nXPath to wsdl:portType: <a href=\"mailto://wsdl:definitions[@targetNamespace='http://tempuri.org/']/wsdl:portType[@name='IService1']\nXPath\" rel=\"nofollow\">//wsdl:definitions[@targetNamespace='http://tempuri.org/']/wsdl:portType[@name='IService1']\nXPath</a> to Error Source: <a href=\"mailto://wsdl:definitions[@targetNamespace='http://schemas.microsoft.com/ws/2005/02/mex/bindings']/wsdl:binding[@name='MetadataExchangeHttpBinding_IService1']\tD:\\User\" rel=\"nofollow\">//wsdl:definitions[@targetNamespace='http://schemas.microsoft.com/ws/2005/02/mex/bindings']/wsdl:binding[@name='MetadataExchangeHttpBinding_IService1']\tD:\\User</a> Folders\\MyUser\\Documents\\Visual Studio 2013\\Projects\\PrismWithServiceTest\\PrismWithServiceTest\\Service References\\ServiceReference1\\Reference.svcmap\t1\t1\tPrismWithServiceTest<br />\nWarning\t5\tCustom tool warning: Cannot import wsdl:port<br />\nDetail: There was an error importing a wsdl:binding that the wsdl:port is dependent on.<br />\nXPath to wsdl:binding: <a href=\"mailto://wsdl:definitions[@targetNamespace='http://schemas.microsoft.com/ws/2005/02/mex/bindings']/wsdl:binding[@name='MetadataExchangeHttpBinding_IService1']\nXPath\" rel=\"nofollow\">//wsdl:definitions[@targetNamespace='http://schemas.microsoft.com/ws/2005/02/mex/bindings']/wsdl:binding[@name='MetadataExchangeHttpBinding_IService1']\nXPath</a> to Error Source: <a href=\"mailto://wsdl:definitions[@targetNamespace='http://tempuri.org/']/wsdl:service[@name='Service1']/wsdl:port[@name='MetadataExchangeHttpBinding_IService1']\tD:\\User\" rel=\"nofollow\">//wsdl:definitions[@targetNamespace='http://tempuri.org/']/wsdl:service[@name='Service1']/wsdl:port[@name='MetadataExchangeHttpBinding_IService1']\tD:\\User</a> Folders\\MyUser\\Documents\\Visual Studio 2013\\Projects\\PrismWithServiceTest\\PrismWithServiceTest\\Service References\\ServiceReference1\\Reference.svcmap\t1\t1\tPrismWithServiceTest<br />\nError\t6\tCustom tool error: Failed to generate code for the service reference 'ServiceReference1'.  Please check other error and warning messages for details.\tD:\\User Folders\\MyUser\\Documents\\Visual Studio 2013\\Projects\\PrismWithServiceTest\\PrismWithServiceTest\\Service References\\ServiceReference1\\Reference.svcmap\t1\t1\tPrismWithServiceTest<br />\n</blockquote>\n",
+    "PostedDate": "2013-07-29T14:12:19.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1074805",
+    "ThreadId": "451699",
+    "Html": "Hi,\r<br />\n<br />\nIt seems that your <strong>WCF</strong> service is asking for <strong>Microsoft.Practices.ServiceLocation</strong>, which is somehow strange since <strong>ServiceLocation</strong> is related to <strong>Prism</strong> and not <strong>WCF</strong>. If your service is referencing <strong>ServiceLocation</strong>, try removing that reference to see if it solves your problem. If it doesn't, you could also delete the reference to your service from the <strong>Prism</strong> side and then reference it again. It is possible that some leftover files from previous builds could be conflicting with newer builds of your service.\r<br />\n<br />\nIf these steps fail to solve your problem, it would be useful if you can provide us with a repro sample of your application or the scenario you are trying to achieve,  so that we can analyze it in further detail.\r<br />\n<br />\nRegards,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a> <br />\n",
+    "PostedDate": "2013-07-30T11:23:42.62-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1074830",
+    "ThreadId": "451699",
+    "Html": "Hi Federico,\r<br />\n<br />\nYeah it's strange, as the WCF service has no references to prism whatsoever.\r<br />\n<br />\nYou can find the solution <a href=\"https://dl.dropboxusercontent.com/u/8603712/PrismWithServiceTest.rar\" rel=\"nofollow\">here</a>. I've not been getting it to work in my app, so been trying with this simple app, to strip out the possibility of it being my code that was the issue.\r<br />\n<br />\nWhen you open it, you can see the warnings/error straight away.\r<br />\n<br />\nThanks\r<br />\nFergal<br />\n",
+    "PostedDate": "2013-07-30T12:51:07.623-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1075188",
+    "ThreadId": "451699",
+    "Html": "Hi,\r<br />\n<br />\nI tested the sample you provided on <strong>Visual Studio 2012</strong> and it seems to be working fine. No error or warning messages were shown after opening the sample, and even after a clean build. Therefore, I believe that the root of your problem relies on your local configuration. I noticed that you seem to be using <strong>Visual Studio 2013</strong>, which is still in <strong>Preview</strong>, so it should be probably related to the errors and warnings you are receiving.\r<br />\n<br />\nRegards,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a> <br />\n",
+    "PostedDate": "2013-07-31T10:06:51.453-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1075193",
+    "ThreadId": "451699",
+    "Html": "Yep, you are right. I hadn't even noticed I was using the 2013 preview - must have moved my icons around.\r<br />\n<br />\nCheers for the help.<br />\n",
+    "PostedDate": "2013-07-31T10:21:53.07-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

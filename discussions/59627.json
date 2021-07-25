@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "201883",
+    "ThreadId": "59627",
+    "Html": "<p>Hi,</p>\r\n<p>I'm noticing some perculiar things happening with Regions. Anyone seen this:</p>\r\n<p>Module A</p>\r\n<p>ViewA (with subregion MySubRegion)</p>\r\n<p>ViewAViewModel.</p>\r\n<p>If in Module A I call RegisterViewWithRegion passing a func to return ViewA, then I get MySubRegion registered as a region.</p>\r\n<p>If in Module A I call AddToRegion passing a concrete ViewA, then I _do not_ get MySubRegion registered as a region.</p>\r\n<p>If I use WPF typed data templates to associate ViewAViewModel with ViewA via a resource dictionary then it doesn't matter whether I call RegisterViewWithRegion or AddToRegion. Either way I _do not_ get MySubRegion registered as a region.</p>\r\n<p>Can anyone shed any light on this?</p>\r\n<p>Thanks,</p>\r\n<p>Graeme</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-06-15T22:54:29.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "201928",
+    "ThreadId": "59627",
+    "Html": "<p>So with a bit more research I've realised that:</p>\r\n<p>There is a method called RegionManagerRegistrationBehavior.FindRegionManager which runs up through the logical tree looking for the Region Manager. When a typed data template (viewmodel poco) is dropped directly into the tree though the LogicalTreeHelper.GetParent returns null when it hits it.</p>\r\n<p>I've made a change to my own version which says this:</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; parent = LogicalTreeHelper.GetParent(dependencyObject);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (parent == null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; parent = VisualTreeHelper.GetParent(dependencyObject);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>However I'm hitting all the same issues around RegionContext and other DP's which Prism attempts to set on my ViewModel but realises it can't. Frustrating that the Pattern de jour can't be used easily.</p>\r\n<p>Question to the authors - why aren't inherited DP's used? It would clean up the _WPF_ soooo much. The codebase looks really comprimised and more complex because of the cross-compilation for WPF and Silverlight.</p>\r\n<p>Cheers,</p>\r\n<p>Graeme</p>",
+    "PostedDate": "2009-06-16T01:50:14.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

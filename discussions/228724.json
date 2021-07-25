@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "498960",
+    "ThreadId": "228724",
+    "Html": "<p>hello, i'm using the desktop library of prism.</p>\r\n<p>what i want is to get modules in a directory and then, run them.</p>\r\n<p>I do like that:</p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre>DirectoryModuleCatalog catalog = <span style=\"color:blue\">new</span> DirectoryModuleCatalog();\r\ncatalog.ModulePath = <span style=\"color:#a31515\">@&quot;C:\\Users\\Raph\\Documents\\Visual Studio 2010\\Projects\\LibraryLoad\\LibraryLoad\\Modules&quot;</span>;\r\n</pre>\r\n<pre><br></pre>\r\n<pre>I checked, the modules are loaded in the catalog.</pre>\r\n<pre>Example of a module:</pre>\r\n<pre><div style=\"color:black;background-color:white\"><pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> SendEmailClass : IModule\r\n    {\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> SendEmail()\r\n        {\r\n            MailMessage mail = <span style=\"color:blue\">new</span> MailMessage();\r\n            mail.From = <span style=\"color:blue\">new</span> MailAddress(<span style=\"color:#a31515\">&quot;**&quot;</span>, <span style=\"color:#a31515\">&quot;moi&quot;</span>);\r\n            mail.Subject = <span style=\"color:#a31515\">&quot;Report&quot;</span>; <span style=\"color:green\">//manage generated subject</span>\r\n\r\n            mail.To.Add(<span style=\"color:#a31515\">&quot;***&quot;</span>);\r\n            \r\n            System.Net.Mail.SmtpClient smtp = <span style=\"color:blue\">new</span> System.Net.Mail.SmtpClient(<span style=\"color:#a31515\">&quot;smtp.gmail.com&quot;</span>);\r\n            smtp.Port = 57;\r\n            smtp.EnableSsl = <span style=\"color:blue\">true</span>; <span style=\"color:green\">//depending of the smtp server</span>\r\n            NetworkCredential cred = <span style=\"color:blue\">new</span> NetworkCredential(<span style=\"color:#a31515\">&quot;***&quot;</span>, <span style=\"color:#a31515\">&quot;***&quot;</span>);\r\n            smtp.Credentials = cred;\r\n            smtp.Send(mail);\r\n        }\r\n\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> Initialize()\r\n        {\r\n            SendEmail();\r\n        }\r\n    }\r\n</pre>\r\n</div>\r\n<br></pre>\r\n<pre><br></pre>\r\n<pre>But then i want to run them (launch their Initialize()) but i don't find it. I want to run the whole catalog. someone has an idea ? I tried catalog.Initialize(), catalog.Validate() or catalog.Load()</pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2010-09-27T07:54:05.253-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "499004",
+    "ThreadId": "228724",
+    "Html": "<p>Do you want to have all the modules initialized during application startup or some later point in time?</p>\r\n<p>If you are trying to do so during application startup, the bootstrapper should handle this for you. Take a look at the Modularity with Unity for WPF Quickstart or the StockTrader RI for examples of how this works.&nbsp; There are also docs describing how modularity works as well as docs that explain in detail how the quickstarts are put together.</p>\r\n<p>If you are trying to do so later in the process, the ModuleMananger has a LoadModule method that could load the modules individually on demand.&nbsp; You may also be able to re-run the Run method on the module mananger, but this may have unintended consequences.</p>\r\n<p>Let me know if neither of these approaches help.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-27T09:05:22.553-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

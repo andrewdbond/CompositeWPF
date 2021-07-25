@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "445349",
+    "ThreadId": "213283",
+    "Html": "<p>Hi,</p>\r\n<p>Prism sugegsts modular programming and there are&nbsp; 4 modules in the stock trader implementation viz Position,Market,Watch and News modules.</p>\r\n<p>As per Prism , each module has its own view and services with in it.&nbsp;&nbsp;It makes sence to keep module-related objects inside the respective modules..</p>\r\n<p>Few modules have interfacecs with in&nbsp;it(position module)&nbsp;and some&nbsp;modules(Market module ) have the implementations of the interfaces that is defined in the Infrastructure Layer.</p>\r\n<p>1.&nbsp;Why is this inconsistancy</p>\r\n<p>2.&nbsp; As per the archecture, the model/modules/Domain layer can have the interfaces where as the actual implementations should be in the infrastructure layer(Seperated Interface Pattern).</p>\r\n<p>3. Is there any specific reason for keeping&nbsp; the implementations inside the module and the respective interfaces in a different project ?..</p>\r\n<p>4. If am right , will this issue be address in the next release ..</p>\r\n<p>If am wrongly understood Stock implementation, Please explain me abot this.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks &amp; Regards</p>\r\n<p>Devasena</p>",
+    "PostedDate": "2010-05-20T04:31:07.52-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "445449",
+    "ThreadId": "213283",
+    "Html": "<p>I haven't looked at this reference application in detail, but what they have done actually makes sense. It will allow you to develop other modules that implement the same interface, but with wholly different implementation. Usually, interfaces are defined in a core/common or as in prism, an infrastructure project. There are exceptions, where the interface is intended for internal consumption within the module and not exposed beyond the module boundaries. If your interface is exposed externally to the module, then it should be in a separate class library, otherwise consumers will have to make a reference to your library with concrete implementation. The exception to this, is when your concrete implementation is a default implementation, and you expose interfaces to allow consumer to write their own concrete implementation. However, this latter is more prevalent in frameworks...look at prism as an example. Just my two cents.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-05-20T08:32:36.583-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "445694",
+    "ThreadId": "213283",
+    "Html": "<p>Thanks for the clarifications.</p>\r\n<p>&nbsp;</p>\r\n<p>Regards</p>\r\n<p>Devsena</p>",
+    "PostedDate": "2010-05-20T22:40:35.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

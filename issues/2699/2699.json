@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "Let say I want to load 3 modules in this order: A, B, and C. The simpliest configuration for that may look like: \n<modules>\n    <module assemblyFile=\"Modules/ModuleA.dll\" moduleType=\"ModuleA.ModuleA\" moduleName=\"ModuleA\"/>\n    <module assemblyFile=\"Modules/ModuleB.dll\" moduleType=\"ModuleB.ModuleB\" moduleName=\"ModuleB\"/>\n    <module assemblyFile=\"Modules/ModuleC.dll\" moduleType=\"ModuleC.ModuleC\" moduleName=\"ModuleC\"/>\n  </modules>\n \nIn the current implementation it won't work thought. The actual module load order is going to be reversed: C, B, and A. The only way to guarantee the load order as A, B, C and would have to add explicit dependencies for modules B and C:\n  <modules>\n    <module assemblyFile=\"Modules/ModuleA.dll\" \n            moduleType=\"ModuleA.ModuleA\" \n            moduleName=\"ModuleA\"/>\n    <module assemblyFile=\"Modules/ModuleB.dll\"\n            moduleType=\"ModuleB.ModuleB\"\n            moduleName=\"ModuleB\">\n      <dependencies>\n        <dependency moduleName=\"ModuleA\"/>\n      </dependencies>\n    </module>\n    <module assemblyFile=\"Modules/ModuleC.dll\"\n            moduleType=\"ModuleC.ModuleC\"\n            moduleName=\"ModuleC\">\n      <dependencies>\n        <dependency moduleName=\"ModuleB\"/>\n      </dependencies>\n    </module>\n  </modules>\n \nThis configuration will work but is definetly an overkill for this simple requirement.\n \nPlease consider a \"stable\" implementation of module resolution that preserves relative order of independent modules. I posted one of the possible solutions and unit tests for it here:\nhttp://eprystupa.wordpress.com/2008/07/07/composite-wpf-improving-out-of-the-box-module-dependency-resolution/\n \nThanks!\n-Eugene Prystupa",
+    "LastUpdatedDate": "2013-02-21T18:38:58.903-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-07-09T05:45:58.567-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ModuleDependencySolver does not preserve the order of independent modules",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 3,
+    "Id": 2699
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "A common example of where the order of the UI modules is important is when multiple modules display their view in the same named location or region. Often there is a desired order in which those views are to be displayed. The modules can be independent of each other. Having to specify dependencies where there are none in order to achieve a display order is inappropriate. The simplist approach is to have the modules loaded and initialized in the order in which the modules appear in the configuration file or modules catalog XAML file for Silverlight applications.  The order of the modules should be preserved outside of the changes that need to made based on dependencies.",
+      "PostedDate": "2009-06-05T07:51:25.737-07:00",
+      "Id": 156010
+    },
+    {
+      "Message": "Hi,\r\n\r\nAs far as I know, currently the runtime initialization order of modules is based on when the modules are downloaded, available, and if the dependencies are satisfied, which seems to be by design.\r\n\r\nBased on my understanding of the guidance provided by Prism, your application should not depend on the order in which your modules are loaded. It shouldn't be desirable to tie the logic of your application to this order, especially when considering the addition of possible new modules.\r\n\r\nAdditionally, if you require that views are displayed in a specific order inside a region you could benefit from the ViewSortHint attribute provided by Prism.\r\n\r\nMore information about this approach can be found in the following chapter of the Prism documentation (http://msdn.microsoft.com/en-us/library/ff921098(v=PandP.40).aspx#sec40).\r\n\r\nRegards,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami﻿",
+      "PostedDate": "2012-03-23T12:17:14.727-07:00",
+      "Id": 156011
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2008-05-08T00:41:20.12-07:00",
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "I noticed there's an IPrismContainer interface which is not used.\n \nI would like to suggest that a ContainerProvider be created so that a concrete Dependency Injection provider can be specified in a configuration file.  For example, the interface and base classes (if needed) would live in Prism.Container, and any concrete provider implementations would live in external assemblies such as:  Prism.Container.Unity etc.  Obviously, this would enabled the benefit of being able to swap out or change the provider via a configuration file change.  And, it prevents the need of hard-coding a reference to IUnityContainer.\n \nFeel free to change the nomenclature though, if you feel \"Container\" is too ambiguous.  However, I do not recommend using anything too specific in the name, such as \"DependencyInjection\", or \"InversionOfControl\", or even their well know abbreviations.",
+    "LastUpdatedDate": "2013-05-16T05:29:06.313-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-03-23T22:43:45.773-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Consider creating a ContainerProvider",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 1498
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Now that I think about it, it would probably be pretty difficult to create a DI provider since some DI engines use declarative artifacts such as attributes to mark properties for injection.  Requiring knowledge of the concrete provider in the consuming code kind of defeats the purpose of a provider.\r\n\r\nFeel free to delete this work item...",
+      "PostedDate": "2008-03-24T00:42:22.433-07:00",
+      "Id": 155983
+    },
+    {
+      "Message": "I don't think this will be pretty difficult actually. I've used pure Unity for creating something like that here in my blog post\r\n\r\nInjecting Xaml with Unity Application Block using Markup Extensions\r\nhttp://dvuyka.spaces.live.com/blog/cns!305B02907E9BE19A!307.entry\r\n\r\nGood container and a set of markup extensions can save you time a lot",
+      "PostedDate": "2008-04-01T03:34:39.29-07:00",
+      "Id": 155984
+    },
+    {
+      "Message": "ejstembler IPrismContainer is a wrapper to a specific DI implementation. OOTB if you are using DI you can handle the concrete implementation being supplied through config and not code. We did this in our initial spikes. Today you can go and move the UnityPrismContainer registration to config if you so desire.",
+      "PostedDate": "2008-04-01T15:03:16.933-07:00",
+      "Id": 155985
+    },
+    {
+      "Message": "@estembler actually IPrismContainer is NOT meant to be the container you use in your application code. It is purely an abstraction to the container that can be used by core services such as the future ModuleLoaderService. The reasoning for this is because containers have different semantics, and if you chose a container, you probably also chose those semantics. This is why in our RI we don't show using IPrismContainer. We will be using it shortly though as in the next drop the RegionManagerService relies on IOC to resolve the region handler class.",
+      "PostedDate": "2008-04-01T15:05:55.743-07:00",
+      "Id": 155986
+    }
+  ]
+}

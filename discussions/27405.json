@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "91395",
+    "ThreadId": "27405",
+    "Html": "<h1>\r\nPrism Features (Desired and Existing)\r\n</h1><br />I do apologise if this thread is in anyway redundant or improperly placed, but I wanted to provide the community with a place where we could discuss the features <b>Prism</b> has and the sort of features <b>Prism</b> might should possess.  Furthermore, if this post seems inappropriate or inaccurate in anyway, I apologise as I have never commented in a <b>Codeplex</b> forum before and I am not the most experienced developer.<br /><br />I have to keep this brief as I simply don't have time for much of this fun at the moment.<br /><br /><br /><b><u>What Prism has</u></b><br /><br /><b>Presentation Model (MVVM)</b><br />From what my team has done on top of <b>CAB</b>, I'm happy to see a very similar implementation of the Presentation Model pattern in <b>Prism</b>.  The pattern is new to us, and, though data-binding support has been available for a while (implying MVVM should have maybe been around in <b>SCSF</b> v2) it is a tremendous movement and improvement for the community.<br /><br /><br /><b><u>What Prism could use:</u></b><br /><br /><b>Dynamic Module Loader/Unloader</b><br />I've noticed that, for the moment, the Prism module loading sequence and scope strongly resembles <b>CAB</b>'s.  My company would especially like to see the module loading abstracted in terms of two dimensions, and be complimented by a module unloading service.  We think it'd be groovy if a service was in place to provide dynamic assembly loading, both within the default and specified application domains (must be specified for unloading to occur).  Clearly, some sort of application domain would need to be created under the default for anything that is to get loaded after the bootstrapper so that unloading can occur  Given that service exists, it would then be extra groovy if it was somehow able to be hooked, such that a custom reflection/initialisation sequence of the loaded assembly could be executed (envision traditional <b>IModule</b> loader sitting atop this, and even customised assembly mini-module loading).  Given all this is done properly, assembly (module) unloading can occur (by dropping application domains, as I'm not familiar with any other way).  This feature is very important to us, and (from what I can tell) other teams as well, as not requiring an application to be restarted to perform clearly very powerful manipulation provides better value to our customers (and meets requirements as well).<br /><br /><br />Looking forward to hearing everyone's feedback.<br /><br />Cheers<br /><i>~michael.</i><br />",
+    "PostedDate": "2008-05-09T01:08:44.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "91456",
+    "ThreadId": "27405",
+    "Html": "\r\nSystem.AddIn?<br />",
+    "PostedDate": "2008-05-09T07:15:21.813-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "91634",
+    "ThreadId": "27405",
+    "Html": "If you were to think <strong>System.AddIn</strong> could solve this problem, I'd also expect that you'd question why a module loader exists in CAB/Prism at all.<br>\r\n<br>\r\nAnyway, though <strong>AddInAttribute </strong>could be applied to assembly that is eventually parsed by a module loader, perhaps to invoke some sort of custom behaviour, it's not really ideal for a composite application, as it implies that the marked up assembly knows something about how/why it's being used.&nbsp; I think it's more appropriate for there to be a component that initiates dynamic module/assembly loading when it deems appropriate and places them in the application domain it deems appropriate.&nbsp; In essence, it is a controller/owner of these modules/assemblies and the corresponding application domain.<br>\r\n",
+    "PostedDate": "2008-05-09T20:12:32.463-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "91635",
+    "ThreadId": "27405",
+    "Html": "I forgot to add that, the reason module loading should be refactored out of the CAB/Prism application codebase (so to speak) and made a service, along with an inverse unloading service, is because of the DRY principle.&nbsp; When my team is having to create a service with almost identical code to the module loader that already exists, there's a problem, and for many reasons, we don't like to change the underlying code and we like to use the signed assemblies.<br>\r\n<br>\r\nThis also reminds me of a sour taste that CAB seems to leave in many team's mouths once they reach a certain point in their development cycle.&nbsp; CAB, along with all of its documentation does a decent job of getting an application and all of it's components loaded and visible, but then what?&nbsp; You have a fully ramped up application that doesn't lend itself easily to &quot;undoing&quot; what you've done.&nbsp; Closing components and cleaning up after yourself isn't well documented or supported.&nbsp; I think it would be a good idea for the Prism team to provide more documentation and support on this for teams that might be just becoming familiar with the composite application paradigm and considering using Prism.<br>\r\n",
+    "PostedDate": "2008-05-09T20:29:41.567-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "91729",
+    "ThreadId": "27405",
+    "Html": "<p>@happi_mike</p>\r\n<p>Prism supports 4 kinds of module loading, one static style (the RI) and 3 dynamic including loading on demand. If you look in our modue loading quickstarts you can see how this works. We deliberately did not bring this into the RI, because we wanted to illustrate that Module is foremost a logical separation.<br>\r\n<br>\r\nAdditionally, the module loading is implemented through services, and they have no coupling whatsoever to the rest of the Prism library code. You can literally take our module loading services (ModueLoader and ModuleEnumerator) and plug them in to any new or existing application. You can also easily replace either the enumerator or the loader with your own implementations.</p>\r\n<p> </p>\r\n",
+    "PostedDate": "2008-05-10T19:57:44.387-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "91730",
+    "ThreadId": "27405",
+    "Html": "@jarrettv<br>\r\n<br>\r\nConceptually, System.Addin sounds like it could solve the problem. After two weeks of spiking with it, we decided it that in our scenarios, it was creating more problems than it was solving :)<br>\r\n<br>\r\nSystem.Addin is great for solving some really complex scenarios, like when you absolutely MUST have app domain isolation, or you want to have instrumentation around modules. However for the normal cases, it's overkill to implement it.\r\n",
+    "PostedDate": "2008-05-10T20:16:51.097-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "91798",
+    "ThreadId": "27405",
+    "Html": "@gblock<br>\r\n<br>\r\nThanks for your response, Glenn.&nbsp; Sorry if I've made the mistake of not recognising the Prism Module Loader as a dynamically reusable service... I must've missed something.&nbsp; Anyway, I've noticed your team has gone to great lengths to decouple the services, especially with the IoC container.&nbsp; We definitely appreciate your team's good work. \r\n",
+    "PostedDate": "2008-05-11T15:28:41.54-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "91811",
+    "ThreadId": "27405",
+    "Html": "Thanks Mike.<br>\r\n<br>\r\nWe felt strongly that this was the right decision (decoupling). Glad to hear you are seeing it has value.\r\n",
+    "PostedDate": "2008-05-11T17:26:21.797-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

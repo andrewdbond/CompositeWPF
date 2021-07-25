@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "When using a ViewModel first approach (whereby a viewmodel is registered with a region, and a view is assigned via data templates defined within a resource dictionary), the RegionManager for the View is not inherited via the visual tree.  Instead it is null, and all nested regions aren't registered with the IRegionManager declared within the container.\n\nExpected Result:\nThe View's RegionManager should correspond to the inherited regionmanager of the visual tree if not explicitly set.\n\nActual Result:\nThe View's RegionManager is null.\n\nPossible Solution:\nChange the RegionManager.RegionManagerProperty to allow inheritance.  Example:\n```\npublic static readonly DependencyProperty RegionManagerProperty =\n            DependencyProperty.RegisterAttached(\"RegionManager\", typeof(IRegionManager), typeof(RegionManager), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));\n```\n\n\n-Richard",
+    "LastUpdatedDate": "2013-08-16T08:50:57.603-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2013-08-13T11:42:46.36-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "RegionManager null (not inherited) on views when ViewModel First is leveraged",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 10276
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi Richard,\r\n\r\nThis is a known problem since early versions of Prism.Basically, when a new __Region__ is created its __RegionManagerRegistrationBehavior__ is the one in charge of registering the __Region__ in the corresponding __RegionManager__. In order to do so, the behavior \"climbs up\" the logical tree recursively using the __Parent__ property until an element that has a __RegionManagerProperty__ attached is found.\r\n\r\nThe problem is that some elements such as __DataTemplates__ do not expose a __Parent__ property and hence, the aforementioned behavior is unable to \"climb up\" pass them. The result is that the __Region__ contained inside the __DataTemplate__ is not added to the __RegionManager__ as expected.\r\n\r\nIn the meantime, there are several approaches and workarounds that can be used to avoid this problem. One of them, for example, is portrayed in the following blog post:* [Regions inside DataTemplates in Prism v4 using a region behavior](http://blogs.southworks.net/dcherubini/2011/11/10/regions-inside-datatemplates-in-prism-v4-using-a-region-behavior/)\r\n\r\nThanks,\r\n\r\nDamian Cherubinihttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2013-08-16T08:50:57.603-07:00",
+      "Id": 156667
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "90468",
+    "ThreadId": "27106",
+    "Html": "\r\nDo you have any suggestion on how you would go about loading the dynamic modules from a database table instead of by directory or from App.config?<br />",
+    "PostedDate": "2008-05-04T21:05:20.637-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "90498",
+    "ThreadId": "27106",
+    "Html": "\r\nYes. If you look in our recent drop, you'll see we have added a quickstart that illustrates loading modules on demand. You can use this approach to load modules from a database.<br />",
+    "PostedDate": "2008-05-05T00:42:46.853-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "90526",
+    "ThreadId": "27106",
+    "Html": "\r\nplanefun, I have the same concern, though I doubt this problem will be addressed by the Prism team due to differences in DB environments.<br /><br />gblock, would a sample DatabaseModuleEnumerator implementation be a welcome submission to PrismContrib?<br />",
+    "PostedDate": "2008-05-05T06:30:10.803-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "90582",
+    "ThreadId": "27106",
+    "Html": "\r\n@braaagh<br /><br />Yes, we won't address the DB version. Putting in contrib is a wonderful idea. I will add you as a developer.<br /><br />Thanks!<br />",
+    "PostedDate": "2008-05-05T10:04:35.373-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "90705",
+    "ThreadId": "27106",
+    "Html": "\r\nHi , what is the containers’(Unity) responsibility and what is the frameworks(Prism) responsibility when it comes to dynamically loading of modules?<br /><br />Regards <br />",
+    "PostedDate": "2008-05-06T02:05:42.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "91149",
+    "ThreadId": "27106",
+    "Html": "\r\n@chrisire The \"framework\" uses an IModuleLoader and IModuleEnumerator service. The IModuleEnumerator is responsible for returning metadata for each module (the IModule typenames). The IModuleLoader then loads the modules and calls their initialize. Within the ModuleLoader implementations, the IPrismContainer (which is a wrapper over any container) is used to resolve each module. This allows the contianer to inject any necessary dependencies into the Module when it is constructed. Again, this is not dependent on Unity.<br /><br />",
+    "PostedDate": "2008-05-08T00:26:22.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

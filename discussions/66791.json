@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "227025",
+    "ThreadId": "66791",
+    "Html": "<p>Hi all,</p>\r\n<p>I was wondering, why is not IsActiveChanged fired in RegionActiveAwareBehavior for a view that is implementing IActiveAware interface, but it's only set&nbsp;the property <span style=\"font-size:x-small\">IsActive.</span></p>\r\n<p><span style=\"font-size:x-small\">Thx,</span></p>\r\n<p><span style=\"font-size:x-small\">Riccardo</span></p>",
+    "PostedDate": "2009-08-24T05:57:29.903-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "227623",
+    "ThreadId": "66791",
+    "Html": "<p>Hi Riccardo,&nbsp;</p>\r\n<p>The <strong>RegionActiveAwareBehavior</strong> sets the <strong>IsActive</strong> property for views that implement the <strong>IActiveAware</strong> interface. The firing of .net events is responsibility of the object that owns the event (in this case the views).<br>To fire the IsActiveChagen event when, the usual implementation <strong>IActiveAware</strong> interface is:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">\tpublic</span> <span style=\"color:Blue\">bool</span> IsActive\r\n\t{\r\n            <span style=\"color:Blue\">get</span>\r\n            {\r\n                <span style=\"color:Blue\">return</span> <span style=\"color:Blue\">this</span>._isActive;\r\n            }\r\n            <span style=\"color:Blue\">set</span>\r\n            {\r\n                <span style=\"color:Blue\">if</span> (<span style=\"color:Blue\">this</span>._isActive != value)\r\n                {\r\n                    <span style=\"color:Blue\">this</span>._isActive = value;     \r\n                     \r\n                    <span style=\"color:Green\">// Fire IsActiveChanged event</span>\r\n                    RaiseIsActiveChanged();<span style=\"color:Green\">//Your logic to fire the event</span>\r\n                 }\r\n            }\r\n\t}   \r\n\r\n<span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> RaiseIsActiveChanged()\r\n{\r\n    <span style=\"color:Blue\">var</span> handler = <span style=\"color:Blue\">this</span>.IsActiveChanged;\r\n    <span style=\"color:Blue\">if</span> (handler != <span style=\"color:Blue\">null</span>)\r\n    {\r\n        handler(<span style=\"color:Blue\">this</span>, EventArgs.Empty);\r\n    } \r\n}\r\n\r\n</pre>\r\n</div>\r\n<p>&nbsp;Hope it helps!&nbsp;</p>\r\n<p>Matias Bonaventura<br><a href=\"http://blogs.southworks.net/matiasb\">http://blogs.southworks.net/matiasb</a></p>",
+    "PostedDate": "2009-08-25T13:07:52.413-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

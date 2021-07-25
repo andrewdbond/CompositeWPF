@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "273307",
+    "ThreadId": "79797",
+    "Html": "<p>Hi,</p>\r\n<p>I need to insert a view in more than one region. When the user manipulates this view <br>will it, and it's associated ViewModel, be changed equally in both regions ???</p>\r\n<p>That is when I insert a view in a Region am I inserting a brand new copy or simply a <br>reference of the View.</p>\r\n<p>I need to do it because my user will have the option to swap regions (a content <br>region and a Tab region) and, of course, he would like that the modifications done <br>in one view&nbsp;be maintained when he swaps the regions.</p>\r\n<p>Thanks in advance</p>",
+    "PostedDate": "2010-01-05T07:09:41.82-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "273878",
+    "ThreadId": "79797",
+    "Html": "<p id=64ba8590-dcfe-012c-a196-12313d018871>Hi,</p>\r\n<p id=64ba9480-dcfe-012c-a197-12313d018871>Let&rsquo;s suppose you are constructing your views in the following way:</p>\r\n<p id=64baa760-dcfe-012c-a198-12313d018871>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>IMyView view = container.Resolve&lt;IMyView&gt;();\r\n\r\n</pre>\r\n</div>\r\nUnity&rsquo;s default behavior, unless you have <a href=\"http://msdn.microsoft.com/en-us/library/dd203134.aspx\">registered any specific instance of the view</a> in the container or <a href=\"http://msdn.microsoft.com/en-us/library/dd203242.aspx\">marked the view to be a singleton</a>, will be returning a brand new instance of the view. Thus, the code below will provide you with two different instances:</p>\r\n<p id=64bafa60-dcfe-012c-a19b-12313d018871>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>IMyView view1 = container.Resolve&lt;IMyView&gt;();\r\nIMyView view2 = container.Resolve&lt;IMyView&gt;();\r\n</pre>\r\n</div>\r\nIn the scenario when you do want to obtain the same view instance, you could keep a reference to that view and add it to the various regions or mark it as a singleton in the Unity container.</p>\r\n<p id=64bb1a10-dcfe-012c-a19c-12313d018871>Please let me know if this helps.</p>\r\n<p id=64bb3ad0-dcfe-012c-a19d-12313d018871>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-06T09:32:11.703-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "273913",
+    "ThreadId": "79797",
+    "Html": "<p>Thanks Damian,</p>\r\n<p>So I could do:</p>\r\n<p>IMyView view = container.Resolve&lt;IMyView&gt;();</p>\r\n<p>region1.Add(view);<br>region2.Add(view);</p>\r\n<p>region1 is hidden and only region2 is displayed.</p>\r\n<p>This way I beleive that when the view in the displayed region changes because of<br>databindings or any update controlled by the ViewModel it will work ok. That is the hidden<br>view will be updated the same way.</p>\r\n<p>But if the view shows a messagebox or something like this. Will the user input be <br>reflected in the hidden view ???</p>\r\n<p>Thanks in advance</p>\r\n<p>&nbsp;</p>\r\n<p><br>&nbsp;</p>",
+    "PostedDate": "2010-01-06T10:45:58.26-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "274448",
+    "ThreadId": "79797",
+    "Html": "<p id=ccdfa0a0-ddc1-012c-4732-12313d018871>Hi,</p>\r\n<p id=ccdfb090-ddc1-012c-4733-12313d018871>The approach you are suggesting above is not a viable one, as you would be trying to make the view a logical child of more than one control at the same time. The exception you will get if you have two content controls for instance is an <strong>InvalidOperationException</strong> with the following message <em>&quot;Specified element is already the logical child of another element. Disconnect it first.&quot; </em>(other controls might not throw this same exception but it will not work anyways).</p>\r\n<p id=ccdfd560-ddc1-012c-4734-12313d018871>You can take advantage of the fact that one of the regions is hidden, to remove the view from one of the regions and place it in the other one.</p>\r\n<p id=ccdfff50-ddc1-012c-4735-12313d018871>Please let me know if this helps.</p>\r\n<p id=cce01dd0-ddc1-012c-4736-12313d018871>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-07T10:58:05.57-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

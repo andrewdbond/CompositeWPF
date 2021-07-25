@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "I'm closing the issue, as the problem specified by the user has been solved.\r\n\r\nFor further support regarding the subject, you could post a question in the Discussion boards (http://compositewpf.codeplex.com/discussions).\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-04-05T11:12:56.803-07:00",
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "Hi,\n \nI have defined TabItem as Region in my Shell and modules loaded will place their views into this region using MVVM Pattern. It seems to be working fine and I was able to set the Header of my TabControl from the Model assigned to it. Now I want the Image also to be loaded as part of the Tab Item Header. i.e. If I load search view , I want the TabItem Header to be like \"Search {Search Image}\". I was able to get this behavior in normal WPF application, but in CAL it does not seems to work. \n \nShell.xaml\n// Tab Item defined as the Region with setting its Header property to be HeaderInfo field of DataContext assigned.\n// This code works. But I want image also to be part of the Header...\n <TabControl AutomationProperties.AutomationId=\"SearchTabControl\"  \n                     x:Name=\"tbControl\" Style=\"{DynamicResource TabControlStyle}\" \n                      cal:RegionManager.RegionName=\"MainRegion\" >\n           <TabControl.ItemContainerStyle>\n             <Style TargetType=\"{x:Type TabItem}\">\n                <!--<Setter Property=\"HeaderTemplate\"> // This does not work in CAB...But it had worked in normal WPF application...\n                     <Setter.Value>\n                        <DataTemplate>\n                           <TextBlock Text=\"{Binding Content.DataContext.HeaderInfo}\"> </TextBlock>\n                        </DataTemplate>\n                      </Setter.Value>\n                    </Setter>-->\n                   <Setter Property=\"Header\" Value=\"{Binding Content.DataContext.HeaderInfo}\" /> // This works....But how to have image now...???\n             </Style>\n           </TabControl.ItemContainerStyle>\n        </TabControl>\n \n \n// Model which is assigned to TabControl....\npublic class SearchViewModel\n    {\n        public string HeaderInfo\n        {\n            get { return \"Search\"; }\n        }\n \n        // Image.....????\n      \n    }\n \n \nCan any one help me in this..?\n \nRegards,\nSmitha",
+    "LastUpdatedDate": "2013-05-16T05:28:54.74-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-02-09T22:14:59.77-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "TabItem as Region with Image as its header",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 6002
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Thanks for posting your question.  I don't have an answer right now.  I was looking for how to set the values in the TabItems.  And this worked for me.  Cheers!\r\n            \r\n                \r\n                    \r\n                \r\n            \r\n",
+      "PostedDate": "2010-05-18T15:39:33.49-07:00",
+      "Id": 156209
+    },
+    {
+      "Message": "Joekahl,\r\n\r\nThat's great. If you find solution for adding an image, let us know. I will also do the same....:)\r\n\r\nThanks and Regards,\r\nSmitha\r\n\r\n",
+      "PostedDate": "2010-05-24T02:49:57.477-07:00",
+      "Id": 156210
+    },
+    {
+      "Message": "Hi Smitha,\r\n\r\nWe've tried an alternative workaround, which implies using a KeyValuePair in the HeaderInfo property of the view's ViewModel.\r\n\r\nThe style in the workaround we are proposing looks like this:\r\n\r\n\r\n            \r\n                \r\n                \r\n                    \r\n                        \r\n                            \r\n                                \r\n                                \r\n                            \r\n                        \r\n                    \r\n                \r\n            \r\n        \r\n\r\nYou can download a sample using this workaround here:\r\nhttp://cid-12a8b70137345033.office.live.com/self.aspx/p^0p%20Samples/ImageInTabHeaderSample.zip\r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-04-04T13:32:00.357-07:00",
+      "Id": 156211
+    },
+    {
+      "Message": "Thanks Guidomaliandi. It was very much helpful :)\r\n\r\n",
+      "PostedDate": "2011-04-04T18:12:38.383-07:00",
+      "Id": 156212
+    }
+  ]
+}

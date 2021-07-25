@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "568108",
+    "ThreadId": "246538",
+    "Html": "<p>Hi,</p>\n<p>We have an&nbsp;app built&nbsp;with&nbsp;PRISM + Silverlight 4. The app contains multiple modules and they share a same set of lookup data dictionaries (i.e., mapping between code and description for different lookup classes). The way we want to implement it is to have a dedicated module for the Lookup service. This module will contain classes responsible for retrieving lookup (through asynchronous web request calls) and providing lookup service to consumers. Those classes will be registered in the Unity Container so other modules could use them.</p>\n<p>The goal is to isolate the responsibility of retrieving lookup completely into the lookup module. Therefore when other modules use the lookup service, we&nbsp;are always certain&nbsp;data is always loaded (i.e., no check is needed. If lookup loading fails, the app should not start).</p>\n<p>The main obstacle we hit is how to synchronize the module loading. We can&nbsp;define modular dependencies and have the lookup module loaded first. But&nbsp;because the data retrieval is asynchronous, when the web request for retrieving lookup is sent out, the process moves forward and continues loading other modules without waiting for the response. Is there a way to block&nbsp;loading modules (i.e., only load other modules when lookup data retrieval succeeded?)&nbsp;. Or is there a better way to do it and acheive the same purpose?</p>\n<p>Help much appreciated. Thanks in advance.</p>\n<p>Regards,</p>\n<p>MH</p>",
+    "PostedDate": "2011-02-17T12:11:47.96-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "568553",
+    "ThreadId": "246538",
+    "Html": "<p>Hi MH,</p>\r\n<p>Based on my understanding of your scenario, you might load your modules on demand after the lookup service finishes to load.</p>\r\n<p>One possible way to achieve this is to load the lookup module on the <strong>bootstrapper</strong> and load the remaining modules on demand. For example, if you use a XAML file to register the modules that will be loaded on demand, you would need to specify <strong>InitializationMode=\"OnDemand\"</strong> in your <strong>ModuleInfo</strong> element.</p>\r\n<p>Finally, in the <em>LoadAsyncCompleted</em> event of your service request you can load the previous registered modules by obtaining a reference of the <strong>ModuleManager</strong>.</p>\r\n<p>For example:</p>\r\n<p><span style=\"color: #0070c0; font-size: 9.5pt;\" lang=\"EN-US\">\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">private</span> <span style=\"color: blue;\">void</span> LoadAsyncCompleted(<span style=\"color: blue;\">object</span> sender, EventArgs e)\r\n{\r\n      <span style=\"color: blue;\">var</span> moduleManager = ServiceLocator.Current.GetInstance&lt;IModuleManager&gt;();\r\n      moduleManager.LoadModule(<span style=\"color: #a31515;\">\"MyFirstModule\"</span>);\r\n}\r\n</pre>\r\n</div>\r\n</span></p>\r\n<p>You can read more about modularity in <a href=\"http://msdn.microsoft.com/en-us/library/gg405479(v=PandP.40).aspx\">Chapter 4: Modular Application Development</a>, specifically in the <em>Registering Modules Using a XAML File section</em> and the <em>Loading Modules on Demand</em> section</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-02-18T07:02:21.06-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "568685",
+    "ThreadId": "246538",
+    "Html": "<p>Hi Miguel,</p>\n<p>Thanks for the help. I think&nbsp;the approach&nbsp; does&nbsp;solve the issue.</p>\n<p>However, I have another dillema when considering where to put the code of dynamicly loading dependent modules.</p>\n<p>It seems to me that it's not very flexible to load the modules directly in the LoadAsyncCompleted event of the service request. For example, what if I have multiple modules I want to load and complete the asynchronous call first before loading other modules? Then I think it might work if&nbsp;those \"first priority modules\" just fire an event to event aggregator when those asynchronous calls are&nbsp;finished. First I was trying to subscribe to these events in bootstrapper (override ConfigureServiceLocator).. But then it seems to me the bootstrapper contains code that's not supposed to be there.... So should i actually create another Module specifically for managing the synchronization of module loading? this module will subscribe to all the event that \"priority modules\" fires when asynchronous service request finish and this module will be responsible for dynamically loading all other dependent modules.</p>\n<p>Does it look all right? or there is a better approach to improve the architecture?</p>\n<p>Thanks!</p>",
+    "PostedDate": "2011-02-18T10:31:08.037-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "568699",
+    "ThreadId": "246538",
+    "Html": "<p>Hi,</p>\r\n<p>The approach you are mentioning (defining a component to manage the load of dependent modules) seems a valid possibility for a complex scenario like the one you have mentioned. Please note that the component doesn't necessarily have to be placed in a separate module; for example, it could be placed in the shell project.</p>\r\n<p>The benefit you will get from following your approach will be that your modules will not be responsible for knowing which module to load after the asyncrhonous operation is completed; the only component that will be aware of the module's load order will be the \"module load manager\" that you will define as a separate component.</p>\r\n<p>Please let me know if this information is useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-02-18T11:02:08.413-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Issue closed as it has been solved by the user.",
+    "ClosedDate": "2011-02-11T07:38:24.11-08:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Without any Modification of the Project-Alpha-Download \"Prism Drop 2\":\n    [http://compositewpf.codeplex.com/releases/view/47253]\nthe QuickStart:\n    ...\\Quickstarts\\Modularity\\Silverlight\\ModularityWithMef\\ModularityWithMef.Silverlight.sln\nfails with: \"Failed to load type for module ModuleD\"\n \n[Details: ] \nMicrosoft.Practices.Composite.Modularity.ModuleTypeLoadingException wurde nicht von Benutzercode behandelt.\n  Message=Failed to load type for module ModuleD. Error was: Ausnahme bei einer WebClient-Anforderung..\n  ModuleName=ModuleD\n  StackTrace:\n       bei Microsoft.Practices.Composite.Modularity.ModuleManager.HandleModuleTypeLoadingError(ModuleInfo moduleInfo, Exception exception)\n       bei Microsoft.Practices.Composite.Modularity.ModuleManager.OnModuleLoaded(ModuleLoadedEventArgs args)\n  InnerException: System.Net.WebException\n       Message=Ausnahme bei einer WebClient-Anforderung.\n       InnerException: System.NotSupportedException\n            Message=Das URI-Präfix wird nicht erkannt.\n            StackTrace:\n                 bei System.Net.WebRequest.Create(Uri requestUri)\n                 bei System.Net.WebClient.GetWebRequest(Uri address)\n                 bei System.Net.WebClient.OpenReadAsync(Uri address, Object userToken)\n-----------------------\n \nIn the diagnostic TextBox yet shows the text: \"[Info][Medium] Downloaded ModuleA\"\nso this action was yet done correctly. \nBut i think he tries to resolve the ModuleD from attributed Dependency:\n    [ModuleExport(typeof(ModuleA), DependsOnModuleNames = new string[] { \"ModuleD\" })]\n    public class ModuleA : IModule\n \nIt seems, the Uri does not resolve correctly (->prefix not recognized).\nSo ... may be ... there must be something wrong within:\n    \\CAL\\Silverlight\\Composite.MefExtensions\\Modularity\\MefXapModuleTypeLoader.cs\nin defining the Uri for the deploymentCatalog. Perhaps BeginLoadModuleType?\n \nciao Frank Dzaebel",
+    "LastUpdatedDate": "2013-05-16T05:28:52.683-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-06-24T05:36:17.457-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Prism 4.0 Drop 2 / Silverlight Quickstart / ModuleTypeLoadingException for ModuleD",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 6896
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "  [RESOLVED]\r\n\r\nThe Original Projekt has simply the wrong StartProjekt. Sorry about this.\r\nIt should be of course the [ModularityWithMef.Silverlight.Web] !\r\nSo please change it.\r\n\r\nciao Frank",
+      "PostedDate": "2010-06-24T07:23:03.45-07:00",
+      "Id": 156248
+    }
+  ]
+}

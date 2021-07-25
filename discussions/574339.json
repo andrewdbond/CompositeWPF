@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "1329780",
+    "ThreadId": "574339",
+    "Html": "Hi,\r<br />\n<br />\nI'm wondering if Prism V5's Interactivity feature can be used to create an Outlook-like app where the user can click &quot;New Email&quot; button on the shell and a new email window pops up. The user can have as many email window as he likes. The email window itself can create a new window through the &quot;New&quot; button in the backstage view.\r<br />\n<br />\nI read the <a href=\"https://compositewpf.codeplex.com/discussions/50888\" rel=\"nofollow\">Multiple instances of a window (view)</a> discussion, but the Matias Bonaventura's zip file seems to be broken.\r<br />\n<br />\nI also read the <a href=\"http://compositewpf.codeplex.com/discussions/25938\" rel=\"nofollow\">Multiple windows in a shell</a> discussion where someone said that it could also be done by creating a region adapter for the Window class.\r<br />\n<br />\nWhat is the most appropriate way to design such an application?\r<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2014-12-08T06:10:47.927-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1335001",
+    "ThreadId": "574339",
+    "Html": "You should check out my Building IG Outlook tutorial.  It's a little old, but it solves the problem you are seeking to solve.\r<br />\n<br />\n<a href=\"http://brianlagunas.com/?s=IG+Outlook\" rel=\"nofollow\">http://brianlagunas.com/?s=IG+Outlook</a><br />\n",
+    "PostedDate": "2014-12-19T13:42:00.687-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1335139",
+    "ThreadId": "574339",
+    "Html": "Hi Brian,\r<br />\n<br />\nThanks for the info. I have watched the videos. But the problem I wanted to solve is &quot;multiple shells&quot;. Your tutorial is excellent, but the app is still single-windowed. The closest I found is <a href=\"http://blogs.msdn.com/b/erwinvandervalk/archive/2009/03/02/how-to-build-an-outlook-style-application.aspx\" rel=\"nofollow\">how to build an outlook style application</a> by Erwin van der Valk. But it introduces another layer of abstraction such as &quot;Use Case&quot; and &quot;Application Model&quot; and so is harder to understand.\r<br />\n<br />\nOur team is now considering an approach with multiple Bootstrappers. If I simply call new Bootstrapper().Run() on a button click, a new window is displayed with all dependencies duplicated, which is not good because some of the dependencies need to be a singleton in the app. So, we are creating a secondary Bootstrappers to solve the issue. Second, third, and n-th window seem to work fine with exactly the same behavior as the main window so far.\r<br />\n<br />\nIs there anything bad looming with this approach? Do you have any further suggestions?\r<br />\n<br />\nBy the way, I have also watched your Pluralsight's two tutorials on Prism. They were very helpful.\r<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2014-12-20T06:50:46.113-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1341073",
+    "ThreadId": "574339",
+    "Html": "Sorry, but I never got a notification that you responded.  DO NOT use two bootstrappers.  You would simply use scoped regions, and use a dialog service to show your multiple windows.\r<br />\n<br />\nHere is a version of IG Outlook that is more complete with the functionality you are looking for:\r<br />\n<br />\n<a href=\"http://www.infragistics.com/sample-applications/infragistics-wpf-igoutlook\" rel=\"nofollow\">http://www.infragistics.com/sample-applications/infragistics-wpf-igoutlook</a>\r<br />\n<br />\nYou can download the source code form here:\r<br />\n<br />\n<a href=\"http://www.infragistics.com/samples/wpf/application-samples\" rel=\"nofollow\">http://www.infragistics.com/samples/wpf/application-samples</a>\r<br />\n<br />\nI hope this helps.<br />\n",
+    "PostedDate": "2015-01-12T06:51:38.72-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1341074",
+    "ThreadId": "574339",
+    "Html": "Duplicate post.<br />\n",
+    "PostedDate": "2015-01-12T06:51:40.237-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1342218",
+    "ThreadId": "574339",
+    "Html": "Hi Brian,<br />\n<br />\nI carefully studied the IG Outlook code and applied a similar approach (scoped regions and a dialog service) to a reasonably complex Prism app (<a href=\"http://channel9.msdn.com/blogs/mtaulty/prism--silverlight-part-10-a-larger-example-email-client\" rel=\"nofollow\">Mike Taulty's Email client app</a> (ported to WPF)) that has been so far single-shelled. I encountered the following issues:<br />\n<ol>\n<li>\nCalling regionManager.RequestNavigate() in a secondary shell's view model classes actually changes the view in the very first shell. This is because the view model class's constructor asks the Unity container to inject the IRegionManager, which is the one for the very first shell. I would need to add some code for every view model class that calls the RequestNavigate() method to get the scoped region manager that is dedicated for that particular shell. A shared service with a dictionary could do it, but it would certainly complicate the software because those multiple scoped region managers need to be carefully managed.<br />\n</li>\n<li>\nWhen I created a new Shell and called the scopedRegionManager.RequestNavigate() with the main content region, I had to also issue RequestNavigate() to all nested regions that are defined inside the main content region to show all views. In the single-shelled version, those were done in each module's InitializeModule() method. But now, I need to know those implementation details beforehand.<br />\n</li>\n<li>\nWith the scoped region manager, the RegisterViewWithRegion() does not work. The app has a lot of &quot;static&quot; area where the view discovery works just fine. The IG Outlook code never uses it because of the scoped region manager, I presume. I had to change to RequestNavigate() calls, which has an additional burden of registering the view classes with the Unity container as &quot;object&quot;. With the view discovery, we don't need to register views to the Unity container.<br />\n</li>\n<li>\nThe EventAggregator also needs to be scoped. I probably should use the &quot;filter&quot; parameter for the Subscribe() method and provide the scoped region manager as the key for the filter. But again, I don't know how to get the scoped region manager in view model classes.<br />\n</li>\n</ol>\nThe secondary bootstrapper approach has none of those issues with the view discovery, region navigation, and event aggregation because all of those services are dedicated to the newly created Shell only, thanks to the also duplicated Unity container.  I created and registered a separate EventAggregator in the main bootstrapper, named it &quot;Global&quot;, and then passed it to every secondary bootstrapper as a singleton. This &quot;global&quot; event aggregator is used to create a new instance of the Shell. I can easily add [Dependency(&quot;Global&quot;)] attribute before the event aggregator parameter in the view model constructors so that the secondary Unity can inject the global one, rather than its own one. So far, it's been working beautifully. Very little code was needed to support multiple shells (again, so far).<br />\n<br />\nYou used rather strong words - &quot;DO NOT use two bootstrappers&quot;. Would you please explain why it is such a bad idea?<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2015-01-15T08:12:20.717-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1342250",
+    "ThreadId": "574339",
+    "Html": "You have just completely over-complicated your entire app architecture.  You get around the scoped region navigation issue by creating a simple IRegionManagerAware custom region behavior.  This solves just about all of your problems with navigating within scoped regions.  It also allows any View or VM to get access to the proper RegionManager by implementing a simple interface.\r<br />\n<br />\nRight now, you are using a work around that will just cause you to have make more workarounds for things that are normally supported, just like your &quot;Global&quot; EventAgregator, because you broke the ability to use the EventAggregator by having two bootstrappers.  Everything that gets created in the bootstrapper has now been duplicated as separate instances, and when you click the button to show another shell, you have three, click it again and you have four, and so on.  This include modules being unnecessarily loaded multiple times, type registrations, RegionAdapter mappings, etc.  I am pretty sure all of that is staying in memory as the singleton objects have been rooted in your app.  There are a number of other possible issues you may run into that isn't obvious at the moment.\r<br />\n<br />\nBy all means, use two bootstrappers if you like.  Maybe your app is simple enough to where you won't run into many problems.  But, I personally would never advise any of my clients to take that approach.<br />\n",
+    "PostedDate": "2015-01-15T09:27:19.583-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1342980",
+    "ThreadId": "574339",
+    "Html": "I completely missed the IRegionManagerAware interface with the RegionManagerAwareBehavior from the IG Outlook sample. So, instead of requesting the DI container to inject the IRegionManager, the idea is to let the behavior to “inject” the view model class the scoped region manager behind the scene. I got that.<br />\n<br />\nThat completely solved the issue no.1. The issue no. 4 was also solved once the scoped region manager was available in the view model classes.<br />\n<br />\nBut the issue no. 2 still remains. A commenter (naskew) in <a href=\"http://stackoverflow.com/questions/5276984/how-to-do-multiple-shells-in-my-prism-app-like-ms-office\" rel=\"nofollow\">Stack Overflow</a> also asked the same question with no answers provided.<br />\n<br />\nAt this point, our team decided to embark on the uncharted territory with the multiple bootstrapper approach until we encounter “a number of other possible issues you may run into that isn't obvious at the moment.” This is because a lot less modifications were needed to change a single-shelled app into multiple shelled than using the scoped region manager approach taken in the IG Outlook sample. And thanks to you, we now know how to change the code to work with the scoped region managers.<br />\n<br />\nMemory footprint may be an issue, but most of the users would open just several windows, rather than hundreds.<br />\n<br />\nAnyways, thank you very much for your invaluable suggestions. I learned a lot about Prism.<br />\n",
+    "PostedDate": "2015-01-17T18:14:13.663-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1342991",
+    "ThreadId": "574339",
+    "Html": "Actually, loading dependent views is done with a simple region behavior and a custom attribute.  This is all it take me to accomplish this task.  I simply attribute my view with all the views that must be loaded into their respective regions.  Then when this view is navigated to, all the dependent views are also injected into their regions.  Oh, and if they implement a certain interface, they will also share the same data context (ViewModel).<br />\n<pre><code>[DependentView(typeof(ViewBTab), &quot;RibbonTabRegion&quot;)]\n[DependentView(typeof(ViewA), &quot;SubRegion&quot;)]\n[DependentView(typeof(ViewC), &quot;SubRegion2&quot;)]\npublic partial class ViewB : UserControl, ISupportDataContext\n{ ... }\n</code></pre>\n\nMultiple bootstrappers not needed :0)<br />\n",
+    "PostedDate": "2015-01-17T21:44:55.537-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1343252",
+    "ThreadId": "574339",
+    "Html": "I see how that would work after looking at the IG Outlook’s XamRibbonRegionBehavior and RibbonTabAttribute code. Once the custom RegionBehavior knows the region and view names, I could call Region.RegionManager.RequestNavigate() from within the custom RegionBahavior class.\r<br />\n<br />\nHowever, some modules require much more initializations than just calling a RequestNavigate(). I needed to resolve business classes, create view models with the resolved business classes, create corresponding views, and finally add them to the region to use view injection. In other words, I needed the DI container and needed to call a part of IModule.Initialize() of every module that is used inside the shell.\r<br />\n<br />\nSo, rather than creating a separate DialogService as is done in the IG Outlook sample, I assigned the responsibility to the Bootstrapper and created an interface for the module classes so that I can separate the IModule.Initialize() in two sections – one that registers types and the other that does everything else including initializing the regions with a given region manager.\r<br />\n<br />\nThis scheme seems to be working very well. Now, I don’t need the custom behavior. The part of the Bootstrapper code is as follows:<br />\n<pre><code>protected override void InitializeModules()\n{\n    var regionManager = this.Container.Resolve&lt;IRegionManager&gt;();\n    this.Container.RegisterType&lt;object, MainView&gt;(&quot;MainView&quot;);\n    regionManager.RequestNavigate(RegionNames.MainRegion, &quot;MainView&quot;);\n\n    var eventAggregator = this.Container.Resolve&lt;IEventAggregator&gt;();\n    const bool KeepMeAlive = true;\n    eventAggregator.GetEvent&lt;CreateNewWindowEvent&gt;().Subscribe(this.CreateNewShell, ThreadOption.UIThread, KeepMeAlive);\n\n    base.InitializeModules();\n}\n\nprivate void CreateNewShell(string obj)\n{\n    var newShell = this.Container.Resolve&lt;ShellView&gt;();\n    var regionManager = this.Container.Resolve&lt;IRegionManager&gt;();\n    var scopedRegionManager = regionManager.CreateRegionManager();\n    RegionManager.SetRegionManager(newShell, scopedRegionManager);\n    scopedRegionManager.RequestNavigate(RegionNames.MainRegion, &quot;MainView&quot;);\n\n    this.InitializeModulesForTheNewShell(scopedRegionManager);\n\n    newShell.Show();\n}\n\nprivate void InitializeModulesForTheNewShell(IRegionManager scopedRegionManager)\n{\n    foreach (var moduleInfo in this.ModuleCatalog.Modules)\n    {\n        var moduleType = Type.GetType(moduleInfo.ModuleType);\n        var module = this.Container.Resolve(moduleType) as IModuleWithMultipleShells;\n        if (module != null)\n        {\n            module.InitializeRegion(scopedRegionManager);\n        }\n    }\n}</code></pre>\n\nSince the above is done in the Bootstrapper, the ModuleCatalog is easily available. The InitializeModulesForTheNewShell() calls InitializeRegion() that is to be implemented in the IModule classes if need be. Below shows an example of such a module:<br />\n<pre><code>public void Initialize()\n{\n    this.container.RegisterType&lt;object, ViewA&gt;(&quot;ViewA&quot;);\n    this.InitializeRegion(this.regionManager);\n}\n\npublic void InitializeRegion(IRegionManager rm)\n{\n    rm.RequestNavigate(RegionNames.ViewARegion, &quot;ViewA&quot;);\n}</code></pre>\n\nThe IModuleWithMultipleShell interface looks like this:<br />\n<pre><code>public interface IModuleWithMultipleShells\n{\n    void InitializeRegion(IRegionManager scopedRegionManager);\n}</code></pre>\n\nWith this implementation, all of my issues with the scoped region manager except for #3 are gone. I still miss view discovery because it’s simpler, but I can live with that.\r<br />\n<br />\nWith that said, our team will go with the multiple bootstrapper approach because it needs a lot less code and less confusing. When we see an unexpected problem related to this decision in future, we should be able to switch to the scoped region manager without much pain.\r<br />\n<br />\nAgain, thank you for your extremely helpful pieces of advice. I really appreciate it.<br />\n",
+    "PostedDate": "2015-01-19T07:36:35.387-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1343268",
+    "ThreadId": "574339",
+    "Html": "Good luck and happy coding :0)<br />\n",
+    "PostedDate": "2015-01-19T08:46:40.68-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

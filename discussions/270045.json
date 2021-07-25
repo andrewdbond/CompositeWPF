@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "661943",
+    "ThreadId": "270045",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>my application will have many modules, which I want to load on demand.<br>\r\nThe shell will have a menu on the left side. Selecting a menu item will load the related view in the content area on right side.</p>\r\n<p>First, I would associate menu item to view&nbsp;name.<br>\r\nSo when the user click &quot;Customers&quot; item, I could compose/resolve &quot;CustomersView&quot; and show it in content area.<br>\r\nBut I cant compose objects from modules which are not already in memory.</p>\r\n<p>AFAIK there's not a built in way to say &quot;compose/resolve this type. If you can't find it load it from &quot;module1.dll&quot; &quot;.<br>\r\nIs this correct?&nbsp;</p>\r\n<p>So I have to do it by myself, something like:</p>\r\n<ol>\r\n<li>Check if requested view class exists. If so goto point 3 </li><li>Else load the module which contains it (using a view=module dictionary built at design time)\r\n</li><li>Compose/resolve class </li></ol>\r\n<p>What do you think about?</p>\r\n<p>Regards,<br>\r\n&nbsp; Corrado</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-08-23T00:55:40.92-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "662356",
+    "ThreadId": "270045",
+    "Html": "<p>Hi Corrado,</p>\r\n<p>The main counterpart of the approach that you proposed is that it doesn't achieve loose coupling between the components because the main project have not only to know the modules beforehand, but also know the views and in which modules they are.</p>\r\n<p>Another possible approach to do this is to communicate between the modules to show the views.</p>\r\n<p>The main project could know that certain actions performed by the user (for example, clicking the <strong>Customers</strong> menu item) should be resolved by certain modules (for example, the module containing the <strong>CustomersView</strong>) and load them on demand.</p>\r\n<p>Then, when the action is performed, you should do the following:</p>\r\n<ol>\r\n<li>Check if the module has been loaded or not and, if it hasn&rsquo;t, load it.</li>\r\n<li>Then, communicate to the module using something like an event through the event aggregator or using a shared service to request the module to show the view.</li>\r\n</ol>\r\n<p>This way the module shows its view in the region, and the main project doesn&rsquo;t have to know the view but the module only.</p>\r\n<p>For more information about this you can check:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28v=PandP.40%29.aspx\">Chapter 9 - Communication of the Prism documentation</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921068%28v=PandP.40%29.aspx\">The Modularity QuickStart for WPF</a> or &nbsp;the <a href=\"http://msdn.microsoft.com/en-us/library/ff921163%28v=PandP.40%29.aspx\">Modularity QuickStart for Silverlight</a></li>\r\n<li><a href=\"265699\">Load Module on Demand thread on CodePlex</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-08-23T14:26:25.55-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "149079",
+    "ThreadId": "44773",
+    "Html": "Hi all,<br>\r\n<br>\r\nhow do you hold your shared data over different within your WPF/CAL project? In other words: how to share parts of the model?<br>\r\n<br>\r\nActually I have to store about 5 different lists I need in different modules. Source is a RDBMS. These lists serves as reference data for comparisons and rarelay must be updated via the UI.<br>\r\nI tend to implement this lists separate as class thats inherits from List&lt;TYPE&gt; (modelclass). For every class I create a datalayer service for querying, inserts, updates etc.<br>\r\nBoth modelclass and datalayer class are registered within Unity. To simplifying explaination I ignore here use of interfaces implemented by the classes.<br>\r\n<br>\r\nSo I'm not sure if this is the best way. It seems to me its actually the fastest and simpliest way.<br>\r\n<br>\r\nBenefit:<br>\r\n- seems to be simple<br>\r\n<br>\r\nDisadvanatge:<br>\r\n- registers model within Unity (not only services)<br>\r\n- if more shared data are needed the more several classes are being registered within Unity<br>\r\n<br>\r\nAlternative:<br>\r\nCreating one 'SharedDataService' holds fields with references to the several lists (maybe a wrapper for Dictionary&lt;TKey, TValue) or hardcoded fields of appropriate type).<br>\r\nIf choosen the dictionary version the several lists must implement a custom Interface.<br>\r\n<br>\r\nCAB uses the State. But I dont like the untyped object way...<br>\r\n<br>\r\nHow do you share your data within a WPF/ CAL project?<br>\r\n<br>\r\nThanks für suggestions.<br>\r\nSchue<br>\r\n",
+    "PostedDate": "2009-01-20T23:45:54.483-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "210720",
+    "ThreadId": "44773",
+    "Html": "<p>I'm curious what you did, I'm wondering the same thing.</p>\r\n<p>Thanks,<br>Todd</p>",
+    "PostedDate": "2009-07-09T23:20:08.607-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "216287",
+    "ThreadId": "44773",
+    "Html": "<p>I used the solution I've evaluated by myself and decribed above. It works fine for me; I guess at this point should everybody do whats ok for him/her. If you want to share data between views you can also look into Prisms docu under Technical Concepts &gt; Communication &gt; Region Context.</p>\r\n<p>bye, schue</p>",
+    "PostedDate": "2009-07-27T00:49:19.937-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "217160",
+    "ThreadId": "44773",
+    "Html": "<p>[schue] How do you share your data within a WPF/ CAL project?</p>\r\n<p>The TopDownUIComposition solution in PRISMV2 Drop 7 shows an excellent example of how this can be done<br>QuickStarts\\Visual Composition\\TopDown\\</p>\r\n<p>This demo&nbsp;uses a combination of the Model-View-Presenter (MVP) pattern&nbsp;and the Model-View-ViewModel (MVVM) pattern, aka Presentation Model and Application Model.&nbsp;&nbsp;&nbsp; By having multiple views share the same model (see <a href=\"http://martinfowler.com/eaaDev/PresentationModel.html\">Martin Fowlers Presentation Model</a>) you effectively share the same data without having to have a lot of complex logic to maintain state.&nbsp;&nbsp; Each view can update the model and the other views will be notified via the observer pattern (INotifyPropertyChanged).</p>\r\n<p>Trying to use MVVM alone has introduced the limitations that Martin Fowler discussed in <a href=\"http://martinfowler.com/eaaDev/uiArchs.html\">THIS ARTICLE</a> (paragraph above Figure 11).&nbsp;&nbsp; As he suggest, it was the limitations that introduced the need for MVP.&nbsp;&nbsp; Combining them gives us the best of both worlds.&nbsp;&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-29T06:05:20.273-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "219198",
+    "ThreadId": "44773",
+    "Html": "<p>I agree that in most situations ViewModels alone are not sufficent and you need something on top to coordinate them.&nbsp;Ward Bell discusses similar concept on his blog and calls it a &quot;Screen Factory&quot;. <a href=\"http://neverindoubtnet.blogspot.com/2009/06/screen-factory.html\">http://neverindoubtnet.blogspot.com/2009/06/screen-factory.html</a>&nbsp;. Note that in his term Screen refers to some portion of your UI that handles a specific task - but it can consist of multiple views collaborating to implement one task. On the other hand you would also have multiple screens in one application and thus multiple &quot;Screen Factories&quot;.</p>\r\n<p>However if you are looking for very loose coupling between ViewModels you can still implement a message bus (using a Mediator pattern) to synchronize their state changes. In Prism this would be the EventAggregator but you can also looks at the Messanger class created by Marlon Grech and Josh Smith: <a href=\"http://marlongrech.wordpress.com/2009/04/16/mediator-v2-for-mvvm-wpf-and-silverlight-applications/\">http://marlongrech.wordpress.com/2009/04/16/mediator-v2-for-mvvm-wpf-and-silverlight-applications/</a>&nbsp;(also part of their MVVM Foundation project <a href=\"http://mvvmfoundation.codeplex.com/\">http://mvvmfoundation.codeplex.com/</a>).</p>",
+    "PostedDate": "2009-08-04T04:25:28.373-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "219262",
+    "ThreadId": "44773",
+    "Html": "<p>Thank you kobush, that was excellent reading!&nbsp;&nbsp;&nbsp;Early in my architecture days I lost faith in blogs&nbsp;because I found so many people&nbsp;teaching, when they didn't understand the concepts, perfect case in point&nbsp;were the countless blogs stating that the&nbsp;difference between MVC and MVP is that in MVP the View does not communciate with the model; a partial truth (Passive MVP) which was more the exception than the rule because any data-binding resulted in MVP being supervising controller.&nbsp;&nbsp; In time, because I didn't know enough to discern the truth, &nbsp;I isolated my readings to authoritative sources such as the Microsoft P&amp;P folks, Fowler (for architecture) and Papa for data.</p>\r\n<p>Although it would have been nice&nbsp;if Ward&nbsp;had provided&nbsp;examples (spoiled by fowler who provides source and UML although I doubt we'll find Agile folks using UML now-a-days) I found his blog(s) to be a breath of fresh air; I particularly enjoyed <a href=\"http://neverindoubtnet.blogspot.com/2009/05/birth-and-death-of-m-v-vm-triads.html\">http://neverindoubtnet.blogspot.com/2009/05/birth-and-death-of-m-v-vm-triads.html</a>&nbsp; which suggested to me that he does his homework and qualifies as an authoritative source.&nbsp; A source that recognizes that, like technologies, architectural patterns have to continually grow/change with the times and he has taken on that challenge.</p>\r\n<p>As for the Grech and Josh Smith - I could be wrong but I think they are attempting to solve problems that are already solved with the PRISM framework but it is to early to tell and I'll bookmark this one.&nbsp;&nbsp; The deeper I dig into the PRISM framework (work in progress) the more impressed with it I become as I see the team is solving many problems for us.&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-04T07:34:18.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "219331",
+    "ThreadId": "44773",
+    "Html": "<p>Ward started very interesting (and important) discussion that now continues among WPF Disciples. You should also read some thoughts from Glenn Block (<a href=\"http://codebetter.com/blogs/glenn.block/archive/2009/08/02/the-spirit-of-mvvm-viewmodel-it-s-not-a-code-counting-exercise.aspx\">http://codebetter.com/blogs/glenn.block/archive/2009/08/02/the-spirit-of-mvvm-viewmodel-it-s-not-a-code-counting-exercise.aspx</a>) and David Hill (<a href=\"http://blogs.msdn.com/dphill/archive/2009/05/18/viewmodel-and-dependency-injection.aspx\">http://blogs.msdn.com/dphill/archive/2009/05/18/viewmodel-and-dependency-injection.aspx</a>).</p>\r\n<p>While Prism provides good foundation for building composite (aka modular) application it doesn't deal directly with the MVVM patterns. This is why we start to see a growing number of MVVM frameworks that try to fill the gap (not only from Josh and Marlon but also from <a href=\"http://karlshifflett.wordpress.com/2009/01/26/ocean-framework-released-mvvm-for-wpf-line-of-business-update/\">Karl Shifflett</a>, <a href=\"http://www.codeproject.com/KB/WPF/CinchIII.aspx\">Sacha Barber</a>, and <a href=\"http://wpfonyx.codeplex.com/\">Bill Kempf</a>). In particular I agree with David Hill's point that we need more support in tooling for creation and binding to ViewModels. For example it would be cool if we could specify bindings to ViewModels in Blend and get the InteliSense like experience. Or even ability to provide design-time sample data in form of mock ViewModels (one example here <a href=\"http://jystic.com/2009/06/06/design-mode-viewmodels-with-rhinomocks/\">http://jystic.com/2009/06/06/design-mode-viewmodels-with-rhinomocks/</a>). Also the creation of the MVVM triad is not an easy topic (both View-first and ViewModel-first approaches are valid depending on the situation).&nbsp;</p>\r\n<p>I hope that eventually this becomes part of the framework (and get support in tools) but we should look closer at this in the next version of Prism too.</p>\r\n<p>-Szymon</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-04T10:09:42.447-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "633103",
+    "ThreadId": "262816",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>My applicatin contains list box which is a region that contains about 50 views.</p>\r\n<p>While inserting the views to the region I noted&nbsp;&#65279;that&nbsp;adding&nbsp;them takes a while&nbsp;.</p>\r\n<p>I tested the issue by adding 1000 views into prism region in&nbsp;list box&nbsp; via the add view method&nbsp; and add same number of views via items.add of the list box.</p>\r\n<p>the results was over 8 minutes to the region and ~0.1 seconds to the listbox,Moreover adding to the list via the items.add when the list box defined as region and doning the same thing without the region definition has the same results as mention above.</p>\r\n<p>Is there something I'm doing wrong or is there a way to improve the views adding to region?</p>\r\n<p>Thanks</p>\r\n<p>Eran</p>\r\n",
+    "PostedDate": "2011-06-26T01:58:48.54-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "633671",
+    "ThreadId": "262816",
+    "Html": "<p>Hi Eran,</p>\r\n<p>Adding views to regions implies an additional overhead of creating the <a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.prism.regions.itemmetadata%28PandP.40%29.aspx\">ItemMetadata </a>object and adding it to the <a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.prism.regions.viewscollection%28PandP.40%29.aspx\">ViewsCollection</a> of the region, setting the <strong>RegionManager </strong>attached property, and so forth. Also, by using regions you are using the ItemsControl's <strong>ItemsSource </strong>property, and when you add the views to the ItemsControl's <strong>Items</strong> property, which are different approaches that might have different performance implications.</p>\r\n<p>However, based on my personal understanding of the scenario you're mentioning, it shouldn't take ~480ms to add a view into a region. It would be helpful if you could provide us with more information about the way you are adding the views to the region (e.g. if you're using DependencyInjection to obtain the views, if you're using scoped regions, etc).</p>\r\n<p>If you consider this to be blocking, you could create a work item in the <a href=\"http://compositewpf.codeplex.com/workitem/list/advanced\">issue tracker</a>, notifying the product team of this.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-06-27T11:30:27.14-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "633965",
+    "ThreadId": "262816",
+    "Html": "<p>Hi Guido,<br />The following 3 methods participate in the views adding in&nbsp;my test unit:</p>\n<pre>public override void Initialize()\r\n        {\r\n            _regionManager.ChangeView(\"MainRegion\",\"Module.Views.VehiclesContainerView\");\r\n            List  vehicles = GetVehicles();\r\n            Stopwatch  stopWatch = new Stopwatch();\r\n            stopWatch.Start();\r\n            foreach(V_Vehicle vehicle in vehicles)\r\n                CreateVehicleView(vehicle);\r\n            stopWatch.Stop();\r\n            double milsec = stopWatch.Elapsed.TotalMilliseconds ;\r\n            double sec = stopWatch.Elapsed.TotalSeconds;\r\n            double min = stopWatch.Elapsed.TotalMinutes;\r\n         }<pre> &nbsp;</pre>\n</pre>\n<pre><pre>   private void CreateVehicleView(V_Vehicle vehicle)\r\n        {\r\n            VehicleViewModel vehicleViewModel = new VehicleViewModel(_eventBus, vehicle);\r\n            Views.VehicleView view = _container.GetInstance();\r\n            _regionManager.AddViewToLoadedRegion(\"VehiclesRegion\",view,vehicle.VehicleKey.ToString());\r\n        }</pre>\n<pre>&nbsp;public void AddViewToLoadedRegion(String region, IView view, String viewCode)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _regionManager.Regions[region].Add(view, viewCode);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</pre>\n<pre>The flow in adding view to list box items is the same as describe above only that instead of the calling to add view to loaded region I call items.add ,I will add the method</pre>\n<pre>in here if you like</pre>\n<pre>Thanks</pre>\n<pre>Eran</pre>\n</pre>",
+    "PostedDate": "2011-06-27T23:16:22.62-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "634168",
+    "ThreadId": "262816",
+    "Html": "<p>Hi Eran,</p>\r\n<p>There doesn't seem to be anything in the code you're showing that could be causing extra overhead besides what I've previously mentioned.</p>\r\n<p>Thanks,</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-06-28T07:54:54.317-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

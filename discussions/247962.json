@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "573721",
+    "ThreadId": "247962",
+    "Html": "\r\n<p>I am currently in the process of putting together a prototype Prism application to illustrate the design patterns that we will be using here and so I am trying to get everything &quot;right&quot;.</p>\r\n<p>Loading views into regions seems quite neat (using MEF) and with custom adapters I am able to use various DevExpress controls (such as the docking control) for layout. All good so far.</p>\r\n<p>My problem is how best to extend menus from modules. Ideally I want to use the DevExpress BarManager, but I guess my question would would also work for the .NET framework Menu/MenuItems too.</p>\r\n<p>Using regions don't seem to be the right choice here. This would require a custom adapter and I suppose a xaml file for each menu item linked to a Command most likely stored somewhere in the main module controller. This seems like a messy pattern (if I can\r\n even get this to work - I'm not sure exactly what I would be putting in the xaml file for DXBarManager which has a lightly more complex structure than menu/menuitem).</p>\r\n<p>My next thought (and the way I will head unless a decent suggestion presents itself) was to have a &quot;MenuService&quot; class shared from the shell that the modules can resolve and use to extend the menu. i.e. In the main module controller class for each module\r\n you would resolve the MenuService and call various methods (e.g. MenuService.GetMenu(&quot;View&quot;).AddMenuItem(&quot;Properties&quot;, OpenPropertyWindowCommand) - where OpenPropertyWindowCommand is defined in the controller class and resolves a particular view and loads\r\n it into a region in the shell.<br>\r\nThe menu service would abstract away from the particular implementation of the menu in the shell which could follow an mvvm pattern (with the model being presented to the shell view by the service).&nbsp;<br>\r\nI guess that this idea is something like this <a href=\"http://www.codeproject.com/KB/silverlight/UIExtensionSites.aspx\">\r\nhttp://www.codeproject.com/KB/silverlight/UIExtensionSites.aspx</a>&nbsp;, which is something similar to the Extension Sites idea that was in CAB.</p>\r\n<p>I have looked at the various Prism Quickstarts but can't see anything suitable in there. The closest thing is the View-Switching one but this one only really seems to suit a situation where your Links really are like Views (i.e. each &quot;link&quot; is really&nbsp;arbitrary&nbsp;xaml),\r\n rather than an extending an actual Menu object.</p>\r\n<p>What are peoples experience with this? Does anyone have any good suggestions for me?</p>\r\n",
+    "PostedDate": "2011-03-01T02:00:08.86-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573842",
+    "ThreadId": "247962",
+    "Html": "<p>Hi,</p>\r\n<p>From my understanding, your approach seems a valid way to achieve the requirement you're explaining.</p>\r\n<p>The first approach you've mentioned seems to be too much of an overhead since, like you've mentioned, it's not that your menu items will be an arbitrary xaml, whereas the second one seems to address the situation appropriately.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-01T06:57:40.473-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "586457",
+    "ThreadId": "247962",
+    "Html": "<p>The guys at DevExpress came up with quite an elegant solution to my problem using the \"Merge\"/\"UnMerge\" feature of their&nbsp;BarManager.</p>\r\n<p>Basically, you can define a barmanager and a bar in a view and when the view is loaded the shell will merge one of the bars defined in the view into the shells main bar manager (and unmerge when the view is removed).</p>\r\n<p>For module menus items (i.e. Menu links that activiate the views themselves, rather than menus for controlling the individual views), I intend to adapt this pattern with the&nbsp;AutoPopulateExportedViewsBehavior functionality (i.e each module will have one xaml file that defines menu items that I want added to the shell at startup).</p>\r\n<p>Anyway, here is the discussion on DevExpress along with a sample project.</p>\r\n<p><a href=\"http://www.devexpress.com/Support/Center/p/Q310265.aspx\">http://www.devexpress.com/Support/Center/p/Q310265.aspx</a></p>\r\n<p>Note: I have since changed the way that the sample project uses their docking control following this discussion:&nbsp;<a href=\"http://www.devexpress.com/Support/Center/Issues/ViewIssue.aspx?issueid=B197493\">http://www.devexpress.com/Support/Center/Issues/ViewIssue.aspx?issueid=B197493</a></p>",
+    "PostedDate": "2011-03-25T07:47:31.783-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "587610",
+    "ThreadId": "247962",
+    "Html": "<p>Hi,</p>\r\n<p>Thank you for sharing your approach with the rest of the community, as other users with similar requirements might benefit from knowing this.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-28T07:41:53.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

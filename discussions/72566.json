@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "247769",
+    "ThreadId": "72566",
+    "Html": "<p>If the ViewModel isn't supposed to know anything about the view (and vice-versa), then if I need to show a file open dialog in response to a button click (and subsequent associated command), where and how should this occur?</p>",
+    "PostedDate": "2009-10-20T09:24:54.46-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "248253",
+    "ThreadId": "72566",
+    "Html": "<p>I put it in the View using a click event because i felt that since the dialog just populates a textbox, and that another button will fire a command that will actually do something with that data, that the call to the dialog belonged in the view.</p>",
+    "PostedDate": "2009-10-21T12:25:25.187-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "249145",
+    "ThreadId": "72566",
+    "Html": "<p>I suggest placing it in a class that can be used in a command that can be executed from the ViewModel. As an example, you would have the following delegate in the ViewModel:</p>\r\n<p><span style=\"white-space:pre\"> </span>public DelegateCommand&lt;object&gt; OpenFileCommand { get; private set; }</p>\r\n<p>Which is bound in the ViewModel constructor with an Action and a Predicate.</p>\r\n<p>&nbsp;</p>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;AddFileCommand = new DelegateCommand&lt;object&gt;(AddFile, _importDataSvc.CanAddFile);</div>\r\n<p><span style=\"white-space:pre\"> </span>OpenFileCommand = new DelegateCommand&lt;object&gt;(OpenFile, CanOpenFile);</p>\r\n<p>The Action would be the method that calls the sub-classed open dialog...</p>\r\n<p>&nbsp;</p>\r\n<p>Best,</p>\r\n<div></div>\r\n</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-23T14:15:52.307-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "249780",
+    "ThreadId": "72566",
+    "Html": "<p>I don't agree.&nbsp; The action is not opening the file per se.&nbsp; All it's doing is filling a textbox with the file path.&nbsp; There is another button on the form that will actually perform the intended command.&nbsp; That command will take all the data from the form, and pass it along.&nbsp; The open file action is not germane to the ViewModel.</p>",
+    "PostedDate": "2009-10-26T08:10:38.687-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "250073",
+    "ThreadId": "72566",
+    "Html": "<p>You can check this <a href=\"http://stackoverflow.com/questions/1043918/open-file-dialog-mvvm\">http://stackoverflow.com/questions/1043918/open-file-dialog-mvvm</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-27T00:57:22.777-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "250168",
+    "ThreadId": "72566",
+    "Html": "<p>OK however the VM in the MVVM triad should be agnostic to the V.&nbsp; Therefore there shouldn't any knowledge of how to get the data into it's respective properties.&nbsp; I should, theoretically, be able to wire-up my VM to a WinForms V or an ASP.NET V if I so choose.&nbsp; I'm sticking with my file dialog in my V and having the V update a data bound property in the VM.</p>",
+    "PostedDate": "2009-10-27T06:55:39.107-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

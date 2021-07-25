@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "985626",
+    "ThreadId": "429339",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I am implementing a composite application that needs to load most of the modules at startup (all of them have data to show in the view at startup) and I am afraid that if I use the existing module loaders it will take several minutes to load of all them.\r\n I was considering overriding the method LoadModulesThatAreReadyForLoad() in ModuleManager. Would it be the right way to go? &nbsp;Can you provide tips or examples on how to customize module loading to load each module in its own thread in parallel?&nbsp;</p>\r\n<p>Thanks,</p>\r\n",
+    "PostedDate": "2013-01-11T12:23:54.933-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "986648",
+    "ThreadId": "429339",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding, the process of loading modules can be divided in two separate steps: loading the assembly containing the module and initializing the module.</p>\r\n<p>For the first step, I don't believe using threads or similar approaches would affect the loading time of an assembly, as the threads would have to wait for the disk to complete their requests to read the corresponding files.</p>\r\n<p>As for the second step, it might be possible to modify the <strong>LoadModulesThatAreReadyForLoad\r\n</strong>method to load each module in a separate thread (for example, by executing the &quot;\r\n<strong>this.InitializeModule(moduleInfo);</strong> &quot; line inside the threads.) I don't know if such approach would report any performance improvements when initializing modules, but you will have to consider how to manage the dependencies between modules (modules\r\n that are related by a dependency should not be initialized concurrently) and how to check when a module has completed it's initializing process.</p>\r\n<p>Also, if your modules have a complex initialization logic, you could create threads inside the\r\n<strong>Initialize </strong>method of the module. However, in this case you will need to make sure that all threads have finished their work before returning from the\r\n<strong>Initialize </strong>method (if not, the module could be declared as <strong>\r\nInitialized </strong>while some of its threads could still be working in the background.)</p>\r\n<p>In my opinion, you could first develop the modules and check how much they take to load before searching how to improve their loading time, as it might be possible for the modules to load fast enough without requiring any modification in the initialization\r\n logic.</p>\r\n<p>On the other hand, if you are experiencing a poor performance when initializing modules, it would be helpful if you could provide us with more information about what initialization logic you have in your modules, so that we could help you improve its initialization\r\n time, as its possible that some of its logic could be moved to other components of the module.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2013-01-14T12:11:15.113-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

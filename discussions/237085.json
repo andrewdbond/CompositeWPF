@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "530900",
+    "ThreadId": "237085",
+    "Html": "\r\n<p>Hi there,&nbsp;</p>\r\n<p>Let me try and explain, I have a window and in this window is a view, it is a wizard so it has a bunch of radio buttons in a listbox and when the user clicks an option it moves them to the next view, when I do this I call this little bit of code.&nbsp;</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>\r\n        <span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> ClearRegions()\r\n        {\r\n          IRegion region = <span style=\"color:blue\">this</span>._container.Resolve&lt;IRegionManager&gt;().Regions[<span style=\"color:#a31515\">&quot;ShellDialogBodyRegion&quot;</span>];\r\n          <span style=\"color:blue\">var</span> views = region.Views;\r\n          <span style=\"color:blue\">foreach</span> (<span style=\"color:blue\">var</span> view <span style=\"color:blue\">in</span> views)\r\n          {\r\n            region.Remove(view);\r\n          }\r\n        }\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>That works fine. If they start over I need to remove the whatever view they are on and show the main view again, the same view that is shown when the module is initialized. I do that like this.&nbsp;</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>        <span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> OnBackCommand()\r\n        {\r\n          IRegion region = RegionManager.Regions[<span style=\"color:#a31515\">&quot;ShellDialogBodyRegion&quot;</span>];\r\n          <span style=\"color:blue\">var</span> views = region.Views;\r\n          \r\n          <span style=\"color:blue\">foreach</span> (<span style=\"color:blue\">var</span> view <span style=\"color:blue\">in</span> views)\r\n          {\r\n            region.Remove(view);\r\n          }\r\n          RegionManager.RegisterViewWithRegion(<span style=\"color:#a31515\">&quot;ShellDialogBodyRegion&quot;</span>, () =&gt; <span style=\"color:blue\">this</span>.Container.Resolve&lt;Views.CreateRgaView&gt;());\r\n        }\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>Everything is working fine, I can go backward and move through screens and then start over 100 times and it all works fine except if I close and reopen the window (just the window mind you the app itself is still running)... When I do that I see the main\r\n view as many times as I hit the back button, say OnBackCommand was called three times, I would see CreateRgaView three times but if I check the region manager when the window is opened it says that view.count() = 0... I am stumped, the region manager says\r\n there are no views but I see three? What am I failing to understand about the region manger?&nbsp;</p>\r\n<p>Thanks!!!</p>\r\n",
+    "PostedDate": "2010-12-03T13:50:28.447-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "531090",
+    "ThreadId": "237085",
+    "Html": "\r\n<p>What kind of Region are you using? Is it a Region, SingleActiveRegion or AllActiveRegion. Try setting the KeepAlive as false on your views and try.</p>\r\n<p>Also a better approach for a wizard control would be to use a ContentControl/ContentPresenter and setting the Content&nbsp;to the current step view, instead of playing with Regions.</p>\r\n",
+    "PostedDate": "2010-12-04T05:01:57.21-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

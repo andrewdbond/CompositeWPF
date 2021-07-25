@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "88353",
+    "ThreadId": "26415",
+    "Html": "\r\nI was taking a look at Drop 4 and experimenting with the UIComposition project when I ran across the code in the shell's xaml file containing the &lt;prism:RegionManager.RegionManagerServiceScope&gt; tag.<br /><br />It looks like it is there to set an attached property to a new instance of a RegionManagerService, is this correct?<br /><br />If so, can't it be moved out to the XAML and put into the view's constructor like so:<br /><br />this.SetValue(Prism.RegionManager.RegionManagerServiceScopeProperty, new Prism.Services.RegionManagerService());<br /><br />I did that and removed the XAML and it seems to work fine.<br /><br />The reason I wanted to remove the XAML is because it ruins the design time experience in Visual Studio 2008 and Blend too I would assume.<br /><br />Also, other views in the project have the same XAML. Would it be ok to create new RegionManagerServices for them too, or is there a better way?<br /><br />",
+    "PostedDate": "2008-04-22T14:30:22.573-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "88400",
+    "ThreadId": "26415",
+    "Html": "\r\nSee my post <br /><br />http://www.codeplex.com/prism/Thread/View.aspx?ThreadId=26427<br /><br /><br />Ben<br />",
+    "PostedDate": "2008-04-22T19:19:47.643-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "88470",
+    "ThreadId": "26415",
+    "Html": "\r\nThat certainly works, but what if you replace the implementation of RegionManagerService with another implementation, you won't be able to do that without using the interface, correct?<br />",
+    "PostedDate": "2008-04-23T04:36:48.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "88852",
+    "ThreadId": "26415",
+    "Html": "\r\nIf you replace Regionmamanger you will need to change the Xaml regardless.. As it explicitly states the type.. However you can inherit from RegionManager and it will still work. <br /><br />A lot fo my WPF code uses no code behind , which results in a much eaiser to maintain UI , i have been surprised at this. <br /><br />Kind of crossing my fingers on the one , the good thing is you are only likley to have one Region Manager in a project . <br /><br />Regards, <br /><br />Ben <br />",
+    "PostedDate": "2008-04-24T13:49:30.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "89273",
+    "ThreadId": "26415",
+    "Html": "\r\nWell nevermind anyway, looks like the UIcomposition project is based on a old version of Prism and the RegionManagerServiceScope isn't even in it anymore.<br />",
+    "PostedDate": "2008-04-27T17:47:00.88-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "89286",
+    "ThreadId": "26415",
+    "Html": "\r\nI hope not - no code behind is a very nice feature <br /><br />From the readme<br />\"<br />New UI Composition QuickStart. Demonstrates shell, global, local regions, and views. Note: This Quickstart uses a branch of the Prism framework source. We will be merging into the main. <br />\"<br /><br />SO it will be there. <br /><br />Regards, <br /><br />Ben <br />",
+    "PostedDate": "2008-04-27T22:11:43.317-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "89391",
+    "ThreadId": "26415",
+    "Html": "\r\nhmm, guess I read the readme incorrectly.<br /><br />Hopefully having that included doesn't break the design time experience.<br />",
+    "PostedDate": "2008-04-28T09:26:31.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "90052",
+    "ThreadId": "26415",
+    "Html": "\r\nSorry, spoke a bit too soon :(<br />",
+    "PostedDate": "2008-05-01T08:47:08.153-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

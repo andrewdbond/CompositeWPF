@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1422742",
+    "ThreadId": "636658",
+    "Html": "Hi,\r<br />\n<br />\nis there an example how to use the EventAggregator to update the GUI?\r<br />\n<br />\nI my case, I have a login scenario. The are a couple of things I am checking.\r<br />\n(database available, service available, .etc...)\r<br />\n<br />\nDuring this process I send an event to the Shell, but the UI is not updated.\r<br />\nIt would be great if there is an example, which shows the best approach. (BackGroundWorker, or Async / await)\r<br />\n<br />\nThank you,\r<br />\nmanullino<br />\n",
+    "PostedDate": "2015-05-04T07:38:10.917-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1422788",
+    "ThreadId": "636658",
+    "Html": "Take a look at the EventAggregation QuickStart. It demostrates how to use it to communicate and pass data between ViewModels. PubSubEvents in Prism are typically used to communicate between ViewModels, between ViewModels and Services, or Service to Service. If the net result is to update the UI based on the event, that is done by having the event handling update some property in the ViewModel, which causes a change in the View through data binding.\r<br />\n<br />\nThat being said, there is nothing stopping you from subscribing to an event from View code behind other than the guidelines of MVVM. You would just have to make sure you are injecting the singleton EventAggregator instance managed by Prism into the View and call GetEvent&lt;MyEvent&gt;.Subscribe() from there.<br />\n",
+    "PostedDate": "2015-05-04T09:50:43.28-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1422802",
+    "ThreadId": "636658",
+    "Html": "Hi Brian,<br />\n<br />\nthis exactly what I am doing.<br />\nIn the ViewModel of the Shell I Subscript to the event.<br />\n<pre><code>this.EventAggregator.GetEvent&lt;WaitWindowEvent&gt;().Subscribe(ShowWaitWindow, ThreadOption.PublisherThread, true);</code></pre>\n\n<pre><code>        private void ShowWaitWindow(WaitWindowEventArgs args)\n        {\n                IsWaitWindow = Visibility.Visible;\n                BusyText = args.Message;\n        }</code></pre>\n\nIf I debug the code, the event is raised an the ShowWaitWindow() Method is executed.<br />\nIn both Properties (IsWaitWindow &amp; BusyText) the INotifyProp. Interface is implemented.<br />\nIf you call the Method in the constructor for example, it works too...<br />\n<br />\nDo you have an idea?<br />\nThank you,<br />\nManullino<br />\n",
+    "PostedDate": "2015-05-04T11:00:39.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1422820",
+    "ThreadId": "636658",
+    "Html": "Not clear on what is not working then. So the event handler is called and sets those properties. I take it those are bound to something in the UI and nothing is happening when they get set? But are you saying if you just call that from the constructor of the ViewModel then it works? Have you tried changing ThreadOption.PublisherThread to UIThread? That is what you would generally want if the handler is going to be modifying bound properties, but WPF bindings are actually tolerant of setting INPC properties on a separate thread.\r<br />\n<br />\nAfraid this is the kind of thing that is hard to speculate on with just a few snippets.<br />\n",
+    "PostedDate": "2015-05-04T12:23:21.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1423258",
+    "ThreadId": "636658",
+    "Html": "Thank you for your answer Brian,\r<br />\n<br />\nif is set the ThreadOption to UIThread, the ShowWaitWindow() method in the ViewModel is executed after the complete  Start() method in my StartupManager is done.\r<br />\nThe StartupManager looks like this:<br />\n<pre><code>private bool Start()\n{\n...\n           if (result == true)\n                result = LoadActiveCompany();\n\n            if (result == true)\n                result = loginManager.CheckUserNameAndPassword(user, password);\n\n            if (result == true)\n                result = databaseBiz.UpdateDatabase();\n\n            if (result == true)\n                result = CheckHostConnection();\n\n            if (result == true)\n                result = CheckLicense();\n...\n}</code></pre>\n\n<pre><code>\n           private bool CheckHostConnection()\n            {\n                UpdateWaitWindowText(&quot;Checking host connection...&quot;);\n\n                this.activeConfiguration.Log(&quot;Checking host connection. &quot; + activeConfiguration.WcfServerName);\n                return= this.startupBiz.IsServiceAvailable();\n            }</code></pre>\n\n<pre><code>\n            private void UpdateWaitWindowText(string message)\n            {\n                this.eventAggregator.GetEvent&lt;WaitWindowEvent&gt;().Publish(new WaitWindowEventArgs(message));\n            }</code></pre>\n\n",
+    "PostedDate": "2015-05-06T02:57:24.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1423280",
+    "ThreadId": "636658",
+    "Html": "OK,now I think I understand what you mean by the UI not updating. Is the Start method being called on the UI thread or a separate thread? When you use ThreadOption.UIThread, under the covers it does a Dispatcher.BeginInvoke kind of operation (actually using SynchronizationContext.Post), which queues up the execution for the UI thread once the current execution on the UI thread is complete. So that would explain why you are seeing what you describe.\r<br />\n<br />\nThe right way to get the updates to show at the right time depends on what thread this Start method is executing on as well as other things it calls out to that do similar attempts to update the UI (i.e. your IsServiceAvailable method?).\r<br />\n<br />\nYou can subscribe using ThreadOption.PublisherThread (the default), and then in the handling method use Dispatcher.Invoke - which blocks the current thread execution until the work you give it is done executing on the UI thread - which should mean you will see the transient text in your case before it moves on to the next stage of async execution.\r<br />\n<br />\nHope that helps.\r<br />\nBrian<br />\n",
+    "PostedDate": "2015-05-06T03:33:58.62-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1423550",
+    "ThreadId": "636658",
+    "Html": "It seems to be the UI Thread. \r<br />\nIf I do this:<br />\n<pre><code>Task&lt;bool&gt; result = Task.Factory.StartNew&lt;bool&gt;(Start);</code></pre>\n\nthe GUI is working! :)\r<br />\nUnfortunately I am getting the next error from the region manager, but this pretty clear:<br />\n<pre><code> var view = this.regionManager.Regions[ShellRegionNames.Popup].GetView(&quot;ILoginViewModel&quot;);</code></pre>\n\n<blockquote>\nAdditional information: The calling thread cannot access this object because a different thread owns it. <br />\n</blockquote>\nI didn't expect that updating the UI in the background is that complicated... :(<br />\n",
+    "PostedDate": "2015-05-06T07:09:13.733-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

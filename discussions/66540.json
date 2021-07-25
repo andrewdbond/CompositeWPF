@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "226047",
+    "ThreadId": "66540",
+    "Html": "<p>I'm looking into using the CAL in a Silverlight application and am somewhat confused conceptually how the shell and regions map to your physical application layout.&nbsp; If you have different styles of layout in your application, I don't quite understand how you define a shell and region(s) to accomodate, or if I'm even thinking of this correctly.</p>\r\n<p>For Example -</p>\r\n<p><strong>Login Screen</strong>&nbsp;</p>\r\n<p>A&nbsp;simple box in the center of a screen with a user name and password field as well a Submit button.&nbsp; Since this is my starting point I imagine this needs to be the shell of the application..?</p>\r\n<p><strong>Main Application Screen</strong>&nbsp;</p>\r\n<p>Header - some dynamic information about the context of what you're doing</p>\r\n<p>Navigation bar - buttons to navigate to different areas of the application</p>\r\n<p>Main content area - an area that will gain the main benefit of the dynamic loading of moduels, it can host a large variety of different views in different ways</p>\r\n<p>Footer</p>\r\n<p>&nbsp;</p>\r\n<p>At first glance those two basic different layouts have me confused about how I should setup my shell, my region(s), etc.&nbsp; Is it possible to have multiple shells that define the unique layouts in your application, or do you really just need 1 main region that injects views into the proper position when they are needed (downloading them on demand), or it is possible to have some sort of nested view layout where you can call on them as needed?</p>\r\n<p>Anyone have any ideas as to how this should work conceptually?&nbsp;</p>\r\n<p>Any help is much appreaciated.</p>\r\n<p>Thanks!</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-20T14:13:38.55-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "226117",
+    "ThreadId": "66540",
+    "Html": "<p>Hi GolfAddict,</p>\r\n<p>I'll preface this with the fact that I've only been working with prism in my project with two weeks and I am by no means an architect. But I have also pondered the same problem.</p>\r\n<p>I solved it using the last suggestion you mentioned. I have a shell that basically has a full screen region. There are two modules (a full screen and a 'main application screen') that are regioned and load modules on demand. I'm not really sure of the downside of this approach other than the fact that you have a larger number of total assemblies.</p>\r\n<p>However if you only have one screen (the login screen) that will follow the full screen type layout, maybe consider regionizing the shell for the main application page, make a window or some other user control region for the login screen and only show that window when the user is logging in. That approach seems a bit more 'hacked' to me but it depends on your liking.</p>\r\n<p>I dunno just some thoughts.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-20T18:47:10.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "226426",
+    "ThreadId": "66540",
+    "Html": "<p>Hi</p>\r\n<p>One way I can think of implementing your requirements would be the following. Once you load the application, and before create the Shell, you can prompt the user with the login screen. You can read more about that in the following threads:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=65777\">Best practice to launch login modal before the shell</a></li>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=58292\">Show login modal form before</a></li>\r\n</ul>\r\n<p>Now, your &ldquo;Main Appliaction Screen&rdquo; is your Shell. Without knowing your application needs I would use a layout like this to distribute regions in the Shell:</p>\r\n<p><img src=\"http://blogs.southworks.net/dschenkelman/files/2009/08/regionlayout.png\" alt=\"\"></p>\r\n<p>You can then load the different views you require at each time in each region.</p>\r\n<p>Moreover, the shell is not is not necessarily always the active window. you might have several views (each with different layout) and how the one you need. Nested views are also supported, just by having a region inside the view. You can find more on these in the following discussions:</p>\r\n<ul>\r\n<li><span style=\"color:#1f497d\" lang=EN-US><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=64564\">Different regions sets: is it possible?</a> </span>(multiple shell layouts)</li>\r\n<li><span style=\"color:#1f497d\" lang=EN-US><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=62388&ANCHOR%23Post212539\">Help with multiple views issue</a> </span>(regions inside views)<span style=\"color:#1f497d\"> </span></li>\r\n</ul>\r\n<p><span style=\"color:#1f497d\" lang=EN-US>&nbsp;</span></p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-08-21T10:26:54.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "226451",
+    "ThreadId": "66540",
+    "Html": "<p>Thanks for the feedback guys.</p>\r\n<p>The login&nbsp;example above was a simple scenario - but I imagine us running into more complex situations in the future, other distinct layouts w/ in the application outside of login.&nbsp; I'll take a look at the links you provided Damian, thanks very much.&nbsp;</p>\r\n<p>Always fun to work w/ bleeding edge technologies.&nbsp; I'll follow up w/ whatever I find out as well.</p>\r\n<p>Sean (aka GolfAddict)</p>",
+    "PostedDate": "2009-08-21T11:11:43.853-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

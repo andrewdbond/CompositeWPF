@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "641603",
+    "ThreadId": "264973",
+    "Html": "<p>Hi Please help.</p>\n<p>Below is the code.</p>\n<p>&nbsp;</p>\n<p>&nbsp;[ImportingConstructor]</p>\n<p>&nbsp; &nbsp; &nbsp; &nbsp; public SchemaDetailsViewModel(ISchemaModel mode,IEventAggregator eventAggregator)</p>\n<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>\n<p><span>&nbsp;</span>....</p>\n<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>\n<p>&nbsp;[Export(typeof(ISchemaModel))]</p>\n<p>&nbsp; &nbsp; public class SchemaClassDataModel : BaseModel&lt;SchemaEntityContext&gt;, ISchemaModel</p>\n<p>&nbsp; &nbsp; {</p>\n<p>&nbsp;</p>\n<p>&nbsp; &nbsp; &nbsp; &nbsp; public void GetSchemasAsync()</p>\n<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>\n<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; InternalExecute();</p>\n<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>\n<p>&nbsp;</p>\n<p>&nbsp; &nbsp; &nbsp; &nbsp; private void InternalExecute()</p>\n<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>\n<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Context.SchemaClassDtos.Clear();</p>\n<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Execute(Context.GetSchemasQuery(), OnGetSchemasComplete);</p>\n<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>\n<p>&nbsp;</p>\n<p>&nbsp; &nbsp; }</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;public interface ISchemaModel</p>\n<p>&nbsp; &nbsp; {</p>\n<p>&nbsp; &nbsp; &nbsp; &nbsp; void GetSchemasAsync();</p>\n<p>&nbsp; &nbsp; &nbsp; &nbsp; event EventHandler&lt;EntityResultsArgs&lt;SchemaClassDto&gt;&gt; OnGetSchemasComplete;</p>\n<p>&nbsp; &nbsp; }</p>\n<p>It raises exception in Bootstrapper.run saying cannot create region. refer key/value for more details....</p>\n<p>&nbsp;</p>\n<p>It works fine if I get rid of the 1st parameter in the ScemaClassViewModel Constructor. I've all imports/exports in place. Just don't understand what I'm missing.</p>\n<p>Please help. I'm have been struggling to death with this</p>\n<p>&nbsp;</p>\n<p>I get below error:</p>\n<p>{Microsoft.Practices.ServiceLocation.ActivationException: Activation error occured while trying to get instance of type SchemaClassList, key \"\"&nbsp; &nbsp;at Microsoft.Practices.Prism.MefExtensions.MefServiceLocatorAdapter.DoGetInstance(Type serviceType, String key)&nbsp; &nbsp;at Microsoft.Practices.ServiceLocation.ServiceLocatorImplBase.GetInstance(Type serviceType, String key)}</p>\n<p>the inner exception also has</p>\n<p><br />'(((System.Linq.Expressions.LambdaExpression)((((System.ComponentModel.Composition.Primitives.ImportDefinition[])(((new System.Collections.Generic.Mscorlib_CollectionDebugView&lt;System.ComponentModel.Composition.Primitives.ComposablePartDefinition&gt;((new System.ComponentModel.Composition.Primitives.ComposablePartCatalogDebuggerProxy(((Microsoft.Practices.Prism.MefExtensions.MefBootstrapper)(bootStrapper)).AggregateCatalog)).Parts)).Items[2]).ImportDefinitions))[1]).Constraint)).Type).GenericParameterPosition' threw an exception of type 'System.InvalidOperationException'</p>\n<p>&nbsp;</p>\n<p>Kavya</p>",
+    "PostedDate": "2011-07-13T04:29:52.157-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "641619",
+    "ThreadId": "264973",
+    "Html": "<p>I figured this out.</p>\r\n<p>&nbsp;</p>\r\n<p>Basically the Interface was saved in a different dll. It had to added to aggregateCatalog.</p>\r\n<p>So did that in the bootstrapper class</p>",
+    "PostedDate": "2011-07-13T05:19:14.057-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "642523",
+    "ThreadId": "264973",
+    "Html": "<p>Hi Kavya,</p>\r\n<p>I'm glad that you've found a solution to your situation. Thank you for sharing it with the rest of the community, as it might be helpful for other users facing similar problems.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-14T11:34:18.703-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

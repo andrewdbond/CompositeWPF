@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "661118",
+    "ThreadId": "269845",
+    "Html": "\r\n<p>Hello!</p>\r\n<p>I am new to prism an i am looking to use this framework as startpoint for a new project that i am working on. Allmost on the start i came upon an obsticle that i can not come over it. I'll try to explain I have a &quot;dashboard shell&quot; and a &quot;working shell&quot; on\r\n user login/logout i switch between them...&nbsp;i&nbsp;have the login services and views&nbsp;in a seperate module.&nbsp;The problem i encounter is that when i initialize the login module i register it's views with appropriate regions in both shells. when\r\n i execute the login first time on the dashboard shell and switch to the working shell it's all ok. During logout from working shell i switch back to the dashboard shell but in this proccess the view for logout is removed from the dashboard shell. and that\r\n is my problem. in the dashboard shell i have two views login and logout when i statrt the app it looks ok. after first switch of shells the dashboard shell contains only login view.</p>\r\n<p>&nbsp;</p>\r\n<p>I have the <a href=\"https://skydrive.live.com/#!/?cid=5aaebb683e45efc9&sc=documents&uc=1&id=5AAEBB683E45EFC9%21209\">\r\nsource code</a> on my skydrive (TicRetail.zip).</p>\r\n<p>&nbsp;</p>\r\n<p>Pleace help me.</p>\r\n<p>Slavko</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-08-21T00:46:26.44-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "662275",
+    "ThreadId": "269845",
+    "Html": "<p>Hi!</p>\r\n<p>You could try decorating your class with the following attributes:</p>\r\n<p>[Export(typeof(LogoutView))]<br /><strong>[PartCreationPolicy(CreationPolicy.NonShared)] </strong><br />public partial class LogoutView : UserControl<br />&nbsp;&nbsp; {...<br /><br />[Export(typeof(LoginView))]<br /><strong>[PartCreationPolicy(CreationPolicy.NonShared)]</strong><br />public partial class LoginView : UserControl<br />&nbsp;&nbsp; {...</p>\r\n<p>Note that by default types registered with <strong>MEF</strong> are singletons. To avoid this you must set the <strong>PartCreationPolicy NonShared</strong>.</p>\r\n<p><span style=\"font: 7pt 'Times New Roman';\">&nbsp;</span>I hope you find this helpful.</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-08-23T12:00:14.533-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "662776",
+    "ThreadId": "269845",
+    "Html": "<p>Hi!</p>\r\n<p>&nbsp;</p>\r\n<p>Thank you for your reply. It was helpful. I have a diferent problem now on the road... Can you pleace point me to the right dirrection on modal dialogs in prism 4 for WPF. I am lookin for some kind of a \"service\" implementation. I want the same sub system for the interaction with the user (exeptions, interactinos, ect..) I you would be so kind an help me a bit on this problem i would be verry gratefull.</p>\r\n<p>Slavko</p>",
+    "PostedDate": "2011-08-24T10:29:37.98-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "662826",
+    "ThreadId": "269845",
+    "Html": "<p>Hi Slavko,</p>\n<p>To implement a modal dialog in Prism you can check the code of the <a href=\"http://msdn.microsoft.com/en-us/library/ff921074%28v=PandP.40%29.aspx\"> Stock Trader Reference Implementation</a>, which uses a behavior (<strong>PopupDialogActivationBehavior.cs</strong> in the silverlight version and <strong>WindowsDialogActivationBehavior.cs</strong> in the desktop version) to show a view in a new window. You can modify the code of these behaviors to show the view in a modal dialog instead of a window.</p>\n<p>Also, you can check the <a href=\"http://karlshifflett.wordpress.com/2010/11/07/in-the-box-ndash-mvvm-training/\"> MVVM Training - In The Box</a> by Karl Shifflett which shows an interesting approach for the implementation of a kind of modal window without the use of a synchronous modal dialog, which provides the possibility to interact between the modal window and the  main application.</p>\n<p>I hope you find this useful,</p>\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-08-24T11:50:32.003-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

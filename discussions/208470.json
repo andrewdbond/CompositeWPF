@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "427968",
+    "ThreadId": "208470",
+    "Html": "<p><span style=\"cursor:pointer\" title=\"View upvote and downvote  totals\"> 0 </span> <img title=\"This question is unclear or not useful (click again to undo)\" src=\"http://sstatic.net/so/img/vote-arrow-down.png\" alt=\"vote down\" width=40 height=25> <img title=\"This is a favorite question (click again to undo)\" src=\"http://sstatic.net/so/img/vote-favorite-off.png\" alt=star width=32 height=31></p>\r\n<p>I'm building a modular Silverlight application, using  Prism.</p>\r\n<p>In the Shell project, I'm loading 2x modules, each hailing from a  separate assembly. For convenience let's call them ModuleA and ModuleB</p>\r\n<p>ModuleA makes calls to WebServiceA. A ServiceReference.ClientConfig  file is present in ModuleA's assembly.</p>\r\n<p>In order for this to work, in the shell project, I've added an  &quot;existing item&quot; (path set to the forementioned config file in ModuleA's  folder) <strong>as a link</strong>. The shell launched and the ModuleA  made a successful call to the WebServiceA.</p>\r\n<p>Currently, I'm working on ModuleB, it also needs to make webservice  calls, this time to WebServiceB. The service reference has been added,  and a ServiceReference.ClientConfig file has appeared in ModuleB's  assembly. I've attempted to add that config file as a link to the shell  project as well, but I've failed.</p>\r\n<p><strong>Q1 : Is it possible to use multiple  ServiceReference.ClientConfig files like this?</strong></p>\r\n<p><strong>Q2 : Are there any best-practices for this case?</strong></p>\r\n<p><strong>Q3 : Is it possible to rename a *.config or *.ClientConfig  file ? How is it done? How do I tell the application what file to use?</strong></p>",
+    "PostedDate": "2010-04-06T11:16:53.59-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "428288",
+    "ThreadId": "208470",
+    "Html": "<p>Hi MaciejM,</p>\r\n<p>My recommendation would be to abandon using ServiceReference.ClientConfig files altogether and follow the approach proposed by David Betz in the 2 articles below:</p>\r\n<p><a href=\"http://www.netfxharmonics.com/2008/11/Architectural-Overview-Creating-Streamlined-Simplified-yet-Scalable-WCF-Connectivity\">http://www.netfxharmonics.com/2008/11/Architectural-Overview-Creating-Streamlined-Simplified-yet-Scalable-WCF-Connectivity</a><br><a href=\"http://www.netfxharmonics.com/2008/11/Understanding-WCF-Services-in-Silverlight-2\">http://www.netfxharmonics.com/2008/11/Understanding-WCF-Services-in-Silverlight-2</a></p>\r\n<p>My team and I started using ServiceReference.ClientConfig in a SL Prism project but it quickly grew too difficult to manage - especially when promoting a deployment to an environment close to production (i.e. Dev -&gt; QA -&gt; Staging -&gt; Prod). Every promotion to a new environment meant we needed to manually go in and modify the ServiceReference.ClientConfig with the correct WCF settings for the environment - a process that was very error prone.</p>\r\n<p>HTH,</p>\r\n<p>Ryan</p>",
+    "PostedDate": "2010-04-07T06:32:31.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,123 @@
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Text;
+using System.Windows;
+
+using Microsoft.Practices.Composite;
+using Microsoft.Practices.Composite.Presentation.Regions;
+using Microsoft.Practices.Composite.Presentation.Regions.Behaviors;
+using Microsoft.Practices.Composite.Regions;
+
+namespace Prism
+{
+    public class NestedRegionActiveAwareBehavior : IRegionBehavior
+    {
+        public const string BehaviorKey = "NestedActiveAware";
+
+        public IRegion Region { get; set; }
+
+		// <summary> False by default. Set to true in Bootstrapper for all top level regions. </summary>
+        public bool IsActive { get; set; }
+
+        public static void SetIsActive(IRegionManager regionManager, bool val)
+        {
+            foreach(var region in regionManager.Regions)
+            {
+                ((NestedRegionActiveAwareBehavior)region.Behaviors[BehaviorKey]).IsActive = val;
+            }
+        }
+
+        public NestedRegionActiveAwareBehavior()
+        {
+            this.IsActive = false;
+        }
+
+        public void Attach()
+        {
+            if (Region.ActiveViews != null) Region.ActiveViews.CollectionChanged += _OnActiveViewsChanged;
+        }
+
+        public void Detach()
+        {
+            if (Region.ActiveViews != null) Region.ActiveViews.CollectionChanged -= _OnActiveViewsChanged;
+        }
+
+        private void _OnActiveViewsChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (!IsActive) return;
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (var item in e.NewItems)
+                {
+                    _ActivateNested(item, Region);
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    _DeactivateNested(item, Region);
+                }
+            }
+        }
+
+        void _ActivateNested(object item, IRegion region)
+        {
+            _ForActiveAware(item, activeAware => activeAware.IsActive = true);
+            var dependencyObject = item as DependencyObject;
+            if (dependencyObject != null)
+            {
+                var nestedRegionManager = RegionManager.GetRegionManager(dependencyObject);
+                if (Region.RegionManager != nestedRegionManager &&
+                    region.RegionManager != nestedRegionManager)
+                {
+                    SetIsActive(nestedRegionManager, true);
+                    foreach (var nestedRegion in nestedRegionManager.Regions)
+                    {
+                        foreach (var activeNestedView in nestedRegion.ActiveViews)
+                        {
+                            _ActivateNested(activeNestedView, nestedRegion);
+                        }
+                    }
+                }
+            }
+        }
+
+        void _DeactivateNested(object item, IRegion region)
+        {
+            _ForActiveAware(item, activeAware => activeAware.IsActive = false);
+            var dependencyObject = item as DependencyObject;
+            if (dependencyObject != null)
+            {
+                var nestedRegionManager = RegionManager.GetRegionManager(dependencyObject);
+                if (Region.RegionManager != nestedRegionManager &&
+                    region.RegionManager != nestedRegionManager)
+                {
+                    SetIsActive(nestedRegionManager, false);
+                    foreach (var nestedRegion in nestedRegionManager.Regions)
+                    {
+                        foreach (var activeNestedView in nestedRegion.Views)
+                        {
+                            _DeactivateNested(activeNestedView, nestedRegion);
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void _ForActiveAware(object item, Action<IActiveAware> action)
+        {
+            var activeAware = item as IActiveAware;
+            if (activeAware != null) action(activeAware);
+
+            var frameworkElement = item as FrameworkElement;
+            if (frameworkElement != null)
+            {
+                var activeAwareDataContext = frameworkElement.DataContext as IActiveAware;
+                if (activeAwareDataContext != null) action(activeAwareDataContext);
+            }
+        }
+    }
+}

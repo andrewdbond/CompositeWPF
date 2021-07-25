@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "700130",
+    "ThreadId": "279991",
+    "Html": "\r\n<p>Hi All,</p>\r\n<p>I want to clear the Views from particular region. I have used the following code but i couldn't solution on views clearing.</p>\r\n<p>&nbsp;</p>\r\n<pre>   foreach ( var view in regionManager.Regions[RegionNames.MainViewRegion].Views)\r\n            {\r\n                while (view != null)\r\n                {\r\n                    regionManager.Regions[RegionNames.MainViewRegion].Remove(view);\r\n                }\r\n                \r\n\r\n            }</pre>\r\n<p>Please find the solution for removing the views from the particular region.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks and regards,</p>\r\n<p>Sakthi</p>\r\n",
+    "PostedDate": "2011-11-18T04:16:45.81-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "700251",
+    "ThreadId": "279991",
+    "Html": "<p>Sakthi,</p>\r\n<p>You could try something like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">var</span> regionManager = ServiceLocator.Current.GetInstance&lt;IRegionManager(); \r\n<span style=\"color: blue;\">var</span> myRegion = regionManager.Regions[<span style=\"color: #a31515;\">\"MainRegion\"</span>];\r\n\r\n            <span style=\"color: blue;\">while</span> (myRegion.Views.Count() &gt; 0)\r\n            {\r\n                myRegion.Remove(myRegion.Views.First());\r\n            }\r\n</pre>\r\n</div>\r\n</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-11-18T08:30:39.783-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "925354",
+    "ThreadId": "398999",
+    "Html": "\r\n<p>Hello everybody,</p>\r\n<p>I just want to ask if anybody thought about it or already modified/extend the EventAggregator to solve this issue.</p>\r\n<p>It would be great if an Event can be published using 0MQ.<br>\r\nFor example:</p>\r\n<p>LAN1<br>\r\n.. PC1<br>\r\n.... Application1.Module1.Publish&lt;HelloEvent&gt;(&quot;Hello From PC1&quot;);<br>\r\n.... Application1.Module2.Subscribe&lt;HelloEvent&gt;(OnHello);<br>\r\n.... Application2.Module1.Subscribe&lt;HelloEvent&gt;(OnHello);<br>\r\n.. PC2<br>\r\n.... Application1.Module1.Subscribe&lt;HelloEvent&gt;(OnHello);<br>\r\nLAN2<br>\r\n.. PC1<br>\r\n.... Application1.Module1.Subscribe&lt;HelloEvent&gt;(OnHello);</p>\r\n<p>Means we can Publish/Subscribe through AppDomains and further.</p>\r\n<p>Any suggestions are appreciated.</p>\r\n<p>Kind regards</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p><br>\r\n&nbsp;</p>\r\n",
+    "PostedDate": "2012-10-11T09:37:02.153-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "925455",
+    "ThreadId": "398999",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, <strong>0MQ/ZMQ</strong> is a library designed to send messages asynchronously in distributed or concurrent applications (that is, <em><strong>external</strong></em> communications between other process or computers.)</p>\r\n<p>I am not aware of any work regarding a modified version of the <strong>EventAggregator </strong>to be compatible with <strong>0MQ</strong>, but in my opinion, as the objective of the current <strong>EventAggregator </strong>implementation (that is, sending messages between loosely coupled components <em><strong>inside </strong></em>an application) is very different from the objective of the <strong>0MQ </strong>library, it might not be possible to adapt the <strong>EventAggregator </strong>to this purpose.</p>\r\n<p>Rather than modifying the <strong>EventAggregator</strong>, I believe it could make more sense to implement a completely new service to use the <strong>0QM </strong>library and build a bridge between the <strong>EventAggregator </strong>and the service to translate events to <strong>0QM </strong>messages and backwards.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-10-11T11:56:20.05-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "925703",
+    "ThreadId": "398999",
+    "Html": "<p>Thank you. That&acute;s the point.</p>\r\n<p>Regards,<br />Carlo</p>",
+    "PostedDate": "2012-10-12T02:03:23.863-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

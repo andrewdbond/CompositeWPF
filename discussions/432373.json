@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "998139",
+    "ThreadId": "432373",
+    "Html": "Hi All,\r<br />\n<br />\nI'm still learning wpf - so its very possible I have been searching for the wrong terms, hence I've not found what I'm looking for!\r<br />\n<br />\nI've written a small app - a host with a list down the left hand side - just populated with &quot;item 1&quot;, &quot;item 2&quot;, &quot;item3&quot;, etc and a corresponding number, 1, 2, 3 etc...\r<br />\n<br />\nand a region (I've got this working without prism, just using MEF, which loads a usercontrol into a contentprovider) my problem started with the inability to bind my usercontrol (view) with the viewmodel. I can correctly pass the number of the item selected into the module, but the textblock bound to the property does not update at all. I am calling the RaisePropertyChanged event, which I can see when debugging but still the view does not update.\r<br />\n<br />\nSo this lead me to prism - but I'm having the same problem - I can't seem to find a good [simple] example not written in Silverlight. is it possible to write a module fully using the MVVM model and load it into a host app correctly?\r<br />\n<br />\nThanks,\r<br />\n<br />\nScott  <br />\n",
+    "PostedDate": "2013-02-07T11:54:49.247-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "998528",
+    "ThreadId": "432373",
+    "Html": "Hi Scott,\r<br />\n<br />\nIt's possible to implement a implement a module fully using the <strong>MVVM</strong> pattern, this can be seen in many of the <a href=\"http://msdn.microsoft.com/en-us/library/gg430879%28v=pandp.40%29.aspx\" rel=\"nofollow\">Quickstarts</a> or even in the <a href=\"http://msdn.microsoft.com/en-us/library/gg405483(v=pandp.40).aspx\" rel=\"nofollow\">StockTrader Reference Implementation</a> which are provided with <strong>Prism</strong>.\r<br />\n<br />\nAlso, for a simple sample to start with, I believe you could check <a href=\"http://blogs.msdn.com/b/dphill/archive/2011/03/04/prism-template-pack-1-4-now-with-mef-support.aspx\" rel=\"nofollow\">David Hill's Prism Template Pack for Visual Studio 2010</a> (e.g. the <strong>QuickStart Solution MEF</strong>)\r<br />\n<br />\nIn my opinion if your modules are correctly loading then I believe that your problem could be related to the wiring of the view model, in which case for more information about this you could check the following section of the documentation:<br />\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg405494%28v=pandp.40%29.aspx#sec15\" rel=\"nofollow\">Chapter 6: Advanced MVVM Scenarios, Creating the View and View Model Using MEF</a><br />\n</li>\n</ul>\nOn the other hand, I recommend you to check the In the Box – MVVM Training which portrays an interactive guidance on the use of the MVVM pattern, an examples using the IOC pattern in WPF applications:<br />\n<ul>\n<li>\n<a href=\"http://karlshifflett.wordpress.com/2010/11/07/in-the-box-ndash-mvvm-training/\" rel=\"nofollow\">In the Box – MVVM Training</a><br />\n</li>\n</ul>\nI hope you find this handy,\r<br />\n<br />\nAgustin Adami\r<br />\n<a href=\"http://blogs.southworks.net/aadami\" rel=\"nofollow\">http://blogs.southworks.net/aadami</a><br />\n",
+    "PostedDate": "2013-02-08T05:51:32.453-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "998843",
+    "ThreadId": "432373",
+    "Html": "Hi Agustin,\r<br />\n<br />\nthanks very much for the links, i did fi ally get it so that when i passed the viewmoldel object it correctly shows my view, by registering the resource dictionary with an export and in the main app registering it with the main app. Resource dictionary.\r<br />\n<br />\nmy next problem i think is related to mef, because now my properties will not update. So in my iplugin interface i defined a setItem(int itemnumber), i can call this in my plugin from the host app when changing the listbox. I see the property being set, i see the raisepropertychanged fire, but the textblock bound to it does not change. Im not quite sure how to bibble that event up to the host which is what i recon needs to happen?\r<br />\n<br />\nalso, im sorry about the grammar / spelling of thus post, writing on a wp8 device.\r<br />\n<br />\nScott <br />\n",
+    "PostedDate": "2013-02-09T00:10:36.393-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1000793",
+    "ThreadId": "432373",
+    "Html": "Hi Scott,\r<br />\n<br />\nSo far, based on the information you provided I couldn't find the cause of this behavior. In order to help you further with this it would be helpful if you could provide us with more specific information on how you are implementing this, for example the <strong>xaml</strong> of the view or how / where you are defining the bindings.\r<br />\n<br />\nAlso, one thing to consider is that this problem could be caused if you are defining your bindings inside a <strong>DataTemplate</strong>, as this will be set to the data object itself and not the <strong>DataContext</strong> of the parent view. If this is the case, there are different approaches that can be followed in order to point to the right <strong>Datacontext</strong> source, for example a common approach is to use <strong>RelativeSource</strong> property with the <strong>FindAncestor</strong> value to point the type of the parent control that has its <strong>Datacontext</strong> set to the corresponding view model, for example:<br />\n<pre><code>&lt;TextBlock Text=“{Binding DataContext.MyProperty, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}“&gt;&lt;/TextBlock&gt;</code></pre>\n\nRegards,\r<br />\n<br />\nAgustin Adami\r<br />\n<a href=\"http://blogs.southworks.net/aadami\" rel=\"nofollow\">http://blogs.southworks.net/aadami</a><br />\n",
+    "PostedDate": "2013-02-13T13:00:50.397-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

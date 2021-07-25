@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1081081",
+    "ThreadId": "453541",
+    "Html": "In my LoginViewModel, which is in a PopupRegion, I implemented the INavigationAware, but it is not being called:<br />\n<pre><code>public void OnNavigatedTo(NavigationContext navigationContext)\n        {\n            var parameter = navigationContext.Parameters[&quot;cancelOperation&quot;];\n            if (parameter != null)\n                cancelOperation = (LoginCancelOperation)Enum.Parse(typeof(LoginCancelOperation), navigationContext.Parameters[&quot;cancelOperation&quot;]);\n        }\n\n        public bool IsNavigationTarget(NavigationContext navigationContext)\n        {\n            return true;\n        }\n\n        public void OnNavigatedFrom(NavigationContext navigationContext)\n        {\n        }</code></pre>\n\nThe only moment when the OnNavigatedTo is called is when I run the following code:<br />\n<pre><code>var region = regionManager.Regions[RegionNames.PopupRegion];\n            region.Remove(region.ActiveViews.FirstOrDefault());</code></pre>\n\nThat is, only when I remove the LoginView from the PopupRegion.<br />\n",
+    "PostedDate": "2013-08-15T12:02:38.953-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1081110",
+    "ThreadId": "453541",
+    "Html": "Let be more clear and provide more detail: when my app starts, it shows a control in the MainContentRegion and a login control in the PopupRegion. The LoginView has LoginViewModel which implements INavigationAware.\r<br />\nSo, here is a snippet of the module:<br />\n<pre><code>class MainModule : IModule\n\nregistrationManager.RegisterViewWithNavigation&lt;TransmissionView&gt;(MainNavigationCommands.ShowTransmissionListDialog, RegionNames.PopupRegion);\n\nregionManager.RegisterViewWithRegion(RegionNames.MainContentRegion, typeof(OperationView));\n            registrationManager.RegisterViewWithNavigation&lt;OperationView&gt;(MainNavigationCommands.NavigateToVideoMixer, RegionNames.MainContentRegion);\n            regionManager.RequestNavigate(RegionNames.MainContentRegion, typeof(OperationView).Name);\n\nregistrationManager.RegisterViewWithNavigation&lt;LoginView&gt;(MainNavigationCommands.ShowLoginDialog, RegionNames.PopupRegion);\n            regionManager.RequestNavigate(RegionNames.PopupRegion, typeof(LoginView).Name);</code></pre>\n\nAs you can see, in the Initialize method of the MainModule, I already call RequestNavigation on the LoginView. The OnNavigatedTo is not called.\r<br />\nOk, moving on...\r<br />\nWhen user click in Login button on the LoginView, I call <br />\n<pre><code>regionManager.RequestNavigate(RegionNames.PopupRegion, ViewNames.Transmission);</code></pre>\n\nIn the TransmissionView, when user click Cancel button, I have to close the view, to do that I remove the only view in the PopupRegion:<br />\n<pre><code>var region = regionManager.Regions[RegionNames.PopupRegion];\n            region.Remove(region.ActiveViews.FirstOrDefault());</code></pre>\n\nWhen I do that, the OnNavigatedTo method is called in the LoginViewModel. How's that possible?<br />\n",
+    "PostedDate": "2013-08-15T13:20:56.743-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1081124",
+    "ThreadId": "453541",
+    "Html": "Hi,\r<br />\n<br />\nI tried using the <strong>RegionPopupBehavior</strong> of the <strong>Stock Trader RI</strong> as out of the box to show a simple popup and didn't experience this behavior; the <strong>OnNavigatedTo</strong> method executed correctly when the view was shown.\r<br />\n<br />\nIt is possible that the <strong>PopupRegionBehavior</strong> or the <strong>WindowWrapper.Desktop</strong> you are using in your application was modified to show the <strong>Window</strong> using the <strong>ShowDialog</strong> method instead of <strong>Show</strong>. This would show the <strong>Window</strong> as a dialog, but would also freeze any logic being executed until the popup <strong>Window</strong> is closed, included Prism's navigation logic as well as other region behaviors.\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-08-15T13:46:35.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1081129",
+    "ThreadId": "453541",
+    "Html": "That's exactly what's happening. If I call Show instead of ShowDialog, it works.\r<br />\nBut I want to block the user from having access to the parent Window.<br />\n",
+    "PostedDate": "2013-08-15T13:52:36.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1081430",
+    "ThreadId": "453541",
+    "Html": "Hi,\r<br />\n<br />\nA possible approach could be to disable the parent window manually when showing the window, and re-enabling it once the popup is closed. For example, in the code behind of the <strong>Shell</strong> window, you could subscribe to an event using the <strong>EventAggregator</strong>. When this event is raised you can change the <strong>IsEnabled</strong> property accordingly to disable / enable the main window.\r<br />\n<br />\nThen, you could modify the <strong>DialogActivationBehavior</strong> to raise the event in the <strong>PrepareContentDialog</strong> and <strong>CloseContentDialog</strong> methods in order to block / unblock the parent window.\r<br />\n<br />\nI have created a small sample portraying this approach. You can find it in the following <strong>SkyDrive</strong> folder as &quot;PopupRegionAndNavigation:&quot;<br />\n<ul>\n<li>\n<a href=\"https://skydrive.live.com/redir?resid=99307B6105BC060D!131&amp;authkey=!ACgbDT5tLxt8pNk\" rel=\"nofollow\">PopupRegionAndNavigation</a><br />\n</li>\n</ul>\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-08-16T10:42:29.25-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1081447",
+    "ThreadId": "453541",
+    "Html": "It is a workaround, but not as the ShowDialog(), which does not enable any interaction with the parent window at all.<br />\nFor now, it will do it...<br />\n<br />\nThanks!<br />\n",
+    "PostedDate": "2013-08-16T11:16:10.943-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1112585",
+    "ThreadId": "453541",
+    "Html": "Hi<br />\n<br />\nYou can fix this issue by change  code in Prism.<br />\nFind RegionNavigationService.cs in Prism.Desktop and then goto to ExecuteNavigation then find InvokeOnNavigationAwareElement(view, (n) =&gt; n.OnNavigatedTo(navigationContext));. If you call this function before  this.Region.Activate(view); it will works<br />\n<br />\nThe Best  <br />\n",
+    "PostedDate": "2013-10-26T21:59:08.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "224117",
+    "ThreadId": "65883",
+    "Html": "<p>Hey All,</p>\r\n<p>I&rsquo;ve got a project I&rsquo;m working on in SL3 that I&rsquo;m now trying to convert over to a Prism framework. I&rsquo;ve broken up all my views into modules and I&rsquo;m trying to get the simplest view, a hacked down login view, to work. It&rsquo;s almost exactly the same as the DiggService on the creating applications with Prism screen cast. The problem that I am having is (and again assume unless I made a typo that my project is exactly the same) when I try to run the project I get a resolution exception when the view is instantiated; the exception is on the injected ViewModel instance. Now I noticed in the screen cast that they never register the viewmodel type anywhere. My first question is is that proper?</p>\r\n<p>Given the above I tried to register the ViewModel type in the IModule implementer in my Module project (in my case called BetaLogin) however the BetaLogin class is never instantiated (I put a breakpoint in the BetaLogin constructor and it is never hit). Whats going on here? Shouldn&rsquo;t that class be instantiated some time before the View is constructed?</p>",
+    "PostedDate": "2009-08-16T19:23:33.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "225058",
+    "ThreadId": "65883",
+    "Html": "<p>Hi</p>\r\n<p>It appears you have two different problems. I&rsquo;ll try to address them separately.</p>\r\n<p>The first one is your exception when trying to inject the <strong>ViewModel</strong>. If you are doing this through an interface, which I suspect is the case, you need to register the type mapping in the container before trying to resolve it:</p>\r\n<p><span style=\"font-size:10pt\" lang=EN-US>&nbsp;</span></p>\r\n<pre>container.RegisterType&lt;IMyViewModel,MyViewModel&gt;();\r\n</pre>\r\n<p>\r\n<p>You might also find the GetRootException extension method (of the Exception class useful). You can read more about it <a href=\"http://blogs.msdn.com/erwinvandervalk/archive/2009/01/19/prism-v2-drop-9-composite-application-guidance-for-wpf-and-silverlight.aspx\">here</a>.</p>\r\n<p>The other issue you appear to have is that the class that implements the <strong>IModule</strong> interface is not being constructed. This is usually due to the fact that the module is not being loaded. As soon as a module is loaded this class is constructed and its Initialize method is called. You can make sure the module is correctly added for download, and use the CAL bits to debug the module loading process to check why it is not loading your module.</p>\r\n<p>Some links that might be useful:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/dd490831.aspx\">How to: Populate the Module Catalog from Code</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/dd458873.aspx\">How to: Populate the Module Catalog from XAML</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/dd203172.aspx\">Dependency Injection Types and Mappings</a></li>\r\n</ul>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><span style=\"font-size:11pt\" lang=EN-US><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></span></p>\r\n</p>",
+    "PostedDate": "2009-08-18T10:52:29.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

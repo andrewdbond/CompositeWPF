@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1020710",
+    "ThreadId": "437912",
+    "Html": "Hi List\r<br />\nmy MainRegion looks like this:\r<br />\n&lt;TabControl VerticalContentAlignment=&quot;Stretch&quot; HorizontalContentAlignment=&quot;Stretch&quot; Foreground=&quot;#FF546780&quot;<br />\n<pre><code>                        ItemContainerStyle=&quot;{DynamicResource TabHeaderStyle}&quot;\n                        prism:RegionManager.RegionName=&quot;{x:Static infra:RegionNames.MainRegion}&quot;&gt;\n\n                &lt;TabControl.Background&gt;</code></pre>\n\nNow i'm adding a UserControl with a ListView to select Items by using RequestNavigate.\r<br />\nFor each Selected Item there is another UserControl added to display-edit with RequestNavigate as well.\r<br />\nWhen selecting another Module from my Menu, only the 'Display-Edit' UC's are removed, the first UC, the ListView is untouched. Neither the OnNavigated....... nor the IsNavigationTarget methods are called.\r<br />\nIf the ListView is the only Control in MainRegion all works as expected (TabItem is removed).\r<br />\nDid i have to add the  'Display-Edit' UC's by Region.Add(view) or is there any better idea.\r<br />\n<br />\nThanks\r<br />\nPeter\r<br />\n<br />\nAny idea's.<br />\n",
+    "PostedDate": "2013-03-25T09:04:20.093-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1020868",
+    "ThreadId": "437912",
+    "Html": "Hi Peter,\r<br />\n<br />\nIt would be helpful if you could provide us with more information or a couple code snippets about how you are adding and removing the views from the <strong>TabControl</strong> region, so that we could have a better understanding of your scenario and help you further in this.\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-03-25T13:34:17.463-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1020883",
+    "ThreadId": "437912",
+    "Html": "Hi,\r<br />\nthere is nothing Special.\r<br />\nJust as in the doc's\r<br />\nIn the ListView, started by Requestnavigate, i  start an regionManager.RequestNavigate (&quot;MyeditView,.........) from a Command.\r<br />\nIn MyEditView i check with IsNavigationTarget if i have to create a new View or use the one already started.\r<br />\nSo all my Views are created with RequestNavigate.\r<br />\nThis is why i'm thinking that all the views should be removed when a RequestNavigate to some other bunch of views are called.\r<br />\n<br />\nIf you need more code, i will send them when i'm back in Office.\r<br />\nPeter<br />\n",
+    "PostedDate": "2013-03-25T13:57:07.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1021071",
+    "ThreadId": "437912",
+    "Html": "Hi and good morning,\r<br />\nhere we are:\r<br />\n<br />\nCommand-Execute Method to start the ListView:\r<br />\nprivate void RunList()<br />\n<pre><code>     {\n        var region = this.regionManager.Regions[RegionNames.MainRegion];\n        var uri = new Uri(WellKnownNames.EmpListView,UriKind.Relative);\n        region.RequestNavigate(uri,base.NavigationCallback);\n     }\n</code></pre>\n\nCommand inside listeView to run EditView:\r<br />\nprivate void DoSelectedEmployeeCommand()<br />\n<pre><code>    {\n        UriQuery query = new UriQuery();\n        query.Add(WellKnownNames.EmpRegionContext, SelectedEmployee.Id.ToString());\n        regionManager.RequestNavigate(RegionNames.MainRegion,\n                                      new Uri(WellKnownNames.EmpEditView + query.ToString(), UriKind.Relative));\n\n\n    }\n</code></pre>\n\nMethodes in EditView :\r<br />\n<br />\npublic override void OnNavigatedTo(Microsoft.Practices.Prism.Regions.NavigationContext navigationContext)<br />\n<pre><code>    {       \n        if (Employee == null) {\n            var empId = navigationContext.Parameters[WellKnownNames.EmpRegionContext];\n            Employee = employeeService.Get(Guid.Parse(empId));\n            VmTitle = Employee.Lastname;\n        }\n    }\n\n\n    public override void OnNavigatedFrom(Microsoft.Practices.Prism.Regions.NavigationContext navigationContext)\n    {\n        if (navigationContext.Uri.ToString() != WellKnownNames.EmpEditView) {\n            myKeepAlive = false;\n        }else {\n            myKeepAlive = true;\n        }\n    }\n\n    public override bool IsNavigationTarget(Microsoft.Practices.Prism.Regions.NavigationContext navigationContext)\n    {\n        var empId = navigationContext.Parameters[WellKnownNames.EmpRegionContext];\n\n        if (!String.IsNullOrWhiteSpace(empId) &amp;&amp; Employee != null &amp;&amp; Employee.Id.ToString() == empId)\n                  return true;    \n         return false;\n    }\n\n    private bool myKeepAlive;\n\n    public override bool KeepAlive {</code></pre>\n\n//\t\t\tget { return true; }<br />\n<pre><code>        get { return myKeepAlive; }\n    }</code></pre>\n\nHope this was helpfull\r<br />\n<br />\nPeter<br />\n",
+    "PostedDate": "2013-03-26T00:24:26.953-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1022028",
+    "ThreadId": "437912",
+    "Html": "Hi Peter,\r<br />\n<br />\nAfter checking your code I believe the &quot;problem&quot; you are experiencing is related to when you are setting the <strong>keepAlive</strong> attribute of the views. Basically, the <strong>OnNavigatedFrom</strong> method is only executed in the view that is being &quot;navigated from&quot; or in other words, in the currently active view before the <strong>NavigationRequest</strong>. For example, if you have the following views in the <strong>TabControl</strong> and you navigate to an <strong>OtherView</strong>:<br />\n<ul>\n<li>ListView</li>\n<li>EditView(1)</li>\n<li>\nEditView(2) &lt;-- Selected view<br />\n</li>\n</ul>\nThe <strong>OnNavigatedFrom</strong> will only be executed in the <strong>EditView(2)</strong>, so only its <strong>keepAlive</strong> attribute will be changed to <strong>false</strong> while the others will keep being <strong>true</strong>. This is why only the visible view is being removed. Therefore, it doesn't seem that this approach will be effective to achieve the functionality you are looking for.\r<br />\n<br />\nIf you wish to &quot;clear&quot; the region when you inject a view from a different module, a possible approach could be to keep track of what module is being used and before navigating to a view from another module, remove all the views in the region. There are several approaches you can follow to do this. For example, you could use the <strong>EventAggregator</strong> and subscribe all the views (i.e. <strong>ListView</strong>, <strong>EditView</strong>, etc) to a certain event, so that in their corresponding handlers, they change the <strong>keepAlive</strong> attribute to <strong>false</strong>. Hence, before navigating to the other view, you can publish this event to set all the <strong>KeepAlive</strong> properties off all the views to <strong>false</strong> so that they are removed as expected.\r<br />\n<br />\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-03-27T13:50:17.27-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1024047",
+    "ThreadId": "437912",
+    "Html": "Hi Damian,\r<br />\ni will follow your approach\r<br />\nThanks\r<br />\nPeter<br />\n",
+    "PostedDate": "2013-04-01T22:48:04.733-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

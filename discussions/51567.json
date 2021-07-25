@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "172959",
+    "ThreadId": "51567",
+    "Html": "Hi<div><br></div><div>I am looking for advices or samples to achieve following scenario:</div><div><br></div><div>I have a shell with one region where I display a view showing 2 buttons. If I click on button 1, I want to display a new view with 2 regions (named templateView2Regions) and if I click on button 2, I want to display another view with 3 regions (named templateView3Regions). Are scope regions the correct way to solve this?</div><div><br></div><div>Then in each region of each templateView, I display the 3 same buttons allowing to choose a view (view1, view2, view3). All combinations would be accepted: for instance in templateView2Regions, displaying view1 two times would be correct. Therefore I cannot use View Injection before user's choice. How can I tell view1 to be injected in the correct region(s) ?</div><div><br></div><div> Thanks for your help</div><div><br></div><div>Alain</div><div><br></div><div>  </div>",
+    "PostedDate": "2009-03-27T15:55:09.4-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "173096",
+    "ThreadId": "51567",
+    "Html": "<p>Hi Alain,</p>\r\n<p>To display or hide a view in a region, a ContentControl has to be used to define your region in your shell.xaml file (assuming yor are defining your regions there). e.g.<br>\r\n<br>\r\n&lt;ContentControl x:Name=&quot;templateView2Regions&quot; cal:RegionManager.RegionName=&quot;templateView2Regions&quot;/&gt;<br>\r\n<br>\r\nThen, you can add your views to the regions. e.g.<br>\r\n<br>\r\n            IRegion region2 = this.regionManager.Regions[&quot;templateView2Regions&quot;];<br>\r\n            region2.Add(view2);</p>\r\n<p>When you click a button, you can display or hide a view by activating or deactivating the veiws:</p>\r\n<p>            region2.Activate(view2);<br>\r\nor<br>\r\n            region2.Deactivate(view2);</p>\r\n<p>Remember that adding a view to a ContentControl does not display the view. You need to activate it to display it.</p>\r\n<p>Jie</p>\r\n<p></p>\r\n",
+    "PostedDate": "2009-03-28T10:35:12.627-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "173928",
+    "ThreadId": "51567",
+    "Html": "jie thanks for your reply.<br>\r\n<br>\r\nIf I go further in my scenario: in the shell I load one module and display its view. This view shows two buttons enabling to choose either a template view with 2 regions or a template view with 3 regions. <br>\r\nWhat would be the best practice? <br>\r\n-To have a controller in the same project as the shell? <br>\r\n-To have another module with a controller to display the correct views?<br>\r\nFor those &quot;navigation&quot; steps (displaying a view A, B or C) is it a good solution to use event (with EventAggregator) ?<br>\r\n<br>\r\nAlain<br>\r\n",
+    "PostedDate": "2009-03-31T09:23:58.543-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "174055",
+    "ThreadId": "51567",
+    "Html": "Composite WPF can help you with building WPF applications with  loosely coupled modules. In that sense, I'd suggest that you have another module (which normally means another project in your solution), unless your application is a simple one. This way, you would be able to separate the main project (which contains the shell) and the view project, and deal with them separately, since Composite WPF can make them loosely coupled.<br>\r\n<br>\r\nEvents can be used for navigation, when you do not need responses. I guess that's your situation. If your event publisher(s) and subscriber(s) are in the same module, either EventAggregator or .NET event can be used. Whereas, If they are in different modules, EventAggregator should be used then.<br>\r\n<br>\r\n \r\n",
+    "PostedDate": "2009-03-31T13:18:03.69-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "174506",
+    "ThreadId": "51567",
+    "Html": "<div>This module containing the controller will have to display wiews of other modules. Would you handle it as a real module (implementing IModule interface like other modules) or more like the Infrastructure project used to communicate between modules?<br></div><div><br></div><div>I would use EventAggregator in the controller to subscribe to events published in ViewModels in order to load the next view to display. Do you think it makes sense?</div>",
+    "PostedDate": "2009-04-01T13:49:55.307-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "174601",
+    "ThreadId": "51567",
+    "Html": "I would make this module a real module. This module would be very likely depended on other modules, and should not be your infrastructure project. In case you do have something in the module that needs to be shared by other modules, try to separate them out and move them to your infrastructure project.<br>\r\n<br>\r\nI'm not sure if you are using the MVVM, MVC, or other similar patterns, but it's perfectly fine to use EventAggregator, provided that your ViewModels does not need reponses from the controller when it publishes events.<br>\r\n<br>\r\n",
+    "PostedDate": "2009-04-01T17:48:00.267-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

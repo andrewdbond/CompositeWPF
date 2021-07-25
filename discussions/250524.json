@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "583719",
+    "ThreadId": "250524",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>This question has been haunting me a long time. How do we pass parameter&nbsp;from View to View model&nbsp;using Prism/MEF approaches?</p>\r\n<p>I came up with a twiested way of doing it,</p>\r\n<p>1. Created my View from my service class,</p>\r\n<p>var x = ServiceLocator.Current.GetInstance&lt;View&gt;();</p>\r\n<p>2. Get the handle of the Viewmodel property // I am using Property import of View Model class []</p>\r\n<p>x.ViewModel.SomeProperty = 10; // Where SomeProperty is a interger type property defined in my ViewModel.</p>\r\n<p>Is there a better approach? Where I can pass some parameter to View's constructor and from there I can hook it too ViewModel constructor?</p>\r\n<p>Any pointers/links/snippets are highly appreciated.</p>\r\n<p>&nbsp;</p>\r\n<p>Warm regards,</p>\r\n<p>Indrasis</p>\r\n",
+    "PostedDate": "2011-03-21T06:31:19.877-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "583894",
+    "ThreadId": "250524",
+    "Html": "<p>Hi Indrasis,</p>\r\n<p>While your approach fulfills your requirement of passing the value to the ViewModel, it isn&rsquo;t a recommended practice, since it would make your application harder to test.</p>\r\n<p>The recommended approach for passing values to the ViewModel is to use Two-Way Bindings. If you can&rsquo;t do so, one workaround would be to use a <em>service</em> or <em>controller</em> class to share those values.</p>\r\n<p>By doing that you could keep the testability of your application intact, as you could easily mock that service in case you&rsquo;re testing.</p>\r\n<p>You might find the following chapters useful:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405484(v=PandP.40).aspx\">Chapter 5: Implementing the MVVM Pattern</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405494(v=PandP.40).aspx\">Chapter 6: Advanced MVVM Scenarios</a> </li>\r\n</ul>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>",
+    "PostedDate": "2011-03-21T11:54:00.267-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "584157",
+    "ThreadId": "250524",
+    "Html": "<p>Hello Mig,</p>\r\n<p>Thanks for the reply. I have looked into these chapters as mentioned, but was unable to find a solution to the problem stated.</p>\r\n<p>Would it be possible for you to share some sample snippt?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks in advance.</p>\r\n<p>Warm regards,</p>\r\n<p>Indrasis</p>",
+    "PostedDate": "2011-03-21T20:43:08.943-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "584462",
+    "ThreadId": "250524",
+    "Html": "<p>Hi Indrasis,</p>\r\n<p>You might find <a href=\"http://cid-12a8b70137345033.office.live.com/self.aspx/p^0p%20Samples/MVVMSynchronizationSample.zip\">the following sample</a> useful, where the concepts explained by Miguel have been exemplified.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-22T08:50:32.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "585049",
+    "ThreadId": "250524",
+    "Html": "<p>Hi Guido,</p>\r\n<p>This works perfectly.</p>\r\n<p>Thanks a lot.</p>\r\n<p>Regards,</p>\r\n<p>Indrasis</p>",
+    "PostedDate": "2011-03-23T07:39:53.397-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

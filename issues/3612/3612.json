@@ -1,0 +1,66 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "I ran into an issue where my regions weren't getting registered with the RegionManager when those regions were defined as part of a control template rather than a UserControl.  This can be rectified by modifying the RegionManagerRegistrationBehavior::FindRegionManager method as follows:\n \nprivate IRegionManager FindRegionManager(DependencyObject dependencyObject)\n{\n    var regionmanager = this.RegionManagerAccessor.GetRegionManager(dependencyObject);\n    if (regionmanager != null)\n    {\n        return regionmanager;\n    }\n \n    DependencyObject parent = null;\n#if SILVERLIGHT\n    FrameworkElement frameworkElement = dependencyObject as FrameworkElement;\n    if (frameworkElement != null)\n    {\n        parent = frameworkElement.Parent ?? frameworkElement.TemplatedParent;\n    }\n#else\n    parent = LogicalTreeHelper.GetParent(dependencyObject);\n    if (parent == null)\n    {\n        var targetElement = dependencyObject as FrameworkElement;\n        if (targetElement != null)\n            parent = targetElement.TemplatedParent;\n    }\n#endif\n \n    if (parent != null)\n    {\n        return this.FindRegionManager(parent);\n    }\n \n    return null;\n}",
+    "LastUpdatedDate": "2014-02-03T04:55:45.063-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "High",
+      "Severity": 150,
+      "Id": 3
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-01-17T21:36:18.66-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Region Registration Fails w/ Templated Controls",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 4,
+    "Id": 3612
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897959,
+      "FileName": "Original.zip",
+      "DownloadUrl": ".\\897959"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nFor those having problems regarding this issue, you might find the following blog post useful as it proposes a possible workaround for this problem:\r\n\r\nRegions inside Control Templates in Prism v4\r\nhttp://blogs.southworks.net/dcherubini/2011/09/23/regions-inside-control-templates-in-prism-v4/\r\n\r\nI hope you find this useful,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2011-09-23T12:15:58.087-07:00",
+      "Id": 156086
+    },
+    {
+      "Message": "Hi,\r\n\r\nFor those having problems regarding this issue, we have found another possible approach to workaround this behavior.\r\nYou can find it in the following blog post:\r\n\r\nRegions inside DataTemplates in Prism v4 using a region behavior\r\nhttp://blogs.southworks.net/dcherubini/2011/11/10/regions-inside-datatemplates-in-prism-v4-using-a-region-behavior/\r\n\r\nI hope you find this useful,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini ",
+      "PostedDate": "2011-11-10T10:24:54.763-08:00",
+      "Id": 156087
+    },
+    {
+      "Message": "I'm not sure if that is quite the problem, although could well be. I have attached the project, View1 has the control and regions. It may be for expandedcontent I am templatebinding to it? I basically just wanted two content properties.",
+      "PostedDate": "2011-12-20T00:58:41-08:00",
+      "Id": 156088
+    },
+    {
+      "Message": "Hi James,\r\n\r\nYou can find a possible approach that might help you with this problem in your original thread:\r\nCustom Control with 2 Content areas each with its own region (http://compositewpf.codeplex.com/discussions/283487)\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2011-12-20T12:16:11.743-08:00",
+      "Id": 156089
+    }
+  ]
+}

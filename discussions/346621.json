@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "802809",
+    "ThreadId": "346621",
+    "Html": "\r\n<p>I am working on a WPF&nbsp;project, using Prism,&nbsp;that requires the following</p>\r\n<p>1. When first launched the application creates&nbsp;a hidden WPF window and displays an icon on the task bar</p>\r\n<p>2. When right-clicking on the icon a menu shows</p>\r\n<p>3. When selecting an item from the menu a second WPF window shows</p>\r\n<p>The question is how to&nbsp;fill different regions in the second/visible WPF window to display the views using view discovery?</p>\r\n",
+    "PostedDate": "2012-02-28T12:56:32.107-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "803856",
+    "ThreadId": "346621",
+    "Html": "<p>Hi,</p>\r\n<p>I believe you might find the following blog post useful, where a possible approach for handling multiple-shell application in Prism is proposed:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/dschenkelman/2010/01/26/creating-a-multi-shell-application-in-prism-v2/\">Creating a multi-shell application in Prism-v2</a></li>\r\n</ul>\r\n<p>Note that it should be similar to achieve this in Prism v4.</p>\r\n<p>Also you can find the proposed sample, upgraded to Prism v4 in the following work item:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/workitem/3216\">Applications may have multiple shell windows</a></li>\r\n</ul>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-03-01T09:18:09.26-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "803937",
+    "ThreadId": "346621",
+    "Html": "<p>Thanks a lot, aadami.</p>\r\n<p>However I don't want to have two shell windows, unless one of them doesn't need to be created at application startup, and can be closed and recreated again.</p>\r\n<p>What I need is that the application has a small memory footprint when the main UI (the second/visible WPF window) is not showing. I believe this is a pretty common use case.</p>",
+    "PostedDate": "2012-03-01T11:50:57.66-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "804496",
+    "ThreadId": "346621",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, following the approach mentioned above you should be able to show the window whenever you need to. For example you could show the second window when selecting an item from the menu. Remember that the setting of the <strong>RegionManager </strong>will have to be done manually for any window you show this way.</p>\r\n<p>If you plan to close it and recreate it again, be aware that if you are using the same instance of the <strong>RegionManager </strong>you should keep the <strong>RegionManager</strong>'s <strong>Regions </strong>collection updated to avoid getting an error when opening the window the second time (as the region will already be registered). For example by removing the region when the window is closed, like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">void</span> Shell2_Closed(<span style=\"color: blue;\">object</span> sender, EventArgs e)\r\n        {\r\n          ... \r\n            ServiceLocator.Current.GetInstance&lt;IRegionManager&gt;().Regions.Remove(<span style=\"color: #a31515;\">\"SecondaryRegion\"</span>);\r\n          ...\r\n        }\r\n</pre>\r\n</div>\r\n</p>\r\n<p>To avoid this an option could be to set the <strong>RegionManager </strong>attached property of the new window with a new region manager, that you could define in a shared service or just create a new one each time you set the attached property.</p>\r\n<p>Take into account that the implementation details for the aforementioned functionality will mainly depend on your personal preferences and the requirements of your scenario.</p>\r\n<p>On the other hand, I believe you could also check the approach used in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921074%28v=pandp.40%29.aspx\">StockTrader Reference Implementation</a> on how to show a popup window. As to achieve this kind of scenarios you could also benefit from the <strong>DialogActivation </strong>behaviors implementations provided in this application.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-03-02T08:45:24.317-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "805744",
+    "ThreadId": "346621",
+    "Html": "<p>Again thank you aadami.</p>\n<p>In view discovery views are registered with regions at the time modules are initialized (IModule.Initialize()). How do&nbsp;I&nbsp;register the views with the&nbsp;regions in&nbsp;a dynamically created window/shell?</p>\n<p>I also looked at the DialogActivationBehavior you mentioned. It seems to me&nbsp;that a new popup window using this behavior doesn't support regions in the new popup window. Am I missing something?</p>\n<p>I am wondering if it is possible to do the following:</p>\n<p>(1) Create the first WPF window in App.OnStartup - no Prism initialization, bootstrapping, etc. just a regular WPF application window.</p>\n<p>(2) When user&nbsp;clicks a button&nbsp;on the first WPF window a thread is created&nbsp;which, in turn, runs bootstrapping and&nbsp;creates&nbsp;the second WPF window with regions. The second WPF window is the real Prism Shell window.</p>",
+    "PostedDate": "2012-03-05T11:55:31.777-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "807109",
+    "ThreadId": "346621",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, you should be able to register or inject views in a dynamically created shell in the same way you would do with a typical single-shell Prism application. Also, as far as I know, both dynamically created window and popup windows should be able to support regions without problems.</p>\r\n<p>As mentioned previously by Agustin, the only additional step to use regions in those windows is to set a <strong>RegionManager </strong>in them manually.</p>\r\n<p>In the following link you can find a sample application, which uses a dynamically created view as a shell:</p>\r\n<ul>\r\n<li><a href=\"https://skydrive.live.com/redir.aspx?cid=99307b6105bc060d&amp;resid=99307B6105BC060D!107&amp;parid=99307B6105BC060D!101&amp;authkey=!ACgbDT5tLxt8pNk\">SecondShellThroughService.zip</a></li>\r\n</ul>\r\n<p>In the application you will find a <strong>HiddenShell </strong>window (which would be the hidden shell you mentioned above) with a button to shown the <strong>MainShell </strong>(this could be instead done by a menu option in a system tray icon). Using the <strong>WindowService </strong>shared service, the <strong>MainShell </strong>window is displayed and a view is added (which was registered by the <strong>SecondaryModule</strong>). This view has another region in which you can inject views.</p>\r\n<p>Also, check the <strong>Bootstrapper </strong>included with the sample application, as it overrides the <strong>ConfigureDefaultRegionBehaviors </strong>method in order to avoid a known issue in Prism.</p>\r\n<p>As a side note, take into account that as far as I know there is not official Prism guidance for scenarios such as running applications without an initial shell or with a icon in the system tray.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-03-07T12:18:04.743-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "807873",
+    "ThreadId": "346621",
+    "Html": "<p>I tried SecondShellThroughService and it works great! Thank you DCherubini and aadami for your help and quick response!</p>\n<p>As I mentioned before I want to have small memory footprint when the main window is not showing because the application may run in the background, and notify users of any events.</p>",
+    "PostedDate": "2012-03-08T19:09:24.683-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

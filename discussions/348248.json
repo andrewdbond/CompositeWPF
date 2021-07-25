@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "809044",
+    "ThreadId": "348248",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I am using Unity to load in my modules from the App.config. My modules are injecting views via the RegionManager and everything is working well.</p>\r\n<p>My question is, one of my views contains controls which are held in an external assembly. If I modify this assembly to contain an empty class which implementes IModule when I can resolve it as a dependency and everythign works fine. It just seems a little\r\n clunky and I worry that I may in future want to use assemblies that I don't have control over.</p>\r\n<p>Am I missing something here? How else can I ensure that the module I resolve is able to recolve its own dependencies?</p>\r\n<p>&nbsp;</p>\r\n<p>Regards</p>\r\n<p>Rich</p>\r\n",
+    "PostedDate": "2012-03-12T05:34:17.85-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "809192",
+    "ThreadId": "348248",
+    "Html": "<p>Hi,</p>\n<p>Based on my understanding of your scenario, I believe there is no need to modify the external assembly to resolve it as a module dependency.</p>\n<p>In my opinion you could directly reference the external assembly in the module's project that is loaded through the configuration file.</p>\n<p>Note that you will have to ensure that the external assembly's dll file is in the same location as the module's dll that is being loaded by the configuration file at run time. A possible way to automatically store the modules' assemblies in a custom folder  after a successful build could be by configuring <strong>post-build</strong> events. You could find an example of this in Modules E and F of the <a href=\"http://msdn.microsoft.com/en-us/library/ff921068%28v=pandp.40%29.aspx\">Modularity Quickstart</a> in which their assemblies are copied into the same location as the application executable.<br /> <br /> I hope you find this helpful,</p>\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2012-03-12T10:44:08.23-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

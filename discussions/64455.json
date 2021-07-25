@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "219382",
+    "ThreadId": "64455",
+    "Html": "<p>Hello All,</p>\r\n<p>Is there any way that I can know when the Module Manager has finished loading all modules? There doesn't seem to be any support for this type of notification.</p>\r\n<p>Thanks,</p>\r\n<p>Dave</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-04T11:52:19.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "219452",
+    "ThreadId": "64455",
+    "Html": "<p>Why not just raise your own even after InitializeModules in your Bootstrapper?</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">override</span> <span style=\"color:Blue\">void</span> InitializeModules()\r\n{\r\n&nbsp;&nbsp; &nbsp; <span style=\"color:Blue\">base</span>.InitializeModules();\r\n&nbsp;&nbsp; &nbsp; <span style=\"color:Green\">//Raise here.&nbsp;</span>\r\n}\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-04T14:12:21.147-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "219469",
+    "ThreadId": "64455",
+    "Html": "<p>I agree - here is an example using a new thread</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">void</span> ModulesInitialized()\r\n{\r\n    <span style=\"color:Green\">// Raise process event (handled in PresenterBase)</span>\r\n    Container.Resolve&lt;IEventAggregator&gt;()\r\n        .GetEvent&lt;ProcessEvent&gt;().Publish(<span style=\"color:Blue\">new</span> ProcessEventArgs\r\n        {\r\n            ProcessType = ProcessType.OnModulesInitialized\r\n        });\r\n}\r\n\r\n<span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">override</span> <span style=\"color:Blue\">void</span> InitializeModules()\r\n{\r\n    <span style=\"color:Blue\">base</span>.InitializeModules();\r\n\r\n    <span style=\"color:Green\">// Run ModuleInitialized() on separate thread</span>\r\n    Dispatcher.CurrentDispatcher.BeginInvoke(\r\n        System.Windows.Threading.DispatcherPriority.SystemIdle,\r\n        <span style=\"color:Blue\">new</span> ModulesInitializedDelegate(ModulesInitialized));\r\n}\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-04T14:45:20.737-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

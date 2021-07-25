@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "120702",
+    "ThreadId": "36393",
+    "Html": "Why is CreateShell() is called before InitializeModules() in UnityBootstrapper.Run(bool).<br>\r\nWe want to disable creating shell based on condition evaluated by Service in one of the modules loaded.<br>\r\n<br>\r\n",
+    "PostedDate": "2008-09-24T10:53:45.51-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "120725",
+    "ThreadId": "36393",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">Hi</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">When a module is initialized, usually loads its views to the shell. For that reason the shell needs to be created before the modules start to be loaded. Perhaps you could evaluate your condition before running the <b>Bootstrapper</b> or in the <b>CreateShell</b> method without depending on a separate module.</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">Please let me know if this helps.</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:Calibri\">Mariano Converti</span></p>\r\n<span style=\"font-size:11pt;font-family:'Calibri','sans-serif'\"><a href=\"http://blogs.southworks.net/mconverti\"><span style=\"color:#0000ff\">http://blogs.southworks.net/mconverti</span></a></span>\r\n",
+    "PostedDate": "2008-09-24T11:51:59.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "120730",
+    "ThreadId": "36393",
+    "Html": "<p>Bear in mind that without the shell (you return null in CreateShell based on logic)&nbsp;that you won't have a RegionManager resolved to handle any views - when InitializeModules() is executed you'll need to&nbsp;ensure&nbsp;that none of the modules&nbsp;attempt to load views in regions.&nbsp;<br>\r\n<br>\r\nExcerpt from UnityBootstrapper.cs follows:</p>\r\n<p>&nbsp;&nbsp;&nbsp; logger.Log(&quot;Creating shell&quot;, Category.Debug, Priority.Low);<br>\r\n&nbsp;&nbsp;&nbsp; DependencyObject shell = CreateShell();</p>\r\n<p>&nbsp;&nbsp;&nbsp;<strong> if (shell != null)</strong><br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n<strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegionManager.SetRegionManager(shell, Container.Resolve&lt;IRegionManager&gt;());<br>\r\n</strong>&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;&nbsp;&nbsp; logger.Log(&quot;Initializing modules&quot;, Category.Debug, Priority.Low);<br>\r\n&nbsp;&nbsp;&nbsp; InitializeModules();</p>\r\n<p>&nbsp;&nbsp;&nbsp; logger.Log(&quot;Bootstrapper sequence completed&quot;, Category.Debug, Priority.Low);<br>\r\n}</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2008-09-24T12:05:02.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "120743",
+    "ThreadId": "36393",
+    "Html": "mconverti:<br>\r\nCondition evaluator in&nbsp; our case to be specific SecuityManager is&nbsp; part of the module&nbsp; e.g. SecurityModule.  <br>\r\nSo when Security Module is loaded SecurityManager is instantiated, it checks some condition and Exits the Application if condition does not meet. <br>\r\nNow I can instantiate SecurityManager but in turn it(SecurityManager) needs other services in Same or may be different module. <br>\r\n<br>\r\nBillKrat: I face similar situation in CreateShell. modules are not loaded yet so cannot instantiate SecurityManager <br>\r\nalso I believe CreateShell should just create shell <br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2008-09-24T12:33:39.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

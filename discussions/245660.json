@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "564709",
+    "ThreadId": "245660",
+    "Html": "\r\n<p>I'm developing a Prism4 WPF application with 1 region and several views. To date I've been using view injection via IRegion Add/Activate/Remove to control the views (in response to menu selections). Works great.</p>\r\n<p>Now I'd like to mix in some view navigation where the 'IRegion.Add'ed views can navigate to other views and pass parameters. This is where I've run into some trouble...</p>\r\n<p>Part (if not all) of the trouble seems to be that the views added to the region with IRegion.Add don't have an existing navigation journal entry when RequestNavigate is called. The NavigateTo view gets loaded but it can't navigate back (apparently) because\r\n the originating view has no journal entry. Shouldn't RequestNavigate create a journal entry for the NavigateFrom view?</p>\r\n<p>I've found that I work around this issue by having the 'from' view navigate to itself first (if the journal's CurrentEntry is null). That creates a journal entry for the 'from' view and then the navigate 'to' view can go back the original view. But this\r\n has some serious 'code smell' and adds complication the the navigation process.</p>\r\n<p>Is mixing and matching IRegion.Add/Activate with RequestNavigate a supported scenario? Is there a better way to initialize the journal so going back to an 'IRegion.Add'ed view works?</p>\r\n<p>Thanks,</p>\r\n<p>Jim</p>\r\n",
+    "PostedDate": "2011-02-11T08:40:30.95-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "564803",
+    "ThreadId": "245660",
+    "Html": "<p>Hi Jim,</p>\r\n<p>Take into account that when you add views into a region, you are not currently navigate to that view. The same applies when you remove views on a region.</p>\r\n<p>Views are been registered into the Journal only when you call the <strong>RequestNavigate</strong> method.</p>\r\n<p>You can read more about Prism Navigation in the following links:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=PandP.40).aspx\">Chapter 8: Navigation</a></li>\r\n<li><a href=\"http://blogs.msdn.com/b/kashiffl/archive/2010/10/04/prism-v4-region-navigation-pipeline.aspx\">Prism v4 Region Navigation Pipeline</a> (on <a href=\"http://blogs.msdn.com/b/kashiffl\">Karl Shifflett</a>&acute;s blog)</li>\r\n</ul>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-02-11T10:47:38.883-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

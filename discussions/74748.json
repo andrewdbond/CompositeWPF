@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "255839",
+    "ThreadId": "74748",
+    "Html": "<p>Hi there,</p>\r\n<p>I am a Prism newbie and do not understand how to get Event Aggregation wired up.</p>\r\n<p>I have a shell project and two module projects. When a view is closed any of the modules I want to pass the Viewname to the Shell project which Removes the View.</p>\r\n<p>From other reading I understand I need to:</p>\r\n<p>1) Create an event deriving from CompositePresentationEvent and include that in my Shell Project.</p>\r\n<p>2) Publish the event in my module project</p>\r\n<p>3) Subscribe to&nbsp;the event in my Shell Project</p>\r\n<p>But, how does my module project know about the CompositePresentationEvent in my Shell project ?</p>\r\n<p>Could someone provide the basic wire-up code that show how a module project knows about the CompositePresentationEvent class in the Shell project ?</p>\r\n<p>My CompositePresentationEvent is called CloseViewEvent</p>\r\n<p>My Payload class is called ViewInfo</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-11-10T22:38:35.097-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "255858",
+    "ThreadId": "74748",
+    "Html": "<p>Most people tend to create an Infrastructure project in VS to hold common information like events, Entity objects, services&nbsp;that are needed by multiple modules and the shell.&nbsp;&nbsp; I tend to include this infrastructure project in all other VS projects that need to reference common items.&nbsp;&nbsp;</p>\r\n<p>In the shell I use code like below to get the EventAggregator to then in your case subscribe to the event</p>\r\n<p>IEventAggregator agg = Container.Resolve&lt;IEventAggrigator&gt;();</p>\r\n<p>In the modules I use constructor injection to get the IEventAggregator to then in your case, publish the event</p>\r\n<p>e.g. public xxxModule(IEventAggregator agg)</p>\r\n<p>This works well for smaller applications but for larger apps you could consider creating for each module a static core class in which you could also declare common information.&nbsp;&nbsp;However for all my apps so far I have added an infrastructure VS module</p>\r\n<p>Hope this helps</p>",
+    "PostedDate": "2009-11-11T00:27:40.643-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "255985",
+    "ThreadId": "74748",
+    "Html": "<p>Did yo manage to check EventAggregation sample in Quick Start?</p>",
+    "PostedDate": "2009-11-11T07:16:43.45-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "256136",
+    "ThreadId": "74748",
+    "Html": "<p>SwissSteve</p>\r\n<p>Thanks for that.</p>\r\n<p>I didn't realise that the Infrastructure Project and the Shell Project were seperate concepts!</p>\r\n<p>Got it working now</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-11-11T14:33:55.443-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1043704",
+    "ThreadId": "443680",
+    "Html": "Hi,\r<br />\nI want to be able to disable my buttons/menuitems in case the server (through AzMan) does not authorize the corresponding action.\r<br />\nTo achieve that the client (at startup) receives a list of allowed operations from the server.\r<br />\nI've build a SecureDelegateCommand class that inherits from DelegateCommandBase.\r<br />\nI'd like to know if I'm on the right track with my implementation.\r<br />\nHere is my code :\r<br />\nAdd the service in MefBootstrapper :<br />\n<pre><code>        protected override void ConfigureContainer()\n        {\n            base.ConfigureContainer();\n\n            // Registers the current composition container.\n            this.Container.ComposeExportedValue&lt;CompositionContainer&gt;(this.Container);\n            this.Container.ComposeExportedValue&lt;IUserSettingsService&gt;(new UserSettingsService());\n        }</code></pre>\n\nThe SecureDelegateCommand implementation :<br />\n<pre><code>    public class SecureDelegateCommand&lt;T&gt; : DelegateCommandBase\n    {\n        public SecureDelegateCommand(Action&lt;T&gt; executeMethod, string operationName)\n            : base((o) =&gt; executeMethod((T)o), (o) =&gt; \n                {\n                    var container = ServiceLocator.Current.GetInstance&lt;CompositionContainer&gt;();\n                    var userSettings = container.GetExportedValue&lt;IUserSettingsService&gt;();\n                    return userSettings.IsOperationAuthorized(operationName);\n                })\n        {\n        }\n\n        public SecureDelegateCommand(Action&lt;T&gt; executeMethod, Func&lt;T, bool&gt; canExecuteMethod, string operationName)\n            : base((o) =&gt; executeMethod((T)o), (o) =&gt;\n                {\n                    var container = ServiceLocator.Current.GetInstance&lt;CompositionContainer&gt;();\n                    var userSettings = container.GetExportedValue&lt;IUserSettingsService&gt;();\n                    if (!userSettings.IsOperationAuthorized(operationName))\n                        return false;\n                    return canExecuteMethod((T)o);\n                })\n        {\n        }\n    }</code></pre>\n\nUsage :<br />\n<pre><code>this.ConsultCommand = new SecureDelegateCommand&lt;object&gt;(this.OnConsult, this.CanConsult, &quot;ActionName&quot;);</code></pre>\n\n",
+    "PostedDate": "2013-05-15T00:46:19.553-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1043992",
+    "ThreadId": "443680",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding, the code you provided seems to be correct. I believe you are in the right track with your approach.\r<br />\n<br />\nRegards,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-05-15T10:11:02.77-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

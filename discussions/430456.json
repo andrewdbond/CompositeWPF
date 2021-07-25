@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "990381",
+    "ThreadId": "430456",
+    "Html": "\r\n<p>I use prism with MEF and i have data comming from different modules can be displayed in a typical view because it is only list of items with search box to find certain item, so i need to have one view but be able to switch view models instead of building\r\n one view for each view model.</p>\r\n",
+    "PostedDate": "2013-01-22T08:24:36.77-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "990476",
+    "ThreadId": "430456",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding, if you want to define only one view for your different view models, then I believe a possible approach could be to export this view through an interface (e.g.\r\n<strong>ISearchView</strong>) defined in a common project. For example, this interface could define a property for the view model which should also respond to a common interface (e.g.\r\n<strong>ISearchViewModel</strong>), in order to establish a compatibility between the different view models and the common view. For example you could have the following property:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> ISearchViewModel ViewModel;\r\n</pre>\r\n</div>\r\nThen, in your modules you could define the logic to resolve the common view through this interface and also set its\r\n<strong>ViewModel </strong>property with the view model provided in this module to handle the search operation. And then once you have the resulting view with its corresponding view, for example you could inject the this view in a region. Take into that if\r\n you follow this approach, the view should be exported also using the following attribute:\r\n<p></p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>[PartCreationPolicy(CreationPolicy.NonShared)]\r\n</pre>\r\n</div>\r\nAs by default <strong>MEF </strong>will register the class as a singleton instance, which may not be necessary for this particular approach. Also, take into account that this may not be the only aproach to achieve this as this will deppend mostly on your personal\r\n preferences and the requirements of your scenario.\r\n<p></p>\r\n<p>Please let us know if we have misunderstood your scenario,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2013-01-22T11:08:19.923-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "990497",
+    "ThreadId": "430456",
+    "Html": "\r\n<p>Hi aadami, thanks in advance, your answer exactly to the point, only one point remaining: if i put Radio button or Combo box in the Shell&nbsp;&nbsp;window (which is laying in another project ) and&nbsp;upon the user selection in this control the required view model will\r\n be determined and consequently the view will be loaded to the region</p>\r\n<p>i think the code&nbsp;to handle user selection will be&nbsp;exist in&nbsp;ShellWindow View Model then it will publish the selected option via EventAggregator for which the interested modules will subscribe and load the view to the region. is this approach right or wrong\r\n or there is better approach.</p>\r\n",
+    "PostedDate": "2013-01-22T12:01:26.4-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "990508",
+    "ThreadId": "430456",
+    "Html": "\r\n<p>I'm glad you find this useful, on the other hand, handling the user selection in the\r\n<strong>ShellWindow</strong>'s view model and publishing this option through the <strong>\r\nEventAggregator</strong> seems like a reasonable approach to me.</p>\r\n<p>Best Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2013-01-22T12:24:44.437-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,51 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Hello there,\n          I am facing an issue regarding code sharing in my Project where it follows Prism Pattern,\nI have Linked one Silverlight and WPF modules, Where in the WPF Part I have some WPF Specific resource dictionary, and in Silverlight module with Silverlight dictionary. where those dictionaries contains Platform(WPF/Silverlight) specific templates and Style. The code for merging my dictionary look like the one given below for each platform.\n\n```\n<ResourceDictionary>\n     <ResourceDictionary.MergedDictionaries>\n         <ResourceDictionary Source=\"SLTemplates.xaml\"/>\n     </ResourceDictionary.MergedDictionaries>\n</ResourceDictionary>\n```\n```\n<ResourceDictionary>\n     <ResourceDictionary.MergedDictionaries>\n         <ResourceDictionary Source=\"DesktopTemplates.xaml\"/>\n     </ResourceDictionary.MergedDictionaries>\n</ResourceDictionary>\n```\n     We found that its not possible to have different code in a Shared File. because each and every update in a xaml file will update in both platform code, because the code is shared.\n     So we decided to Have the same name for Template files both Side, for accomplishing this task, We added __Templates.xaml__ in WPF , so it automatically shows up the link in Silverlight side. So we deleted the link for Templates.xaml in Silerlight and again added new file(Templates.xaml) in Silverlight. Now the Merge dictionary code look like this\n```\n <ResourceDictionary>\n      <ResourceDictionary.MergedDictionaries>\n           <ResourceDictionary Source=\"Templates.xaml\"/>\n      </ResourceDictionary.MergedDictionaries>\n </ResourceDictionary>\n```\nBut the designer showing Exception for this user control in both Modules\nscreen shot for bug has been attached.\n\nHow can I get out of this issue?",
+    "LastUpdatedDate": "2013-07-22T10:39:53.237-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2013-07-16T21:26:49.24-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "How to share code in Prism for WPF and Silverlight?",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 10245
+  },
+  "FileAttachments": [
+    {
+      "FileId": 898017,
+      "FileName": "prismbug.jpg",
+      "DownloadUrl": ".\\898017"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nI'm not so sure that the approach you took is appropriate to achieve the functionality that you want. Merging __WPF__ and __Silverlight__ resources may not work correctly. Nevertheless, I believe that the problem you are facing could be related to the issue discussed in the following thread:#+ [WPF ResourceDictionary, MergedDictionaries mixed load from assembly and filesystem](http://social.msdn.microsoft.com/Forums/vstudio/en-US/8eb005af-f11b-4ce3-9357-a16d3a0eed84/wpf-resourcedictionary-mergeddictionaries-mixed-load-from-assembly-and-filesystem)\r\n\r\nHope this helps,\r\n\r\nFederico Martinez http://blogs.southworks.net/fmartinez ",
+      "PostedDate": "2013-07-22T10:39:53.237-07:00",
+      "Id": 156666
+    }
+  ]
+}

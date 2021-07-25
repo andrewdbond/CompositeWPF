@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "486418",
+    "ThreadId": "225295",
+    "Html": "<p><span style=\"color:black;font-size:10pt\">Hello, I am creating a Silverlight dashboard application and would appreciate any advice</span></p>\r\n<p><span style=\"color:black;font-size:10pt\">Each dashboard has a collection of widgets. The widgets all present the same sort of data but in different ways (each widget will have its own View Model).</span></p>\r\n<p><span style=\"color:black;font-size:10pt\">My question is how should Widgets be managed in terms of configuration (configuration for each widget is stored as a single row in db accessed using the widgets GUID)&nbsp;and data access.</span></p>\r\n<p><span style=\"color:black;font-size:10pt\">1:&nbsp; Widget manages itself,&nbsp;widget will load it's configuration from the db using appropriate injected service&nbsp;(dashboard manager provides widget GUID ID)&nbsp;and then load the data to display again using appropriate injected service.&nbsp;</span></p>\r\n<p><span style=\"color:black;font-size:10pt\">2:&nbsp; Widget is dumb (it doesn't know how to load configuration or data to display. All configuration/data would be provided by the dashboard manager</span></p>\r\n<p><span style=\"color:black;font-size:10pt\">3: Widgets are passed the configuration by the dashboard manager and then widget uses the event aggregator to subscribe for data (passing a data request template), the idea here is that there would be 1 data manager that would be a single source for all the data displayed within the different widgets/dashboards.</span></p>\r\n<p><span style=\"color:black;font-size:10pt\">I know this quite a broad topic but I am sure the concept of a dashboard with widgets is a common design issue.</span></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-08-30T07:19:35.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "494097",
+    "ThreadId": "225295",
+    "Html": "<p>Currently, Prism doesn't have guidance regarding your scenario.</p>\r\n<p>Any of your approaches might work, but to determine which is the best one, it greatly depends on your concrete scenario.</p>\r\n<p>Nevertheless, in my opinion the 2nd approach is a good one because it has low coupling. Remember that the logic of accessing the database should not be in the widget, but in a separate class,&nbsp;which could be the&nbsp;Dashboard manager.</p>\r\n<p>Regarding the 3rd approach, remember that the Event Aggregator is used to communicate between modules. So unless you have to communicate between different modules, I wouldn't recommend using it for this functionality.</p>\r\n<p>&nbsp;</p>\r\n<p>Hope this help,</p>\r\n<p>Diego</p>",
+    "PostedDate": "2010-09-15T14:18:41.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

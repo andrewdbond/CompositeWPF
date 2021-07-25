@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "jbe2277 identified the issue as a code generation issue.  Please try the x:Name attribute.",
+    "ClosedDate": "2010-08-02T10:20:27.593-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "I ran into an interesting issue while playing around with the StockTraderRI solution.  To see the problem, put a breakpoint in the App.OnStartup override and check Application.Current.Resources.  You'll find that the collection is empty.  I tracked down the cause of the problem to being that at least one property (either StartupUri, Startup, or ShutdownMode, but others properties may affect it as well) not being set on the Application tag in the App.xaml file.  If you add the property, the resources are loaded.  I checked the App.g.cs file and sure enough, the InitializeComponent method is not generated (which loads the resources) at least one of the properties is not applied.  I'm assuming this is either a WPF bug or a scantly (if at all) documented \"feature\".  The recommendation should probably be to use the Startup event with a handler rather than overriding the OnStartup method so that the resource issue does not occur.  I'm not sure why they wouldn't gen the InitializeComponent method if any Application.Resources exist though.",
+    "LastUpdatedDate": "2013-05-16T05:29:03.55-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-08-27T11:09:39.523-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "StockTraderRI guidance issues",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 2928
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "This is an issue of the WPF code generator. I put a \"x:Name\" attribute into the Application tag and then it works for me.",
+      "PostedDate": "2008-12-23T05:53:45.177-08:00",
+      "Id": 156025
+    }
+  ]
+}

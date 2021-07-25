@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "423226",
+    "ThreadId": "207193",
+    "Html": "<p>Hello All,</p>\r\n<p>I have a module in which I have the following:</p>\r\n<p><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">void</span> Initialize()<br>{<br>&nbsp;&nbsp; RegisterViewsAndServices();<br>&nbsp;&nbsp; EventAggregator.GetEvent&lt;LogFileSelectedEvent&gt;().Subscribe(OnLogFileSelected, ThreadOption.UIThread);<br>}<br><br><span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> OnLogFileSelected(<span style=\"color:Blue\">string</span> aFilePath)<br>{<br>...<br>}<br><br>At another place in the same module, I have the following:</p>\r\n<pre>private void OnLogFileDataListBoxSelectionChanged(object sender, SelectionChangedEventArgs, e)\r\n{\r\n   mEventAggregator.GetEvent().Publish(((LogFileData)e.AddedItems[0]).FilePath);\r\n}\r\n</pre>\r\n<p>Finally, LogFileSelectedEvent is defined as so:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span> LogFileSelectedEvent : CompositePresentationEvent&lt;<span style=\"color:Blue\">string</span>&gt;\r\n{\r\n}\r\n\r\n</pre>\r\n</div>\r\n<p>I verified with a breakpoint that the subscription line is getting hit before the event is published. However, when I publish the event, OnLogFileSelected() just flat-out doesn't get called. It's inexplicable. It's as if I never subscribed, but I did. A call to CompositePresentationEvent.Contains() confirms the registration. The word &quot;Unsubscribe&quot; does not appear anywhere in my source, so I'm sure I'm not unsubscribing. Can anybody fathom a reason why my handler is not getting called?</p>\r\n<p>Thanks,</p>\r\n<p>Dave</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-03-24T13:27:32.163-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "423271",
+    "ThreadId": "207193",
+    "Html": "<p>I've had this issue before. This is most likely because the module object you're in doesn't have any external references to it, so it gets garbage collected. EventAggregator uses weak references to the events, so your subscriptions also disappear. This is by design.</p>\r\n<p>Rather than subscribing to the events inside IModule.Initialize(), do it inside your view, or viewmodel.</p>\r\n<p>-Dash.</p>",
+    "PostedDate": "2010-03-24T14:55:32.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "423560",
+    "ThreadId": "207193",
+    "Html": "<p>You should also make the OnLogFileSelected method public otherwise the EventAggregator won't be able to invoke it.</p>\r\n<p>HTH,</p>\r\n<p>Ryan</p>",
+    "PostedDate": "2010-03-25T06:25:09.11-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "423599",
+    "ThreadId": "207193",
+    "Html": "<p>Only if he's using Silverlight, I believe. This is because Silverlight doesn't support weak references.</p>\r\n<p>It's OK for the method to be private in a WPF application.</p>\r\n<p>For more info, <a href=\"http://msdn.microsoft.com/en-us/library/dd458915.aspx\">http://msdn.microsoft.com/en-us/library/dd458915.aspx</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-03-25T07:34:23.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "428517",
+    "ThreadId": "207193",
+    "Html": "<p>I had this problem as well.&nbsp; Thanks for the link DashNY.&nbsp; It contained the solution.&nbsp; I just thought I'd complete this thread with what worked for me.</p>\r\n<p>First, not all modules need a view.&nbsp; Sometimes we have modules in our app that have no UI.&nbsp; They perform specific background functions, handle data, consume and publish events.&nbsp; So I have noticed that if you Publish&nbsp;an event inside a view, you should subscribe to it there as well.&nbsp; Or you should subscribe to it on the Constructor overload that includes the ThreadOption in it.&nbsp; Of course you would subscribe on the UI thread because that is where it is published.&nbsp; I have yet to confirm this but it seems obvious in the link above.</p>\r\n<p>In modules that don't have a view, the weak reference does get garbage collected unless you use the Subscribe constructor overload that includes the <em>bool SubscriberReferenceKeepAlive</em> option.&nbsp; This keeps the object alive so the callback can get called.</p>",
+    "PostedDate": "2010-04-07T14:33:49.697-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

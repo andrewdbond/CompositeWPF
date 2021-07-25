@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "462452",
+    "ThreadId": "218096",
+    "Html": "<p>Hello,</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp; Is there any way to load the modules that mathc some specific condition by <strong>DirectoryModuleCatalog?</strong></p>\r\n<p><strong>&nbsp;&nbsp;&nbsp;&nbsp; </strong>For example,&nbsp; There are Three modules now,</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp; public class Module A : IModule, ICustomInterface1{};</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp; public class Module&nbsp;B : IModule, ICustomInterface1{};</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp; public class Module&nbsp;C : IModule, ICustomInterface2{};</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp; When I state the application , I want to load the Module that derive from ICustomInterface1 , can we do that ? (Do not use the &quot;OnDemad=true&quot;)</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;&nbsp;&nbsp; Thank you.</p>",
+    "PostedDate": "2010-07-01T19:43:40.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "464885",
+    "ThreadId": "218096",
+    "Html": "<p id=d7843940-6c3d-012d-e170-1231390ee8f1>Hi,</p>\r\n<p id=d7844e10-6c3d-012d-e171-1231390ee8f1>This is not supported in Prism out-of-the-box. As the <a href=\"http://msdn.microsoft.com/en-us/library/ff648995.aspx\">DirectoryModuleCatalog</a> has not filters, you could create your own ModuleCatalog implementation with this behavior.</p>\r\n<p id=d7846a30-6c3d-012d-e172-1231390ee8f1>Additionally, take into account that the DirectoryModuleCatalog implementation provided by Prism, does not support this functionality because it is expected to load all those modules in a module path. For example in deployments scenarios where catalogs are something planned/defined in advance.</p>\r\n<p id=d7848f40-6c3d-012d-e173-1231390ee8f1>If the application needs to load modules based on a particular logic you could to use any of these two approaches to fill the ModuleCatalog:</p>\r\n<ol>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff649346.aspx\">Defining modules in code</a> </li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff649346.aspx\">Defining modules in XAML</a> </li>\r\n</ol>\r\n<p>Another approach that might suite your scenario, is dealing with the condition in the Initialize method of all the modules. This approach has the disadvantage that the condition would be spread in all the modules.</p>\r\n<p id=d784b740-6c3d-012d-e174-1231390ee8f1>I hope you can find this useful.</p>\r\n<p id=d784e4b0-6c3d-012d-e175-1231390ee8f1>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-07-08T08:20:33.07-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "465133",
+    "ThreadId": "218096",
+    "Html": "<p>Thank you very much , I will check it as you said.</p>",
+    "PostedDate": "2010-07-08T16:36:13.69-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

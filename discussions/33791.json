@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "111993",
+    "ThreadId": "33791",
+    "Html": "Hi,<br>\r\n<p>\r\n<br>\r\nWe have been looking at the StockTraderRI and there the services create the data that is\r\nshown in the application by reading from a resource application file. For\r\nexample, in the News Module the &quot;Resources.News&quot; is parsed from which business objects are created and exposed. This is, of course, ok as an illustration of the Composite WPF framework.</p>\r\n<p></p>\r\n<p>We are considering two scenarios with regards to implementing a &quot;live&quot; DataModel where the data will be loaded from and saved to a XML file:</p>\r\n<ol>\r\n    <li>\r\n    <p>The data is loaded from the XML file, business objects are created and placed in a DataModel object. The services expose the business objects that are in the DataModel to Modules. The DataModel will then have Load(string filename) and Save(string filename) methods.</p>\r\n    </li>\r\n    <li>The data is loaded from the XML file, business objects are created and placed in their respective services. Here the services are responsible for storing the &quot;live&quot; business objects as well as exposing them to Modules. A separate object is responsible for loading and saving the business objects.</li>\r\n</ol>\r\n<p></p>\r\n<p>We would like to get some input on pros and cons on the above mentioned scenarios. If someone know of any other solutions please feel free to speak your mind :)</p>\r\n<p></p>\r\n<p></p>\r\n<p>Cheers</p>\r\n",
+    "PostedDate": "2008-08-19T01:52:54.04-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "112874",
+    "ThreadId": "33791",
+    "Html": "<p>The RI is really focused on the UI concerns. Everything else is mocked simply to make the UI function. Now we try to do it in a clean fashion, but are not recommending the way we handle business concerns and such is how you should do it in the real world.</p>\r\n<p>Just out of curiosity, why are you reading &quot;live&quot; data from an xml file, as opposed to a database?&nbsp;Is this coming from a web service of some sort? Or is it some static data?<br>\r\n<br>\r\nAs far as how the models are accessed, I would recommend the Respository pattern, i.e. you&nbsp;Repository&lt;T&gt; objects&nbsp;for your business objects. From the module perspective, how the models are stored is an implementation detail. They should access the Repository to get what the need. The implementation of the Repository itself would manage reading and writing to the XML.<br>\r\n<br>\r\nThe advantage of this, is that the application modules are completely decoupled from the data store, and from managing persistance. <br>\r\n<br>\r\nRegards<br>\r\nGlenn</p>\r\n",
+    "PostedDate": "2008-08-21T23:38:23.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

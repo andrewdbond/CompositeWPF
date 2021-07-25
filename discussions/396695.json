@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "916744",
+    "ThreadId": "396695",
+    "Html": "\r\n<p>Hi to all friends out there.</p>\r\n<p>I am developing application by using Modularity of prism.To make it work i have to add reference in my shell module.If i have to do so ,don't we are loosing decoupling of application concept.</p>\r\n<p>It may be possible i am not aware of other solution.So if there is any way to add reference of module without there directly adding reference than please me clear.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks in advance.</p>\r\n",
+    "PostedDate": "2012-09-24T10:03:10.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917486",
+    "ThreadId": "396695",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I believe you could find the following chapter of the <strong>Prism </strong>documentation useful regarding this topic:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405479(v=pandp.40).aspx\">Chapter 4: Modular Application Development</a>\r\n</li></ul>\r\n<p>There you could find the different approaches you could use to register your modules in your application. As far as I know\r\n<strong>Prism </strong>allows Registering modules for <strong>Silverlight </strong>\r\napplications in the following ways:</p>\r\n<ul>\r\n<li><strong>Directly in code</strong>. <em>Modules can be directly registered in the module catalog in the application code. Using this approach, you can use conditional logic to determine which module should be included in your application. Modules added in\r\n code are referenced by the application instead of being loaded at run time.</em>\r\n</li><li><strong>Using XAML.</strong> <em>Prism can register modules with the module catalog by loading an Extensible Application Markup Language (XAML) file. Declaring the modules in XAML allows the modules to be downloaded and initialized independent of the application\r\n XAP file.</em> </li></ul>\r\n<p>Which approach you take will depend on what your application needs, if you require not having references to the modules then using a configuration\r\n<strong>XAML </strong>file should be the recommended approach.</p>\r\n<p>Also for examples of this approaches I recommend you to check the <a href=\"http://msdn.microsoft.com/en-us/library/ff921163%28v=pandp.40%29.aspx\">\r\nModularity QuickStarts for Silverlight </a>provided with <strong>Prism</strong>.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-09-25T13:45:36.763-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "917717",
+    "ThreadId": "396695",
+    "Html": "<p>Thanks for reply.</p>\r\n<p>I think you don't get my problem.I am only able to register module when i reference to solution.Without adding reference it gives error \" missing reference of assembly like which we get normally when you don't reference assembly and use it.</p>\r\n<p>While using XAML do we need to add reference also like i have to do while adding in view model.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks in advance.</p>",
+    "PostedDate": "2012-09-26T02:57:33.313-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918116",
+    "ThreadId": "396695",
+    "Html": "<p>Hi,</p>\r\n<p>When registering a module in <strong>XAML</strong>, you don't to reference the module in the shell project. That is because you don't need to register the module in the bootstrapper's code; instead the module is defined in a <strong>XAML </strong>file, from which the module catalog will be created.</p>\r\n<p>As an example, you can take a look at the <strong>Modularity QuickStart</strong> provided with <strong>Prism </strong>as out of the box. This <strong>QuickStart </strong>has several modules, where the modules <strong>B, D, E</strong> and <strong>F</strong> are defined in the <strong>ModulesCatalog.xaml</strong> file and not in code. To create a module catalog using the aforementioned <strong>XAML </strong>file, the bootstrapper of the <strong>QuickStart </strong>has the following code:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>        <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> IModuleCatalog CreateModuleCatalog()\r\n        {\r\n            <span style=\"color: green;\">// Module B, D, E and F are defined in XAML.</span>\r\n            <span style=\"color: blue;\">return</span> Modularity.ModuleCatalog.CreateFromXaml(<span style=\"color: blue;\">new</span> Uri(<span style=\"color: #a31515;\">\"/ModularityWithUnity.Silverlight;component/ModulesCatalog.xaml\"</span>, <br />                                                                    UriKind.Relative));\r\n        }\r\n</pre>\r\n</div>\r\nThe shell project of the <strong>Modularity QuickStart</strong> does not reference module <strong>B, D, E</strong> or <strong>F</strong>. However, the <strong>QuickStart </strong>is able to identify and load the aforementioned modules using the <strong>XAML </strong>file.</p>\r\n<p>On the other hand, if you are receiving \"missing reference or assembly\" error, this could be cause by:</p>\r\n<ul>\r\n<li>You are trying to register the modules both in <strong>XAML </strong>and in code.</li>\r\n<li>Your shell project uses code directly from those modules.</li>\r\n</ul>\r\n<p>In the later case, this would mean that your shell project is coupled up to some degree to the module, and therefore, you cannot decouple it from the shell. You will need first to refactor the shell project to avoid using the module's code directly (for example, using interfaces, dependency injection, etc).</p>\r\n<p>I hope this helps.</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-09-26T14:47:01.387-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "918231",
+    "ThreadId": "396695",
+    "Html": "<p>Hi</p>\r\n<p>Thanks allot for making me clear.</p>",
+    "PostedDate": "2012-09-26T21:47:37.833-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

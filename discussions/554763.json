@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1279688",
+    "ThreadId": "554763",
+    "Html": "Hi,\r<br />\nI'm using XAML: ...<br />\n<pre><code> &lt;Window .....       xmlns:view=&quot;clr-namespace:SampleApp.ViewModel&quot;\n        mc:Ignorable=&quot;d&quot;\n        Title=&quot;Sample&quot; Height=&quot;500&quot; Width=&quot;700&quot;&gt;\n    &lt;Window.DataContext&gt;\n        &lt;view:Datamodel/&gt; &lt;!-- This gives the error Object reference not set to an instance of an object --&gt;\n    &lt;/Window.DataContext&gt;\n</code></pre>\n\nThe line with &lt;view:Datamodel/&gt; gets red error indicators, but at runtime everything is ok.\r<br />\nAssumption: This is not really an error\r<br />\nQuestion: Is there a fix/workaround and still continue with the declarative assignment of the viewmodel?\r<br />\n<br />\nBest regards\r<br />\nBo<br />\n",
+    "PostedDate": "2014-07-31T11:52:58.61-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1280791",
+    "ThreadId": "554763",
+    "Html": "Good Day,\r<br />\n<br />\nIn your ViewModel, are you using GetIsInDesignMode code which is throwing some exceptions ?\r<br />\n<br />\nSomething like :<br />\n<pre><code>if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))\n{\n  // Some Object reference not set which would be throwing an uncatch exception here.\n}</code></pre>\n\nRegards\r<br />\n<br />\nDimitri<br />\n",
+    "PostedDate": "2014-08-02T04:18:50.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1280876",
+    "ThreadId": "554763",
+    "Html": "Dimitri, \r<br />\nnothing like that. Just creating some properties like ObservableCollections, Commands and some more  data classes are created in CTOR.<br />\n<pre><code>if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))\n{\n  // Some Object reference not set which would be throwing an uncatch exception here.\n}</code></pre>\n\nRegards\r<br />\n<br />\nBo<br />\n",
+    "PostedDate": "2014-08-02T04:58:39.477-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1283411",
+    "ThreadId": "554763",
+    "Html": "HI Bo,<br />\n<br />\nI had a similar issue and after commenting out just about everything in my CTOR I was able to find my issue while de-commenting one functionality at a time.<br />\n<br />\nRegards,<br />\n<br />\nDimitri<br />\n",
+    "PostedDate": "2014-08-03T06:18:52.537-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1283913",
+    "ThreadId": "554763",
+    "Html": "Finally got it:<br />\n<ul>\n<li>1st try: Using devenv to debug devenv did not show up with any exception loading the view into the designer. Output window gave no indication of error but the red marks continued.</li>\n<li>\n2nd try: removed everything from CTOR an rebuild it line by line until I hit the mark!<br />\n</li>\n</ul>\n<pre><code>Application.Current.MainWindow.Closing += (o, e) =&gt; { };</code></pre>\n\nOne should always use<br />\n<pre><code>Application.Current.Exit += (o, e) =&gt; { };</code></pre>\n\nSolved it,\r<br />\nThanks for contributing\r<br />\n<br />\nBo<br />\n",
+    "PostedDate": "2014-08-03T11:48:56.873-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

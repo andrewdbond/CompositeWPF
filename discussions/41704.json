@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "138434",
+    "ThreadId": "41704",
+    "Html": "Hello,<br>\r\n<br>\r\nI started playing with Prism v2 drop 7 today and I notice that having different namespace &nbsp;(e.g. *.Desktop or *.Silverlight) is giving me a lot of problems in compiling the linked files.&nbsp; I'm thinking to share ModulesCatalog.xaml in both WPF and SIlverlight project but I can't because the Prism assembly (Microsoft.Practices.Composite.<strong>Silverlight</strong> and Microsoft.Practices.Composite.<strong>Desktop</strong>) for WPF and Silverlight are different. <br>\r\n<br>\r\nCreating the modules under different namespace is not very good. For example: I like to share some class files (e.g. Bootstrapper.cs, PresentationModels or etc) but I always need to change the namespace since I created the projects like CALSample.Shell and CALSample.Desktop or etc.. <br>\r\n<br>\r\nSo, I think it would be the best if we can have the same namespaces for both WPF and Silverlight. What's your thoughts? <br>\r\n<br>\r\n",
+    "PostedDate": "2008-12-07T12:58:03.203-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138642",
+    "ThreadId": "41704",
+    "Html": "Hi Michael,<br>\r\n<br>\r\nI shared your concerns (trying to figure out how to share via linked files) - I then stumbled upon the QuickStarts\\MultiTargingQuickstart and all was revealed :)  <br>\r\n<br>\r\nIn a nutshell they create the &quot;Project names&quot; with the .Desktop and .Silverlight extensions but the namespaces themselves don't contain the extensions (they strip them off of the project namespace configuration) so there is only one consistent namespace for both sides.<br>\r\n<br>\r\nFYI, I had started with the QuickStarts\\Visual Composition\\TopDownUIComposition (we're moving to Separated Presentation Pattern for our next project) which threw me a curve because in this project the Desktop code is the source and the Silverlight files link to them - which is how I started.   At least until I read in the documentation that P&amp;P recommends making the Silverlight code the source and have the desktop link to them.   Consistent with P&amp;P our team will develop for Silverlight and link from desktop (for MultiTargeted applications).<br>\r\n<br>\r\nExcerpt (copy/pasted) from Documentation Multi-Targeting Design Concepts follows:<br>\r\n<br>\r\n<h1>Multi-targeted Elements</h1>\r\n<p>The interaction patterns will be different between WPF and Silverlight because you are running inside a browser. If you split your application into smaller parts, it's more likely that you will be able to reuse certain parts.</p>\r\n<p>The ideal approach is to multi-target code that is easily shared between both technologies, typically non-UI code. This will result in an exhaustive use of Separated Presentation patterns to maximize the separation between UI and non-UI code, hence increasing multi-targetable code. Usually you can multi-target the following source code elements:</p>\r\n<ul>\r\n    <li>Presenters, although this depends on how different the view is. </li>\r\n    <li>Controllers </li>\r\n    <li>Models </li>\r\n    <li>Services </li>\r\n    <li>Themeing </li>\r\n    <li>Unit Tests </li>\r\n    <li>Simple Views </li>\r\n</ul>\r\n<p>If you want to share code between Silverlight and WPF, you should develop your application in Silverlight, because the API is more constrained than WPF.</p>\r\n<h1>Elements that Should Not Be Multi-Targeted </h1>\r\n<p>The following elements should not be multi-targeted: </p>\r\n<ul>\r\n    <li>Views (XAML) </li>\r\n    <li>Controls </li>\r\n    <li>Styling </li>\r\n</ul>\r\n",
+    "PostedDate": "2008-12-08T09:15:46.33-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

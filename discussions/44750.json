@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "149007",
+    "ThreadId": "44750",
+    "Html": "Can I ask what the reason was for not including Requery support in the DelegateCommand or if there is a plan to add a lightweight ICommand that supports Requery?",
+    "PostedDate": "2009-01-20T19:05:06.277-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "149226",
+    "ThreadId": "44750",
+    "Html": "Hi.<br>\r\nThe DelegateCommand contains a method called RaiseCanExecuteChanged(). Nevertheless this method won't be fired automatically whenever you press any key or make any gesture with the mouse, as standard WPF RoutedCommands do.<br>\r\n<br>\r\nThe reason for this, is that we created the DelegateCommand as a means to decouple a the command a little more from the UI, and couple it more to the underlying ViewModel (or Presentation Model or any flavor of Presenter you like) that will handle the execution.<br>\r\nSo you usually bind to an instance of a DelegateCommand that is hanging from a model, and the model is the one that decides whether the command's CanExecuteChanged event should be raised according to changes to that model (or to the parameter being passed), but not against any change in any part of the UI.<br>\r\n<br>\r\nIf for a reason you need to create a DelegateCommand because RoutedCommand does not suits your needs, but you need this particular UI requery behavior, you can do the following:<br>\r\n<br>\r\n<p><span style=\"font-size:13px;color:#2b91af\">CommandManager </span><span style=\"font-size:13px\">.RequerySuggested += (s, e) =&gt; myCommand.RaiseCanExecuteChanged();</span><br>\r\n<br>\r\nYou can even inherit from DelegateCommand and add that directly to you custom DelegateCommand class if you are using this throughout your application.<br>\r\n<br>\r\nI hope this helps,<br>\r\nJulian Dominguez<br>\r\n<a href=\"http://blogs.southworks.net/jdominguez\">http://blogs.southworks.net/jdominguez</a></p>\r\n",
+    "PostedDate": "2009-01-21T06:08:52.22-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "149234",
+    "ThreadId": "44750",
+    "Html": "Definitely helps Julian, thanks.<div><br></div><div>As you've said the Command is often hanging off the Model, so the logic for the CanExecute Function/Predictate is still contained in the Model (likely).  You aren't moving the ownership of the logic for validity of the Model state for that command.</div>",
+    "PostedDate": "2009-01-21T06:19:50.747-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "361518",
+    "ThreadId": "44750",
+    "Html": "<p>I think the solution suggested by Julian has a big problem: RequerySuggested is a weak event, and if you don't reference you lambda (or delegate) in other ways, it'll be collected and it won't work any more.</p>\r\n<p>Bye,</p>\r\n<p>Gabriele</p>",
+    "PostedDate": "2010-02-22T00:16:49.31-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

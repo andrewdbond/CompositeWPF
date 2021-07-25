@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "592923",
+    "ThreadId": "252802",
+    "Html": "<div>Hi guys,<br />I faced very strange problem.<br />Prism application has 1 Class Library project</div>\n<div>\n<div>&nbsp;- MyLibrary project, which has MyBaseClass.cs</div>\n</div>\n<div>and&nbsp;2 modules:</div>\n<div>&nbsp;- MyLibsModule (consist MyLibrary.dll).</div>\n<div>&nbsp;- MyModule which depends on&nbsp;MyLibsModule (dependency set in ModuleCatalog.xaml).</div>\n<div>So Idea is to have module with&nbsp;dll's and&nbsp;separate&nbsp;MyLibrary.dll&nbsp;from other modules.</div>\n<div>Now, MyModule project has&nbsp;a helper&nbsp;class&nbsp;which overrides MyBaseClass&nbsp;class defined in MyLibrary.</div>\n<div>In MyModule I refer MyLibrary project and set CopyLocal=false, as dependency MyLibsModule has it.<br /><br />Problem is that MyModule fails initializing/constructing if MyLibrary.dll&nbsp;is set to CopyLocal=false.</div>\n<div><br />If I remove helper&nbsp;class (or remove inheritance from class defined in MyLibsModule), everything is working fine.<br />If I set CopyLocal=true for mydll.dll&nbsp; in MyModule, it works fine as well. But I don't want to set copyLocal=true, as dependency Module MyLibsModule has this dll, and I don't need duplicate.</div>\n<div>Any ideas?</div>\n<div>How come that MyModule fails with complain abt missed MyLibrary.dll if even constructor is not called in it.</div>\n<div>I expect sequence of events like this:</div>\n<div>1. MyLibsModule.xaml, MyModule.xaml&nbsp;downloaded from server,</div>\n<div>2. MyLibsModule constructor called.</div>\n<div>3. MyLibsModule imported.</div>\n<div>4. MyLibsModule initialized.</div>\n<div>Exception here....</div>\n<div>5. MyModule constructor called,</div>\n<div>\n<div>6. MyModule imported.</div>\n<div>7. MyModule initialized.</div>\n<div>&nbsp;</div>\n<div>If MyModule is loaded with Shell (InitializationMode=\"WhenAvailable\", which is equal to referencing MyLibrary.dll at compile time) then MyModule is loading no problem. I want all modules loaded on demand...-))</div>\n<div><br />I have demo project to show this....Initially I asked support from Telerik here:<a href=\"http://www.telerik.com/community/forums/silverlight/general-discussions/telerik-libs-prism-app.aspx\">http://www.telerik.com/community/forums/silverlight/general-discussions/telerik-libs-prism-app.aspx</a> , but obviously it is related to Prism.....</div>\n</div>",
+    "PostedDate": "2011-04-06T09:58:07.243-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "592993",
+    "ThreadId": "252802",
+    "Html": "<p>Hi,</p>\r\n<p>Before digging into your issue, it would be helpful to know that the recommended practice for having a third party class library shared across your modules is to have an infrastructure project referenced in all your modules. Modules are mostly meant to be discrete units of functionality that export views and/or services.</p>\r\n<p>As for your actual issue, the problem you&rsquo;re experiencing could be caused by the fact that your module isn&rsquo;t finding the dll which contains the classes you need to use. One possible way to solve it would be to reference the infrastructure project in your shell module with <strong>CopyLocal</strong> set to true; that way you could then reference that project from within other projects without the need to set <strong>CopyLocal</strong> to true, since the dll will have already been loaded in the shell&rsquo;s bin directory. That way you would avoid a duplicate reference.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-04-06T11:40:30.877-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "593010",
+    "ThreadId": "252802",
+    "Html": "<p>Yes, this is what I ended up with..</p>\r\n<p>I see&nbsp;&nbsp;2 options either load infrastructure dlls into shell as static link, as u suggest or equally the same is to loas MyLibsModule in WhenAvailable mode.</p>\r\n<p>but I want to make shell as light as possible and as fast as possible, thats why I tried to move havy dlls into another module. Reason for this that shell may not need havy dll module and MyModule, so no point to load it.. u see what i mean?<br />But anyway it is still not clear for me, how come MyModule is failing if it even didn't started to load.</p>\r\n<p>Dependency modules loaded, as I see from step 4, so everything should be available for MyModule..</p>",
+    "PostedDate": "2011-04-06T11:53:43.687-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "594362",
+    "ThreadId": "252802",
+    "Html": "<p>Hi,</p>\r\n<p>We've reproduced a similar scenario and didn't experience the problem you're mentioning. In this context, it would be helpful if you could provide us with a repro sample, so that we can help you further understand the root of this unexpected behavior.</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-04-08T12:04:18.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "594565",
+    "ThreadId": "252802",
+    "Html": "<p>OK, I can upload demo project... Where to? What's address?</p>\r\n<p>When you experiment with your project, pls make sure that everytime you load shell, your browser cache is clean..Otherwise there is chance that module's dependency is in cache... Also make you MyLibsModule bigger (put some stuff in it) to emulate longer download time then MyModule.</p>",
+    "PostedDate": "2011-04-09T04:28:43.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "595411",
+    "ThreadId": "252802",
+    "Html": "<p>Hi,</p>\r\n<p>You could upload it to <a href=\"http://skydrive.live.com\">SkyDrive</a> or a similar site. Thank you for the additional information.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-04-11T09:40:19.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "595917",
+    "ThreadId": "252802",
+    "Html": "<p>Here is url: <a href=\"http://cid-17feeb61afe2dbeb.office.live.com/self.aspx/.Documents/PrismExample/PrismExample.rar\">http://cid-17feeb61afe2dbeb.office.live.com/self.aspx/.Documents/PrismExample/PrismExample.rar</a></p>\r\n<p>So, solution has 2 Modules and 1 class Lib.</p>\r\n<p>MyModule depends on MyLibsModule, which has MyService.dll. <br />MyModule overrides MyService.MyBaseClass and has MyService copyLocal=false.</p>\r\n<p>To repeate problem, run application, make sure that browser cache is clean and click Load Module Btn.. Try few times...exception should be thrown.</p>\r\n<p>Now either set MyService copyLocal=true in MyModule or remove inheritance in MyModule.Helpers.MyClass.. Exception never thrown.</p>\r\n<p>and now explain me why MyModule is constructing if dependency is not loaded...</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-04-12T06:08:24.047-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "596010",
+    "ThreadId": "252802",
+    "Html": "<p>Hi,</p>\n<p>We've been able to reproduce the issue you're mentioning using your sample application.</p>\n<p>We've found a similar issue reported on this thread and its associated work item:</p>\n<ul>\n<li><a href=\"http://compositewpf.codeplex.com/discussions/226255\"><span>Mef and Module Dependencies in Silverlight</span></a><span> (thread)</span> </li>\n<li><a href=\"http://compositewpf.codeplex.com/workitem/7224\"><span id=\"TitleLabel\">Mef and Module Dependencies in Silverlight</span></a> (work item) </li>\n</ul>\n<p>As a workaround, you could stick to setting Copy-Local to true in the dependency to MyService.</p>\n<p>Thanks,</p>\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-04-12T08:28:26.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "596020",
+    "ThreadId": "252802",
+    "Html": "<p>Does it mean that this will be considered as a bug of the framework and eventually will be fixed.</p>\r\n<p>BTW, Guido, are you prism project developer?</p>",
+    "PostedDate": "2011-04-12T08:42:51.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

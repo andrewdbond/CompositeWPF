@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "96639",
+    "ThreadId": "28997",
+    "Html": "Anyone else having problems running the StockTraderRI in the latest (12146) drop of Prism? I'm getting a module load exception I'm not really sure how to solve.<br>\r\n",
+    "PostedDate": "2008-06-03T20:43:30.733-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "96643",
+    "ThreadId": "28997",
+    "Html": "This turned out the be caused by the date parsing in the News module...<br>\r\n<span style=\"font-family:courier new\"><br>\r\nPublishedDate = DateTime.Parse(newsItem.Attribute(&quot;PublishedDate&quot;).Value, CultureInfo.CurrentCulture)</span><br>\r\n<br>\r\nthe problem being that the dates in the data file are in an en-US, and my CurrentCulture is en-AU.<br>\r\n<br>\r\nNot very international friendly code :)<br>\r\n",
+    "PostedDate": "2008-06-03T21:19:50.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "97015",
+    "ThreadId": "28997",
+    "Html": "Hi jtango18, it's pretty easy to get around this problem, I can verify that the same problem was in the last two drops.<br>\r\n<br>\r\nOpen <em>StockTraderRI.Modules.News/Services/NewsFeedService.cs</em><br>\r\n<br>\r\nAdd a static reference to the en-US culture.<br>\r\n<br>\r\n<code>\r\n&nbsp;&nbsp;&nbsp; private static CultureInfo USCulture = new CultureInfo(&quot;en-US&quot;);<br>\r\n</code>\r\n<br>\r\nReplace<br>\r\n<br>\r\n<code>\r\n&nbsp;&nbsp;&nbsp; PublishedDate = DateTime.Parse(newsItem.Attribute(&quot;PublishedDate&quot;).Value, CultureInfo.CurrentCulture),<br>\r\n</code>\r\n<br>\r\nWith <br>\r\n<br>\r\n<code>\r\n&nbsp;&nbsp;&nbsp; PublishedDate = DateTime.Parse(newsItem.Attribute(&quot;PublishedDate&quot;).Value, USCulture),<br>\r\n</code>\r\n<br>\r\nTo the P&amp;P guys maybe you could include this in the source so us Aussies don't see this problem on future drops?<br>\r\n<br>\r\nI'm not sure about how to upload patches (is there a facility?) so here it is below.<br>\r\n<br>\r\n<pre>\r\n\r\nIndex: Source/StockTraderRI/StockTraderRI.Modules.News/Services/NewsFeedService.cs\r\n===================================================================\r\n--- Source/StockTraderRI/StockTraderRI.Modules.News/Services/NewsFeedService.cs\t(revision 12352)\r\n+++ Source/StockTraderRI/StockTraderRI.Modules.News/Services/NewsFeedService.cs\t(working copy)\r\n@@ -28,6 +28,7 @@\r\n     public class NewsFeedService : INewsFeedService\r\n     {\r\n         readonly Dictionary&lt;string, List&lt;NewsArticle&gt;&gt; newsData = new Dictionary&lt;string, List&lt;NewsArticle&gt;&gt;();\r\n+        private static CultureInfo USCulture = new CultureInfo(&quot;en-US&quot;);\r\n \r\n         public NewsFeedService()\r\n         {\r\n@@ -41,7 +42,7 @@\r\n                 }\r\n                 newsData[tickerSymbol].Add(new NewsArticle()\r\n                 {\r\n-                    PublishedDate = DateTime.Parse(newsItem.Attribute(&quot;PublishedDate&quot;).Value, CultureInfo.CurrentCulture),\r\n+                    PublishedDate = DateTime.Parse(newsItem.Attribute(&quot;PublishedDate&quot;).Value, USCulture),\r\n                     Title = newsItem.Element(&quot;Title&quot;).Value,\r\n                     Body = newsItem.Element(&quot;Body&quot;).Value,\r\n                     IconUri = newsItem.Attribute(&quot;IconUri&quot;) != null ? newsItem.Attribute(&quot;IconUri&quot;).Value : null\r\n\r\n\r\n</pre>\r\n-Brett<br>\r\n",
+    "PostedDate": "2008-06-05T07:43:45.93-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "97155",
+    "ThreadId": "28997",
+    "Html": "Hey Brett,<br>\r\n<br>\r\nYour solution is basically what I did to get around this. Thanks though :)<br>\r\n<br>\r\nI definitely didn't have this problem with the last 2 drops though.<br>\r\n<br>\r\nJustin<br>\r\n",
+    "PostedDate": "2008-06-05T18:05:01.793-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "97174",
+    "ThreadId": "28997",
+    "Html": "Hey jtango, no worries. I had it in both 11609 and 12146, have now switched to the svn source hoping to possibly see any new movements early.<br>\r\n<br>\r\nCan I ask how you're finding Prism? I'm a bit two sided with it, I think I'm struggling with it just a little, I always found CAB a little heavy to swallow and now while it's a smaller pill, still finding prism a little hard to swallow too. I hope as more guidance and samples come out it will make things a little easier for us.<br>\r\n<br>\r\nThe other thing is I totally get what WPF is trying to do, but how do you get the flexibility of WPF with compile time safety? I'm finding that most of my problems attribute to errors in my XAML that, due to disconnecting my UI from my model, there's no real XAML test coverage.<br>\r\n<br>\r\nI shouldn't have posted this here, but just thought I'd see how someone closer to home is going.<br>\r\n<br>\r\n-Brett.<br>\r\n<br>\r\n<div style=\"border-style:dotted none;border-color:rgb(170, 170, 170) -moz-use-text-color;border-width:0.1em medium;margin:1em 0em 2.5em 3em;padding:0.2em;font-style:italic\"><br>\r\njtango18 wrote:<br>\r\nHey Brett,<br>\r\n<br>\r\nYour solution is basically what I did to get around this. Thanks though :)<br>\r\n<br>\r\nI definitely didn't have this problem with the last 2 drops though.<br>\r\n<br>\r\nJustin<br>\r\n<br>\r\n<br>\r\n</div>\r\n<br>\r\n",
+    "PostedDate": "2008-06-05T20:43:32.973-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

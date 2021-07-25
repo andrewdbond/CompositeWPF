@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nI'm closing this work item, as it seems that the problem described in it isn't caused by an issue in Prism.\r\n\r\nIf you need further support about this, you could create a thread in the discussions section (http://compositewpf.codeplex.com/discussions).\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-11-04T06:18:15.72-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "I'm new so ... be gentle. \n \nI'm following the Composite Application Guidance for WPF Hands-On Lab. \n \nI get to the point where I'm instructed to \"Open the file App.xaml and remove the attribute StartupUri\" .... \n \nOnce I do this, my app 'launches'  (as I can see it in the TaskManager) but, alas ... now window is 'Shown' ... \n \nIn debug, I step into the   InitializeComponent() method in the Shell class ... eventually I arrive in the RegionManager.OnSetRegionNameCallback method where this line of code returns null:\n \nIRegionManager regionManager = element.GetValue(RegionManagerProperty) as IRegionManager;  \n \nAt this point it seems to go pear shaped. \n \nWarning ... my wpf project is a vb.net project ....",
+    "LastUpdatedDate": "2013-05-16T05:29:03.143-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-09-03T11:26:07.953-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Error when manually instantiating the Shell window in your bootstrapper",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 2950
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nThe problem you're experiencing might be that you haven't set the correct code in the Bootstrapper.InitializeShell method override.\r\n\r\nThe code should look like this:\r\nprotected override void InitializeShell()\r\n{\r\n    base.InitializeShell();\r\n\r\n    App.Current.MainWindow = (Window)this.Shell;\r\n    App.Current.MainWindow.Show();\r\n}\r\n\r\nThis is necessary in order for the Shell window to show. Otherwise, it would be created but not shown. The RegionManager shouldn't be responsible for your issue, since it's not needed for the main window to be shown.\r\n\r\nIf you keep having trouble with this, it would be helpful if you could provide us with a repro sample, so that we can help you further debug that application to know why your Shell window isn't showing.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-03-15T10:51:02.427-07:00",
+      "Id": 156027
+    }
+  ]
+}

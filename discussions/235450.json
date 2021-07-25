@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "524828",
+    "ThreadId": "235450",
+    "Html": "\r\n<p>Dear Sir,</p>\r\n<p>We are writing a compsite application, this app just a 'Shell' and other team will write 'plug-in' for this app. We plan to implement these 'plug-ins' as module and put them in a specific folder. We meet 2 problems.</p>\r\n<p>1. How to get the services in the module? After we get the ModuleInfo instance, we don't know how to deal with them.<br>\r\n2. Each plug-in should implement a interface IBookLibrary, in this interface there's method 'List&lt;string&gt; GetAllBookNames()'. The problem is: where we should put this interface? Shell project or plug-in projects or another isolated project?</p>\r\n<p>Thanks and Regards,<br>\r\nTim</p>\r\n",
+    "PostedDate": "2010-11-20T17:09:00.393-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "525902",
+    "ThreadId": "235450",
+    "Html": "\r\n<p>Hi Tim,</p>\r\n<p>When consuming a service from a module, you shouldn't explicitly get a reference to the ModuleInfo. To achieve loose-coupling between your modules, you should expose the services as Shared Services, or use any other way of\r\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28PandP.40%29.aspx\">communication between loosely coupled components</a>.</p>\r\n<p>As for the interfaces for the services, you could place them in an infrastructure module, as it is done in the\r\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921074%28PandP.40%29.aspx\">Stock Trader Reference Implementation</a>. From the documentation:</p>\r\n<p>&ldquo;<em>In the Stock Trader Reference Implementation (Stock Trader RI), the Market module provides an implementation of\r\n<strong>IMarketFeedService</strong>. The Position module consumes these services by using the shell application's dependency injection container, which provides service location and resolution. The\r\n<strong>IMarketFeedService</strong> is meant to be consumed by other modules, so it can be found in the\r\n<strong>StockTraderRI.Infrastructure</strong> common assembly, but the concrete implementation of this interface does not need to be shared, so it is defined directly in the Market module and can be updated independently of other modules.</em>&rdquo;</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-11-23T08:20:57.593-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

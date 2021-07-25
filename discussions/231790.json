@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "510456",
+    "ThreadId": "231790",
+    "Html": "<p>Hi,&nbsp; <br>I'm using PRISM v2, CAL, SL4 and MVVM and have a delegate command on my ViewModel called CheckCommand. The ItemsControl contains a checkbox and I'm trying to get the items in ItemsControl/Checkbox to fire this command when it's checked - but it's not communication back to the viewmodel!</p>\r\n<p>I think it's because each items 'datacontext' is the individual object the item is bound to, rather than the ViewModel?&nbsp;&nbsp; <br>- My suspicion is actually correct, cause if I move my DelegateCommand out of the viewmodel and into the class defining the items in itemscontrol I can see the commands/methods beeing fired!</p>\r\n<p>View:</p>\r\n<p>&nbsp;&nbsp;&nbsp; &lt;ListBox x:Name=&quot;BasketListBox&quot; ItemsSource=&quot;{Binding BasketCollection}&quot; MinWidth=&quot;200&quot;&gt;<br>&nbsp;&lt;ListBox.ItemTemplate&gt;<br>&nbsp;&nbsp;&lt;DataTemplate&gt;<br>&nbsp;&nbsp;&nbsp;&lt;CheckBox commands:Checked.Command=&quot;{Binding CheckCommand}&quot;&nbsp; IsChecked=&quot;False&quot; &lt;/CheckBox&gt;<br>&nbsp;&nbsp;&lt;/DataTemplate&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&lt;/ListBox.ItemTemplate&gt;<br>&lt;/ListBox&gt;</p>\r\n<p>Can anyone point me in the right direction please?</p>\r\n<p>Cheers, Mcad.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-21T05:22:45.85-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "511161",
+    "ThreadId": "231790",
+    "Html": "\r\n<p>Hi Mcad,</p>\r\n<p>As you mentioned your suspicion is right. I think that you can find interesting that there is a solution implemented for this scenario in the Stock Trader RI. So, you could take a look at the following files in the StockTraderRI.Modules.Postition.Silverlight:</p>\r\n<ul>\r\n<li>PositionSummaryView\\PositionSummaryView.xaml, see the <strong>ActionsBuyButton</strong> and\r\n<strong>ActionsSellButton</strong>. </li><li>PositionSummaryView\\PositionSummaryView.xaml.cs, see the Model property set. </li></ul>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n",
+    "PostedDate": "2010-10-22T08:54:55.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

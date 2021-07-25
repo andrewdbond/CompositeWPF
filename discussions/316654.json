@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "767830",
+    "ThreadId": "316654",
+    "Html": "\r\n<p>my goal is : in my wpf application, i have a region -- content, and two module A and B , InitializationMode is set to ondemand. when i open the application, dynamic load the A module , then i click a button, dynamic load the B module and open a subwindow.\r\n in B module's view, i define a InteractionRequest. but the interactionrequest.raised is null when the first time .&nbsp;&nbsp; i have found the view.loaded&nbsp; event is later than the OnNavigatedTo.</p>\r\n<p>because my english is poor. here is my demo link</p>\r\n<p><a href=\"https://skydrive.live.com/redir.aspx?cid=c4630016e6dc9cf8&resid=C4630016E6DC9CF8!158&parid=C4630016E6DC9CF8!154&authkey=!ABzgMO42W50cVqs\">https://skydrive.live.com/redir.aspx?cid=c4630016e6dc9cf8&amp;resid=C4630016E6DC9CF8!158&amp;parid=C4630016E6DC9CF8!154&amp;authkey=!ABzgMO42W50cVqs</a></p>\r\n<p>can someone help me? thanks a lot!</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-02-15T09:03:00.22-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "775981",
+    "ThreadId": "316654",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding it&acute;s likely that your problem is caused by a  threading issue. If you  plan to modify anything that will affect UI  state, you will need to dispatch the response to the UI thread,  typically using the thread <strong>Dispatcher</strong>.</p>\r\n<p>You'll find more information regarding that in the following link of the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405494%28v=PandP.40%29.aspx#sec8\">Handling Asynchronous Interactions</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>\r\n<ul>\r\n</ul>",
+    "PostedDate": "2012-02-17T10:42:00.723-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "778780",
+    "ThreadId": "316654",
+    "Html": "<blockquote style=\"padding-bottom: 0px; font-style: italic; margin: 0.25em 1em 0px; padding-left: 0.25em; padding-right: 0.25em; padding-top: 0px; border: #ccc 0.1em solid;\"><strong>aadami wrote:</strong><br />\r\n<p>Hi,</p>\r\n<p>Based on my understanding it&acute;s likely that your problem is caused by a threading issue. If you plan to modify anything that will affect UI state, you will need to dispatch the response to the UI thread, typically using the thread <strong>Dispatcher</strong>.</p>\r\n<p>You'll find more information regarding that in the following link of the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405494%28v=PandP.40%29.aspx#sec8\">Handling Asynchronous Interactions</a> </li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br />http://blogs.southworks.net/aadami</a></p>\r\n</blockquote>\r\n<p><br />hi，i have checked the thread , both the view and viewmodel run in the same thread . but the viewmodel execute earlyer than the view. because i found out that view.loaded event is later executed than the OnNavigatedTo. so the first time interactionrequest object.raised is null.&nbsp;</p>\r\n<p>the other way, why ImoduleManage.loadModuleCompleted event had executed but the Module's view have not loaded completed?</p>\r\n<p>can you spend a little time check my code above? thanks a lot.</p>",
+    "PostedDate": "2012-02-19T00:57:08.65-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "803283",
+    "ThreadId": "316654",
+    "Html": "<p>Hi,</p>\r\n<p>If I understood correctly, you want to raise an interaction request from the <strong>BVM </strong>view model when the <strong>ModuleB </strong>is initialized and the <strong>BPage </strong>view is added to the region. I have checked your repro-sample application and I believe a possible approach to achieve the aforementioned functionality could be to subscribe to the <strong>Loaded </strong>event of the <strong>BPage </strong>view and raise the interaction request after that event is raised. This can be done, for example, doing something like this:</p>\r\n<ul>\r\n<li>Add the following method in the <strong>BVM </strong>view model:</li>\r\n</ul>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> OnViewReady(<span style=\"color: blue;\">object</span> sender, RoutedEventArgs e)\r\n        {\r\n            <span style=\"color: blue;\">if</span> (<span style=\"color: blue;\">this</span>.executeOnViewReady == <span style=\"color: blue;\">true</span>)\r\n            {\r\n                OKCommand.Execute(<span style=\"color: blue;\">null</span>);\r\n            }\r\n        }\r\n</pre>\r\n</div>\r\n</p>\r\n<ul>\r\n<li>Add the following member in the <strong>BVM </strong>view model:</li>\r\n</ul>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>        <span style=\"color: blue;\">private</span> <span style=\"color: blue;\">bool</span> executeOnViewReady = <span style=\"color: blue;\">false</span>;\r\n</pre>\r\n</div>\r\n</p>\r\n<ul>\r\n<li>Replace the <em><strong>OKCommand.Execute(null);</strong></em> sentence in the <strong>OnNavigatedTo</strong> method of the <strong>BVM </strong>view model with <strong><em>this.executeOnViewReady = true;</em></strong></li>\r\n</ul>\r\n<ul>\r\n<li>Modify the <strong>vm </strong>property in the <strong>BPage </strong>view to include the following line in its setter:</li>\r\n</ul>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>        <span style=\"color: blue;\">this</span>.Loaded += value.OnViewReady;\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Like this, in the <strong>OnNavigatedTo </strong>method, we set a flag to inform that an interaction request should be raised when the view is ready. When the <strong>Loaded </strong>event of the view is raised, if the aforementioned flag is set, the interaction request will be raised correctly.</p>\r\n<p>However, take into account that the implementation details for the aforementioned functionality will mainly depend of your personal preferences and the requirements of your scenario.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-02-29T10:34:57.647-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

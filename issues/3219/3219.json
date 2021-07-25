@@ -1,0 +1,51 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nWe are closing this work item as, as explained by Agustin, the functionality suggested here can already been achieved taking advantage of the capabilities provided by the current version of Prism.\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+    "ClosedDate": "2012-04-20T10:28:21.27-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "=== Need for an \"AttachedRegion\" event raised by the RegionManager ===\n \nFor some situations it is necessary to know when a new region is actually registered by the RegionManager. When the programmer wants to initialize a module it is necessary to know when this can be done. The proper moment is when the region assigned to the module to display its view(s) has been created. A module cannot add the view to a region in the shell xaml until this region has been created by the Region Manager.\n \nHowever, there are some situations (like when templates are used for a ContentControl with the RegionManager.RegionName attached property) when some difficulties may arise. I found impossible to determine when the module may proceed to add views to a region successfully. It is a little bit difficult to explain with words what I mean so I prefer to provide an application that shows the issue I'm reporting. If you run the application, you will get a ModuleLoadException: \nFailed to load module HelloWorldModule from assembly HelloWorld, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null. Error was:\nThe given key was not present in the dictionary.\n \nThis exception is raised because internally the RegionManager has not added the region that the module requires. When the use of a content control without a template is used then the same application does not throw the exception.\n \nThe solution for this problem is quite easy to achieve: \n1) add an AttachRegion event to the IRegionManager interface \n2) raise this event in the RegionManager.AttachNewReqion\n \npublic void AttachNewRegion(object regionTarget, string regionName)\n        {\n            if (Regions.ContainsKey(regionName))\n                throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, Resources.RegionNameExistsException, regionName));\n \n            IRegionAdapter regionAdapter = regionAdapterMappings.GetMapping(regionTarget.GetType());\n            IRegion region = regionAdapter.Initialize(regionTarget);\n \n            Regions.Add(regionName, region);\n            // Inform the interested parties that the region has been properly attached. The modules can then be initialized and the views added to the region.\n            if (AttachedRegion != null)\n            {\n               AttachedRegion(regionName);\n            }\n        }\n \nIf you need more explanation, I will be able to provide that. Just let me know please.",
+    "LastUpdatedDate": "2013-05-16T05:29:02.41-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-10-09T03:49:10.72-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Change request for the RegionManager: AttachedRegion Event",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 3,
+    "Id": 3219
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897956,
+      "FileName": "HelloWorld-WithAnException.zip",
+      "DownloadUrl": ".\\897956"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nFor those who are concerned with this subject, you might find useful to know that in Prism v4 this scenario is supported.\r\n\r\nFor example you could achieve this by using the View Discovery approach to display views in a region (more information can be found in Chapter 7: Composing the User Interface, View Discovery (http://msdn.microsoft.com/en-us/library/ff921098(v=pandp.40).aspx#sec25).\r\n\r\nAlso you might benefit from the regionManager.Regions.CollectionChanged event, to be notified when the regions collection is modified.\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami﻿",
+      "PostedDate": "2012-01-31T08:57:38.61-08:00",
+      "Id": 156047
+    }
+  ]
+}

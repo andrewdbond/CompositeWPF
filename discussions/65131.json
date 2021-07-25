@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "221785",
+    "ThreadId": "65131",
+    "Html": "<p>I am just learning about Prism and the design pattern for composing loosely coupled apps...What a learning curve!&nbsp; I have been looking at lots of examples but have not seen anything regarding a mechanism persisting &quot;session&quot; values prior to application shutdown.&nbsp; I put the word session in quotes because at this point I am only interested in WPF and session usually connotes a web app.&nbsp; I would like to be able to query all the presenters to a) determine if it is OK to shutdown, and b) if they have data to be persisted.&nbsp; Does anyone&nbsp;know of a pattern that solves this?</p>\r\n<p>Thanks,</p>\r\n<p>Rick</p>",
+    "PostedDate": "2009-08-10T17:33:43.207-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "221984",
+    "ThreadId": "65131",
+    "Html": "<p>Hi rickburke133,&nbsp; &quot;What a learning curve!&quot; - I feel (remember) your pain...</p>\r\n<p>I would use a combination of the&nbsp;a) Chain of responsibility and&nbsp;b) Memento&nbsp;patterns using isolated storage to meet your requirements.&nbsp;</p>",
+    "PostedDate": "2009-08-11T05:10:26.017-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "224009",
+    "ThreadId": "65131",
+    "Html": "<p>Bill,</p>\r\n<p>Thanks for your reply!</p>\r\n<p>I decided that for my current app the presenters did not need to respond back to the requestor to prevent shutdown, they just needed to persist their state at the right time. The solution that I came up with is to create a global CompositeCommand that the presenters can add a &quot;SaveSettings&quot; command to.&nbsp; I created a persistence service that manages de/serialization with an IsolatedStorage file and that caches the settings.&nbsp;Now shutdown works, and the presenters are saving their state.</p>\r\n<p>I have two problems now.&nbsp; 1)&nbsp; I am firing the composite command from a Closing handler in the Shell codebehind.&nbsp; I would like to move it out of there, but haven't figured out how to bind the Closing event to the presenter from XAML.&nbsp; 2) There is a problem with sequencing startup.&nbsp; Running in the debugger without breakpoints, the app comes up OK, using the settings values as loaded from the IsolatedStorage.&nbsp; However when I run without debugging, my call to GetUserStoreForApplication() throws an exception...Unable to determine application identity of the caller.</p>\r\n<p>Anyway, thanks again for the consult!</p>\r\n<p>Rick</p>",
+    "PostedDate": "2009-08-16T05:01:16.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

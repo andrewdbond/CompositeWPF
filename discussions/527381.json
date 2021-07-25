@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1198972",
+    "ThreadId": "527381",
+    "Html": "Word of warning up front.  I haven't actually ran the 4.2 build I was just looking at the code to see how passing the parameter objects would work.   So maybe I'm wrong on my assumptions of what the code is doing.<br />\n\r<br />\nWith that out of the way it seems that Prism will be overriding the object stored in the region.Context with the navigation parameters.    From the NavigationWithParametersExtensions.RequestNavigate method.\r<br />\n<br />\nRight now we use the region.Context as kind of like a viewbag to store data we want views to share.  This would break that.<br />\n\r<br />\nFor a different way you can check this <a href=\"http://stackoverflow.com/a/20170410/1798889\" rel=\"nofollow\">http://stackoverflow.com/a/20170410/1798889</a>.  It is my code and only works with Unity but there is a UnityRegionNavigationContentLoader so it's not unheard of to do specific Unity implementations.    I've refactor the code and would be willing to contribute the latest code.\r<br />\n<br />\nAs far as the UnityRegionNavigationContentLoader I've implemented almost the exact same code in Prism 4 but I ended up having to cache the results because Unity Registrations enumeration will recreate the registrations each time, making multiple calls very slow.  The first call we query unity registration and get a list of everything that is register to typeof object and then just that list instead of querying the registration because of performance.<br />\n",
+    "PostedDate": "2014-01-27T07:19:03.887-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1200086",
+    "ThreadId": "527381",
+    "Html": "We are looking into this issue and ways to ensure that we do not break your app. Our next drop should address this issue. The next drop will come in 2 or less weeks.\r<br />\n<br />\nThanks for the feedback.<br />\n",
+    "PostedDate": "2014-01-28T12:05:50.217-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1201008",
+    "ThreadId": "527381",
+    "Html": "Thank you.  Not to be pushy but I think a lot of people would enjoy to have dependency injection overrides in their application.  I know it solved a lot of problems with our application.  It's easier than trying to store stuff in navigation events and retrieve them later. <br />\n",
+    "PostedDate": "2014-01-30T09:58:58.077-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1201067",
+    "ThreadId": "527381",
+    "Html": "Hi CharlesNRice,\r<br />\n<br />\nWhat do you mean by dependency injection override? Do you mean that you want an abstraction to the container to be passed into your ViewModel so that you can push state into the container to be pulled out by other ViewModels?\r<br />\n<br />\n-Francis<br />\n",
+    "PostedDate": "2014-01-30T11:26:33.757-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1201090",
+    "ThreadId": "527381",
+    "Html": "We use lots of interfaces and constructor injection in our application.   We have default implementations of the interfaces registered with Unity and for the most part unity will fill the constructor dependency with the objects based on their lifetime. \r<br />\n<br />\nOne example we have is a MessageBoxView that takes in it's constructor a IMessageBoxViewModel.  \r<br />\n<pre><code>public interface IMessageBoxViewModel\n{\n    string[] Choices { get; set; }\n    string Title { get; set; }\n    string Content { get; set; }\n}\n\npublic MessageBoxViewModel : IMessageBoxViewModel\n{\n        public MessageBoxViewModel()\n        {\n            //default choices\n            Content = &quot;Continue?&quot;;\n            Choices = new [] {&quot;Ok&quot;,&quot;Cancel&quot;};\n        }\n\n       public string[] Choices { get; set; }\n       public string Title { get; set; }\n       public string Content { get; set; }\n}\n</code></pre>\n\nIf I use the RequestNavigate and pass in the Uri to the MessageBox I'm going to get a messagebox with Ok &amp; Cancel with the content saying &quot;Continue?&quot;.   Because unity will resolve a new messageboxviewmodel.  <br />\n\r<br />\nBut if I want to change the messageboxviewmodel to a different message I can do this.<br />\n<pre><code>   // Technically I use unity to resolve messageboxviewmodel but it doesn't matter for this exercise. \n   IMessageBoxViewModel messageBoxViewModel = new MessageBoxViewModel();\n   messageBoxViewModel.Content = &quot;Save changes?&quot;;\n   messageBoxViewModel.Choices = new [] {&quot;Yes&quot;, &quot;No&quot;, &quot;Cancel&quot;};\n</code></pre>\n\nFrom the code from stackoverflow link I sent I can do <br />\n<pre><code>   var navUri = new NavigationUri(&quot;MessageBoxView&quot;);\n   navUri.Add(messageBoxViewModel );\n   RequestNavigate(&quot;Popup&quot;, navUri);\n</code></pre>\n\nThis will create a new MessageBoxView but instead of creating a new MessageBoxViewModel unity will inject the messageBoxViewModel object I created. \r<br />\n<br />\nUsing this I can do dependency overrides when needed or if we have interfaces in the constructor to swap out implementations depending on the application state.\r<br />\n<br />\nAlso with Unity you can send in overrides and if the object graph doesn't need them they are just ignored.   So in the CreateNewRegionItem of the RegionNavigationContentLoader we always pass in the UriQuery.  If one of our classes need it we can just add it to the constructor and get access to it.  That's not part of the stackoverflow post. I added that in later.\r<br />\n<br />\nThis allows for us to pass information to the viewmodels or views.  It doesn't have to replace the entire viewmodel it would be whatever in the unity object graph that unity would be newing up when resolving a view..<br />\n",
+    "PostedDate": "2014-01-30T12:36:31.707-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

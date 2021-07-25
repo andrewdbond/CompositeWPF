@@ -1,0 +1,16 @@
+<div class="wikidoc">
+<h2>Symptom</h2>
+<p>A user reported that when a UI Control is marked as a region inside an Adorner, the region is never created.</p>
+<h2>Cause</h2>
+<p>The implementation of the Adorner did not add its children to the logical tree. Since Prism uses the
+<strong>SetValue</strong> method of the <strong>DependencyObject</strong> class to assign the instance of RegionManager, the UI Control with attached property must be in the logical tree.</p>
+<h2>Workaround</h2>
+<p>It is necessary to ensure that the UI Control marked as a region is located in the logical tree.</p>
+<p>If you need to print the logical tree of a DependencyObject&rsquo;s children, you could use the following method:</p>
+<pre><span style="color:blue">public static void </span>PrintLogicalTree(<span style="color:blue">int </span>depth, <span style="color:blue">object </span>obj)<br>{<br>    Debug.WriteLine(<span style="color:blue">new </span>String(<span style="color:#a31515">' '</span>, depth) &#43; obj);<br><br>    <span style="color:blue">if </span>(!(obj <span style="color:blue">is </span>DependencyObject)) <span style="color:blue">return</span>;<br><br>    <span style="color:blue">foreach </span>(var child <span style="color:blue">in </span>LogicalTreeHelper.GetChildren(obj <span style="color:blue">as </span>DependencyObject))<br>    {<br>        PrintLogicalTree(depth &#43; 1, child);<br>    }<br>}<br></pre>
+<p>For more information on this topic, you could take a look at the following documentation section on MSDN:
+<a href="http://msdn.microsoft.com/en-us/library/system.windows.logicaltreehelper.aspx">
+LogicalTreeHelper class</a></p>
+<p>Additionally, you can find more information about this in the following work-item:
+<a href="workitem/7391">work-item 7391</a></p>
+</div><div class="ClearBoth"></div>

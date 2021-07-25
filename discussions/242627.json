@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "552701",
+    "ThreadId": "242627",
+    "Html": "\r\n<p>Hi,&nbsp;</p>\r\n<p>I make use of a custom ChildWindow for use in a popupchildwindowaction :&nbsp;</p>\r\n<p>&lt;prism:InteractionRequestTrigger SourceObject=&quot;{Binding ValidationSummaryInteractionRequest}&quot;&gt;</p>\r\n<p><span style=\"white-space:pre\"></span>&lt;prism:PopupChildWindowAction&gt;&nbsp;&nbsp; &nbsp;</p>\r\n<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;prism:PopupChildWindowAction.ChildWindow&gt;</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;<strong>Views:ValidationSummaryView\r\n</strong>/&gt;&nbsp;&nbsp; &nbsp;</p>\r\n<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;/prism:PopupChildWindowAction.ChildWindow&gt;&nbsp;&nbsp; &nbsp; &nbsp;</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp; &lt;/prism:PopupChildWindowAction&gt; &nbsp; &nbsp; &nbsp;</p>\r\n<p>Now whenever this SummaryView is displayed, the same instance of this childwindow is used, which does not impose a problem an sich.</p>\r\n<p>However, inside this view i have a combobox which is bound (MVVM) to a viewmodel (Confirmation based) which holds a countries observablecollection</p>\r\n<p>Now, the first time I open the SummaryView, databinding between combo and collection works fine. After I close the childwindow, all succeeding calls to the same childwindow have problems binding between the countries combo and countries collection. I believe\r\n the problem lies in the single ChildWindow instance that is reused over again, which results resetting the combobox collection ItemsSource...&nbsp;</p>\r\n<p>How can I force the PCWAction to create a new CW instance on popup??</p>\r\n<p>Any useful ideas would be helpful, thanks!</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-20T09:29:46.15-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "552797",
+    "ThreadId": "242627",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>One possibility to achieve your desired scenario would be to extend the <strong>\r\nPopupChildWindowActionBase </strong>class to create a new child window each time the\r\n<strong>Invoke </strong>method is called. Another possibility would be to obtain a new instance of your View Model each time the ChildWindow is shown (in the\r\n<a href=\"http://msdn.microsoft.com/en-us/library/system.windows.controls.childwindow.onopened%28VS.95%29.aspx\">\r\nOnOpened</a> method). If you keep experiencing problems after applying one of the aforementioned possibilities, it would be helpful if you could provide us with more information about which kind of problems you're experiencing in the binding, or also a repro\r\n sample of your scenario.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2011-01-20T11:54:04.55-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "552800",
+    "ThreadId": "242627",
+    "Html": "\r\n<p>In your view, do you make use of the</p>\r\n<pre style=\"font-family:consolas\">&nbsp;&nbsp;&nbsp;&nbsp;[<span style=\"color:#2b91af\">RegionMemberLifetime</span>&nbsp;(&nbsp;KeepAlive&nbsp;<span style=\"color:gray\">=</span>&nbsp;<span style=\"color:#c18139\">false</span>)]<br></pre>\r\n<p>attribute?</p>\r\n<p>This should force the popup to contain a new instance of the view (this should include your viewmodel) for the popup to show.&nbsp; Also are you making a change to the underlying collection from within that view before closing and does the collection see\r\n that change (at least is it notified)?</p>\r\n<p>&nbsp;</p>\r\n<p>Morgan.</p>\r\n",
+    "PostedDate": "2011-01-20T12:01:13.26-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

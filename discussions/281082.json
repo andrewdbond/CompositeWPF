@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "704350",
+    "ThreadId": "281082",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>&nbsp;</p>\r\n<p>I have several questions regarding the use of a TreeView with PRISM &amp; MVVM.</p>\r\n<p>&nbsp;</p>\r\n<p>I have several models that I want to put inside a treeview. They are all represented with a checkbox (checked property), an icon and a name. There are inheritance relations between some of them. Some of them are used as nodes in the treeview and other as\r\n leaves.</p>\r\n<p>&nbsp;</p>\r\n<p>-<span style=\"font:7pt 'Times New Roman'\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n</span>The first question is a general MVVM question: Do I have to create different TreeViewItemViewModels (one for each model)? Or should I create a generic TreeViewItemViewModel class that encapsulates all the models? Basically, the only changes between the\r\n ViewModels are the item icon (one for each model) and maybe the context menu. The first solution seems cleaner but it means that while creating the ObservableCollection, the correct ViewModel should be determined for each item depending on its model type.\r\n What is your opinion on this choice?</p>\r\n<p>&nbsp;</p>\r\n<p>-<span style=\"font:7pt 'Times New Roman'\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n</span>Secondly, I want to communicate with the other modules when an item gets disabled (i.e. his checkbox is unchecked). I was thinking of using a shared service for that purpose. The shared service is resolved with MEF using the ImportingConstructors attribute\r\n in the main treeview ViewModel. But to my mind, the items must have a direct access to this shared service in order to notify it when the Checked property is changed. Thus, the shared service instance is passed to the TreeViewItemViewModels when they are created.\r\n Is that correct?</p>\r\n<p>&nbsp;</p>\r\n<p>I hope my explanation are not too messy,</p>\r\n<p>Thanks for your help,</p>\r\n<p>Best,</p>\r\n",
+    "PostedDate": "2011-11-28T12:12:12.83-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "704943",
+    "ThreadId": "281082",
+    "Html": "<p>Hi,</p>\r\n<p>Regarding your first question about <strong>MVVM</strong>, take into account that this decision will be strictly related to your particular scenario. From my point of view, using <strong>ViewModels </strong>that inherit from a generic base <strong>ViewModel </strong> class could be a reasonable approach.</p>\r\n<p>Second, to&nbsp; achieve communication with other modules using <strong>Shared Services </strong>like you mentioned sounds like a good idea. Also, another approach could be using <strong>Event Aggregation</strong>.</p>\r\n<p>You can find more information about these approaches in the Prism documentation at MSDN:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28v=PandP.40%29.aspx\">Chapter 9: Communicating Between Loosely Coupled Components</a></li>\r\n</ul>\r\n<p>I hope you find this handy,﻿</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-11-29T12:22:30.877-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "705510",
+    "ThreadId": "281082",
+    "Html": "<p>Hi Augustin,</p>\r\n<p>Tanks for your answer.</p>\r\n<p>It helps me but I am still not very clear about all of this (MVVM, Prism, etc.)</p>\r\n<p>In particular, I have another question regarding bindings and events. I have some data (instances of a model that implement INotifyPropertyChanged) that are shared with a shared service between different views (TreeView, etc.). Some of the views are directly binded to the models (through the associated ViewModel). Therefore, when one element is selected, the property IsSelected is set to true and it gets automatically selected in the other views with the binding. Howerver, in one of the views, the binding can&rsquo;t be used (not WPF). What do I have to use in order to select the item in this view as well?</p>\r\n<p><span style=\"font: 7pt 'Times New Roman';\">&nbsp;</span>- Listen for the PropertyChanged event for the shared data in order to update consequently when the &ldquo;IsSelected&rdquo; property is set to true?</p>\r\n<p>-<span style=\"font: 7pt 'Times New Roman';\">&nbsp;&nbsp; </span>Use event aggregator but it seems a bit weird to me as we have this PropertyChanged event...</p>\r\n<p>Thanks again for your help,</p>\r\n<p>Best,</p>",
+    "PostedDate": "2011-11-30T13:22:44.257-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "705953",
+    "ThreadId": "281082",
+    "Html": "<p>Hi,</p>\r\n<p>The approach that should be used for your case depends mostly of your personal preferences and the requirements of your scenario.</p>\r\n<p>Based on my understanding, subscribing to the <strong>PropertyChanged </strong>event seems like a valid approach. However, take into account that you might require to implement some custom logic to unsubscribe for this event when needed to avoid keeping the subscriber alive (for example, when the view / view model is no longer needed, it they are subscribed to the event, they will be kept alive until the subscription is undone), which is the advantage that the <strong>Event Aggregator</strong> provides.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-12-01T08:59:27.717-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "705982",
+    "ThreadId": "281082",
+    "Html": "<p>Thanks Damian,</p>\r\n<p>That fits with my understanding.</p>\r\n<p>Best,</p>",
+    "PostedDate": "2011-12-01T09:53:08.873-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

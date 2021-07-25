@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "507546",
+    "ThreadId": "230988",
+    "Html": "<p>Can anyone suggest the best way to implement what I am trying to accomplish?&nbsp; I have a Main View which will contain either a List View or an Edit View.&nbsp; Both the List View and Edit View will contain a Toolbar.&nbsp; On the List View Toolbar there will be an Edit Button which when clicked should replace the List View with the Edit View.&nbsp; And the Edit View Toolbar will contain a Search Button which when clicked should replace the Edit View with the List View.&nbsp; Hopefully, I explained what I am trying to accomplish.</p>",
+    "PostedDate": "2010-10-14T19:58:34.113-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "507818",
+    "ThreadId": "230988",
+    "Html": "<p id=82d15990-8eef-012d-037f-12313b101d25>Hi,</p>\r\n<p id=96e336d0-ba9c-012d-cbbf-123139081a13>Assuming  that these views could be placed in different modules, a possibility  for implementing what you&rsquo;re explaining would be to have a <a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.composite.presentation.regions.singleactiveregion.aspx\">SingleActiveRegion</a> (for example, a ContentControl) named &ldquo;MainRegion&rdquo; in which the views  could be inserted, and have the buttons in the toolbar switch between  views by publishing an event through the <a href=\"http://msdn.microsoft.com/en-us/library/ff921075(PandP.20).aspx\">Event Aggregator</a>.  If both views were located in the same module, it wouldn&rsquo;t be necessary  to use the Event Aggregator and you could switch between views directly  from your ViewModel.</p>\r\n<p id=96e34800-ba9c-012d-cbc0-123139081a13>To this purpose, the <a href=\"http://msdn.microsoft.com/en-us/library/ff921075(PandP.20).aspx\">View Injection</a> approach should be used, and the views should be registered with a name, like this:</p>\r\n<p id=96e35a60-ba9c-012d-cbc1-123139081a13><strong>regionManager.Regions[&quot;MainRegion&quot;].Add(new Views.ListView(),&quot;ListView&quot;);</strong></p>\r\n<p id=96e36bc0-ba9c-012d-cbc2-123139081a13>When  switching, each view would publish a &ldquo;SwitchViewEvent&rdquo; with the other  view&rsquo;s name as a parameter, to indicate that it should be activated.</p>\r\n<p id=96e37de0-ba9c-012d-cbc3-123139081a13>For  example, the code in your button for replacing the List View for the  Edit View could be like this (assuming that myListView is a reference to  your current view):</p>\r\n<p id=96e391a0-ba9c-012d-cbc4-123139081a13><strong>eventAggregator.GetEvent&lt;SwitchViewsEvent&gt;().Publish(&ldquo;EditView&rdquo;);</strong></p>\r\n<p id=96e3a5f0-ba9c-012d-cbc5-123139081a13>and the code in your Edit View for subscribing to that event could be like this:</p>\r\n<p id=96e3bad0-ba9c-012d-cbc6-123139081a13><strong>eventAggregator.GetEvent&lt;SwitchViewsEvent&gt;().Subscribe(addViewtoRegion);</strong></p>\r\n<p id=96e3d0c0-ba9c-012d-cbc7-123139081a13><strong>private void addViewtoRegion(string viewName) </strong><br><strong>{</strong></p>\r\n<p id=96e3e760-ba9c-012d-cbc8-123139081a13><strong>var view = regionManager.Regions[&quot;MainRegion&quot;].GetView(viewName);</strong></p>\r\n<p id=96e3ff90-ba9c-012d-cbc9-123139081a13><strong>if(view !=null)regionManager.Regions[&quot;MainRegion&quot;].Activate(view);</strong></p>\r\n<p id=96e41970-ba9c-012d-cbca-123139081a13><strong>}</strong></p>\r\n<p id=96e43350-ba9c-012d-cbcb-123139081a13>Since  the SingleActiveRegion can only hold one active region at a time,  activating the EditView will deactivate the ListView and vice-versa.</p>\r\n<p id=96e44f40-ba9c-012d-cbcc-123139081a13>You  can find more information about this in the UI Composition Quickstart  (there is only a Silverlight version, but it could be useful anyway).</p>\r\n<p id=96e46ef0-ba9c-012d-cbcd-123139081a13>Hope this helps.</p>\r\n<p id=82d18930-8eef-012d-0381-12313b101d25>Fernando Antivero    <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-15T08:14:24.14-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "508366",
+    "ThreadId": "230988",
+    "Html": "<p>Thank You,</p>\r\n<p>That does exactly what I was looking for.</p>",
+    "PostedDate": "2010-10-16T20:27:43.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

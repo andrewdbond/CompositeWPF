@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1275479",
+    "ThreadId": "552548",
+    "Html": "Hello,\r<br />\nRequestNavigate method is unable to find correct view in the following case:<br />\n<ul>\n<li>I use View injection:</li>\n</ul>\n<pre><code>CustomView view = new CustomView();\nstring viewId = &quot;MyDynamicId&quot;;\nRegionManager.Regions[regionName].Add(view, viewId);</code></pre>\n\n<ul>\n<li>Next, I try to use RequestNavigate like this:</li>\n</ul>\n<pre><code>object view = RegionManager.Regions[regionName].GetView(&quot;MyDynamicId&quot;);\n//Preceeding code works and give me correct view...\n\nRegionManager.Regions[regionName].RequestNavigate(&quot;MyDynamicId&quot;);\n//But this code seems to not retrieve existing view because he try to create a new view\n//although I use KeepAlive = true for the view</code></pre>\n\nPrecisions : I use Unity\r<br />\n<br />\nThanks a lot for your help, and tell me if I forgot some details to understand my problem.<br />\n",
+    "PostedDate": "2014-07-23T07:03:37.637-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1284581",
+    "ThreadId": "552548",
+    "Html": "In my understanding, I think you will initialize the views using the Container. \r<br />\nYou can't use CustomView view = new CustomView() yourself.\r<br />\n<br />\nPlease use container.RegisterType&lt;object, CustomView&gt;(&quot;CustomView&quot;); in your module initializer. \r<br />\n<br />\nor CustomView view = container.Resolve&lt;CustomView&gt;();\r<br />\n<br />\nHope this helps.<br />\n",
+    "PostedDate": "2014-08-04T06:41:42.047-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

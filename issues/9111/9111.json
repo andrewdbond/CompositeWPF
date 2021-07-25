@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "It's a common complaint that the CanExecuteChanged handlers of DelegateCommand get unexpectedly garbage collected. While it's simple enough to work around the problem, I think it would be worth changing Prism to avoid the problem appearing:\n \nIn DelegateCommand, rather than referencing the EventHandler with a WeakReference for the CanExecuteChanged handlers, Prism should instead use the DelegateReference (as used by the Event Aggregator).\n \nDelegateReference holds a weak referece to the target object of the Delegate, instead of the handler function itself.\n \nThis would then negate the need for holding an explicit reference to the EventHandler for the majority of handlers, and would still not present a memory leak.",
+    "LastUpdatedDate": "2015-07-08T06:44:40.587-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-01-10T05:49:56.94-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "DelegateCommand should use DelegateReference to reference target object",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 9111
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nBased on my understanding this is currently by design as it can be seen in the following comments inside the Prism v4 Library source code (DelegateCommandBase.cs):\r\n\r\n        /// \r\n        /// Occurs when changes occur that affect whether or not the command should execute. You must keep a hard\r\n        /// reference to the handler to avoid garbage collection and unexpected results. See remarks for more information.\r\n        /// \r\n        /// \r\n        /// When subscribing to the  event using \r\n        /// code (not when binding using XAML) will need to keep a hard reference to the event handler. This is to prevent \r\n        /// garbage collection of the event handler because the command implements the Weak Event pattern so it does not have\r\n        /// a hard reference to this handler. An example implementation can be seen in the CompositeCommand and CommandBehaviorBase\r\n        /// classes. In most scenarios, there is no reason to sign up to the CanExecuteChanged event directly, but if you do, you\r\n        /// are responsible for maintaining the reference.\r\n        /// \r\n        /// \r\n        /// The following code holds a reference to the event handler. The myEventHandlerReference value should be stored\r\n        /// in an instance member to avoid it from being garbage collected.\r\n        /// \r\n        /// EventHandler myEventHandlerReference = new EventHandler(this.OnCanExecuteChanged);\r\n        /// command.CanExecuteChanged += myEventHandlerReference;\r\n        /// \r\n        /// \r\n        public event EventHandler CanExecuteChanged\r\n        {\r\n            add\r\n            {\r\n                WeakEventHandlerManager.AddWeakReferenceHandler(ref _canExecuteChangedHandlers, value, 2);\r\n            }\r\n            remove\r\n            {\r\n                WeakEventHandlerManager.RemoveWeakReferenceHandler(_canExecuteChangedHandlers, value);\r\n            }\r\n        }\r\n\r\nWe are leaving this work item open, so that the team is aware of your suggestion and analyzes it for future releases.\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami﻿",
+      "PostedDate": "2012-01-27T10:31:37.393-08:00",
+      "Id": 156565
+    },
+    {
+      "Message": "We recently encountered a nasty bug that found to be since DelegateCommand internal implementation hold weak reference of the delegate.\nAlghouth you claim it's by design, you need to realize how is the common usage, intuative and acceptable event registration C# by most developers, and realize they will do simple CanExecuteChanged += MyHandlingMethod and will get hit by curent implementation when it's GCed.\n\nIn addition when commonly implementing ICommandSource it isn't trivial to check or assume Prism DelegateCommand is under our ICommand and therefor keep the delegate hard referenced locally.\nOr if I have i other class an ICommand to always keep hard reference to delegate, since who knows if it's Prism DelegateCommand. it's not the common practice.\nkeep it simple: command.CanexecuteChanged += MyHanlingMethod\n\nAlthough it's easy to wave the flag of it's by design, it actually seems like design bug or wrong design,\nbecause you trick most developers that custom to work a very common way.\nyou can't expect developers to read the class comments that it's required to \"You must keep a hard reference to the handler \", they have know good reason to start digging in your library in order to do simple things as registering to events.\n\nToday you have other better implementation or handling weak delegates that won't fool developers, and you ought to take it seriously to change current implementation to keep it simple.\n\nthanks",
+      "PostedDate": "2015-07-08T06:44:40.587-07:00",
+      "Id": 187041
+    }
+  ]
+}

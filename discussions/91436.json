@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "298343",
+    "ThreadId": "91436",
+    "Html": "<p>Hi,</p>\r\n<p>I am attempting to run the Silverlight Stocktrader reference implementation application under Visual Studio 2008. When I click on a stock and then click on the &quot;+&quot; plus button, it raises an exception:</p>\r\n<p>Attempt by method 'StockTraderRI.Infrastructure.DependencyPropertyHelper.GetOrAddValue&lt;System.__Canon&gt;(System.Windows.DependencyObject, System.Windows.DependencyProperty)' to access method 'StockTraderRI.Infrastructure.OnValidationError+MonitorBindingValidationErrorsBehavior..ctor()' failed.</p>\r\n<p>Learning something new becomes so disappointing when&nbsp;examples don't&nbsp;work straight out of the box!</p>\r\n<p>Here's the stack trace:</p>\r\n<p>[External Code]&nbsp;<br>&nbsp;&nbsp;StockTraderRI.Infrastructure!StockTraderRI.Infrastructure.DependencyPropertyHelper.GetOrAddValue&lt;StockTraderRI.Infrastructure.OnValidationError.MonitorBindingValidationErrorsBehavior&gt;(System.Windows.DependencyObject dependencyObject = {System.Windows.Controls.TextBox}, System.Windows.DependencyProperty property = {System.Windows.CustomAttachedDependencyProperty}) Line 38 + 0x2b bytes&nbsp;C#<br>&nbsp;&nbsp;StockTraderRI.Infrastructure!StockTraderRI.Infrastructure.OnValidationError.MonitorBindingValidationErrors(System.Windows.FrameworkElement element = {System.Windows.Controls.TextBox}) Line 110 + 0x13 bytes&nbsp;C#<br>&nbsp;&nbsp;StockTraderRI.Infrastructure!StockTraderRI.Infrastructure.OnValidationError.ShowToolTipPropertyChanged(System.Windows.DependencyObject dependencyObject = {System.Windows.Controls.TextBox}, System.Windows.DependencyPropertyChangedEventArgs e = {System.Windows.DependencyPropertyChangedEventArgs}) Line 136 + 0x8 bytes&nbsp;C#<br>&nbsp;&nbsp;[External Code]&nbsp;<br>&nbsp;&nbsp;StockTraderRI.Infrastructure!StockTraderRI.Infrastructure.OnValidationError.SetShowToolTip(System.Windows.DependencyObject dependencyObject = {System.Windows.Controls.TextBox}, bool value = true) Line 99 + 0x35 bytes&nbsp;C#<br>&nbsp;&nbsp;[External Code]&nbsp;<br>&nbsp;&nbsp;StockTraderRI.Modules.Position!StockTraderRI.Modules.Position.Orders.OrderDetailsView.OrderDetailsView() Line 25 + 0x8 bytes&nbsp;C#<br>&nbsp;&nbsp;[External Code]&nbsp;<br>&gt;&nbsp;StockTraderRI.Modules.Position!StockTraderRI.Modules.Position.Controllers.OrdersController.StartOrder(string tickerSymbol = &quot;STOCK0&quot;, StockTraderRI.Infrastructure.TransactionType transactionType = Buy) Line 112 + 0x2a bytes&nbsp;C#<br>&nbsp;&nbsp;StockTraderRI.Modules.Position!StockTraderRI.Modules.Position.Controllers.OrdersController.OnBuyExecuted(string parameter = &quot;STOCK0&quot;) Line 62 + 0x10 bytes&nbsp;C#<br>&nbsp;&nbsp;Microsoft.Practices.Composite.Presentation!Microsoft.Practices.Composite.Presentation.Commands.DelegateCommand&lt;string&gt;.Execute(string parameter = &quot;STOCK0&quot;) Line 83 + 0x11 bytes&nbsp;C#<br>&nbsp;&nbsp;Microsoft.Practices.Composite.Presentation!Microsoft.Practices.Composite.Presentation.Commands.DelegateCommand&lt;string&gt;.System.Windows.Input.ICommand.Execute(object parameter = &quot;STOCK0&quot;) Line 136 + 0x35 bytes&nbsp;C#<br>&nbsp;&nbsp;Microsoft.Practices.Composite.Presentation!Microsoft.Practices.Composite.Presentation.Commands.CommandBehaviorBase&lt;System.Windows.Controls.Primitives.ButtonBase&gt;.ExecuteCommand() Line 127 + 0x22 bytes&nbsp;C#<br>&nbsp;&nbsp;Microsoft.Practices.Composite.Presentation!Microsoft.Practices.Composite.Presentation.Commands.ButtonBaseClickCommandBehavior.OnClick(object sender = {System.Windows.Controls.Button}, System.Windows.RoutedEventArgs e = {System.Windows.RoutedEventArgs}) Line 43 + 0xb bytes&nbsp;C#<br>&nbsp;&nbsp;[External Code]&nbsp;</p>\r\n<p>Can someone please tell me what I need to do to get this working?</p>\r\n<p>Regards,</p>\r\n<p>Tony</p>",
+    "PostedDate": "2010-02-20T04:09:12.047-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "408965",
+    "ThreadId": "91436",
+    "Html": "<p id=ff020730-0512-012d-f8a4-123139096d81>Hi Tony,</p>\r\n<p id=ff023280-0512-012d-f8a5-123139096d81>Assuming you have the right  prerequisites installed there should be no problem running the reference  implementation. You can check the system requirements <a href=\"http://msdn.microsoft.com/en-us/library/dd458809.aspx\">here</a>.  You can also try to re-extract the Prism files just in case any  modifications were performed to them.</p>\r\n<p id=ff027a40-0512-012d-f8a6-123139096d81>In case the above does not  work, please provide a repro sample so we can find the cause for this  issue.</p>\r\n<p id=ff02c720-0512-012d-f8a7-123139096d81>Please let me  know if this helps.</p>\r\n<p id=ff0312e0-0512-012d-f8a8-123139096d81>Damian  Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-02-26T08:29:00.063-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "413316",
+    "ThreadId": "91436",
+    "Html": "<p>I also am getting this error and have the listed prerequisites. I also have Visual Studio 2010 Ultimate Final Release Candidate, .Net 4, and Microsoft Silverlight 4 installed. What kind of repro sample are you looking for?</p>",
+    "PostedDate": "2010-03-02T11:27:37.283-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "419324",
+    "ThreadId": "91436",
+    "Html": "<p><span style=\"font-family:Consolas;color:#0000ff;font-size:x-small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:x-small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:x-small\">\r\n<p>Try to change the class access modifier in the OnValidationError.cs from <strong>private</strong> to <strong>public</strong>, will solve the problem.</p>\r\n<p>\\RI\\Silverlight\\StockTraderRI.Infrastructure.Silverlight\\OnValidationError.cs</p>\r\n<p>public</p>\r\n</span></span></span><span style=\"font-family:Consolas;color:#0000ff;font-size:x-small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:x-small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:x-small\">class</span></span></span><span style=\"font-family:Consolas;font-size:x-small\"><span style=\"font-family:Consolas;font-size:x-small\"> </span></span><span style=\"font-family:Consolas;color:#2b91af;font-size:x-small\"><span style=\"font-family:Consolas;color:#2b91af;font-size:x-small\"><span style=\"font-family:Consolas;color:#2b91af;font-size:x-small\">MonitorBindingValidationErrorsBehavior</span></span></span></p>\r\n<p><span style=\"font-family:Consolas;color:#0000ff;font-size:x-small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:x-small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:x-small\">public&nbsp;class</span></span></span><span style=\"font-family:Consolas;font-size:x-small\"><span style=\"font-family:Consolas;font-size:x-small\"> </span></span><span style=\"font-family:Consolas;color:#2b91af;font-size:x-small\"><span style=\"font-family:Consolas;color:#2b91af;font-size:x-small\"><span style=\"font-family:Consolas;color:#2b91af;font-size:x-small\">ToggleBackgroundOnValidationBehavior</span></span></span></p>\r\n<p><span style=\"font-family:Consolas;color:#0000ff;font-size:x-small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:x-small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:x-small\">public </span></span></span><span style=\"font-family:Consolas;color:#0000ff;font-size:x-small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:x-small\"><span style=\"font-family:Consolas;color:#0000ff;font-size:x-small\">class</span></span></span><span style=\"font-family:Consolas;font-size:x-small\"><span style=\"font-family:Consolas;font-size:x-small\"> </span></span><span style=\"font-family:Consolas;color:#2b91af;font-size:x-small\"><span style=\"font-family:Consolas;color:#2b91af;font-size:x-small\"><span style=\"font-family:Consolas;color:#2b91af;font-size:x-small\">ShowToolTipOnValidationBehavior</span></span></span></p>\r\n<p>&nbsp;-Dinhduy</p>",
+    "PostedDate": "2010-03-17T10:23:23.667-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "423422",
+    "ThreadId": "91436",
+    "Html": "<p>Thanks, that worked for me!</p>",
+    "PostedDate": "2010-03-25T01:09:49.657-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

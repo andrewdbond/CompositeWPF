@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "491420",
+    "ThreadId": "226654",
+    "Html": "<p>Hi,<br>I have an app based on Prism (v4 ctp) and MEF.<br>The app has a service IService1. I want this service implementation was exported by some module (not just discovered by MEF)<br>&nbsp;<br><br>&nbsp;&nbsp;&nbsp; public interface IService1 {}<br>&nbsp;&nbsp;&nbsp; public class Service1Impl: IService1 {}<br><br>Service1Impl doesn't have ExportAttribute. This' because I want to create the implementation by hand in my Prism-module:<br><br>&nbsp;&nbsp;&nbsp; [ModuleExport(typeof(SomeModule))]<br>&nbsp;&nbsp;&nbsp; [PartCreationPolicy(CreationPolicy.Shared)]<br>&nbsp;&nbsp;&nbsp; public SomeModule: IModule<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Export]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public IService1 Service1 {get; private set}<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void Initialize()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Service1 = new Service1Impl();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>In some other components I want to get IService1's implementation through MEF Import.<br>The problem is how to tell MEF to do export (in SomeModule) after Initialize was called by Prism? <br><br>If I create the service's implementation in the module's constructor then everything works fine, but it's inconsistent with Prism's modules initialization process. <br>The thing is that Prism initializes modules after MEF's composition completes.<br>Moreover before creation of the service's implementation I need to perform some complex initialization logic and I don't want it to be in constructor.<br><br>So, what are my options?</p>",
+    "PostedDate": "2010-09-09T12:05:38.853-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "492901",
+    "ThreadId": "226654",
+    "Html": "<p>Hello,</p>\r\n<p>What you have above should work fine.&nbsp; The export definition for IService1 is exposed through your module, although it will remain null until your module is initialized.&nbsp; Because the other components may be constructed before your module is initialized, they will need to use [Import] with AllowDefault=true and AllowRecomposition=true.&nbsp; This will allow the IService1 property to be null until the module is initialized, and be updated with the value when the module is initialized.&nbsp; You can also import a Lazy&lt;IService1&gt; which will prevent trying to instantiate IService1 until you actually use it.</p>\r\n<p>If you end up with composition errors, post a code sample and I am happy to take a look.</p>\r\n<p>Geoff Cox<br>Southworks</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-13T10:24:07.72-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

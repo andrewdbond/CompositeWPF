@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "417040",
+    "ThreadId": "204663",
+    "Html": "<p>Hi All,</p>\r\n<p>I need some help in Display ProgressBar While Loading data Asyn.</p>\r\n<p>I have 3 Regions ( Header, Main and Footer), when certain event occurs (Click) on MainRegion i Wanted to display a progressBar Covering the Entire Shell (covering 3 Regions).</p>\r\n<p>Thanks In Advance</p>",
+    "PostedDate": "2010-03-11T09:27:18.413-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "418889",
+    "ThreadId": "204663",
+    "Html": "<p>Any idea how to wrap the three Regions</p>",
+    "PostedDate": "2010-03-16T14:14:28.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "428346",
+    "ThreadId": "204663",
+    "Html": "<p id=7e0aea20-2484-012d-6df4-12313d013db1>Hi,</p>\r\n<p id=7e0af440-2484-012d-6df5-12313d013db1>A possible way to wrap all  regions could be using something similar to the Busy Indicator from the <a href=\"http://silverlight.codeplex.com/\">Silverlight toolkit</a> in the  Shell. Suppose your Shell has a Grid as the Root Element. You can add  the busy indicator inside your Grid at the bottom of the Grid&rsquo;s  declaration (so it shown at the highest value of the Z axis) and make it  occupy the entire grid. So if the Grid has three rows something like  this would work:</p>\r\n<p id=7e0b5300-2484-012d-6dfa-12313d013db1>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">Grid</span><span style=\"color:Blue\">&gt;</span>\r\n&hellip;\r\n<span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">toolkit</span><span style=\"color:Blue\">:</span><span style=\"color:#A31515\">BusyIndicator</span> <span style=\"color:Red\">Grid.RowSpan</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">3</span><span style=\"color:Black\">&quot;</span> <span style=\"color:Red\">Visibility</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">{Binding IsSearching, Converter={StaticResource BooleanToVisibilityConverter}}</span><span style=\"color:Black\">&quot;</span> <span style=\"color:Red\">IsBusy</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">{Binding IsSearching}</span><span style=\"color:Black\">&quot;</span> <span style=\"color:Red\">BusyContent</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">Searching...</span><span style=\"color:Black\">&quot;</span> <span style=\"color:Blue\">/&gt;</span>\r\n<span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">Grid</span><span style=\"color:Blue\">&gt;</span>\r\n</pre>\r\n</div>\r\nThe <strong>ShellViewModel</strong> can take care of getting the events through event aggregator and  updating the binding properties.</p>\r\n<p id=7e0b69f0-2484-012d-6dfb-12313d013db1>A similar approach can be  taken with the <a href=\"http://silverlight.codeplex.com/\">ProgressBar</a> control (setting the Width and Height as necessary), but it will not  shade the regions and views.</p>\r\n<p id=7e0b85c0-2484-012d-6dfc-12313d013db1>Please let me know if this  helps.</p>\r\n<p id=7e0ba210-2484-012d-6dfd-12313d013db1>Damian  Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-04-07T08:50:37.397-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

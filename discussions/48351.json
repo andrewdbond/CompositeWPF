@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "161362",
+    "ThreadId": "48351",
+    "Html": "I am trying to implement something in Silverlight and WPF. The Click.Command exists for both. In WPF it is working fine.<br>\r\nBut in Silverlight I get an error:<br>\r\nUnknown Attribute &quot;Click.Command&quot; for Element &quot;Button&quot;.<br>\r\n<br>\r\nHere is how I defined the Button:<br>\r\n<span style=\"font-size:13px;color:#a31515\"><span style=\"font-size:13px;color:#a31515\">\r\n<p> </p>\r\n</span>\r\n<p> </p>\r\n</span>\r\n<p><span style=\"font-size:13px;color:#0000ff\">&lt;</span><span style=\"font-size:13px;color:#a31515\">Button</span><span style=\"font-size:13px;color:#ff0000\"> Content</span><span style=\"font-size:13px;color:#0000ff\">=&quot;Speichern&quot;</span><span style=\"font-size:13px;color:#ff0000\"> Margin</span><span style=\"font-size:13px;color:#0000ff\">=&quot;0,4,137,4&quot;</span><span style=\"font-size:13px;color:#ff0000\"> Width</span><span style=\"font-size:13px;color:#0000ff\">=&quot;60&quot;</span><span style=\"font-size:13px;color:#ff0000\"> Height</span><span style=\"font-size:13px;color:#0000ff\">=&quot;25&quot; <br>\r\n             </span><span style=\"font-size:13px;color:#ff0000\">HorizontalAlignment</span><span style=\"font-size:13px;color:#0000ff\">=&quot;Right&quot;</span><span style=\"font-size:13px;color:#ff0000\"> VerticalAlignment</span><span style=\"font-size:13px;color:#0000ff\">=&quot;Bottom&quot;</span><span style=\"font-size:13px;color:#ff0000\"> Grid.Row</span><span style=\"font-size:13px;color:#0000ff\">=&quot;1&quot;<br>\r\n             </span><span style=\"font-size:13px;color:#ff0000\">prism</span><span style=\"font-size:13px;color:#0000ff\">:</span><span style=\"font-size:13px;color:#ff0000\">Click.Command</span><span style=\"font-size:13px;color:#0000ff\">=&quot;{</span><span style=\"font-size:13px;color:#a31515\">x</span><span style=\"font-size:13px;color:#0000ff\">:</span><span style=\"font-size:13px;color:#a31515\">Static</span><span style=\"font-size:13px;color:#ff0000\"> presenters</span><span style=\"font-size:13px;color:#0000ff\">:</span><span style=\"font-size:13px;color:#ff0000\">KontoCommands</span><span style=\"font-size:13px;color:#0000ff\">.SaveKontenCommand}&quot;<br>\r\n             </span><span style=\"font-size:13px;color:#ff0000\">Visibility</span><span style=\"font-size:13px;color:#0000ff\">=&quot;{</span><span style=\"font-size:13px;color:#a31515\">Binding</span><span style=\"font-size:13px;color:#ff0000\"> RelativeSource</span><span style=\"font-size:13px;color:#0000ff\">={</span><span style=\"font-size:13px;color:#a31515\">RelativeSource</span><span style=\"font-size:13px;color:#ff0000\"> FindAncestor</span><span style=\"font-size:13px;color:#0000ff\">,</span><span style=\"font-size:13px;color:#ff0000\"> AncestorType</span><span style=\"font-size:13px;color:#0000ff\">={</span><span style=\"font-size:13px;color:#a31515\">x</span><span style=\"font-size:13px;color:#0000ff\">:</span><span style=\"font-size:13px;color:#a31515\">Type</span><span style=\"font-size:13px;color:#ff0000\"> ItemsControl</span><span style=\"font-size:13px;color:#0000ff\">}},</span><span style=\"font-size:13px;color:#ff0000\"> Path</span><span style=\"font-size:13px;color:#0000ff\">=DataContext.SaveVisibility}&quot;/&gt;</span></p>\r\n<p>&nbsp;</p>\r\n<p>I am not sure what I am doing wrong. Any suggestions?</p>\r\n",
+    "PostedDate": "2009-02-24T04:02:14.127-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "161391",
+    "ThreadId": "48351",
+    "Html": "Hi!<br>\r\n<br>\r\nx:Static is not supported by Silverlight you only can have StaticResource.<br>\r\n<br>\r\nOn the other hand RelativeSource is also not supported by Silverlight 2.<br>\r\n<br>\r\nCheck out the StockTrader RI for Silverlight to get a working sample for the Command. For the visibility you should try to use a Model variable binding with a ValueConverter which looks up the ItemsControl's DataContext for you. But since DataContext is assigned downwards the VisualTree afaik, your button should also has access to the same data within it's DataContext property, but I can't tell this from your snippet above.<br>\r\n<br>\r\nhth,<br>\r\nAttila\r\n",
+    "PostedDate": "2009-02-24T05:09:51.897-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "161425",
+    "ThreadId": "48351",
+    "Html": "Oh. I did not know that..<br>\r\n<br>\r\nOk. The Command I can get to work with simple DataBinding, they are in the ViewModel. But only in the DataTemplate in which the Button is defined. But what do I have to do if I want to define a Button in the Shell and use my CommandProxy and the Commands? Couldn't find a sample in the StockTrader. Just samples where they use DataBinding...<br>\r\nAnd the enabling and disabling is not working like in WPF... Do I have to bind this too? And how?<br>\r\n<br>\r\nEdit: My Error Sorry. It is not working with Databinding.. Same Problem as described below. Need to find the overlaying DataContext somehow...<br>\r\n<br>\r\nThe visibility is more complex. Thought it would work the same way. But as you say, there is no RelativeSource... The Problem is, that the Button is in a DataTemplate for a rowdetails of a Datagrid. The ViewModel is assigned to the whole Datagrid and there is the visibility and everything else set. But the Buttons are shown when one Row is selected and because of that for the button not the whole set (ViewModel) is the datacontext but only one Item in the set. I get BindingErrors saying that SaveVisibility is not defined on that item. I need a way to go up like in WPF.... \r\n",
+    "PostedDate": "2009-02-24T06:02:32.893-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "161429",
+    "ThreadId": "48351",
+    "Html": "DataTemplate's should also get the DataContext property propagated. Add a Click handler within your DataTemplate to your button and check the DataContext property, what's it holding? where is it pointing to?<br>\r\n<br>\r\nCan't you add a Parent property to your ViewModel's &quot;per row&quot; data type? that way you can walk up to the whole dataset.<br>\r\n<br>\r\nIf you'd like to have a per row visibility why can't you propagate that value to the per row datacontext items? What is the base of the determination of the button's visibility why you need the whole data set?\r\n",
+    "PostedDate": "2009-02-24T06:16:22.17-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "161437",
+    "ThreadId": "48351",
+    "Html": "I have to use a bunch of autogenerated Classes and some Interfaces I can not change. Because of that I only have a ViewModel for the Set and not for single Items. <br>\r\nThe single Items are only displayed by DataTemplates and with DataBinding. They have no real funtionality. Things like saving are done with the set.<br>\r\n<br>\r\nTo make the situation a bit clearer:<br>\r\n<br>\r\nWe have a View which gets the ViewModel as DataContext. In the View there is a DataGrid which ItemsSource ist set to Binding. Now we have rows and for this rows a DetailsTemplate. This Template only gets the single Items as DataContext. I know this because I used the DataContext in a Converter. And now the Button. The Button is in the Template too. But all the visibility and command stuff is in the ViewModel. Out of reach for the button. How to get there?<br>\r\nAre Commands comming in Silverlight 3? Does anybody know? Would fix the whole problem I think...<br>\r\n",
+    "PostedDate": "2009-02-24T06:36:44.063-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "161577",
+    "ThreadId": "48351",
+    "Html": "<p>Hi,<br>\r\nThis is a limitation in Silverlight. It would be much easier if we had RelativeSource or ElementName in Binding. Let’s hope for it in SL3 :)<br>\r\n<br>\r\nIn order to workaround it, you have some options.<br>\r\nIf the command you are trying to bind to is a global command (and not an instance command hanging from your ViewModel), and I guess it is your case because you were first using the x:Static markup, then the solution is pretty easy.<br>\r\nYou need to create a command proxy class that expose the commands.<br>\r\nThen add this class to the Resources (either in App.xaml or in your UserControl for the view)<br>\r\nBind to the command using StaticResource in the Source property</p>\r\n<p>public class KontoCommandsProxy<br>\r\n{<br>\r\n  public ICommand SaveKontenCommand { get { ... } }<br>\r\n}</p>\r\n<p>&lt;UserControl ... &gt;<br>\r\n&lt;UserControl.Resources&gt;<br>\r\n  &lt;presenters:KontoCommandsProxy x:Key=&quot;KontoCommandsProxy&quot; /&gt;<br>\r\n&lt;/UserControl.Resources&gt;<br>\r\n  ...<br>\r\n  &lt;DataGrid&gt;<br>\r\n    ...<br>\r\n    &lt;Button Click.Command=&quot;{Binding SaveKontenCommand, Source={StaticResource KontoCommandsProxy}}&quot; ... /&gt;<br>\r\n  &lt;/DataGrid&gt;<br>\r\n&lt;/UserControl&gt;<br>\r\n<br>\r\n<br>\r\nIn case this is an instance command and not a global one, you can check out the PositionSummaryView in the StockTrader RI, which handles this scenario, although the workaround is a little more complex than this one, due to the lack of DynamicResource in SL again.</p>\r\n<p>I hope this helps,<br>\r\nJulian Dominguez<br>\r\n<a href=\"http://blogs.southworks.net/jdominguez\">http://blogs.southworks.net/jdominguez</a> </p>\r\n",
+    "PostedDate": "2009-02-24T11:45:11.23-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "161781",
+    "ThreadId": "48351",
+    "Html": "Thank you so much! That is exactly what I am looking for. Again such a simple sulotion. There are times when I notice that I just started one month ago with WPF and Silverlight...<br>\r\n<br>\r\nBut the Visibility thing is not solved. Perhaps I just have to wait until SL3... <br>\r\n<br>\r\nEdit: I got it working, in fact it is working nearly perfect.. But the enabled Status is not updated correctly... When I edit something in a details template nothing happens to my Buttons. When I select another Row there the Buttons are enabled and dsabled as they should. Do I have to Refresh the pasge after each edit?? In the WPF implementation this works fine and the debugging shows that everything is the right way.\r\n",
+    "PostedDate": "2009-02-24T23:16:40.723-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "162630",
+    "ThreadId": "48351",
+    "Html": "I still need you help.<br>\r\nI don't get the Buttons enabled and disabled correctly. I don't know why. As I said before The ViewModel returns the right values for the enabledstate but the buttons do not do what they should do. Only when I click into another row the buttons in the new row get enabled. But when I click an Button I am getting errors because the state does not fit the changes made. Even if I change back into the row where I made the changes the buttons are still disabled.<br>\r\nIs this a bug or something else?\r\n",
+    "PostedDate": "2009-02-27T00:14:43.843-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

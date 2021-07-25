@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "457062",
+    "ThreadId": "216467",
+    "Html": "<p>The implementation given uses reflection to determine what property name to raise, based on receiving a lambda expression as an argument. Does the Prism team suggest this as a recommended general purpose implementation? It seems like quite an expensive&nbsp;way of avoiding the use of a string.&nbsp;Is it a concern at all that there may be a performance hit of doing it this way when there are a lot of frequent change notifications occuring?</p>\r\n<p>So far with our projects we have just used strings and experienced very few difficulties. But it has never sat all that well, and we would like a better way to do it.</p>",
+    "PostedDate": "2010-06-17T21:59:37.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "471788",
+    "ThreadId": "216467",
+    "Html": "<p>Hi,</p>\r\n<p>Thanks for your feedback, we appreciated this. So far, in the ViewModel base class there are two ways to notify when a property has changed:</p>\r\n<ol>\r\n<li>You could pass an Expression, so reflection is used to manage the property name. </li>\r\n<li>The second option is to notify the property name by passing a string directly. </li>\r\n</ol>\r\n<p>As you mentioned, the former option is more expensive than the second one, but you still can use the other approach. Anyway, take into account that these are the first drops of Prism v4, and that all the feedback received will be undergo in next drops and obviously for the final release.</p>\r\n<p>Using the first approach is easier for refactorings and less error prone (as you will get compilation errors if you misspell the property name).</p>\r\n<p>On the other hand, the product team has not detected performance issues using the lambda expressions approach so far.</p>\r\n<p>Therefore, if you experience in your project any performance issue, you could send this feedback since it will be really important for the product team.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-07-23T11:35:24.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "473628",
+    "ThreadId": "216467",
+    "Html": "My findings so far are that 99% of the time the expense is fine and much preferred over the use of a magic string for reasons of refactoring. \r\n\r\nMost of the time the binding is based on a user input, so the user types and exits the field or clicks a button, and then the data-binding executes the raise property changed. The hit can be measured in milliseconds and simply isn't a factor. \r\n\r\nOn the flipside, the two areas where it does factor in is when you have something like a textbox bound to update as the user types, or when it is some object in the background being updated by a process. For those items, I found a nice compromise is simply to create a global set of constants for the property values and pass those. While less strongly-typed than the expression (i.e. if you change the name of the property, you have to remember to change the value in the constant) it is still much more friendly to refactoring because then the constant itself can be changed in one place or refactored in one place and you don't have to go hunting down strings to in the code.",
+    "PostedDate": "2010-07-28T04:54:30.13-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

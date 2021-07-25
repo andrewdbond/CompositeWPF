@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "529201",
+    "ThreadId": "236635",
+    "Html": "\r\n<p>I am trying to create a simple prism application using MEF, however I am getting the following exception when the application starts up:</p>\r\n<pre>System.ComponentModel.Composition.ImportCardinalityMismatchException: No valid exports were found that match the constraint\r\n        '((exportDefinition.ContractName == &quot;SilverlightApplication1.Shell&quot;)\r\n        AndAlso (exportDefinition.Metadata.ContainsKey(&quot;ExportTypeIdentity&quot;)\r\n        AndAlso &quot;SilverlightApplication1.Shell&quot;.Equals(exportDefinition.Metadata.get_Item(&quot;ExportTypeIdentity&quot;))))',\r\n        invalid exports may have been rejected.\r\n   at System.ComponentModel.Composition.Hosting.ExportProvider.GetExports(ImportDefinition definition, AtomicComposition atomicComposition)\r\n   at System.ComponentModel.Composition.Hosting.ExportProvider.GetExportsCore(Type type, Type metadataViewType, String contractName, ImportCardinality cardinality)\r\n   at System.ComponentModel.Composition.Hosting.ExportProvider.GetExportedValueCore[T](String contractName, ImportCardinality cardinality)\r\n   at System.ComponentModel.Composition.Hosting.ExportProvider.GetExportedValue[T](String contractName)\r\n   at System.ComponentModel.Composition.Hosting.ExportProvider.GetExportedValue[T]()\r\n   at SilverlightApplication1.TestBootstrapper.CreateShell()\r\n   at Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.Run(Boolean runWithDefaultConfiguration)\r\n   at Microsoft.Practices.Prism.Bootstrapper.Run()\r\n   at SilverlightApplication1.App.Application_Startup(Object sender, StartupEventArgs e)\r\n   at MS.Internal.CoreInvokeHandler.InvokeEventHandler(Int32 typeIndex, Delegate handlerDelegate, Object sender, Object args)\r\n   at MS.Internal.JoltHelper.FireEvent(IntPtr unmanagedObj, IntPtr unmanagedObjArgs, Int32 argsTypeIndex, Int32 actualArgsTypeIndex, String eventName)\r\n</pre>\r\n<p>What could I be doing wrong? I started with a fresh Silverlight application created by VS 2010. Then added a shell and exported it:</p>\r\n<pre>    [Export]\r\n    public partial class Shell : UserControl\r\n    {\r\n        public Shell()\r\n        {\r\n            InitializeComponent();\r\n        }\r\n    }\r\n</pre>\r\n<p>Changed App.xaml.cs to run the bootstrapper:</p>\r\n<pre>        private void Application_Startup(object sender, StartupEventArgs e)\r\n        {\r\n            TestBootstrapper bootstrapper = new TestBootstrapper();\r\n            bootstrapper.Run();\r\n        }\r\n</pre>\r\n<p>And here's my bootstrapper that creates and initializes the Shell:</p>\r\n<pre>    public class TestBootstrapper : MefBootstrapper\r\n    {\r\n        protected override DependencyObject CreateShell()\r\n        {\r\n            return this.Container.GetExportedValue&lt;Shell&gt;();\r\n        }\r\n\r\n        protected override void InitializeShell()\r\n        {\r\n            base.InitializeShell();\r\n\r\n            Application.Current.RootVisual = (UIElement)this.Shell;\r\n        }\r\n    }\r\n</pre>\r\n<p>Is there anything that I am omitting? Note that I do not have any modules yet, so I have not bothered with initializing a module catalog.</p>\r\n<p>Thanks.</p>\r\n<p>Naresh</p>\r\n",
+    "PostedDate": "2010-11-30T20:25:55.373-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "529250",
+    "ThreadId": "236635",
+    "Html": "\r\n<p>Answering my own question. Only additional method needed in the TestBootstrapper was:</p>\r\n<p></p>\r\n<pre>        protected override void ConfigureAggregateCatalog()\r\n        {\r\n            this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(TestBootstrapper).Assembly));\r\n        }\r\n</pre>\r\n<p></p>\r\n<p>I suppose I need to add the bootstrapper's assembly to the catalog even if I don't have any other modules.</p>\r\n<p>Thanks.</p>\r\n<p>Naresh</p>\r\n",
+    "PostedDate": "2010-11-30T23:05:44.917-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "529548",
+    "ThreadId": "236635",
+    "Html": "\r\n<p>Hi Naresh,</p>\r\n<p>I am glad that you found a solution&nbsp;for your scenario. Thanks for sharing this with the rest of the community, since other users with a similar situation might find this useful.</p>\r\n<p>Thanks again.</p>\r\n<p>Guido Leandro Maliandi <br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-01T09:25:32.74-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

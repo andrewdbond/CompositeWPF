@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "147795",
+    "ThreadId": "44406",
+    "Html": "Here's my scenario:<br>\r\n1) Shell with 1 TabControl and 1 region called MenuRegion<br>\r\n2) MenuRegion contains Buttons for each of the available modules (applications). <br>\r\n<br>\r\nI need your help figuring out the following: <strong>When one of the buttons is clicked, I need to add a new TabItem to the TabControl, and load and individual instance of the corresponding module (application) inside this TabItem</strong>. <br>\r\nOne module may appear several times in the TabControl.<br>\r\n<br>\r\nPlease help.<br>\r\n",
+    "PostedDate": "2009-01-16T11:03:09.757-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "148347",
+    "ThreadId": "44406",
+    "Html": "I think the confusion here lies in your definition of a &quot;module&quot;, and I would say that it originally confused a team in my company as well.  However, I may be wrong, and the definition you've acquired through guidance may be the exact same one that p&amp;p is trying to portray.  Understand that my perceptions come from a CAB/SCSF-based world (and they have been equally effective in developing atop CAL) --<div><br></div><div>To me, modules are the byproducts of recognition (or intent to eploit) of observations found within the problem domain.  Depending on the project, I like to keep this entity-based for the first cut of segregation.  So we might have a Customers module and an Employees module.  Alternatively, module separation can be driven by user stories.  Modules, to me, then may contain many views and or controllers.  In CAL, I like to have one controller (serving as module controller if you will) for each module, and then at least one controller for each use case that module is intended to fulfill (sounds like SCSF doesn't it?).  During the execution of the application, these controllers could show any number of a myriad of views where no view is necessarily limited to a particular use case.</div><div><br></div><div>Using this understanding, I think what you actually want to achieve is this--</div><div><br></div><div>Given a use case (UC1) which consists of the user clicking a button and showing a tab with some information:</div><div><br></div><div>0) Boot app and show your Shell with some toolbar/ribbon region (region name of &quot;Toolbar&quot;) and a central, tab control-based region (region name of &quot;MainRegion&quot;) each with appropriately registered or default region adapters.</div><div>1) Load and Initialise a module &quot;FooModule&quot;</div><div>2) FooModule's initialisation executes an arbitrary method (&quot;Run&quot; is good) on a controller &quot;FooController&quot;</div><div>3) FooController resolves and runs another controller called &quot;UC1Controller&quot; who's purpose is to create and handle the components and events necessary for enacting UC1.</div><div>4) BarController subscribes some method (OnUC1Invoked) to a well known command that represents the execution of UC1.</div><div>5) BarController goes about registering a command invoking button (invokes UC1 via proper command binding) on the toolbar/ribbon by doing something like &quot;RegionManager.Regions[RegionNames.Toolbar].Add(someButton)&quot;.</div><div>6) The OnUC1Invoked method resolves a&quot; BarView&quot; with a randomly generated id/name and adds the view to &quot;MainRegion&quot;.</div><div><br></div><div>I think I've been fairly generous with my application of disclaimers thus far, but again, I'd like to state that I might be missing something from p&amp;p's intent with CAL.  If I am misunderstanding how modules should be segregated or anything at all, please let me know.</div><div><br></div><div>Cheers and good luck</div><div><br></div><div><br></div><div><div><br></div><div><br></div></div>",
+    "PostedDate": "2009-01-19T06:52:18.47-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "148493",
+    "ThreadId": "44406",
+    "Html": "Mike, I appreciate your response very much. In my case, a module is an entire application (they are small apps in general). For instance, it can be a employee management module, or a database management dashboard. Likely, they are not related.<br>\r\nFollowing your UC's step 0, I do not understand the concept of a &quot;tab control-based region&quot;, and I think that's the core of my question. I am confused with the fact that I need to associate my view with a region by its name, and yet, the regions are to be created on-the-fly (as tabitems)...<br>\r\nSo, can you please expand a little more on the tab control-based region you mention?<br>\r\nThanks!<br>\r\n",
+    "PostedDate": "2009-01-19T13:11:14.71-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "148511",
+    "ThreadId": "44406",
+    "Html": "Yup, very sorry I didn't also mention that a workbench style of application tends to create separate modules for sub-applications (though each of those applications could consist of multiple modules if designed right).<div><br></div><div>So your conundrum is more clear to me now ;)  I have seen it solved in two ways and I'd say one should be more preferred over the other</div><div><br></div><div>Don't do:</div><div>You could dynamically create a region name and assign it to the view dynamically.  If I recall correctly, the specifics are that the RegionManager's RegionName property is an attached property, (just like say Canvas.Top or Canvas.Left).  You would need some sort of service or event implemented to help declare to other components in the system that this new dynamic region is available.</div><div><br></div><div>Do:</div><div>Check out the documentation for CAL concerning scoped RegionManager's; basically, two regions can have the same name under certain conditions. Work out a strategy for utilising this in your framework.</div>",
+    "PostedDate": "2009-01-19T13:59:16.063-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "148512",
+    "ThreadId": "44406",
+    "Html": "I might also add that you might want to consider using scoped Unity containers as well.  That is a lot of homework to do! ;)",
+    "PostedDate": "2009-01-19T14:01:18.227-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "148549",
+    "ThreadId": "44406",
+    "Html": "Thank you Mike. You gave me some good ideas and I will work on those.<br>\r\nI appreciate you help!<br>\r\n- Gus<br>\r\n",
+    "PostedDate": "2009-01-19T17:02:21.543-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

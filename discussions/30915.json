@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "102830",
+    "ThreadId": "30915",
+    "Html": "Hi,<br>\r\nI'm trying to&nbsp; activate a storyboard that animates Shell regions as a response to an event raised by a module.&nbsp;I want to use a single storyboard to animate more than one region to insure syncronization.&nbsp;<br>\r\nI have placed my storyboard in the Shell. But&nbsp;I know I should not refrence the shell from&nbsp; the modules.&nbsp;<br>\r\nAny recommendations on how this should be done? Where should I place my storyboard? and how to activate it? Is it proper to have the shell refrence the container and then subscribe to an event?<br>\r\n<br>\r\nThanx\r\n",
+    "PostedDate": "2008-07-05T05:56:37.46-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "104194",
+    "ThreadId": "30915",
+    "Html": "samykabu, there are several apporaches you can use to do this. One simple approach is to look to use the <a href=\"http://msdn.microsoft.com/en-us/library/cc707867.aspx\">EventAggregator</a>&nbsp;in the Composite Application Library. With it you can have decoupled communication&nbsp;between modules and the shell or components in the shell. The only thing needing to be shared will be the event definition itself.. Instead of actually having the logic for manipulating the storyboard itself, I would put it either in the Presenter/Presentation&nbsp;Model&nbsp;for the view where the storyboard lives or in a controller which can access that view. The view subscribes to the EventAggregator event and listens for notifications. The module will then grab that event and fire it when it needs to notify the view. <br>\r\n<br>\r\nFirst you'll need to define an event class which represents your new event<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; public class MyEvent : CompositeWpfEvent&lt;string&gt;{}<br>\r\n<br>\r\nThen the&nbsp;Presenter / PM&nbsp;which wants to listen needs to grab a hold of it in it's initialization. That view will need the IEventAggregator to be injected in it's constructor.<br>\r\n<br>\r\n<p>&nbsp;&nbsp;&nbsp; public class MyPresenter(IMyView view, IEventAggregator eventAggregator)</p>\r\n<p>&nbsp;&nbsp;&nbsp; public void Initialize()<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eventAggregator.GetEvent&lt;MyEvent&gt;().Subscribe(HandleEvent, ThreadOption.UIThread);<br>\r\n&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;&nbsp;&nbsp; public void HandleEvent(MyArgs args)<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<br>\r\n&nbsp;&nbsp;&nbsp; }</p>\r\n<br>\r\nFinally the module will fire the event for wherever it chooses<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;EventAggregator.GetEvent&lt;MyEvent&gt;().Publish(value);<br>\r\n<br>\r\nThere are also several other apporaches, you can find out more about the pros and cons of some of them <a href=\"http://msdn.microsoft.com/en-us/library/cc707836.aspx\">here</a>. <br>\r\n<br>\r\nRegards<br>\r\nGlenn<br>\r\n<br>\r\n",
+    "PostedDate": "2008-07-11T10:10:07.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

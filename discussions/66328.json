@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "225332",
+    "ThreadId": "66328",
+    "Html": "<p>Hi I really like CompositeWPF libraries it is really nice and helps to loosen up dependencies, but I have one question is it really necessary to split up the code in several assemblies just cause you don't wanna have any dependencies between modules or between shell and modules?</p>\r\n<p>Right now I have the following assembly structure</p>\r\n<p>for example:</p>\r\n<p>Client.Desktop</p>\r\n<p>Client.Desktop.Modules</p>\r\n<p>&nbsp;&nbsp;&nbsp; Namespaces</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp; Client.Desktop.Modules.Login</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp; Client.Desktop.Modules.Order</p>\r\n<p>Client.Desktop.Infrastructure</p>\r\n<p>I'm am thinking of to just merge this three into one assembly and let the namespaces partitioning the code.</p>\r\n<p>But I have a stomach feeling that I maybe missing something here? What should I do? :)</p>",
+    "PostedDate": "2009-08-19T01:57:56.937-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "225381",
+    "ThreadId": "66328",
+    "Html": "<p>You can merge the Modules to one assembly, this will work.</p>\r\n<p>But you won't be able to developed, test&nbsp;and deploy&nbsp;modules separately or by different teams.</p>",
+    "PostedDate": "2009-08-19T05:28:36.867-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "225410",
+    "ThreadId": "66328",
+    "Html": "<p>Well I could but that depends on how I make my module registration, but that isn't the big question :)... I guess the answer is it depends as usual :)</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-19T06:30:26.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "225513",
+    "ThreadId": "66328",
+    "Html": "<p>Hi Niclas</p>\r\n<p>It is not necessary &ldquo;per se&rdquo; to split the code in several assemblies to avoid having dependencies between modules. Prism is a library, so you can take the features you feel best suit your application requirements.</p>\r\n<p>Take into account that if you do not have a modular application, it might be harder to maintain/extend because of the high coupling between all its components. This might not be a requirement for your application, so there would be no problem in leaving it out. If you merge modules in the same assembly, you will have a modular application, so the aforementioned would not be the case.</p>\r\n<p>In my personal opinion, evaluating the pros and cons of not having a modular application/having modules in the same assembly would be the starting point. Once weighed all the pros and cons have been evaluated, then the decision can be taken. It might be an overkill to have a modular application/multiple assemblies if you are just creating tools for your own use. But if you are creating a LOB application, or something that might grow, going modular would be the better choice.</p>\r\n<p>The <a href=\"http://msdn.microsoft.com/en-us/library/dd458909.aspx\">Modularity Quickstarts</a> show how to load modules in the same assembly in case you do use this approach.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-08-19T10:00:44.113-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "225532",
+    "ThreadId": "66328",
+    "Html": "<p>dschenkelman, your answer is exactly what I'm thinking, I just wanted it to be confirmed by someone else :)</p>",
+    "PostedDate": "2009-08-19T10:43:16.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

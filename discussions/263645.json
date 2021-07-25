@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "636332",
+    "ThreadId": "263645",
+    "Html": "\r\n<p>Hi</p>\r\n<p>I can't mock the RequestNavigate method&nbsp;in RegionManager because it's an extension method. I want my unit test to verify that the region manager was called and that the correct Uri was passed to it.&nbsp; Is there some way to mock the RequestNavigate\r\n method (or some other clever way to verify that the method is called with the correct parameters)?</p>\r\n<p>Thanks</p>\r\n<p>Craig</p>\r\n",
+    "PostedDate": "2011-07-01T22:41:37.967-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "636789",
+    "ThreadId": "263645",
+    "Html": "<p>Hi,</p>\r\n<p>WHy would you want to mck requestnavigate? All you need to verify is the url you are passing to it right?</p>",
+    "PostedDate": "2011-07-03T21:33:29.817-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "636808",
+    "ThreadId": "263645",
+    "Html": "<p>In most cases I want to know that a method has made a navigation call and that the Uri for that call is correct.&nbsp; Here's a simple example:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> OnAdd(<span style=\"color: blue;\">object</span> parameter)\r\n        {\r\n            <span style=\"color: blue;\">var</span> uriQuery = <span style=\"color: blue;\">new</span> UriQuery { { <span style=\"color: #a31515;\">\"Id\"</span>, <span style=\"color: #a31515;\">\"0\"</span> } };\r\n            _regionManager.RequestNavigate(RegionNames.ContentRegion, <span style=\"color: blue;\">new</span> Uri(<span style=\"color: #a31515;\">\"UserDetailView\"</span> + uriQuery, UriKind.Relative));\r\n        }\r\n\r\n</pre>\r\n</div>\r\n<p>Where _regionManager is&nbsp;passed in&nbsp;the constructor via DI.&nbsp; I'm using Rhino Mocks to mock this out and want to do an AssertWasCalled on _regionManager.RequestNavigate to ensure that the OnAdd method is correct.&nbsp; In other methods there are sometimes conditions around whether the navigation occurs and what the Uri querystring contains, so unit tests are even more important.&nbsp; An example test for this (which doesn't work because RequestNavigation is an extension) might be:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>        [Test, NUnit.Framework.Category(<span style=\"color: #a31515;\">\"ViewModel\"</span>)]\r\n        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> OnAddCallsRegionManager()\r\n        {\r\n            <span style=\"color: green;\">// initialise</span>\r\n            IRegionManager _regionManager = MockRepository.GenerateStub&lt;IRegionManager&gt;();\r\n            _regionManager.Expect(r =&gt; r.RequestNavigate(Arg&lt;<span style=\"color: blue;\">string</span>&gt;.Is.Anything, Arg&lt;Uri&gt;.Is.Anything));\r\n            Container.RegisterInstance(_regionManager);\r\n\r\n            Container.RegisterType&lt;IUserListViewModel, UserListViewModel&gt;();\r\n            _userListViewModel = Container.Resolve&lt;IUserListViewModel&gt;();\r\n\r\n            <span style=\"color: green;\">// setup</span>\r\n            <span style=\"color: blue;\">var</span> uriQuery = <span style=\"color: blue;\">new</span> UriQuery { { <span style=\"color: #a31515;\">\"Id\"</span>, <span style=\"color: #a31515;\">\"0\"</span> } };\r\n            <span style=\"color: blue;\">var</span> uri = <span style=\"color: blue;\">new</span> Uri(<span style=\"color: #a31515;\">\"UserDetailView\"</span> + uriQuery, UriKind.Relative);\r\n\r\n            <span style=\"color: green;\">// system under test</span>\r\n            _userListViewModel.OnAdd(<span style=\"color: blue;\">null</span>);\r\n\r\n            <span style=\"color: green;\">// assertions\t\t</span>\r\n            _regionManager.AssertWasCalled(r =&gt; r.RequestNavigate(\r\n                Arg&lt;<span style=\"color: blue;\">string</span>&gt;.Is.Equal(RegionNames.ContentRegion),\r\n                Arg&lt;Uri&gt;.Is.Equal(uri)));\r\n        }\r\n\r\n</pre>\r\n</div>",
+    "PostedDate": "2011-07-03T23:12:13.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "636812",
+    "ThreadId": "263645",
+    "Html": "<p>In this case rather than trying to mock requestnavigate I would check if the view which you navigate to in the OnAdd is loaded into the regionmanager as a ActiveView and also if that views viewmodel received the parameter you have passed in the uriQuery. That way you are sure that the right view with the right parameter was loaded in the OnAdd method of yours.</p>\r\n<p>I dont think there is a need to mock the request navigate here.</p>",
+    "PostedDate": "2011-07-03T23:16:50.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "636819",
+    "ThreadId": "263645",
+    "Html": "<p>I'm a little confused here (I might be misunderstanding your solution).&nbsp; I'm trying to unit test my OnAdd method in isolation.&nbsp; I have other tests for the OnNavigateTo method for&nbsp;any responding viewmodel (also isolated, so no knowledge of the requesting viewmodel).&nbsp; I don't see why I should call the OnAdd method on one viewmodel and then test the result on another viewmodel and also have a view participating in this as well, not to mention all the Regionmanager stuff underneath it.&nbsp; I don't think I should be testing whether the RegionManager is doing the right thing (I assume the Prism framework is doing things correctly), e.g. I shouldn't have to test that the parameter I passed into the navigation request came out the other end.&nbsp; That's implicit in the way the RegionManager works.</p>\r\n<p>I have come up with a workaround, but suspect it's likely to be frowned on here.&nbsp; I've created a wrapper interface and class for RegionManager (just for the RequestNavigate method) and I pass that into any viewmodel that has to navigate to another view.&nbsp; Doing this actually allows me to run the exact test above, verifying the address being navigated to and the parameter being passed.&nbsp; So I think I'm good for now.</p>\r\n<p>Thanks for your help anyway.</p>\r\n<p><span style=\"font-family: Consolas; font-size: x-small;\"><span style=\"font-family: Consolas; font-size: x-small;\">&nbsp;</span></span></p>",
+    "PostedDate": "2011-07-03T23:33:30.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "636823",
+    "ThreadId": "263645",
+    "Html": "<p>That is precisely what I asked in the begining. Why would you want to mock requestnavigate? It's part of the prism framework and it should work just fine. What you need to test is if the right view was with right parameter, which is represented by the uri, is called.</p>\r\n<p>Creating a wrapper class around regionmanager, like a navigation service, which accepts the url and does the request navigate, is just fine I think. Even in our project we navigate around using a service class which does the actual navigation within the region.</p>",
+    "PostedDate": "2011-07-03T23:39:08.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "636843",
+    "ThreadId": "263645",
+    "Html": "<p>Ok. Perhaps I should have said I wanted to stub out the RegionManager, rather than mock it.&nbsp; Sorry for the confusion.</p>",
+    "PostedDate": "2011-07-04T00:29:11.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "134358",
+    "ThreadId": "40500",
+    "Html": "How can I get a handle on a Scoped Region and/or it's RegionManager WITHOUT adding another view to it. Another issue related to same question is how to check the existence of a view inside a scoped region. I want to do it without adding another view just to get regionmanager's handle. I hope my question is clear enough. If not then I'll supplement with a code snippet - just ask.<br>\r\n",
+    "PostedDate": "2008-11-21T13:32:02.527-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "134375",
+    "ThreadId": "40500",
+    "Html": "The UIComposition.sln (I believe in the CompositeWPF 2008 RC1 June release) shows how it can be done in:<br>\r\n<br>\r\nModules \\ Controllers \\ EmployeesController.cs   OnEmployeeSelected() method  <br>\r\n<br>\r\nIt uses scoped regions for employee details and checks to ensure the view (within scoped region) wasn't already loaded before loading it.\r\n",
+    "PostedDate": "2008-11-21T15:00:35.82-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "134756",
+    "ThreadId": "40500",
+    "Html": "Thanks for your response but no that's not what I am looking for. The example code, you referred to, checks for view existence in DetailsRegion which has global scope. In case there was no matching view loaded in DetailsRegion, it adds a view and gets a Scoped RegionManager in return. And of course, once you have this handle, you can add more scoped views. However that's not what I was looking for. Below is the code snippet you referred to. In this code, I want to get a handle on ScopedRegionManager within else block of the code. Once I have this handle, I want to check the existence of a view within SCOPED region manager, not the global one.<br>\r\n<br>\r\npublic virtual void OnEmployeeSelected(BusinessEntities.Employee employee)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IRegion detailsRegion = regionManager.Regions[RegionNames.DetailsRegion];<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object existingView = detailsRegion.GetView(employee.EmployeeId.ToString(CultureInfo.InvariantCulture));<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (existingView == null)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IProjectsListPresenter projectsListPresenter = this.container.Resolve&lt;IProjectsListPresenter&gt;();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; projectsListPresenter.SetProjects(employee.EmployeeId);<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IEmployeesDetailsPresenter detailsPresenter = this.container.Resolve&lt;IEmployeesDetailsPresenter&gt;();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; detailsPresenter.SetSelectedEmployee(employee);<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IRegionManager detailsRegionManager = detailsRegion.Add(detailsPresenter.View, employee.EmployeeId.ToString(CultureInfo.InvariantCulture), true);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IRegion region = detailsRegionManager.Regions[RegionNames.TabRegion];<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; region.Add(projectsListPresenter.View, &quot;CurrentProjectsView&quot;);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; detailsRegion.Activate(detailsPresenter.View);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; detailsRegion.Activate(existingView);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\n<br>\r\n\r\n",
+    "PostedDate": "2008-11-24T06:20:50.69-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

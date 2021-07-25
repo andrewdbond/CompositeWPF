@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "474654",
+    "ThreadId": "221972",
+    "Html": "<p>Hi,</p>\r\n<p>I'm a prism newbie, I can't find any answer here but I managed to couple everything together, but was wandering:</p>\r\n<p>I have views (user control) witch I use as such:</p>\r\n<p>Shell.xaml</p>\r\n<p>&lt;ItemsControl Grid.Row=&quot;0&quot; Name=&quot;MenuRegion&quot; cal:RegionManager.RegionName=&quot;MenuRegion&quot; /&gt;</p>\r\n<p>And the corrisponding module:</p>\r\n<p>_regionManager.RegisterViewWithRegion(&quot;MenuRegion&quot;, typeof(Views.PlannerMenu));</p>\r\n<p>&nbsp;</p>\r\n<p>So my question is when in design time my Shell.xaml design view is empty, is there a way to get the designer to work with prism like normal usercontrols ?</p>\r\n<p>Plesase if I'm ask me if this explanation isn't clear.</p>\r\n<p>Any light on this matter will be highly appreciated :)</p>\r\n<p>/sushibite</p>",
+    "PostedDate": "2010-07-30T02:59:40.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "474898",
+    "ThreadId": "221972",
+    "Html": "<p>When you&nbsp;use Regions in Prism, the region contents and layout are determined dynamically at runtime. In the designer, there is no way for the designer to determine the runtime contents of the regions.&nbsp; You should be able to see the top level layout of the regions within the shell, and see each&nbsp;view's layout&nbsp;in the designer for the individual xaml files,&nbsp;but you will not be able to see the whole, integrated application without running it.</p>\r\n<p>I hope that helps, even if it was not the answer you wanted,</p>\r\n<p>Michael Puleio</p>",
+    "PostedDate": "2010-07-30T14:02:05.597-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "476311",
+    "ThreadId": "221972",
+    "Html": "<p>Thanks,</p>\r\n<p>Yes it helps, even when it is not the answer I wanted :)</p>\r\n<p>/sushibite</p>",
+    "PostedDate": "2010-08-04T01:21:53.95-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "476350",
+    "ThreadId": "221972",
+    "Html": "<p>This a part where Prism (and Blend) could progress since it forces us to make a tradeoff between Architectural Concerns (modularity) and good UX Design ( I mean integrating a UX team where all the people have not a developer background) .&nbsp;</p>\r\n<p>The designer needs to see the real interface at design time to tune the UI easily (the devil is always in the details) . That's what Blend was made for after all :) . &nbsp;If the developer has made a lot of modules (worst case scenario, &nbsp;one per view... :) ) the designer's work begins to look like hell or close to it... And he returns to work with Illustrator or Powerpoint letting the developpers implement the view as they can (that's basically what we were doing before WPF or Silverlight and the Developer/Designer Workflow :) ...).</p>\r\n<p>I'm still waiting some guidance concerning Blendability and View Composition. Views are often nested in composite applications and Designers needs to work on &quot;the big picture&quot;. &nbsp;For the moment &nbsp;I'm giving to the UX team&nbsp;a mock application statically referencing modules. I use custom behaviors to inject &nbsp;mock Resource Views in the Regions Content Property at DesignTime.&nbsp;But this is not really satisfactory. &nbsp; &nbsp;</p>\r\n<p>Any ideas welcome.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-08-04T03:04:28.133-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

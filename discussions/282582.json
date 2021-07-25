@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "710619",
+    "ThreadId": "282582",
+    "Html": "<p>I try to make Modal Window. I use the approach described in this <a href=\"http://www.codeproject.com/KB/architecture/MVVM_Dialogs.aspx\">article</a>, but unfortunately, I have a problem. When I first called Modal Window everything is working correctly.</p>\n<p><a href=\"http://imageshack.us/photo/my-images/707/16199488.jpg/\">http://imageshack.us/photo/my-images/707/16199488.jpg/</a></p>\n<p><a href=\"http://imageshack.us/photo/my-images/803/89135642.jpg/\">http://imageshack.us/photo/my-images/803/89135642.jpg/</a></p>\n<p>But if you close the window and open it again Modal Window will not be react to state changes.</p>\n<p><a href=\"http://imageshack.us/photo/my-images/214/21686102.jpg/\">http://imageshack.us/photo/my-images/214/21686102.jpg/</a></p>\n<p>I can not understand how to fix it.</p>\n<p><a href=\"https://skydrive.live.com/?cid=4e1f0617c9aaf89e&amp;id=4E1F0617C9AAF89E!123\">Source code</a></p>",
+    "PostedDate": "2011-12-11T13:47:31.71-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "711089",
+    "ThreadId": "282582",
+    "Html": "<p>Hi,</p>\r\n<p>In my opinion, the recommended approach to create dialog or modal window in Prism is using the <strong>WindowDialogActivationBehavior</strong> provided in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921074%28PandP.40%29.aspx\"><strong>Stock Trader RI</strong></a> (or the <strong>PopupDialogActivationBehavior </strong>for Silverlight). Those behaviors will allow you to define a region that, when a view is added to it, will be shown in a new  window/popup.</p>\r\n<p>You might find the following threads useful where similar concerns are discussed:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/265715\">Modal Dialog</a> </li>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/268575\">Popup region implementation for WPF class library</a> </li>\r\n</ul>\r\n<p>As a possible workaround using your approach, you could add the following code in the code-behind of the <strong>Window1 </strong>window to handle the <strong>Closed </strong>event of the window:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">private</span> <span style=\"color: blue;\">void</span> Window_Closed(<span style=\"color: blue;\">object</span> sender, EventArgs e)\r\n{\r\n    IRegionManager myRegionManager = RegionManager.GetRegionManager(MainRegion);\r\n    IRegion myRegion = myRegionManager.Regions[<span style=\"color: #a31515;\">\"MainRegion\"</span>];\r\n\r\n    <span style=\"color: blue;\">while</span>( myRegion.Views.Count() &gt; 0)\r\n    {\r\n        myRegion.Remove(myRegion.Views.FirstOrDefault());\r\n    }\r\n\r\n    myRegionManager.Regions.Remove(<span style=\"color: #a31515;\">\"MainRegion\"</span>);\r\n}\r\n</pre>\r\n</div>\r\n<p>Like this, we remove all the views from the region and remove the region itself from the <strong>RegionManager</strong>, so that the next time the <strong>Window1 </strong>window is created it should work like the first time. Note that in the previous code snippet, we get the <strong>RegionManager </strong>of the element <strong>MainRegion</strong>. This element is the <strong>ContentControl </strong>that acts as the region and has the name \"MainRegion.\"</p>\r\n<p>I hope you find it useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-12-12T12:52:31.377-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

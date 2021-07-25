@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "813685",
+    "ThreadId": "349516",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>&nbsp; &nbsp;We are working on a large application developed using Silverlight 4 and PRISM v2. There is a dependency between 2 modules where one is referred in other by adding reference to the binary. We are supposed to remove this dependency. I tried using\r\n IUnityContainer, but it requires the corresponding abstract class. As we have removed the binary reference, there is no reference to the specific type.&nbsp;</p>\r\n<p>So I thought of discovering the type using the System.Reflection. In order to achieve this, we need to know the list assemblies from the multiple modules.</p>\r\n<p>Is there any possibility to get the list of assemblies ? Or please let me know the other ways.</p>\r\n<p>&nbsp;</p>\r\n<p>Regards,</p>\r\n<p>Raaj</p>\r\n",
+    "PostedDate": "2012-03-21T12:30:01.07-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "813710",
+    "ThreadId": "349516",
+    "Html": "<p>Hi Raaj,</p>\r\n<p>Based on my understanding, the recommended approach when using types that are declared in different assemblies is to register and compose them through the container:</p>\r\n<ul>\r\n<li>Usually, the classes that you need to export to other modules would implement an <em><strong>interface</strong></em>. You can register these classes, mapping them to their corresponding interfaces in the container, inside the <strong>Initialize </strong>method of your <strong>IModule </strong>class (lets call this module \"<strong>ModuleB</strong>\"). </li>\r\n<li>Then, in the module that requires them, you can obtain an instance of the corresponding type through the <em><strong>interface</strong></em> (lets call this module \"<strong>ModuleA</strong>\").</li>\r\n<li>The aforementioned interfaces would be in a common project (for example <strong>Infrastucture</strong>), that could be referenced by both modules (as well as other projects in your application).</li>\r\n</ul>\r\n<p>Doing this, the <strong>ModuleA </strong>will not require to reference <strong>ModuleB </strong>and it still will be able to obtain instances of the classes in <strong>ModuleB</strong> that were exported through the container. Also, as <strong>ModuleA </strong>will require the <strong>ModuleB </strong>to be initialized first, it's a good practice to declare a \"loosely dependency\" between those modules as explained in the following chapter of the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28v=pandp.40%29.aspx#sec25\">Chapter 4: Modular Application Development - Specifying Module Dependencies</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-03-21T13:16:05.88-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "813758",
+    "ThreadId": "349516",
+    "Html": "<p>Hi Damian,</p>\r\n<p><span style=\"white-space: pre;\"> </span>I have proposed the same idea to my team. But we were asked to find any other potential solution is around. Is there any way to discover and load the assembly from a specific XAP file?</p>\r\n<p>&nbsp;</p>\r\n<p>Regards,</p>\r\n<p>Raaj</p>",
+    "PostedDate": "2012-03-21T14:21:51.947-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "814259",
+    "ThreadId": "349516",
+    "Html": "<p>Hi Raaj,</p>\r\n<p>As far as I know Prism does not expose the assemblies of the modules as out of the box. However, I believe a possible approach could be to implement a shared service that could store the assembly of each module:</p>\r\n<ul>\r\n<li>The shared service could be simple a <strong>Dictionary </strong>of <strong>&lt;string, Assembly&gt;</strong> that could be defined in the Infrastructure project.</li>\r\n<li>In the Initialize method of each module, you could register the Assembly of the module in the aforementioned service. For example, this can be done doing something like this:</li>\r\n</ul>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> Initialize()\r\n    {\r\n\r\n        Assembly asm = <span style=\"color: blue;\">typeof</span>(ThisModule).Assembly;\r\n\r\n        <span style=\"color: green;\">//   ...  or ....</span>\r\n\r\n        Assembly asm = Assembly.GetExecutingAssembly();\r\n\r\n        <span style=\"color: green;\">// This would be the service        </span>\r\n        service.Add(<span style=\"color: #a31515;\">\"ThisModule\"</span>, asm);\r\n\r\n    }\r\n</pre>\r\n</div>\r\n<ul>\r\n<li>This way, you can retrieve the assembly you need from the service and use it to perform reflection to obtain the required classes.</li>\r\n</ul>\r\n<p>Note that you will need to ensure that the corresponding module was loaded before trying to retrieve the classes through reflection. A possible way could be to declare a \"loosely dependency\" between those modules as mentioned above.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-03-22T13:01:04.443-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "686274",
+    "ThreadId": "276422",
+    "Html": "\r\n<p>here i want to ask one question perhaps not so related to prim ,</p>\r\n<p>i want to design one class served as application context across prism based application ,for example&nbsp; i have one domain object\r\n<strong><em>Group </em></strong>which has a children collection of type <strong><em>Contact\r\n</em></strong>,now the <em><strong>ObservableCollection&lt;GroupInfo&gt; </strong>\r\n<strong>Groups </strong></em>collection live in one module ,but i want this be used all over the application in order to check some state and information .</p>\r\n<p>i don't want to put it in the region context ,i suppose it should look like <em>\r\n<strong>ThreadContext.Current .Groups</strong></em> ,any idea ?</p>\r\n<div id=\"_mcePaste\" style=\"left:-10000px; top:0px; width:1px; height:1px; overflow:hidden\">\r\n<pre style=\"font-family:Microsoft YaHei; font-size:16; color:#f1f2f3; background:#22282a\"><span style=\"color:#678cb1\">ObservableCollection</span><span style=\"color:#e8e2b7\">&lt;</span><span style=\"color:#678cb1\">GroupInfo</span><span style=\"color:#e8e2b7\">&gt;</span>&nbsp;Groups\r\n</pre>\r\n</div>\r\n",
+    "PostedDate": "2011-10-19T04:18:12.803-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "686298",
+    "ThreadId": "276422",
+    "Html": "<p>if i use a ThreadContext class contains the <em><strong>public static ObservableCollection&lt;GroupInfo&gt; Groups</strong></em> and i have a XXViewModel, how should i use this Groups property to bind such as treeview or listbox ,</p>\r\n<p>1 i always use XXViewModel as data context for XXView</p>\r\n<p>2 should i add a ObservableCollection&lt;GroupInfo&gt; Groups in XXViewModel and set its value with ThreadContext.Groups or should i bind to the static value in ThreadContext?</p>\r\n<p>i am new to prism and need your help :)</p>\r\n<p>thank U</p>",
+    "PostedDate": "2011-10-19T04:59:42.42-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "686305",
+    "ThreadId": "276422",
+    "Html": "<p>Hi,</p>\r\n<p>You might find <a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28PandP.40%29.aspx#sec7\">shared services</a> useful to fulfill your requirement; shared services are services shared among your modules by exporting them into the container, using the service's interface (which is stored in an infrastructure project referenced in all your modules) as the contract type.</p>\r\n<p>You might, therefore, create a service that returns your Groups, and abstracts the way you fetch it from the server (or any other place you're obtaining the groups from). You might find this blog post useful, which shows how to do this with WCF Services:<a href=\"http://blogs.southworks.net/gmaliandi/2011/10/using-wcf-services-in-prism-silverlight-applications/\"></a></p>\r\n<p><a href=\"http://blogs.southworks.net/gmaliandi/2011/10/using-wcf-services-in-prism-silverlight-applications/\">Using WCF services in Prism Silverlight applications</a></p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-10-19T05:30:40.55-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

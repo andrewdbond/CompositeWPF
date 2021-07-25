@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "151666",
+    "ThreadId": "45456",
+    "Html": "I want to extend the Composite WPF/SL command system using derived classes of <strong>DelegateCommand </strong>and <strong>CompositeCommand</strong>.<br>\r\n<br>\r\nFor the <strong>CompositeCommand </strong>it works fine: we can overload the virtual methods <strong>CanExecute</strong>()&nbsp; and <strong>Execute</strong>().<br>\r\nFor the <strong>DelegateCommand </strong>these methods are non-virtual and break the extensibility.<br>\r\n<br>\r\nIs any reason for this?<br>\r\n<br>\r\nCheers,<br>\r\nJani<br>\r\n",
+    "PostedDate": "2009-01-28T01:51:40.387-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "151753",
+    "ThreadId": "45456",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi Jani,</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">The reason the <b>DelegateCommand </b>methods are not virtual is that you can pass as delegates both the <b>CanExecuteMethod</b> and the <b>ExecuteMethod</b>, thus defining how they will be implemented. </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Since the <b>DelegateCommand </b>class is a lightweight class that was created for this purpose only (having just a delegate for Execute and CanExecute), you might considering creating your own class that implements ICommand directly instead of trying to extend DelegateCommand.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Please let me know if this helps.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\">Damian Schenkelman</span></p>\r\n<span style=\"font-size:11pt;font-family:'calibri','sans-serif'\"><a href=\"http://blogs.southworks.net/dschenkelman\"><span style=\"color:#0000ff\">http://blogs.southworks.net/dschenkelman</span></a></span>\r\n",
+    "PostedDate": "2009-01-28T06:00:03.75-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "151771",
+    "ThreadId": "45456",
+    "Html": "Hi Damian,<br>\r\n<br>\r\nThanks for your feedback.<br>\r\n<br>\r\nI have already a custom implementation of <strong>ICommand</strong>. I want to use a derived <strong>DelegateCommand</strong> to build the bridge to my Command.<br>\r\nSomething like this:<br>\r\n<br>\r\n----------------------------------------------------------------------------------------<br>\r\nclass LinkedDelegateCommand&lt;T&gt; : DelegateCommand&lt;T&gt;<br>\r\n{<br>\r\n&nbsp; public LinkedDelegateCommand( Action&lt;T&gt; executeMethod, Func&lt;T, bool&gt; canExecuteMethod )<br>\r\n&nbsp;&nbsp; : base( executeMethod, canExecuteMethod )<br>\r\n&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp; // null-check...<br>\r\n&nbsp;&nbsp;&nbsp; this.link = link;<br>\r\n&nbsp; }<br>\r\n&nbsp; <br>\r\n&nbsp; public <strong>override </strong>bool CanExecute&lt;T&gt;( object parameter )<br>\r\n&nbsp;{<br>\r\n&nbsp;&nbsp;&nbsp; return link.CanExecute( parameter );<br>\r\n&nbsp; }<br>\r\n<br>\r\n&nbsp; public <strong>override </strong>void Execute&lt;T&gt;( object parameter )<br>\r\n&nbsp;{<br>\r\n&nbsp;&nbsp;&nbsp; link.Execute( parameter );<br>\r\n&nbsp; }<br>\r\n<br>\r\n&nbsp; private readonly ICommand link;<br>\r\n}<br>\r\n<br>\r\n----------------------------------------------------------------------------------------<br>\r\nclass MyCommand : ICommand<br>\r\n{<br>\r\n&nbsp;&nbsp; bool CanExecute(object parameter)<br>\r\n&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp; return true; // custom code<br>\r\n&nbsp; }<br>\r\n<br>\r\n&nbsp; void Execute(object parameter)<br>\r\n&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp; // custom code<br>\r\n&nbsp; }<br>\r\n}<br>\r\n<br>\r\n----------------------------------------------------------------------------------------<br>\r\nusage:<br>\r\n...<br>\r\nMyCommand myCommand = new MyCommand();<br>\r\nDelegateCommand viewCommand = new LinkedDelegateCommand( myCommand.Execute, myCommand.CanExecute );<br>\r\n...<br>\r\n<br>\r\n<strong>LinkedDelegateCommand </strong>would also be a lightweight class.<br>\r\n<br>\r\nCheers,<br>\r\nJani<br>\r\n<span style=\"font-family:calibri\"><br>\r\n</span>\r\n",
+    "PostedDate": "2009-01-28T06:36:03.73-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "152066",
+    "ThreadId": "45456",
+    "Html": "Hi Damian,<br>\r\n<br>\r\nI am using now this approach: <hr>\r\npublic class LinkedDelegateCommand : DelegateCommand&lt;object&gt;<br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp; public LinkedDelegateCommand( ICommand link )<br>\r\n&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;: base( link.Execute, link.CanExecute )<br>\r\n&nbsp;&nbsp; &nbsp;{<br>\r\n&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;this.link = link;<br>\r\n&nbsp;&nbsp; &nbsp;}<br>\r\n<br>\r\n&nbsp;&nbsp; &nbsp;public ICommand Link<br>\r\n&nbsp;&nbsp; &nbsp;{<br>\r\n&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;get { return link;&nbsp; }<br>\r\n&nbsp;&nbsp; &nbsp;}<br>\r\n<br>\r\n&nbsp;&nbsp; &nbsp;private readonly ICommand link;<br>\r\n}<br>\r\n<br>\r\n<hr>\r\nusage:<br>\r\n...<br>\r\nICommand command = new LinkedDelegateCommand( new MyCommand() );<br>\r\n...<br>\r\n<br>\r\nCheers,<br>\r\nJani<br>\r\n",
+    "PostedDate": "2009-01-28T22:46:08.68-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

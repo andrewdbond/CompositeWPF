@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "1055032",
+    "ThreadId": "446607",
+    "Html": "Hi,\r<br />\n<br />\nI am trying to use the QuickStarts to learn and practice on Prism.  But it seems that the most quickstarts based on Silverlight only apart from &quot;Modularity Quick Starts for WPF&quot;.<br />\n\r<br />\nI have tried to run &quot;Basic MVVM QuickStart&quot; and &quot;MVVM QuickStart&quot; and am getting errors such as &quot;The type or namespace name 'Practices.Prism' does not exist...&quot; when I try to Build solutions.\r<br />\n<br />\nSo I tried to browse and add references manually (although I did run &quot;RegisterPrismBinaries.bat&quot; file), but I am getting the following error: &quot;You can't add a reference to Microsoft.Practices.Prism.dll as it was not built against the Silverlight runtime...&quot;<br />\n\r<br />\nThe references I try to add are from Prism/Bin/Desktop folder.\r<br />\n<br />\nCan anyone suggest what examples are designed for WPF only as I am not trying to learn or design in Silverlight, for now anyway.\r<br />\n<br />\nThanks <br />\n",
+    "PostedDate": "2013-06-10T12:21:00.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1055054",
+    "ThreadId": "446607",
+    "Html": "Hi,\r<br />\n<br />\nFirst of all, there is a known issue in the <strong>Prism 4.1</strong> registration script where the <strong>Prism</strong> libraries for <strong>Silverlight</strong> are registered for <strong>Silverlight 4</strong> instead of <strong>Silverlight 5</strong>. In order to register the <strong>Prism</strong> library properly please modify the <strong>RegisterPrismLibrary.proj</strong> as described in the following work item:<br />\n<ul>\n<li>\n<a href=\"https://compositewpf.codeplex.com/workitem/9225\" rel=\"nofollow\">Bug in RegisterPrismLibrary.proj (Prism v4.1)</a><br />\n</li>\n</ul>\nIf you wish to add the <strong>Prism</strong> libraries manually to your application or to the quick starts, take into account that there are different versions of the library for each supported platform:<br />\n<ul>\n<li>\\Bin\\Desktop\\ - contains the compiled Prism library for .<strong>NET 4.0.</strong></li>\n<li>\\Bin\\Silverlight\\ - contains the compiled Prism library for <strong>Silverlight</strong>.</li>\n<li>\n\\Bin\\Phone\\ - contains the compiled Prism library for <strong>Windows Phone</strong>.<br />\n</li>\n</ul>\nAlthough most of the quick starts included in <strong>Prism</strong> were implemented in <strong>Silverlight</strong>, most of the concepts and functionalities they portray can also be used in <strong>WPF</strong>. Therefore, I believe you could still find the <strong>Silverlight</strong> quick starts useful in order to learn about the capabilities provided by <strong>Prism</strong> and then apply them in your <strong>WPF</strong> application as you see fit.\r<br />\n<br />\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-06-10T13:17:44.723-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1055100",
+    "ThreadId": "446607",
+    "Html": "Thanks for your reply,\r<br />\n<br />\nI've changed the file and tried again, but still doesn't work.  There is a registration line for .NetFramework\\v4.0.30319.  I have Framework 4.5 installed - not sure if I need to change that as well.\r<br />\n<br />\nAlso I am using evaluation copy of VS 2012, but this shouldn't affect right ?\r<br />\n<br />\nThanks again<br />\n",
+    "PostedDate": "2013-06-10T14:30:29.287-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1055106",
+    "ThreadId": "446607",
+    "Html": "Tried MVVM QuickStart, the following dlls are resolved fine: Microsoft.Practices.Prism; Microsoft.Practices.Prism.Interactivity; Microsoft.Practices.Prism.\r<br />\n<br />\nThe following references can not be found:\r<br />\n<br />\nMicrosoft.Silverlight.Testing\r<br />\nMicrosoft.VisualStudio.QualityTools.UnitTesting.Silverlight\r<br />\nMoq.Silverlight\r<br />\nMicrosoft.Practices.Prism.GuidanceTools<br />\n",
+    "PostedDate": "2013-06-10T14:40:35.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1055507",
+    "ThreadId": "446607",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding, you seem to be facing a configuration problem. If you want to use the <strong>MVVM Quickstart</strong> from Prism 4.1, you will need to have both <strong>Silverlight 5</strong> and <strong>Silverlight 5 SDK</strong> installed to make it work out of the box. Regarding your missing assemblies you are listing, if your <strong>Quickstart</strong> solution still don't find them you can add them manually from your <strong>LIB</strong> folder inside the folder where you have installed Prism.\r<br />\n<br />\nNote: Prism 4.1 is designed to work with <strong>.NET Framework 4.0</strong>. In order to make it work with <strong>.NET Framework 4.5</strong>,  you can recompile Prism solution targeting that framework or you can download <strong>Prism for NET 4.5</strong>.\r<br />\n<br />\nRegards,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a> <br />\n",
+    "PostedDate": "2013-06-11T10:53:14.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1055728",
+    "ThreadId": "446607",
+    "Html": "Thanks Federico,\r<br />\n<br />\n<br />\nI still can not open the quickstart projects.  This is the error I am getting:\r<br />\n<br />\nC:\\Prism\\Quickstarts\\BasicMVVM\\BasicMVVMApp\\BasicMVVMApp.csproj : error  : Unable to read the project file 'BasicMVVMApp.csproj'. \r<br />\nC:\\Prism\\Quickstarts\\BasicMVVM\\BasicMVVMApp\\BasicMVVMApp.csproj(120,3): The imported project &quot;C:\\WINDOWS\\Microsoft.NET\\Framework\\v4.0.30319\\Microsoft\\Silverlight\\v5.0\\Microsoft.Silverlight.CSharp.targets&quot; was not found. Confirm that the path in the &lt;Import&gt; declaration is correct, and that the file exists on disk.\r<br />\n<br />\n<br />\nI have installed Sivlerlight5 tools for Visual Studio 2010.  Visual Studio runs against .Net Framework 4 version.  I really don't understand what do I need to do and I don't understand the path from the above error.\r<br />\n<br />\n<br />\nThanks again<br />\n",
+    "PostedDate": "2013-06-12T02:12:14.013-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1055732",
+    "ThreadId": "446607",
+    "Html": "I can find this: &quot;C:\\WINDOWS\\Microsoft.NET\\Framework\\v4.0.30319&quot;\r<br />\n<br />\nBut my Silverlight files are in the following folder: C:\\Program Files\\MSBuild\\Microsoft\\Silverlight\\v5.0\r<br />\n<br />\nNot sure what I need to do really.<br />\n",
+    "PostedDate": "2013-06-12T02:29:14.24-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1055956",
+    "ThreadId": "446607",
+    "Html": "Hi,\r<br />\n<br />\nBased on your description, it seems that you have a problem with your working environment. I would recommend you to try to install <strong>Prism</strong> and <strong>Silverlight</strong> again on a clean environment and see if you still face the same issue. \r<br />\n<br />\nRegards, \r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a> <br />\n",
+    "PostedDate": "2013-06-12T09:51:47.56-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1078666",
+    "ThreadId": "446607",
+    "Html": "All works now, thanks.  I had to re-install everything, including VS.<br />\n",
+    "PostedDate": "2013-08-09T03:58:19.84-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

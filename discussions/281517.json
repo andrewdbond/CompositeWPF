@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "706027",
+    "ThreadId": "281517",
+    "Html": "\r\n<p>Does anybody know of any way to monitor all of the events going through the EventAggregator at runtime?</p>\r\n<p>I understand how to subscribe to each event type, but that would require knowledge of the events.&nbsp; What I am looking for would just show the traffic independent of the event type.</p>\r\n<p>Thanks</p>\r\n<p>pmont</p>\r\n",
+    "PostedDate": "2011-12-01T11:19:47.243-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "706503",
+    "ThreadId": "281517",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, you could monitor events in the <strong>EventAggregator</strong>, for example by modifying the <strong>Subscribe</strong> method in the <strong>CompositePresentationEvent</strong> Class of the Prism Library, this way you could be notified when events are being subscribed and the corresponding handler for them. A sample of this can be seen in the following code snippet:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">virtual</span> SubscriptionToken Subscribe(Action&lt;TPayload&gt; action, ThreadOption threadOption, <span style=\"color: blue;\">bool</span> keepSubscriberReferenceAlive, Predicate&lt;TPayload&gt; filter)\r\n\r\n        {\r\n\r\n            <span style=\"color: blue;\">var</span> subscriptionInfo = <span style=\"color: #a31515;\">\"Event \"</span> + <span style=\"color: blue;\">this</span>.GetType().ToString() + <span style=\"color: #a31515;\">\" subscribed (handler is \"</span> + action.Target.GetType() + <span style=\"color: #a31515;\">\".\"</span> + action.Method.Name + <span style=\"color: #a31515;\">\")\"</span>;\r\n\r\n            ServiceLocator.Current.GetInstance&lt;ILoggerFacade&gt;().Log(subscriptionInfo, Category.Debug, Priority.High);\r\n\r\n(...)\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Also you could modify the <strong>InternalPublish</strong> method in the <strong>EventBase</strong> Class of the Prism Library to be notify when an event is being published, the payload used and the number of handlers for example. This can be achieved like in the following code snippet:</p>\r\n<p><span style=\"font-size: 9.5pt; color: blue;\" lang=\"EN-US\">protected</span><span style=\"font-size: 9.5pt;\" lang=\"EN-US\"> <span style=\"color: blue;\">virtual</span> <span style=\"color: blue;\">void</span> InternalPublish(<span style=\"color: blue;\">params</span> <span style=\"color: blue;\">object</span>[] arguments)</span></p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>        {\r\n            List&lt;Action&lt;<span style=\"color: blue;\">object</span>[]&gt;&gt; executionStrategies = PruneAndReturnStrategies();\r\n\r\n            <span style=\"color: blue;\">var</span> publicationInfo = <span style=\"color: #a31515;\">\"Event \"</span> + <span style=\"color: blue;\">this</span>.GetType().ToString() + <span style=\"color: #a31515;\">\" published (payload: \"</span> + (arguments[0] ?? <span style=\"color: #a31515;\">\"null\"</span>) + <span style=\"color: #a31515;\">\", \"</span> + executionStrategies.Count + <span style=\"color: #a31515;\">\" handlers)\"</span>;\r\n\r\n            ServiceLocator.Current.GetInstance&lt;ILoggerFacade&gt;().Log(publicationInfo, Category.Debug, Priority.High);\r\n\r\n            <span style=\"color: blue;\">foreach</span> (<span style=\"color: blue;\">var</span> executionStrategy <span style=\"color: blue;\">in</span> executionStrategies)\r\n            {\r\n                executionStrategy(arguments);\r\n            }\r\n        }\r\n</pre>\r\n</div>\r\n</p>\r\n<p><em>Note that this modifications will be useful for <strong>debugging</strong> <strong>purposes</strong>, as the notifications will be shown in the <strong>Debug</strong> <strong>Output</strong> <strong>Window</strong>.</em></p>\r\n<p>Also you can find a small sample application in my <a href=\"https://skydrive.live.com/?ppud=4#cid=7890102B5B8BC928&amp;id=7890102B5B8BC928%21103\">Skydrive Account</a> under the name <strong>EventAggregatorMonitorSample</strong> that portrays the aforementioned modifications.</p>\r\n<p>I hope you find this useful</p>\r\n<p>﻿Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-12-02T08:24:45.513-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "706511",
+    "ThreadId": "281517",
+    "Html": "<p>Neat, thank you very much.</p>\r\n<p>pmont</p>",
+    "PostedDate": "2011-12-02T08:34:45.987-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

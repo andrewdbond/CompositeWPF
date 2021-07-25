@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "111183",
+    "ThreadId": "33554",
+    "Html": "hi.<br>\r\n<br>\r\nI want to have a main menu that will initialize modules when the user selects an item.&nbsp; In the bootstrapper, I add the modules<span style=\"font-size:13px\">\r\n<p>&nbsp;</p>\r\n</span>\r\n<p><span style=\"font-size:13px;color:#2b91af\">in IModuleEnumerator</span><span style=\"font-size:13px\"> GetModuleEnumerator.&nbsp; I don't want to initialize them until selected from the menu.&nbsp; The command event takes me to the code behind, but I can use the&nbsp;<span style=\"font-size:13px;color:#008000\"> moduleLoader.Initialize because it only takes an array.&nbsp; Should I be using an event that is subscribed to by the modules?\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n</span>\r\n<p>&nbsp;</p>\r\n</span></p>\r\n",
+    "PostedDate": "2008-08-14T12:13:56.943-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "111294",
+    "ThreadId": "33554",
+    "Html": "A good idea would be create one central module that creates the menu items and attaches commands to them. The following XAML and viewmodel is a good startingpoint to implement the menu view components:<br>\r\n<br>\r\n&lt;Menu&gt;<br>\r\n&nbsp; &lt;MenuItem Command=&quot;{Binding LoadModuleCommand}&quot; CommandParameter=&quot;ModuleA&quot; Header=&quot;Module A&quot;/&gt;<br>\r\n&nbsp; &lt;MenuItem Command=&quot;{Binding LoadModuleCommand}&quot; CommandParameter=&quot;ModuleB&quot; Header=&quot;Module B&quot;/&gt;<br>\r\n&lt;/Menu&gt;<br>\r\n<br>\r\npublic class MenuViewModel {<br>\r\n&nbsp; DelegateCommand&lt;string&gt; _loadModuleCommand;<br>\r\n<br>\r\n&nbsp; public DelegateCommand&lt;string&gt; LoadModuleCommand<br>\r\n&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp; get { return _loadModuleCommand; }<br>\r\n&nbsp; }<br>\r\n}<br>\r\n<br>\r\nWhen one of the commands is invoked it should load the module using the following piece of code:<br>\r\n<br>\r\npublic class MainModule: IModule {<br>\r\n&nbsp; IUnityContainer _container;<br>\r\n<br>\r\n&nbsp; public MainModule(IUnityContainer container) {<br>\r\n&nbsp;&nbsp;&nbsp; _container = container;<br>\r\n&nbsp; }<br>\r\n<br>\r\n&nbsp; public void Initialize() {<br>\r\n&nbsp;&nbsp;&nbsp; // Load the menu view and attach the viewmodel<br>\r\n&nbsp; }<br>\r\n<br>\r\n&nbsp; // This handles the load module command logic<br>\r\n&nbsp; void LoadModule(string moduleName) {<br>\r\n&nbsp; &nbsp; ModuleInfo[] moduleInfo = _container.Resolve&lt;IModuleEnumerator&gt;().GetModule(&quot;ModuleName&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; _container.Resolve&lt;IModuleLoader&gt;().Initialize(moduleInfo);<br>\r\n&nbsp; }<br>\r\n}<br>\r\n<br>\r\nBe sure to mark the modules with StartupLoaded=false, otherwise they get loaded and the effect is lost.<br>\r\nHope this helps.<br>\r\n",
+    "PostedDate": "2008-08-15T00:45:09.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "111340",
+    "ThreadId": "33554",
+    "Html": "Thanks the Menu Module idea.&nbsp; I like it.&nbsp; I'm still having problems w/ ModuleLoader.&nbsp; The moduleInfo variable errors out because _container.Resolve doesn't return an array.&nbsp; I guess I could modify the CAG so it does&nbsp;take one value :)&nbsp;<br>\r\n<br>\r\n&nbsp;// This handles the load module command logic<br>\r\n&nbsp; void LoadModule(string moduleName) {<br>\r\n&nbsp; &nbsp; ModuleInfo[] moduleInfo = _container.Resolve&lt;IModuleEnumerator&gt;().GetModule(&quot;ModuleName&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; _container.Resolve&lt;IModuleLoader&gt;().Initialize(moduleInfo);<br>\r\n<br>\r\n",
+    "PostedDate": "2008-08-15T05:44:58.043-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

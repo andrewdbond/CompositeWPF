@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "895846",
+    "ThreadId": "390377",
+    "Html": "\r\n<p>Hi friends out there.</p>\r\n<p>I want to know how i can add control or usercontrol in layout control like canvas at runtime in MVVM. As i don't want to add any code in&nbsp; code behind file of my view and i am unable to figure out how&nbsp; i can do in MVVM.</p>\r\n<p>please tell me how i achieve that.</p>\r\n<p>Thanks in advance.</p>\r\n",
+    "PostedDate": "2012-08-05T20:27:37.697-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "896201",
+    "ThreadId": "390377",
+    "Html": "<p>Hi,</p>\r\n<p>As far as I know, it's not possible to set the elements of a <strong>Canvas </strong>control through a data binding. Therefore, you will need to add the corresponding controls to the <strong>Canvas </strong>manually (this also includes setting the <strong>Canvas.Left</strong> and <strong>Canvas.Top</strong> attached properties.)</p>\r\n<p>Based on my understanding, when implementing the <strong>MVVM </strong>pattern, the <strong>view </strong>is responsible for defining any UI specific logic in its code-behind. Also, the <strong>view model</strong> should not know how to modify the UI components of the <strong>view </strong>directly. Therefore, while the<strong> view model</strong> could expose a list of controls to add to the <strong>view</strong>, the logic to display those controls in the <strong>Canvas </strong>should be placed in the <strong>view</strong>'s code-behind.</p>\r\n<p>I believe you can find the following thread interesting, where a similar scenario was discussed:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/357364\">Silverlight 5.0 Prism 4.0 Designer</a></li>\r\n</ul>\r\n<p>On the other hand, if you wish to handle this scenario in a more decoupled fashion and without adding code in the view's code-behind, I believe you can take advantage of the <strong>UI Composition</strong> capabilities provided by <strong>Prism</strong>. Although <strong>Prism </strong>as out of the box does not provide support for using <strong>Canvas </strong>or any other \"layout pane\" controls as a <strong>Region</strong>, you could define your own custom <strong>RegionAdapters </strong>for controls such as <strong>Canvas</strong>. Then, you could define the aforementioned <strong>Canvas </strong>in the <strong>view </strong>as a <strong>Region</strong>, and in the <strong>view model</strong> inject the corresponding controls as you would do with views in a <strong>Region</strong>.</p>\r\n<p>You can find more information about creating your <strong>RegionAdapters</strong>, in the following chapter of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430866%28v=pandp.40%29#sec25\">Appendix E: Extending Prism - Region Adapters</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-08-06T12:22:35.813-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

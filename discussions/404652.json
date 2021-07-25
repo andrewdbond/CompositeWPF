@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "947293",
+    "ThreadId": "404652",
+    "Html": "\r\n<p><span><span>What is the difference between CreateModuleCatalog() and ConfigureModuleCatalog() in PRISM?</span><br>\r\n<span>for example doing this:</span></span></p>\r\n<p><span><span></p>\r\n<pre>protected override Microsoft.Practices.Prism.Modularity.IModuleCatalog CreateModuleCatalog()\r\n        {\r\n            ModuleCatalog catalog = new ModuleCatalog();\r\n            catalog.AddModule(typeof(ModuleAModule));\r\n            return catalog;\r\n        }</pre>\r\n</span></span>\r\n<p></p>\r\n<p><span>or this:</span></p>\r\n<p><span></p>\r\n<pre>protected override void ConfigureModuleCatalog()\r\n        {\r\n            Type moduleAType = typeof(ModuleAModule);\r\n            ModuleCatalog.AddModule(new ModuleInfo()\r\n            {\r\n                ModuleName = moduleAType.Name,\r\n                ModuleType = moduleAType.AssemblyQualifiedName,\r\n                InitializationMode = InitializationMode.WhenAvailable,\r\n            });\r\n        }</pre>\r\n<span>when to use one method or the other or i need to use both</span><br>\r\n<span>thanks</span><br>\r\n</span>\r\n<p></p>\r\n",
+    "PostedDate": "2012-11-26T14:08:20.527-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "947796",
+    "ThreadId": "404652",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding the <strong>CreateModuleCatalog </strong>method is used to define the creation of the\r\n<strong>ModuleCatalog </strong>that will be used by your application. As you may find, by default, this method creates a\r\n<strong>ModuleCatalog </strong>instance, but this method can be overridden in a derived class in order to create different types of module catalogs. On the other hand, the\r\n<strong>ConfigureModuleCatalog </strong>method is used to modify the catalog after its creation, although as far as I know there may not be differences in adding the module in one method or the other, as the\r\n<strong>ConfigureModuleCatalog </strong>is called in the bootstrapping process right after the\r\n<strong>CreateModuleCatalog </strong>method. In my opinion this is mainly to maintain your code organized. Take into account that you should only add you module once (only in one of those methods).</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-11-27T09:10:34.117-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "757492",
+    "ThreadId": "307854",
+    "Html": "\r\n<p>I am building a Prism application that has a MainRegion, MenuRegion, and ToolBarRegion.&nbsp; Each view that is inserted into the MainRegion has it's own menu and toolbar that get inserted into it's corresponding region.&nbsp; I wired this by using a single\r\n instance of a ViewModel that is registered with the unity container&nbsp;as follows&nbsp;container.RegisterInstance&lt;<span style=\"color:#2b91af\">MyViewModel</span>&gt;(myViewModel).&nbsp; The mainView, menuView, and toolbarView each get the same viewModel\r\n instance injected into it when it is created.&nbsp; Each view is similar to the following:</p>\r\n<pre>public partial class View1ToolBar : UserControl\r\n{\r\n\r\n    public View1ToolBar()\r\n    {\r\n        InitializeComponent();\r\n    }\r\n\r\n    [Dependency]\r\n    public MyViewModel ViewModel\r\n    {\r\n        set { this.DataContext = value; }\r\n    }\r\n\r\n}</pre>\r\n<p>Therefore, all commands get bound to the myViewModel using DelegateCommand's.&nbsp; Is this a good practice?</p>\r\n<p>Thanks</p>\r\n",
+    "PostedDate": "2012-02-11T12:52:36.077-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "757753",
+    "ThreadId": "307854",
+    "Html": "<p>I personally like the composite form with the use of Dependency Injection defined within the constructor of the View, typically via an IViewModel interface (per Prism4 documentation). This holds true for any View/ViewModel that you may use as follows:</p>\n<p><strong>Interface:</strong></p>\n<p>interface IYourViewModel {</p>\n<p><span style=\"white-space: pre;\">&nbsp;</span>ICommand cmdSubmitAction {get; private set;} &nbsp;// This is one command that your ViewModel must implement</p>\n<p>}</p>\n<p><strong>ViewModel</strong></p>\n<p>public class YourViewModel : IYourViewModel{</p>\n<p><span style=\"white-space: pre;\">&nbsp;</span>public&nbsp;ICommand cmdSubmitAction {get; private set;}&nbsp;</p>\n<p><span style=\"white-space: pre;\">&nbsp;</span><span style=\"white-space: pre;\"> </span>public YourViewModel(){</p>\n<p>cmdSubmitAction = new DelegateCommand(()=&gt;{</p>\n<p>//Define your code to handle this Command&nbsp;</p>\n<p><span style=\"white-space: pre;\">&nbsp;</span><span style=\"white-space: pre;\"> </span>});</p>\n<p>}</p>\n<p>}</p>\n<p><strong>View</strong></p>\n<p>public class YourVIew{</p>\n<p>public YourView(IYourViewModel VM){</p>\n<p>// &nbsp;Use Dependency Injection within the Constructor to define its DataContext from the Interface resolved by Unity</p>\n<p>this.DataContext = VM;</p>\n<p><span style=\"white-space: pre;\">&nbsp;</span><span style=\"white-space: pre;\"> </span>}</p>\n<p>}</p>\n<p><strong>Unity Registration (Assume UC = IUnityContainer)</strong></p>\n<p>UC.RegisterType&lt;IYourViewModel, YouViewModel&gt;();</p>\n<p>// This tells Unity that you want the concrete implementation YouViewModel when you ask for IYouViewModel</p>\n<p><strong>Add Your View To A Region</strong></p>\n<p>&nbsp;//This is one way, but you get the idea... As your code will ask Unity for your View, the View's constructor does the rest.&nbsp;<em>&nbsp;</em></p>\n<p>IRegion.Add(UC.Resolve&lt;YourView&gt;());</p>\n<p><em>** The above was free formed typed, I am assuming you can infer the concept and not get hung up on any small syntax issue</em></p>\n<p><strong>Note</strong></p>\n<p>The idea here is that you can now create more than one ViewModel that implement IYourViewModel and reuse your xaml View file with any number of ViewModels as makes sense to promote reusability. This is a good practice for abstraction and clean separation. So if you create a xaml file and Interface that any ViewModel must implement, then another developer on your team could then create the concrete ViewModel Implementing your defined Interface without having  to be involved with the xaml portion. Now, I concede that you are probably doing everything yourself, maybe not... But in a team and especially when working between disconnected groups this clear/clean separation helps keep things organized.</p>",
+    "PostedDate": "2012-02-11T16:26:04.123-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "760745",
+    "ThreadId": "307854",
+    "Html": "<p>Thanks for the advice</p>",
+    "PostedDate": "2012-02-13T07:43:22.11-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

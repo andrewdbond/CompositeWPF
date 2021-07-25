@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "183907",
+    "ThreadId": "54545",
+    "Html": "Hi,<br>\r\n<br>\r\nI have a solution built on v1 and everything works fine. After upgrading to v2, it fails in the following scenario, a WinForm project launches the Bootstrapper in the Shell project. All region definitions seem to be missing thus the region collection is always empty. Thus no view can be added to the shell. The same Shell project works fine if it's launched directly as a WPF application. Please help, thanks.<br>\r\n<br>\r\nDaniel\r\n",
+    "PostedDate": "2009-04-26T20:31:20.81-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "184720",
+    "ThreadId": "54545",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi Daniel, </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">I was able to reproduce the error you mention.  With a bit of debugging I realized the issue that was causing region not to be created was the <b>IsInDesignMode()</b> method from the <b>RegionManager</b> class which needs the </span><span style=\"font-size:10pt;color:#2b91af;font-family:'courier new'\">Application</span><span style=\"font-family:calibri\">.Current to be set. </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">The right way of launching the Shell is though the Application as follows:</span></p>\r\n<p style=\"margin:0cm 0cm 0pt 35.4pt\"><span style=\"font-size:10pt;color:#2b91af;font-family:'courier new'\">YourPrismApp</span><span style=\"font-family:calibri\">.Main();</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-size:10pt;font-family:'courier new'\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">That way the Bootstrapper is also ran and the </span><span style=\"font-size:10pt;color:#2b91af;font-family:'courier new'\">Application</span><span style=\"font-family:calibri\">.Current will be set correctly. You will need to add references to the WindowsBase and PresentationFramework assemblies in your WinForm launcher project.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-size:10pt;font-family:'courier new'\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hope it helps!</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Matias Bonaventura</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><a href=\"http://blogs.southworks.net/\"><span style=\"font-family:calibri\">http://blogs.southworks.net/matiasb</span></a> </p>\r\n",
+    "PostedDate": "2009-04-28T14:28:10.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

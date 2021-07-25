@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "594212",
+    "ThreadId": "253119",
+    "Html": "<p>I may have missed it, but is there a list of the objects that Prism registers into the Unity Container somewhere in the documentation?&nbsp;</p>\n<p>Things like the Region Manager, Event Aggregator, Unity itself, etc...</p>\n<p>Just trying to do some documentation as to what was&nbsp;available to developers for injection already&nbsp;and I couldnt find a list.</p>\n<p>(edit)</p>\n<p>I found the following code in the UnityBootstrapper.cs file, ConfigureContainer method.</p>\n<div style=\"color: black; background-color: white;\">\n<pre>                RegisterTypeIfMissing(<span style=\"color: blue;\">typeof</span>(IServiceLocator), <span style=\"color: blue;\">typeof</span>(UnityServiceLocatorAdapter), <span style=\"color: blue;\">true</span>);\r\n                RegisterTypeIfMissing(<span style=\"color: blue;\">typeof</span>(IModuleInitializer), <span style=\"color: blue;\">typeof</span>(ModuleInitializer), <span style=\"color: blue;\">true</span>);\r\n                RegisterTypeIfMissing(<span style=\"color: blue;\">typeof</span>(IModuleManager), <span style=\"color: blue;\">typeof</span>(ModuleManager), <span style=\"color: blue;\">true</span>);\r\n                RegisterTypeIfMissing(<span style=\"color: blue;\">typeof</span>(RegionAdapterMappings), <span style=\"color: blue;\">typeof</span>(RegionAdapterMappings), <span style=\"color: blue;\">true</span>);\r\n                RegisterTypeIfMissing(<span style=\"color: blue;\">typeof</span>(IRegionManager), <span style=\"color: blue;\">typeof</span>(RegionManager), <span style=\"color: blue;\">true</span>);\r\n                RegisterTypeIfMissing(<span style=\"color: blue;\">typeof</span>(IEventAggregator), <span style=\"color: blue;\">typeof</span>(EventAggregator), <span style=\"color: blue;\">true</span>);\r\n                RegisterTypeIfMissing(<span style=\"color: blue;\">typeof</span>(IRegionViewRegistry), <span style=\"color: blue;\">typeof</span>(RegionViewRegistry), <span style=\"color: blue;\">true</span>);\r\n                RegisterTypeIfMissing(<span style=\"color: blue;\">typeof</span>(IRegionBehaviorFactory), <span style=\"color: blue;\">typeof</span>(RegionBehaviorFactory), <span style=\"color: blue;\">true</span>);                \r\n                RegisterTypeIfMissing(<span style=\"color: blue;\">typeof</span>(IRegionNavigationJournalEntry), <span style=\"color: blue;\">typeof</span>(RegionNavigationJournalEntry), <span style=\"color: blue;\">false</span>);\r\n                RegisterTypeIfMissing(<span style=\"color: blue;\">typeof</span>(IRegionNavigationJournal), <span style=\"color: blue;\">typeof</span>(RegionNavigationJournal), <span style=\"color: blue;\">false</span>);\r\n                RegisterTypeIfMissing(<span style=\"color: blue;\">typeof</span>(IRegionNavigationService), <span style=\"color: blue;\">typeof</span>(RegionNavigationService), <span style=\"color: blue;\">false</span>);\r\n                RegisterTypeIfMissing(<span style=\"color: blue;\">typeof</span>(IRegionNavigationContentLoader), <span style=\"color: blue;\">typeof</span>(RegionNavigationContentLoader), <span style=\"color: blue;\">true</span>);                \r\n</pre>\n</div>\n<p>Can I assume that these are it?&nbsp; Or should I look elsewhere too.&nbsp;</p>\n<p>Thanks</p>\n<p>Paul</p>",
+    "PostedDate": "2011-04-08T08:10:36.997-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "595323",
+    "ThreadId": "253119",
+    "Html": "<p>Hi Paul,</p>\r\n<p>The <strong>UnityBootstrapper</strong>&acute;<strong>s</strong> <strong>ConfigureContainer</strong> method registers all the services that the <strong>UnityContainer</strong> will use in your application, as you mentioned. These are the <strong>core Prism services</strong> your application will use by default. You can also turn off registering any services by default, using the <em>overloaded</em> <strong>Bootstrapper.Run</strong> method passing in <strong>false</strong> value. But if you turn off the default registration, you will need to <strong>manually register required services</strong>.</p>\r\n<p>You can read more about these topics in <a href=\"http://msdn.microsoft.com/en-us/library/gg430868(PandP.40).aspx\">Chapter 2: Initializing Prism Applications</a></p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>",
+    "PostedDate": "2011-04-11T07:25:36.993-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "595359",
+    "ThreadId": "253119",
+    "Html": "<p>Yup, thats the part in the documentation I missed.&nbsp;</p>\r\n<p>thanks</p>\r\n<p>Paul</p>",
+    "PostedDate": "2011-04-11T08:07:54.473-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

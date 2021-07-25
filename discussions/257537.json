@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "612429",
+    "ThreadId": "257537",
+    "Html": "\r\n<p>RegionManager.RequestNavigate does not update my ContentControl. The NavigationResult.Result comes back True, and I can drill down into the region in the debugger and see the view inside it, but the UI never shows the new view. Perhaps it is not setting\r\n it to active?</p>\r\n<p>The oddest part is that it works perfectly fine in Silverlight. Any help?</p>\r\n<p>&nbsp;</p>\r\n<pre><span>&lt;</span><span>ContentControl</span><span>&nbsp;Height</span><span>=</span><span>&quot;200&quot;</span><span>&nbsp;Width</span><span>=</span><span>&quot;200&quot;</span><span>&nbsp;Background</span><span>=</span><span>&quot;BlanchedAlmond&quot;</span><span>&nbsp;x</span><span>:</span><span>Name</span><span>=</span><span>&quot;MainContent&quot;</span><span>&nbsp;Regions</span><span>:</span><span>RegionManager.RegionName</span><span>=</span><span>&quot;MAIN&quot;</span><span>&gt;</span>\r\n</pre>\r\n<pre>_regionManager.RequestNavigate(&quot;Main&quot;,&nbsp;<span>ViewNames</span>.USER_SUMMARY,&nbsp;OnNavigationCallback);\r\n<br></pre>\r\n",
+    "PostedDate": "2011-05-13T07:47:08.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "612443",
+    "ThreadId": "257537",
+    "Html": "<p>Hi,</p>\r\n<p>It could be helpful if you could provide us with a repro sample (for example <a href=\"http://skydrive.live.com/\">SkyDrive</a>) of your solution, so that we can help you find out the cause of the unexpected behavior you're experiencing.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-13T08:15:58.207-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "612447",
+    "ThreadId": "257537",
+    "Html": "<p>&nbsp;</p>\n<p>http://cid-a3388b7fbf17cf82.office.live.com/self.aspx/.Public/PrismPad.zip</p>\n<p>&nbsp;</p>\n<p>when you run the app, click on the \"User Manager\" button. The code is in LaunchButtonViewModel.cs Sorry for posting such a trivial problem but I've looked everywhere for an explanation.</p>\n<p>&nbsp;</p>\n<p>Thanks!</p>",
+    "PostedDate": "2011-05-13T08:23:43.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "612562",
+    "ThreadId": "257537",
+    "Html": "<p>Hi,</p>\r\n<p>After debugging your application we&rsquo;ve found that your shell window was not being correctly initialized and shown on the screen. This caused the UI not reflected the changes when you navigate to the second view.</p>\r\n<p>We modified your Bootstrapper class like this:</p>\r\n<p><span style=\"font-size: 9pt;\" lang=\"EN-US\">\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> Bootstrapper : UnityBootstrapper\r\n{\r\n       <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> DependencyObject CreateShell()\r\n       {\r\n           <span style=\"color: blue;\">var</span> shell = <span style=\"color: blue;\">new</span> Shell();\r\n           <span style=\"color: blue;\">this</span>.Container.RegisterInstance&lt;Shell&gt;(shell);\r\n           Application.Current.MainWindow = shell;\r\n           <span style=\"color: blue;\">return</span> shell;\r\n       }\r\n\r\n       <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> InitializeShell()\r\n       {\r\n           <span style=\"color: blue;\">this</span>.Container.Resolve&lt;Shell&gt;().Show();\r\n       }\r\n&hellip;\r\n</pre>\r\n</div>\r\n</span></p>\r\n<p>We also modified the <strong>App.xaml</strong> file, removing the <strong>StartUpUri</strong> <em>property</em>.</p>\r\n<p>After modifying the <strong>CreateShell</strong> method, overriding the <strong>InitializeShell</strong> method in the <strong>Bootstrapper</strong> and removing the <strong>StartUpUri</strong> property in the <strong>App.xaml</strong> file, the sample worked correctly.</p>\r\n<p>Please let me know if this information helps you.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-13T12:56:24.803-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "612603",
+    "ThreadId": "257537",
+    "Html": "<p>Thank you very much!</p>",
+    "PostedDate": "2011-05-13T14:07:07.493-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "569592",
+    "ThreadId": "246904",
+    "Html": "<p>Hello,</p>\n<p>I am using PRISM 4 with MEF in WPF. &nbsp;I have a view, which is defined as:</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre>    [ViewExport(RegionName = RegionNames.MainRegion)] \n    [PartCreationPolicy(CreationPolicy.NonShared)]\n    [RegionMemberLifetime(KeepAlive=<span style=\"color: blue;\">true</span>)]\n    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> DocumentSelectionView : UserControl\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>On a button click (command), another View is loaded to the region, which contains another sub region. There I want to inject a _new_ instance of the DocumentSelectionView, leaving the existing (hidden) instance alive, so when going back it should be simply  reactivated with latest state.&nbsp;</p>\n<p>I created a controller class to programmatically inject the new view to the region (which should be done multiple times with different configuration settings).&nbsp;</p>\n<p>How to get a new instance of the view including resolving all the types needed (initializing constructor)?&nbsp;</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre>region.Add(???) // how to get a new view instance resolved?\n</pre>\n</div>\n<p>&nbsp;</p>\n<p><br /> Best Regards</p>\n<p>Andreas</p>",
+    "PostedDate": "2011-02-21T05:53:31.67-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "569610",
+    "ThreadId": "246904",
+    "Html": "<p>Hello,</p>\n<p>got a step forward. Added an additional [Export] attribute to my view, so now I get the view through&nbsp;&nbsp;ServiceLocator.Current.GetInstance&lt;DocumentSelectionView&gt;()</p>\n<pre> [ViewExport(RegionName = RegionNames.MainRegion)] \n [Export]</pre>\n<pre> [PartCreationPolicy(CreationPolicy.NonShared)]</pre>\n<pre> [RegionMemberLifetime(KeepAlive=<span>true</span>)]\n <span>public</span> <span>partial</span> <span>class</span> DocumentSelectionView : UserControl</pre>\n<pre><br /></pre>\n<pre><br /></pre>\n<p>Is it ok to have 2 export (ViewExport, Export) attributes at the view?&nbsp;</p>\n<p>Furthermore I figured out that the ViewModel haven't changed between the instances was caused by missing the following on the _ViewModel_</p>\n<pre> [PartCreationPolicy(CreationPolicy.NonShared)]</pre>\n<pre><br /></pre>\n<pre><br /></pre>\n<pre>Conclusion: With PartCreationPolicy NonShared on both the View and the ViewModel it seems to work - I get a new instance using ServiceLocator. </pre>\n<pre>Is that the right approach?</pre>",
+    "PostedDate": "2011-02-21T06:32:21.273-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

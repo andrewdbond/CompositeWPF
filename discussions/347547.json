@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "806384",
+    "ThreadId": "347547",
+    "Html": "<p>So I've grabbed the 4.1 release of Prism for use with my Silverlight 5 application. &nbsp;But now code analysis is complaining:</p>\n<p>MSBUILD : warning : CA0060 : The indirectly-referenced Silverlight assembly 'mscorlib, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e' could not be found. This assembly is not required for analysis, however, analysis results could be incomplete.  Silverlight reference assemblies should be specified with the '/reference' switch. This assembly was referenced by: C:\\...stuff...\\Lib\\Microsoft\\Prism\\4.1\\Silverlight\\Microsoft.Practices.Prism.dll.</p>\n<p>So it sounds like Prism 4.1 (which is packaged with PRISM 4.1) is not fully built against SL5? &nbsp;Or perhaps it's because I'm using Unity 2.1 which is not built against SL5?</p>",
+    "PostedDate": "2012-03-06T11:09:16.49-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "806452",
+    "ThreadId": "347547",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, this could be related to a known issue described in Prism 4.1 Readme (<strong>readme.mht</strong> file) due to the fact that <strong>FxCop </strong>cannot resolve references to older libraries. As the Prism library references versions of the Common Service Locator and Unity that still reference <strong>Silverlight 4</strong>, a similar warning appears. As mentioned in this <a href=\"http://connect.microsoft.com/VisualStudio/feedback/details/713608/ca0055-silverlight5-business-application-project\">article</a>, this problem only exists when you are mixing versions. And the work around is to make sure ALL of the references you are using in the <strong>Silverlight 5</strong> application are built against <strong>Silverlight 5</strong>.</p>\r\n<p>Based on this, I believe that using <strong>Unity 2.1</strong> which is not built against <strong>Silverlight 5</strong> might be the cause of this warning.</p>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-03-06T12:42:34.377-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

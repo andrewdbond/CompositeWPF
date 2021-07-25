@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "218857",
+    "ThreadId": "64322",
+    "Html": "<p>Hi,</p>\r\n<p>How to register or map a custom regaion adapter in app.config? Let's say I have Tab Control Region Adapter, Windows Region Adapter. Module developers will use only &quot;region&quot; but Infrastructure developer will define what custom region adapter will be used in the system. What adapter we will use in the system should be transparnet to the module-level developer. I think I can create one abstraction layer for that. But I'm wondering if I can specify the mapping in app.config so no need of creating any abstraction layer.&nbsp;</p>\r\n<p>Thanks in advance.&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-03T09:53:42.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "219314",
+    "ThreadId": "64322",
+    "Html": "<p>Hi Michael,</p>\r\n<p>In Prism there is not out of the box way to register region adapters through a configuration file. However, to suit your objective you can simply <a href=\"http://msdn.microsoft.com/en-us/library/dd458901.aspx\">register the RegionAdapters</a> in the <strong>Bootsrapper</strong> overriding the <strong>ConfigureRegionAdapterMappings</strong> method.<br>In the <strong>ConfigureRegionAdapterMappings</strong> method you could also read the <strong>app.config</strong> file and register the adapters dynamically. This will allow you to change the adapters without recompilation.<br>This will automatically allow your entire application to use those adapters, without any need of knowledge from the &ldquo;module level&rdquo; developers.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><span style=\"font-size:11pt\" lang=EN-US><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></span></p>",
+    "PostedDate": "2009-08-04T09:48:39.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

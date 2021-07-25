@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "836171",
+    "ThreadId": "355726",
+    "Html": "\r\n<p>Hi All</p>\r\n<p>I have a RadTabControl as a region in my application for loading settings/lists that will be used throughout my application.</p>\r\n<p>I would like to load the associated view into the RadTabRegion when the user selects an option from a listbox on the left hand side of the screen.</p>\r\n<p>The listbox on the left hand side of the screen pulls all the options from a database and also holds the name of the view I want to navigate to(probably not the best solution but these are pulled from the database based on the users permissions)</p>\r\n<p>There could be over a dozen of these views.&nbsp; I would like to load all these views into the region but I don't want them visible until I call RegionManager.RequestNavigate(a method will be called in the viewmodel when the user selects an option from\r\n the list).</p>\r\n<p>From what I know the options to load the views are:</p>\r\n<p><strong>RegionManager.RegisterViewWithRegion </strong>- This will load the view into the region when the region is active, so I don't think I can use this, also I don't think I can use this as I need to use the view name when calling RegionManager.RequestNavigate</p>\r\n<p><strong>Region.Add </strong>- I have used this before and it work as I wanted, I could add the view to the region and then deactivate it.&nbsp; I can't use this as when I try to activate it I get an error that it can't be deactivated in this type of region(RadTabRegion).</p>\r\n<p>I'm stumped at this stage, can anyone think of any else I can try.</p>\r\n<p>Thanks</p>\r\n<p>Paul</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-05-14T10:29:29.263-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "836217",
+    "ThreadId": "355726",
+    "Html": "<p>Hi Paul,</p>\r\n<p>Based on my understanding, the reason behind the exception you are mentioning is that the <strong>RadTabControl </strong>inherits from an <strong>ItemsControl</strong>; and therefore, Prism will treat it as an <strong>AllActiveRegion </strong>by default. In an <strong>AllActiveRegion </strong>it's not possible to deactivate views and thus the aforementioned exception is thrown. This can be changed by defining your own <strong>RegionAdapter </strong>for a <strong>RadTabControl </strong>and registering it overriding the <strong>ConfigureRegionAdapterMappings </strong>method in your bootstrapper. You can find more information about this in the following section of the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430866(v=pandp.40)#sec25\">Appendix E: Extending Prism - Region Adapters</a></li>\r\n</ul>\r\n<p>Regarding your scenario, is there a reason you need to inject all the views in the region even before their are requested by the user? If there is not, you can simply inject the views when needed by performing a <strong>NavigationRequest </strong>like you mentioned above and you would not need to worry about pre-loading the views and hiding them.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-05-14T12:06:20.057-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "836520",
+    "ThreadId": "355726",
+    "Html": "<p>Thanks Damian</p>\r\n<p>I always asumed that using <strong>RegionManager.RequestNavigate </strong>only works if the view is already loaded into the region.&nbsp; Not sure how I came to this conclusion, maybe I couldn't get it to work at some stage or because its called RequestNavigate and you pass the name of the view, anyway that worked like a charm.</p>\r\n<p>The problem I'm having now is that it shows the RadTabItem but its not selected but I'll have a look at Telerik site and try find a solution.</p>\r\n<p>Thanks again Damian</p>\r\n<p>Paul</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-05-15T02:25:02.603-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "201489",
+    "ThreadId": "59511",
+    "Html": "<p>Hi there,</p>\r\n<p>I'm stuck with a problem I haven't found a solution yet. Maybe someone has an idea:</p>\r\n<p>I have a highly modular Silverlight Prism app, containing modules like &quot;email&quot; or &quot;addresses&quot;, e.g. Each of these modules has it's own region, again containing nested child regions. But there is one area I would like to show in every module: a widget area. It should be exactly the same view instance (maintaining state when switching between modules).</p>\r\n<p>The problem I'm faced with is, that I _need_ to have separate, named regions for the widget area inside of each module region. I cannot name those widget regions the same, because I'd get an error if I had multiple regions with the same name. Still, I want to show the exact same content/instance of my widgets in each module region (&quot;address_widgetregion&quot; and &quot;email_widgetregion&quot; should have the same content). Since Views are registered inside their containing regions, I cannot easily have a master region and re-use (cut &amp; paste) the widget view in the currently active module region, because the view can only be registered within one region.</p>\r\n<p>Do you have any ideas?<br><br>Best regards,<br>Tobi</p>",
+    "PostedDate": "2009-06-15T01:51:45.71-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "201626",
+    "ThreadId": "59511",
+    "Html": "<p>Hi Tobi,</p>\r\n<p>it sounds to me that you need to think about the problem from a slightly different viewpoint.</p>\r\n<p>Why not have a single instance of the data which the 'widget' areas then display to the user.</p>\r\n<p>So you can then have multiple instances of the view but they all display the same data - basic Observer pattern approach.</p>\r\n<p>Regards,</p>\r\n<p>Niall.</p>",
+    "PostedDate": "2009-06-15T08:56:35.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "201900",
+    "ThreadId": "59511",
+    "Html": "<p>Hi Niall,</p>\r\n<p>thank you very much for your answer! Having a single instance of the data sounds reasonable, you're right.</p>\r\n<p>What I can't (yet) imagine, is how &quot;view states&quot; will be part of that, too. I'm thinking e.g. of an accordion that's collapsed/open in one (instance of a) view - this should remain collapsed/open in the other widget views, too. So actually, the whole view should be reflected in the other instances.<br>What I also don't know right now is, how to do that in Prism: when populating a region, I'm constrained to using &quot;this.container.Resolve&lt;WidgetModuleView&gt;()&quot; or &quot;regionManager.RegisterViewWithRegion(&quot;AddressModule_WidgetRegion&quot;, typeof(WidgetModuleView));&quot; - which both 'just' instantiate my views. I can't step in and, e.g. stop instantiation to implement a singleton or something similar (can I??).</p>\r\n<p>Do you have a (code) sample regarding doing this in Silverlight / Prism?</p>\r\n<p>Best regards,</p>\r\n<p>Tobi</p>",
+    "PostedDate": "2009-06-16T00:28:48.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "202232",
+    "ThreadId": "59511",
+    "Html": "<p>Hi Toby,</p>\r\n<p>sorry, I forgot / skipped the bit about maintaining the view state!</p>\r\n<p>My first reaction would be to simply store this extra state information in a similar manner to the data that is being displayed, ie. in a central location. I'd look into the Model-View-ViewModel pattern if you're not currently using it as I believe the ViewModel may relate to the state information that you want to preserve. If so, you could share a single ViewModel between multiple instances of the view.</p>\r\n<p>I don't have any such code but now that you mention it, I'm sure you can control the instantiation of objects within Prism as it simply uses a Dependency Injection framework behind the scenes. I have to admit that I'm not currently developing with Prism so my depth of specific knowledge is going to be slightly lacking! I'm hoping to get back to some smart client development soon though.</p>\r\n<p>Sounds like the path of least resistance would be option one though!</p>\r\n<p>Regards,</p>\r\n<p>Niall.</p>",
+    "PostedDate": "2009-06-16T14:59:17.85-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

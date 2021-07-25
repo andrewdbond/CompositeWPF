@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "815916",
+    "ThreadId": "350153",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I'm using prism 4.1 with&nbsp;ClearChildViewsRegionBehavior for removing all child views from nested region. Every time i'm creating new instances of views/viewmodels. And i see that private static void method ClearChildViews in&nbsp;ClearChildViewsRegionBehavior.cs\r\n executes only when i'm creating new instances of view/viewmodel, but not after removing view with nested regions from main region. Is this normal behavior?</p>\r\n",
+    "PostedDate": "2012-03-26T23:57:21.563-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "816190",
+    "ThreadId": "350153",
+    "Html": "<p>Hi,</p>\n<p>We could reproduce the scenario you mentioned. When we removed a view with nested regions inside using the <strong>ClearChildViews </strong>attached property. We realized that the <strong>Region_PropertyChanged</strong> method of the <strong>ClearChildViewsRegionBehavior</strong> was not being call until another change was made (for example by adding another view as you mentioned.) The reason for this behavior seems to be that the <strong>Region.Remove</strong> method doesn't call the <strong>RegionManager.UpdateRegions</strong> which notifies the attached behaviors to update the region managers appropriately, if needed. For example, this method is invoked when indexing the regions collection  or adding a new view.</p>\n<p>So far we didn't find any other undesired behavior than the aforementioned one. We believe a quick workaround could be to call the <strong>RegionManager.UpdateRegions()</strong> static method after removing the views, to achieve the proper notification to the attached behaviors.</p>\n<p>Please let us know if this is your case and if you have encountered any other problem related to it.</p>\n<p>I hope you find this useful,</p>\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2012-03-27T11:17:53.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "816370",
+    "ThreadId": "350153",
+    "Html": "<p>He aadami. Thank you. <strong>RegionManager.UpdateRegions()</strong> did the trick.</p>",
+    "PostedDate": "2012-03-27T22:48:49.823-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "816661",
+    "ThreadId": "350153",
+    "Html": "<p>Hi,</p>\n<p>I'm glad you found this workaround helpful. Additionally we have created this <a href=\"http://compositewpf.codeplex.com/workitem/9270\"> work item</a> notifying about the behavior, so it can be taken into account for future releases.<br /> <br /> Thanks for the feedback!</p>\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2012-03-28T10:03:08.24-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

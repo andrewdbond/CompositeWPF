@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "523049",
+    "ThreadId": "234977",
+    "Html": "\r\n<p>&nbsp;&nbsp;&nbsp; public class SingleActiveRegion : Region<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// Marks the specified view as active.<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;param name=&quot;view&quot;&gt;The view to activate.&lt;/param&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;remarks&gt;If there is an active view before calling this method,<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// that view will be deactivated automatically.&lt;/remarks&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public override void Activate(object view)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object currentActiveView = ActiveViews.FirstOrDefault();</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (currentActiveView != null &amp;&amp; currentActiveView != view &amp;&amp; this.Views.Contains(currentActiveView))<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.Deactivate(currentActiveView);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.Activate(view);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;</p>\r\n<p>should we check ---this.Views.Contains(view) ?&nbsp; not currentActiveView?</p>\r\n",
+    "PostedDate": "2010-11-16T21:50:05.843-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "523417",
+    "ThreadId": "234977",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>There are no issues reported related to this so far. Please, take into account that this Region type allows a maximum of one active view at a time. It means that when you add a view to this region, the current one must be deactivated previously.</p>\r\n<p>Have you experienced an issue with this?</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n",
+    "PostedDate": "2010-11-17T11:59:34.207-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

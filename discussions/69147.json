@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "235278",
+    "ThreadId": "69147",
+    "Html": "<p>I've been working my way through the quickstarts and have a few questions about the View Injection Quickstart:</p>\r\n<p>1) The <strong>Initialize</strong> method of the <strong>EmployeeModule</strong> registers the view with the following code:</p>\r\n<p><span style=\"font-size:x-small\"> </span></p>\r\n<p>&nbsp; <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">void</span> Initialize()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"color:Blue\">this</span>.RegisterViewsAndServices();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EmployeesPresenter presenter = <span style=\"color:Blue\">this</span>.container.Resolve&lt;EmployeesPresenter&gt;();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IRegion mainRegion = <span style=\"color:Blue\">this</span>.regionManager.Regions[RegionNames.MainRegion];<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mainRegion.Add(presenter.View);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>How is that different than</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">void</span> Initialize()\r\n{\r\n<span style=\"color:Blue\">this</span>.RegisterViewsAndServices();\r\n<span style=\"color:Blue\">this</span>.regionManager.RegisterViewWithRegion(<span style=\"color:#A31515\">&quot;MainRegion&quot;</span>,<span style=\"color:Blue\">typeof</span>(EmployeeView));\r\n}\r\n</pre>\r\n</div>\r\n<p>2) The QuickStart creates a separate instance of an EmployeeDetails view for every employee, rather than a single instance which refreshes its data context.&nbsp; Is storing the viewing in the local regionManager the best practice?&nbsp; I would think it would bloat the footprint overtime.&nbsp; Please advise.</p>\r\n<p>&nbsp;3) In the Silverlight version of the quickstart, the tab for Current Projects has no title in the tab, even though the&nbsp;ProjectListPresentationModel implements the HeaderInfo property.&nbsp; The EmployeesDetailView defines the TabControl, and has a RegionAdapter defined to bind the header template to the model's HeaderInfo property. &nbsp;I've noticed the Header text is set explictly in the xaml for the &quot;General&quot; tab. &nbsp; I can bind a textblock to the headerinfo property and see the value, but it isn't getting picked up by the Tab Adapter.</p>\r\n<p>&nbsp;Thank you.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-16T12:00:19.03-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "235625",
+    "ThreadId": "69147",
+    "Html": "<p>The same problem is present in the View Discovery Quickstart.</p>",
+    "PostedDate": "2009-09-17T08:17:58.99-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "235663",
+    "ThreadId": "69147",
+    "Html": "<p>Issue 3) is actually a Silverlight 3 problem - blogged about <a href=\"http://www.global-webnet.net/blogengine/post/2009/08/06/SL3-TabItem-HeaderTemplate-does-not-support-DataBinding.aspx\">HERE</a>.&nbsp;</p>\r\n<p>Issue 1) The difference is that in the first code snippet the Presenter resolves the View and in the second I can only assume the View will instantiate the presenter.</p>\r\n<p>Issue 2) I trust this would be dependent on the story/use case requirements.&nbsp;&nbsp; Like you I would lean towards a single instance however if I needed to be able to work with multiple employees, with some sort of optimistic concurrency, separate instances would make managing state a wee bit easier.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-17T09:49:52.88-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

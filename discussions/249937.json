@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "581421",
+    "ThreadId": "249937",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>I have a base application template that I use when creating new apps. Currently this template is based on Prism 2. I am currently in the process of converting it to Prism 4. Now of course there are a few more things to think about given the&nbsp;inclusion\r\n of MEF.&nbsp;MEF is the &quot;cool&quot; thing now. So I am trying to use this over Unity. However the more I get into it the more I wonder whether MEF is indeed the right option for me (not talking about anyone else, just me). My biggest problem with MEF is that if\r\n you don't have attributes, you don't have MEF. It appears future versions of MEF will support an attribute less model but that's then and this is now. You see more often than not my views have no code behind. The code behind is unaware of the view model. More\r\n often than not the wiring of my views and view models&nbsp;happens through configuration. The&nbsp;infrastructure through this configuration will instantiate both the view and&nbsp;view model and then wire them, and it currently uses Unity to instantiate these.&nbsp;With\r\n MEF it appears your view MUST explicitly import through attributes its view model and the view model MUST explicitly export itself through attributes. I have no problem with this and certainly there are scenarios where this is useful. I personally however\r\n am not a huge fan of having to ALWAYS &quot;clutter&quot; my types with attributes just to get dependencies resolved. Again, I think it's OK BUT having worked with Unity in the past it seems like a&nbsp;step backward not being able to resolve an instance without the\r\n need of attributes. But again, I like MEF and under certain circumstances I like its usage but not ALWAYS. I was wondering if there is any way to use both with PRISM? I would like to give my team options in terms of dependency resolution. For those that like\r\n MEF and don't mind all the attribute noise, fine, use it. But for those that don't, don't. I guess I could live with using the MefBootstrapper but somehow make available&nbsp;Unity as an option. Ideally however I would like&nbsp;a custom container that will\r\n be smart enough to know whether to use MEF or Unity based on the type. If the type has MEF decorations use MEF, otherwise fallback on Unity. I believe this option though is much more involved and right now I lack the time to do any such thing. So again, does\r\n anyone have any advice on making Unity available as an option when using the MefBootstrapper? Thank you</p>\r\n",
+    "PostedDate": "2011-03-16T06:43:19.283-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "581607",
+    "ThreadId": "249937",
+    "Html": "<p>Hi,</p>\r\n<p>Prism is designed to be container agnostic, but not to work with two Dependency Injection containers at the same time.</p>\r\n<p>However, your requirement should be possible to achieve, as a temporal measure. You should take into account that there are certain classes that use ServiceLocation, so they must use MEF, since there is one Locator Provider, which is configured in the corresponding bootstrapper.</p>\r\n<p>Additionally, you might find the following chapter from the Prism MSDN documentation useful:</p>\r\n<p><a href=\"http://msdn.microsoft.com/en-us/library/ff921140%28PandP.40%29.aspx\">Chapter 3: Managing Dependencies Between Components</a></p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-16T11:33:04.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

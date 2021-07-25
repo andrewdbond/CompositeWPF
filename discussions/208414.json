@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "427713",
+    "ThreadId": "208414",
+    "Html": "<p>I'm implementing a module with Views created in a separate project and hence a separate assembly. I'm using UnityContainer and DirectoryLookUp for module discovery and placing&nbsp;both the module and view binaries inside modules folder.</p>\r\n<p>All works fine, container is able to resolve and create the view.</p>\r\n<p>I also have a requirement to <strong>generate the view type dynamically</strong> and load it. For that I'm using Type.GetType(&quot;&lt;fully qualified name of type, fully qualified name of assembly&gt;&quot;, true). For some strange reason this doesn't work and an exception is thrown at the run time. If view is created in the same assembly in which module resides then Type.GetType works fine.</p>\r\n<p>After debugging, I realised that Module assembly is loaded by calling Assembly.LoadFrom() method inside AssemblyResolve event of AppDomain, however, the view assembly is loaded via. container while resolving the view&nbsp;type. Both the binaries are loaded in AppDomain and AppDomain.CurrentDomain.GetAssemblies(..) returns both of these.</p>\r\n<p>Also, if I explicitely pick up the view assembly from loaded assemblies and then call GetType&nbsp;method on assembly&nbsp;it works fine -&nbsp;the workaround being used currently.</p>\r\n<p>My guess is that it is related to the way container resolves the types. May be container loads the assembly in less privilege or different context. Can somebody please explain what's going &quot;under the hood&quot; and what should be the best way to handle this requirement.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-05T23:28:50.717-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "430134",
+    "ThreadId": "208414",
+    "Html": "<p id=03d8a7b0-287c-012d-5e0e-12313d010121>Hi,</p>\r\n<p id=03d8b640-287c-012d-5e0f-12313d010121>From the problem description above, this does not seem to be a problem entirely related to Prism. For that reason you might find it useful to post your question in these forums:</p>\r\n<ul>\r\n<li><a href=\"http://unity.codeplex.com/Thread/List.aspx\">Unity Forum</a></li>\r\n<li><a href=\"http://social.msdn.microsoft.com/Forums/en/netfxbcl/threads\">NET Base Class Library</a></li>\r\n</ul>\r\n<p id=03d8c780-287c-012d-5e10-12313d010121>It might also be useful, if you could provide the full exception message you are getting. Based on <a href=\"http://msdn.microsoft.com/en-us/library/c5cf8k43.aspx\">this documentation</a>, which explains the different exceptions the <strong>Type.GetType</strong> method can throw, the possible cause for your exception could be narrowed down.</p>\r\n<p id=03d8e2e0-287c-012d-5e11-12313d010121>Please let me know if this helps.</p>\r\n<p id=03d8fb40-287c-012d-5e12-12313d010121>Damian Schenkelman <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-04-12T11:32:28.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

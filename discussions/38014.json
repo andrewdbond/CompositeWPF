@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "126103",
+    "ThreadId": "38014",
+    "Html": "<p>Remote module is not getting loaded or error rose when ModuleManifest.xaml contains a reference to external assembly that is not available on remote module project. Current drop 3&nbsp;does not even raise Application_UnhandledException and therefore you wont even see anything wrong as its not raised to ReportErrorToDOM.<br>\r\n<br>\r\nI verified this behavior on RemoteModuleLoading sample and I was able to reproduce this when I changed ModuleManifest.xaml and added one assembly that is not available on the remote module. See the example config below. In this sample I added&nbsp;AssemblyPart ModuleZ.UIControls.dll to reproduce this behaviour.<br>\r\n<br>\r\nIs there any way to tide up this and get more accurate indication when statically referenced assembly is not available on module but referenced on Module deployment? I spend some time for tracking down why one of the module did not get loaded, and after some profound debug sessions and midnight hours I realized the problem. Anyhow when module is not getting loaded this missing reference to module deployment is not obvious.</p>\r\n<p>&lt;Modularity:ModuleDeployment<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp; xmlns=http://schemas.microsoft.com/winfx/2006/xaml/presentation<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp; xmlns:x=&quot;<a href=\"http://schemas.microsoft.com/winfx/2006/xaml\">http://schemas.microsoft.com/winfx/2006/xaml</a>&quot;&nbsp; <br>\r\n&nbsp;&nbsp;&nbsp; xmlns:Modularity=&quot;clr-namespace:Microsoft.Practices.Composite.Modularity;assembly=Microsoft.Practices.Composite.Silverlight&quot;&gt;&nbsp;&nbsp; <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp; &lt;Modularity:ModuleDeployment.Parts&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;AssemblyPart Source=&quot;ModuleZ.Silverlight.dll&quot; /&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;AssemblyPart Source=&quot;ModuleZ.UIControls.dll&quot; /&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Modularity:ModuleDeployment.Parts&gt;<br>\r\n&lt;/Modularity:ModuleDeployment&gt;</p>\r\n<p>Regards,<br>\r\nAlexander</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2008-10-18T17:13:36.817-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "128735",
+    "ThreadId": "38014",
+    "Html": "Thanks Alexander,<br>\r\n<br>\r\nI have entered this into our bug list.<br>\r\n<br>\r\nLarry Prism Test Lead\r\n",
+    "PostedDate": "2008-10-29T15:48:17.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "128738",
+    "ThreadId": "38014",
+    "Html": "No problem, there is also another bug related module loading, see the discussion item <span style=\"font-size:10pt;font-family:'verdana','sans-serif'\">[discussion:37975]<br>\r\n</span>Regards,<br>\r\nAlexander \r\n",
+    "PostedDate": "2008-10-29T16:00:16.073-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

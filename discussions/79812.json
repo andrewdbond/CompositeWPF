@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "273377",
+    "ThreadId": "79812",
+    "Html": "<p>After returning from a 2 week vacation, I suddenly started seeing the following exception from my Prism application from the call to Boostrapper.Run():</p>\r\n<p>System.InvalidCastException {&quot;Unable to cast transparent proxy to type 'InnerModuleInfoLoader'.&quot;}</p>\r\n<p>With the following call stack:</p>\r\n<p>at Microsoft.Practices.Composite.Modularity.DirectoryModuleCatalog.InnerLoad()<br>&nbsp;&nbsp; at Microsoft.Practices.Composite.Modularity.ModuleCatalog.Load()<br>&nbsp;&nbsp; at Microsoft.Practices.Composite.Modularity.ModuleCatalog.Initialize()<br>&nbsp;&nbsp; at Microsoft.Practices.Composite.Modularity.ModuleManager.Run()<br>&nbsp;&nbsp; at Microsoft.Practices.Composite.UnityExtensions.UnityBootstrapper.InitializeModules()<br>&nbsp;&nbsp; at Microsoft.Practices.Composite.UnityExtensions.UnityBootstrapper.Run(Boolean runWithDefaultConfiguration)<br>&nbsp;&nbsp; at Microsoft.Practices.Composite.UnityExtensions.UnityBootstrapper.Run()<br>&nbsp;&nbsp; at Mobile.App..ctor()<br>&nbsp;&nbsp; at Mobile.App.Main()</p>\r\n<p>&nbsp;</p>\r\n<p>My bootstrapper class is:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>    <span style=\"color:Blue\">internal</span> <span style=\"color:Blue\">class</span> Bootstrapper : UnityBootstrapper\r\n    {\r\n              \r\n        <span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">override</span> IModuleCatalog GetModuleCatalog()\r\n        {\r\n            LoggerFacade.Log(<span style=\"color:#A31515\">&quot;Loading modules&quot;</span>, Category.Debug, Priority.Medium);\r\n            DirectoryModuleCatalog moduleCatalog = <span style=\"color:Blue\">new</span> DirectoryModuleCatalog();\r\n            moduleCatalog.ModulePath = <span style=\"color:#A31515\">@&quot;Modules&quot;</span>;\r\n            <span style=\"color:Blue\">return</span> moduleCatalog;\r\n        }\r\n\r\n        <span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">override</span> DependencyObject CreateShell()\r\n        {\r\n            LoggerFacade.Log(<span style=\"color:#A31515\">&quot;Loading logger&quot;</span>, Category.Debug, Priority.Medium);\r\n\r\n            LoggerFacade.Log(<span style=\"color:#A31515\">&quot;Showing shell&quot;</span>, Category.Debug, Priority.Medium);\r\n            Shell shell = <span style=\"color:Blue\">new</span> Shell();\r\n            shell.Show();\r\n\r\n            <span style=\"color:Blue\">return</span> shell;\r\n        }\r\n    }\r\n</pre>\r\n</div>\r\n</p>\r\n<p>In my Modules directory, I have 2 assemblies, both of which contain a Module.</p>\r\n<p>Has anyone seen this before?&nbsp; Any ideas to the cause or fix of this behavior?</p>\r\n<p>Thanks!</p>",
+    "PostedDate": "2010-01-05T09:15:05.247-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "273439",
+    "ThreadId": "79812",
+    "Html": "<p>I think I figured it out.&nbsp; We had 2 versions of the same assembly, each had a different public key.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-05T11:41:00.007-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "704904",
+    "ThreadId": "79812",
+    "Html": "<blockquote style=\"padding-bottom: 0px; font-style: italic; margin: 0.25em 1em 0px; padding-left: 0.25em; padding-right: 0.25em; padding-top: 0px; border: #ccc 0.1em solid;\"><strong>dmonks wrote:</strong><br />\r\n<p>I think I figured it out.&nbsp; We had 2 versions of the same assembly, each had a different public key.</p>\r\n<p>&nbsp;</p>\r\n</blockquote>\r\n<p><br />We're encountering the same error, would you mind elaborating on what you figured out?&nbsp; Where were the 2 versions located, and are you referring to your module assembly or something else?&nbsp; Any insight will be highly appreciated.</p>\r\n<p>Thanks!</p>",
+    "PostedDate": "2011-11-29T10:45:19.423-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "706078",
+    "ThreadId": "79812",
+    "Html": "<p>Sorry I didn't provide more detail in my original post.&nbsp; I thoughtlessly assumed that I ended up in a weird situation that no one else would.</p>\r\n<p>As best as I can remember almost it was one of the two scenarios -</p>\r\n<p>1.&nbsp; We had 2 different versions of one of our module.dlls in a directory.</p>\r\n<p>or</p>\r\n<p>2.&nbsp; We had 2 different versions of Microsoft.Practices.ObjectBuilder.dll registered on the machine.</p>\r\n<p>&nbsp;</p>\r\n<p>Good Luck !</p>",
+    "PostedDate": "2011-12-01T13:13:40.18-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "709072",
+    "ThreadId": "79812",
+    "Html": "<p>actually, I was thinking about your answer and it kinda pointed me to the right direction, so thanks!&nbsp;</p>\r\n<p>In our case, our prism dlls were in the wrong location, we were hoping not to have&nbsp;to register them in the GAC.&nbsp; Error disappeared after registering them properly.</p>",
+    "PostedDate": "2011-12-07T15:59:55.82-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "709285",
+    "ThreadId": "79812",
+    "Html": "<p>Glad you found a solution, but I was able to get my code working without using the GAC.&nbsp; So there should be a way to do it avoiding the GAC.</p>",
+    "PostedDate": "2011-12-08T06:14:23.223-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

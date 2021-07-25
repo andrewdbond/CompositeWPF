@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "148169",
+    "ThreadId": "44516",
+    "Html": "Are these 2 terms 100 % interchangeable, or do they mean different things.<br>\r\n",
+    "PostedDate": "2009-01-18T17:32:46.223-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "148195",
+    "ThreadId": "44516",
+    "Html": "Within the context of WPF they are the same thing.<br>\r\n<br>\r\n<a href=\"http://www.google.com/search?hl=en&q=MVVM\">http://www.google.com/search?hl=en&amp;q=MVVM</a> - Google search on MVVM (Model/View/ViewModel)<br>\r\n<br>\r\n<a href=\"http://martinfowler.com/eaaDev/PresentationModel.html\">http://martinfowler.com/eaaDev/PresentationModel.html</a>  - Martin Fowler<br>\r\n<br>\r\nAs for which is more correct - you really have to consider the source (which is very hard to find sometimes).  For example,  a few years back almost every site I went to said that in the MVP (Model-View-Presenter) pattern that the View does *not* communicate with the Model.   I trust they still mislead you today but I wouldn't know because there are only two sources I frequent now for architecture research - Microsoft and Martin Fowler (in that order).   In the absence of guidance by Microsoft Fowler gets it.   Why?<br>\r\n<br>\r\nWhen the Model-View-Presenter (MVP) pattern evolved from the Model-View-Controller (MVC) pattern the most significant changes were the &quot;levels of abstraction&quot; (don't take my word for it - I recommend you read it from one of our MVP founding fathers - Mike Potel).  See following link: <a href=\"http://en.wikipedia.org/wiki/Model_View_Presenter\">http://en.wikipedia.org/wiki/Model_View_Presenter</a><br>\r\n<br>\r\nSo where did the mis-understanding come from?  My suspicion is from Martin Fowler in 2006 when he &quot;split&quot; MVP into two - the Supervising Controller and Passive View.  In &quot;Passive View&quot; it is correct that the Presenter is responsible for updating the view (manually) and the View does not communicate with the model.   If you read Fowlers comments on &quot;Supervising Controller&quot; you'll find he notes that if you using DataBinding (View indirectly monitors the Model) then the pattern is &quot;Supervising Controller&quot;.   <br>\r\n<br>\r\nSo if Martin Fowler could have such a great impact on the community then my vote is to call it <strong>PresentationModel</strong>; after all MVVM really doesn't make a lot of sense when it is more View-ViewModel-Model or in the case of my <a href=\"http://www.codeplex.com/SDMS\">http://www.CodePlex.com/SDMS</a> application; <br>\r\n      View-ViewModel - Presenter - Model.  <br>\r\nI am following a CompositeWPF pattern from the TopDown composition sample where the Presenter communicates with the Model to update the PresentationModel (indirectly updating the view via DataBinding).<br>\r\n<br>\r\nIn my humble opinion there is no place for Passive MVP in the ASP.NET, WinForm and WPF world - we have smart controls and smart infrastructures to do the hard work for us (via DataBinding).<br>\r\n<br>\r\n<a href=\"http://www.martinfowler.com/eaaDev/ModelViewPresenter.html\">http://www.martinfowler.com/eaaDev/ModelViewPresenter.html</a><br>\r\n<br>\r\n----<br>\r\n<br>\r\nSoooo, just when I thought I had a clear understanding on the difference between MVP and MVC, Microsoft came out with ASP.NET <span style=\"text-decoration:underline\"><strong>MVC</strong></span> - Phil Haack explains the difference between MVP and MVC in the following:<br>\r\n<br>\r\n<a href=\"http://haacked.com/archive/2008/06/16/everything-you-wanted-to-know-about-mvc-and-mvp-but.aspx\">http://haacked.com/archive/2008/06/16/everything-you-wanted-to-know-about-mvc-and-mvp-but.aspx</a><br>\r\n<br>\r\nWhy MVC?  Was clear as mudd when I got done reading his blog...  I'm one of the last comments on it - perhaps one day someone will be able to clear it up????   <br>\r\n<br>\r\nBill \r\n",
+    "PostedDate": "2009-01-18T19:46:06.97-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "148286",
+    "ThreadId": "44516",
+    "Html": "<p>I would go with Bill and say that supervising type of view is better choice for WPF/SL/ASP.NET which are heavily supporting data biding approach. But there is a case at least one I have encounter so far, where Supervising type of MVP is not most feasible as declarative or indirect data binding is not allowed by control, and such unusual case is when your view contains PasswordBox control.</p>\r\n<p>PasswordBox control does not allow you to data binding to control content changes. You can go around of this by subscribing password change event and then apply the changes into your model but the code looks ugly as you compromise the concept by one (exception) control. Also you should be careful here as such information as password is sensitive and if you move it out from PasswordBox control, the content (password) will be hanging as naked string in your model and in client site SL CLR till the GC cleans it up. </p>\r\n<p>So, I think some cases passive type of MVP is better choice, like above or when you need to encrypt the control content (Bank Account, Password, SSN) and limit your controls data biding by security reasons. <br>\r\n<br>\r\nJust my humble observation and comment to this topic... <br>\r\n<br>\r\nRegards,<br>\r\nAlexander</p>\r\n",
+    "PostedDate": "2009-01-19T03:08:08.483-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "148316",
+    "ThreadId": "44516",
+    "Html": "Kona,<br>\r\n<br>\r\nI created a diagram presenting the difference of typical CreateUser view (which I mention above) where you could use declarative data binding as supervising type partially,and for security sensitive info you could mix the use of typical Passive type of MVP. The diagram here is a bit out of standard UML Sequence diagram but I hope this illustrate the difference in more visually. <br>\r\n<br>\r\nAnyhow, see the diagram link (there is no way to attach it to this discussion here so I made it as link) <a href=\"http://www.xentree.com/sl2withprism/MVP_Passive_vs_Supervising.JPG\" title=\"http://www.xentree.com/sl2withprism/MVP_Passive_vs_Supervising.JPG\">http://www.xentree.com/sl2withprism/MVP_Passive_vs_Supervising.JPG</a><br>\r\n<br>\r\nHope above clears the differences...<br>\r\n<br>\r\nRegards,<br>\r\nAlexander \r\n",
+    "PostedDate": "2009-01-19T05:25:14.323-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "148317",
+    "ThreadId": "44516",
+    "Html": "<div>\r\n<p><span style=\"font-family:'calibri','sans-serif';color:#1f497d;font-size:11pt\">Very, very nice Alexander – I’m keeping this one for my next Story/Use case (one less thing to document!).   I have to create an authentication model that will support both ADS and ASP.NET security for Silverlight, ASP.NET and our CompositeWPF apps; if the user doesn’t authenticate via ADS then I have to provide a login form.</span></p>\r\n<p><span style=\"font-family:'calibri','sans-serif';color:#1f497d;font-size:11pt\"></span></p>\r\n<p><span style=\"font-family:'calibri','sans-serif';color:#1f497d;font-size:11pt\">Bill</span></p>\r\n</div>\r\n",
+    "PostedDate": "2009-01-19T05:35:02.11-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "148496",
+    "ThreadId": "44516",
+    "Html": "This is awesome Alex. Thanks a lot!!!<br>\r\n",
+    "PostedDate": "2009-01-19T13:17:33.183-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "149538",
+    "ThreadId": "44516",
+    "Html": "Thanks for all the replies, and thanks Alex for the diagram (this is going on the wall for sure).<br>\r\nAll of this definitely helped clear up some stuff for me, but perhaps brought up a few questions as well.<br>\r\nIn this type of scenario, how would you envision the model being implemented. <br>\r\nI imagine it would it be help as a property in the presenter, and then set as the data context of the view, but I wanted to make seeing things from the same perspective.\r\n",
+    "PostedDate": "2009-01-21T19:41:13.79-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "149679",
+    "ThreadId": "44516",
+    "Html": "<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">There are couples of different ways to do this and <i>I would recommend you to look into the quick starts and get dirty in code.</i></span></p>\r\n<p style=\"margin:0in 0in 10pt\"><i><span style=\"font-family:calibri\">You are close by now as you asking right questions, so to help you on star, take a look of following quick starts and debug them.</span></i></p>\r\n<p style=\"margin:0in 0in 10pt\"><i><span style=\"font-family:calibri\">PrismV2 code drop 9 and particularly Visual Composition Quick Starts. See EmployeesModule, IEmployeesDetailsView which has a Model (Property) and defines EmployeesDetailsPresentationModel contract. </span></i></p>\r\n<p style=\"margin:0in 0in 10pt\"><i><span style=\"font-family:calibri\">There is a good Unity Silverlight Quick start sample that does not use Composite but just Silverlight Unity. You can find this sample from Unity Contrib. site source code </span><a href=\"http://www.codeplex.com/UnityContributions\"><span style=\"color:#0000ff;font-family:calibri\">http://www.codeplex.com/UnityContributions</span></a><span style=\"font-family:calibri\">  </span></i></p>\r\n<p style=\"margin:0in 0in 10pt\"><i><span style=\"font-family:calibri\">This is tricky and requires some time, but once it’s clear it’s so clear. If this is still not clear and you getting lost,  please send me an email from my CodePlex profile and I can schedule a 5-10 minutes application sharing chat with you by using MSN. If we go for this then I reserve rights to record and publish this chat in Codeplex in learning purpose for others. </span></i></p>\r\n<i><span style=\"font-size:11pt;font-family:'calibri','sans-serif'\">Regards,<br>\r\nAlexander</span></i>\r\n",
+    "PostedDate": "2009-01-22T03:43:35.7-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "150218",
+    "ThreadId": "44516",
+    "Html": "<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Hi Kona,</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Here is a good </span><a href=\"http://www.lab49.com/files/videos/Jason Dolinger MVVM.wmv\"><span style=\"font-family:calibri\">video</span></a><span style=\"font-family:calibri\"> that explains the <b>Model-View-ViewModel</b> pattern<span style=\"color:#1f497d\">,</span> that I personally liked. You can download the video and the source code of the demo application built in it from the following blog posts: </span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><span style=\"color:#1f497d\"><a href=\"http://blog.lab49.com/archives/2650\"><span style=\"font-family:calibri\">Jason Dolinger on Model-View-ViewModel</span></a></span>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><span style=\"color:#1f497d\"><a href=\"http://blog.lab49.com/archives/2689\"><span style=\"font-family:calibri\">Source code for Jason Dolinger’s Model-View-ViewModel presentation</span></a></span>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Have you seen this video before? What are your thoughts about it?</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Mariano Converti</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><a href=\"http://blogs.southworks.net/mconverti\"><span style=\"font-family:calibri\">http://blogs.southworks.net/mconverti</span></a> </p>\r\n</span></p>\r\n</span></p>\r\n",
+    "PostedDate": "2009-01-23T05:41:44.737-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "151159",
+    "ThreadId": "44516",
+    "Html": "Thanks again for all the great responses and resources. <br>\r\nExcellent video.<br>\r\n<br>\r\nOne of the things that Jason kept mentioning that now makes things clearer is:<br>\r\n<br>\r\n&quot;<strong>You know you are doing things right when you don't need x:Name on your elements in your view</strong>&quot; <br>\r\n<br>\r\nThis is because those values are already available on the view model from the databinding.<br>\r\n<br>\r\nPreviously, I was thinking that a click handler would have to pass data to the view model, but now I realize that the handler in the code behind should really just be a 1 liner that calls a method on the view model.<br>\r\n",
+    "PostedDate": "2009-01-26T18:21:31.947-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

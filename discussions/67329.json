@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "228822",
+    "ThreadId": "67329",
+    "Html": "<p>Hey All,</p>\r\n<p>A simple problem that I'm sure there is a dumb answer for: when you are dynamically loading a module into a region is there some way to know when the module has started and stopped loading? I can think of ways to do it publishing events, etc. But is there a pre-baked solution to this, something like the <a href=\"http://blogs.msdn.com/brada/archive/2009/03/20/silverlight-3-activity-control.aspx\">Activity Control</a> but for Prism regions?</p>",
+    "PostedDate": "2009-08-28T12:41:26.71-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229414",
+    "ThreadId": "67329",
+    "Html": "<p>Hi</p>\r\n<p>If I understand your scenario correctly, you want to be able to get notification when a particular module is loaded. Although this behavior does not come with Prism out of the box, you can implement it for your application. The following thread deals with that scenario:</p>\r\n<ul>\r\n<li><a href=\"View.aspx?ThreadId=47957\">ModuleManager Download Progress</a></li>\r\n</ul>\r\n<p>Remember that you load views, which are part of modules, into regions not modules directly. If you want to get notification about a view being added to a region you can use the region's events.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-08-31T10:28:22.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230894",
+    "ThreadId": "67329",
+    "Html": "<p>Hi Damian,</p>\r\n<p>Thanks for your reply! You are correct I'm just concerned with the visual aspect of determining when a view is available to display to the user. You speak of region events; do you mean that the control (Content Control) has some events to determine if a view has been loaded or the IRegionManager has some events? If the later is the case could you point me in the direction where I can learn a bit more about this?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks!</p>\r\n<p>Luke</p>",
+    "PostedDate": "2009-09-03T14:59:30.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "231839",
+    "ThreadId": "67329",
+    "Html": "<p>Hi Luke,</p>\r\n<p>When you talk about a view being available to display to the user I have two possible interpretations for it.</p>\r\n<p><strong>First</strong>: You want to know if the module that has a particular view has been loaded so you can add that view to a region. In Prism, there is no way to get notification that a module has been loaded. However, you can check that at a particular moment in your application by executing code like this:</p>\r\n<p><span style=\"font-family:Courier New;font-size:x-small\">\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span>ModuleInfo info = <span style=\"color:Blue\">this</span>.moduleManager.Modules.First&lt;ModuleInfo&gt;(m =&gt; m.ModuleName == <span style=\"color:#A31515\">&quot;ModuleName&quot;</span>);\r\n            <span style=\"color:Blue\">if</span> (info.State == ModuleState.Initialized)\r\n            {\r\n                <span style=\"color:Green\">//Views are ready</span>\r\n            }\r\n</span></pre>\r\n</div>\r\n</span></p>\r\n<p>You must really consider when the above code should be used, since you might be tightly coupling your modules.</p>\r\n<p><strong>Second: </strong>You want to know when a view has been added to a region so it can be displayed. The <strong>IRegion</strong> Views property&nbsp; exposes the <strong>Views.CollectionChanged </strong>event. This event will allow you to know when a view is added/removed to a particular region. So, if you add a view into a region (for example when your module is loaded), you will receive a notification through this event and be able to act upon it.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-09-07T07:36:38.793-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

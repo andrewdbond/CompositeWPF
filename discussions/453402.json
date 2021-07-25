@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1080573",
+    "ThreadId": "453402",
+    "Html": "I don't know if I'm doing something wrong here but this is my scenario.\r<br />\n<br />\nI have a single active region, which views are open and closed in. So I open view1, the region has view1 in it, I then navigate to view2, a back arrow then becomes visible. On clicking back it sets keep alive to false and use journal.GoBack() method to navigate back to view1. This works fine and the journal is up to date. My problem is what to do when you close view1 and you can't go back. At the moment I set keepalive to false and deactivate view 1. But this doesn't seem to update the journal?? How can I get it so it does update the journal?\r<br />\n<br />\nAm I correct in that I should deactivate to close a view if I can't go back? And if so why doesn't this sort out the journal? How would I best sort out the journal?<br />\n",
+    "PostedDate": "2013-08-14T07:39:05.743-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1081063",
+    "ThreadId": "453402",
+    "Html": "Hi James,\r<br />\n<br />\nThe navigation journal used in Prism works similar to the navigation journal of a web browser. It stores the <strong>URI</strong> of the previous pages (or in this case views) rather that page itself. Hence, when you use the &quot;go back&quot; functionality in Prism's navigation API, it does not actually switch to the previous page. Instead it just performs a navigation request using the previous <strong>URI</strong> and as with a common navigation request, it might navigate to an existing view or create a new one if no one exists in the region. Likewise, as you cannot remove a &quot;previous <strong>URI</strong>&quot; from the navigation journal of a web browser, Prism's navigation journal does not provide any functionality to remove an specific <strong>URI</strong> from its navigation history (although it does provide a <strong>Clear</strong> method to discard the <strong><em>entire</em></strong> navigation history.)\r<br />\n<br />\nHowever, if you need to implement this feature, I believe you will need to modify or create your own <strong>RegionNavigationJournal</strong> and <strong>RegionNavigationJournalEntry</strong> implementations. Then, for example, you could raise an event when erasing a view to remove any related <strong>URIs</strong> of said view from the navigation history.\r<br />\n<br />\nYou can find more information on the following Prism chapter section:<br />\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg430866(v=pandp.40).aspx#sec38\" rel=\"nofollow\">Extending Prism - IRegionNavigationJournal</a><br />\n</li>\n</ul>\nOn the other hand, it would be useful if you could explain in further detail why you want to remove a view for the navigation journal, so that we can have a better understanding of your scenario and help you find other possibles approaches to tackle the problem.\r<br />\n<br />\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-08-15T11:20:07.313-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1081262",
+    "ThreadId": "453402",
+    "Html": "Ok thank you. I understand that, I will just deactivate and clear the journal which solves most of my issues.\r<br />\n<br />\nMy main issue is that the ConfirmNavigation doesn't fire when I close, because NavigateFrom isn't used. I have forced this to fire at present at this point in time. I guess this is because I am using it a little differently than was designed.<br />\n",
+    "PostedDate": "2013-08-16T01:02:35.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

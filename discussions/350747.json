@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "818189",
+    "ThreadId": "350747",
+    "Html": "\r\n<p>Hello</p>\r\n<p>wondering if there's any guidance/sample on showing a view in a dialog window ? used to be possible in CAB so am sure it's possible in PRISM v4 as well</p>\r\n<p>Found some references for dialog windows in StockTrader RI but haven't seen it in the WPF edition</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-03-31T11:19:25.783-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "819320",
+    "ThreadId": "350747",
+    "Html": "<p>Hi,</p>\r\n<p>I believe, you might find the <strong>WindowDialogActivationBehavior </strong>(for <strong>WPF</strong>) or the <strong>PopupDialogActivationBehavior </strong>(for <strong>Silverlight</strong>) included with the <strong>Stock Trader RI </strong>useful for this. Those behaviors allows you to define a region that, when a view is added to it, will be shown in a new window/popup.</p>\r\n<p>For more information on this topic, you could take a look at the following code files (in the <strong>WPF </strong>version of the <strong>RI</strong>):</p>\r\n<ul>\r\n<li><em>StockTraderRI_Desktop\\StockTraderRI.Infrastructure\\Behaviors\\RegionPopupBehavior.cs</em></li>\r\n<li><em>StockTraderRI_Desktop\\StockTraderRI.Infrastructure\\Behaviors\\WindowsDialogActivationBehavior.cs</em></li>\r\n</ul>\r\n<p>Additionally you could find a small sample that portrays the implementation of this behavior in the following thread:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/258937\">Login dialog in PRISM + WPF</a></li>\r\n</ul>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2012-04-03T09:40:20.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "819542",
+    "ThreadId": "350747",
+    "Html": "<p>That's great, I see the size is defined in code, Is there a way to make it generic ?</p>\r\n<p>Sorry, i don't quite understand how the behaviors work yet !</p>\r\n<p>&nbsp;</p>\r\n<p>thanks</p>",
+    "PostedDate": "2012-04-03T19:52:25.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "819553",
+    "ThreadId": "350747",
+    "Html": "<p>Also, looking at other alternatives here, is there any advantage to using the RegionBehaviour approach as compared to say</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool? showDialog(UserControl instance, string title, bool resize) <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DialogHost dlg = new DialogHost();&nbsp;</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dlg.Content = instance;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dlg.Owner = this;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dlg.Title = title;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dlg.ResizeMode = resize ? ResizeMode.CanResize : System.Windows.ResizeMode.NoResize;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return dlg.ShowDialog();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>where DialogHost is simply</p>\r\n<p>&lt;Window x:Class=\"MyApplication8.DialogHost\"<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Title=\"DialogHost\" Height=\"300\" Width=\"300\"<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SizeToContent=\"WidthAndHeight\" WindowStartupLocation=\"CenterOwner\" Topmost=\"True\" ResizeMode=\"CanResizeWithGrip\"&gt;<br />&lt;/Window&gt;</p>\r\n<p>just wondering !</p>",
+    "PostedDate": "2012-04-03T20:41:15.393-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "819984",
+    "ThreadId": "350747",
+    "Html": "<p>Hi,</p>\r\n<p>As far as I know, if you want to avoid defining the size in code in order to make it more flexible to its content size, you could try for example, instead of defining the <strong>Height </strong>and <strong>Width&nbsp;</strong>manually, modifying the <strong>WindowWrapper </strong>class, by adding the following line to its Show method:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> Show()\r\n        {\r\n          \r\n        <span style=\"color: green;\">//Specifies that a window will automatically set both its width and height</span>\r\n        <span style=\"color: green;\">//to fit the width and height of its content.</span>\r\n            <span style=\"color: blue;\">this</span>.window.SizeToContent = SizeToContent.WidthAndHeight;\r\n           \r\n            <span style=\"color: blue;\">this</span>.window.ShowDialog();\r\n           \r\n        }\r\n</pre>\r\n</div>\r\n</p>\r\n<p>In my opinion the main benefit of using this approach is that it allows you to loosely compose the UI, as you will be able to show a dialog using the UI functionalities provided by <strong>Prism </strong>through the use of <strong>Regions</strong>.</p>\r\n<p>On the other hand, also another alternative if you need to need to notify the user of the occurrence of an event, for example by displaying a dialog, could be using <strong>InteractionRequests</strong>.</p>\r\n<p>You can find more information about this approach in the following chapter of the Prism documentation at MSDN:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405494%28v=pandp.40%29.aspx#sec10\">Chapter 6: Advanced MVVM Scenarios, User Interaction Patterns</a></li>\r\n</ul>\r\n<p>Additionally, you can find a <strong>WPF </strong>sample that portrays the use of <strong>InteractionRequest </strong>to display a dialog in Karl Shifflet's <a href=\"http://visualstudiogallery.msdn.microsoft.com/3ab5f02f-0c54-453c-b437-8e8d57eb9942\">In The Box MVVM Training</a> (in the MVVM Scenarios Section).</p>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2012-04-04T11:12:29.563-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

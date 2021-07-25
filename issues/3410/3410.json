@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nIt could be helpful to know that, as of Prism v4, the Execute method in the CompositeCommand class follows the behavior described in your suggestion. Here's the code from the method to illustrate this:\r\n\r\n        public virtual void Execute(object parameter)\r\n        {\r\n            Queue<ICommand> commands;\r\n            lock (this.registeredCommands)\r\n            {\r\n                commands = new Queue<ICommand>(this.registeredCommands.Where(this.ShouldExecute).ToList());\r\n            }\r\n\r\n            while (commands.Count > 0)\r\n            {\r\n                ICommand command = commands.Dequeue();\r\n                command.Execute(parameter);\r\n            }\r\n        }\r\n\r\nThank you for your feedback.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-02-24T11:39:14.213-08:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "The Execute method checks with \"ShouldExecute(command)\" every command right before calling its execute command. \n \nwhile (commands.Count > 0)\n{\n    ICommand command = commands.Dequeue();\n    if (ShouldExecute(command))\n        command.Execute(parameter);\n}\n \nThis can produce unexpected results. It is better to retrieve first the collection of commands that should be executed and then execute all of them afterwards:\n \npublic virtual void Execute(object parameter)\n{\n    // We need ToList() to create a copy of the RegisteredCommands collection\n    List<ICommand> commands = RegisteredCommands.Where(c => ShouldExecute(c)).ToList();\n \n    foreach (ICommand command in commands)\n    {\n        command.Execute(parameter);\n    }\n}\n \nUse Case: I use the CompositeCommand for the command \"Close\". All my document views listen to this command. I have implemented the IActiveAware interface at the view to synchronize it with the local DelegateCommand.IsActive property. With the original CompositeCommand implementation it happens that my application closes all document views when the first one was active. This happens because the Execute method calls Close of the first document view. This one closes itself and the RegionManager set the next document view as active. When the Execute method checks ShouldExecute(command) of the next document view then this one is now active too. And so all document views get closed.",
+    "LastUpdatedDate": "2013-05-16T05:29:01.67-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-11-25T08:27:08.687-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Implementation flaw in CompositeCommand.Execute",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 3410
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "good feedback, thanks, we will include this in our backlog",
+      "PostedDate": "2008-11-26T09:11:21.677-08:00",
+      "Id": 156053
+    },
+    {
+      "Message": "UPDATE: I have published my [url:application|http://www.codeplex.com/CompositeExtensions] on CodePlex. It shows the Use Case I describe here.",
+      "PostedDate": "2008-12-22T08:54:58.217-08:00",
+      "Id": 156054
+    },
+    {
+      "Message": "UPDATE: I have published my application (http://www.codeplex.com/CompositeExtensions) on CodePlex. It shows the Use Case I have described here.",
+      "PostedDate": "2008-12-22T08:56:45.013-08:00",
+      "Id": 156055
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "886433",
+    "ThreadId": "385367",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>&nbsp;</p>\r\n<p>I am fairly new to Prism and WPF. I have gone through some topics and observed that each module project is associated with a IOC registration. &nbsp;But I think it would be better if we can register all the dependencies in a common class globally.</p>\r\n<p>Is there any way to do this?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>\r\n<p>Vipin</p>\r\n",
+    "PostedDate": "2012-07-22T10:52:55.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "889055",
+    "ThreadId": "385367",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>As mentioned in <a href=\"http://msdn.microsoft.com/en-us/library/ff921140%28v=pandp.40%29#sec2\">\r\nthis section</a> of the <strong>Prism </strong>documentation before using containers there are some considerations that should me made, for example:</p>\r\n<p><em>Consider whether you want to configure the container through code or configuration:</em></p>\r\n<ul>\r\n<li><em>If you want to centrally manage all the different services, configure the container through configuration.</em>\r\n</li><li><em>If you want to conditionally register specific services, configure the container through code.</em>\r\n</li><li><em>If you have module-level services, consider configuring the container through code so that those services are registered only if the module is loaded.</em>\r\n</li></ul>\r\n<p>Based on this, if what you are looking for is to centralize your registration, I believe this could be achieved for example by overriding the\r\n<strong>ConfigureContainer</strong> method in the <strong>Bootstrapper</strong>, where a number of core\r\n<strong>Prism&nbsp;</strong>services are registered by default (this is a stage of the initialization process of a\r\n<strong>Prism </strong>application).</p>\r\n<p>You could find more information about this, in the following chapter of the <strong>\r\nPrism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430868%28v=pandp.40%29#sec10\">Chapter 2: Initializing Prism Applications, Creating and Configuring the Container</a>\r\n</li></ul>\r\n<p>Also, another approach could be configuring your container through a configuration file. However, some container such as\r\n<strong>MEF </strong>does not provide this functionality.</p>\r\n<p>I believe, you could find useful information on how to achieve this with <strong>\r\nUnity </strong>in the following resource:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff660846%28v=pandp.20%29\">Configuring Unity</a>\r\n</li></ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-07-23T07:29:28.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1259114",
+    "ThreadId": "549484",
+    "Html": "Hi,<br />\n<br />\nIn order to break functionality in modules, there are two approaches which I am considering - <br />\n<br />\nA) A module can have more than one MainView and based on certain rule I may load specific view. In this case Initialize() method will have if..else construct to decide which of the MainView needs to be created and loaded in the specific region.<br />\n<br />\nModule - Having two views : AddFundView , ActivityView<br />\n<pre><code>        public void Initialize()\n        {\n            if (ShowFundView)\n            {\n                var addFundView = Container.Resolve&lt;AddFundView&gt;();\n                RegionManager.Regions[Region.Name].Add(addFundView);\n            }\n            else if (ShowActivityView)\n            {\n                var activityView = Container.Resolve&lt;ActivityView&gt;();\n                RegionManager.Regions[Region.Name].Add(activityView);\n            }\n        }</code></pre>\n\nA)To have one MainView per module. In module initialize resolve this MainView and add it to appropriate region. In this case I would have two modules, Module1 and Module2<br />\n<br />\nModule 1 - AddFundView<br />\n<pre><code>        public void Initialize()\n        {\n            var addFundView = Container.Resolve&lt;AddFundView&gt;();\n            RegionManager.Regions[Region.Name].Add(addFundView);\n        }</code></pre>\n\nModule 2 - ActivityView<br />\n<pre><code>        public void Initialize()\n        {\n            var activityView = Container.Resolve&lt;ActivityView&gt;();\n            RegionManager.Regions[Region.Name].Add(activityView );\n        }</code></pre>\n\nWhich of the approach should I follow to organize my Module and View ? Is it best practice to have if..else construct in Module initialization to load specific view?<br />\n<br />\nThanks<br />\nSantosh<br />\n",
+    "PostedDate": "2014-06-23T23:32:51.673-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1259541",
+    "ThreadId": "549484",
+    "Html": "Hello,\r<br />\n<br />\nDid you managed to find out solution because I am actually in same reflection as you. \r<br />\n<br />\nIN my scenario I will have a WPF application with mainly 3 mains screen that will be accessible like a Panorama view in the sense that :\r<br />\nScreen 1 will be shown first\r<br />\nThen Screen 2 will be visible when user will slide screen 1 to left\r<br />\nThen Screen 3 will be visible when user will slide screen 2 to left\r<br />\n<br />\nMy screens are identified as follow :\r<br />\n<br />\nScreen 1 = Product Selection screen\r<br />\nScreen 2 = Selected product information\r<br />\nScreen 3 = Payement screen\r<br />\n<br />\nIn each of those screen, I will have different different region that will identify the Interface as  : <br />\n<ul>\n<li>A header Region =&gt; display screen title or other stuff</li>\n<li>A Center region = &gt; represent main content View which can be based on different Views</li>\n<li>\nA command region = &gt; represent screen action buttons<br />\n</li>\n</ul>\nSo based on what I have understood I was planning to build a Module for each region.\r<br />\nThen if my Center region is based on multiple View to build the User Interface my idea was to define a single Module for that CenterRegion but which will have the  main View containg only ContentControls for each sub view\r<br />\n<br />\nThen in my code logic, based on condition I will set the Content property of corresponding ContentControl to inject my UserControl which will form my sub view\r<br />\n<br />\nDoes this make sense ?\r<br />\n<br />\nFirst time I need to play with Prism and Composit UI so was wondering also\r<br />\n<br />\nregards\r<br />\nserge<br />\n",
+    "PostedDate": "2014-06-25T01:41:46.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1259753",
+    "ThreadId": "549484",
+    "Html": "Hi,<br />\nThere may be two approches for center region-<br />\n<br />\n1- For every functionality/screen define one Module having only one View which will be added to your center region. Based on action command you load other module which in turn will create respective view and place it in appropriate region. While doing so you may set RegionContext value which you may want to pass to next screen or you may use event aggregator. <br />\n<br />\n2-Define only one module having three different views. And then use view-switching by using navigation mechanism. Using this way you may also pass information to other views.  I would prefer approach2 here as you also intent to use.  For header and command region you may create different module also.  Lets hope we hear few more opinion here.<br />\n<br />\nRegards<br />\nSantosh    <br />\n",
+    "PostedDate": "2014-06-25T09:37:42.307-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

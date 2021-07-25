@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1222385",
+    "ThreadId": "538913",
+    "Html": "I'm currently in the process of upgrading our platform and application from Prism 2.0 to Prism 4.1 (WPF). When doing this, I noticed that the class CompositeModuleCatalog had been removed. Is there a reason for this? Can I replace it with some other (better?) class? Or is it still safe to take the CompositeModuleCatalog class from the Prism 2 library and continue using it for our purposes? Thanks.<br />\n",
+    "PostedDate": "2014-03-13T08:27:43.463-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1223564",
+    "ThreadId": "538913",
+    "Html": "Hi,\r<br />\n<br />\nThe <strong>ModuleCatalog</strong> class would be still present in <strong>PRISM 4.1</strong>. You could find it at the following namespace on the Library:<br />\n<h1></h1>\n<ul>\n<li>\n<strong><em>Microsoft.Practices.Prism.Modularity;</em></strong><br />\n</li>\n</ul>\nIn addition, you can find the same class description on the <strong>MSDN</strong> site:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.prism.modularity.modulecatalog(v=pandp.40).aspx\" rel=\"nofollow\">ModuleCatalog Class</a><br />\n</li>\n</ul>\nI hope this helps,\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-03-17T08:55:25.747-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1223565",
+    "ThreadId": "538913",
+    "Html": "Yes, thanks. But my questions is regarding a subclass of ModuleCatalog called CompositeModuleCatalog, which was present in Prism 2 but cannot be found in Prism 4.<br />\n",
+    "PostedDate": "2014-03-17T08:59:19.387-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1223577",
+    "ThreadId": "538913",
+    "Html": "Hi,\r<br />\n<br />\nI am afraid I am not able to find the <strong><em>CompositeModuleCatalog</em></strong> class in <strong>Prism 2</strong> library. Could you tell me where is it located?\r<br />\n<br />\nIn addition, I found an implementation of a <strong><em>CompositeModuleCatalog</em></strong> which inherits of <strong>ModuleCatalog</strong>, but this would not be part of the <strong>Prism Library</strong>.\r<br />\n<br />\nYou would be able to see the <strong>Prism</strong> changes from 2 to 4.1 and what considerations you should keep in mind in order to <em>Upgrade</em> your solution in the following <strong>MSDN</strong> <strong>Prism Guide</strong> section:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg430859(v=pandp.40).aspx\" rel=\"nofollow\">Upgrading from Prism 2.x</a><br />\n</li>\n</ul>\nRegards.\r<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-03-17T09:21:16.307-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1223829",
+    "ThreadId": "538913",
+    "Html": "Yes, this is very weird. I haven't been able to find any reference to a CompositeModuleCatalog class anywhere. Nevertheless, in our Prism 2 (CAGv2) library residing in TFS, there is a CompositeModuleCatalog.Desktop.cs file located in CAL\\Desktop\\Composite\\Modularity (Microsoft.Practices.Composite.Modularity namespace). And the class doesn't seem to be written by any of our developers. Very strange. Anyway, I have already successfully upgraded our platform and application to Prism 4.1, extending it with the CompositeModuleCatalog class from our CAGv2 code. Thanks for your input.<br />\n",
+    "PostedDate": "2014-03-18T01:48:27.12-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1223830",
+    "ThreadId": "538913",
+    "Html": "Follow-up question: Where did you find the CompositeModuleCatalog class you mentioned, that was not part of the Prism library?<br />\n",
+    "PostedDate": "2014-03-18T01:50:17.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1224099",
+    "ThreadId": "538913",
+    "Html": "Hi, <br />\n<br />\nThere is a brief summary of <strong><em>Catel's</em></strong> job in the following blog post about the module catalog composition extension for <strong>Prism</strong>:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://likewastoldtome.blogspot.com.ar/2013/10/catel-extends-prism-modularity-options.html\" rel=\"nofollow\">Catel extends Prism modularity options through NuGet</a><br />\n</li>\n</ul>\nIn addition, you may find the <strong>CompositeModuleCatalog.cs</strong> implementation of ___Catel'___s extension in the following site:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://www.symbolsource.org/Public/Metadata/NuGet/Project/Catel.Extensions.Prism/3.2.1208111253-beta/Release/.NETFramework,Version%3Dv4.5/Catel.Extensions.Prism/Catel.Extensions.Prism/Modules/CompositeModuleCatalog.cs?ImageName=Catel.Extensions.Prism\" rel=\"nofollow\">Catel.Extensions.Prism/Modules/CompositeModuleCatalog.cs</a><br />\n</li>\n</ul>\nRegards.<br />\nGabriel Ostrowsky<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-03-18T11:46:14.993-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

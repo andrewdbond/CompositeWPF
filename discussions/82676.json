@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "284102",
+    "ThreadId": "82676",
+    "Html": "<p>Hi All</p>\r\n<p>I've been trying to add InputBindings to some commands. Unfortunately it is not working because the commands are defined in views that are 'imported' in a region in the Shell. Because this region (normally) never has focus, the commands are never executed. I've seen several questions on this subject but none of the answers actually solve the problems, which are:</p>\r\n<ol>\r\n<li>The commands belong to the individual views so there is no way that the shell (or which ever window that holds the region) knows about the command. Thus there is no way that the keybinding ever gets activated</li>\r\n<li>The Prism delegate command doesn't define InputBindings (or a name etc.) so we have to manually bind</li>\r\n</ol>\r\n<p>I think the work around for problem 2) is to simply define a RoutedCommand (standard WPF one) on the control / view which redirects to the Prism delegate command. This way we should be able to get names and key bindings etc. So that leaves me with problem number 1. Now I'm wondering if it is possible for a view to add commands &amp; keybindings to the shell / window that holds the view. This way it would be possible for the window / shell to 'know' about the commands without actually hard coding them.</p>\r\n<p>Any ideas? Suggestions? Comments?</p>\r\n<p>Thanks</p>\r\n<p>Patrick</p>",
+    "PostedDate": "2010-01-31T20:01:16.797-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "475322",
+    "ThreadId": "82676",
+    "Html": "<p>I have come across this exact same problem recently. No solution yet, but my thinking was to add something (a service or controller or the like) in my ViewModelBase class, which can communicate with the shell regarding keybindings. Then I would register all of my keybindings (a nightmare idea, I know) on the shell to at least have it trigger, and then route to the correct viewmodel. Now, I am a total noob with the Prism stuff at this stage, so this solution would by any means just be forcing a square into a round hole.</p>",
+    "PostedDate": "2010-08-02T00:35:42.667-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "500705",
+    "ThreadId": "82676",
+    "Html": "<p>Hi,</p>\r\n<p>There is no guidance on this topic in Prism out-of-the-box. So I could take a  look at the following forum thread:</p>\r\n<ul>\r\n<li><a href=\"How to bind Command property on InputBindings\">How to bind Command  property on InputBindings</a></li>\r\n</ul>\r\n<p>I hope this help.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-09-30T13:53:21.867-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

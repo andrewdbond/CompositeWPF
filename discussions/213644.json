@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "446661",
+    "ThreadId": "213644",
+    "Html": "<p>Hi there,</p>\r\n<p>I have a view with a grid of data, where multiple rows can be selected.</p>\r\n<p>I also have a DelegateCommand in my VM that I need to enable if only one row is selected. If user selects multiple rows, it should be disabled. The command is bound in 2 places - the main view with the grid as a context menu option, and another view -&nbsp;the ribbon button group</p>\r\n<p>The problem is that the information about the currently selected rows is part of the main view, not the view model or the ribbon.</p>\r\n<p>I'm thinking I need handle the grid's SelectionChanged event inside the view's codebehind and then somehow signal the VM which rows have been selected. The VM would enable/disable the command. This would in turn enable/disable the context menu and the ribbon button.</p>\r\n<p>I'm wondering if there is an easier or a more unified/universal way of accomplishing it.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks.</p>",
+    "PostedDate": "2010-05-24T08:04:37.283-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "448876",
+    "ThreadId": "213644",
+    "Html": "<p id=55652240-4cb6-012d-d0e9-12313b071d41>Hi,</p>\r\n<p id=556530a0-4cb6-012d-d0ea-12313b071d41>Handling the grid&rsquo;s  <strong>SelectionChanged</strong> event inside the view's code behind is a  possible way to expose that information to the <strong>ViewModel</strong>. You  can read <a href=\"http://codebetter.com/blogs/glenn.block/archive/2009/08/02/the-spirit-of-mvvm-viewmodel-it-s-not-a-code-counting-exercise.aspx\">this  blog post</a> by Glenn, in which he talks about code behind in MVVM.&nbsp;On the  other hand, you could use&nbsp;the <strong>CommandInvokeAction</strong> behavior.  That would have the <strong>SelectionChanged </strong>event tied together, so  that when&nbsp;the event is raised, an associated&nbsp;command is called.</p>\r\n<p id=55658bd0-4cb6-012d-d0ed-12313b071d41>I hope you find this helpful.</p>\r\n<p id=5565aef0-4cb6-012d-d0ee-12313b071d41>Guido Leandro Maliandi<br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-05-28T14:34:24.253-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

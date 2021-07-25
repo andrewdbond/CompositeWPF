@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "199906",
+    "ThreadId": "59040",
+    "Html": "<p>Hello,</p>\r\n<p>I'm writing a WPF Application using PRISM v2 and AvalonDock in order to have several views.</p>\r\n<p>Each view contains a module (that the application loads at run-time by ModuleManager.LoadModule(ModuleName)).</p>\r\n<p>The user could be open the same view more times (for example to work on more things at the same time) but this is a problem for me because the loaded modules cannot be re-loaded.</p>\r\n<p>Is there a way to do this thing?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-06-10T03:16:24.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "200071",
+    "ThreadId": "59040",
+    "Html": "<p>This question comes up a good bit. For me, the key was in understanding that what you are interested in doing is not reloading the module - you are actually interested in instantiating another instance of a view from that module. Once that module is loaded, it does not need to be loaded again - you now have access to the views it contains and can create multiple instances of them at will.</p>\r\n<p>In my case, I have several modules that should display a list of records based on a user selection. I created a module for that record list and reference it in any module that needs to display that view and then inject the view after the user takes the required action. Check out the View Injection QuickStart for an example - the Employees Controller is a great start.</p>\r\n<p>I accepted the need to reference the record list module in my other modules for ease of implementation. I eventually would like to revisit it and see if there is a reasonable way to decouple that, but the issue is that for ViewInjection to work as it does in the QuickStart, the module injecting the view needs to be aware of the view type it is injecting. Again, I can live with that (for now at least).</p>\r\n<p>Rock on.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-06-10T10:00:11.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "202149",
+    "ThreadId": "59040",
+    "Html": "<p>Any diea how you would do it if you actually had to create new instances of the same modules though? Views, Data, State all the works.</p>",
+    "PostedDate": "2009-06-16T12:11:02.06-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "202561",
+    "ThreadId": "59040",
+    "Html": "<p>I think the basic concept still holds - you are still not creating whole new instances of the module. You are creating new instances of a view and (maybe here's the key) its data context.</p>\r\n<p>&nbsp;</p>\r\n<p>In the scenario I described above, I am actually creating presenters first, each one managing it's own view. That means multiple data contexts, and with the help of some state management plumbing and view naming, my app could remember those context/view pairs for the future. I can also imagine storing the state of the region manager in relation to those pairs so you could recreate them in the same location in the shell, for example, or at the same size, with the same template, etc. Referencing my scenario again, I use WCF, SQL Server and serialization to store snapshots of the form states that generate my reports. This could be extended to storing a snapshot of the shell's state, or the region manager's state, or whatever...</p>\r\n<p>&nbsp;</p>\r\n<p>Apologies if I have misunderstood your question. If there is a specific scenario that you cannot see covered by this idea, describe it and we'll go from there.</p>\r\n<p>&nbsp;</p>\r\n<p>Rock on.</p>",
+    "PostedDate": "2009-06-17T10:03:17.07-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "202594",
+    "ThreadId": "59040",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-family:Calibri\"><span style=\"font-size:small\">Hi Arch,</span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-family:Calibri;font-size:small\">&nbsp;</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-family:Calibri\"><span style=\"font-size:small\">The following thread deals with a similar scenario. Perhaps you can find it useful:</span></span></span></p>\r\n<p style=\"text-indent:-18pt;margin:0cm 0cm 0pt 34.8pt\"><span style=\"font-family:Symbol\" lang=EN-US><span style=\"\"><span style=\"font-size:small\">&middot;</span><span style=\"font:7pt &quot;Times New Roman&quot;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><span style=\"\" lang=EN-US><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=59827\"><span style=\"font-family:Calibri;font-size:small\">Confirmation of understanding</span></a><span style=\"font-size:small\"><span style=\"font-family:Calibri\"> </span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-family:Calibri;font-size:small\">&nbsp;</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-size:small\"><span style=\"font-family:Calibri\">Please let me know if this helps.</span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"\" lang=EN-US><span style=\"font-family:Calibri;font-size:small\">&nbsp;</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"\" lang=EN-US><span style=\"font-size:small\"><span style=\"font-family:Calibri\">Damian Schenkelman</span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><a href=\"http://blogs.southworks.net/dschenkelman\"><span style=\"font-family:Calibri;font-size:small\">http://blogs.southworks.net/dschenkelman</span></a></span></p>",
+    "PostedDate": "2009-06-17T11:26:59.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "202630",
+    "ThreadId": "59040",
+    "Html": "<p>Thanks guys, yes I think both the responses are useful. Essentialy, load a single module and create instances of the views (et all). That's a good start.</p>",
+    "PostedDate": "2009-06-17T12:46:44.867-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

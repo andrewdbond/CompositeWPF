@@ -1,0 +1,98 @@
+[
+  {
+    "Id": "651743",
+    "ThreadId": "267584",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>&nbsp;</p>\r\n<p>I had my hands on Prism for some weeks now and using the region feature is just great! I really like this &quot;push&quot; approach for composing application. But there is something I am still not getting. How can I use a view-model first approach along with regions?</p>\r\n<p>In my situation, I really need to create my view-models first and I really do not see how I could do it differently. So for now I always been using data templates, but still, Prism does not give the possibility of adding a view-model to a region. I have\r\n been reading the Prism book cover to cover and I still do not understand how could benefit of region feautre with view-model first.</p>\r\n<p>So am I missing something in the Prism patterns or is their a guideline to achieve that?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2011-08-03T07:05:03.02-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "651787",
+    "ThreadId": "267584",
+    "Html": "<p>Hi,</p>\r\n<p>It is possible to add a view to a region using the View-Model first approach, defining the view as the data template.</p>\r\n<p>You might find this thread useful, as it deals with the subject of navigating to views defined as data templates of their corresponding view model:</p>\r\n<p><a href=\"http://compositewpf.codeplex.com/discussions/250936\"><span class=\"CodePlexPageHeader\"><a>Region navigation to ViewModel</a> </span></a></p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-08-03T07:55:39.247-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "655736",
+    "ThreadId": "267584",
+    "Html": "<p>Thanks for your reply. I have been reading the chapter again but it does not resolve my problem. I think I did not described it enough.</p>\r\n<p>So my problem is that I have a list of different existing view model <span style=\"text-decoration: underline;\">instances</span> and when one of them is selected I want to display its details in my content region. The problem is that it could be any type of view model. So what I would like to do is to be able to publish my view model into the region so it can retrieve the DataTemplate automatically and display it correctly. View-model first navigation does not actually permit to navigate to an existing instance of a view model because it will use the view-model default constructor.</p>\r\n<p>Again I feel like I am missing a crucial detail.</p>",
+    "PostedDate": "2011-08-10T02:13:14.83-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "655832",
+    "ThreadId": "267584",
+    "Html": "<p>Have you tried adding the specific instance of your view model to your region via the <strong>Region.Add</strong> method (view injection approach)?</p>\r\n<p>You can read more about it in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28PandP.40%29.aspx\">UI Composition chapter</a> of the Prism MSDN documentation.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-08-10T05:38:48.187-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "656561",
+    "ThreadId": "267584",
+    "Html": "<p>So I tried to use the method you mentioned and it worked. Thanks.</p>\r\n<p>But as you say it is a view injection approach. Even the parameter in documentation says \"Region.Add(object view)\". Also when I use it on a TabControl, we can see that the TabControl region adapter is not at ease with this behavior because it displays my view in the Header and in the Content of the TabItem.</p>\r\n<p>Should I deduce that view-model injection is a bad practice or that Prism does not support it? I feel kind of alone on this issue, this is why I wonder.</p>",
+    "PostedDate": "2011-08-11T07:21:54.623-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "656783",
+    "ThreadId": "267584",
+    "Html": "<p>Hi Ucodia,</p>\n<p>Based on my understanding of the Prism guidance, this isn't a \"wrong\" practice to follow when developing an application usign Prism. The parameter in the <strong>Region.Add</strong> method is named \"view\" as a common example (i.e. because adding a view is the most common approach, but not the only possible one).</p>\n<p>Additionally, the documentation shows how to associate a data template with a view model type in the <a title=\"Creating a View Defined as a Data Template\" href=\"http://msdn.microsoft.com/en-us/library/gg405484%28v=PandP.40%29.aspx#sec20\" target=\"_blank\"> Implementing the MVVM Pattern chapter</a>.</p>\n<p>Regarding your problem with the <strong>TabControl </strong>header, you can find the following links useful, where similar issues are addressed:</p>\n<ul>\n<li><a href=\"http://compositewpf.codeplex.com/discussions/65361\"><span>How to set tabItem header when UI element region is TabControl </span></a></li>\n<li><a href=\"http://compositewpf.codeplex.com/discussions/30673\"></a><a href=\"http://compositewpf.codeplex.com/discussions/30673\">TabControl as a region</a> </li>\n<li><a href=\"http://compositewpf.codeplex.com/discussions/248686\"><span>Dynamic views in TabControl - ViewName? </span></a></li>\n</ul>\n<p>I hope you find this useful.</p>\n<p>Agustin Rodriguez Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-08-11T12:27:27.74-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "657028",
+    "ThreadId": "267584",
+    "Html": "<p>Hi,</p>\r\n<p>&nbsp;</p>\r\n<p>Thank you for your advices. It is really helpful.</p>\r\n<p>Also I like to understand how things works under the cover so I had a look to the 3 different region adapters. So now with your advices and my analysis of Prism source code I am confident going this way.</p>\r\n<p>Still, I noticed that adding a view or a view model to a Selector region like the TabControl behaved differently. I attached 2 screenshots so you can have a look. The first one is when I add a view to the region, everything is normal. In the second one I add a view-model and as you can see, the view-model is being added to the Content and to the Header of the TabItem.</p>\r\n<p>&nbsp;</p>\r\n<p><a href=\"http://img820.imageshack.us/img820/2951/viewinregion.png\">http://img820.imageshack.us/img820/2951/viewinregion.png</a></p>\r\n<p><a href=\"http://img542.imageshack.us/img542/9672/viewmodelinregion.png\">http://img542.imageshack.us/img542/9672/viewmodelinregion.png</a></p>\r\n<p>&nbsp;</p>\r\n<p>As I like to understand why it behaves this way, does anybody can explain me why it behaves differently? Is that a bug?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks.</p>\r\n<p>Lionel.</p>",
+    "PostedDate": "2011-08-12T02:19:15.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "657122",
+    "ThreadId": "267584",
+    "Html": "<p>Lionel,</p>\r\n<p>It would be helpful if you could provide us with a repro sample application that portrays that problem, so we can help you find the cause and a possible workaround for your issue with the tab control.</p>\r\n<p>Thanks,</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-08-12T06:33:35.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "657961",
+    "ThreadId": "267584",
+    "Html": "<p>Actually, the workaround is simple. I just have to replace the ItemContainerStyle of TabItems in TabControl.</p>\r\n<p>&nbsp;</p>\r\n<p>But still, I believe there is a real difference between injecting a view or view-model because of the behavior I described. I attach you a solution to reproduce this behavior.</p>\r\n<p><a href=\"http://www.2shared.com/file/y_BQuu1e/PrismIssueDemo.html\">PrismIssueDemo.zip</a></p>\r\n<p>&nbsp;</p>\r\n<p>Thanks for your help.</p>\r\n<p>Lionel.</p>",
+    "PostedDate": "2011-08-14T04:35:37.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "658569",
+    "ThreadId": "267584",
+    "Html": "<p>Lionel,</p>\r\n<p>We've downloaded your sample and we are analyzing the issue you're mentioning. We'll provide an answer to you soon.</p>\r\n<p>Thanks,</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-08-15T15:17:11.927-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "658926",
+    "ThreadId": "267584",
+    "Html": "<p>Hi Lionel,</p>\r\n<p>As far as I know, this is not a bug of the Prism library, but a normal behavior of the WPF framework.</p>\r\n<p>The <strong><span style=\"font-size: 10pt;\">TabControl </span></strong>has two <strong><span style=\"font-size: 10pt;\">DataTemplates</span></strong>, one for the header and other for the content. The problems seems to be that the <strong><span style=\"font-size: 10pt;\">TabControl</span></strong> doesn&rsquo;t know to which of the two the template must be assigned to, so its assigned to both.</p>\r\n<p>You can check this by adding the following line inside a <strong><span style=\"font-size: 10pt;\">TabControl</span></strong>:</p>\r\n<p><span style=\"font-size: 9.5pt; color: blue;\">&lt;</span><span style=\"font-size: 9.5pt; color: #a31515;\">TabControl</span><span style=\"font-size: 9.5pt; color: red;\">&nbsp;</span><span style=\"font-size: 9.5pt; color: blue;\">&gt;</span><br /> <span style=\"font-size: 9.5pt; color: blue;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span style=\"font-size: 9.5pt; color: #a31515;\">my</span><span style=\"font-size: 9.5pt; color: blue;\">:</span><span style=\"font-size: 9.5pt; color: #a31515;\">TestViewModel</span><span style=\"font-size: 9.5pt; color: blue;\">/&gt;</span><span style=\"font-size: 9.5pt; color: #a31515;\"> </span><br /> <span style=\"font-size: 9.5pt; color: blue;\">&lt;/</span><span style=\"font-size: 9.5pt; color: #a31515;\">TabControl</span><span style=\"font-size: 9.5pt; color: blue;\">&gt;</span></p>\r\n<p>Like this, the view is created and added to the <strong><span style=\"font-size: 10pt;\">TabControl</span></strong> through the data template without using Prism at all, however the issue still happens.</p>\r\n<p>As a workaround for this, you can explicitly declare the <strong><span style=\"font-size: 10pt;\">DataTemplate</span></strong> for the header in the <strong><span style=\"font-size: 10pt;\">TabControl</span></strong> like this:</p>\r\n<p><span style=\"font-size: 9.5pt; color: blue;\">&lt;</span><span style=\"font-size: 9.5pt; color: #a31515;\">TabControl</span><span style=\"font-size: 9.5pt; color: red;\"> cal</span><span style=\"font-size: 9.5pt; color: blue;\">:</span><span style=\"font-size: 9.5pt; color: red;\">RegionManager.RegionName</span><span style=\"font-size: 9.5pt; color: blue;\">=\"MainContent\"&gt;</span><br /> <span style=\"font-size: 9.5pt; color: #a31515;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style=\"font-size: 9.5pt; color: blue;\">&lt;</span><span style=\"font-size: 9.5pt; color: #a31515;\">TabControl.ItemTemplate</span><span style=\"font-size: 9.5pt; color: blue;\">&gt;</span><br /> <span style=\"font-size: 9.5pt; color: #a31515;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style=\"font-size: 9.5pt; color: blue;\">&lt;</span><span style=\"font-size: 9.5pt; color: #a31515;\">DataTemplate</span><span style=\"font-size: 9.5pt; color: blue;\">&gt;</span><br /> <span style=\"font-size: 9.5pt; color: #a31515;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style=\"font-size: 9.5pt; color: blue;\">&lt;</span><span style=\"font-size: 9.5pt; color: #a31515;\">Label</span><span style=\"font-size: 9.5pt; color: red;\"> Content</span><span style=\"font-size: 9.5pt; color: blue;\">=\"Test\"</span><span style=\"font-size: 9.5pt; color: red;\"> Padding</span><span style=\"font-size: 9.5pt; color: blue;\">=\"0\"</span><span style=\"font-size: 9.5pt; color: red;\"> Margin</span><span style=\"font-size: 9.5pt; color: blue;\">=\"0\"/&gt;</span><br /> <span style=\"font-size: 9.5pt; color: #a31515;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style=\"font-size: 9.5pt; color: blue;\">&lt;/</span><span style=\"font-size: 9.5pt; color: #a31515;\">DataTemplate</span><span style=\"font-size: 9.5pt; color: blue;\">&gt;</span><br /> <span style=\"font-size: 9.5pt; color: #a31515;\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style=\"font-size: 9.5pt; color: blue;\">&lt;/</span><span style=\"font-size: 9.5pt; color: #a31515;\">TabControl.ItemTemplate</span><span style=\"font-size: 9.5pt; color: blue;\">&gt;</span><br /> <span style=\"font-size: 9.5pt; color: blue;\">&lt;/</span><span style=\"font-size: 9.5pt; color: #a31515;\">TabControl</span><span style=\"font-size: 9.5pt; color: blue;\">&gt;</span></p>\r\n<p>In this case, the <strong><span style=\"font-size: 10pt;\">TabControl</span></strong> already has a <strong><span style=\"font-size: 10pt;\">DataTemplate</span></strong> for the header so the <strong><span style=\"font-size: 10pt;\">DataTemplate</span></strong> that instantiates the view is only assigned to the content.</p>\r\n<p>Note that in the example above, the <strong><span style=\"font-size: 10pt;\">Label</span></strong> used in the header has a fixed string as content, however you can bind the content to a property to change the header accordingly to the view/view model.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>&nbsp;</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-08-16T09:54:23.92-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "660513",
+    "ThreadId": "267584",
+    "Html": "<p>Thank you Damian.</p>\r\n<p>Your reply really lightened up why the TabControl behaved this way.</p>\r\n<p>&nbsp;</p>\r\n<p>I am now ok with view-model first navigation mechanisms.</p>",
+    "PostedDate": "2011-08-19T04:19:17.877-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

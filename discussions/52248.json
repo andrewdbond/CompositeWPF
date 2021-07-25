@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "175527",
+    "ThreadId": "52248",
+    "Html": "Has anyone implemented a forms authentication login using a View?  I'm at the point right now where I've created the authentication service, a presentation model and view for the Login, but I'm at an impasse for how I'm going to fit it in to the workflow.  \r\n",
+    "PostedDate": "2009-04-03T16:34:38.867-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "175690",
+    "ThreadId": "52248",
+    "Html": "Hi!<br>\r\n<br>\r\nWe've implemented this functionality. I try to summarize the approach what we took in our silverlight solution:<br>\r\n<br>\r\n- We've implmenented a view and a viewmodel (username, password, ispersistent properties) and encapsulated this functionality into a module.<br>\r\n- We've defined 3 events, one of them is LoginRequested. This event is raised in 2 generic places: at app start early stage in shell initialization (because we've security trimmed UI) and raised from our WCF message inspector which is responsible to handle securityexceptions received from the server side.<br>\r\n- Your controller is subscribing to the LoginRequested event and present (in our case a dedicated popup region) the login view. and after a successful login your controller raising the LoginSuccessful event.<br>\r\n<br>\r\nIt's not that complicated, I hope my write-up is clear, if not, then just ask :-)<br>\r\n<br>\r\nI'm very curious about other's approach.<br>\r\n<br>\r\nThanks,<br>\r\nAttila\r\n",
+    "PostedDate": "2009-04-04T13:39:54.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,151 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 20,
+    "Custom": "",
+    "Description": "Hello,\n \nI've encountered an issue with Prism entering what at first appears to be an infinite execution loop and exhausting all available memory. The issue occurs when an exception is thrown inside of the CollectionChanged event delegate defined in ContentControlRegionAdapter. In my case, the exception was being thrown by the setter of regionTarget.Content as my view had previously been manually assigned as the child of another content control (a Silverlight Popup).\n \nAs a result of this exception, Prism control flow seems to enter a control flow loop via WeakDelegatesManager. The \"Raise\" method of WeakDelegatesManager ends up firing a delegate which eventually calls a method that in turn calls Raise again. The result is a fatal crash. The behaviour is non-deterministic - sometimes the Silverlight plugin will use up to 2GB of memory before crashing, sometimes it will only use ~100MB.\n \nHere is a block from the stack trace:\n \n \tMicrosoft.Practices.Prism!Microsoft.Practices.Prism.Events.WeakDelegatesManager.Raise(object[] args) Line 55 + 0xf bytes\tC#\n \tMicrosoft.Practices.Prism!Microsoft.Practices.Prism.Regions.RegionManager.UpdateRegions() Line 224 + 0x45 bytes\tC#\n \tMicrosoft.Practices.Prism!Microsoft.Practices.Prism.Regions.RegionManager.RegionCollection.Add(Microsoft.Practices.Prism.Regions.IRegion region) Line 316 + 0x5 bytes\tC#\n \tMicrosoft.Practices.Prism!Microsoft.Practices.Prism.Regions.Behaviors.RegionManagerRegistrationBehavior.TryRegisterRegion() Line 126 + 0x27 bytes\tC#\n \tMicrosoft.Practices.Prism!Microsoft.Practices.Prism.Regions.Behaviors.RegionManagerRegistrationBehavior.StartMonitoringRegionManager() Line 102 + 0x8 bytes\tC#\n \tMicrosoft.Practices.Prism!Microsoft.Practices.Prism.Regions.Behaviors.RegionManagerRegistrationBehavior.OnAttach() Line 86 + 0x8 bytes\tC#\n \tMicrosoft.Practices.Prism!Microsoft.Practices.Prism.Regions.RegionBehavior.Attach() Line 65 + 0xb bytes\tC#\n \tMicrosoft.Practices.Prism!Microsoft.Practices.Prism.Regions.RegionBehaviorCollection.Add(string key, Microsoft.Practices.Prism.Regions.IRegionBehavior regionBehavior) Line 73 + 0x9 bytes\tC#\n \tMicrosoft.Practices.Prism!Microsoft.Practices.Prism.Regions.RegionAdapterBase<System.Windows.Controls.ContentControl>.AttachDefaultBehaviors(Microsoft.Practices.Prism.Regions.IRegion region, System.Windows.Controls.ContentControl regionTarget) Line 114 + 0x1d bytes\tC#\n \tMicrosoft.Practices.Prism!Microsoft.Practices.Prism.Regions.RegionAdapterBase<System.Windows.Controls.ContentControl>.Initialize(System.Windows.Controls.ContentControl regionTarget, string regionName) Line 65 + 0x12 bytes\tC#\n \tMicrosoft.Practices.Prism!Microsoft.Practices.Prism.Regions.RegionAdapterBase<System.Windows.Controls.ContentControl>.Microsoft.Practices.Prism.Regions.IRegionAdapter.Initialize(object regionTarget, string regionName) Line 81 + 0x55 bytes\tC#\n \tMicrosoft.Practices.Prism!Microsoft.Practices.Prism.Regions.Behaviors.DelayedRegionCreationBehavior.CreateRegion(System.Windows.DependencyObject targetElement, string regionName) Line 137 + 0x12 bytes\tC#\n \tMicrosoft.Practices.Prism!Microsoft.Practices.Prism.Regions.Behaviors.DelayedRegionCreationBehavior.TryCreateRegion() Line 118 + 0x14 bytes\tC#\n \tMicrosoft.Practices.Prism!Microsoft.Practices.Prism.Regions.Behaviors.DelayedRegionCreationBehavior.OnUpdatingRegions(object sender, System.EventArgs e) Line 99 + 0xb bytes\tC#\n \t[External Code]\n \n \nThis block is repeated over and over again. Note that behaviour registered in WeakDelegatesManager and invoked by its Raise method ends up calling UpdateRegions ... which calls Raise again.\n \nThis is concerning - how do you know when you can and can't call Raise, or call some other method that may as a result call Raise somewhere down the line? Code that is indirectly invoked as a result of WeakDelegatesManager.Raise being called has a very insidious dependency on all other methods: you absolutely cannot call any method that would result in Raise being called, if you are in a method that is executing as a result of Raise being fired somewhere up the call stack.\n \nThe source of the memory exhaustion is in DelayedRegionCreationBehaviour.CreateRegion in the catch block:\n \n    throw new RegionCreationException(string.Format(CultureInfo.CurrentCulture, Resources.RegionCreationException, regionName, ex), ex);\n \nThis causes an exception to be thrown and caught and, through the looping behaviour, handled in the same spot .... resulting in a massive chain of inner exceptions and a massive stack trace. Here's the weird part: Dropping the inner exception, e.g.:\n \n    throw new RegionCreationException(string.Format(CultureInfo.CurrentCulture, Resources.RegionCreationException, regionName, ex));\n \n...causes the application to load and run fine. What appeared to be an infinite loop actually terminates when the app doesn't run out of memory.\n \nMy debugger hangs while this is going on, so its hard to tell exactly what is happening.\n \nI should also note that I receive RegionCreationExceptions from *all* regions when something in one fails, but I think this is regular Prism behaviour.\n \nTo reproduce:\n \nHost a view in a content control such as a Popup. Create a region and add the view to it in such a way that ContentControlRegionAdapter.Adapt is called, assigning a delegate to the CollectionChanged event of its ActiveViews ViewCollection. Ensure that an exception is thrown in the delegate as the result of the view control already having a parent in the control tree.\n \nI'm using VS 2010, Prism 4 drop 9, Silverlight 4, IE 8.",
+    "LastUpdatedDate": "2013-02-21T18:38:23.54-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Medium",
+      "Severity": 100,
+      "Id": 2
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-11-12T11:09:04.62-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Exception handling logic leads to Prism crashing due to nested exceptions",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 7521
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897975,
+      "FileName": "Prism trace.txt",
+      "DownloadUrl": ".\\897975"
+    },
+    {
+      "FileId": 897976,
+      "FileName": "Call_Stack.txt",
+      "DownloadUrl": ".\\897976"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Slightly larger call stack attached.",
+      "PostedDate": "2010-11-12T11:13:32.187-08:00",
+      "Id": 156360
+    },
+    {
+      "Message": "Would you mind trying this on the latest, released bits to see if you can repro it?\r\n\r\nThanks,\r\n-b\r\n",
+      "PostedDate": "2010-11-12T14:16:48.237-08:00",
+      "Id": 156361
+    },
+    {
+      "Message": "I tried to put together a repro based on what you outlined and wasn't able to reproduce, but I suspect I'm not hitting your exact scenario.  If you find it's failing on the latest bits, can you send a small repro so we can investigate further?\r\n\r\nThanks,\r\n\r\n-b",
+      "PostedDate": "2010-11-12T14:49:12.277-08:00",
+      "Id": 156362
+    },
+    {
+      "Message": "The issue still occurs using the November release of Prism. It might be worth noting that after reproducing, I detached the debugger and the program managed to recover, but memory consumption rose to and stayed at 800 MB which is far higher than the application normally uses.\r\n\r\nI took a quick shot at reproducing using the UIComposition QuickStart from the latest release. I added a contrived throwing expression to the CollectionChanged event delegate (for ActiveViews), defined in ContentControlRegionAdapter's Adapt method. This is what kicks off the behaviour in my app. However, the exception here is caught and handled by RegionViewRegistry.OnContentRegistered, whereas in my app it's caught and handled in DelayedRegionCreationBehaviour.CreateRegion.\r\n\r\nI'm not very familiar with Prism so I'll spend a bit of time this weekend trying to reproduce this problem for you based on an existing example. I'll have to grok DelayedRegionCreationBehaviour and try to get the UIComposition example to use it (if it makes sense).",
+      "PostedDate": "2010-11-12T16:47:06.497-08:00",
+      "Id": 156363
+    },
+    {
+      "Message": "So far no luck reproducing using a simple example from the ground up. I tried modifying the QuickStart as mentioned but so far no success in reproducing. The combination of all of these event handlers and the behaviour contained in the WeakDelegateManager(s) is proving quite hard to reproduce. I'm sorry I can't be more help at this point. I will try to reproduce later in the week if I have a bit of time.\r\n\r\nMeanwhile, does the call stack I provided give you any hints as to what is happening here? It definitely looks like a loop in program flow is happening, with OnUpdatingRegions (invoked through WeakDelegatesManage.Raise) eventually resulting in Raise being called again. Is this intended behaviour? \r\n\r\nPerhaps an exception thrown at an inopportune time (e.g. in a foreach loop) prevents certain behaviour from being unregistered from a WeakDelegatesManager? Just thinking out loud here. Again, sorry I couldn't be more help.\r\n\r\n\r\n\r\n",
+      "PostedDate": "2010-11-15T13:46:46.737-08:00",
+      "Id": 156364
+    },
+    {
+      "Message": "I've taken a couple tries at reproing, but so far no luck.  Other than the large nature of the stack, I didn't spot anything odd.\r\n\r\nThe WeakDelegateManager is being used to support a regions updated event that some of the behaviors attach to for awereness of when new regions are added.  In particular the DelayedRegionCreation behavior.  \r\n",
+      "PostedDate": "2010-11-18T08:00:03.113-08:00",
+      "Id": 156365
+    },
+    {
+      "Message": "Hi,\r\n\r\nHave you tried using nested regions in your reproduction attempts? I just noticed we are using nested regions in a couple of places. In our case we have a view that contains a region, and that view itself is placed in a region through a region adapter.",
+      "PostedDate": "2010-11-23T13:09:39.213-08:00",
+      "Id": 156366
+    },
+    {
+      "Message": "I'll see if we can repro with nested regions.",
+      "PostedDate": "2010-11-29T08:31:13.267-08:00",
+      "Id": 156367
+    },
+    {
+      "Message": "Hi,\r\n\r\nWe’ve continue trying to reproduce your scenario and were able to get to the point where the CreateRegion method of the DelayedRegionCreationBehavior throws a RegionCreationException (as you’ve mentioned, this is expected, as the same instance of a view cannot be assigned to the content of two different controls). However, we weren’t able to reproduce the behavior you’ve experienced regarding the control flow loop after the exception has been thrown.\r\n\r\nThe spike we’ve created has a view (a user control with a region inside), the same instance of which gets added to both:\r\n•\tA ChildWindow and,\r\n•\ta region nested inside the Shell.\r\nIn our spike we’ve used View Discovery.\r\n\r\nWe would appreciate if you could provide us with any additional piece of information like the fact that you used nested region, so that we could try to reproduce your scenario more accurately.\r\n\r\nThanks for your feedback again.\r\n\r\nFernando Antivero\r\nhttp://blogs.southworks.net/fantivero",
+      "PostedDate": "2010-11-30T07:06:58.327-08:00",
+      "Id": 156368
+    },
+    {
+      "Message": "I'm having a similar problem except instead of an infinite execution loop I get an ArgumentException because DelayedRegionCreationBehavior.CreateRegion is called twice resulting in two instances of RegionManagerRegistrationBehavior. See attached stack trace.",
+      "PostedDate": "2010-12-11T09:09:45.357-08:00",
+      "Id": 156369
+    },
+    {
+      "Message": "jscharf,\r\n\r\nHave you upgraded to the RTM version of Prism?  Drop 9 is an older alpha release.\r\n\r\nPlease upgrade to the RTM version of Prism and attempt to repro again and attach new information.\r\n\r\nCan you repro this bug on a small project that you can send to us?\r\n\r\nThanks,\r\n\r\nKarl\r\n\r\n",
+      "PostedDate": "2010-12-13T10:32:13.493-08:00",
+      "Id": 156370
+    },
+    {
+      "Message": "Hi Karl,\r\n\r\nYes the issue still occurs with the RTM version. \r\n\r\nUnfortunately, I cannot give much more detail than I have already have.\r\n\r\nI do think the stack trace is very telling - behaviour registered in the WeakDelegates manager that is invoked by Raise *also* results in Raise being called again. If you look at the stack trace snippet in my post, starting from the bottom, the call to \"OnUpdatingRegions\" eventually results in a call to \"UpdateRegions\", which calls Raise again. Control flow alteration as a result of an exception begin thrown seems to be the cause here... perhaps an exception thrown by a view or adapter in a foreach loop is preventing other views to be properly processed and removed from the WeakDelegatesManager?\r\n\r\nOne thing I did to confirm that recursive calls to Raise were the issue was to use a manual reset event in Raise to prevent it being called by itself... when Raise is called, if the event is set, Raise does not fire its delegates. If the event is not set, the event is set and the delegates are invoked and then the event reset after they have completed. Doing this \"fixes\" the issue - Raise can no longer be called recursively from itself.\r\n\r\nApologies for not being able to give an accurate reproduction, but it's been very hard to mimic the exact behaviour that led to this, and I'm under time constraints on this project. FYI this is not a critical issue for us, just some peculiar behaviour I stumbled upon by using a view incorrectly.\r\n",
+      "PostedDate": "2010-12-15T10:16:21.49-08:00",
+      "Id": 156371
+    },
+    {
+      "Message": "I made some changes that seem to have resolved the issue as well. See http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=237965",
+      "PostedDate": "2010-12-15T13:15:40.46-08:00",
+      "Id": 156372
+    },
+    {
+      "Message": "Hello\r\n\r\nI have the same call stack. My Module/MVVM composition looks like that : \r\nelements : \r\n\r\n - Two modules loaded OnDemand : Module A / Module B\r\n - Module A owns a Shell view\r\n - Shell view contains a Main region (ContentControl)\r\n - Module A owns a Main view\r\n - Main view contains a Sub region (ContentControl)\r\n - Module B owns a Sub view\r\n\r\ncomposition : \r\n  A.Shell view <-- A.Main region <-- A.Main view <-- A.Sub region <-- B.Sub view\r\n\r\nThe problem should occurs when composition happens with views and sub-views from different modules.\r\n\r\nI have to say that i use the region navigation framework to navigate to Main view.\r\n\r\nIf that could help...",
+      "PostedDate": "2011-01-01T06:13:14.833-08:00",
+      "Id": 156373
+    },
+    {
+      "Message": "Hello\r\n\r\nI have the same call stack. My Module/MVVM composition looks like that : \r\nelements : \r\n\r\n - Two modules loaded OnDemand : Module A / Module B\r\n - Module A owns a Shell view\r\n - Shell view contains a Main region (ContentControl)\r\n - Module A owns a Main view\r\n - Main view contains a Sub region (ContentControl)\r\n - Module B owns a Sub view\r\n\r\ncomposition : \r\n  A.Shell view <-- A.Main region <-- A.Main view <-- A.Sub region <-- B.Sub view\r\n\r\nThe problem should occurs when composition happens with views and sub-views from different modules.\r\n\r\nI have to say that i use the region navigation framework to navigate to Main view.\r\n\r\nIf that could help...",
+      "PostedDate": "2011-01-01T06:13:35.87-08:00",
+      "Id": 156374
+    },
+    {
+      "Message": "neurosoup,\r\n\r\nThanks for posting this.  We'll try out this scenario.  I know this thread has been going on a while, but I'd like to have a solid repro here before we start changing anything.\r\n\r\n-b",
+      "PostedDate": "2011-01-05T09:13:20.393-08:00",
+      "Id": 156375
+    },
+    {
+      "Message": "Hi neurosoup,\r\n\r\nThank you for reporting this. We’ve been able to reproduce your scenario, and reached the aforementioned stack trace by trying to create a region with a duplicate name (in the same region manager) in the Sub View.\r\n\r\nWe’ve only been able to reproduce that behavior when adding the Sub View with the View Discovery approach. Additionally, if the Sub View is marked as an export with a contract type or a contract name, the control flow loop isn’t triggered.\r\n\r\nAfter going further into the subject, we’ve found that navigation, on-demand loaded separate modules, and MVVM don’t seem to be requirements for this behavior to happen.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-01-07T12:13:06.283-08:00",
+      "Id": 156376
+    },
+    {
+      "Message": "Would this change in DelayedRegionCreationBehaviour work?\r\n\r\n private void TryCreateRegion()\r\n        {\r\n            DependencyObject targetElement = this.TargetElement;\r\n            if (targetElement == null)\r\n            {\r\n                this.Detach();\r\n                return;\r\n            }\r\n\r\n            if (targetElement.CheckAccess())\r\n            {\r\n                this.Detach();\r\n\r\n                if (!this.regionCreated)\r\n                {\r\n                    this.regionCreated = true;\r\n                    string regionName = this.RegionManagerAccessor.GetRegionName(targetElement);\r\n                    CreateRegion(targetElement, regionName);\r\n   // delete                    this.regionCreated = true;\r\n                }\r\n            }\r\n        }",
+      "PostedDate": "2011-06-10T11:03:28.613-07:00",
+      "Id": 156377
+    },
+    {
+      "Message": "\"I'm having a similar problem except instead of an infinite execution loop I get an ArgumentException because DelayedRegionCreationBehavior.CreateRegion is called twice resulting in two instances of RegionManagerRegistrationBehavior\"\r\n\r\nI can confirm we also have this problem. It only happens where we are using scoped region managers and it only happens now and again.",
+      "PostedDate": "2011-07-22T04:25:37.83-07:00",
+      "Id": 156378
+    },
+    {
+      "Message": "Hi sh0dan,\r\n\r\nIt would be helpful if you could provide us with a repro sample application portraying your problem, so that we can help you further with it.\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2011-12-29T09:43:36.4-08:00",
+      "Id": 156379
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "252846",
+    "ThreadId": "73927",
+    "Html": "<p>Is there an article on using CompositeCommands in Prism? I noticed it is being used in one of the blog posts on integrating Prism with SL navigation. Also, is there a step by step explanation on how to integrate the SL 3 navigation with Prism?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2009-11-03T07:27:53.45-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "253005",
+    "ThreadId": "73927",
+    "Html": "<p id=31450d70-aaf3-012c-d4d1-12313d006601>Hi Bilal,</p>\r\n<p id=31451840-aaf3-012c-d4d2-12313d006601>You can read about Composite Commands in the following articles from the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/dd458862.aspx\">How to: Create Globally Available Commands</a> </li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/dd458928.aspx\">Commands</a> </li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/dd458878.aspx\">Communication</a> </li>\r\n</ul>\r\n<p id=31452290-aaf3-012c-d4d3-12313d006601>Also the <a href=\"http://msdn.microsoft.com/en-us/library/dd458890.aspx\">Commanding Quickstart</a> uses a Composite Command.</p>\r\n<p id=31453590-aaf3-012c-d4d4-12313d006601>As for using Prism with Silverlight 3 Navigation you should take into account that there are some limitations explained in <a href=\"http://blogs.southworks.net/dschenkelman/2009/11/05/why-silverlight-3-navigation-cannot-be-fully-leveraged-when-loading-modules-remotely-with-prism-2/\">this blog post</a>.</p>\r\n<p id=314550a0-aaf3-012c-d4d5-12313d006601>Please let me know if this helps.</p>\r\n<p id=31456cb0-aaf3-012c-d4d6-12313d006601>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-11-03T14:11:18.783-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "253170",
+    "ThreadId": "73927",
+    "Html": "<p>Hello Damian,</p>\r\n<p>Thanks for replying back.</p>\r\n<p>&nbsp;</p>\r\n<p>Regarding the Prism integration with Navigation in SL, I have few questions to the Mariano who wrote the blog post:</p>\r\n<p><strong>1.</strong> ItemsControlAdapter: Inside the ItemsControlRegionAdapter, there is a checking on the &quot;regionTarget.ItemsSource != null to through an exception&quot;. Does setting the &quot;Items&quot; property has no effect on the &quot;ItemsSource&quot;? as I know, ItemsSource says where to bring the data while Datacontext says what is the data and Items has the list of data records.</p>\r\n<p>&lt;ItemsControl cal:RegionManager.RegionName=&quot;LinkRegion&quot; HorizontalAlignment=&quot;Center&quot; VerticalAlignment=&quot;Top&quot;&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsControl.ItemsPanel&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsPanelTemplate&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;StackPanel Orientation=&quot;Horizontal&quot;/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsPanelTemplate&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsControl.ItemsPanel&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsControl.Items&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;HyperlinkButton Content=&quot;Home&quot; Tag=&quot;Home&quot;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd:Click.Command=&quot;{Binding NavigateCommand}&quot;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd:Click.CommandParameter=&quot;{Binding RelativeSource={RelativeSource Self}, Path=Tag}&quot; /&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsControl.Items&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsControl&gt;</p>\r\n<p><strong>2.</strong> In the Shell.xaml.cs, the following code didn;t know why we need it:</p>\r\n<p>private void MainFrame_Navigated(object sender, NavigationEventArgs e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // This logic is placed in code-behind instead of a presenter<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // for the ease of demonstrating module navigation.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (e.Content != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.container.BuildUp(e.Content.GetType(), e.Content);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p><strong>3.</strong> LoadModule(&quot;modulename&quot;) method loads a module only once. So, if the module is already loaded, Prism doesn't load it again. However, when &quot;ModuleLoad&quot; is called and no module is initialized, how is the Prism calling the Initialize method of the already loaded module? I tried to follow the code and couldnt find it.</p>\r\n<p>Thank&nbsp;<strong> </strong>you,<br>Regards</p>",
+    "PostedDate": "2009-11-04T02:18:08.71-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "254941",
+    "ThreadId": "73927",
+    "Html": "<p>Any help on my questions?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2009-11-09T00:47:29.78-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "258780",
+    "ThreadId": "73927",
+    "Html": "<p>Here is a post where I cover using Prism and SL Navigation. It supports dynamic loading of modules and doesn't require more than one page to process the navigation requests.</p>\r\n<p><a href=\"http://csharperimage.jeremylikness.com/2009/11/dynamic-module-loading-with-silverlight.html\">http://csharperimage.jeremylikness.com/2009/11/dynamic-module-loading-with-silverlight.html</a></p>\r\n<p>Jeremy</p>",
+    "PostedDate": "2009-11-19T10:30:41.753-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "476840",
+    "ThreadId": "222568",
+    "Html": "<p>Hi</p>\r\n<p>I have a view in module A that contains a region in which a view in module B is displayed.    The view in module B contains a treeview with a checkbox on each node.  When a user clicks a checkbox I am publishing an event with the selected items as its payload and the view in module A subscribes to that event.</p>\r\n<p>That&rsquo;s all well and good but what if I add a view in module C that also contains a region in which the view in module B is displayed and also subscribes to the checkbox click event.</p>\r\n<p>I require a&nbsp;separate&nbsp;instance of the view in module B in the two regions in module A and C. &nbsp;How can I achieve this?</p>\r\n<p>And how can I ensure that the subscribers to the event in Module B know which instance has published the event in order that they can filter for event they are interested in?</p>\r\n<p>Is this scenario compatible with Prism?  Is this use of events the best way to communicate between two modules when there are multiple instances of a view?</p>\r\n<p>I hope that made sense.  Any guidance would be appreciated.</p>\r\n<p>Thanks</p>\r\n<p>Kevin</p>",
+    "PostedDate": "2010-08-05T05:36:14.49-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "477093",
+    "ThreadId": "222568",
+    "Html": "<p>Hi Kevin,</p>\r\n<p>I do not know you exact scenario, but&nbsp;if you need to create different instances of your View, you could take advance of the <a href=\"http://msdn.microsoft.com/en-us/library/ff921098(PandP.20).aspx\">UI Composition </a>in Prism by using the following approaches:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921103(PandP.20).aspx\">View discovery</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921076(PandP.20).aspx\">View Injection</a></li>\r\n</ul>\r\n<p>Both approaches could guarantee to you the creation of new instances of the view, as long as the singleton pattern wouldn't been used for its creation.</p>\r\n<p>As for your second question, this might be achieved by applying filters when you call the Subscribe method.</p>\r\n<p>In other words, you could notify your ViewB when it is displayed into RegionA or RegionC by implementing this on your own. And when you publish your <a href=\"http://msdn.microsoft.com/en-us/library/ff921122(PandP.20).aspx\">event</a>, you could use this information as an argument. So, when you call the <strong>Subscribe</strong> method, you could specify a predicate&nbsp;for filtering those event&rsquo;s raises that shouldn&rsquo;t be treated, as shown in the following code lines:</p>\r\n<p><span style=\"color:blue\"><span style=\"color:#000000\">fundAddedEvent.Subscribe(FundAddedEventHandler, ThreadOption.UIThread, false, <strong>FundOrderFilter</strong>)</span><br>...<br>public bool </span>FundOrderFilter(<span style=\"color:#2b91af\">FundOrder </span>fundOrder) <br>{ <br>&nbsp;&nbsp;&nbsp; <span style=\"color:blue\">return </span>fundOrder.CustomerId == _customerId;<br>}</p>\r\n<p>For more information you could take a look at&nbsp;the <a href=\"http://msdn.microsoft.com/en-us/library/ff921173(PandP.20).aspx\">EventAggregator Quickstart</a> (see the <strong>ActivityPresenter </strong>class&nbsp;code line: 68). &nbsp;</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-08-05T13:36:28.93-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "570842",
+    "ThreadId": "247248",
+    "Html": "<p>Hello,</p>\n<p>In the early age of Prism I remember that if we didn't specify the correct version, culture and token of the module type in the module catalog it wasn't working.</p>\n<p>Now, I can remove the version and the other part and it is working perfectly.</p>\n<p>&nbsp;</p>\n<p>Did someone change the behvior in the last release?</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>Thanks,</p>\n<p>Adrien Pellegrini.</p>",
+    "PostedDate": "2011-02-23T08:19:20.177-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "570947",
+    "ThreadId": "247248",
+    "Html": "<p>Hi Adrien,</p>\r\n<p>I have tested both <strong>RemoteModuleLoading QuickStart from Prism v2.2</strong> and the <strong>Prism Modularity QuickStarts from Prism v4</strong> by modifying the <em>ModuleType</em> from the <em>Modularity:ModuleInfo</em> element in the <strong>ModulesCatalog.xaml</strong> file.</p>\r\n<p>In Prism v2, <strong>you need to specify the Version</strong> in <em>ModuleType</em> for each <em>ModuleInfo</em>, but there is no need for PublicKeyToken and Culture.</p>\r\n<p>On the other hand, Prism v4, <strong>you need to specify Version, Culture and PublicKeyToken</strong> in <em>ModuleInfo</em>.</p>\r\n<p>However, it could be possible that you are referring <strong>ModuleCatalogBuilder</strong> class, which has been replaced with the <strong>ModuleCatalog</strong> class, for loading modules from xaml files.</p>\r\n<p>Additionally, you can read more about modularity in Prism&nbsp;<a href=\"http://msdn.microsoft.com/en-us/library/gg405479(v=PandP.40).aspx\">here</a>.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>",
+    "PostedDate": "2011-02-23T10:49:50.83-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "571274",
+    "ThreadId": "247248",
+    "Html": "I got the modules to load correctly when I recompiled the modules and readded them to the main project.<br>\r\n<br>\r\n<hr id=\"x_x_stopSpelling\">\r\nFrom: [email removed]<br>\r\nTo: [email removed]<br>\r\nDate: Wed, 23 Feb 2011 08:19:28 -0800<br>\r\nSubject: Module loading [CompositeWPF:247248]<br>\r\n<br>\r\nFrom: apellegrini<br>\r\n<div id=\"x_x_ecxThreadNotificationPostBody\">Hello,<br>\r\nIn the early age of Prism I remember that if we didn't specify the correct version, culture in the module type in the module catalog and token it wasn't working.<br>\r\nNow, I can remove the version and the other part and it is working perfectly.<br>\r\n<br>\r\nDid someone change the behvior in the last release?<br>\r\n<br>\r\n<br>\r\nThanks,<br>\r\nAdrien Pellegrini.<br>\r\n</div>\r\n<div id=\"x_x_ecxThreadNotificationFooter\">Read the <a href=\"http://compositewpf.codeplex.com/discussions/247248#post570842\" target=\"_blank\">\r\nfull discussion online</a>.<br>\r\nTo add a post to this discussion, reply to this email (<a href=\"mailto:CompositeWPF@discussions.codeplex.com?subject=[CompositeWPF:247248]\">CompositeWPF@discussions.codeplex.com</a>)<br>\r\nTo start a new discussion for this project, email <a href=\"mailto:CompositeWPF@discussions.codeplex.com\">\r\nCompositeWPF@discussions.codeplex.com</a><br>\r\nYou are receiving this email because you subscribed to this discussion on CodePlex. You can\r\n<a href=\"https://compositewpf.codeplex.com/subscriptions/thread/project/edit\" target=\"_blank\">\r\nunsubscribe or change your settings</a> on codePlex.com.<br>\r\nPlease note: Images and attachments will be removed from emails. Any posts to this discussion will also be available online at codeplex.com<br>\r\n</div>\r\n",
+    "PostedDate": "2011-02-23T21:59:08.093-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "571299",
+    "ThreadId": "247248",
+    "Html": "<p>My application is working perfectly since the beginning of Prism. It is not an issue with module loading or something else. In both cases (with or without the version etc.) it works well.</p>\r\n<p>&nbsp;</p>\r\n<p>I'm not using any custom code for this test (no custom ModuleInitializer, not custom ModuleManager, etc) and neither the ModuleCatalogBuilder. But I can remove the version and others parts without any troubles and change the version of the assembly as well.</p>\r\n<p>This behavior is not what I want and I do not know why I have it. Could you please help me to debug this? (I will not be able to give a sample application of course...)</p>",
+    "PostedDate": "2011-02-23T23:18:06.33-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "572054",
+    "ThreadId": "247248",
+    "Html": "<p>Ok I find some issue with the code.</p>\n<p>I'm using MEF and not Unity. It seems that MEF is not aware of the version of the file and need only the moduleName to work. If I remove the moduleName I got the error \"Unable to locate the module with type ...\". (I signed my assembly and add the full moduleType  line).</p>\n<p>I got the same behavior in the Modularity with MEF Quickstart - SIlverlight.</p>\n<p>Is MEF really don't care of the version?</p>",
+    "PostedDate": "2011-02-25T03:21:21.07-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "572141",
+    "ThreadId": "247248",
+    "Html": "<p>Adrien,</p>\r\n<p>We&rsquo;ve conducted some research and reached to the same results as yours. We&rsquo;ve found that the difference is in the <strong>MefModuleInitializer</strong> class (which overrides some methods from the <strong>ModuleInitializer</strong> class), specifically in the <strong>CreateModule</strong> method.</p>\r\n<p>The <strong>ModuleInitializer.CreateModule</strong> method obtains the <strong>IModule </strong>by calling <strong>ServiceLocator.GetInstance</strong>, passing the module&rsquo;s type as a parameter. Since Unity is able to resolve a type even if it&rsquo;s not registered in the container, this works when Unity is used as the dependency injection container. To illustrate this:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre> <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">virtual</span> IModule CreateModule(<span style=\"color: blue;\">string</span> typeName)\r\n {\r\n      Type moduleType = Type.GetType(typeName);\r\n      <span style=\"color: blue;\">if</span> (moduleType == <span style=\"color: blue;\">null</span>)\r\n      {\r\n         <span style=\"color: blue;\">throw</span> <span style=\"color: blue;\">new</span> ModuleInitializeException(<span style=\"color: blue;\">string</span>.Format(CultureInfo.CurrentCulture, Properties.Resources.FailedToGetType, typeName));\r\n      }\r\n \r\n      <span style=\"color: blue;\">return</span> (IModule)<span style=\"color: blue;\">this</span>.serviceLocator.GetInstance(moduleType);\r\n }\r\n</pre>\r\n</div>\r\n<p>The <strong>MefModuleInitializer.CreateModule</strong>, on the other hand, relies on the <strong>ModuleExport</strong> attribute. The <strong>MefModuleInitializer</strong> class holds a field of type <strong>IEnumerable&lt;Lazy&lt;IModule, IModuleExport&gt;&gt;</strong>, and the aforementioned method queries it to find the <strong>IModule</strong> that has the same name as the <strong>ModuleInfo</strong> provided. Therefore, there is no need to specify the type of the <strong>IModule</strong> in the <strong>ModuleInfo</strong> in order for the <strong>CreateModule</strong> method to obtain the <strong>IModule</strong>. To illustrate this:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> IModule CreateModule(ModuleInfo moduleInfo)\r\n{\r\n     <span style=\"color: green;\">// If there is a catalog that needs to be integrated with the AggregateCatalog as part of initialization, I add it to the container's catalog.</span>\r\n    ComposablePartCatalog partCatalog;\r\n    <span style=\"color: blue;\">if</span> (<span style=\"color: blue;\">this</span>.downloadedPartCatalogs.TryGet(moduleInfo, <span style=\"color: blue;\">out</span> partCatalog))\r\n    {\r\n        <span style=\"color: blue;\">if</span> (!<span style=\"color: blue;\">this</span>.aggregateCatalog.Catalogs.Contains(partCatalog))\r\n        {\r\n             <span style=\"color: blue;\">this</span>.aggregateCatalog.Catalogs.Add(partCatalog);\r\n        }\r\n \r\n         <span style=\"color: blue;\">this</span>.downloadedPartCatalogs.Remove(moduleInfo);\r\n     }\r\n \r\n     <span style=\"color: blue;\">if</span> (<span style=\"color: blue;\">this</span>.ImportedModules != <span style=\"color: blue;\">null</span> &amp;&amp; <span style=\"color: blue;\">this</span>.ImportedModules.Count() != 0)\r\n     {\r\n         Lazy&lt;IModule, IModuleExport&gt; lazyModule =\r\n                   <span style=\"color: blue;\">this</span>.ImportedModules.FirstOrDefault(x =&gt; (x.Metadata.ModuleName == moduleInfo.ModuleName));\r\n         <span style=\"color: blue;\">if</span> (lazyModule != <span style=\"color: blue;\">null</span>)\r\n         {\r\n              <span style=\"color: blue;\">return</span> lazyModule.Value;\r\n         }\r\n     }\r\n \r\n           <span style=\"color: green;\">// This does not fall back to the base implementation because the type must be in the MEF container and not just in the application domain.</span>\r\n           <span style=\"color: blue;\">throw</span> <span style=\"color: blue;\">new</span> ModuleInitializeException(\r\n               <span style=\"color: blue;\">string</span>.Format(CultureInfo.CurrentCulture, Properties.Resources.FailedToGetType, moduleInfo.ModuleType));\r\n}\r\n</pre>\r\n</div>\r\n<p>For more information on how <strong>MEF</strong> catalogs work, you might find better support in MEF&acute;s <a href=\"http://mef.codeplex.com/discussions\">Codeplex forum</a> and also in <a href=\"http://social.msdn.microsoft.com/Forums/eu/MEFramework/threads\">MSDN forum</a>.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-02-25T07:17:06.217-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "572360",
+    "ThreadId": "247248",
+    "Html": "<p>Finally, I updated my custom module initializer and add this simple line of code:</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre>Type type = Type.GetType(moduleInfo.ModuleType, <span style=\"color: blue;\">false</span>, <span style=\"color: blue;\">true</span>);\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>If the module version is not the same as the assembly version, the type will be null. After we can check it and throw our exception if we want this behavior.</p>\n<p>&nbsp;</p>\n<p>Thanks for answers.</p>\n<p>Adrien.</p>",
+    "PostedDate": "2011-02-25T14:15:38.183-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573264",
+    "ThreadId": "247248",
+    "Html": "<p>Hi Adrien,</p>\r\n<p>Thank you for sharing your insight with the rest of the community, as other users might find your approach useful in case they face similar concerns.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-02-28T06:44:32.983-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

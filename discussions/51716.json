@@ -1,0 +1,138 @@
+[
+  {
+    "Id": "173487",
+    "ThreadId": "51716",
+    "Html": "I have an existing WPF application that would benefit from integrating Prism into it but I haven't a clue where to start. I can create applications using Prism from the start but the integration is stumping me. Any help? Thanks.<br>\r\n",
+    "PostedDate": "2009-03-30T07:45:12.943-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "173529",
+    "ThreadId": "51716",
+    "Html": "You can download Prism, which has three source code projects called Composite, Composite.UnityExtensions, and Composite.Wpf. Add the three projects to your solution, and also add them to the references of your own projects wherever needed. Build the three projects first (or in the Build Order dialog, make your own projects dependent on the three CAL projects). Then build your solution. You should be good to go then by using the CAL.<br>\r\n<br>\r\n",
+    "PostedDate": "2009-03-30T09:30:30.317-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "173531",
+    "ThreadId": "51716",
+    "Html": "\r\n<div><span class=815014216-30032009>You are kidding me \r\nright? All I have to do is reference the Prism libraries and I can have access \r\nto the event aggregator (for instance)? Seems like some form of voodoo... \r\n:-)</span></div>\r\n<div> </div><br clear=all> <table width=550>\r\r\n  <tbody>\r\r\n  <tr>\r\r\n    <td align=middle><span style=\"font-weight:bold;font-size:13.5pt;color:#669900;font-family:Webdings\">P</span> \r\r\n      <span style=\"font-weight:bold;font-size:7.5pt;color:#669900;font-family:Verdana\">Please \r\r\n      consider the environment before printing this message. Thank you</span> <span style=\"font-weight:bold;font-size:13.5pt;color:#669900;font-family:Webdings\">P</span> \r\r\n    </td>\r\r\n  <tr>\r\r\n  <tr>\r\r\n    <td>\r\r\n      <div style=\"font-size:7.5pt;width:550px;color:gray;font-family:Arial\"><span style=\"font-weight:bold\"></span> </div></td></tr></tbody></table>\r\r\n<div> </div>\r\n",
+    "PostedDate": "2009-03-30T09:43:44.92-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "173548",
+    "ThreadId": "51716",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi,</span></p>\r\n<p style=\"margin:0cm 0cm 0pt -1.2pt\"><span style=\"font-family:calibri\">Although there is not a defined way to integrate your application with Prism, this was one of the main objectives of the Composite Application Library (CAL).  The CAL was designed to be easy to integrate in your existing application and take advantage of its features quickly and gradually as you need them.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">I think a good point to start with this task would be following the Hello World Quick start provided with the CAL. Based on its content, you will be able to easily modify your existing application to enable CAL inside it, then you should migrate your current application to take advantage of the different advantages that CAL provides.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Basically, as you will see in the QuickStart, in order to get started, you will need to create a bootstrapper to initialize the Unity Container (assuming you want to use Unity) with the CAL services.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Most likely, as you go forward with the integration, you are going to do things like the following to take full advantage of this Guidance, take into account that all these steps are not required to start using the Prism features in your existing application:</span></p>\r\n<p style=\"margin:0cm 0cm 0pt 36pt\"><span><span style=\"font-family:calibri\">1.</span><span style=\"font:7pt 'times new roman'\">       </span></span><span><span style=\"font-family:calibri\">Detect the different application’s logic units and separate each of them in a </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458911.aspx\"><span style=\"font-family:calibri\">CAL Module</span></a><span style=\"font-family:calibri\"> when it is possible. This will allow you to implement </span><a href=\"http://msdn.microsoft.com/en-us/library/dd490825.aspx\"><span style=\"font-family:calibri\">Modularity</span></a><span style=\"font-family:calibri\">.</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt 36pt\"><span><span style=\"font-family:calibri\">2.</span><span style=\"font:7pt 'times new roman'\">       </span></span><span><span style=\"font-family:calibri\">Identify each UI part inside your current application and migrate these to be Views inside different </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458938.aspx\"><span style=\"font-family:calibri\">Regions</span></a><span style=\"font-family:calibri\">.</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt 72pt\"><span><span style=\"font-family:calibri\">a.</span><span style=\"font:7pt 'times new roman'\">       </span></span><span><span style=\"font-family:calibri\">May use </span><a href=\"http://msdn.microsoft.com/en-us/library/dd490821.aspx\"><span style=\"font-family:calibri\">presenters</span></a><span style=\"font-family:calibri\"><span style=\"color:#1f497d\"> to m</span>ove the UI logic defined inside the XAML Code Behinds outside these.</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt 72pt\"><span><span style=\"font-family:calibri\">b.</span><span style=\"font:7pt 'times new roman'\">      </span></span><span><span style=\"font-family:calibri\">May use the </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458863.aspx\"><span style=\"font-family:calibri\">Presentation Model (also called MVVM) pattern</span></a><span style=\"font-family:calibri\"> in the case you are not implementing this yet.</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt 36pt\"><span><span style=\"font-family:calibri\">3.</span><span style=\"font:7pt 'times new roman'\">       </span></span><span><span style=\"font-family:calibri\">Enable </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458878.aspx\"><span style=\"font-family:calibri\">communication</span></a><span style=\"font-family:calibri\"> between the modules by taking advantage of </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458915.aspx\"><span style=\"font-family:calibri\">Event Aggregator</span></a><span style=\"font-family:calibri;color:#1f497d\">, </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458928.aspx\"><span style=\"font-family:calibri\">Commands</span></a><span style=\"font-family:calibri\"> and/or <span style=\"color:#1f497d\"><a href=\"http://msdn.microsoft.com/en-us/library/dd458913.aspx\">Services</a></span>.</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt -1.2pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt -1.2pt\"><span style=\"font-family:calibri\">Please, let me know if this helps.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Ezequiel Sculli</span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><a href=\"http://blogs.southworks.net/esculli/\"><span style=\"font-family:calibri;color:#0000ff\">http://blogs.southworks.net/esculli/</span></a> </p>\r\n",
+    "PostedDate": "2009-03-30T10:30:35.267-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "173557",
+    "ThreadId": "51716",
+    "Html": "What I described is how to set up CAL in your solution. As for how to use it, I recommend that you read Composite Application Guidance for WPF, and start with the QuickStart as recommended by Ezequiel Sculli. I also suggest that you start with figuring out how to set up the shell and bootstrapper, and how to load modules as these are necessay steps no matter what Composite WPF features you are going to use in your application.\r\n",
+    "PostedDate": "2009-03-30T10:45:54.087-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "173566",
+    "ThreadId": "51716",
+    "Html": "Thanks guys. I was <em>really</em> afraid you was going to say something like that. \r\n",
+    "PostedDate": "2009-03-30T11:03:18.117-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "173574",
+    "ThreadId": "51716",
+    "Html": "<p>You may want to communicate more about your situation and needs, so that people could better help you.<br>\r\n<br>\r\nBTW, people are here to help and get help. Better communications are very important to have good understanding on the issues. Using proper words would be helpful for building a better community here, so that people would be able to better help with each other.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2009-03-30T11:31:39.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "173585",
+    "ThreadId": "51716",
+    "Html": "Okay, I am not sure what was unclear. I have and existing application that I would like to integrate Prism into. I do not know where to start doing that. I already know how to create a Prism based application. What I do not know is how you are supposed to go about integrating Prism into an <em>exisiting</em> application. Based on your answer and the answer esculli gave, it would seem to be not an integration but more of a conversion process.\r\n",
+    "PostedDate": "2009-03-30T11:55:37.573-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "173607",
+    "ThreadId": "51716",
+    "Html": "waday wrote:\r\n&gt;\r\n&gt; From: waday\r\n&gt;\r\n&gt; Okay, I am not sure what was unclear. I have and existing application\r\n&gt; that I would like to integrate Prism into. I do not know where to\r\n&gt; start doing that. I already know how to create a Prism based\r\n&gt; application. What I do not know is how you are supposed to go about\r\n&gt; integrating Prism into an /exisiting/ application. Based on your\r\n&gt; answer and the answer esculli gave, it would seem to be not an\r\n&gt; integration but more of a conversion process.\r\n<br>\r\n<br>\r\nHey Chap,\r\n<br>\r\n<br>\r\nIndeed.  I wasn't sure many people actually read the 'existing app' bit\r\nof your first email since it also seams you know CAL from other project\r\nSTARTED with it.\r\nI'm no expert (have completed/released one commercial app and one\r\npersonal app using CAL) but I would first ask about (presuming your\r\nexisting apps are already WPF) what models you already have in your UI?\r\nIf you have already used some form of MV* model\r\n(Model-View-Presenter/Controller/View-Model etc) your in really good\r\nshape to apply CAL to it.  If you haven't done that already, it would be\r\nwhere I would start I think.  Change your views in the app to use\r\nview-models and create some controller classes to apply to them.\r\nAs I see it that is probably the absolute core of it, if you haven't got\r\nthis model in the app already, separating things into modules will be\r\nmore painful.  If you have got these models in already your probably\r\nusing Commands etc already, which have direct companions in CAL with\r\npretty much the same syntax.\r\nThen you might want to think about separating things into dlls (with\r\nstatic refs between them) before chopping it up completed and stuffing\r\nin the container, bootstrapper and event aggregator.\r\n<br>\r\n<br>\r\n--\r\nJammer&nbsp;\r\n<blockquote cite=\"mid:CO1MSFTVADM01dAgrAA000007ca@CO1MSFTVADM01.SND.RNO.GBL\">\r\n<div><a href=\"http://www.jammer.biz\"></a><a href=\"http://www.myspace.com/findjammer\"><br>\r\n</a>\r\n</div>\r\n</blockquote>\r\n",
+    "PostedDate": "2009-03-30T12:36:04.947-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "173621",
+    "ThreadId": "51716",
+    "Html": "Thanks Jammer.<br>\r\n<br>\r\nStill seems to me that it's less of an integration process and more of a conversion process. Seems to me that it would be just as easy to to do a parallel branch and transfer the non-Prism items to the Prism side and break them up as you go. Unless I am totally missing something important. I am not getting where the &quot;integration&quot; part comes in. \r\n",
+    "PostedDate": "2009-03-30T13:23:07.243-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "173622",
+    "ThreadId": "51716",
+    "Html": "As far as I can tell your going to have to go through that process if you want it to be a composite app.<br>\r\n",
+    "PostedDate": "2009-03-30T13:28:37.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "173630",
+    "ThreadId": "51716",
+    "Html": "Thanks mate. I was really hoping that I wouldn't have to do that. Seems dangerously close to rewriting. It gives me something to think about anyway. It might just be easier than I think it is.\r\n",
+    "PostedDate": "2009-03-30T14:01:37.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "173645",
+    "ThreadId": "51716",
+    "Html": "No problem!<br>\r\n<br>\r\nActually, it's a lot less painful than you might think.&nbsp; My personal project SampleSort was originally written as a 'traditional' layered .NET app.&nbsp; The normal, presentation, DataAccess, Db layers etc ... Only took about 3 weeks hard graft to go from that to CAL ...<br>\r\n<br>\r\nGood luck!<br>\r\n",
+    "PostedDate": "2009-03-30T14:46:17.03-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "173808",
+    "ThreadId": "51716",
+    "Html": "I've had a thought ...<br>\r\n<br>\r\nOne thing you might want to considering before ripping your app apart is the methods centered around dependency injection.&nbsp; Ideally you would use constructor DI on an app that was started with CAL.&nbsp; But there are methods for utilising getter/setter DI called BuildUp()/BuildUp&lt;T&gt;.<br>\r\n<br>\r\nThat was you might avoid any breaking changes on your classes through not having to change all your default constructors whilst still getting the benefits of the container ...<br>\r\n<br>\r\nHmm ...<br>\r\n<br>\r\nCheers,<br>\r\n<br>\r\nJammer<br>\r\n",
+    "PostedDate": "2009-03-31T02:14:26.247-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "173896",
+    "ThreadId": "51716",
+    "Html": "Hey thanks for thinking of me Jammer.<br>\r\n<br>\r\nLate yesterday afternoon, I had what I suppose would be called a &quot;Great leap of stupidity&quot; in my thinking. Something you said got the rust out of the cogs in my brain. The application that I was thinking of has an exe module and gets its views from a DLL so basically it already it kind of like a shell. So all I really need to do is to add the bootstrapper and start migrating the other stuff to modules. Turns out to be way easier than I thought for this application. Wish I had thought of it before posting though... grrr. But thanks for getting the ball rolling.\r\n",
+    "PostedDate": "2009-03-31T07:10:42.173-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "174086",
+    "ThreadId": "51716",
+    "Html": "Sounds more than doable and probably not that painful at all.<br>\r\n<br>\r\nThat was also my experience and is probably what is meant by Prism being easy to integrate.&nbsp; If your app design sucks already CAL won't help a jot!!!&nbsp; HAHA!&nbsp; Seems like yours should be a doddle however.<br>\r\n<br>\r\nCheers,<br>\r\n<br>\r\nJammer.<br>\r\n",
+    "PostedDate": "2009-03-31T14:16:11.573-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "177968",
+    "ThreadId": "51716",
+    "Html": "Just for future reference in case someone else has a similar question.<br>\r\n<br>\r\nIf you have an existing application and want to integrate Prism into it this is one possible scenario.<br>\r\n<br>\r\nThe first thing to do is to create a bootstrapper as documented in the quickstarts. That gives you access to the container. <br>\r\nFrom there you can access the services like the RegionManager and the EventAggregator with the ServiceLocator:<br>\r\n<br>\r\n    IEventAggregator events = ServiceLocator.Current.GetInstance&lt;IEventAggregator&gt;();<br>\r\n<br>\r\nThis would allow you to take advantage of the services without having to convert everything over all at once. I hope that helps someone.\r\n",
+    "PostedDate": "2009-04-10T08:47:36.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

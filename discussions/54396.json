@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "183350",
+    "ThreadId": "54396",
+    "Html": "Hi there,<br>\r\n<br>\r\nI'm trying to use the Separated Interface Pattern by separating an interface from its implementation, but got runtime exception when registering a service. I'm using the June 2008 release Prism. Currently I have two different projects, one for the implementation and one for its interface. The implementation project has a reference to the interface project. Below is the code to register the interface and implementation as a service, which resides inside the implementation project. The code is similar to the NewsModule class in the StockTraderRI.<br>\r\n<p>namespace aaa.Services.Broadcast<br>\r\n{<br>\r\n    public class SeparateInterface : IModule<br>\r\n    {<br>\r\n        private IUnityContainer _container;</p>\r\n<p>        public SeparateInterface(IUnityContainer container)<br>\r\n        {<br>\r\n            _container = container;<br>\r\n        }</p>\r\n<p>        public void Initialize()<br>\r\n        {<br>\r\n            RegisterMyServices();<br>\r\n        }</p>\r\n<p>        protected void RegisterMyServices()<br>\r\n        {<br>\r\n            _container.RegisterType&lt;IMusic, Music&gt;();<br>\r\n        }<br>\r\n    }<br>\r\n}<br>\r\n<br>\r\nThe code runs fine if I put the IMusic interface in the same implementation project. However, when I put them in two separate projects, I can still build without any errors, but got the following runtime exception message:<br>\r\n<br>\r\n&quot;Could not load type 'aaa.Services.Broadcast.IMusic' from assembly 'Broadcast, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.&quot;<br>\r\n<br>\r\nI stepped through the code, and found that the exception was thrown by RegisterMyServices() inside Initialize().<br>\r\n<br>\r\nBTW, I use the same namespace for the two projects.<br>\r\n<br>\r\nAny clues what I might be missing?<br>\r\n<br>\r\nThanks,<br>\r\n<br>\r\nJie<br>\r\n<br>\r\n<br>\r\n</p>\r\n",
+    "PostedDate": "2009-04-24T11:33:00.41-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "183412",
+    "ThreadId": "54396",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi Jie,</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">The code you posted seem to be alright and it is a usual practice to have interfaces in a separated project.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">I quickly tried to reproduce your scenario and had no problems registering the service. I tried to reproduce the error and managed to get a similar exception if I set both project's Assembly Name to the same value.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">This makes the implementation and interface projects to override the same .dll file, so you will be able to compile fine but at runtime one of the assemblies won't really exist.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">If that's your case, just setting one of the project's Assembly Name to a different value will solve the problem. If this does not solve your issue, please provide more information </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-size:10pt;font-family:'courier new'\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hope it helps!</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Matias Bonaventura</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><a href=\"http://blogs.southworks.net/\"><span style=\"font-family:calibri\">http://blogs.southworks.net/matiasb</span></a></p>\r\n",
+    "PostedDate": "2009-04-24T14:17:05.603-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "183433",
+    "ThreadId": "54396",
+    "Html": "Hi Matias,<br>\r\n<br>\r\nI checked my dlls, and did have the same assembly name for the two projects. So, I changed one of the assembly names to a different one, and did get rid of the exception. Everything runs smoothly now.<br>\r\n<br>\r\nThanks a lot,<br>\r\n<br>\r\nJie<br>\r\n",
+    "PostedDate": "2009-04-24T15:15:42.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

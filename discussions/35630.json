@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "118422",
+    "ThreadId": "35630",
+    "Html": "Can I get a sanity check from someone... I can't load EmployeeDetailsView into the designer (straight out of the box) because I get errors.<br>\r\nThe whole solution compiles and builds and runs, but I can't load this view.<br>\r\nI get the error: &quot;Specified method is not supported&quot;.<br>\r\n<br>\r\nAs a WPF newbie, I have to ask, is this some quirk of the way this particular XAML is constructed - or is likely something specific to my machine?<br>\r\n",
+    "PostedDate": "2008-09-14T05:18:54.17-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "119188",
+    "ThreadId": "35630",
+    "Html": "A few steps will fix you up.<br>\r\n<br>\r\nIn your UIComposition project go to the Styles folder, right click on Styles.xaml and select &quot;Copy&quot; (we're copying the full path)<br>\r\n<br>\r\nIn your UIComposition.Modules.Employee project<br>\r\n<ol>\r\n    <li>Add a Styles folder\r\n    <li>Right-click &quot;Styles&quot; folder and click &quot;Add Existing Item&quot;\r\n    <li>Paste the path into the &quot;Object Name:&quot; block\r\n    <li>DO NOT CLICK ADD.&nbsp; Instead on the dropdown triangle to the right of &quot;Add&quot; select &quot;Add as Link&quot; (this way you won't have two files to maintain)\r\n    <li>Add the<strong> &lt;UserControl.Resources&gt;</strong> information from below into your EmployeesDetailsView XAML file as shown: </li>\r\n</ol>\r\n<p>&lt;UserControl x:Class=&quot;UIComposition.Modules.Employee.EmployeesDetailsView&quot;<br>\r\n&nbsp;&nbsp;&nbsp; xmlns=&quot;<a href=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">http://schemas.microsoft.com/winfx/2006/xaml/presentation</a>&quot;<br>\r\n&nbsp;&nbsp;&nbsp; xmlns:x=&quot;<a href=\"http://schemas.microsoft.com/winfx/2006/xaml\">http://schemas.microsoft.com/winfx/2006/xaml</a>&quot;<br>\r\n&nbsp;&nbsp;&nbsp; xmlns:local=&quot;clr-namespace:UIComposition.Modules.Employee&quot;<br>\r\n&nbsp;&nbsp;&nbsp; xmlns:cal=&quot;<a href=\"http://www.codeplex.com/CompositeWPF\">http://www.codeplex.com/CompositeWPF</a>&quot;&gt;</p>\r\n<p>&nbsp;&nbsp;&nbsp; &lt;UserControl.Resources&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ResourceDictionary&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ResourceDictionary.MergedDictionaries&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ResourceDictionary Source=&quot;Styles\\styles.xaml&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ResourceDictionary.MergedDictionaries&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ResourceDictionary&gt;<br>\r\n&nbsp;&nbsp;&nbsp; &lt;/UserControl.Resources&gt;</p>\r\n<p>You should be able to compile and view EmployeesDetailsView.xaml in the designer.<br>\r\n<br>\r\nAs a WPF newbie I would strongly recommend Adam Nathan's book WPF Unleased - I was a newbie not to long ago (still qualify as one ;)</p>\r\n",
+    "PostedDate": "2008-09-17T11:40:23.43-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "243553",
+    "ThreadId": "35630",
+    "Html": "<p>I followed this guidance and while I can now view the xaml in the designer, when I run it I get an XMLParseException because it cannot locate resouce &quot;styles/styles.xaml&quot;.</p>",
+    "PostedDate": "2009-10-08T11:29:07.73-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

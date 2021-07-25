@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "555284",
+    "ThreadId": "243285",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I'm new to MEF and Prism and have a question on what approach to take. Actually I'm not really sure whether this is a MEF or a Prism problem so I'll pose it to both groups.</p>\r\n<p>I want to make a widget based application that enables users to select widgets that show up on a dashboard screen. Now, let's suppose that the dashboard screen can have a number of different layouts (e.g. single column, two columns, equal split, 60/40 split,\r\n etc...). This struck me as a good problem for Prism and MEF. I could have plug-ins that implement, say, IDashboardLayout and use MEF to get all of the layouts that are provided by the current catalogs.</p>\r\n<p>What I want to be able to do is somehow store which layout the user has selected, and also which widgets are where in that layout (assume that I have a working settings storage service that is able to persist whatever settings needed, as this is not a storage\r\n problem). My real question is, how do I load the correct layout type with the correct settings at the time of composition?</p>\r\n<p>Thanks</p>\r\n<p>Greg</p>\r\n",
+    "PostedDate": "2011-01-25T15:56:59.81-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "555830",
+    "ThreadId": "243285",
+    "Html": "\r\n<p>Hi Greg,</p>\r\n<p>Based on my understanding of your scenario, one possible approach to fulfill this requirement would be to define a region on the shell that is going to load your &ldquo;<em>layoutViews</em>&rdquo; depending on user&acute;s settings. Then in the view model\r\n associated to the shell view, you could retrieve these settings and inject the view that represents the layout you need. You can find the following\r\n<a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=67191\">thread</a> useful, as a related issue was discussed.</p>\r\n<p>To achieve this, you could make use of Prism <strong>Region</strong> <strong>Navigation\r\n</strong>(you can read more about in Prism documentation <a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=PandP.40).aspx\">\r\nhere</a>).</p>\r\n<p>On the other hand, every layout you define would be a View which defines how your widgets will be displayed. Each view model would have to bind the information to localize every widget on the view depending on your configuration.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-26T12:10:59.203-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

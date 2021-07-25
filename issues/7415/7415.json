@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "I'm closing the Work Item, as the issue portrayed has been fixed in the current veresion of Prism v4.\r\n\r\nMore information here: http://compositewpf.codeplex.com/discussions/231365.\r\n\r\nThank you for your feedback.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-04-07T07:05:03.627-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "With Prism drop 10, if I have a region associated with an ItemsControl and try to remove it as follows\n \n        public void ShowDashboardView()\n        {\n            if (_dashboardView == null && !_dashboardRegion.Views.Contains(_dashboardView))\n            {\n                _dashboardView = new DashboardView();\n                _dashboardRegion.Add(_dashboardView);\n            }\n        }\n \n        public void HideDashboardView()\n        {\n            try\n            {\n                if (_dashboardView != null && _dashboardRegion.Views.Contains(_dashboardView))\n                {\n                    _dashboardRegion.Remove(_dashboardView);\n                    _dashboardView = null;\n                }\n            }\n            catch (Exception exception)\n            {\n                Debug.WriteLine(exception);\n            }\n        }\n \nI get an exception.  Works fine if the region is associated with a ContentControl.\n \nThe exception is\n \nA first chance exception of type 'System.InvalidOperationException' occurred in PresentationFramework.dll\nSystem.InvalidOperationException: Collection Remove event must specify item position.\n   at MS.Internal.Data.EnumerableCollectionView.ProcessCollectionChanged(NotifyCollectionChangedEventArgs args)\n   at System.Windows.Data.CollectionView.OnCollectionChanged(Object sender, NotifyCollectionChangedEventArgs args)\n   at System.Collections.Specialized.NotifyCollectionChangedEventHandler.Invoke(Object sender, NotifyCollectionChangedEventArgs e)\n   at Microsoft.Practices.Prism.Regions.ViewsCollection.OnCollectionChanged(NotifyCollectionChangedEventArgs e) in c:\\WorkingDir\\PrismLibraryBuild\\PrismLibrary\\Desktop\\Prism\\Regions\\ViewsCollection.cs:line 121\n   at Microsoft.Practices.Prism.Regions.ViewsCollection.NotifyRemove(IList items) in c:\\WorkingDir\\PrismLibraryBuild\\PrismLibrary\\Desktop\\Prism\\Regions\\ViewsCollection.Desktop.cs:line 40\n   at Microsoft.Practices.Prism.Regions.ViewsCollection.SourceCollectionChanged(Object sender, NotifyCollectionChangedEventArgs e) in c:\\WorkingDir\\PrismLibraryBuild\\PrismLibrary\\Desktop\\Prism\\Regions\\ViewsCollection.cs:line 266\n   at System.Collections.ObjectModel.ObservableCollection`1.OnCollectionChanged(NotifyCollectionChangedEventArgs e)\n   at System.Collections.ObjectModel.ObservableCollection`1.RemoveItem(Int32 index)\n   at System.Collections.ObjectModel.Collection`1.Remove(T item)\n   at Microsoft.Practices.Prism.Regions.Region.Remove(Object view) in c:\\WorkingDir\\PrismLibraryBuild\\PrismLibrary\\Desktop\\Prism\\Regions\\Region.cs:line 287",
+    "LastUpdatedDate": "2013-05-16T05:28:46.427-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "High",
+      "Severity": 150,
+      "Id": 3
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-10-24T13:26:17.637-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Remove view from region fails",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 7415
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Thanks for reporting this.  We've confirmed this as an issue and will have a fix next drop.  In the meantime we posted the updated code on this thread:\r\nhttp://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=231365",
+      "PostedDate": "2010-10-26T10:40:17.27-07:00",
+      "Id": 156350
+    }
+  ]
+}

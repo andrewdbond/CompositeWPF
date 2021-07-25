@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "545259",
+    "ThreadId": "240811",
+    "Html": "\r\n<p>I have an issue where the browser keeps caching the xap files.</p>\r\n<p>I've fixed this for the Shell by introducing a querystring parameter using the code in&nbsp;</p>\r\n<pre><a href=\"http://codeblog.larsholm.net/2010/02/avoid-incorrect-caching-of-silverlight-xap-file\" target=\"_blank\">http://codeblog.larsholm.net/2010/02/avoid-incorrect-caching-of-silverlight-xap-file</a></pre>\r\n<p>but my modules are loaded by prism: http://someurl/ClientBin/ReportModule.xap</p>\r\n<p>the browser caches it correctly, it just doesn't seem to detect the changes if the module is updated.&nbsp;</p>\r\n<p>is there a way to let prism use the same trick for loading the latest module.xap?</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-07T00:52:39.017-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "545518",
+    "ThreadId": "240811",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>When you load modules remotely, the <strong>XapModuleTypeLoader </strong>or <strong>\r\nMefXapModuleTypeLoader</strong> is used to retrieve the module from the remote location. You could try inserting the date or any extra identifier inside a query string parameter in the uri variable inside the\r\n<strong>LoadModuleType</strong> method of the Xap module type loader you're using. In order to achieve that you could modify the source code of Prism, or extend it by creating a custom Xap module type loader that implements this behavior.</p>\r\n<p>You might also find the <a href=\"http://msdn.microsoft.com/en-us/library/gg430856%28PandP.40%29.aspx\">\r\nDeployment chapter</a> of the Prism MSDN documentation useful.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2011-01-07T10:03:06.293-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

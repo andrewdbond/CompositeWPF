@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "252875",
+    "ThreadId": "73935",
+    "Html": "<p>I'm working with an app that was set up using the Guidance. Mostly it seems to work ok, except that it doesn't always exhibit standard windows behavior. Specifically, we have a few Windows in Regions which appear as popups/dialogs. When made active these popups appear in front of the main region (which lives in the shell) which is what we want.</p>\r\n<p>If the focus is moved from the popup region to the shell region, or any other region for that matter, the region with the focus is not moved to the TopMost position, which is fairly standard in Windows apps. The user has to minimize the popup in order to see the window with the new focus. What the user wants is that the window with the focus comes to the top. Even other windows from other apps do not come to the top.</p>\r\n<p>We are currently using no Region behaviors in the app, and I am guessing that the answer to my problem lies there somewhere. I haven't yet been able to find a solution to this seemingly simple issue however.</p>\r\n<p>Does someone know how to control this focus issue using the Guidance?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p>&nbsp;</p>\r\n<p>Hedley</p>",
+    "PostedDate": "2009-11-03T08:23:59.763-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "255184",
+    "ThreadId": "73935",
+    "Html": "<p id=95f803e0-af8c-012c-fd30-12313b018621>Hi Hedley,</p>\r\n<p id=95f81130-af8c-012c-fd31-12313b018621>Assuming you are using the Reference Implementation&rsquo;s RegionPopupBehavior, I have been able to reproduce your issue. The cause of it is that the <strong>DialogActivationBehavior</strong> sets the popup window&rsquo;s owner to the Shell window (in the case of the RI). As <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.window.owner.aspx\">this site</a> explains, <em>&ldquo;An owner window can never cover an owned window&rdquo;. </em>I tried removing that line and was able to get the Shell Window over the popup (this was only for testing purposes, you should check that this does not break anything else).</p>\r\n<p id=95f83070-af8c-012c-fd32-12313b018621>Please let me know if this helps.</p>\r\n<p id=95f84b60-af8c-012c-fd33-12313b018621>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-11-09T11:00:26.803-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "255194",
+    "ThreadId": "73935",
+    "Html": "<p>Damian,</p>\r\n<p>In our app we are not explicitly using RegionPopupBehavior, however your explanation makes sense in that case.</p>\r\n<p>Since posting the issue, my QA folks have decided that they actually want to keep the behavior as is for the time being - because this app will be run with 2 monitors.</p>\r\n<p>If that changes again, then I think that your solution will get me pointed in the right direction.</p>\r\n<p>Thanks,</p>\r\n<p>HS</p>",
+    "PostedDate": "2009-11-09T11:30:23.11-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "270627",
+    "ThreadId": "79037",
+    "Html": "hI,\r\n I am trying to display a TabItem with text and a close button.  I have the following XAML which displays the close button on the TabItem, but for some reason, does not show the text which I have bound to it using:\r\n\r\n&lt;ContentPresenter Content=&quot;{Binding Path=DisplayName}&quot; VerticalAlignment=&quot;Center&quot; /&gt;\r\n\r\nI cannot figure out what's wrong.  The TabItem template declared like this:\r\n\r\n &lt;DataTemplate x:Key=&quot;ClosableTabItemTemplate&quot;&gt;\r\n            &lt;DockPanel Width=&quot;120&quot;&gt;   \r\n                &lt;Button\r\n                    Command=&quot;{Binding Path=CloseCommand}&quot;\r\n                    Content=&quot;X&quot;\r\n                    Cursor=&quot;Hand&quot;\r\n                    DockPanel.Dock=&quot;Right&quot;\r\n        Focusable=&quot;False&quot;\r\n        FontFamily=&quot;Courier&quot; \r\n        FontSize=&quot;9&quot;\r\n        FontWeight=&quot;Bold&quot;  \r\n        Margin=&quot;0,1,0,0&quot;\r\n        Padding=&quot;0&quot;\r\n        VerticalContentAlignment=&quot;Bottom&quot;\r\n        Width=&quot;16&quot; Height=&quot;16&quot; \r\n        /&gt;      \r\n        &lt;ContentPresenter Content=&quot;{Binding Path=DisplayName}&quot; VerticalAlignment=&quot;Center&quot; /&gt;\r\n            &lt;/DockPanel&gt;\r\n        &lt;/DataTemplate&gt;\r\n\r\nI have declared the Main  region thus:\r\n\r\n &lt;!-- Main Region --&gt;\r\n        &lt;Border Margin=&quot;2,2,8,8&quot; Grid.Column=&quot;2&quot; Grid.Row=&quot;2&quot; BorderThickness=&quot;2,2,2,2&quot; CornerRadius=&quot;4,4,4,4&quot; BorderBrush=&quot;#FF929D31&quot; Grid.RowSpan=&quot;2&quot;&gt;\r\n        \t&lt;!--&lt;ContentControl x:Name=&quot;MainRegion&quot; prismrgn:RegionManager.RegionName=&quot;MainRegion&quot;\r\n        \t\t            Style=&quot;{StaticResource ContentControlRegionStyle}&quot;\r\n                            VerticalContentAlignment=&quot;Stretch&quot; HorizontalContentAlignment=&quot;Stretch&quot;/&gt;--&gt;\r\n            &lt;TabControl x:Name=&quot;MainRegion&quot; \r\n                        prismrgn:RegionManager.RegionName=&quot;MainRegion&quot;\r\n                    Width=&quot;Auto&quot; Height=&quot;Auto&quot; Margin=&quot;10,10,0,0&quot; \r\n                    HorizontalAlignment=&quot;Stretch&quot;                            \r\n                    IsSynchronizedWithCurrentItem=&quot;True&quot;\r\n                    ItemTemplate=&quot;{StaticResource ClosableTabItemTemplate}&quot;    \r\n            /&gt;\r\n        &lt;/Border&gt;\r\n\r\nDisplayName is a public property declared in the ViewModelBaseClass\r\n\r\npublic abstract class ViewModelBase : DependencyObject, IDataErrorInfo, INotifyPropertyChanged\r\n    {\r\n        private string _DisplayName;\r\n\r\n        public virtual string DisplayName\r\n        {\r\n            get { return _DisplayName; }\r\n            set\r\n            {\r\n                if (_DisplayName != value)\r\n                {\r\n                    _DisplayName = value;\r\n                    OnPropertyChanged(this, &quot;DisplayName&quot;);\r\n                }\r\n            }\r\n        }\r\n.\r\n.\r\n.\r\n.\r\nAny idea on how to solve this problem?\r\n\r\nThanks,\r\nArun\r\n",
+    "PostedDate": "2009-12-24T10:12:51.113-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "270835",
+    "ThreadId": "79037",
+    "Html": "<p>There is a great <a href=\"http://dl.getdropbox.com/u/376992/CAGMenus.zip\">example</a> on doing this CAL way at <a href=\"http://stackoverflow.com/questions/1516164/menu-service-in-prism-application-cal\">StackOverflow</a>.</p>",
+    "PostedDate": "2009-12-26T08:30:16.56-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "270891",
+    "ThreadId": "79037",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>highel wrote:</strong><br>\r\n<p>There is a great <a href=\"http://dl.getdropbox.com/u/376992/CAGMenus.zip\">example</a> on doing this CAL way at <a href=\"http://stackoverflow.com/questions/1516164/menu-service-in-prism-application-cal\">StackOverflow</a>.</p>\r\n</blockquote>\r\n<p>Thanks for the link. Got it working.</p>",
+    "PostedDate": "2009-12-26T15:23:53.493-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

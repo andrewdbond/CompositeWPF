@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "540013",
+    "ThreadId": "239439",
+    "Html": "\r\n<p>We have found that if we load the modules of our prism application using the app.config configuration, the application does not load when invoked from a share on our network. We are able to run other .net applications from a share, so, at first glance, the\r\n issue does not appear to be .net security related. The exception will be thrown in the base.InitializeModules method of the boot strapper. Once I moved the module loading from the app.config.xml to the CreateModuleCatalog method, the application runs fine\r\n from a share. We are using Prism V4 drop 10. Below is an example of the error message from the exception:</p>\r\n<p>[System.Configuration.ConfigurationErrorsException] = {&quot;An error occurred creating the configuration section handler for modules: Request failed.</p>\r\n<p>Thanks for any <span style=\"font-size:10pt; color:black\">assistance </span>with this issue.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-23T11:48:43.6-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "540036",
+    "ThreadId": "239439",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>The problem you&rsquo;re experiencing might be because when you retrieve a module from the\r\n<em>App.Config</em> file, prism internally uses the <strong>FileModuleTypeLoader</strong> class, that places a\r\n<a href=\"file:///\">file://</a> prefix before the path specified in the <em>App.Config</em>. If you&rsquo;re retrieving your module from a network share, that might be causing an error.</p>\r\n<p>So, when retrieving the module from another place, you are specifying the path directly, which could probably be the cause why it works.</p>\r\n<p>If you necessarily need to use the <em>App.Config</em> file to retrieve your modules, you could extend Prism by creating another module type loader that retrieves modules from a shared location.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-23T12:24:26.54-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

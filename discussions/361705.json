@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "856418",
+    "ThreadId": "361705",
+    "Html": "\r\n<p>I'm trying to use EventAggregator to pass events between ViewModels.</p>\r\n<p>The problem is that I want to code parameterless ViewModels.</p>\r\n<p>The UICompositionQuicStart suggests to do:</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre>    <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> EmployeeListViewModel : INotifyPropertyChanged {\r\n        <span style=\"color:blue\">private</span> <span style=\"color:blue\">readonly</span> IEventAggregator eventAggregator;\r\n\r\n        <span style=\"color:blue\">public</span> EmployeeListViewModel(IEmployeeDataService dataService, IEventAggregator eventAggregator) {\r\n            <span style=\"color:blue\">if</span> (dataService == <span style=\"color:blue\">null</span>)\r\n                <span style=\"color:blue\">throw</span> <span style=\"color:blue\">new</span> ArgumentNullException(<span style=\"color:#a31515\">&quot;dataService&quot;</span>);\r\n            <span style=\"color:blue\">if</span> (eventAggregator == <span style=\"color:blue\">null</span>)\r\n                <span style=\"color:blue\">throw</span> <span style=\"color:blue\">new</span> ArgumentNullException(<span style=\"color:#a31515\">&quot;eventAggregator&quot;</span>);\r\n\r\n            <span style=\"color:blue\">this</span>.eventAggregator = eventAggregator;\r\n\r\n            <span style=\"color:green\">// Initialize the CollectionView for the underlying model</span>\r\n            <span style=\"color:green\">// and track the current selection.</span>\r\n            <span style=\"color:blue\">this</span>.Employees = <span style=\"color:blue\">new</span> PagedCollectionView(dataService.GetEmployees());\r\n            <span style=\"color:blue\">this</span>.Employees.CurrentChanged &#43;= <span style=\"color:blue\">new</span> EventHandler(<span style=\"color:blue\">this</span>.SelectedEmployeeChanged);\r\n        }\r\n\r\n        <span style=\"color:blue\">public</span> ICollectionView Employees {\r\n            <span style=\"color:blue\">get</span>;\r\n            <span style=\"color:blue\">private</span> <span style=\"color:blue\">set</span>;\r\n        }\r\n\r\n        <span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> SelectedEmployeeChanged(<span style=\"color:blue\">object</span> sender, EventArgs e) {\r\n            Employee employee = <span style=\"color:blue\">this</span>.Employees.CurrentItem <span style=\"color:blue\">as</span> Employee;\r\n            <span style=\"color:blue\">if</span> (employee != <span style=\"color:blue\">null</span>) {\r\n                <span style=\"color:green\">// Publish the EmployeeSelectedEvent event.</span>\r\n                <span style=\"color:blue\">this</span>.eventAggregator.GetEvent&lt;EmployeeSelectedEvent&gt;().Publish(employee.Id);\r\n            }\r\n        }\r\n</pre>\r\n</div>\r\n<p>I'm not using the dataService parameter in my project, but I do need the event, how can I code it without using parameters in my ViewModel?</p>\r\n",
+    "PostedDate": "2012-07-02T09:21:38.537-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "856486",
+    "ThreadId": "361705",
+    "Html": "<p>Hi,</p>\r\n<p>If your view model is not being resolved through dependency injection and you want to retrieve / resolve an instance from the container, a possible approach could be to use the <strong>ServiceLocator </strong>class to access the container. For example, if you want to retrieve the <strong>EventAggregator </strong>inside your view model, you could do something similar to this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> MyViewModel\r\n{\r\n    <span style=\"color: blue;\">private</span> IEventAggregator eventAggregator;\r\n\r\n    <span style=\"color: blue;\">public</span> MyViewModel ()\r\n    {\r\n        <span style=\"color: blue;\">this</span>.eventAggregator = ServiceLocator.Current.GetInstance&lt;IEventAggregator&gt;();\r\n    }\r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-07-02T12:10:37.85-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "856555",
+    "ThreadId": "361705",
+    "Html": "\r\n<p>Don't I need to register something first to make the event available in the ServiceLocator object?, perhaps in the ModuleEmployees.cs class (Module Implementation)?</p>\r\n",
+    "PostedDate": "2012-07-02T14:32:21.017-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "856779",
+    "ThreadId": "361705",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, you should be able to retrieve the instance of the <strong>EventAggregator </strong>from the container like mentioned above, take into account that by default in the initialization process of a <strong>Prism </strong>application, this class is registered in the container and mapped to the <strong>IEventAggregator </strong>interface.</p>\r\n<p>If you are interested, more information about the application initialization process can be found in the following chapter of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430868(v=pandp.40)\">Chapter 2: Initializing Prism Applications</a></li>\r\n</ul>\r\n<p>Also, remember to add a reference in your project to the <strong>Microsoft.Practices.ServiceLocation</strong> assembly, when using the <strong>ServiceLocator</strong>.</p>\r\n<p>Regarding the handling of the events, once you create the event in one of your modules (e.g. like the <strong>EmployeeSelectedEvent</strong>.<strong>cs </strong>in the <strong>UI Composition QuickStart</strong>) you should be able to subscribe/publish to it using the retrieved instance of the <strong>EventAggregator</strong>.</p>\r\n<p>Also, for more information on how to <strong>create</strong>, <strong>subscribe </strong>and <strong>publish </strong>to events, you could check the following section of the documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122(v=pandp.40)#sec8\">Chapter 9: Communicating Between Loosely Coupled Components, Event Aggregation</a></li>\r\n</ul>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-07-03T06:04:39.42-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "856797",
+    "ThreadId": "361705",
+    "Html": "<p>Thank you or answering</p>",
+    "PostedDate": "2012-07-03T06:39:42.797-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "568530",
+    "ThreadId": "246631",
+    "Html": "\r\n<p>I am trying to fire a command from a&nbsp;DataGridTemplateColumn in a Silverlight datagrid. This used to work very well in WPF but does not work in Silverlight. I have read about several approaches to solve this issue (adding behaviors, using static resources\r\n on the view, etc.) but wanted to know what is the recommended approach in light of Prism 4. Here's what I have right now that doesn't work (I am binding the command to the current view using ElementName):</p>\r\n<p></p>\r\n<pre>&lt;sdk:DataGridTemplateColumn Header=&quot;Name&quot;&gt;\r\n    &lt;sdk:DataGridTemplateColumn.CellTemplate&gt;\r\n        &lt;DataTemplate&gt;\r\n            &lt;HyperlinkButton\r\n                Content=&quot;{Binding Path=Name}&quot;\r\n                Command=&quot;{Binding ElementName=ThisView, Path=DataContext.SelectAccountCommand}&quot;\r\n                CommandParameter=&quot;{Binding}&quot; /&gt;\r\n        &lt;/DataTemplate&gt;\r\n    &lt;/sdk:DataGridTemplateColumn.CellTemplate&gt;\r\n&lt;/sdk:DataGridTemplateColumn&gt;\r\n</pre>\r\n<p></p>\r\n",
+    "PostedDate": "2011-02-18T06:36:18.463-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "568540",
+    "ThreadId": "246631",
+    "Html": "<p>Hi,</p>\n<p>There is no recommended approach <em>per se</em> in prism. However, you might find the following thread useful, as a similar problem is dealt with:</p>\n<p><a href=\"http://compositewpf.codeplex.com/discussions/242032\"><span>command in datagrid not work </span></a></p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-02-18T06:47:35.097-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "568599",
+    "ThreadId": "246631",
+    "Html": "<p>Thanks Guido. I tried the solution suggested in that thread, but could not code exactly like that. That thread suggests:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>        [ImportingConstructor]\r\n        <span style=\"color: blue;\">public</span> ProductList(ProductListViewModel viewModel)\r\n        {            \r\n            <span style=\"color: blue;\">this</span>.DataContext = viewModel;\r\n            <span style=\"color: blue;\">this</span>.Resources.Add(<span style=\"color: #a31515;\">\"ViewModel\"</span>, viewModel);\r\n            InitializeComponent();\r\n        }\r\n\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Since I am not using an ImportingConstructor, I added the resource in the [Import] of the ViewModel. However this did not work. Any thoughts why?</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>    [ViewExport(RegionName = <span style=\"color: #a31515;\">\"LoggedInUserRegion\"</span>)]\r\n    [PartCreationPolicy(CreationPolicy.NonShared)]\r\n    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> AccountsView : UserControl\r\n    {\r\n        <span style=\"color: blue;\">public</span> AccountsView()\r\n        {\r\n            Debug.WriteLine(<span style=\"color: #a31515;\">\"[Debug] AccountsView.AccountsView()\"</span>);\r\n            InitializeComponent();\r\n        }\r\n\r\n        [Import]\r\n        <span style=\"color: blue;\">public</span> IAccountsViewModel ViewModel\r\n        {\r\n            <span style=\"color: blue;\">set</span>\r\n            {\r\n                <span style=\"color: blue;\">this</span>.DataContext = value;\r\n                <span style=\"color: blue;\">this</span>.Resources.Add(<span style=\"color: #a31515;\">\"ViewModel\"</span>, value);\r\n            }\r\n        }\r\n    }\r\n\r\n</pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2011-02-18T08:18:13.553-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "568612",
+    "ThreadId": "246631",
+    "Html": "<p>Hi,</p>\r\n<p>The approach you've followed might not be working because you need to add the resource before calling the <strong>InitializeComponent</strong> method. You could, for example, declare the import, and call the <strong>InitializeComponent </strong>method inside the setter. Another possibility would be to implement the <strong>IPartImportsSatisfiedNotification </strong>interface and call the <strong>InitializeComponent </strong>method in the <strong>OnImportsSatisfied</strong> method.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-02-18T08:35:05.007-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "568715",
+    "ThreadId": "246631",
+    "Html": "<p>I followed the example in the other post and changed the constructor to an [ImportingConstructor] with viewModel passed in as a parameter. Everything is working now. I personally try to avoid parameterized constructors for Views because they have caused problems for me when working inside Visual Studio (don't know if that's a valid concern). However in this case it seems to be the cleanest way to trigger the command.</p>\r\n<p>Guido, thanks so much for your help.</p>",
+    "PostedDate": "2011-02-18T11:42:40.187-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

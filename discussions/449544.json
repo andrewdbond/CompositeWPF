@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1066497",
+    "ThreadId": "449544",
+    "Html": "Hi All,\r<br />\n<br />\nI am using Prism 4.1 as my application framework. there are a couple of modules in my app, what i want is to load each module when it's needed. below are the main codesnippets of my app:\r<br />\n<br />\nIn Bootstrapper class:<br />\n<pre><code>    protected override void ConfigureAggregateCatalog()\n    {\n        base.ConfigureAggregateCatalog();\n\n        this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(Bootstrapper).Assembly));\n\n        DirectoryCatalog catalog = new DirectoryCatalog(&quot;DirectoryModules&quot;);\n        this.AggregateCatalog.Catalogs.Add(catalog);\n    }\n</code></pre>\n\none module class:<br />\n<pre><code>[Module(ModuleName = &quot;ModuleHouseOwnerInfo&quot;, OnDemand = true)]\npublic class ModuleHouseOwnerInfo : IModule\n{\n    [ImportingConstructor]\n    public ModuleHouseOwnerInfo()\n    {\n    }\n}\n</code></pre>\n\nHowever, it seems to me that module attribute OnDemand = true doesn't work as expected, because I did see my ModuleHouseOwnerInfo.dll is loaded in memory when my app is loaded.\r<br />\n<br />\nby the way, the ModuleHouseOwnerInfo.dll is output to folder DirectoryModules.\r<br />\n<br />\nIn addition, I don't want to use LoadModule API to load my module dynamically as I have a lot of modules in my app and i don't like to load each in code.\r<br />\n<br />\nAnyone can help me on this?  Any input will be much appreciated.<br />\n",
+    "PostedDate": "2013-07-10T04:00:46.44-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1066745",
+    "ThreadId": "449544",
+    "Html": "Hi,\r<br />\n<br />\nI believe this is due to how the <strong>DirectoryModuleCatalog</strong> works. Starting a module in Prism is divided in two steps: <strong>loading</strong> the assembly contained the module (if it was not loaded before) and <strong>initializing</strong> the module invoking the <strong>Initialize</strong> method.\r<br />\n<br />\nBased on my understanding, the <strong>DirectoryModuleCatalog</strong> <strong>loads</strong> all the assemblies in the specified directory at the beginning. It needs to load them in order to analyze them and build the <strong>ModuleInfo</strong> for each module. Then, based on those <strong>ModuleInfos</strong> it initialize the corresponding modules or not accordingly. Hence, it seems the loading of the assembly and the initialization of the module are done at different times.\r<br />\n<br />\nRegarding loading the modules manually, if you specify that you do not what to load a module automatically at start up then you will need tell Prism when you want this module to be loaded. The simplest way to this is invoking the <strong>LoadModule</strong> method in the moment you want to initialize the module.\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-07-10T12:39:00.967-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1068029",
+    "ThreadId": "449544",
+    "Html": "Thanks Damian for your reply.\r<br />\n<br />\nI don't like DirectoryModuleCatalog way to load all assemblies at the same time as it will bring bad performance. I seek a way to load module manually when it's needed. \r<br />\nSeems that the one way to make this is to use LoadModule as you said.\r<br />\n<br />\nHere is another issue i encountered when using LoadModule, could you help take a look at it? Senario is below:\r<br />\n<br />\nI output the assemble of one module in the same folder as the output of the shell app. However, i got error saying &quot;Module ModuleHouseOwnerInfo was not found in this catalog&quot; when using LoadModule with the module name as parameter.\r<br />\n<br />\nin Bootstrapper.cs class:<br />\n<pre><code>    protected override void ConfigureAggregateCatalog()\n    {\n        base.ConfigureAggregateCatalog();\n\n        this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(Bootstrapper).Assembly));\n    }\n</code></pre>\n\nThe module class:<br />\n<pre><code>[ModuleExport(typeof(ModuleHouseOwnerInfo))]\npublic class ModuleHouseOwnerInfo : IModule\n{\n    [ImportingConstructor]\n    public ModuleHouseOwnerInfo()\n    {\n    }\n}</code></pre>\n\n",
+    "PostedDate": "2013-07-14T03:35:11.273-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1068584",
+    "ThreadId": "449544",
+    "Html": "Hi,\r<br />\n<br />\nIt seems that the <strong><em>ModuleHouseOwnerInfo</em></strong> module is not being registered in the <strong>ModuleCatalog</strong>. The <strong>DirectoryModuleCatalog</strong> you are using in your application loads the modules from the &quot;DirectoryModules&quot; folder, so as the module is in the shell's folder and not in the aforementioned directory it will not picked up by the <strong>DirectoryModuleCatalog</strong> (although I'm not seeing it being created in your <strong>ConfigureAggregateCatalog</strong> method anymore).\r<br />\n<br />\nIn order to load and initialize the module you need to register it, which can be done in several ways:<br />\n<h1></h1>\n<ul>\n<li>You can move the module to the &quot;DirectoryModules&quot; directory for it to be picked by the <strong>DirectoryModuleCatalog</strong> (if you are still using it).</li>\n<li>If you have a direct reference in the <strong>Shell</strong> to the module, you can add it manually as an <strong>AssemblyCatalog</strong>, just like you are doing with the <strong>Shell</strong> in the <strong>ConfigureAggregateCatalog</strong> method:</li>\n</ul>\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">this</span>.AggregateCatalog.Catalogs.Add(<span style=\"color:Blue;\">new</span> AssemblyCatalog(<span style=\"color:Blue;\">typeof</span>(ModuleHouseOwnerInfo).Assembly));\r\n</pre></div><ul>\n<li>\nYou can register the module using a <strong>ConfigurationModuleCatalog</strong> and add it to the <strong>AggregateCatalog</strong> too.<br />\n</li>\n</ul>\nYou can find more information about to use different methods of registering modules in the following chapter of the documentation:<br />\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28v=pandp.40%29.aspx\" rel=\"nofollow\">Chapter 4 - Modular Application Development</a><br />\n</li>\n</ul>\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-07-15T11:12:07.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

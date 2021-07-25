@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "149288",
+    "ThreadId": "44824",
+    "Html": "Hello, <div><br></div><div>I have upgraded my project with Prism 2 Drop 9 today. I was a bit disappointed a bit. </div><div><br></div><div>1. Microsoft.Practices.ServiceLocation.Silverlight.dll</div><div><br></div><div>Why did you guys rename this assembly? We are totally fine with Microsoft.Practices.ServiceLocation.Silverlight.dll or Microsoft.Practices.ServiceLocation.dll. but we have been using Microsoft.Practices.ServiceLocation.Silverlight.dll for all of our modules since early drop. Now, we have to change the reference manually for all projects and also, SVN. </div><div><br></div><div>And also, it's not in the doc. Initally, Microsoft.Practices.Unity.Silverlight.dll was renamed to Microsoft.Practices.Unity.dll in Drop 7 too. </div><div><br></div><div>3. Command  (cmd:Command.Click =&gt; cmd:Click.Command)</div><div><br></div><div>I'm not sure why you guys did this. Actually, I like cmd:Command.Click instead of cmd:Click.Command. We endup changing all of Silverlight XAML. But thanks! we have VS &quot;Find and Replace&quot; function. </div><div><br></div><div>I really like to request you not to change the name if it's not really needed. There are some people who are using Prism vs &quot;Alpha&quot; in real project because we want to support both WPF and Silverlight. </div><div><br></div><div>Thanks.</div><div><br></div><div><br></div><div><br></div>",
+    "PostedDate": "2009-01-21T08:19:36.7-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "149717",
+    "ThreadId": "44824",
+    "Html": "Be careful what you ask for...  When the Microsoft teams provide &quot;drops&quot; for us they are giving us a peek at what's coming down the pipe.   A Golden rule with one of my contracts is that I am not allowed to use Beta or CTP - it must be released.  In the case of our last sprint I sold the team on Prism V2 drop 8 because there were no other viable solutions (short of the Web Client Software Factory which doesn't support Unity).<br>\r\n<br>\r\nLike yourself, I've been forced to refactor (and will have to again)....  The alternative is to rewrite &quot;when there is a release&quot; because I wrote an application on a framework I can no longer use; I'd rather refactor than rewrite...<br>\r\n<br>\r\nMy concern would be that if there are two many complaints that Microsoft may find &quot;drops&quot; to be counter productive (reputation black-eye).    As Agile programmers we constantly change/refactor as requirements dictate - let's not tie their hands or we may have to wait until the CTP.\r\n",
+    "PostedDate": "2009-01-22T05:33:27.077-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "149736",
+    "ThreadId": "44824",
+    "Html": "<div>Sorry if my post is not good.  It's just a suggestion. I was wondering if there is any value after re-naming. </div><div><br></div>1) Okay. Let's them rename. At least, it should have mentioned in ReadMe or Doc or etc, right? This is the breaking changes.<div><br></div><div>2) If Prism team is adding super cool feature by re-naming the namespace or class, I would be really happy to refactor the code.  Now, it's just nothing but re-name. Do you think this is really good to change cmd:Command.Click to cmd:Click:Command .. maybe, it might be like cmd:Command in next release. </div><div><br></div><div><br><div><br></div><div> </div></div>",
+    "PostedDate": "2009-01-22T06:14:37.027-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "150281",
+    "ThreadId": "44824",
+    "Html": "Michael,<br>\r\n<br>\r\nI completely understand your frustration around this.  Despite all appearances, we like to think we have reasons for the renames. :)  For instance, the Command.Click to Click.Command was a change discussed at length with our advisor board and the WPF/SL team as one that would be easier for users to 'extend' in a logical way and may better align with the direction of the platform.  With the Command.Click approach, if someone wanted to extend the library to have a new event they would have needed to modify the Command class in the library or provide their own Command class with the new event.   With the current approach, they can follow the pattern used for the Click event for their own event.<br>\r\n<br>\r\nI agree we can do a better job with highlighting the breaking changes.  And to let you know, there will be another change in the assembly names (not namespaces) in the next drop that may affect you as well.  We are dropping the .Desktop and .Silverlight extensions to these assembly names.  One of the primary reasons for this is that it makes Xaml less portable if we have the extensions in the assembly name and, as you've pointed out previously, there is no #SILVERLIGHT option in Xaml.<br>\r\n<br>\r\n-b<br>\r\n<br>\r\n",
+    "PostedDate": "2009-01-23T08:17:19.187-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "151214",
+    "ThreadId": "44824",
+    "Html": "Thanks a lot, B<br>\r\n",
+    "PostedDate": "2009-01-26T22:20:55.23-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "153702",
+    "ThreadId": "44824",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi Michael,</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:calibri\">To help with the assembly name changes </span><a href=\"http://blogs.southworks.net/ejadib/\"><span style=\"color:#0000ff;font-family:calibri\">Ezequiel Jadib</span></a><span style=\"font-family:calibri\"> created a Powershell script that <i>“will look for all the .csproj and .xaml that contain references to the old prism assemblies and will update it to the new version of them.” </i></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">He blogged about it and uploaded the script so it can be downloaded:</span></p>\r\n<p style=\"margin:0cm 0cm 0pt 36pt\"><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><a href=\"http://blogs.southworks.net/ejadib/2009/02/03/prism-v2-migrating-from-drop-9-to-drop-10/\"><span style=\"color:#0000ff;font-family:calibri\">Prism v2: Migrating from Drop 9 to Drop 10</span></a>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Please let me know if this helps.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\">Damian Schenkelman</span></p>\r\n<span style=\"font-size:11pt;font-family:'calibri','sans-serif'\"><a href=\"http://blogs.southworks.net/dschenkelman\"><span style=\"color:#0000ff\">http://blogs.southworks.net/dschenkelman</span></a></span></span></p>\r\n",
+    "PostedDate": "2009-02-03T04:14:03.837-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

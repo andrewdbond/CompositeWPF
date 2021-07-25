@@ -1,0 +1,56 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "When I click one of the not yet started modules in the ModularityWithMef (Desktop) sample, the \"'ModuleX' module loaded.\" message is displayed twice in the log. This is a result of the Shell.OnImportsSatisfied method being called twice. Why is this method called more than once?",
+    "LastUpdatedDate": "2014-11-05T03:37:44.827-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-12-01T04:28:20.557-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ModularityWithMef \"module loaded\" displayed twice",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 7634
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897977,
+      "FileName": "Prism.png",
+      "DownloadUrl": ".\\897977"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nThe behavior you are describing is caused by the fact that the Shell is being composed twice, both in the CreateShell method and in the InitializeShell method of the QuickStartBootstrapper.\r\n\r\nA possible workaround to avoid this from happening would be to make the CreateShell method of the QuickStartBootstrapper return a new shell instead of composing it (by calling the Container.ComposeParts method). The following code exemplifies this:\r\n\r\nprotected override DependencyObject CreateShell()\r\n{\r\n        return new Shell();\r\n}\r\n\r\nBy doing this, the shell would be composed once, so the OnImportsSatisfied method would be called once as well, fixing the issue that you are describing.\r\n\r\nTake into account that if you need to have the shell composed before initializing it, you can modify the InitializeShell method instead of the CreateShell method, by removing the call to base.InitializeShell (which composes the shell). The resulting code would look like this:\r\n\r\nprotected override void InitializeShell()\r\n{\r\n        Application.Current.MainWindow = (Shell) this.Shell;\r\n        Application.Current.MainWindow.Show();\r\n}\r\n\r\nThank you for your feedback.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2010-12-07T11:58:18.68-08:00",
+      "Id": 156392
+    },
+    {
+      "Message": "Thank you for this sir! :)",
+      "PostedDate": "2014-11-05T03:37:44.827-08:00",
+      "Id": 163995
+    }
+  ]
+}

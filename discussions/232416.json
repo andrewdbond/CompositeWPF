@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "512951",
+    "ThreadId": "232416",
+    "Html": "\r\n<p>I know the code causing this but I'm not sure exactly why.&nbsp; All I know is it's starting to happen after I've integreated Prism 4.0 into my application.&nbsp; In particular regions.&nbsp; Again, I'm not pointing any fingers but I've posted this over\r\n on the Silverlight forum with zero responses.</p>\r\n<p>It happens when I try to set an Image to a button.</p>\r\n<p>&lt;Button x:Name=&quot;BtnBack&quot; HorizontalAlignment=&quot;Right&quot; Command=&quot;{Binding CloseTruckDetailCommand}&quot; &gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Image Source=&quot;EyeCue.Common;component/Assets/Images/Editor.png&quot; Width=&quot;15&quot; Height=&quot;15&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Button&gt;</p>\r\n<p>If I remve this portion, &lt;Image Source=&quot;EyeCue.Common;component/Assets/Images/Editor.png&quot; Width=&quot;15&quot; Height=&quot;15&quot;/&gt; there are no problems.&nbsp; However when I add it, silverlight throughs the following runtime error in a popup.</p>\r\n<p>Line: 61<br>\r\nError: Unhandled Error in Silverlight Application <br>\r\nCode: 4011&nbsp;&nbsp;&nbsp; <br>\r\nCategory: ManagedRuntimeError&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>\r\nMessage: Setting the Template property on a UserControl is not supported.&nbsp;&nbsp;&nbsp;&nbsp;</p>\r\n<p>In this particular case, there are I have a region loaded inside another region.&nbsp; The button is on a page and is directly inside a grid.&nbsp; Of course if I put it in a stackpanel or whatever I get the exception.</p>\r\n<p>Also, it's not just the Button control.&nbsp; If I use some other 3rd party controls I'm starting to see this.&nbsp;</p>\r\n<p>Additionaly we use a map control to map coordinates via images and it's throwing the exception now.</p>\r\n<p>Google hasn't turned up much and the error itself doesn't make much sense.&nbsp;</p>\r\n<p>Any ideas?</p>\r\n",
+    "PostedDate": "2010-10-26T13:08:03.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514157",
+    "ThreadId": "232416",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on the following forum thread if I am not wrong you solved this issue:</p>\r\n<p><a href=\"http://forums.silverlight.net/forums/t/206512.aspx\">Message: Setting the Template property on a UserControl is not supported</a></p>\r\n<p>Is my assumption right?</p>\r\n<p>Fernando Antivero</p>\r\n<p><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n",
+    "PostedDate": "2010-10-28T11:58:22.71-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514160",
+    "ThreadId": "232416",
+    "Html": "\r\n<p>Thank you Fantivero for posting.&nbsp; I was trying to find this and wasn't having any luck.</p>\r\n<p>Yes I did resolve it.&nbsp; I had switched to Prism and that included using the code for PopupRegions.&nbsp; The popup regions in the app were using ChildWindows and I changed them all to UserControls.&nbsp; The target type on the Style I changed to UserControl\r\n but inside it was a setter for Template.&nbsp; (I took over this app and the themes were created a while ago.)</p>\r\n<p>It was hard to track down because it didn't surface for a while and what made it come about didn't make sense.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-10-28T12:06:05.053-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

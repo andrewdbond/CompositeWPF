@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "126968",
+    "ThreadId": "38284",
+    "Html": "In the Commanding Quickstart there are two PresentationModel classes: OrderPresentationModel and OrdersEditorPresentationModel.&nbsp; It would appear to me that they have slightly different purposes in that OrdersEditorPresentationModel actually depends on the OrderPresentationModel and it also has a direct reference to the View.&nbsp; Wouldn't that make it more of a Presenter than a PresentationModel?<br>\r\n<br>\r\nIs the union of these two classes the PresenterModel or am I completely off track?\r\n",
+    "PostedDate": "2008-10-22T10:40:56.553-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "127213",
+    "ThreadId": "38284",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">Hi,</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">The purpose of the Presentation Model class is to act as an UI model (like a façade for the <b>domain</b> model) with UI-specific state and behavior, by encapsulating the access to the model and providing a public interface that is easy to consume from the view (for example, using data binding). </span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">For example, the <b>OrdersEditorPresentationModel</b> exposes an <b>Orders</b> property (of type <i>ObservableCollection&lt;OrderPresentationModel&gt;</i>) which is used to set the <b>Model</b> property of the <b>OrdersEditorView</b>. The Model property sets the <b>DataContext</b> of the view, so that the Orders collection can be bound to the <b>ItemsSource</b> of the <b>ListBox</b> in XAML. In that way, this collection is easily consumed from the view (taking into account that the OrderPresentationModel has a data template for its visual content), whether you use a concrete view or a data template.</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">For more information on the Presentation Model, you may have a look at this link: </span><a href=\"http://msdn.microsoft.com/en-us/library/cc707885.aspx\"><span style=\"color:#0000ff;font-family:Calibri\">Presentation Model</span></a><span style=\"font-family:Calibri\">.</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">Hope it helps.</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:Calibri\">Ignacio Baumann Fonay</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><a href=\"http://blogs.southworks.net/ibaumann/\"><span><span style=\"color:#0000ff;font-family:Calibri\">http://blogs.southworks.net/ibaumann/</span></span></a> </p>\r\n",
+    "PostedDate": "2008-10-23T07:58:33.287-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

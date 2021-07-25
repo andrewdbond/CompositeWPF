@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "888409",
+    "ThreadId": "387238",
+    "Html": "\r\n<p>I have a WPF application in PRISM architecture.</p>\r\n<p>I have a 'Login View' that is shown in the 'Main Region' when the app loads.</p>\r\n<p>When the user presses 'Login' - I connect to a WCF service, authenticate the user, and get a list of roles for that user from the service.</p>\r\n<p>Then - according to the user's roles - I load different modules, using the 'Module Manager'.</p>\r\n<p>Problem is - I want all the work after the 'Login' button is pressed to be done in a separate thread, because it might take time to connect to the service etc, and I don't want the UI to be frozen.</p>\r\n<p>But - if I put the code to 'connect, authenticate, get roles, load modules' in a separate thread - I get an exception when I call '_moduleManager.LoadModule' that says:</p>\r\n<p><strong>&nbsp;The calling thread must be STA, because many UI components require this.</strong></p>\r\n<p>How can I solve this ?<br>\r\n<br>\r\nI have tried different solutions.<br>\r\nI have tried to set the new thread's 'Apartment State = STA' and it didn't help.<br>\r\nI thought about saving the 'Dispatcher' object in the constructor of the View-Model, and then do 'dispatcher.Invoke' when I call 'LoadModule', but that is bad design (View-Model should not use Dispatcher, and also it is bad for testing).</p>\r\n<p><br>\r\nAny ideas how I can solve this ??</p>\r\n<p>Only the 'LoadModule' gives me grief, all the other stuff works fine.</p>\r\n",
+    "PostedDate": "2012-07-23T02:17:22.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "889171",
+    "ThreadId": "387238",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, the loading of modules should be done in the \"main\" thread of your application. In this case, a possible approach could be to execute the code to \"connect, authenticate and get roles\" in the separated thread, pass the list of modules that should be loaded to the \"main\" thread and load the modules there. Usually, the thread <strong>Dispatcher </strong>is used to achieve this kind of functionality.</p>\r\n<p>Also, as far as I know, it's not required for the aforementioned functionality to be in your view model. For example, you could implement a service that could be in charge of connecting, authenticating, getting the roles and loading the modules (in its corresponding thread). The view model then could simply consume this service, so it would not be aware of the aforementioned logic.</p>\r\n<p>You can find more information in the following section of the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405494%28v=pandp.40%29#sec8\">Chapter 6 - MVVM Scenarios - Handling Asynchronous Interactions</a></li>\r\n</ul>\r\n<p>Also, I believe you might find the <strong>MVVM RI </strong>provided by <strong>Prism </strong>useful, as it provides examples of asynchronous interactions when using <strong>MVVM</strong>:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405492%28v=pandp.40%29\">Appendix F: MVVM Reference Implementation</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-07-23T11:08:51.34-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "889459",
+    "ThreadId": "387238",
+    "Html": "<p>Can you please provide a code sample with the dispatcher doing such a thing ?<br />Isn't it bad to have code using the Dispatcher in my View-Model (in respect of testability) ?&nbsp;</p>\r\n<p>Also - it seems like you contradicted yourself a bit.</p>\r\n<p>&nbsp;</p>\r\n<p>You said : \"<span>Based on my understanding, the loading of modules should be done in the \"main\" thread of your application\"</span></p>\r\n<p><span>and then you said : \"<span>you could implement a service that could be in charge of connecting, authenticating, getting the roles and <strong>loading the modules (in its corresponding thread</strong>)\".</span></span></p>\r\n<p><br />So can I or can't I load the modules in a separate thread ?</p>",
+    "PostedDate": "2012-07-23T22:39:01.29-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "891273",
+    "ThreadId": "387238",
+    "Html": "<p>Hi,</p>\r\n<p>Sorry for the misunderstanding. When I wrote \"<em><strong>(in its corresponding thread)</strong></em>\" I meant the \"<em><strong>main</strong></em>\" thread, which is the thread in which the modules should be loaded.</p>\r\n<p>Regarding the approach I mentioned before about using a service to obtain the list of modules to be loaded asynchronously, you can find a mock-up sample in my <strong>SkyDrive </strong>account named <strong>SimpleSeparateThreadSample</strong>:</p>\r\n<ul>\r\n<li><a href=\"https://skydrive.live.com/redir?resid=99307B6105BC060D!107&amp;authkey=!ACgbDT5tLxt8pNk\">SimpleSeparateThreadSample in SkyDrive</a></li>\r\n</ul>\r\n<p>In this mock-up sample, a mocked <strong>ModuleListService </strong>is defined which receives a callback and after 3 seconds returns the list of modules to be loaded (in this case, only one) invoking the aforementioned callback in the \"<em><strong>main</strong></em>\" thread. The view model is not aware of this and only consumes the service. This service uses a new <strong>Thread </strong>to mock an asynchronous action, but in a real scenario this could be, for example, a call to an asynchronous <strong>WCF Service</strong>.</p>\r\n<p>Again, this is only a possible approach; which approach you should use will depend mostly of your personal preferences and the requirements of your scenario.</p>\r\n<p>Regarding the usage of the <strong>Dispatcher </strong>in the view model, I am not aware if it's a \"bad\" pattern or not. However, as mentioned in the following blog post by Kent Boogaart, this should not complicate the testability of your view model:</p>\r\n<ul>\r\n<li><a href=\"http://kentb.blogspot.com.ar/2009/04/mvvm-infrastructure-viewmodel.html\">MVVM Infrastructure - ViewModel</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-07-25T10:54:30.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "184761",
+    "ThreadId": "54779",
+    "Html": "<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">Hello,</span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">I have a bit of an architecture conundrum. I’ve written a fairly large duplex client/server application using SL2 without using Prism. The server side is pretty well along. Where I am stuck is on the client. I am trying to implement an MVVM client architecture that gets its data from a duplex push instead of from a web service.</span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">All examples that I can find show an MVVM model that has direct access to a web service or a database and can simply use linq to fulfill requests from the UI as the user clicks on various widgets. </span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">In my case, the client is going to be constantly receiving updates. These updates need to make their way to the model and then have the UI update accordingly.</span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">Does Prism support this model? Are there any examples?</span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">Thanks,</span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">Rick</span></p>\r\n",
+    "PostedDate": "2009-04-28T16:15:18.867-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "185173",
+    "ThreadId": "54779",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi Rick, </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:calibri\">Prism programming model does support MVVM and you will find this pattern used in most </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458858.aspx\"><span style=\"font-family:calibri\">Quickstart</span></a><span style=\"font-family:calibri\"> solutions. Although the CAL (Prism library) does not provide any special feature to facilitate your scenario, it will support it. This is because Prism was not specifically built to address web services or inter-application communication, so the<span style=\"color:#1f497d\"> <a href=\"http://msdn.microsoft.com/en-us/library/dd458858.aspx\">Prism-v2 Quickstarts</a></span> show a simplified access to the data to demonstrate the composability features. </span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">You might find on the web or the silverlight forums several sample applications that demonstrate using duplex services in silverlight. Moreover Silverlight 3 simplifies duplex object model. You can read more on <a href=\"http://blogs.msdn.com/silverlightws/archive/2009/03/20/what-s-new-with-web-services-in-silverlight-3-beta.aspx\">What's new with web services in Silverlight 3 Beta</a>. </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-size:10pt;font-family:'courier new'\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hope it helps!</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Matias Bonaventura</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><a href=\"http://blogs.southworks.net/\"><span style=\"font-family:calibri\">http://blogs.southworks.net/matiasb</span></a></p>\r\n",
+    "PostedDate": "2009-04-29T12:35:37.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "185192",
+    "ThreadId": "54779",
+    "Html": "Thank you for your answer. The question is not so much how Prism works with MVVM as it is how does Prism work with a model underneath MVVM that is receiving data from a duplex channel as opposed to fetching it from a webservice.<br>\r\n<br>\r\nIn one case, the user clicks on a widget which causes some data to be fetched from a server. In the other case, the model is being fed data on a background thread from which it must force a UI update.<br>\r\n<br>\r\nThanks,<br>\r\n<br>\r\nRick\r\n",
+    "PostedDate": "2009-04-29T13:14:24.8-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "185253",
+    "ThreadId": "54779",
+    "Html": "I have been working with the duplex services for a while now.  I use the EventAggregator to publish the appropriate message when recieved (pushed) from the server.  I have been following the recommendation to use an Infrastructure project and this is where the client side of the duplex is implemented.  The ViewModels subscribe for the events they are interested in.  This really seperates the concerns with the  ViewModels having no dependancy on the duplex service.  Works great.\r\n",
+    "PostedDate": "2009-04-29T16:11:16.19-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "602417",
+    "ThreadId": "255174",
+    "Html": "\r\n<p>I need to close the app from the Shell at the startup time when the security validation is failed. Where is the recommended place to validate the security, e.g., App, or Bootstrapped? Any how to close the App?</p>\r\n<p>Thanks in advance.</p>\r\n",
+    "PostedDate": "2011-04-25T07:08:24.41-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602440",
+    "ThreadId": "255174",
+    "Html": "<p>Hi,</p>\r\n<p>If you have the <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.application.shutdownmode.aspx\">ShutdownMode</a> set to <strong>OnLastWindowClose </strong>(which is the default value), you need to call your main window's <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.window.close.aspx\">Close</a> method in order to close the application. You could have your Shell subscribe to an event through the event aggregator, so that it calls its Close method when that event is published.</p>\r\n<p>The general recommended practice would be to place the responsibility of carrying out the validation on a component placed on a module, and load other modules based on the result of that validation. However, the decision of where to place it depends mostly on the specific conditions of your security validation.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-04-25T08:16:13.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602494",
+    "ThreadId": "255174",
+    "Html": "<p><span style=\"font-size: 10pt; color: black;\">Hi Guido, </span></p>\r\n<p><span style=\"font-size: 10pt; color: black;\">Thanks for your response and suggestion. I am using Infragistics toolkit and it seems it does not work with <strong>OnLastWindowClose</strong>. If I set to <strong>OnExplicitShutdown</strong></span>, how can I programmatically shut down the app? Thanks in advance.</p>",
+    "PostedDate": "2011-04-25T10:24:34.963-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602518",
+    "ThreadId": "255174",
+    "Html": "<p>In case it is set to <strong>OnExplicitShutdown</strong>, you need to call the <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.application.shutdown.aspx\"> Application.Shutdown</a> method explicitly in order for the application to shut down.</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-04-25T11:08:00.623-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

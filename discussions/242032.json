@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "550322",
+    "ThreadId": "242032",
+    "Html": "\r\n<p>There is a datagrid with a template column</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">                    &lt;</span><span style=\"color:#a31515\">data</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">DataGridTemplateColumn</span> <span style=\"color:red\">Width</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">180</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">CanUserSort</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">False</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">&gt;</span>\r\n                        <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">data</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">DataGridTemplateColumn.CellTemplate</span><span style=\"color:blue\">&gt;</span>\r\n                            <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">DataTemplate</span><span style=\"color:blue\">&gt;</span>\r\n                                    <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">HyperlinkButton</span> <span style=\"color:red\">Content</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">View</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">Command</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">{Binding Path=DataContext.LinkButtonClickCommand,ElementName=LayoutRoot}</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">Style</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">{StaticResource GridHyperLink}</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">/&gt;</span>                                    \r\n                            <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">DataTemplate</span><span style=\"color:blue\">&gt;</span>\r\n                        <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">data</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">DataGridTemplateColumn.CellTemplate</span><span style=\"color:blue\">&gt;</span>\r\n                    <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">data</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">DataGridTemplateColumn</span><span style=\"color:blue\">&gt;</span>\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>the DataContext is a ViewModel , and the<span style=\"color:blue\"> LinkButtonClickCommand is a DelegateCommand</span></p>\r\n<p><span style=\"color:blue\">anyone help me why nothing happen when click the HyperlinkButton, Thanks!<br>\r\n</span></p>\r\n",
+    "PostedDate": "2011-01-16T21:56:04.787-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "550682",
+    "ThreadId": "242032",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>The reason your HyperLink button command is not working could be that you are setting your Command Binding incorrectly. You might find the following resources useful to achieve alternative ways of binding a command from within a DataTemplate:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.msdn.com/b/mikehillberg/archive/2007/05/14/wheredoesbindingfinditsdata.aspx\">Where does a Binding find its data</a> (from\r\n<a href=\"http://blogs.msdn.com/b/mikehillberg\">Mike Hillberg&acute;s blog)</a> </li><li><a href=\"http://forums.silverlight.net/forums/p/162415/373144.aspx\">MVVM Commanding inside of a datatemplate</a> and\r\n<a href=\"http://forums.silverlight.net/forums/t/176766.aspx\">MVVM - propagation of the ViewModel into nested UserControls</a> (from\r\n<a href=\"http://forums.silverlight.net/\">Silverlight Forums</a>) </li></ul>\r\n<p>Also you might check your view model&rsquo;s code to check if you are instantiating correctly your delegate command. You can read more about how to achieve this on Prism&acute;s documentation,\r\n<a href=\"http://msdn.microsoft.com/en-us/library/gg405484(v=PandP.40).aspx\">Chapter 5 Implementing MVVM Pattern</a>, specifically the\r\n<strong>Commands</strong> section.&nbsp;</p>\r\n<p><span lang=\"EN-US\">Since <strong>DelegateCommands</strong> inherits from <strong>\r\nDelegateCommandBase</strong>, that implements <strong>ICommand</strong><em> interface</em>, you could try replacing the\r\n<strong>DelegateCommand</strong> for a simpler implementation of <strong>ICommand</strong>, so as to make sure that the issue doesn&rsquo;t come specifically from the\r\n<strong>DelegateCommand</strong>. If you find that when using that implementation you experience the same problem, you could share your concern on the Silverlight Forum, where you might find better support around Silverlight specific problems.</span></p>\r\n<p><span lang=\"EN-US\">I&nbsp;hope you find this information useful.</span></p>\r\n<p><span lang=\"EN-US\">Thanks,</span></p>\r\n<p><span lang=\"EN-US\">Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></span></p>\r\n<p><span lang=\"EN-US\">&nbsp;</span></p>\r\n",
+    "PostedDate": "2011-01-17T10:57:50.183-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "551050",
+    "ThreadId": "242032",
+    "Html": "\r\n<p>Thanks,</p>\r\n<p>finally resolved by adding ViewModel as Resource.<span style=\"font-size:x-small\">&nbsp;</span></p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [ImportingConstructor]<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public ProductList(ProductListViewModel viewModel)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.DataContext = viewModel;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Resources.Add(&quot;ViewModel&quot;, viewModel);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeComponent();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>and set<span style=\"color:#a31515\"> HyperlinkButton's <span style=\"color:#000000\">\r\nCommand={Binding EditCommand, Source={StaticResource ViewModel}}</span></span></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-18T00:31:31.983-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "693412",
+    "ThreadId": "242032",
+    "Html": "<p>Hi,</p>\r\n<p>You might find the following blog post useful, which explores one possible way to achieve this scenario using Prism's <strong>ObservableObject&lt;T&gt;</strong> class:</p>\r\n<p><a href=\"http://blogs.southworks.net/gmaliandi/2011/11/prism-binding-to-commands-from-inside-datatemplates/\">Prism: Binding to commands from inside DataTemplates</a></p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-11-03T09:16:53.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "693668",
+    "ThreadId": "242032",
+    "Html": "<p>Hi,</p>\r\n<p>For dynamic take a look at this .<a href=\"http://forums.silverlight.net/t/241494.aspx/1?DataGrid+column+button+Click+navigate+to+another+page+using+MVVM\">http://forums.silverlight.net/t/241494.aspx/1?DataGrid+column+button+Click+navigate+to+another+page+using+MVVM</a>+</p>",
+    "PostedDate": "2011-11-03T19:34:27.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "693669",
+    "ThreadId": "242032",
+    "Html": "<p>I was found there are a few way to do that.</p>",
+    "PostedDate": "2011-11-03T19:35:48.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

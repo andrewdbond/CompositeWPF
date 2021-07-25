@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "163712",
+    "ThreadId": "49007",
+    "Html": "Hi,<br>\r\n<br>\r\nI've got to question about region based on Selector.<br>\r\n<br>\r\n1. What control is recommended to be used? <br>\r\n2. Now I'm using ListBox. I've created specific Template and ItemContainerStyle, so its look like ItemsControl. I need to activate and deactivate views inside this region. But after deactivation view is still visible? (I've tried ContentControl and its work fine, but i need more than one view inside region)<br>\r\n<br>\r\nThanks,<br>\r\nAlexey Zakharov. \r\n",
+    "PostedDate": "2009-03-02T23:24:59.877-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "164360",
+    "ThreadId": "49007",
+    "Html": "Activation is not the same thing as setting visible or invisible. What activation means can be something different per type of control.<br>\r\n<br>\r\nA contentcontrol can only show one view at a time. So manipulating the active will make a view visible/invisible.<br>\r\n<br>\r\nA selector is a control that can show multiple items, but only one of them can be selected. So activation in this case controls the selection. Consider the tabcontrol (also a selector in WPF, not in silverlight). The tabcontrol can have many views where each view get's its own tab. Setting the active view will activate the tab that hosts the view. <br>\r\n<br>\r\nA listbox is a strange beast, since it can have multiple active items. <br>\r\n<br>\r\nIf you don't like this behavior, you can easily create your own SelectorRegionAdapter which does not bind the items to the Region.Views collection, but to the Region.ActiveViews collection. <br>\r\n<br>\r\nHope this helps,<br>\r\nErwin<br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2009-03-04T08:22:02.81-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

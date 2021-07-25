@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "115347",
+    "ThreadId": "34743",
+    "Html": "Hi guys,<br>\r\n<br>\r\nWe have a few abstractions put in place over Prism as we wanted to get away from the depedency model that's presented (i.e. our modules know very little about Prism and only deal with regions).<br>\r\n<br>\r\nOur controller (similar to IModule) has a launch method that will get called when the application controller calls it (bound to a listbox with a list of dynamic modules that are loaded at runtime). Launch just calls:<br>\r\n<br>\r\nregionManager.Regions[RegionNames.MainRegion].Add(view);<br>\r\n<br>\r\n// view is actually constructed by a factory which handles the binding of the view to the model but that's not important here<br>\r\n// regionManager is of type IRegionManager<br>\r\n<br>\r\nWhat I *want* to do is swap the view in, replacing the old view (maybe using some kind of transition).<br>\r\n<br>\r\nNot sure how to do this as I don't want to get into view management inside of each module. Ideas?\r\n",
+    "PostedDate": "2008-09-02T06:16:21.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "115402",
+    "ThreadId": "34743",
+    "Html": "bsmiser,<br>\r\n<br>\r\nWhat if you simply used a custom TabControl that does not show tabs? The control would be your RegionNames.MainRegion. This cusotm control could also have a property that exposes an interface so that you could assign different types of transitions.<br>\r\n<br>\r\nJust a thought,<br>\r\n<br>\r\nAndres Olivares\r\n",
+    "PostedDate": "2008-09-02T09:06:37.393-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "115432",
+    "ThreadId": "34743",
+    "Html": "Andres,<br>\r\n<br>\r\nThat makes sense. I'll spike something out to see if that would work. <br>\r\n<br>\r\nThanks.\r\n",
+    "PostedDate": "2008-09-02T10:54:44.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "116099",
+    "ThreadId": "34743",
+    "Html": "Andres,<br>\r\n<br>\r\nI've changed my ItemsControl to a TabControl and it shows up. I'm not sure when the view is launched how to hook into the control (without exposing the control itself).<br>\r\n<br>\r\nHere's my tab control:<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TabControl <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Regions:RegionManager.RegionName=&quot;{x:Static UserInterface:RegionNames.TaskExecutionRegion}&quot;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Grid.Column=&quot;1&quot; Grid.Row=&quot;1&quot; Name=&quot;tabControl1&quot; &gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsControl.ItemsPanel&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsPanelTemplate&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TabItem Header=&quot;tabItem1&quot; Name=&quot;tabItem1&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Grid /&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/TabItem&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsPanelTemplate&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsControl.ItemsPanel&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/TabControl&gt;<br>\r\n<br>\r\n<p>This isn't what I want because when I select a module it adds a new tab. Not sure where the logic should go for finding a tab and activating it (or adding a new tab) or how that would get access to the control. </p>\r\n",
+    "PostedDate": "2008-09-04T11:04:15.19-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "116336",
+    "ThreadId": "34743",
+    "Html": "bsimser,<br>\r\n<br>\r\nI would approach your issue in the following steps:<br>\r\n<br>\r\n1. Create a custom control that handles your view transitions.<br>\r\n2. Regionalize your control and interact with it to Add/Activate module views<br>\r\n<br>\r\n&lt;!--Custom Control - TransitionControl--&gt;<br>\r\n&lt;TabControl x:Name=&quot;root&quot;/&gt;<br>\r\n&lt;!--Should implement non-visible tabs, transitions and state management for each view contained--&gt;<br>\r\n<br>\r\n&lt;!--Window1.xaml--&gt;<br>\r\n&lt;Window x:Name=&quot;root&quot;<br>\r\n&nbsp;xmlns...<br>\r\n&nbsp;&gt;<br>\r\n&nbsp;&lt;DockPanel&gt;<br>\r\n&nbsp;&nbsp;&lt;!-- Module selector--&gt;<br>\r\n&nbsp;&nbsp;&lt;ListBox x:Name=&quot;moduleListBox&quot; SelectionChanged=&quot;moduleSelected&quot;/&gt;<br>\r\n&nbsp;&nbsp;&lt;!--Region for custom control--&gt;<br>\r\n&nbsp;&nbsp;&lt;ContentControl x:Name=&quot;moduleManager&quot; cal:RegionManager.RegionName=&quot;ModuleManagerArea&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&lt;!--Style for type of custom control--&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&lt;ContentControl.Resources&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&lt;Style TargetType=&quot;{x:Type self:TransitionControl}&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;!--Example of transition assignment--&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;Setter Property=&quot;Transition&quot; Value=&quot;{StaticResource moduleTransition}&quot; /&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&lt;Style&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&lt;/ContentControl.Resources&gt;<br>\r\n&nbsp;&nbsp;&lt;/ContentControl&gt;<br>\r\n&nbsp;&lt;/DockPanel&gt;<br>\r\n&lt;/Window&gt;<br>\r\n<br>\r\n<p>// Bootstrapper.cs<br>\r\n// Resolve UI items<br>\r\nContainer.Resolve&lt;Window1&gt;();<br>\r\ncontrol = Container.Resolve&lt;TransitionControl&gt;();<br>\r\n// Get region management objects<br>\r\nvar regionManager = Container.Resolve&lt;IRegionManager&gt;();<br>\r\nvar region = regionManager.Regions[&quot;ModuleManagerArea&quot;];<br>\r\n// regionalize your custom control<br>\r\nregion.Add(control);<br>\r\nregion.Activate(control);</p>\r\n<p>//Window1.xaml.cs<br>\r\nvoid moduleSelected(object sender, RoutedEventArgs e)<br>\r\n{<br>\r\n&nbsp;IModule module = GetModule(moduleManager.SelectedItem);<br>\r\n&nbsp;//SpecificModule would be your custom module<br>\r\n&nbsp;object view = (module as SpecificModule).GetUserView();<br>\r\n&nbsp;// Retrieve TransitionControl<br>\r\n&nbsp;TransitionControl transitionControl = moduleManager.Content as TransitionControl;<br>\r\n&nbsp;// Your custom control would manage the addition of a new view or activate a new request<br>\r\n&nbsp;transitionControl.Add(view);<br>\r\n&nbsp;// The custom control would use the transtion defined to animate switching views<br>\r\n}<br>\r\n<br>\r\nYou do not have to regionalize your custom control, but I added that in their if you were interested in a way of extracting regionalized views and setting custom properties for you regionalized view in a clean way.<br>\r\n<br>\r\nHope this helps,<br>\r\n<br>\r\nAndres Olivares</p>\r\n",
+    "PostedDate": "2008-09-05T07:18:05.95-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

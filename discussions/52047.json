@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "174661",
+    "ThreadId": "52047",
+    "Html": "Hi,<br>\r\n<br>\r\nif I use nested regions, how can I get the parent region of a view and the parent view of a region? \r\n",
+    "PostedDate": "2009-04-01T23:17:05.47-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "175458",
+    "ThreadId": "52047",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi jaga, </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">This is not a usual scenario. In general views should not be aware in which region they are located nor regions know their parent views. There are of course tricks to get what you are looking for but you will be probably breaking modularity or coupling modules.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:calibri\">If what you are looking for is a way to share some contextual information between the region and its children, you should use the RegionContext. You can find more information on how to use the RegionContext in the </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458878.aspx\"><span style=\"font-family:calibri\">Communication</span></a><span style=\"font-family:calibri\"> and  </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458944.aspx\"><span style=\"font-family:calibri\">UI Composition</span></a><span style=\"font-family:calibri\"> Technical Concepts of the documentation.</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">To get the region in which a view is defined you can do something like the following:</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">                IRegion region = regionManager.Regions.First(r =&gt; r.Views.Contains(yourView));</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:calibri\">You can obtain a reference to the regionManager using </span><a href=\"http://msdn.microsoft.com/en-us/library/cc707845.aspx\"><span style=\"font-family:calibri\">dependecy injection</span></a><span style=\"font-family:calibri\">. You might find useful the </span><a href=\"http://msdn.microsoft.com/en-us/library/cc707903.aspx\"><span style=\"color:#0000ff;font-family:calibri\">How to: Show a View in a Scoped Region</span></a></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">If you what to get the WPF control that the region is mapped to, you can generally query the view's <b>Parent</b> property (That is equivalent to using the <b>LogicalTreeHelper.GetParent</b> method):</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">               ContentControl control = view.Parent;</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-size:10pt;font-family:'courier new'\">                                                    </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hope it helps!</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Matias Bonaventura</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><a href=\"http://blogs.southworks.net/\"><span style=\"color:#0000ff;font-family:calibri\">http://blogs.southworks.net/matiasb</span></a></p>\r\n",
+    "PostedDate": "2009-04-03T13:40:01.983-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "175654",
+    "ThreadId": "52047",
+    "Html": "Thank you for the answer, Matias.<br>\r\n<br>\r\nyes, we have a special scenario. Our program have many scenes (WorkItems). Each scene consist of several views and regions. If I call a scene, it integretes itself in the scoped regions/views of the parent (caller) scene using dependency injection.<br>\r\n <br>\r\nIf I close the scene it knows only his own views and regions, but to remove them I have to know theirs parents too. I thought there is may be an out of the box solution. If not, I have to save a reference of the parents during the integration, or I have to use dependency injection again. (and the user schould not have permits to move views to an other region)\r\n",
+    "PostedDate": "2009-04-04T10:02:54.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

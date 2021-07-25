@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "802764",
+    "ThreadId": "346609",
+    "Html": "\r\n<p>Hello all,</p>\r\n<p>I am having a heck of a time deploying my Silverlight 5&nbsp;solution (with Prism 4.1) into IIS.&nbsp; Let me give a quick synopsis:</p>\r\n<p>We have a machine, on our network that is used to host all of our test sites/databases/etc.&nbsp; Our previous application was an asp.net application that hooked into a windows service.&nbsp; Before, I would publish the asp.net solution to a folder and then\r\n copy/paste the contents to a set folder on the Test Server.&nbsp; I am doing this same process for the new Silverlight version and all seems to go well, until I try to login.</p>\r\n<p>I type in the required credentials to login and the loading bar turns on and then just stops and the app does nothing.&nbsp; It doesn't switch to the Employee module page like it should and how it does when running in Visual Studio.&nbsp; I feel like I am\r\n missing some step in the deploy process, but I have gone over Chapter 11 and it seems fine...</p>\r\n<p>Really looking for a bit of help or hope here, thanks.</p>\r\n",
+    "PostedDate": "2012-02-28T11:38:13.04-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "803265",
+    "ThreadId": "346609",
+    "Html": "<p>IIS is a fun head ache. First off what are you using for your&nbsp;authentication and what are you using to talk to the server (wcf, ria, other)? Does it work on the deployed server if you remove the need to login, if not then maybe there's an issue with getting the Employee module.</p>\r\n<p>If you don't have the program <a title=\"Fiddler\" href=\"http://www.fiddler2.com/fiddler2/\">Fiddler2</a>&nbsp;get it now, this'll show you whats actually happening. Alot of the time IIS will send a very generic error that won't get to the screen but fiddler will capture.</p>\r\n<p>Alot of my issues I had with IIS involved RIA, if your using RIA then maybe this'll help</p>\r\n<ul>\r\n<li>I didn't install RIA on the server and some of my&nbsp;libraries&nbsp;on the web side didn't CopyLocal (even though they're set to true) onto the server.</li>\r\n<li>After those I discovered my services were failing and after many hours I discovered that my web.config connection strings had been converted from the connection string to $Tokens to be used with an installer.</li>\r\n</ul>",
+    "PostedDate": "2012-02-29T10:09:31.453-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "804013",
+    "ThreadId": "346609",
+    "Html": "<p>Alright, so I downloaded Fiddler2 and started going with that.&nbsp; I believe we're using WCF for the service side.&nbsp; In any event, the problem seems to be that it isn't able to communicate with the service itself.&nbsp; I got an error back: \"An error occurred while trying o mae a request to URI <a href=\"http://localhost:39010/AccessSVR.svc'. ....\">http://localhost:39010/AccessSVR.svc'. ....</a> In any event, I believe that it is set to my local dev environment for the service location.&nbsp; When I would deploy my asp.net site I would have an address in the client web.config file that I could adjust to point to the service location.&nbsp; What is the best way to do this in a silverlight/prism app.&nbsp; When i am developing in visual studio, i want it to stay pointed to local host, when it's deployed, i want it to be point to the server address xxx.xx.xxx.110:50001</p>",
+    "PostedDate": "2012-03-01T13:44:23.07-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "804488",
+    "ThreadId": "346609",
+    "Html": "<p>Change the webconfig on the server side todo that. Honestly for my companies work we find having a server that we all share the DB to makes things easier.<br />You can either go into the actual webconfig or go to IIS, your deployed site, connection strings.<br />Another option is to setup the connection string to be different between Debug and Release mode and have local host as your debug config and always deploy the Release.</p>\r\n<p>Good luck if another error pops up.</p>",
+    "PostedDate": "2012-03-02T08:36:25.937-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

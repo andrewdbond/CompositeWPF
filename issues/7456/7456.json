@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Submitted by a customer:\n \nI started using the region based navigation, but one thing I can't find is how to recognize the navigation direction. \n \nRegular SL navigation exposes this via NavigationMode property on NavigationCancelEventArgs: http://msdn.microsoft.com/en-us/library/system.windows.navigation.navigatingcanceleventargs.navigationmode(v=VS.95).aspx\n \nI think this informaiton should be also exposed on the NavigationContext because it is sometimes important to the logic to determine if we navigate to new page or going back the stack. In my scenario I'm trying to add page transition animation and would like to run different animaitons for going forward or back.",
+    "LastUpdatedDate": "2013-02-21T18:38:24.15-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-10-28T13:05:04.963-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Suggestiong: Please add the NavigationMode property on NavigationCancelEventArgs",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 1,
+    "Id": 7456
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nAs a possible approach to know if you are navigating to a new view or going back to a previous one could be to add an extra parameter to the navigation Uri when navigating through the RegionNavigationJournal. \r\n\r\nFor example, this could be done without modifying the Prism library by creating a custom RegionNavigationJournal (based on the one provided by Prism) which could add an extra parameter to the Uri of the RegionNavigationJournalEntry in the InternalNavigate method to identify that the navigation request is going back to a previous view.\r\n\r\nThis extra parameter could be obtained in the view / view model through the NavigationContext.\r\n\r\nI hope you find his useful,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-05-11T12:33:41.033-07:00",
+      "Id": 156352
+    }
+  ]
+}

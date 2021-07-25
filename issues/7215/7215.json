@@ -1,0 +1,80 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Fixed in Prism 5.0.",
+    "ClosedDate": "2014-05-01T11:24:28.667-07:00",
+    "CommentCount": 8,
+    "Custom": "",
+    "Description": "When using ModuleCatalog.CreateFromXaml in a WPF application with MEF Bootstrapper using the following Module Catalog through an exception:\n \n<Modularity:ModuleCatalog xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"\n                          xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"\n                          xmlns:sys=\"clr-namespace:System;assembly=mscorlib\"\n                          xmlns:Modularity=\"clr-namespace:Microsoft.Practices.Prism.Modularity;assembly=Microsoft.Practices.Prism\">\n \n  <!-- Module info without a group -->\n    <Modularity:ModuleInfo Ref=\"file://YourModuleName.dll\" ModuleName=\"YourModuleName\" ModuleType=\"YourNamespace.Module, YourModuleName, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\" InitializationMode=\"WhenAvailable\" />\n</Modularity:ModuleCatalog>\n \n \nThe following call in MefFileModuleTypeLoader returns \"ourModuleName.dll\" instead of \"YourModuleName.dll\"\n \nstring path = moduleInfo.Ref.Substring(RefFilePrefix.Length + 1);\n \nWhen I change Ref=\"file://YourModuleName.dll\" to Ref=\"file://xYourModuleName.dll\" it works.",
+    "LastUpdatedDate": "2014-05-01T11:24:28.667-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-09-06T07:44:03.427-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Issue with ModuleCatalog.CreateFromXaml for WPF application with MEF Bootstrapper",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 5,
+    "Id": 7215
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nThanks for your feedback, we consider this really valuable. We could reproduce this situation. As the product team was notified about this, it might be tackled in a future release. \r\n\r\nWhat you proposed seems to be a possible workaround.\r\n\r\nThanks again.\r\n\r\nFernando Antivero\r\nhttp://blogs.southworks.net/fantivero",
+      "PostedDate": "2010-11-25T10:20:21.67-08:00",
+      "Id": 156294
+    },
+    {
+      "Message": "Not sure which version rfalle was using. I am using Microsoft.Practices.Prism.dll 4.0.0.0 (built on 11/10/2010) and it still has the same line of code:\r\n\r\nstring path = moduleInfo.Ref.Substring(RefFilePrefix.Length + 1);\r\n\r\nAlso the workaround (\"file://xFile.dll\") doesn't work as it apparently no longer handles relative path.\r\n\r\nI had to change the line above to this:\r\n\r\nstring path = moduleInfo.Ref.Substring(RefFilePrefix.Length);\r\n\r\nand use an absolute path:\r\n\r\n<Modularity:ModuleInfo Ref=\"file://C:\\Folder\\Mod.dll\" ...\r\n\r\nto make it work.\r\n\r\nWould appreciate if someone could test the latest Prism and provide a working syntax for the relative Ref URI.\r\n\r\nThanks!\r\n",
+      "PostedDate": "2010-12-29T11:25:20.937-08:00",
+      "Id": 156295
+    },
+    {
+      "Message": "Hi,\r\n\r\nI've tried with the stable release (http://compositewpf.codeplex.com/releases/view/55576) and it worked. You can download a working sample of using the relative path syntax (with the workaround proposed by rfalle) here:\r\n\r\nhttp://public.blu.livefilestore.com/y1ptMNUac1lGjM15WPB5J25xUsm_6lPMwcV4kFshMl9l4OTjTE4ctR8siRAHlOgwO8bwukQcbYt0KG3_BTE0Yh7vw/LoadingModulesFromXAMLSample.zip?download&psid=1\r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-01-04T10:11:16.463-08:00",
+      "Id": 156296
+    },
+    {
+      "Message": "Here's an alternative download link, in case the previous one doesn't work:\r\n\r\nhttp://cid-12a8b70137345033.office.live.com/self.aspx/p%5E0p%20Samples/LoadingModulesFromXAMLSample.zip\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi ",
+      "PostedDate": "2011-01-05T06:32:26.313-08:00",
+      "Id": 156297
+    },
+    {
+      "Message": "The HelloWorld sample works because it uses MEF. I am using Unity and it does not work. The difference:\r\n\r\n// MefFileModuleTypeLoader.Desktop.cs (MEF)\r\npublic virtual void LoadModuleType(ModuleInfo moduleInfo)\r\n{\r\n    // ...\r\n            // moduleInfo.Ref has \"file://xHelloWorldModule.dll\"\r\n            // path will get \"HelloWorldModule.dll\"\r\n            string path = moduleInfo.Ref.Substring(RefFilePrefix.Length + 1);\r\n\r\n            long fileSize = -1L;\r\n            if (File.Exists(path))\r\n            {\r\n                FileInfo fileInfo = new FileInfo(path);\r\n                fileSize = fileInfo.Length;\r\n            }\r\n            this.RaiseModuleDownloadProgressChanged(moduleInfo, 0, fileSize);\r\n            // path has \"HelloWorldModule.dll\", a valid file name\r\n            this.aggregateCatalog.Catalogs.Add(new AssemblyCatalog(path));\r\n    // ...\r\n}\r\n\r\n// FileModuleTypeLoader.Desktop.cs (Unity)\r\npublic void LoadModuleType(ModuleInfo moduleInfo)\r\n{\r\n    // ...\r\n            // moduleInfo.Ref has \"file://xHelloWorldModule.dll\"\r\n            // path will get \"HelloWorldModule.dll\"\r\n            string path = moduleInfo.Ref.Substring(RefFilePrefix.Length + 1);\r\n\r\n            long fileSize = -1L;\r\n            if (File.Exists(path))\r\n            {\r\n                FileInfo fileInfo = new FileInfo(path);\r\n                fileSize = fileInfo.Length;\r\n            }\r\n            this.RaiseModuleDownloadProgressChanged(moduleInfo, 0, fileSize);\r\n            // moduleInfo.Ref still has \"file://xHelloWorldModule.dll\" and the call will try to load \"xHelloWorldModule.dll\"!\r\n            this.assemblyResolver.LoadAssemblyFrom(moduleInfo.Ref);\r\n    // ...\r\n}\r\n",
+      "PostedDate": "2011-01-05T13:09:43.693-08:00",
+      "Id": 156298
+    },
+    {
+      "Message": "If you use Unity, you need to change this line:\r\n\r\nstring path = moduleInfo.Ref.Substring(RefFilePrefix.Length + 1);\r\n\r\nto this:\r\n\r\nstring path = moduleInfo.Ref.Substring(RefFilePrefix.Length);\r\n\r\nand you will find that it works for an absolute path like \"file://C:\\Temp\\MyModule.dll\" but still doesn't work for relative path like \"file://MyModule.dll\".\r\n",
+      "PostedDate": "2011-01-05T13:14:55.763-08:00",
+      "Id": 156299
+    },
+    {
+      "Message": "Hi,\r\n\r\nYou could try setting your ModuleInfo's Ref property to file:///[YourFilePath]. Also, it could be helpful to mention that in order for relative paths to work, you need to place your module's DLL in the same folder as the DLL outputted by your shell project.\r\n\r\nIf you continue experiencing problems with this, it could be useful if you could provide us with a repro sample, so that we can help you with your scenario.\r\n\r\nThank you for your feedback.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-01-10T09:55:37.063-08:00",
+      "Id": 156300
+    },
+    {
+      "Message": "Hi,\r\n\r\nWe reproduced the error you mentioned, when using the MefFileModuleTypeLoader. We also verified that your workaround seems to solve the problem, and when applying it all tests in the Prism library passed.\r\n\r\nNote that with unity this error doesn't appear when loading modules as the path is retrieved using the moduleInfo.Ref property in order to resolve the assembly. In the FileModuleTypeLoader (i.e. the one used with Unity), the path property (which suffers the consequences of the error reported in this work item) is only used for the ModuleDownloadProgressChanged event. However, in the FileModuleTypeLoader this event is implemented merely for consistency, so the issue won't cause significant trouble.\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami﻿",
+      "PostedDate": "2011-11-25T10:27:35.19-08:00",
+      "Id": 156301
+    }
+  ]
+}

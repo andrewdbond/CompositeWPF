@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "1042099",
+    "ThreadId": "443305",
+    "Html": "Hi,<br />\n<br />\nI am developing an Application for users that have more than one monitor and it is very important that he could move and maintain different Views in both monitors.<br />\n<br />\nHow can I do this. I suppose the solution is to instantiate a Popup Window that would have Regions and in that regions inject my Views. <br />\n<br />\nI am starting with Prism and I would like to know the better solution. Will the Region Manager have control and monitor regions in the Popup window ?<br />\n<br />\nWhat could be the better solution ?<br />\n<br />\nThanks in advance<br />\n",
+    "PostedDate": "2013-05-10T15:01:17.117-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1042849",
+    "ThreadId": "443305",
+    "Html": "Hi,\r<br />\n<br />\nI believe you could find the following blog post from <strong>Damian Schenkelman</strong>, which explains how to create a multi-shell application in <strong>Prism v2</strong>, interesting. Since the sample is made in <strong>Prism v2</strong>, you will need to adapt it to <strong>Prism v4</strong>, which probably won't give you major problems.<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://blogs.southworks.net/dschenkelman/2010/01/26/creating-a-multi-shell-application-in-prism-v2/\" rel=\"nofollow\">Creating a multi-shell application in Prism-v2</a><br />\n</li>\n</ul>\nRegards,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-05-13T07:51:04.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1042903",
+    "ThreadId": "443305",
+    "Html": "Thanks Frederico, I will check it out.<br />\n",
+    "PostedDate": "2013-05-13T08:59:43.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1043908",
+    "ThreadId": "443305",
+    "Html": "Perfect. Thank you very much<br />\n",
+    "PostedDate": "2013-05-15T07:49:15.983-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1044650",
+    "ThreadId": "443305",
+    "Html": "Just another point.<br />\n<br />\nDamian article creates the Shell on the CreateShell of the Bootstrapper. I Will need to create the Shell on Demand, probably asnwering to a DelegateCommand, from a button or Menu.<br />\n<br />\nThe new Shell will be hosted in a PopUpWindow, that will be dragged to the other monitor area. I have found some post that talk about child windows. As you can see this window will not a be child window this window will be displayed in an independent mode. Without any visual hierarchy with the window that showed it.<br />\n<br />\nHow can I do this ? I presume I can create another window, and in the constructor set the Region manager like this:<br />\n<ul>\n<li>\nRegionManager.SetRegionManager(shell2, container.Resolve&lt;IRegionManager&gt;());<br />\n</li>\n</ul>\nBut how will I have access to RegionManager, EventAggregator and every Prism Manager.<br />\n<br />\nThanks in advance<br />\n",
+    "PostedDate": "2013-05-16T10:48:51.923-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1044651",
+    "ThreadId": "443305",
+    "Html": "I have an IDialogService that is responsible for showing my dialogs/popups.  The implementation of the service creates a scoped region and uses the RequestNavigate method to navigate to the view in the dialog/popup.  Very simple.  Keep in mind, that your ViewModel should never declare or initialize a dialog or view directly.  So in your DelegateCommand you would call _dialogService.Show(string viewURI) or something similar.<br />\n",
+    "PostedDate": "2013-05-16T10:53:05.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1044664",
+    "ThreadId": "443305",
+    "Html": "Brian,\r<br />\n<br />\nWhat I really need is to open another &quot;main&quot; window. The user can start a command and open as many Windows/Shells he wants, and show whaterver views he wants in the shells. The user will be able to open the same view in more that one Windows/Shells. I intend to use the KeepAlive = false for the ViewModels.\r<br />\n<br />\nThe new Windows/Shells wil be exactly like the main Shell, the only difference is that the user may ask for a new Sheel on demand.\r<br />\n<br />\nI would like create dinamycally ContentControls in the Shells and inject the Views in these controls. The User will be able to adjust the window the appearence and position of these ContentControls/Regions as he wants, creating there own Dashboards.\r<br />\n<br />\nI presume that the best way is to use the Same RegionManager for all Shells. The problem here is the RegionNames, they will have to be different in the created Shells. Do you think it is better use the same RegionManager for all Shells ?\r<br />\n<br />\nCan I have access to your service, or could you post some code to help.\r<br />\n<br />\n<strong>By the way your course in PluralSight is excelent I am just starting the View-Based Navigation</strong><br />\n",
+    "PostedDate": "2013-05-16T11:24:01.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1045235",
+    "ThreadId": "443305",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding, you should be able to create a new <strong>Shell</strong> in your application at any time by following the same steps that the bootstrapper does to create the main <strong>Shell</strong>:<br />\n<ol>\n<li>Create a <strong>Shell</strong> instance using the container.</li>\n<li>Set the corresponding <strong>RegionManager</strong> using the <strong>SetRegionManager</strong> method.</li>\n<li>\nInvoke the <strong>UpdateRegions</strong> method to register the regions in the <strong>RegionManager</strong>.<br />\n</li>\n</ol>\nBrian has made a good remark in pointing that your view model should not create a <strong>Shell</strong> (or any other view) directly. Therefore, you could define a simple service that could be consumed by the view models and that would execute the aforementioned steps to create the <strong>Shell</strong>. It could also contain any logic to manage those windows, if needed. Besides the <strong>RegionManager</strong>, the rest of the services provided by <strong>Prism</strong>, such as the <strong>EventAggregator</strong> or the <strong>ModuleManager</strong>, are independent of the <strong>UI / Regions</strong> of the application, so you should be able to use them in all the windows without problems.\r<br />\n<br />\nRegarding the regions of the secondary <strong>Shells</strong>, if your application will have several windows or will reuse views in different <strong>Shells</strong>, then I believe it could be appropriate to use an scoped <strong>RegionManager</strong> for each <strong>Shell</strong> to avoid conflicts between region names (you can obtain a new <strong>RegionManager</strong> using the <strong>CreateRegionManager</strong> method.) Take into account that the container only has the <strong>RegionManager</strong> of the main <strong>Shell</strong> registered; therefore, you will need to manage the access to the scoped <strong>RegionManagers</strong> of the secondary windows.\r<br />\n<br />\nAlso, in order to access the appropriate <strong>RegionManager</strong> for a view depending on the <strong>Shell</strong> it's being shown on, you might find the <strong>RegionManagerAwareBehavior</strong> described in the following blog post useful:<br />\n<ul>\n<li>\n<a href=\"http://blogs.southworks.net/dcherubini/2011/11/10/regions-inside-datatemplates-in-prism-v4-using-a-region-behavior/\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini/2011/11/10/regions-inside-datatemplates-in-prism-v4-using-a-region-behavior/</a><br />\n</li>\n</ul>\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-05-17T11:00:00.633-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1045451",
+    "ThreadId": "443305",
+    "Html": "Damian,\r<br />\n<br />\nAs I told you I am using PRISM for the first time and I have a lot of questions. I have followed Brian Lagunas videos in Pluralsight and the IG Outlook sample.\r<br />\n<br />\nWhat is making me a little concerned, among other things, is about Custom Region Adapters. I have followed the IG Outlook example and I have tried to inject some WPF standard controls in the ContentRegion, like DataGrid, DocumentViewer and the application crashed, and I presume that's because of the RegionAdapters.\r<br />\n<br />\nMy application is a Finance application with a lot of forms and different controls. How can I solve this kind of problem ?\r<br />\n<br />\nThanks  <br />\n",
+    "PostedDate": "2013-05-18T04:52:47.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1046175",
+    "ThreadId": "443305",
+    "Html": "Hi,\r<br />\n<br />\nAs far as I know, I believe that a <strong>RegionAdapter</strong> should not have affect over controls injected into the region, but over the control that is being used as a region; although this could differ depending on the implementation of the <strong>RegionAdapter</strong>.\r<br />\n<br />\nIf you are using a custom <strong>RegionAdapter</strong> that is causing problems it would be helpful if you could share it with us along with a description of what controls you want to adapt an how you want to use the region, so that we can help you with it.\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-05-20T13:17:45.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1046664",
+    "ThreadId": "443305",
+    "Html": "I think I have solved the problem. \r<br />\n<br />\nIf I use a UserControl in a Region hosted by a ContentControl everything works. I do not need to create any additional Region Adapters for controls not supported. I can put every control I want in my UserControl and I suppose it will work. Maybe this is not the best solution but it I have tried a lot of different controls and it is working.\r<br />\n<br />\nThanks to all of you<br />\n",
+    "PostedDate": "2013-05-21T11:28:35.263-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

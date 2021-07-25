@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "664851",
+    "ThreadId": "270774",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I'm trying to use Enterprise Library 5 Exception Handling in my Prism class library application (using MEF). Since I can't put the\r\n<span style=\"color:#000000\">exceptionHandling configuration&nbsp;in App.config (like StockTraderRI ), I probably need to use code to load the\r\n</span></p>\r\n<p><span style=\"color:#000000\">exception&nbsp;config file in bootstraper. </span>\r\n</p>\r\n<p><span style=\"color:#000000\">1. How should I do this? </span></p>\r\n<p><span style=\"color:#000000\">2. Do I need to use Fluent interface? Can I use Fluent if this is MEFBootstrapper?</span></p>\r\n<p><span style=\"color:#000000\">&nbsp;</span></p>\r\n<p><span style=\"color:#000000\">Thanks!</span></p>\r\n",
+    "PostedDate": "2011-08-29T07:20:50.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "664957",
+    "ThreadId": "270774",
+    "Html": "<p>Hi Julie,</p>\r\n<p>As far as I know there is no official support for Enterprise Library in Prism, however, you might a better support about how to load the exception config file (and thus, apply this approach in your application) in the Enterprise Library forums:</p>\r\n<ul>\r\n<li><a href=\"http://entlib.codeplex.com/discussions\">Enterprise Library Forums in CodePlex</a></li>\r\n</ul>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-08-29T11:00:29.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "664998",
+    "ThreadId": "270774",
+    "Html": "<p>Hi Damian,</p>\r\n<p>So for Prism to use my exception handler, should I define a class \"MyHandler\" (like \"<span style=\"color: #2b91af;\">EnterpriseLibraryLoggerAdapter\" <span style=\"color: #000000;\">in StockTraderRI), but implement IMyHandler interface. And put the load config file&nbsp;part (which hopefully I can find in the other forum)&nbsp;in the constructor of this class (or some inilize mothod). Then use:</span></span></p>\r\n<pre style=\"font-family: Consolas; background: white; color: black; font-size: 13px;\"><span style=\"color: blue;\">this</span>.Container.ComposeExportedValue&lt;<span style=\"color: #000000;\">I</span><span style=\"color: #2b91af;\">MyHandler</span>&gt;(<span style=\"color: blue;\">this</span>.myHandler);\r\n</pre>\r\n<pre style=\"font-family: Consolas; background: white; color: black; font-size: 13px;\">Then, MyHandler can be injected into the constructor of all the mocules that need to handle exceptions.</pre>\r\n<pre style=\"font-family: Consolas; background: white; color: black; font-size: 13px;\">Is this the right approch?</pre>\r\n<pre style=\"font-family: Consolas; background: white; color: black; font-size: 13px;\">Thanks!</pre>",
+    "PostedDate": "2011-08-29T11:59:17.777-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "665291",
+    "ThreadId": "270774",
+    "Html": "<p>Julie,</p>\r\n<p>The approach you're following seems to be a valid possiblity to achieve your scenario. You should note that you could also use the declarative <strong>Export</strong> attribute to define the interface mapping between the <strong>IMyHandler</strong> interface and the <strong>MyHandler </strong>implementation.</p>\r\n<p>You can read more about the <strong>Export </strong>attribute in the <a href=\"http://mef.codeplex.com/wikipage?title=Declaring%20Exports&amp;referringTitle=Guide\">this section</a> from the <a href=\"http://mef.codeplex.com/wikipage?title=Guide\">Mef Programming Guide</a>.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-08-30T06:24:36.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "683120",
+    "ThreadId": "270774",
+    "Html": "<p>Hi Guido,</p>\r\n<p>I have MyHandler which implement IMyHandler and has a [Export] attrubute. Now I can import it in ever of my module. But I noticed that sometime if a view has problem, I can see the exception thrown in InteliTrace but in my Prism app it just continues and won't display the view.&nbsp;</p>\r\n<p>In order to catch every exception, do I have to put try, catch block in every function in every module? Is there a \"out most\" place that I can put a try catch?</p>\r\n<p>Thanks!</p>",
+    "PostedDate": "2011-10-12T06:30:09.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "683338",
+    "ThreadId": "270774",
+    "Html": "<p>Hi Julie,</p>\r\n<p>Based on my understanding of your scenario, this could be happening because Prism's navigation service raises the NavigationFailed event when an exception appears instead of throwing the exception.</p>\r\n<p>If this is the case you might find the following blog post useful:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/gmaliandi/2011/08/how-to-prevent-region-navigation-from-hiding-exceptions-in-prism/\">How to prevent Region Navigation from hiding exceptions in Prism</a></li>\r\n</ul>\r\n<p>Please let us know if we misunderstood your scenario.</p>\r\n<p>I hope you find it useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-10-12T12:31:37.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

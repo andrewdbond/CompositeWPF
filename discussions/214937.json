@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "451560",
+    "ThreadId": "214937",
+    "Html": "<p>Hello!</p>\r\n<p>Is it possible to pass additional parameters to IUnityContainer.Resolve&lt;T&gt; method?</p>\r\n<p>&nbsp;</p>\r\n<p>Let's say I've got UserEditViewMovel with the following constructor:</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:#0000ff\"><pre></pre>\r\n<pre>public class UserEditViewModel : IUserEditViewModel{\r\n\r\npublic UserEditViewModel(IUnityContainer container, IEventAggregator eventAggregator, IDataService dataService, User currentUser)\r\n{\r\n            this.dataService = dataService;\r\n            this.currentUser = currentUser;\r\n            ...\r\n}\r\n\r\n...\r\n}\r\n\r\nInside another view model (lets call it IUserListViewModel) which operates on users list I'd like to invoke user edit functionality:\r\n\r\npublic class UserListViewModel : IUserListViewModel\r\n{\r\n  public void EditCurrentUser(){\r\n    IUserEditViewModel model = container.Resolve();\r\n    model.EditCurrentUser();\r\n  }\r\n}\r\n</pre>\r\n<pre><br></pre>\r\n</span></pre>\r\n<pre>Is there any way to provide parameter for Resolve() method?</pre>\r\n<pre><br></pre>\r\n<pre><br></pre>\r\n</div>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-06-03T22:50:07.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "451562",
+    "ThreadId": "214937",
+    "Html": "<p>If there is no such a possibility, maybe there exists some extensions?</p>\r\n<p>The key point is that I have to inject&nbsp;<em>currentUser</em>&nbsp;argument to <em>UserEditViewModel</em>. And this argument is dynamically changed during runtime.&nbsp;</p>\r\n<p>For example there is list with users. When I double click on some user inside list, new <em>IUserEditModel </em>must be resolved with <em>currentUser</em>&nbsp;passed to contructor.&nbsp;</p>",
+    "PostedDate": "2010-06-03T22:55:28.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "454806",
+    "ThreadId": "214937",
+    "Html": "<p>up thread, Still actual</p>",
+    "PostedDate": "2010-06-12T12:08:40.013-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "455300",
+    "ThreadId": "214937",
+    "Html": "<p>Hi,</p>\r\n<p>One of the benefits of using a dependency injection container is that it  gives the possibility for the caller (in this case, the  <strong>UserListViewModel</strong>) to be unaware of the dependencies of the  object you are resolving, since the container is responsible of injecting those  dependencies. With that in mind, it wouldn&rsquo;t be appropriate to pass a dependency  as an argument to the <strong>Resolve&lt;T&gt;</strong> method. The correct  approach for your scenario is annotating those dependencies for <a href=\"http://msdn.microsoft.com/en-us/library/ff660875(PandP.20).aspx\">constructor  injection</a>, like you&rsquo;ve done, so that the dependencies are injected to the  object when it is created.</p>\r\n<p>When you call the <strong>Resolve </strong>or  <strong>Resolve&lt;T&gt;</strong> method, you need to specify the type or the  interface your object inherits from. You might find <a href=\"http://msdn.microsoft.com/en-us/library/ff660929(PandP.20).aspx\">this  article</a> useful. If you are looking for the <strong>Resolve&lt;T&gt;</strong> method, it is located in the Unity extensions, as explained on <a href=\"View.aspx?ThreadId=210756\">this  thread</a>. If you used the generic one, the code for resolving  IUserEditViewModel would look like this:</p>\r\n<p><span style=\"font-family:consolas\">IUserEditViewModel model =  container.Resolve&lt;IUserEditViewModel&gt;();</span></p>\r\n<p>Take into account that, in order for the container to be able to resolve an  object of certain type, you need to have the <a href=\"http://msdn.microsoft.com/en-us/library/ff660923(PandP.20).aspx\">type  or type mapping registered beforehand</a>. If you haven&rsquo;t specified a value for  the Lifetime Manager, a new instance is created each time you resolve it, which  is the behavior you are asking for. You can read more about this in <a href=\"View.aspx?ThreadId=213883\">this  thread</a>.</p>\r\n<p>For other unity specific question, you might find better  support in the <a href=\"http://unity.codeplex.com/Thread/List.aspx\">Unity  forum</a>.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-06-14T10:08:40.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

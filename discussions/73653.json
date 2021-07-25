@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "251800",
+    "ThreadId": "73653",
+    "Html": "<p>Hi all,</p>\r\n<p>I'm using prism in my current Silverlight application and I need to add a generic way to implement windows management. I read about how to create a PopupDialogWindow (by adding a PopupDialogActivationBehavior and creating a wrapper around my view) and this works just fine (just for the record I use a docking component to create floating windows - but this is not the problem).</p>\r\n<p>In the samples that I've seen so far this popup window is closed only using the wrapper close button and handling the event in the behavior to remove the view. I would like to have some suggestion regarding:</p>\r\n<p>1. how can I close the window from the ViewModel? Should I call Close() on the View? (usually a View is added and removed from a region - I don't know how to bring in the close concept)<br>2. how can I notify the owner (ViewModel) of the window giving that the user can close the window from both the wrapper (close button) and the ViewModel of the window? Should the owner of the window subscribe to events of the View or the ViewModel?</p>\r\n<p>I don't even know if I was able to make it clear, but I'll wait for some answers or some links to read and have a better understanding.</p>\r\n<p>Thanks,</p>\r\n<p>Jimmi</p>",
+    "PostedDate": "2009-10-30T15:25:09.397-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "253415",
+    "ThreadId": "73653",
+    "Html": "<p id=0d61bd90-ab78-012c-b188-12313b019cc1>Hi,</p>\r\n<p id=0d61e360-ab78-012c-b189-12313b019cc1>If you are using the popup implementation of the RI and you want to close a popup view, you can deactivate the view from the region. A possible approach to do this could be having a command in your ViewModel that executes the following actions:</p>\r\n<ol>\r\n<li>Gets the popup Region from the RegionManger.</li>\r\n<li>Obtains the view by name(calling the GetView method)</li>\r\n<li>Calls the Deactivate method by passing the View object as parameter. </li>\r\n</ol>\r\n<p id=0d621d10-ab78-012c-b18a-12313b019cc1>I hope you can find this answer helpful.</p>\r\n<p id=0d6267c0-ab78-012c-b18b-12313b019cc1>Fernando Antivero    <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2009-11-04T10:53:10.127-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "1347533",
+    "ThreadId": "579006",
+    "Html": "I have created a new VB project (named TestPrismVB), installed Prism and I have written this simple code:<br />\n<pre><code>Imports Microsoft.Practices.Prism.Mvvm\n\nPublic Class pruebaViewModel\n    Inherits BindableBase\n\n    Private Property _oneProperty As String\n    Public Property oneProperty As String\n        Get\n            Return _oneProperty\n        End Get\n        Set(value As String)\n            SetProperty(_oneProperty, value)\n            'IF I UNCOMMENT THIS LINE, IT WORKS:\n            'OnPropertyChanged(&quot;oneProperty&quot;)\n        End Set\n    End Property\n\n    Private Property _anotherProperty As String\n    Public Property anotherProperty As String\n        Get\n            Return _anotherProperty\n        End Get\n        Set(value As String)\n            SetProperty(_anotherProperty, value)\n            oneProperty = value\n        End Set\n    End Property\nEnd Class\nAnd the XAML file is MainWindow.xaml:</code></pre>\n\n<pre><code>&lt;Window x:Class=&quot;MainWindow&quot;\n    xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;\n    xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;\n    xmlns:vm=&quot;clr-namespace:TestPrismVB&quot;\n    Title=&quot;MainWindow&quot; Height=&quot;350&quot; Width=&quot;525&quot;&gt;\n    &lt;Window.DataContext&gt;\n        &lt;vm:pruebaViewModel/&gt;\n    &lt;/Window.DataContext&gt;\n    &lt;StackPanel&gt;\n        &lt;TextBox Text=&quot;{Binding anotherProperty, UpdateSourceTrigger=PropertyChanged}&quot;/&gt;\n        &lt;TextBlock Text =&quot;{Binding oneProperty}&quot;/&gt;\n    &lt;/StackPanel&gt;\n&lt;/Window&gt;</code></pre>\n\nIf you run this simple project, and you type 1234, you will see that the TextBlock updates one step behind (it will show 123 instead of 1234).\r<br />\n<br />\nIs it a VB bug? A Prism bug? Am I doing something wrong?\r<br />\n<br />\nThank you<br />\n",
+    "PostedDate": "2015-01-30T06:09:43.267-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1347744",
+    "ThreadId": "579006",
+    "Html": "I can't explain what you are describing just based on your code. But bottom line the recommended pattern when you have co-dependent properties is to use OnPropertyChanged to raise the change notification for the other property when you set it from the dependent one. So if A and B are properties that set each other, use SetProperty for the one being set, set the other, then call OnPropertyChanged for the other as the normal pattern.<br />\n",
+    "PostedDate": "2015-01-31T06:20:40.063-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1348863",
+    "ThreadId": "579006",
+    "Html": "SOLVED:\r<br />\n<br />\nThe problem was the word PROPERTY in:<br />\n<pre><code>Private Property _oneProperty As String\nPublic Property oneProperty As String\n</code></pre>\n\nThe correct is:<br />\n<pre><code>Private _oneProperty As String\nPublic Property oneProperty As String\n</code></pre>\n\nThank you<br />\n",
+    "PostedDate": "2015-02-04T00:58:50.333-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1348956",
+    "ThreadId": "579006",
+    "Html": "Interesting. That didn't jump out at me since I rarely use VB. Guess VB was letting that somehow silently mask the intended public property from being called. Another good reason not to like VB. :)<br />\n<br />\nSnide comments aside - guessing you don't have option strict on? I would think that option strict would catch that.<br />\n",
+    "PostedDate": "2015-02-04T07:01:54.49-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1353546",
+    "ThreadId": "579006",
+    "Html": "Interesting indeed. A couple of months ago I was struggeling with exactly this same issue and solved it with after bad struggle with myself and others who claimed I was wrong. See <a href=\"http://stackoverflow.com/questions/25608207/prism-windows-8-1-notifyproperychanged-does-not-fire/25684985#25684985\" rel=\"nofollow\">this article in StackOverflow</a>.\r<br />\nIt appears that the declaration of variables and properties in C# and VB are slightly but significantly different. And all the documentation (infortunately for VB programmers) is in C#. I don't believe Option Strict solves this, but I did not try to be honest.\r<br />\n<br />\nOh and BrianNoyes, if this would be a reason (what are the other ones??) to abandon VB, I would certainly stick to it. Less sexy, less techie OK, but better to understand and read. But that's a completely other discussion :-) - no offence!\r<br />\n<br />\nRegards!<br />\n",
+    "PostedDate": "2015-02-17T14:03:49.727-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1353556",
+    "ThreadId": "579006",
+    "Html": "Actually the reason you mention is the #1 reason I think choosing VB.NET if not already heavily invested in it is a bad idea - the majority of documentation and samples are in C# only making it a constant source of friction for VB developers. The &quot;better able to understand and read&quot; is not a valid argument for anyone to make or dispute about any language - those qualities are in the eyes of the beholder and are driven by the experience of the beholder and the way their brain is wired. My main reasons for being biased against VB are driven by the combination of the problem mentioned with documentation and samples (which gets worse all the time as many product teams at Microsoft are specifically choosing to allocate their budgets to shipping more features instead of spending the resources to document and provide samples in two languages), and the fact that VB is more loosely typed and lets you get away with shooting yourself in the foot in more subtle ways such as the property redeclaration here without telling you you are doing it. That last argument has weakened a lot for me as I now do a ton of JavaScript development, and that is a language that will let you point a high caliber weapon at your forehead and not tell you anything until you have blown your head off, and yet somehow that flexibility doesn't bother me there as the flexibility of VB always did. Can't fully explain that other than to say that when developing in .NET my brain knows that the underlying runtime is very strongly typed so I like my language to match the reality of the runtime as closely as possible, whereas when doing JavaScript development my brain knows that the underlying runtime is very loose so using a language that matches that makes more sense to me.<br />\n",
+    "PostedDate": "2015-02-17T14:30:53.537-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1353623",
+    "ThreadId": "579006",
+    "Html": "@BrianNoyes: we have indeed invested heavily in VB development the last 4 to 6 years, based on earlier positive experience with the language. In fact I dislike the discussion, but every now and then someone comes up with a new argument. What I really - I mean really - need is THE argument to invest in re-education of our devteam. .... and still am looking for that argument. It seems a matter of mindset as you mention it. I completely agree on that. Close this discussion, OK?<br />\n",
+    "PostedDate": "2015-02-18T00:13:46.377-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1353780",
+    "ThreadId": "579006",
+    "Html": "Agreed on shutting this line of discussion down. :) Was just trying to explain myself since I fell into the trap of making a snide comment about a perfectly good language.<br />\n",
+    "PostedDate": "2015-02-18T10:58:32.763-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "694599",
+    "ThreadId": "278554",
+    "Html": "<p>After navigate between views in the same region i am unable to got focus on the target view.</p>\n<p>In this case the Shell view received the focus instead of the current view.</p>\n<p>Starting navigation:</p>\n<pre style=\"font-family: Courier New; font-size: 12; color: black; background: white;\"> RegionManager.RequestNavigate(<span style=\"color: #2b91af;\">RegionNames</span>.MainRegion,&nbsp;<span style=\"color: blue;\">new</span>&nbsp;<span style=\"color: #2b91af;\">Uri</span>(<span style=\"color: #2b91af;\">ViewNames</span>.TargetView&nbsp;+&nbsp;query.ToString(),&nbsp;<span style=\"color: #2b91af;\">UriKind</span>.Relative));</pre>\n<p>On the target ViewModel the request is handled by an implementation of the INavigationAware.</p>\n<p>The last call on the callstack i recognist happen on the Shell-Codebehind EventHandler:</p>\n<pre style=\"font-family: Courier New; font-size: 12; color: black; background: white;\"> <span style=\"color: blue;\">this</span>.GotFocus&nbsp;+=&nbsp;<span style=\"color: blue;\">new</span>&nbsp;<span style=\"color: #2b91af;\">RoutedEventHandler</span>(StartView_GotFocus);</pre>\n<p>&nbsp;</p>\n<p>regards.</p>",
+    "PostedDate": "2011-11-06T23:49:45.413-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "694676",
+    "ThreadId": "278554",
+    "Html": "<p>Hi,</p>\r\n<p><span style=\"font: 7pt 'Times New Roman';\"> </span>It would be helpful if you could provide us with a repro sample application that portrays this scenario, so we can help you troubleshoot your problem.</p>\r\n<p>Thanks,</p>\r\n<p>﻿﻿Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-11-07T04:33:38.777-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "695207",
+    "ThreadId": "278554",
+    "Html": "<p>Hi Agustin,<br />hi anyone,</p>\r\n<p>thank you for your interest.</p>\r\n<p>Unfortunately i am currently unable to size down the application in a certain time.<br />I will take charge of a small sample.</p>\r\n<p>Irrespective of the an code-example, is the discripte behavior (see above) correct/expectable?</p>\r\n<p>Is an additional action required to set the focus to the new view?</p>\r\n<p>Is there a best practice to solve this issue?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2011-11-08T02:14:17.153-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "695437",
+    "ThreadId": "278554",
+    "Html": "<p>Hi,</p>\r\n<p>As far as I know Prism doesn't provide guidance about best practices to manage focus in controls.</p>\r\n<p>Based on my understanding, you could try setting the <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.uielement.focusable.aspx\"><strong>Focusable</strong> Property</a> of your Control to <strong>true</strong>, which would make your control react to focus. If this doesn't help, you could try the <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.uielement.focus.aspx\"><strong>Focus</strong> Method</a>, which allows you to set focus to an element.</p>\r\n<p>I hope you find this handy.</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-11-08T10:48:19.017-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

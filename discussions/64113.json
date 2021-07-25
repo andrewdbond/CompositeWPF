@@ -1,0 +1,122 @@
+[
+  {
+    "Id": "217998",
+    "ThreadId": "64113",
+    "Html": "<p>I'm working on a simple demo application using the compoiste Application Library for WPF. I have an issue in that when I <em>inject </em>a user control into a region in the shell there is a considerable lag in the control rendering and being visible. When I include the same control in the shell (not in a referenced IModule) it appears instantly. I understand that I must take a performance hit at the point when I load controls into my shell from other modules but the delay is quite extreme. The control itself is a dataGrid (WPFToolkit) with around 2000 rows - there is no database work being done to generate the data for the grid.</p>\r\n<p>&nbsp;</p>\r\n<p>The code Im using in the initialisation of my module is as below:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre> <span style=\"color:Blue\">this</span>.regionManager.RegisterViewWithRegion(RegionNames.MainRegion, <span style=\"color:Blue\">typeof</span>(Test2));\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Is there any reason Im getting such poor performance? The lag in the control rendering is around 5 seconds - a complete show stopper for using prism if it cannot do something so simple.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2009-07-31T06:56:43.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218046",
+    "ThreadId": "64113",
+    "Html": "<p>What is the performance if you don't load the DataGrid with data?&nbsp;&nbsp;</p>",
+    "PostedDate": "2009-07-31T08:34:47-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218061",
+    "ThreadId": "64113",
+    "Html": "<p>Its faster - but still has a lag of about a second even just to render the grid with columns headers and no rows in it.</p>",
+    "PostedDate": "2009-07-31T08:59:17.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218073",
+    "ThreadId": "64113",
+    "Html": "<p>How many columns are we talking about?&nbsp;&nbsp; The reason I ask is because I have not encountered such delays (that I agree are impractical);&nbsp; I suspect something else is going on...&nbsp;&nbsp;&nbsp; For example: <a href=\"http://www.global-webnet.net/webcast/RIAPrism.htm\">http://www.global-webnet.net/webcast/RIAPrism.htm</a>&nbsp;is a webcast I did for <a href=\"http://www.global-webnet.net/blogengine/post/2009/07/27/How-to-use-NET-RIA-Services-in-PRISM.aspx\">this BLOG</a> where I show RIA, WPF, Silverlight and Winform Grids being populated (multi-targeting) with data and the view loads in an expected responsive manner.</p>\r\n<p>I would review the output window and see if there are any complaints from WPF happening in the background.&nbsp;&nbsp; If you remark out the datagrid do you still get the delay?&nbsp;&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-31T09:28:35.237-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218077",
+    "ThreadId": "64113",
+    "Html": "<p>Thanks for getting back to me. Ive only got 3 columns on the grid.</p>\r\n<p>I've created a sample at home which illustrates the issue I'm having. I shall zip it up and share it with this thread.</p>",
+    "PostedDate": "2009-07-31T09:40:13.107-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218104",
+    "ThreadId": "64113",
+    "Html": "<p>Hi</p>\r\n<p>I do not know the exact problem you are having, but you should take into account that <a href=\"http://msdn.microsoft.com/en-us/library/dd490826.aspx\">ViewDiscovery</a> &ldquo;<em>you do not have explicit control over when the regions' corresponding views are loaded and displayed.&rdquo;</em> (from the Prism-v2 documentation), as opposed to <a href=\"http://msdn.microsoft.com/en-us/library/dd458899.aspx\">ViewInjection</a>. You can read more about these differences in <a href=\"http://msdn.microsoft.com/en-us/library/dd458944.aspx\">this article</a> from the Prism documentation.</p>\r\n<p>Another possibility could be that the <strong>DataGrid</strong> is not being rendered using <a href=\"http://msdn.microsoft.com/en-us/library/cc716879.aspx\">UI Virtualization</a> (you can read about a similar situation in <a href=\"http://blogs.southworks.net/dschenkelman/2009/01/29/how-to-show-large-amounts-of-data-in-wpf-using-ui-virtualization/\">this post</a>). If this is the cause of the issue, you can search the web for different ways to enable Virtualization in the WPF DataGrid.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-07-31T10:47:55.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218112",
+    "ThreadId": "64113",
+    "Html": "<p>Ive tried using both view discovery and view injection and the problem persists. Ive also set the endable row and column&nbsp;virtulization methods on my grid.</p>\r\n<p>Below is a zipped up copy of a small solution demonstrating the issue</p>\r\n<p><a href=\"http://files.getdropbox.com/u/416443/CALDemo.zip\">http://files.getdropbox.com/u/416443/CALDemo.zip</a></p>\r\n<p>Im grateful for your help,</p>\r\n<p>Dav</p>",
+    "PostedDate": "2009-07-31T11:16:20.727-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218206",
+    "ThreadId": "64113",
+    "Html": "<p>Hi Dav,</p>\r\n<p>I took your demo and wrapped some infrastructure around it so that I could level the playing field.&nbsp;&nbsp; The infrastructure is a combination of the Model-View-Presenter and Model-View-ViewModel (MVVM) patterns in addition to patterns I picked up from the Smart Client Software Factory days as well as the QuickStart example TopDownComposition in PRISM V2 drop 7.&nbsp;&nbsp;&nbsp;The infrastructure cranked out is a scaled down version of what I will be <a href=\"http://www.global-webnet.net/blogengine/post/2009/07/27/How-to-use-NET-RIA-Services-in-PRISM.aspx\">releasing in August</a>.</p>\r\n<p>What you will find in the demo provided is that not only do both the Shell and Modules load in the same amount of time, but with a wee bit of P&amp;P the&nbsp;performance (actual and perceived) is very fast.&nbsp;</p>\r\n<p>In the following capture clip I show before and after&nbsp;refactoring referenced PRISM project:<br><a href=\"http://www.global-webnet.net/webcast/performance.htm\">http://www.global-webnet.net/webcast/performance.htm</a>&nbsp;&nbsp; Blogged about <a href=\"http://www.global-webnet.net/blogengine/post/2009/07/31/Does-PRISM-have-a-performance-issue.aspx\">HERE</a></p>\r\n<p>All of the source code (your demo with infrastructure plugged in) available on the following link:<br><a href=\"http://www.global-webnet.net/Webcast/CALDemo.zip\">http://www.global-webnet.net/Webcast/CALDemo.zip</a></p>\r\n<p>Bill</p>\r\n<p><em>Architectural note:&nbsp;&nbsp;This&nbsp;demo uses a combination of the Model-View-Presenter (MVP) pattern&nbsp;and the Model-View-ViewModel (MVVM) pattern, aka Presentation Model and Application Model.&nbsp;&nbsp;&nbsp; By having multiple views share the same model (see </em><a href=\"http://martinfowler.com/eaaDev/PresentationModel.html\"><em>Martin Fowlers Presentation Model</em></a><em>) you can effectively share the same data without having to have a lot of complex logic to maintain state.&nbsp;&nbsp; Each view can update the model and the other views will be notified via the observer pattern (INotifyPropertyChanged).</em></p>\r\n<p><em>Trying to use MVVM alone has introduced the limitations that Martin Fowler discussed in </em><a href=\"http://martinfowler.com/eaaDev/uiArchs.html\"><em>THIS ARTICLE</em></a><em> (paragraph above Figure 11).&nbsp;&nbsp; As he suggest, it was the limitations that introduced the need for MVP.&nbsp;&nbsp; Combining them gives us the best of both worlds.&nbsp;&nbsp;</em></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-31T16:46:59.257-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218690",
+    "ThreadId": "64113",
+    "Html": "<p>Additionally, I suggest you use View Injection rather than View Discovery, although the latter&nbsp;sytax is easy, but because RegisterViewWithRegion use weak reference, so we are not sure when the GC occurs, the performance&nbsp;will be&nbsp;down.</p>\r\n<p>Please use &quot;RegionManager.Region[&quot;RegionName&quot;].Add(new View())&quot;, and manully remove the view from region, which can improve the performance significantly.</p>",
+    "PostedDate": "2009-08-03T02:55:50.83-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218741",
+    "ThreadId": "64113",
+    "Html": "<p>Actually the weak references are for the listeners.&nbsp;&nbsp; I&nbsp;trust the problem they are trying to solve by doing this is to ensure that the registered listeners (ContentRegistered event) do not have a strong reference to the objects that contain the handlers.&nbsp;&nbsp; Otherwise when the object is removed it can't be GC'd (memory leak)&nbsp;because the listener has a strong reference to it.&nbsp;&nbsp; By using the WeakDelegatesManager to manage the registered listeners if objects get removed, they can be GC'd.&nbsp;&nbsp;&nbsp;</p>",
+    "PostedDate": "2009-08-03T04:58:00.523-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218760",
+    "ThreadId": "64113",
+    "Html": "<p>Hi Bill,</p>\r\n<p>Thanks so much for taking the time to look at and modify my code. Am I correct in thinking that apart from adding the goodness of MVVM to my demo app, the perceived performance of my app has been increased by simply using the below code to let the xaml respond to the changes in the observable collection?</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre> if (i % 15 == 0)</pre>\r\n<pre>System.Windows.Forms.Application.DoEvents();\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-03T05:41:02.19-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218803",
+    "ThreadId": "64113",
+    "Html": "<p>Yes, DoEvents() helps with the percieved performance&nbsp;as well as loading your data on a separate thread, e.g.,</p>\r\n<p><em>Excerpt from Bootstrapper.cs follows:</em><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;// Run ModuleInitialized() on separate thread<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dispatcher.CurrentDispatcher.BeginInvoke(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Windows.Threading.DispatcherPriority.SystemIdle,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new ModulesInitializedDelegate(ModulesInitialized));</p>\r\n<p>Which&nbsp;also helped with the actual performance.&nbsp;&nbsp; If you take out the DoEvents() it will still be fast but if you remove the ModulesInitialized() event, running on&nbsp;a separate thread your original problem will raise it's ugly head.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-03T07:45:43.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218838",
+    "ThreadId": "64113",
+    "Html": "<p>Thanks Bill,</p>\r\n<p>I've read elsewhere that using DoEvents() to keep the UI responsive is not considered a best practice. Is there a way using WPF's dispatcher model to push changes to the UI to achieve similar perceived performance (that is seeing some rows appear in the grid earlier)?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2009-08-03T09:07:57.24-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218871",
+    "ThreadId": "64113",
+    "Html": "<p>You'll find the following WPF alternative to Application.DoEvents()&nbsp;in a number of places:&nbsp;<a href=\"http://www.cnblogs.com/sheva/archive/2006/08/24/485790.html\">http://www.cnblogs.com/sheva/archive/2006/08/24/485790.html</a>, he wrote this one back in 2006.&nbsp;&nbsp;</p>\r\n<p>Bill</p>\r\n<p>P.S. (Edited) the &quot;bad things&quot;&nbsp;refered to can result in a very quicky behavior of your application.&nbsp; I can't remember the specifics but years ago (back when WinForms was the way to go) I chased a reentrancy problem caused/permitted by a misplaced DoEvents().&nbsp;&nbsp; DoEvents() had&nbsp;its place and usage but if littered to generously it could cause serious problems.&nbsp;&nbsp;&nbsp; I trust this falls true for WPF...</p>",
+    "PostedDate": "2009-08-03T10:18:33.25-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218875",
+    "ThreadId": "64113",
+    "Html": "<p>Hi, <a id=\"ctl00_ctl00_MasterContent_Content_PostRepeater_ctl20_UserNameLink\" href=\"http://www.codeplex.com/site/users/view/dav_evans\">dav_evans</a>,</p>\r\n<p>I remember DoEvent is the function of Winform, not WPF, which is another topic, rather than Prism. To approve my viewpoint, maybe I pzuuled, so I create a WPF app, but find no this function.</p>\r\n<p>DoEvent can actually improve performance of WInform when load too many controls, another case is receive so many event but have no enough time to handled them, finally some events will be lost, so we use doevent to prevent from it.</p>\r\n<p>But in WPF, we don not need to use this mechnism, nor the async mechnism either.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-03T10:24:22.627-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

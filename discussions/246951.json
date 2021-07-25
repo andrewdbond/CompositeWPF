@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "569730",
+    "ThreadId": "246951",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I've added KeyBindings to a UserControl, this UserControl is added to the Shell using the regionmanager. The UserControl needs to have focus to make the KeyBindings work. Is there any way to make the KeyBindings work without always giving the UserControl\r\n focus. Should I use commaind or the eventaggregator ?</p>\r\n<p>I was thinking about creating a &quot;KeyPressEvent&quot; which holds information about the keys pressed and then publish the event in the KeyDown handler of the shell. Any help or advice is appreciated!</p>\r\n",
+    "PostedDate": "2011-02-21T10:39:18.833-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "570371",
+    "ThreadId": "246951",
+    "Html": "<p>Hi</p>\r\n<p>Take into account that in a composite scenario, the command handler might be a view model that does not have any associated elements in the visual tree or is not the focused element.</p>\r\n<p>For this reasons Prism provides guidance to support this kind of scenarios with <strong>DelegateCommands</strong> (which allows you to call a delegate method when the command is executed) and <strong>CompositeCommands</strong> (which allows you to combine multiple commands).</p>\r\n<p>On the other hand, Prism also provides you an <strong>EventAggregator</strong> event mechanism. As MSDN documentation shows: &ldquo;<em>(&hellip;) enables communications between loosely coupled components in the application. This mechanism, based on the event aggregator service, allows publishers and subscribers to communicate through events and still do not have a direct reference to each other.</em></p>\r\n<p><em>(&hellip;)Consider using the EventAggregator to publish an event across modules and when sending a message between business logic code, such as controllers and presenters</em>&rdquo;</p>\r\n<p>Based on my understanding of your scenario you could use <strong>EventAggregator</strong> in your approach, since you need to communicate between any focused view and your user control. publishing an event and then subscribe to it in order to fulfill your requirement.</p>\r\n<p>Additionally, you can read more about these topics in <a href=\"http://msdn.microsoft.com/en-us/library/ff921122(v=PandP.40).aspx\">Chapter 9: Communicating Between Loosely Components</a></p>\r\n<p>Please let me know if this information helps you.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-02-22T12:11:39.123-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "570607",
+    "ThreadId": "246951",
+    "Html": "<p>Thanks for the repsonse!</p>\r\n<p>So publishing the KeyPressEvent in a view through the EventAggregator and subscribing to this it from for example the viewmodel would be a good approach to solve this problem ?</p>",
+    "PostedDate": "2011-02-22T23:24:01.167-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

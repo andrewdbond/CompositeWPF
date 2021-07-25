@@ -1,0 +1,76 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "This issue was fixed in the Prism-v2.1 release, so the Workitem is closed now. Prism 2.1 can be downloaded from here:\r\nhttp://www.microsoft.com/downloads/details.aspx?FamilyID=387c7a59-b217-4318-ad1b-cbc2ea453f40&displaylang=en",
+    "ClosedDate": "2009-11-03T11:27:34.753-08:00",
+    "CommentCount": 6,
+    "Custom": "",
+    "Description": "This used to work fine under SL3 beta, but after I upgraded to SL3 RTM, the functionality stopped working.\nIn order to reproduce, just open and compile the ViewInjectionComposition solution in Quick starts. the tab header that used to display \"Current Projects\", now is empty.",
+    "LastUpdatedDate": "2013-05-16T05:28:56.827-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-07-15T17:41:14.977-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "TabControlRegionAdapter bindings in the tab header are broken under silverlight 3.0",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 15,
+    "Id": 4599
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897963,
+      "FileName": "SL3 bug.JPG",
+      "DownloadUrl": ".\\897963"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "I noticed this myself the other day and checked that using simple text in a template style for the TabItem.HeaderTemplate does show BUT when using {Binding SomeProperty} it is blank.",
+      "PostedDate": "2009-07-17T08:23:56.527-07:00",
+      "Id": 156159
+    },
+    {
+      "Message": "I've been beating my head against the wall on this for a couple of days - anyone have a workaround?",
+      "PostedDate": "2009-07-22T05:13:19.877-07:00",
+      "Id": 156160
+    },
+    {
+      "Message": "I just dug into what is causing the problem and it is a flaw in Silverlight 3 unfortunately. SL 2 worked correctly as the UpdateHeaderVisuals correctly set the template by loading the content:\r\n\r\nContentControl contentControl = this.GetContentControl(this.IsSelected, this.TabStripPlacement);\r\n    if (contentControl != null)\r\n    {\r\n        if (this.HeaderTemplate == null)\r\n        {\r\n            contentControl.Content = this.Header;\r\n        }\r\n        else\r\n        {\r\n            FrameworkElement element = this.HeaderTemplate.LoadContent() as FrameworkElement;\r\n            contentControl.Content = element;\r\n        }\r\n    }\r\n\r\nSL3 just sets the ContentTemplate of the header control to the HeaderTemplate which I don't think performs the data binding.\r\n\r\nI verified this by manually loading the TabItem.Header with the evaluation of its HeaderTemplate.LoadContent(). Probably the best way to workaround this problem is to create your own derived TabItem control to correct the problem by adding an additional step to the ApplyTemplate AND copy the TabControlRegionAdaptor to use your new derived TabItem control.\r\n\r\nI have not tested this yet but will post something when I have it working.",
+      "PostedDate": "2009-07-22T07:03:07.703-07:00",
+      "Id": 156161
+    },
+    {
+      "Message": "I have another workaround until this is fixed properly - \r\n\r\nIn the TabControlRegionAdapter PrepareContainerForItem method, I inserted the line Fred showed above into the method, after the container.Style was set. So after the line:\r\n\r\ncontainer.Style = GetItemContainerStyle(parent); \r\nI added:\r\ncontainer.Header =  container.HeaderTemplate.LoadContent();\r\n\r\nThis performs the databinding and will set the headers from the binding on the presenter...\r\n\r\nIts a hack, but it will work until the right answer is posted...",
+      "PostedDate": "2009-07-27T10:37:47.04-07:00",
+      "Id": 156162
+    },
+    {
+      "Message": "We've starting work to address these for SL3 and I've posted a drop of what we have to-date that includes an updated TabControlRegionAdapter for this issue.  You can find tis in the source under V3.",
+      "PostedDate": "2009-08-21T14:36:16.06-07:00",
+      "Id": 156163
+    },
+    {
+      "Message": "This issue was fixed in the Prism-v2.1 release, so the Workitem is closed now. Prism 2.1 can be downloaded from here:\r\nhttp://www.microsoft.com/downloads/details.aspx?FamilyID=387c7a59-b217-4318-ad1b-cbc2ea453f40&displaylang=en",
+      "PostedDate": "2009-11-03T11:26:40.47-08:00",
+      "Id": 156164
+    }
+  ]
+}

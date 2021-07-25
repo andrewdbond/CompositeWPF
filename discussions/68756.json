@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "233972",
+    "ThreadId": "68756",
+    "Html": "<p>Hi everybody</p>\r\n<p>I would like to display some images in my SL3 application. As there are a lot of images i created a directory in the ClientBin and put the images inside.</p>\r\n<p>Usually all i have to do is to set the&nbsp;Source of the image control&nbsp;in any usercontrol but with prism my image is not displayed.</p>\r\n<p>May be&nbsp;&nbsp;because the usercontrol is in a module. When i add the image at the module as resource it displays.</p>\r\n<p>Does anybody encounter this issue?</p>\r\n<p>Thanks</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-12T21:53:30.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "234493",
+    "ThreadId": "68756",
+    "Html": "<p>Hi</p>\r\n<p>You can take the <a href=\"http://msdn.microsoft.com/en-us/library/dd490832.aspx\">Multitargeting Quickstart</a> which shows different images as an example. Take into account that when you migrate it to Silverlight 3 you will get an error when running the application as the constructor of the resources will be internal. You must make it public in order for it to work.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman   <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-09-14T14:42:33.083-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "235052",
+    "ThreadId": "68756",
+    "Html": "<p>Hi</p>\r\n<p>In this example the absolute path is set to the source like this.</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>        <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">Image</span> <span style=\"color:Red\">Grid.Row</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">0</span><span style=\"color:Black\">&quot;</span> <span style=\"color:Red\">Grid.Column</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">2</span><span style=\"color:Black\">&quot;</span> <span style=\"color:Red\">HorizontalAlignment</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">Right</span><span style=\"color:Black\">&quot;</span> <span style=\"color:Red\">Source</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">http://localhost:10234/Images/CompanyLogo.jpg</span><span style=\"color:Black\">&quot;</span> <span style=\"color:Blue\">&gt;</span><span style=\"color:Blue\">&lt;/</span><span style=\"color:#A31515\">Image</span><span style=\"color:Blue\">&gt;</span>\r\n</pre>\r\n<pre>This should works. It is not very nice solution. I'll work around with this solution.</pre>\r\n<pre>Thanks\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-16T01:58:45.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "242719",
+    "ThreadId": "68756",
+    "Html": "<p>When I am using CAL (Prism), all the business views are located in Module project where I can not add &lt;ResourceDictionary&gt;. Only the Shell project can add the &lt;ResourceDictionary&gt; but I could not reference the Shell project from my Module but the Shell project reference the module project. So, how could I use the Resources in my Module? Even whe I try to add images in my business module and set the images's Build Action to Resource,&nbsp;the compiler keeps complaining that &quot;Error&nbsp;5&nbsp;The file images/AddNew.png is not part of the project or its 'Build Action' property is not set to 'Resource'.&quot;</p>\r\n<p>Do you and any examples that the module can define its own image resources and uses them to set the menu bar?</p>\r\n<p>Thanks</p>\r\n<p>Alan</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-06T13:57:13.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "242960",
+    "ThreadId": "68756",
+    "Html": "<p>Hi</p>\r\n<p>To use a resource in your module you can define all your resources in a separated library project and refernce this project in your shell.</p>\r\n<p>In your App.xaml you can reference your resources like this. Then you can use your resources in all modules.</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>   <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">Application.Resources</span><span style=\"color:Blue\">&gt;</span>\r\n        <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">ResourceDictionary</span><span style=\"color:Blue\">&gt;</span>\r\n            <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">ResourceDictionary.MergedDictionaries</span><span style=\"color:Blue\">&gt;</span>\r\n                <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">ResourceDictionary</span> <span style=\"color:Red\">Source</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">/Skin;component/Color.xaml</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">/&gt;</span>\r\n                <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">ResourceDictionary</span> <span style=\"color:Red\">Source</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">/Skin;component/Button.xaml</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">/&gt;</span>\r\n                <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">ResourceDictionary</span> <span style=\"color:Red\">Source</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">/Skin;component/TextBox.xaml</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">/&gt;</span>\r\n                <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">ResourceDictionary</span> <span style=\"color:Red\">Source</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">/Skin;component/PasswordBox.xaml</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">/&gt;</span>\r\n                <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">ResourceDictionary</span> <span style=\"color:Red\">Source</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">/Skin;component/Combobox.xaml</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">/&gt;</span>\r\n                <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">ResourceDictionary</span> <span style=\"color:Red\">Source</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">/Skin;component/ItemTemplate.xaml</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">/&gt;</span>\r\n            <span style=\"color:Blue\">&lt;/</span><span style=\"color:#A31515\">ResourceDictionary.MergedDictionaries</span><span style=\"color:Blue\">&gt;</span>\r\n        <span style=\"color:Blue\">&lt;/</span><span style=\"color:#A31515\">ResourceDictionary</span><span style=\"color:Blue\">&gt;</span>\r\n    <span style=\"color:Blue\">&lt;/</span><span style=\"color:#A31515\">Application.Resources</span><span style=\"color:Blue\">&gt;</span>\r\n</pre>\r\n</div>\r\n<p>In my case i define some ResourcesDictionary in my library project called&nbsp;Skin.</p>\r\n<p>&nbsp;</p>\r\n<p>For your problem about image i didn't encounterer this error. But i add some image in my module with Build Action&nbsp;set&nbsp;to Resource</p>\r\n<p>and it works very well.</p>\r\n<p>Thanks</p>\r\n<p>&nbsp;</p>\r\n<p>Francois Bochaou&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-07T07:05:25.823-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

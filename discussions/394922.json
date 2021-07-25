@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "910205",
+    "ThreadId": "394922",
+    "Html": "\r\n<p>Are there some known issues with the use of Prism and the Silverlight Business Application Template?</p>\r\n<p>Prism 4.1 &#43; Silverlight 5</p>\r\n",
+    "PostedDate": "2012-09-09T11:54:44.583-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "910493",
+    "ThreadId": "394922",
+    "Html": "<p>Hi,</p>\r\n<p>So far I haven't seen any issues reported regarding this subject. Take into account that although this application was not created using <strong>Prism</strong>, I believe adding the <strong>Prism </strong>functionalities to it shouldn't require much effort.</p>\r\n<p>For example as a starting point I would modify the <strong>Application_Startup</strong> method in the code behind of the <strong>App.xaml</strong> file and replace the call of the <strong>InitializeRootVisual </strong>method with the a call to initialize the bootstrapping process, for example like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">private</span> <span style=\"color: blue;\">void</span> Application_Startup(<span style=\"color: blue;\">object</span> sender, StartupEventArgs e)\r\n        {\r\n           (...)\r\n\r\n\r\n        Bootstrapper bootstrapper = <span style=\"color: blue;\">new</span> Bootstrapper();\r\n        bootstrapper.Run();       \r\n       \r\n            <span style=\"color: green;\">// Show some UI to the user while LoadUser is in progress      </span>\r\n            <span style=\"color: green;\">//this.InitializeRootVisual();</span>\r\n        }\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Then you could add the <strong>Bootstrapper </strong>class to the main application project, along with the corresponding references to the <strong>Prism </strong>required libraries, and in the override of the <strong>CreateShell </strong>method you could return the corresponding <strong>UIElement </strong>(e.g like in the aforementioned <strong>InitializeRootVisual </strong>method) that will be set as the <strong>RootVisual </strong>property of the application. For example the <strong>Boostrapper </strong>class could look like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> Bootstrapper : UnityBootstrapper\r\n    {\r\n        <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> DependencyObject CreateShell()\r\n        {\r\n       \r\n            BusinessApplication1.Controls.BusyIndicator busyIndicator = <span style=\"color: blue;\">new</span> BusinessApplication1.Controls.BusyIndicator();\r\n            busyIndicator.Content = Container.Resolve&lt;MainPage&gt;();                    \r\n            busyIndicator.HorizontalContentAlignment = HorizontalAlignment.Stretch;\r\n            busyIndicator.VerticalContentAlignment = VerticalAlignment.Stretch;\r\n\r\n            <span style=\"color: blue;\">return</span> busyIndicator;\r\n\r\n        }\r\n\r\n        <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> InitializeShell()\r\n        {\r\n            <span style=\"color: blue;\">base</span>.InitializeShell();\r\n\r\n            Application.Current.RootVisual = (UIElement)<span style=\"color: blue;\">this</span>.Shell;\r\n        }\r\n</pre>\r\n</div>\r\n</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-09-10T09:43:49.847-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "910513",
+    "ThreadId": "394922",
+    "Html": "<p>And what about navigation?</p>\r\n<p>Can I use Frame and Frame.UriMapper for navigation instead of the Prism Region Navigation?</p>",
+    "PostedDate": "2012-09-10T10:13:45.877-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "910563",
+    "ThreadId": "394922",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, you should be able to use the approach that suits best to the requirements of your scenario, take into account that as mentioned in this section of the <strong>Prism </strong>documentation (<a href=\" http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40)#sec14\">Using the WPF and Silverlight Navigation Frameworks</a>), region navigation was not designed to replace the <strong>Silverlight</strong> Navigation Framework. Instead, Prism region navigation was designed to be used side-by-side with the this framework. For example, it is common to use the <strong>Silverlight </strong>navigation framework to implement top-level navigation within the application's shell and then to use <strong>Prism </strong>regions to implement navigation within the rest of the application, this way you can take advantaje of the capabilities of each approach. However, take into account that as far as I know the <strong>Silverlight </strong>Frame Navigation doesn't allow navigating <strong>Prism </strong>regions and the <strong>Prism </strong>navigation API is not designed to work with frames as out of the box.</p>\r\n<p>On the other hand, if your are interested on how to integrate Silverlight's Navigation Framework with <strong>Prism </strong>you could check the following articles from Karl Schifflett's blog:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.msdn.com/b/kashiffl/archive/2010/10/05/integrating-prism-v4-region-navigation-with-silverlight-frame-navigation.aspx\">Integrating Prism v4 Region Navigation with Silverlight Frame Navigation</a></li>\r\n</ul>\r\n<ul>\r\n<li><a href=\"http://blogs.msdn.com/b/kashiffl/archive/2011/03/10/prism-4-region-navigation-with-silverlight-frame-navigation-and-unity.aspx\">Prism 4 Region Navigation with Silverlight Frame Navigation and Unity</a></li>\r\n</ul>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-09-10T11:46:57.443-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "912288",
+    "ThreadId": "394922",
+    "Html": "<p>Thank you Agustin.</p>",
+    "PostedDate": "2012-09-13T10:04:53.863-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

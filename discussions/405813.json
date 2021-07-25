@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "952269",
+    "ThreadId": "405813",
+    "Html": "\r\n<p>I have a button that uses the PRISM Click binding:</p>\r\n<pre>prism:Click.Command=&quot;{Binding ABinding}&quot;</pre>\r\n<p>On the same button I have a binding for the IsEnabled property:</p>\r\n<pre>IsEnabled=&quot;{Binding Path=CheckEnabled}&quot;</pre>\r\n<p>The CheckEnabled property[in my ViewModel] does not get called. If I change the PRIMS click binding to a straight Command binding:</p>\r\n<pre>Command=&quot;{Binding ABinding}&quot;</pre>\r\n<p>Then the CheckEnabled property gets called (during binding updates). What I would like to know is why the PRISM click command binding interferes with other bidnings on the control?</p>\r\n<p>&nbsp;</p>\r\n<p>Peter</p>\r\n<p>&#65279;&#65279;&#65279;&#65279;&#65279;</p>\r\n",
+    "PostedDate": "2012-12-06T06:07:00.903-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "952456",
+    "ThreadId": "405813",
+    "Html": "\r\n<p>Hi Peter,</p>\r\n<p>Based on my understanding the <strong>Click</strong> class creates a <strong>ButtonBaseClickCommandBehavior\r\n</strong>when a <strong>Click.Command </strong>attached property is set (i.e. <strong>\r\nClick.Command</strong>,) used to &quot;map&quot; the <strong>Click </strong>event of the <strong>\r\nButton </strong>to the <strong>Execute </strong>method of the <strong>Command</strong>. This behavior inherits from the\r\n<strong>CommandBahaviorBase</strong> class, which in turn changes the <strong>IsEnabled\r\n</strong>property. This could be the reason why the binding to the <strong>CheckEnabled\r\n</strong>property is being &quot;ignored.&quot;</p>\r\n<p>However, take into account that the <strong>Click </strong>class (and the <strong>\r\nClick.Command</strong> attached property) are obsolete and their usage is discouraged as since\r\n<strong>Silverlight 4&nbsp;</strong> binding <strong>Buttons </strong>to <strong>Commands\r\n</strong>is directly supported. Hence, it's recommended to use common <strong>Command\r\n</strong>bindings instead.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2012-12-06T11:30:38.38-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "952530",
+    "ThreadId": "405813",
+    "Html": "\r\n<p>This occurs no matter what property I'm binding. Are you implying that all control properties are circumvented by PRISM.</p>\r\n<p>Note: this is being done in a Desktop application not Silverlight.</p>\r\n<p>&nbsp;</p>\r\n<p>Pryrt</p>\r\n",
+    "PostedDate": "2012-12-06T13:51:15.183-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "953037",
+    "ThreadId": "405813",
+    "Html": "\r\n<p>Hi Pryrt,</p>\r\n<p>So far, we could not reproduce the behavior you are describing. Besides the <strong>\r\nIsEnabled </strong>property that is changed by the <strong>CommandBehaviorBase </strong>\r\nclass, other properties responded their corresponding bindings correctly. Which properties bindings are failing in your scenario?</p>\r\n<p>Again, take into account that the <strong>Click </strong>class was created to use\r\n<strong>Commands </strong>in <strong>Silverlight 3</strong> and below. As far as I know, this class was not designed to be used in\r\n<strong>WPF </strong>and hence, it should not be used in <strong>WPF </strong>applications. Our recommendation is to use common\r\n<strong>Command </strong>bindings instead of the <strong>Click </strong>class.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2012-12-07T09:36:51.137-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "953044",
+    "ThreadId": "405813",
+    "Html": "\r\n<p>If this seems to be a non typical problem then I'll leave it at that. For those who pointed out that Command is the proper use I suggest you re read my question where you will see I am using the Comand object. For those who seem to like to point out that\r\n this bhavior was designed explicilty for Silverlight, why do I see it in PRISM for desktop. I'm using the latest version of PRISM and I am using PRISM [project] templates that generate test cases that use this functoinality. So stop brining up this point and\r\n direct it to MS to specify that it should be documented as such.</p>\r\n<p>Peter</p>\r\n",
+    "PostedDate": "2012-12-07T09:54:35.143-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "954063",
+    "ThreadId": "405813",
+    "Html": "\r\n<p>Hi Peter,</p>\r\n<p>In my case when experiencing this behavior, I found that a possible way to avoid the aforementioned problem could be to set the\r\n<strong>Mode </strong>of the binding in the <strong>IsEnabled </strong>property to\r\n<strong>TwoWay </strong>(e.g.<strong> IsEnabled=&quot;{Binding Path=CheckEnabled, Mode=TwoWay</strong>}&quot; which by default may be set to\r\n<strong>OneWay</strong>. As based on my understanding, when the <strong>CommandBehavior\r\n</strong>updates the value of this property in the <strong>CommandCanExecuteChanged\r\n</strong>handler, if the mode is set to <strong>OneWay </strong>the binding will stop working.</p>\r\n<p>So far, when using this behavior I could experience this problem only with the\r\n<strong>IsEnabled </strong>property as my other bindings keep working. <br>\r\n<br>\r\nI hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-12-10T09:05:13.083-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

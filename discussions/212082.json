@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "440865",
+    "ThreadId": "212082",
+    "Html": "<p>HI</p>\r\n<p>I have developed a application in silverlight using Prism framework. As per the help docs I have created the functionality as Interfaces/Services which are coded in the Module application. Using events I then trigger these functions from the View Model.</p>\r\n<p>&nbsp;&nbsp; I have used ADO.Net data services in the Service class. from the view model I must call this service function with a return type of Action delegate. Sinec in the service layer the functionality is done in a asynchronous mode, i am not able to integrate the event with the function in service coded using ADo.Net data services.</p>\r\n<p>Need a demo / sample code/ guidance&nbsp; on achieving the same.</p>\r\n<p>Thanks in advance.</p>\r\n<p>Regards,</p>\r\n<p>Sharanth</p>",
+    "PostedDate": "2010-05-09T11:37:49.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "442263",
+    "ThreadId": "212082",
+    "Html": "<p id=bb499550-4032-012d-a705-12313d013db1>Hi Sharanth,</p>\r\n<p id=bb49a380-4032-012d-a706-12313d013db1>If I understand correctly your scenario is the following:</p>\r\n<ol>\r\n<li>An event is published using <strong>EventAggregator</strong> at a certain point in your application.</li>\r\n<li>A <strong>ViewModel</strong> is subscribed and handles the event.</li>\r\n<li>In the handler, you make a call to a WCF (ADO.Net) DataService.</li>\r\n</ol>\r\n<p id=bb49b290-4032-012d-a707-12313d013db1>However, from the explanation above I am not certain where the issues lays. Therefore, I will provide a general explanation of how this can be achieved (at least the way I would do it).</p>\r\n<ol>\r\n<li>In the handler, I would make the call to the WCF DataService, providing a callback method inside that same ViewModel.</li>\r\n<li>In the callback, I would add the information obtained from the service call to a ViewModel bindable property. For example, if you received a list of Customers, add them to an ObservableCollection&lt;Customer&gt;.</li>\r\n</ol>\r\n<p id=bb49cbd0-4032-012d-a708-12313d013db1>That will automatically update the UI bound to the Customer collection.</p>\r\n<p id=bb49ec70-4032-012d-a709-12313d013db1><a href=\"http://msdn.microsoft.com/en-us/data/cc974474.aspx\">This video</a> shows a similar usage scenario (it does not use MVVM, but it does use bindings). You might also find <a href=\"http://blogs.southworks.net/matiasb/2009/06/20/how-to-consume-wcf-services-from-composite-application-guidance-for-wpf-and-silverlightprism-v2-modules/\">this blog post</a> by <a href=\"http://blogs.southworks.net/matiasb/\">Matias Bonaventura</a> useful, as it deals with issues when using WCF services in Prism applications and could provide valuable information.</p>\r\n<p id=bb4a1340-4032-012d-a70a-12313d013db1>Please let me know if this helps.</p>\r\n<p id=bb4a3ad0-4032-012d-a70b-12313d013db1>Damian Schenkelman <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-05-12T14:01:04.443-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "996162",
+    "ThreadId": "431898",
+    "Html": "Hi to all friends out there.\r<br />\n<br />\nI have problem which i am facing.I am not able to bind combox by prism .\r<br />\nHere is my XAML\r<br />\n&lt;telerik:RadComboBox Grid.Column=&quot;1&quot; HorizontalAlignment=&quot;Left&quot; Margin=&quot;10,3,0,0&quot; Grid.Row=&quot;4&quot; VerticalAlignment=&quot;Top&quot; Width=&quot;79&quot; Height=&quot;22&quot; ItemsSource=&quot;{Binding  marriageStatusList, Mode=TwoWay}&quot; SelectedValue=&quot;{Binding Path=marriageStatusId, Mode=TwoWay}&quot; DisplayMemberPath=&quot;StatusName&quot; SelectedValuePath=&quot;MarriageStatusId&quot; &gt;\r<br />\n &lt;/telerik:RadComboBox&gt;\r<br />\n<br />\nMy view model code is:-\r<br />\n ObservableCollection&lt;HappyNagarAppService.FamilyTree_MarriageStatus&gt; marriageStatusList { get; set; }\r<br />\n<br />\n private void loadMarriageStatus()<br />\n<pre><code>    {\n\n        proxy.getMarriageStatusCompleted += new EventHandler&lt;HappyNagarAppService.getMarriageStatusCompletedEventArgs&gt;(client_getMarriageStatusCompleted);\n        proxy.getMarriageStatusAsync();\n    }\n\n    void client_getMarriageStatusCompleted(object sender, HappyNagarAppService.getMarriageStatusCompletedEventArgs e)\n    {\n        marriageStatusList = e.Result;\n\n    }\n</code></pre>\n\nand i am calling loadMarriageStatus() in constructor of viewmodel. Here is proxy is my proxy object of my wcf service.\r<br />\n<br />\nplease help me and let me what wrong i am doing due to which it is not binding.\r<br />\n<br />\nThanks in advance.<br />\n",
+    "PostedDate": "2013-02-04T07:33:44.35-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "996252",
+    "ThreadId": "431898",
+    "Html": "Hi,<br />\n<br />\nBased on my understanding, I believe that a possible cause for this behavior could be that you are replacing the <strong>marriageStatusList</strong> property with a new collection in your <strong>client_getMarriageStatusCompleted</strong> event handler. Hence, as the the collection only notifies a change when an item is added, removed or when the collection is refreshed, which in this case is not happening, you may have to invoke the <strong>RaisePropertyChanged</strong> method on this property after changing its value in order to properly notify the UI about this change. For example, this could be achieved like this:<br />\n<pre><code> void client_getMarriageStatusCompleted(object sender, HappyNagarAppService.getMarriageStatusCompletedEventArgs e)\n    {\n marriageStatusList = e.Result;\n this.RaisePropertyChanged(() =&gt; this.marriageStatusList);\n    }</code></pre>\n\nI hope this helps,<br />\n<br />\nAgustin Adami<br />\n<a href=\"http://blogs.southworks.net/aadami\" rel=\"nofollow\">http://blogs.southworks.net/aadami</a><br />\n",
+    "PostedDate": "2013-02-04T10:00:15.123-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "996495",
+    "ThreadId": "431898",
+    "Html": "Thanks aadami for your reply.\r<br />\n<br />\nI tried but still it is not getting collection item in combox still. No Success yet\r<br />\n.Please help me . If you can please show me small code in wihch i get ersult in observable collection  like in this i m getting.\r<br />\n<br />\nIt is getting very frustating to get this thing one .\r<br />\nI have dfiffult in radiobutton list also to set and get selected radiobutton from view to viewmodel.\r<br />\n<br />\nThanks and please help me to come out from this thing.<br />\n",
+    "PostedDate": "2013-02-04T21:47:23.057-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "996713",
+    "ThreadId": "431898",
+    "Html": "Hi,<br />\n<br />\nSo far based on the code snippets you provided I couldn't find the reason for this behavior, in my case I haven't experimented with this particular control, but as a starting point, I believe you could check if your view's <strong>datacontext</strong> is being correctly set with the corresponding view model. Also, you could debug you application to see if the data is being correctly retrieved and set in your <strong>marriageStatusList</strong> property, take into account that as far as I know the collection retrieved from your service should be wrapped in a <strong>ObservableCollection&lt;T&gt;</strong> instance, for example using one of its constructors that take an <strong>IEnumerable&lt;T&gt;</strong> or <strong>List&lt;T&gt;</strong> parameter:<br />\n<pre><code>myProperty = new ObservableCollection&lt;T&gt;(Service.GetItemsList() );</code></pre>\n\nAdditionally, I believe you could check the following article from the <strong>Telerik</strong> site where a possible approach to Binding to WCF Service using the MVVM Approach is explained:<br />\n<ul>\n<li>\n<a href=\"http://www.telerik.com/help/silverlight/radcombobox-populating-with-data-binding-to-wcf.html\" rel=\"nofollow\">RadControls for Silverlight, Binding to WCF Service</a><br />\n</li>\n</ul>\nI hope you find this handy,<br />\n<br />\nAgustin Adami<br />\n<a href=\"http://blogs.southworks.net/aadami\" rel=\"nofollow\">http://blogs.southworks.net/aadami</a><br />\n",
+    "PostedDate": "2013-02-05T07:15:46.917-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

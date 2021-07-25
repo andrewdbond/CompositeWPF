@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "861877",
+    "ThreadId": "363847",
+    "Html": "\r\n<p>I finished my version of UICompositionQuicStart succesfuly, but I have still one problem to solve.</p>\r\n<p>My version uses RIA Services to access Northwind database. My version of EmployeeProjectsViewModel is EmployeeOrdersViewModel which loads the Employee's Orders.</p>\r\n<p>The code that throws the exception is:</p>\r\n<pre>public class EmployeeOrdersViewModel : INotifyPropertyChanged {\r\n\r\n    NorthwindDomainContext _Context = new NorthwindDomainContext();\r\n\r\n    public EmployeeOrdersViewModel() {\r\n        if (!DesignerProperties.IsInDesignTool) {\r\n            EntityQuery queryOrders = _Context.GetOrdersQuery();\r\n            LoadOperation loadOpOrders = _Context.Load(queryOrders);\r\n            loadOpOrders.Completed &#43;= new EventHandler(loadOpOrders_Completed);\r\n        }\r\n    }\r\n\r\n    void loadOpOrders_Completed(object sender, EventArgs e) {\r\n        if (_Context.Orders.Count != 0) {\r\n            PagedOrders = new PagedCollectionView(_Context.Orders);\r\n        }\r\n    }\r\n\r\n    private Employee currentEmployee;\r\n    public Employee CurrentEmployee {\r\n        get {\r\n            return this.currentEmployee;\r\n        }\r\n        set {\r\n            this.currentEmployee = value;\r\n\r\n            if (this.CurrentEmployee != null)\r\n                // This instruction throws an exception, When Prism loads this code, it tries to set the \r\n                // currentEmployee before the LoapOpOrders_Completed is executed (as a response of a change of the\r\n                // Current Employee in EmployeeListView), which leads to an exception since PagedOrders is still null.\r\n                this.PagedOrders.Filter = o =&gt; ((Order)o).EmployeeID == this.CurrentEmployee.EmployeeID;\r\n            this.PagedOrders.Refresh();\r\n\r\n            this.NotifyPropertyChanged(&quot;CurrentEmployee&quot;);\r\n            this.NotifyPropertyChanged(&quot;PagedOrders&quot;);\r\n        }\r\n    }</pre>\r\n<p>&nbsp;I don't know how to make the it to wait untilLoadOpOrders_Completed is executed.</p>\r\n",
+    "PostedDate": "2012-07-12T11:34:03.973-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "865110",
+    "ThreadId": "363847",
+    "Html": "<p>Duplicated thread.</p>\r\n<p>Original question can be found in: <a href=\"http://compositewpf.codeplex.com/discussions/363850\">http://compositewpf.codeplex.com/discussions/363850</a>.</p>\r\n<p>Regards.</p>",
+    "PostedDate": "2012-07-13T11:08:45.287-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n \r\nWe are closing this work item as this issue has been solved, since Prism 4.1 release (http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=28950).\r\n\r\nThe order of the aforementioned sentences in BindRegionContextToDependencyObjectBehavior was changed. After doing so, we verified the scenario involved in this work item and found that the problem was gone.\r\n \r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami﻿",
+    "ClosedDate": "2012-03-14T11:57:39.627-07:00",
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "I have encountered some logic in the default BindRegionContextToDependencyObjectBehavior that I believe is incorrect:\n \nelse if (e.Action == NotifyCollectionChangedAction.Remove && this.Region.Context != null)\n{\n    SetContextToViews(e.OldItems, null);\n    this.DetachNotifyChangeEvent(e.OldItems);\n}\n \nThe result here is that the ObservableRegionContext on the removed views is set to 'null'.  However, this is done *before* detaching the change notification handlers, which results in the 'null' value being propagated to all of the views in the region.  I believe the call to DetachNotifyChangeEvents should occur *before* the call to SetContextToViews.\n \nRegards,\nMike",
+    "LastUpdatedDate": "2013-05-16T05:28:59.85-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-02-22T13:42:11.213-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Bug in Default RegionContext Binding Behavior",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 4,
+    "Id": 3862
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "I forgot to mention that the code excerpt in the description comes from the Views_CollectionChanged method.",
+      "PostedDate": "2009-02-22T13:42:55.04-08:00",
+      "Id": 156108
+    },
+    {
+      "Message": "Hi Mike,\r\n\r\nThe call to SetContextToViews you're mentioning is applied to the OldItems (http://msdn.microsoft.com/es-es/library/system.collections.specialized.notifycollectionchangedeventargs.olditems.aspx) in the Region's Views collection, so that the ObservableRegionContextProperty attached property is set to null in the views that have been removed from the region. Considering that the Region Context is a means of sharing information between a views and the region that hosts them, it seems reasonable to propagate the null value to their ObservableRegionContextProperty attached property once they are removed from a region.\r\n\r\nIf you have a scenario in which this behavior is undesirable, or if we have misunderstood your description of the situation, it would be helpful it you could provide us with more information about it.\r\n\r\nThank you for your feedback.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-01-18T10:41:29.383-08:00",
+      "Id": 156109
+    },
+    {
+      "Message": "I also would change the two lines:\r\nthis.DetachNotifyChangeEvent(e.OldItems);\r\nSetContextToViews(e.OldItems, null);\r\n\r\nI have a master/detail scenario: The master view has a current Customer object which is also set to the Region.Context. Then I have a TabControl with several detail views that all display or edit data from the current Customer. The user can open/close the detail views (i.e. the user can add remove tab pages to/from the TabControl). When removing the tab page from the TabControl the view is removed from the region and then the region context for all other views is set to null (which is not what I want). In my scenario it is not desirable to have the removed view set the region context to null.\r\nGuido",
+      "PostedDate": "2011-07-27T02:40:31.89-07:00",
+      "Id": 156110
+    },
+    {
+      "Message": "Guido,\r\n\r\nThank you for notifying this. We've investigated this issue further and were able to reproduce the problem you're mentioning. We created the following blog post, where this is explained in further detail so that other users in the community can benefit from this:\r\n\r\nhttp://blogs.southworks.net/aadami/2011/09/22/prism-v4-regioncontext-lost-when-removing-a-view-from-a-region/\r\n\r\nThank you for the insight!\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-09-22T07:18:30.45-07:00",
+      "Id": 156111
+    }
+  ]
+}

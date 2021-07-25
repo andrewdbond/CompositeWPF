@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "774240",
+    "ThreadId": "322324",
+    "Html": "\r\n<p>IRegionMemberLifetime interface breaks removing from an itemscontrolregion as it seems to try and remove twice, and on the second time error?</p>\r\n<p>So if I have a view attached to a viewmodel that implements that interface and I call something like this:</p>\r\n<p>&nbsp;</p>\r\n<p>IRegion region = RegionManager.Regions[&quot;itemscontrolregion&quot;];&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>region.Remove(region.ActiveViews.OfType&lt;View2&gt;().FirstOrDefault());</p>\r\n<p>It will error.</p>\r\n<p>&nbsp;</p>\r\n<p>An example can be found at:&nbsp;<a href=\"https://skydrive.live.com/#cid=A53184DCECF800FE&id=A53184DCECF800FE%21125\">https://skydrive.live.com/#cid=A53184DCECF800FE&amp;id=A53184DCECF800FE%21125</a>&nbsp;called itemscontrol problems.zip</p>\r\n",
+    "PostedDate": "2012-02-17T03:13:43.967-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "798193",
+    "ThreadId": "322324",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, the problem you are experiencing seems to be the same that the one described in the following thread:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/272855\">Problem when remove view from region</a></li>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/256689\">Silverlight - Add/Remove view - ArgumentException</a></li>\r\n</ul>\r\n<p>As far as I know, this problems seems to appear when trying to use both  the \"<strong><em>navigation</em></strong>\" functionality and the \"<strong><em>view injection</em></strong>\" functionality to remove  views from a region at the same time. In my opinion, a view / view model that implements the <strong>IRegionMemberLifetime </strong>interface should usually be removed as a result of being \"replaced\" by another view through a navigation request, as it might be possible that explicitly removing the view (through the <strong>Remove </strong>method of the region) might interfere with the \"<strong><em>navigation</em></strong>\" functionality provided by Prism (for example, if a view / view model have logic implemented in the <strong>OnNavigatedFrom </strong>method, that logic will not be executed if the view is directly removed from the region).</p>\r\n<p>There is an existing work item in the issue tracking portraying this problem, which includes a possible modification to the <strong>ShouldKeepAlive </strong>method of the <strong>RegionMemberLifetimeBehavior </strong>class to avoid this problem:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/workitem/8224\">Work Item 8224: Silverlight - Add/Remove view - ArgumentException</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-02-23T12:48:16.047-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "804228",
+    "ThreadId": "322324",
+    "Html": "<p>Ok cool thank you.</p>",
+    "PostedDate": "2012-03-02T00:38:42.85-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

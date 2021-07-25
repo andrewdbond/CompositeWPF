@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "180440",
+    "ThreadId": "53610",
+    "Html": "Went through an excellent  blog<br>\r\n<br>\r\nhttp://blogs.southworks.net/mconverti/2009/04/12/how-to-integrate-a-prism-v2-application-with-the-silverlight-3-navigation-framework/<br>\r\n<br>\r\nHowever when i add a region to each of the Navigation pages it goes pop when i Navigate away and Navigate back , it seems that DelayedRegionCreation is firing and trying to add the region again. This is not a Navigation problem.<br>\r\n<br>\r\nI have tried <br>\r\n<br>\r\nAddModuleUriMappings();<br>\r\n<br>\r\nthis.regionManager.Regions[&quot;LinkRegion&quot;].Add(new DiggModuleLink());<br>\r\nIRegion region = new AllActiveRegion();<br>\r\nregionManager.Regions.Add(&quot;ResultsRegion&quot;, region);<br>\r\n<br>\r\nregion.Add(container.Resolve&lt;DiggSearchResultsView&gt;(), &quot;DiggSearchResultsView&quot;, true); <br>\r\n<br>\r\n<br>\r\nand this as variations<br>\r\n<br>\r\nthis.container.RegisterType&lt;IDiggService, DiggService&gt;(new ContainerControlledLifetimeManager());<br>\r\n<br>\r\nAddModuleUriMappings();<br>\r\n<br>\r\nthis.regionManager.Regions[&quot;LinkRegion&quot;].Add(new DiggModuleLink());<br>\r\n<br>\r\nIRegion region = new AllActiveRegion();<br>\r\nregionManager.Regions.Add(&quot;ResultsRegion&quot;, region);<br>\r\n<br>\r\nregion.Add(container.Resolve&lt;DiggSearchResultsView&gt;(), &quot;DiggSearchResultsView&quot;, true); <br>\r\n<br>\r\nThe link region which is registered on the Shell works but the regions in the View ( or Navigation Page) get  added , then the delayedRegionCreation tried to  re add them and it goes pop, any hints or clues ? <br>\r\n",
+    "PostedDate": "2009-04-16T21:08:27.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "180443",
+    "ThreadId": "53610",
+    "Html": "I am having similar problems with regard to view injection in SL3 ChildWindows.  Setting the attached RegionName property on the control in xaml does not appear to get registered with the RegionManager.  I also tried a similar approach whereby I set the attached property in the code-behind and still the same problem when trying to retrieve a region reference in my viewModel--RegionManager does not contain that Region Name.  Incidently the view discovery approach works fine regardless of the parent container type (ie. ChildWindow), however I prefer view injection in some scenarios and have been banging my head on this for a few hours now.  <br>\r\n<br>\r\nI also implemented Marianos approach to prism navigation with SL3, however his implementation strategy is not the problem, at least in my case, as the problem for me occurred well before.<br>\r\n<br>\r\nSorry I cant be of any help, but I figured this is a good spot to post a similar issue:)\r\n",
+    "PostedDate": "2009-04-16T21:26:23.147-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "180481",
+    "ThreadId": "53610",
+    "Html": "The plot thickens i have simplified it a bit  and it apears the SearchRegion doesnt work but the Results region does . I have made Search region a tab control and no change. <br>\r\n<br>\r\n&lt;ContentControl Regions:RegionManager.RegionName=&quot;SearchRegion&quot; Grid.Row=&quot;0&quot; Margin=&quot;2&quot; /&gt;<br>\r\n<br>\r\n&lt;controls:TabControl Regions:RegionManager.RegionName=&quot;ResultsRegion&quot; Grid.Row=&quot;1&quot; Margin=&quot;3&quot; &gt;<br>\r\n&lt;Regions:TabControlRegionAdapter.ItemContainerStyle&gt;<br>\r\n&lt;Style TargetType=&quot;controls:TabItem&quot;&gt;<br>\r\n&lt;Setter Property=&quot;HeaderTemplate&quot;&gt;<br>\r\n&lt;Setter.Value&gt;<br>\r\n&lt;DataTemplate&gt;<br>\r\n&lt;TextBlock Text=&quot;{Binding HeaderInfo}&quot; /&gt;<br>\r\n&lt;/DataTemplate&gt;<br>\r\n&lt;/Setter.Value&gt;<br>\r\n&lt;/Setter&gt;<br>\r\n&lt;/Style&gt;<br>\r\n&lt;/Regions:TabControlRegionAdapter.ItemContainerStyle&gt;<br>\r\n&lt;/controls:TabControl&gt;<br>\r\n<br>\r\nin initialize of the module <br>\r\n<br>\r\nnote local is a new RegionManager ( unattached to the parent )<br>\r\n<br>\r\nlocal.RegisterViewWithRegion(&quot;SearchRegion&quot;, typeof(SearchView));<br>\r\nlocal.RegisterViewWithRegion(&quot;ResultsRegion&quot;, typeof(DiggSearchResultsView));<br>\r\n<br>\r\n<br>\r\nNote it shows ok the first time but when Navigation shows it a 2nd time it shows a Region already created error. Im curious though why the Tab control works. <br>\r\n<br>\r\n",
+    "PostedDate": "2009-04-17T01:05:50.397-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

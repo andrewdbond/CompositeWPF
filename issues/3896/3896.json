@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "Issue:\nWhen a view containing region(s) is removed, the reference to the view remain and the view never get disposed.\n \nExpected: \nWhen view containing region(s) is removed from a region, RegionManagerRegistrationBehavior  should stop monitoring the RegionManager  to release the reference to the view.\n \nUnfortunately, the RegionBehavior does not get notified when the region get detached.",
+    "LastUpdatedDate": "2013-03-21T20:20:05.943-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-03-02T07:43:41.863-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "RegionManagerRegistrationBehavior never stop monitoring the RegionManager",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 9,
+    "Id": 3896
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Unfortunately, it's not possible to detect in Silverlight that a view (that contains regions) is removed from the Visual tree. \r\n\r\nHowever, we are checking that, whenever you are accessing the regionmanager, if all the views are still part of the visual tree. If it turns out that a region no longer is part of the visual tree, we'll remove it from the regionmanager. Then the view should be removed. \r\n\r\nIt's not very straigtforward, but eventually the view should be released. However, if you find a situation where the views don't get released, then we'd like to know about it. Can you send a repro?\r\n\r\nThanks,\r\nErwin",
+      "PostedDate": "2009-03-06T15:50:31.517-08:00",
+      "Id": 156113
+    },
+    {
+      "Message": "Hi,\r\n\r\nYou can check the following work item, where a similar concern is discussed and a workaround is proposed:\r\nRemove view does not remove all sub-views (http://compositewpf.codeplex.com/workitem/5657)\r\n\r\nI'm leaving this as an open suggestion so that the team reviews the way in which regions are removed from the region manager when the region is no longer part of the visual tree.\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2011-09-06T06:34:24.75-07:00",
+      "Id": 156114
+    },
+    {
+      "Message": "Hi, \r\n\r\nFor those interested in this subject, you might find useful to know that since Prism 4.1 release (http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=28950). To support scenarios where a view contains a nested region, and the nested regions may need to be removed from the region manager when the parent view is removed from a region, an optional behavior was added that will clear the RegionManager attached properties on those regions to force their removal from the region manager.\r\n\r\nAs mentioned in the Prism 4.1 readme file: While the behavior is registered and available for all regions, it is optionally enabled for a view containing nested regions by using the ClearChildViews attached property:\r\n\r\n\r\n\r\n    ...\r\n\r\nRegards,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami ",
+      "PostedDate": "2012-03-08T11:38:51.613-08:00",
+      "Id": 156115
+    }
+  ]
+}

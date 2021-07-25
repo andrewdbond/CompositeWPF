@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\nI’m closing the issue since it’s already been answered by the Prism team.\r\nThank you for your feedback.",
+    "ClosedDate": "2011-02-16T08:49:52.21-08:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "Prism Version:\nv4 Drop 10 Beta\n \nEnvironment:\nSilverlight 4\nMicrosoft .Net Framework 4.0 \n \nDescription:\nModuleManager.ModuleCatalog is inaccessible due to its protection level being changed from public to protected.  The protection level was public in all previous releases.\n \nWorkaround:\nChange ModuleManager.ModuleCatalog to public.  Or inherit the class in a new class that exposes ModuleCatalog.\n \nComments:\nI'm not too sure what the reasons were for changing ModuleCatalog's protection level, seems like a risky change for a beta.  It would seem that there is no other way to obtain access to the ModuleCatalog except in ModuleManager.  For those of us who need it, it seems unnecessary to add another level of inheritance just to expose this property.  I used this method to obtain which models that haven't been loaded and to check for my own ModuleInfo types.  If there is another way to achieve this then please let me know, else it would seem changing ModuleCatalog back to public would be the obvious solution.\n \nBelow is an example on how I used it:\n        public static IEnumerable<ModuleInfo> GetNonImportedModules(this MefModuleManager moduleManager) {\n            var query = from mi in moduleManager.ModuleCatalog.Modules\n                        where mi.InitializationMode == InitializationMode.OnDemand &&\n                            moduleManager.ImportedModules.FirstOrDefault(m =>\n                                m.Metadata.ModuleName.Equals(mi.ModuleName)) == null\n                        select mi;\n \n            return query;\n        }",
+    "LastUpdatedDate": "2013-05-16T05:28:46.577-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-10-20T07:56:33.38-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Bug: ModuleManager.ModuleCatalog was changed from public to protected",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 7401
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "palmera,\r\n\r\nWe are looking into this problem and will respond.\r\n\r\nHave a nice day,\r\n\r\nKarl",
+      "PostedDate": "2010-10-25T13:53:10.433-07:00",
+      "Id": 156347
+    },
+    {
+      "Message": "palmera,\r\n\r\nThis wasn't public on the ModuleManager, but was public on the MefModuleManager (but only on the Silverlight side).  We made this public for Mef injection purposes (but not on the WPF side).  However, it turns out that the catalog was already being passed in the constructor for ModuleCatalog so having it injected on the Mef property was unnecessary.  Since the MefModuleManager needed to access to this we made it a protected property on the ModuleCatalog.  \r\n\r\nWe'd rather not make it public.  Is it possible to capture the ModuleCatalog during bootstrapping or injecting the IModuleCatalog?\r\n\r\n-b\r\n\r\n\r\n",
+      "PostedDate": "2010-10-26T10:51:58.867-07:00",
+      "Id": 156348
+    },
+    {
+      "Message": "thanks for explaining brumfb =)\r\n\r\nI've switched to using the service locator for extentions instead of relying on ModuleManager's ModuleCatalog, works fine.",
+      "PostedDate": "2010-11-03T11:49:04.263-07:00",
+      "Id": 156349
+    }
+  ]
+}

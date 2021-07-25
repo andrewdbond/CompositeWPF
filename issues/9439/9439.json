@@ -1,0 +1,56 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "When I try to navigate to an existing View, if the view was exported in MEF using a contract name different from its type name, the navigation won't complete successfully and a \"ViewAlreadyExistsInRegion\" exception is raised.\n \nFrom my analysis this can be fixed adding an override of the GetCandidatesFromRegion method in the class MefRegionNavigationContentLoader, in order to examine not only the Type name but also the ContractName from the Export attribute.\n \nAttached you may find my proposed override.",
+    "LastUpdatedDate": "2013-02-21T18:37:59.72-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-06-08T04:45:26.64-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "[MEF] Navigation to an existing View",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 9439
+  },
+  "FileAttachments": [
+    {
+      "FileId": 898007,
+      "FileName": "MefRegionNavigationContentLoader.cs",
+      "DownloadUrl": ".\\898007"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nWe will examine your proposed code changes.\r\n\r\nThanks for sharing your findings with the rest of the community, as it might be useful for other users pursuing this scenario.\r\n\r\nAdditionally, for those interested in this subject you could find the following blog post useful, where this problem is explained in further detail:\r\n\r\nMatching contract names and view names in Prism region navigation http://blogs.southworks.net/aadami/2011/10/14/matching-contract-names-and-view-names-in-prism-region-navigation/\r\n\r\nhttp://blogs.southworks.net/aadami/2011/10/14/matching-contract-names-and-view-names-in-prism-region-navigation/\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2012-06-08T11:00:46.903-07:00",
+      "Id": 156604
+    },
+    {
+      "Message": "Hi,\r\n\r\nWe could verify your proposed workaround for this issue, and we believe it's a great approach to avoid this undesired behavior.\r\n\r\nAlso, as this error also appears when using Unity as the container, we implemented a similar workaround for it, based on your idea. For those interested you can find it in the following related work item:\r\n\r\nPrism ContentControl Region RequestNavigate - \"View already exists in region\" \r\n\r\nhttp://compositewpf.codeplex.com/workitem/8121\r\n\r\nWe are leaving this work item open so that the team consider it, for future releases.\r\n\r\nThanks again, \r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2012-06-27T12:14:38.51-07:00",
+      "Id": 156605
+    }
+  ]
+}

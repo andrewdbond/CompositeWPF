@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "Hi,\r\ni´m a rookie in Prism and i have the following Problem: I had made a shell with one region (MainRegion) with a dockpanel.\r\nI had made 2 Modules, Module A and Module B.\r\nBoth Modules have only different labels inside.\r\nModule A had also a button which had to trigger the navigation.\r\nIn Both Module.cs file are the registration (in the container) from my views.\r\nI see the View from Module A in my shell, but when i want to navigate to the next module then changes nothing.....\r\n\r\nModule A\r\n```\r\npublic partial class ModuleA: UserControl\r\n    {\r\n        private IRegionManager regionmanager;\r\n\r\n        public ModuleA(IRegionManager regionmanager)\r\n        {\r\n            InitializeComponent();\r\n            this.regionmanager = regionmanager;\r\n        }\r\n\r\n        private void Button_Click(object sender, RoutedEventArgs e)\r\n        {\r\n            regionmanager.RequestNavigate(\"MainRegion\", new Uri(\"ModuleB\", UriKind.Relative));\r\n        }\r\n\r\n    }\r\n```\r\nModule B\r\n```\r\n  public class CustomerModule:IModule\r\n    {\r\n\r\n        private IRegionManager regionmanager;\r\n        private IUnityContainer container;\r\n        public CustomerModule(IRegionManager regionmanager, IUnityContainer container)\r\n        {\r\n            this.regionmanager = regionmanager;\r\n            this.container = container;\r\n        }\r\n\r\n        public void Initialize()\r\n        {\r\n            regionmanager.AddToRegion(\"MainRegion\", typeof(ModuleB));\r\n            container.RegisterType<object, ModuleB>(\"ModuleB\");\r\n        }\r\n    }\r\n```\r\n\r\nCan anybody help me?\r\n\r\nThx\r\nBrian",
+    "LastUpdatedDate": "2014-08-24T15:24:15.213-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2014-08-24T15:24:15.213-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Navigation Problem",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 10710
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

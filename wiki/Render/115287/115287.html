@@ -1,0 +1,21 @@
+<div class="wikidoc"><h1>Bootstrapper initialization is not at the Application Startup event in some of the Quickstarts and Documentation topics</h1><h2>Problem</h2>Running the Bootstrapper at the App’s constructor stage will probably let your application in an inconsistent state, for example if you try adding application resources dynamically. 
+<h2>Solution</h2>It is recommended that the Bootstrapper initialization be placed in the handler for the <b>Startup</b> event of the Application like in the following sample code:<br /><pre>
+public partial class App : Application
+{
+    protected override void OnStartup(StartupEventArgs e)
+    {
+        base.OnStartup(e);
+
+        MyBootstrapper bootstrapper = new MyBootstrapper();
+        bootstrapper.Run();
+    }
+} </pre>
+<h2>Assets affected</h2>In the first release of Composite Application Guidance, the following assets are running the Bootstrapper from the <b>App constructor</b> instead of the <b>Startup event</b> (these are <b><u>not</u></b> correct):
+<ul><li><a href="http://msdn.microsoft.com/en-us/library/cc707864.aspx">How to: Create a Solution Using the Composite Application Library.</a></li>
+<li><a href="http://msdn.microsoft.com/en-us/library/cc707878.aspx">Composite Application Guidance for WPF Hands-On Lab</a> and the HelloWord QuickStart source code.</li>
+<li>ConfigurationModularity Quickstart source code.</li>
+<li>DirectoryLookupModularity Quickstart source code.</li>
+<li>EventAggregation Quickstart source code.</li>
+<li>UI Composition Quickstart source code.</li></ul>
+<h2>More Information</h2>You may find information on the application’s startup in the Remarks section of these links:
+<ul><li><a href="http://msdn.microsoft.com/en-us/library/system.windows.application.startup(VS.85).aspx">Application.Startup Event.</a></li></ul></div><div class="ClearBoth"></div>

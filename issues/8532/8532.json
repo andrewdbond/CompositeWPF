@@ -1,0 +1,66 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "This issue is closed for WPF in Prism 5.0",
+    "ClosedDate": "2014-05-01T11:19:37.503-07:00",
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "Hi,\nI found a issue for Prism v4 - Silverlight 4 and WPF 4.\n \nInteractionRequestTrigger inherits System.Windows.Interactivity.EventTrigger.\nThe EventTrigger doesn't implement WeakEvent Pattern.\nIt creates a strong reference from event source.\n \nAs a result, \nInteractionRequestTrigger can cause memory leaks with some implementations.\n \n \nFor example, \n \nA View has a InteractionRequestTrigger that has ViewModel's InteractionRequest as SourceObject.\nThe ViewModel lives longer than the View.\nIn this case, the View is kept alive longer than intended.\n \n \nCode sample is...\n \n// In a MainWindow\n \n/// <summary>\n/// SubWindow's ViewModel that has a InteractionRequest.\n/// This is MainWindow's instance member.\n/// </summary>\nprivate SubWindowViewModel _vm;\n \nprivate void button1_Click(object sender, RoutedEventArgs e)\n{\n    if (_vm == null)\n    {\n        _vm = new SubWindowViewModel();\n    }\n \n    //Create SubWindow's instance that has InteractionRequestTrigger.\n    //And add ViewModel to it's DataContext.\n    var window = new SubWindow { DataContext = _vm };\n    \n    window.ShowDialog();\n}\n \n//I expected that SubWindow could be garbage collected after it was closed, but it couldn't.\n \n## Same topic was created in \"Discussins\" by Mr. okazuki.\n## http://compositewpf.codeplex.com/discussions/265154\n \nThanks.",
+    "LastUpdatedDate": "2014-05-01T11:19:37.503-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-07-27T23:22:21.467-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "InteractionRequestTrigger can cause memory leaks with some implementations.",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 7,
+    "Id": 8532
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897987,
+      "FileName": "view.jpg",
+      "DownloadUrl": ".\\897987"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nWe investigated this issue and found that the reference to the view is kept alive because it is holded by the handler for the Raised event in the InteractionRequest class. The InteractionRequestTrigger class (which inherits from EventTrigger) located in the view subscribes to the Raised event in the InteractionRequest class, which results in a handler being added to that event. The handler is a delegate that contains the InteractionRequestTrigger instance in its Target property. This results in the view being kept in memory.\r\n\r\nA possible workaround for this problem might be to create a different implementation of the IInteractionRequest interface that relies on a weak events. We created an implementation (see details below), tested it and found that it caused no memory leaks. We based on the default implementation provided by Prism. The result is as follows:\r\n\r\n    public class WeakInteractionRequest : IInteractionRequest\r\n        where T : Notification\r\n    {\r\n        IList handlers = new List();\r\n\r\n        /// \r\n        /// Fired when interaction is needed.\r\n        /// \r\n        public event EventHandler Raised\r\n        {\r\n            add\r\n            {\r\n                handlers.Add(new WeakReference(value));\r\n            }\r\n\r\n            remove\r\n            {\r\n                handlers.Remove(handlers.Where(e => e.Target as EventHandler == value).FirstOrDefault());\r\n            }\r\n        }\r\n\r\n        /// \r\n        /// Fires the Raised event.\r\n        /// \r\n        /// \r\nThe context for the interaction request.\r\n\r\n        [System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Design\", \"CA1030:UseEventsWhereAppropriate\")]\r\n        public void Raise(T context)\r\n        {\r\n            this.Raise(context, c => { });\r\n        }\r\n\r\n        /// \r\n        /// Fires the Raised event.\r\n        /// \r\n        /// \r\nThe context for the interaction request.\r\n\r\n        /// \r\nThe callback to execute when the interaction is completed.\r\n\r\n        [System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Design\", \"CA1030:UseEventsWhereAppropriate\")]\r\n        public void Raise(T context, Action callback)\r\n        {\r\n            foreach (var handler in handlers)\r\n            {\r\n                if (handler.IsAlive)\r\n                {\r\n                    var myHandler = handler.Target as EventHandler;\r\n                    myHandler(this, new InteractionRequestedEventArgs(context, () => callback(context)));\r\n                }\r\n            }\r\n        }\r\n    }\r\n\r\nTake into account that this is only a simple approach for illustrative purposes. A definite implementation might have to cover more details in the implementation for the weak event pattern. For more information on weak event patterns you can check the following article (http://msdn.microsoft.com/en-us/library/aa970850.aspx).\r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi\r\n\r\nhttp://msdn.microsoft.com/en-us/library/aa970850.aspx",
+      "PostedDate": "2011-11-11T09:37:14.883-08:00",
+      "Id": 156491
+    },
+    {
+      "Message": "I hope that weak event pattern implementation provided by prism. Because this pattern is general case in application. If this implementation did not provide in prism then many prism user will write this code.\r\n\r\nThank you.",
+      "PostedDate": "2011-12-23T08:00:09.2-08:00",
+      "Id": 156492
+    },
+    {
+      "Message": "Maybe the \"DataContext = null\" is the best solution for leaks and for now?http://prisminteractionlack.codeplex.com/WeakInteractionRequest - it's overwhelming.It don't solve other troubles.Sorry if I wrong.",
+      "PostedDate": "2012-12-22T14:17:32.7-08:00",
+      "Id": 156493
+    },
+    {
+      "Message": "The sample code posted by Guido Leandro Maliandi doesn't actually seem to work as expected.The event handler now gets garbage collected immediately, so the interaction request no longer has any effect. It solves the memory leak, but breaks functionality.",
+      "PostedDate": "2013-10-03T02:54:45.083-07:00",
+      "Id": 156494
+    }
+  ]
+}

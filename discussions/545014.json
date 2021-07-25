@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1244098",
+    "ThreadId": "545014",
+    "Html": "Are there any performance issues with using <a href=\"http://rachel53461.wordpress.com/2011/10/09/simplifying-prisms-eventaggregator/\" rel=\"nofollow\">this approach</a> for Pub/Sub events?\r<br />\n<br />\nThe idea is to wrap a message in a generic PubSubEvent so you can write the message like this:<br />\n<pre><code>// Create the Event Message\npublic class TickerSymbolSelectedMessage\n{\n    public string StockSymbol { get; set; }\n}</code></pre>\n\nAnd the you can send it like this:<br />\n<pre><code>// Broadcast Events\nEventSystem.Publish&lt;TickerSymbolSelectedMessage&gt;(\n    new TickerSymbolSelectedMessage{ StockSymbol = “STOCK0”});</code></pre>\n\nI like this and it remind me of the messagebus in RxUI<br />\n",
+    "PostedDate": "2014-05-11T10:30:34.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1244397",
+    "ThreadId": "545014",
+    "Html": "Hi Martin,\r<br />\n<br />\nThe <em>Blogpost</em> you referenced describes an approach based on a simple wrapping for the <strong><em>GetEvent</em></strong> method in particular in order to not be redundantly called each time.\r<br />\nBased on my understanding, the approach you mentioned would be a good optimization in regards to <em>code cleaning and simplicity</em>. \r<br />\nI would not think right now on any performance issues that this wrapping would cause. However, as the blogpost points out, I can't tell how a big application would behave with many calls to <strong>EventSystem</strong> class.\r<br />\n<br />\nI hope this helped you,\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky.\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-05-12T08:16:20.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

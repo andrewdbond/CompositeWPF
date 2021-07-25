@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "802016",
+    "ThreadId": "346426",
+    "Html": "\r\n<p>I <em>was</em> using the new IRegion.MoveFrom function in the pre-release version of Prism 4.1, but I notice it's disappeared from the final 4.1 release. Is there a good reason for this (i.e. a known problem)?</p>\r\n<p>I'm going to go down the route of putting it back in by hand, which sadly means editing the Prism source, but I'm wondering if there is a problem with this function of which I am not aware, which would make me reconsider.</p>\r\n<p>Thanks,</p>\r\n<p>Mark</p>\r\n",
+    "PostedDate": "2012-02-27T06:57:06.213-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "802715",
+    "ThreadId": "346426",
+    "Html": "<p>Hi Mark,</p>\r\n<p>As far as I know, the <strong>MoveFrom </strong>method included in the <strong>pre-release version of Prism 4.1</strong> was initially designed as an approach to support the scenario described in the following work item: <a href=\"http://compositewpf.codeplex.com/workitem/7381\">UpdateRegionsException when adding/removing a view with a scoped region manager</a>.</p>\r\n<p>However, based on my understanding, it seems that the pattern &amp; practices team decided to remove the <strong>MoveFrom </strong>method in the final release, as this approach didn't appear to actually solve the issue described in the work item.</p>\r\n<p>If you believe that the <strong>MoveFrom </strong>method included should be included in Prism as out of the box, you could create a work item in the <a href=\"http://compositewpf.codeplex.com/workitem/list/advanced\">issue tracker</a> or comment the aforementioned work item, so that the team can consider it for future releases.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-02-28T09:59:44.007-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "802733",
+    "ThreadId": "346426",
+    "Html": "<p>It's interesting that it's been removed, because it did provide a solution for my specific case (moving views with scoped region managers between regions).</p>\r\n<p>What the MoveFrom function gave us was effectively a limited way to insert a view which already has a region manager attached to it. This is all I really need to achieve. I'd favor a more generic function - i.e. an AddViewWithRegionManager() or similar.</p>\r\n<p>Previously I was using my workaround to the RegionManagerRegistrationBehavior (mentioned in the thread you linked to above) to prevent the re-assignment of region managers which happens when a view is reinserted from blowing up. However, it's much cleaner in operation if we don't have to re-create a region manager at all, when the view is put back in, as there are quite a lot of knock on effects in other extensions I have to Prism when this happens.</p>\r\n<p>I'm happy to write extensions to Prism, but when we start modifying the source code it becomes much harder to upgrade in the future. Honestly, I'm debating whether&nbsp;to splurge out some Reflection code to invoke Region.InnerAdd()...&nbsp;</p>",
+    "PostedDate": "2012-02-28T10:39:28.92-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

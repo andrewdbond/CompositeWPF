@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "666082",
+    "ThreadId": "271099",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I came across an example showing how to dynamic inject&nbsp;views in 2 shells in ModuleView.xaml.cs:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre> [ImportingConstructor]\r\n        <span style=\"color:blue\">public</span> MyShellWindow(IRegionManager regionManager)\r\n        {\r\n            _regionManager = regionManager;\r\n            InitializeComponent();\r\n            Loaded &#43;= ShellDockWindow_Loaded;\r\n        }\r\n<div style=\"color:black; background-color:white\"><pre><span style=\"color:blue\">void</span> MyShellWindow_Loaded(<span style=\"color:blue\">object</span> sender, System.Windows.RoutedEventArgs e) </pre>\r\n<pre>{ //code to use view injection to load a view into region on this Shell }</pre>\r\n<pre>Usually, the load view code is located in ViewModel, but this is in the code of the View itself. Is it possible for the ViewModel to be aware of the &quot;Loaded&quot; event of the view, since</pre>\r\n<pre>there may be other code in ViewModel that need to happen when View is loaded?</pre>\r\n<pre>Thanks!</pre>\r\n</div>\r\n</pre>\r\n</div>\r\n",
+    "PostedDate": "2011-08-31T19:54:41.193-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "666354",
+    "ThreadId": "271099",
+    "Html": "<p>Hi,</p>\n<p>There are various approaches that you can use to communicate between the View and the ViewModel to inform it that the view was loaded.</p>\n<p>One of those approaches would be making the ViewModel subscribe to the \"Loaded\" event using the event aggregator so the View and the ViewModel would be still decoupled. This is important since the MVVM pattern usually implies that the ViewModel isn't aware  of the specific implementation of the view related.</p>\n<p>Another possible approach would be to create a shared service. When the Loaded event is raised, the View could use the service to inform the ViewModel that the View has been loaded.</p>\n<p>For more information about this you can see the following chapter of the Prism documentation:</p>\n<ul>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28v=PandP.40%29.aspx\">Chapter 9: Communicating Between Loosely Coupled Components</a> </li>\n</ul>\n<p>I hope you find this useful,</p>\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-09-01T09:49:36.733-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

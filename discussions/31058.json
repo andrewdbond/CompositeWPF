@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "103287",
+    "ThreadId": "31058",
+    "Html": "Have anyone tried to develop&nbsp; XBAP application using this Prism framework ? If yes, what did you do in CreateShell() method of BootStarpper so show the startup page? can anyone give any code example ? Thanks in advance.<br>\r\n",
+    "PostedDate": "2008-07-08T01:19:11.133-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "107709",
+    "ThreadId": "31058",
+    "Html": "To create a PRSIM XBAP I had to tackle the following issues:<br>\r\n<br>\r\n1.&nbsp;XBAPs are partial trust applications by default.<br>\r\nAdd the AllowPartiallyTrustedCallers attribute to assemblyinfo of the three CAL projects.<br>\r\n2.&nbsp;The Shell of an XBAP is not a Window but a Page. <br>\r\nSince Page&nbsp;does not have a .Show(), we cannot create its visualtree in the CreateShell() override of our Bootstrapper. <br>\r\nThe way I solved this was by adding StartupUri=&quot;Shell.xaml&quot; to the Application tag of App.xaml.<br>\r\nTo our bootstrapper I added:\r\n<p><em>public static DependencyObject ShellPage { private get; set; }</em></p>\r\n<p><em>protected override DependencyObject CreateShell()<br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return ShellPage;<br>\r\n}<br>\r\n<br>\r\n</em>The Shell page gets the following constructor:<br>\r\n<br>\r\n<em>public Shell()<br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;InitializeComponent();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;Bootstrapper.ShellPage = this;<br>\r\n}<br>\r\n<br>\r\n</em>That's it.</p>\r\n",
+    "PostedDate": "2008-07-29T06:55:29.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "107846",
+    "ThreadId": "31058",
+    "Html": "Flash demo / code of the CompositeWPF's&nbsp; Commanding solution running under both CompositeWPF and XBAP available <a href=\"http://www.global-webnet.net/BlogEngine/post/2008/07/20/WPF-and-XBAP.aspx\">HERE</a>; I like sjappie's approach - I took the approach of bootstrapping from the Page1 codebehind (versus the shell).\r\n",
+    "PostedDate": "2008-07-29T16:53:19.08-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "107938",
+    "ThreadId": "31058",
+    "Html": "Thanks Bill for the nice flash movie.<br>\r\nHave you ever tried deploying the XBAP in IIS? I can't get it to work there.<br>\r\nIt turns out that Composite.Moduleloader requires FileIO permission. This is not granted in partial trust.<br>\r\nSecurity permissions must be less strict in debug mode, because it works there.\r\n",
+    "PostedDate": "2008-07-30T04:58:45.633-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "108107",
+    "ThreadId": "31058",
+    "Html": "<p>Thanks sjappie for alerting me to the fact that a CompositeWPF XBAP application requires full trust to execute under IIS!&nbsp; I had a false sense of security (no pun intended) thinking that since it ran in Debug&nbsp;that it would deploy.</p>\r\n<p>In the following blog <a href=\"http://blogs.microsoft.co.il/blogs/maxim/archive/2008/03/05/wpf-xbap-as-full-trust-application.aspx\">How to run WPF - XBAP as Full Trust Application</a>&nbsp;the author does a great job providing step-by-step instructions for preparing an XBAP application for deployment as a full trust application.&nbsp;&nbsp; I applied the steps and ran into the same things he did (Vista Ultimate/IIS7) - more about it <a href=\"http://www.global-webnet.net/BlogEngine/post/2008/07/30/XBAP-Deploying-to-IIS-Server-with-Full-Trust.aspx\">HERE</a></p>\r\n",
+    "PostedDate": "2008-07-30T17:35:47.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "108131",
+    "ThreadId": "31058",
+    "Html": "Many many thanks sjappie for your answer<span style=\"text-decoration:underline\"><br>\r\n</span>\r\n",
+    "PostedDate": "2008-07-30T19:58:38.63-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "108167",
+    "ThreadId": "31058",
+    "Html": "<span id=UniqueID1217490859628>Hi Bill, thanks for your help. Eventually, I may end up building a full trust XBAP anyway.<br>\r\nBut the full trust is required by the module loader only. So I created a custom module loader that doesn't do any File IO. Fortunately Composite WPF is very extensible through the use of services, so this was not a big problem.<br>\r\nI made the following custom implementation of <em>IModuleLoader</em>, that overrides <em>ModuleLoader</em>'s <em>LoadAssembly </em>method.&nbsp;<br>\r\n<p><em>&nbsp;&nbsp;&nbsp; public class PartialTrustModuleLoader : ModuleLoader<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private readonly ILoggerFacade loggerFacade;</em></p>\r\n<p><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public PartialTrustModuleLoader(IContainerFacade containerFacade, ILoggerFacade loggerFacade)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : base(containerFacade, loggerFacade)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.loggerFacade = loggerFacade;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</em></p>\r\n<p><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override Assembly LoadAssembly(ModuleInfo moduleInfo)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string moduleAssembly = moduleInfo.AssemblyFile;</em></p>\r\n<p><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (String.IsNullOrEmpty(moduleAssembly))<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new ArgumentException(&quot;assemblyFile&quot;);</em></p>\r\n<p><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assembly assembly;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (LoadedAssemblies.ContainsKey(moduleAssembly))<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return LoadedAssemblies[moduleAssembly];</em></p>\r\n<p><em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; assembly = Assembly.Load(moduleAssembly);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadedAssemblies.Add(moduleAssembly, assembly);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; loggerFacade.Log(string.Format(&quot;Loaded module: {0}&quot;, moduleInfo.ModuleName), Category.Info, Priority.None);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception ex)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new ModuleLoadException(null, moduleAssembly, ex.Message, ex);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return assembly;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\n</em>I also had to make a custom implementation of&nbsp;<em>IModuleEnumerator</em>, because Composite WPF's <em>StaticModuleEnumerator</em>&nbsp;reads <em>moduleType.Assembly.Location </em>,which requires Sytem.File.IO.&nbsp;<br>\r\n<br>\r\n<em>public&nbsp;PartialTrustModuleEnumerator AddModule(Type moduleType, params string[] dependsOn)<br>\r\n{<br>\r\n&nbsp;&nbsp; ModuleInfo moduleInfo = new ModuleInfo(<strong>moduleType.Assembly.FullName</strong><br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;, moduleType.FullName<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;, moduleType.Name<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;, dependsOn);<br>\r\n&nbsp;&nbsp; _modules.Add(moduleInfo);<br>\r\n&nbsp;&nbsp; return this;<br>\r\n}<br>\r\n<br>\r\n</em>There is no difference with the&nbsp;<em>StaticModuleEnumerator </em>apart from the&nbsp;<em>moduleType.Assembly.FullName</em> argument to <em>ModuleInfo.<br>\r\n<br>\r\n</em>The last thing left to do is override&nbsp;<em>ConfigureContainer()</em> in our&nbsp;Bootstrapper and register our own module loader there.<br>\r\n<em>protected override void ConfigureContainer()<br>\r\n{<br>\r\n&nbsp;&nbsp; Container.RegisterType(typeof(IModuleLoader), typeof(PartialTrustModuleLoader), new ContainerControlledLifetimeManager());<br>\r\n&nbsp;&nbsp; base.ConfigureContainer();<br>\r\n}<br>\r\n<br>\r\n</em>That's it. My Composite WPF XBAP is running partial trust in IIS on my machine now. Let me know if you still experience difficulties.<br>\r\n<br>\r\nP.S. I use Bill's method of running the bootstrapper from Page1's constructor, rather than the solution I suggested before, because it may happen that Page1 is not yet loaded when the bootstrapper is run.</p>\r\n</span>\r\n",
+    "PostedDate": "2008-07-31T01:00:53.88-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "108215",
+    "ThreadId": "31058",
+    "Html": "Very nice!!! Thanks for sharing the code with us - I'll plug it in tonight when I get home to see how it works :)\r\n",
+    "PostedDate": "2008-07-31T05:18:58.323-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

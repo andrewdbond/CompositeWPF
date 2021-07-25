@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "892102",
+    "ThreadId": "389252",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>In my MEF application I have module dependencies, but the ModuleDependency tag uses a string to reference another module. Is there a way of using it with a syntax that accepts a type, like:</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre>[ModuleDependency(<span style=\"color:blue\">typeof</span>&lt;IModuleInterfaceForTheDependency&gt;)]</pre>\r\n<p>Or any other ideas on how to do this type of injection or ensure that the dependent module is loaded? Wuold it be possible to include it in the next version of MEF? It would be great!!!</p>\r\n<p>Thanks very much,</p>\r\n<p>Pablo</p>\r\n</div>\r\n",
+    "PostedDate": "2012-07-27T00:25:48.63-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "892372",
+    "ThreadId": "389252",
+    "Html": "<p>Hi,</p>\r\n<p>As far as I know <strong>Prism </strong>does not provide an approach for resolving module dependencies defined through the type of a custom interface.</p>\r\n<p>By default, when specifying dependencies in code when using <strong>MEF</strong>, the current implementation of the <strong>ModuleExport </strong>attribute only allows getting or setting the contract names of modules that your module will depend upon.</p>\r\n<p>For example this attribute could be used like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>[ModuleExport(<span style=\"color: blue;\">typeof</span>(ModuleA), DependsOnModuleNames = <span style=\"color: blue;\">new</span> <span style=\"color: blue;\">string</span>[] { <span style=\"color: #a31515;\">\"ModuleD\"</span> })]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> ModuleA : IModule\r\n{\r\n    ...\r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Also, based on my understanding, <strong>Prism </strong>uses this modules' contract name to identify the modules that needs to <strong>retrieve </strong>or <strong>load</strong>, and the dependencies of each modules. This can be seen in the current implementations of the <strong>MefModuleManager </strong>and <strong>ModuleCatalog </strong>classes.</p>\r\n<p>Take into account that <strong>Prism </strong>provides extensibility points for developers that can be used to tailor the library to suit their needs. For more information and guidelines about this, you could check the following appendix of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430866(v=pandp.40)\">Appendix E: Extending Prism</a></li>\r\n</ul>\r\n<p>On the other hand, in my opinion, you could benefit from other approaches provided by <strong>Prism </strong>to register your modules, like registering them in a configuration file or in a <strong>XAML </strong>module catalog. Using these approaches you can define modules and their dependencies in a loosely coupled pattern (without even needing to have a reference to the modules). If you are interested, you could find more information regarding the different approaches provided by <strong>Prism </strong>as out of the box in the following chapter of the documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405479(v=pandp.40)\">Chapter 4: Modular Application Development</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-07-27T11:23:28.17-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

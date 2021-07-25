@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "716258",
+    "ThreadId": "283941",
+    "Html": "<p>where the shell contained just 1 region, say MainView</p>\n<p>A module (ModuleA) is loaded, say ShellView, which defines other regions say Center, Left, Top etc</p>\n<p>Other modules, say ModuleB, are only aware of these regions Center, Left, Top etc and oblivious of region MainView</p>\n<p>Does this still work, any gotchas, special considerations to keep in mind ?</p>",
+    "PostedDate": "2011-12-22T12:15:22.777-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "716335",
+    "ThreadId": "283941",
+    "Html": "<p>I was able to create the scenario above in a test case</p>\n<p>Wondering if there are any gotchas ?</p>\n<p>perhaps the order in which modules are loaded may change on a different machine which would cause ModuleB to fail to init as regions Center, Left, Top defined in ModuleA are not available as yet ?</p>",
+    "PostedDate": "2011-12-22T14:57:57.377-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "716695",
+    "ThreadId": "283941",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, you might find the <strong><em>view discovery approach</em></strong> useful for you scenario. In this approach, when a module initializes, it <em><strong>registers </strong></em>the view in the corresponding regions (using for example, the <strong>RegisterViewWithRegion </strong>extension method of the <strong>RegionManager</strong>) so that when when the region is available, an instance of the registered view is automatically injected in the region. Like this, you shouldn't need to worry about the order in which the modules are initialized, as it's not required for the region to be available at the moment of the registration of the views.</p>\r\n<p>You can find more information about the view discovery approach in the following chapter of the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28PandP.40%29.aspx#sec37\">Chapter 7: Composing the User Interface - Displaying Views in a Region When the Region Loads</a></li>\r\n</ul>\r\n<p>On the other hand, if needed, you could also have explicit control of when each module is loaded. For example, if your modules are initialized on demand, you can define in which order the modules are loaded according to your requirements. Also, if none of the above approaches fit your scenario, you could define dependencies between different modules, (for example, making the Module B dependent of the Module A) so that the dependency module is initialized first.</p>\r\n<p>You might find more information regarding both possibilities  in the following chapter of the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28PandP.40%29.aspx\">Chapter 4: Modular Application Development</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-12-23T09:34:37.8-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "720491",
+    "ThreadId": "283941",
+    "Html": "<p>Hello Damian</p>\r\n<p>&nbsp;</p>\r\n<p>I,m using the view discovery approach but strangely getting the error</p>\r\n<p>System.InvalidOperationException was unhandled by user code<br />&nbsp; Message=View already exists in region.<br />&nbsp; Source=Microsoft.Practices.Prism<br />&nbsp; StackTrace:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Microsoft.Practices.Prism.Regions.Region.InnerAdd(Object view, String viewName, IRegionManager scopedRegionManager) in c:\\release\\WorkingDir\\PrismLibraryBuild\\PrismLibrary\\Desktop\\Prism\\Regions\\Region.cs:line 360<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Microsoft.Practices.Prism.Regions.Region.Add(Object view, String viewName, Boolean createRegionManagerScope) in c:\\release\\WorkingDir\\PrismLibraryBuild\\PrismLibrary\\Desktop\\Prism\\Regions\\Region.cs:line 275<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Microsoft.Practices.Prism.Regions.Region.Add(Object view) in c:\\release\\WorkingDir\\PrismLibraryBuild\\PrismLibrary\\Desktop\\Prism\\Regions\\Region.cs:line 246<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Microsoft.Practices.Prism.Regions.Behaviors.AutoPopulateRegionBehavior.AddViewIntoRegion(Object viewToAdd) in c:\\release\\WorkingDir\\PrismLibraryBuild\\PrismLibrary\\Desktop\\Prism\\Regions\\Behaviors\\AutoPopulateRegionBehavior.cs:line 84<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Microsoft.Practices.Prism.Regions.Behaviors.AutoPopulateRegionBehavior.OnViewRegistered(Object sender, ViewRegisteredEventArgs e) in c:\\release\\WorkingDir\\PrismLibraryBuild\\PrismLibrary\\Desktop\\Prism\\Regions\\Behaviors\\AutoPopulateRegionBehavior.cs:line 109<br />&nbsp; InnerException:</p>\r\n<p>&nbsp;</p>\r\n<p>at this line in moduleInitialize</p>\r\n<p>&nbsp;rmgr.RegisterViewWithRegion(RegionNames.MainRegion, typeof(ExShell));</p>\r\n<p>&nbsp;</p>\r\n<p>all the exceptions for this so far are on reactivation etc</p>\r\n<p>any idea what could be wrong ?</p>\r\n<p>&nbsp;</p>\r\n<p>thanks</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-01-04T13:52:36.933-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "720535",
+    "ThreadId": "283941",
+    "Html": "<p>Update - not sure what the problem was but i added the AutoPopulateExportedViewsBehavior from StockTraderRI and it went away</p>\n<p>However, given the scenario above of</p>\n<p>ModuleA adding a CustomView with regions RA, RB, RC</p>\n<p>and ModuleB using view discovery to load View1 into RA and View2 into RB</p>\n<p>view1 and view2 don't show up, stepping thru the code in AutoPopulateExportedViewsBehavior, it appears that RA, RB, RC are never processed/added to the regionmanager !!</p>\n<p>any clues on what/where to check ?</p>\n<p>&nbsp;</p>\n<p>also on a side note, in AutoPopulateExportedViewsBehavior.AddRegisteredViews()</p>\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Region.Add(view);</p>\n<p>is executed twice from this code block</p>\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!this.Region.Views.Contains(view))<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Region.Add(view);<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\n<p>not sure how that's possible but that may have something to do with the issue above!</p>",
+    "PostedDate": "2012-01-04T14:53:06.383-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "720819",
+    "ThreadId": "283941",
+    "Html": "<p>still have the issue of the call for adding the view being made twice though !!</p>",
+    "PostedDate": "2012-01-05T07:00:07.373-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "720871",
+    "ThreadId": "283941",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding of your scenario it seems that you are registering the view in the region twice: one with the <strong>RegisterViewWithRegion </strong>method and the other with the <strong>AutoPopulateExportedViewsBehavior</strong>. Although both approaches associate a view with a region to be injected automatically when the corresponding region is available, those are are not related to each other and each one use its own \"registration\" implementation. Usually, when following the <strong><em>view discovery approach</em></strong>, you would need to use only one of the aforementioned functionalities.</p>\r\n<p>For example, when registering a view using the <strong>AutoPopulateExportedViewsBehavior</strong> you need to export the view using the following custom export attribute: <strong>[ViewExport(RegionName = RegionName)]</strong>. Instead, when using the <strong>RegisterViewWithRegion </strong>method, this custom attribute is not required.</p>\r\n<p>Also, if you need more support regarding this problem, it would be helpful if you could provide us with a repro-sample application portraying it, so that we can help you find the causes behind the exception.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-01-05T08:53:12.463-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "720892",
+    "ThreadId": "283941",
+    "Html": "<p>RegisterViewWithRegion is commented out so it,s only done once</p>\n<p>will create a repro app and revert<strong><br /> </strong></p>",
+    "PostedDate": "2012-01-05T09:17:35.86-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "721694",
+    "ThreadId": "283941",
+    "Html": "<p>You are right, this works with the ms .net controls</p>\r\n<p>however i am using devx controls where it fails in the test app so looks like an issue with the adapter - fyi</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-01-06T13:15:44.123-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "722438",
+    "ThreadId": "283941",
+    "Html": "<p><span style=\"font-size: 10pt; color: black;\">Got feedback from devx and it's happening because of﻿ this bug in the framework</span></p>\r\n<p><span style=\"font-size: 11pt;\"><a href=\"../workitem/8521\">http://compositewpf.codeplex.com/workitem/8521</a></span></p>\r\n<p><span style=\"font-size: 11pt;\">&nbsp;</span></p>\r\n<p><span style=\"font-size: 11pt;\">&nbsp;</span></p>\r\n<p><span style=\"font-size: 11pt;\">posting this here in case others land here confounded by same/similar issue</span></p>",
+    "PostedDate": "2012-01-09T05:38:15.407-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

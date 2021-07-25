@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "115732",
+    "ThreadId": "34851",
+    "Html": "Is it possible to dynamically unload a module? My app has menu options to load specific modules, but I can't find an easy way to unload a module. Any help is much appreciated!\r\n",
+    "PostedDate": "2008-09-03T10:40:15.307-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "115747",
+    "ThreadId": "34851",
+    "Html": "<em>[ID10T] &quot;is it possible to dynamically unload a module?&quot;<br>\r\n<br>\r\n</em>Yes and no....&nbsp; Once an application domain loads an assembly&nbsp;the assembly cannot be unloaded. &nbsp;However, you can unload an AppDomain and all of the modules it contains.&nbsp; <br>\r\n<br>\r\nCoincidently I start&nbsp;development on this for the CompositeWPF this evening for my&nbsp;<a href=\"http://www.CodePlex.com/SDMS\">http://www.CodePlex.com/SDMS</a> project.&nbsp; Preliminary research led me to this very cool &quot;<a href=\"http://www.codeplex.com/clraddins/Release/ProjectReleases.aspx?ReleaseId=9454\">Sample - WPF Caclulator</a>&quot; which shows how to load and unload AppDomains.&nbsp; What particularly interested me was how easily the modules within a different AppDomain were added to the main form of the parent Domain.&nbsp; I think you'll find this demo very interesting.<br>\r\n<br>\r\nI'm going to&nbsp;create a Contrib project for the CompositeWPF using the concepts taught in the <a href=\"http://www.CodePlex.com/clraddins\">http://www.CodePlex.com/clraddins</a> project and blog on my adventures <a href=\"http://www.Global-webnet.net/BlogEngine\">HERE</a>.\r\n",
+    "PostedDate": "2008-09-03T11:11:37.967-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "115988",
+    "ThreadId": "34851",
+    "Html": "Bill / ID10T, you may also be interested in the work I've been doing with composite apps and AppDomain isolation. I have a few posts on my blog: <a href=\"http://kentb.blogspot.com/search/label/MAF\">http://kentb.blogspot.com/search/label/MAF</a><br>\r\n<br>\r\nBest,<br>\r\nKent<br>\r\n",
+    "PostedDate": "2008-09-04T05:46:51.21-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "116088",
+    "ThreadId": "34851",
+    "Html": "Bill,<br>\r\n<br>\r\nThere's already a contrib project for CompositeWPF here that you may want to hook up on:<br>\r\n<a href=\"http://www.codeplex.com/CompositeWPFContrib\">http://www.codeplex.com/CompositeWPFContrib</a>\r\n",
+    "PostedDate": "2008-09-04T10:29:20.803-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "116293",
+    "ThreadId": "34851",
+    "Html": "@kentcb, you did an excellent job&nbsp;explaining a complex topic; it helped make sense out of the required components and tied everything together nicely.&nbsp; My thoughts are to create a MAFModuleLoader class which will utilize policies/strategies if/as required - I'd like your thoughts and any advice you might have on the topic to ensure I start coding in the right direction.&nbsp;&nbsp; Your sample solution opened my eyes to a lot of things to include the requirement for the static Main() having a LoaderOptimizationAttribute; this attribute had me googling, which I blog&nbsp;about <a href=\"http://www.codeplex.com/clraddins\">HERE</a>.&nbsp; During this adventure I stumbled upon the Pipeline Builder tool which (at a glance) seems to build the necessary infrastructure from a single contract file (and&nbsp;properly structured solution).&nbsp; I'm going to compare the resulting output to&nbsp;the solution you provided in your&nbsp;<a href=\"http://kentb.blogspot.com/search/label/MAF\">blog</a>.&nbsp; I'll update the output source as required,&nbsp;using&nbsp;your solution&nbsp;as&nbsp;the guideline, because as you noted&nbsp;your Agnostic&nbsp;Host&nbsp;is &quot;really cool&quot;.<br>\r\n<br>\r\n@bsimser,&nbsp; thanks!&nbsp; I downloaded the latest release so that I can create a Contrib project that conforms.&nbsp;\r\n",
+    "PostedDate": "2008-09-05T03:58:16.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "116398",
+    "ThreadId": "34851",
+    "Html": "Thanks Bill, I appreciate your feedback on my post. I have your post ear-marked to digest when I find some time over the weekend.<br>\r\n<br>\r\nThe posts on my blog are very much POCs that I have used as learning and have fed into the design and implementation of the real deal, which I am currently working on (and have made a lot of progress). I made the conscious decision to not impose any particular framework on add-ins. In fact, the only requirement is that they be discoverable with MAF. From there, they can use any framework they want, such as Prism, CAB, Windsor, whatever.<br>\r\n<br>\r\nAt this point, my shell (host) is dependent only upon .NET 3.5. It did not make sense to me to include a UI framework like Prism in the host at this stage. However, I have a layered design and the bottom layer (which is the only part I've completed) is UI agnostic, meaning I could use it for WPF, Winforms, Console apps or whatever. When I get to the layer that adds WPF support, it may make sense to introduce a framework such as Prism then, but not really sure yet.<br>\r\n<br>\r\nI hope that makes some sense, and good luck in your Prism/MAF ventures!<br>\r\n<br>\r\nBest,<br>\r\nKent<br>\r\n",
+    "PostedDate": "2008-09-05T12:00:45.723-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "590600",
+    "ThreadId": "252239",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>&nbsp;</p>\r\n<p>I have no images in my client projects, yet each module is quite big.</p>\r\n<p>I have two modules and a shared infrastructure project and the shell project.</p>\r\n<p>&nbsp;</p>\r\n<p>Shell is 642 KB.</p>\r\n<p>NavigationModule 586 KB</p>\r\n<p>ContactModule 835 KB</p>\r\n<p>&nbsp;</p>\r\n<p>Thats quite massive. &nbsp;Is there a way to reduce it? Is it because of Prism?</p>\r\n<p>Thanks,</p>\r\n<p>Houman</p>\r\n",
+    "PostedDate": "2011-04-02T02:15:30.697-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "591380",
+    "ThreadId": "252239",
+    "Html": "<p>A google search revealed that you can try renaming to zip and try unpacking then repacking with higher compression. &nbsp;</p>",
+    "PostedDate": "2011-04-04T08:52:29.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "591690",
+    "ThreadId": "252239",
+    "Html": "<p><span style=\"font-size: 11pt;\">Hi Houman,</span></p>\r\n<div class=\"im\">\r\n<p><span style=\"font-size: 11pt;\">You can check the following links in order to achieve your requirement:</span></p>\r\n<ul>\r\n<li><span style=\"font-size: 11pt;\"><a href=\"http://forums.silverlight.net/forums/t/21548.aspx\" target=\"_blank\">Reducing XAP size</a></span></li>\r\n<li><span style=\"font-size: 11pt;\"><a href=\"http://blogs.msdn.com/b/delay/archive/2008/07/16/smaller-is-better-a-simple-step-to-shrink-the-download-size-of-silverlight-2-applications.aspx\" target=\"_blank\">Smaller is better! [A simple step to shrink the download size of Silverlight 2 applications]</a></span></li>\r\n<li><span style=\"font-size: 11pt;\"><a href=\"http://msdn.microsoft.com/en-us/library/gg430856%28PandP.40%29.aspx\" target=\"_blank\">Chapter 11: Deploying Prism Applications</a> (specifically the <strong>Reducing the Download Size of Your Module XAP Files </strong>section)</span></li>\r\n</ul>\r\n</div>\r\n<p><span style=\"font-size: 11pt;\">&nbsp;</span></p>\r\n<p><span style=\"font-size: 11pt;\">On  the other hand, Prism provides the means for achieving background  downloading of Xap files, so as to minimize the application start-up  time. You might find the <strong>Downloading Remote Modules in the Background </strong>section in the <a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28PandP.40%29.aspx\" target=\"_blank\">Modularity Chapter</a> of the Prism MSDN documentation useful to this purpose.</span></p>\r\n<p><span style=\"font-size: 11pt;\">&nbsp;</span></p>\r\n<p><span style=\"font-size: 11pt;\">I hope you find this information useful.</span></p>\r\n<p><span style=\"font-size: 11pt;\">Thanks,</span></p>\r\n<p><span style=\"font-size: 11pt;\">Miguel Bronzovic<br />http://blogs.southworks.net/mbronzovic</span></p>\r\n<p><span style=\"font-size: 11pt;\"><br /></span></p>",
+    "PostedDate": "2011-04-04T16:49:13.707-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "596351",
+    "ThreadId": "252239",
+    "Html": "<p>Sorry for late response I had forgotten to subscribe to this topic.</p>\r\n<p>Thank you Miguel for the solution. &nbsp;This looks very promising. :)</p>\r\n<p><br />Kind Regards,</p>\r\n<p>Houman</p>",
+    "PostedDate": "2011-04-12T23:26:13.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "652521",
+    "ThreadId": "252239",
+    "Html": "<p>Hi guys,</p>\n<p><strong>UPDATE</strong></p>\n<p>My project is finally ready to be deployed and since days I am fighting to reduce the XAP size. &nbsp;It goes quite well the tricks above helped quite a bit.</p>\n<p>Now back to PRISM documentation, it suggests to utilize the Application Library Cache. &nbsp;I have already done an extensive research on how it should work. I have enabled the XAP reduction checkbox and after building I can see how the XAP's have been reduced significantly and all the dependencies now lie as ZIP files next to them. &nbsp;It all looks great.</p>\n<p>But when I start the application over VS 2010, I get a javascript error message:</p>\n<p><strong>Microsoft JScript runtime error: Unhandled Error in Silverlight Application An exception occurred while initializing module 'NavigationModule'.&nbsp;&nbsp; &nbsp; - The exception message was: An exception has occurred while trying to add a view to region 'NavRegion'.&nbsp;&nbsp; &nbsp; - The most likely causing exception was was: 'System.Windows.Markup.XamlParseException: The invocation of the constructor on type 'SalesContactManagement.Modules.NavigationModule.Views.CoverFlow' that matches the specified binding constraints threw an exception. [Line: 48 Position: 46] ---&gt; System.IO.FileNotFoundException: Could not load file or assembly 'Telerik.Windows.Controls.Navigation, Version=2011.2.712.1040, Culture=neutral, PublicKeyToken=5803cfa389c90ce7' or one of its dependencies. The system cannot find the file specified.&nbsp; &nbsp;at SalesContactManagement.Modules.NavigationModule.Views.CoverFlow.InitializeComponent()&nbsp; &nbsp;at SalesContactManagement.Modules.NavigationModule.Views.CoverFlow..ctor()&nbsp; &nbsp;--- End of inner exception stack trace ---&nbsp; &nbsp;at System.Windows.Application.LoadComponent(Object component, Uri resourceLocator)&nbsp; &nbsp;at SalesContactManagement.Modules.NavigationModule.Views.NavigationView.InitializeComponent()&nbsp; &nbsp;at SalesContactManagement.Modules.NavigationModule.Views.NavigationView..ctor(NavigationViewModel viewModel)&nbsp; &nbsp;at BuildUp_SalesContactManagement.Modules.NavigationModule.Views.NavigationView(IBuilderContext )&nbsp; &nbsp;at Microsoft.Practices.ObjectBuilder2.DynamicMethodBuildPlan.BuildUp(IBuilderContext context)&nbsp; &nbsp;at Microsoft.Practices.ObjectBuilder2.BuildPlanStrategy.PreBuildUp(IBuilderContext context)&nbsp; &nbsp;at Microsoft.Practices.ObjectBuilder2.StrategyChain.ExecuteBuildUp(IBuilderContext context)&nbsp; &nbsp;at Microsoft.Practices.Unity.UnityContainer.DoBuildUp(Type t, Object existing, String name, IEnumerable`1 resolverOverrides)'.&nbsp; &nbsp; But also check the InnerExceptions for more detail or call .GetRootException().&nbsp;&nbsp; &nbsp; - The Assembly that the module was trying to be loaded from was:SalesContactManagement.Modules.NavigationModule, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&nbsp; &nbsp; Check the InnerException property of the exception for more information. If the exception occurred while creating an object in a DI container, you can exception.GetRootException() to help locate the root cause of the problem.&nbsp;&nbsp; &nbsp; &nbsp;at Microsoft.Practices.Prism.Modularity.ModuleInitializer.HandleModuleInitializationError(ModuleInfo moduleInfo, String assemblyName, Exception exception)&nbsp; &nbsp;at Microsoft.Practices.Prism.Modularity.ModuleInitializer.Initialize(ModuleInfo moduleInfo)&nbsp; &nbsp;at Microsoft.Practices.Prism.Modularity.ModuleManager.LoadModulesThatAreReadyForLoad()&nbsp; &nbsp;at Microsoft.Practices.Prism.Modularity.ModuleManager.IModuleTypeLoader_LoadModuleCompleted(Object sender, LoadModuleCompletedEventArgs e)&nbsp; &nbsp;at Microsoft.Practices.Prism.Modularity.XapModuleTypeLoader.RaiseLoadModuleCompleted(LoadModuleCompletedEventArgs e)&nbsp; &nbsp;at Microsoft.Practices.Prism.Modularity.XapModuleTypeLoader.HandleModuleDownloaded(DownloadCompletedEventArgs e)&nbsp; &nbsp;at Microsoft.Practices.Prism.Modularity.XapModuleTypeLoader.IFileDownloader_DownloadCompleted(Object sender, DownloadCompletedEventArgs e)&nbsp; &nbsp;at Microsoft.Practices.Prism.Modularity.FileDownloader.WebClient_OpenReadCompleted(Object sender, OpenReadCompletedEventArgs e)&nbsp; &nbsp;at System.Net.WebClient.OnOpenReadCompleted(OpenReadCompletedEventArgs e)&nbsp; &nbsp;at System.Net.WebClient.OpenReadOperationCompleted(Object arg)</strong></p>\n<p>&nbsp;</p>\n<p>In the CoverFlow Class ctor I have nothing there but&nbsp;</p>\n<pre><div style=\"color: black; background-color: white;\"><pre><span style=\"color: blue;\">public</span> CoverFlow()\n{\n    InitializeComponent();\n}\n</pre>\n</div>\n<br /></pre>\n<pre><br /></pre>\n<pre>I think PRISM doesnt like the XAP reduction feature that much. Any idea this regarding?</pre>\n<pre><br /></pre>\n<p>&nbsp;</p>\n<p>Many Thanks,</p>\n<p>Houman</p>",
+    "PostedDate": "2011-08-04T10:06:24.24-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "653571",
+    "ThreadId": "252239",
+    "Html": "<p>I have found the problem in this case.&nbsp;</p>\n<p>The problem lies in 3rd party Telerik controls. &nbsp;There you can specify an Application wide theme like this:&nbsp;</p>\n<pre><span>private</span>&nbsp;<span>void</span>&nbsp;Application_Startup(<span>object</span>&nbsp;sender,&nbsp;<span>StartupEventArgs</span>&nbsp;e)\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//StyleManager.ApplicationTheme&nbsp;=&nbsp;new&nbsp;Windows7Theme();</span>\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>new</span>&nbsp;<span>Bootstrapper</span>().Run();\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>\n<p>&nbsp;</p>\n<p>Don't do it. Since the App.xaml is defined in Shell, somehow Telerik has problems applying this to the underlying modules. Just apply the theme directly on the module's views rather than central like here.</p>\n<p>&nbsp;</p>\n<p>Then it works. :)</p>\n<p>&nbsp;</p>\n<p>Houman</p>",
+    "PostedDate": "2011-08-06T02:11:43.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

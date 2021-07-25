@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "247779",
+    "ThreadId": "72567",
+    "Html": "<p>Both the &quot;View Discovery Compostion QuickStart&quot; and &quot;View Injection Compostion QuickStart&quot; examples update fields in the EmployeesListView (e.g. First Name) when they are edited in the EmployesDetailView and focus is then set to another field.</p>\r\n<p>Yet, the &quot;BusinessEntities.Employee&quot; class does not implement INotifyPropertyChanged, nor is it a DependencyProperty.</p>\r\n<p>Therefore, my question is, how does the update occur?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-20T09:54:52.13-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "247845",
+    "ThreadId": "72567",
+    "Html": "<p id=5c394d60-9fd1-012c-5c12-12313b00c091>Hi Paul,</p>\r\n<p id=5c395920-9fd1-012c-5c13-12313b00c091>The update occurs because the EmployeesListView is binded to an <a href=\"http://msdn.microsoft.com/en-us/library/ms668604.aspx\">ObservableCollection&lt;T&gt;</a> (which basically prevents you from having to implement INotifyPropertyChanged in your own collection, but it is better explained in the MSDN link I provided). Below is a brief summary of what is going on:</p>\r\n<ol>\r\n<li>When the employee is selected an event is raised, which passes the Employee as a parameter. </li>\r\n<li>It is handled in the EmployeesPresenter which calls the EmployeeControler.OnEmployeeSelected method.</li>\r\n<li>The controller creates the EmployeeDetailsPresenter and calls its SetSelectedEmployee method, passing the employee as parameter. </li>\r\n<li>The employee properties have a two way binding so the Employee is updated whenever the textboxes are. </li>\r\n</ol>\r\n<p id=5c396b50-9fd1-012c-5c14-12313b00c091>As the same Employees are shared, they are automatically modified in the view as it is binding to an ObservableCollection.</p>\r\n<p id=5c398a70-9fd1-012c-5c15-12313b00c091>Please let me know if this helps.</p>\r\n<p id=5c39a320-9fd1-012c-5c16-12313b00c091>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-10-20T12:53:32.95-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "247883",
+    "ThreadId": "72567",
+    "Html": "<p>Thanks Damian:</p>\r\n<p>I'm not sure the update I'm referring to has anything to do with ObservableCollection&lt;T&gt;.</p>\r\n<p>Note, I'm referring to editing in the Detail area, which then updates the item in the List area.</p>\r\n<p>I quote from the MSDN documentation:</p>\r\n<p><em>However, to set up dynamic bindings so that insertions or deletions in the collection update the UI automatically, the collection must implement the INotifyCollectionChanged interface.</em></p>\r\n<p>And also:</p>\r\n<p><em>To fully support transferring data values from binding source objects to binding targets, each object in your collection that supports bindable properties must implement an appropriate property changed notification mechanism such as the <span><a id=\"ctl00_MTCS_main_ctl104_ctl00_ctl18\" href=\"http://msdn.microsoft.com/en-us/library/system.componentmodel.inotifypropertychanged.aspx\">INotifyPropertyChanged</a></span> interface.</em></p>\r\n<p>To verify my uinderstanding, I replaced all the ObservableCollection&lt;T&gt; with List&lt;T&gt; in the &quot;View Injection Compostion QuickStart&quot; sample, and I still observe the update behaviour.</p>\r\n<p>Thus something else must be causing the List item to be updated, yet I fail to see exactly what is doing that.</p>\r\n<p>Thanks for your input, and I await your further comments.</p>\r\n<p>&nbsp;</p>\r\n<p><em>&nbsp;</em></p>",
+    "PostedDate": "2009-10-20T14:30:16.02-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

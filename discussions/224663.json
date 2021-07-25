@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "484216",
+    "ThreadId": "224663",
+    "Html": "<p>I am wondering when we remove a view from a region, does it also&nbsp;dispose viewModels associated with them [In View-First approach I guess] Or do we explicitely need to dispose the presenters, controllers and viewModels.</p>\r\n<p>Thanks,</p>\r\n<p>Ravi</p>",
+    "PostedDate": "2010-08-24T09:05:29.9-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "484254",
+    "ThreadId": "224663",
+    "Html": "<p>Hi Ravi,</p>\r\n<p>Beyond of the presentation pattern of your choice, MVVM, MVP, etc,&nbsp; if you remove a view from a region, it will be disposed as well as its objects (e.g. a View Model) when the garbage collection occurs. That said, take into account that the garbage collector will dispose all these components successfully if you don&rsquo;t have any pointer alive to your objects from other place.</p>\r\n<p>Therefore, it is not necessary to explicitly dispose a view model. On the other hand a memory leak has been detected and treated in the <a href=\"http://blogs.southworks.net/dschenkelman/\">Damian Schenkelman&rsquo;s blog</a>:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/dschenkelman/2009/12/23/memory-leak-removing-view-with-child-regions-in-prism-v2/\">Memory Leak removing View with child regions in Prism-v2</a></li>\r\n</ul>\r\n<p>For more information about this topic, you could take a look at the following forum threads:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=203787\">Killing instances of view-s</a></li>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=49559\">Memory Leaks in the PresentationModel classes</a></li>\r\n</ul>\r\n<p>Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-08-24T10:24:53.96-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "484275",
+    "ThreadId": "224663",
+    "Html": "<p>Fernando,</p>\r\n<p>Thanks for you quick reply. That was definitely helpful. It addresses 90% of my current issues regarding view disposal because most of them I am using the View-First approach to resolve Views.</p>\r\n<p>I have few cases where a Presenter is dynamically generating UI components and binding them to a view. To make matters worse, there are events hooked between the UI components and the presenter. I don't think I am handling the disposal of the presenter well enough because all I am doing is setting the reference to the presenter to Null and it seems the instance of it still lingers around because it keeps handling some UI events. Long story short, I guess I am wondering if there is a best practice regarding how to handle disposal in case of Model-First or Presenter approaches like mine because just removing the views from the region doesn't seem to cut it for these cases [or I might be totally misunderstanding something here :-) ]</p>\r\n<p>Thanks again for your time,<br>Ravi</p>",
+    "PostedDate": "2010-08-24T11:14:02.307-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "484309",
+    "ThreadId": "224663",
+    "Html": "<p>Hi Ravi,</p>\r\n<p>There&nbsp;is no specific&nbsp;guidance about&nbsp;memory management and dispose patterns&nbsp;topics in Prism out-of-the-box. In most usual View-First cases, there is no need to do any special disposing. By the way, this topic requires you to&nbsp;evaluate&nbsp;in advance what your classes&nbsp;will use to know whether it requires to induce the garbage collection or not.</p>\r\n<p>Although View-First or other approaches do not require any specific memory management, your application do. So, I would like to share the following links to generic content on this subject:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.msdn.com/b/bclteam/archive/2007/10/30/dispose-pattern-and-object-lifetime-brian-grunkemeyer.aspx\">Dispose Pattern and Object Lifetime [Brian Grunkemeyer]</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/magazine/cc163392.aspx#S2\">Digging into IDisposable</a>&nbsp;(see <em>The Disposable Pattern </em>section)</li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/system.idisposable.aspx\">IDisposable Interface</a></li>\r\n</ul>\r\n<p>On the other hand, if you manage an event strong references between two objects, it could be&nbsp;necessary to untie them to get it disposed correctly.</p>\r\n<p>Additionally, you could take a look at the following documentation section on MSDN:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/aa970850.aspx\">Weak Event Patterns</a></li>\r\n</ul>\r\n<p>Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-08-24T12:37:39.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "484357",
+    "ThreadId": "224663",
+    "Html": "<p>Fernando,</p>\r\n<p>Thanks again. This is definitely helpful and points me in the right direction.</p>\r\n<p>-Ravi</p>",
+    "PostedDate": "2010-08-24T13:54:20.567-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

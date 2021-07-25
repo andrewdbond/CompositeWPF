@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "207435",
+    "ThreadId": "61167",
+    "Html": "<p>Hi,</p>\r\n<p>&nbsp;&nbsp;I am trying to use ADO.Net Entity Data Framework in Prism. Almost all the examples including &nbsp;<a href=\"http://msdn.microsoft.com/en-us/library/cc838191(VS.95).aspx\">http://msdn.microsoft.com/en-us/library/cc838191(VS.95).aspx</a>&nbsp;talk about Silverlight page accessing. However in our applications, we use modules which are Class Libraries or Silverlight Class Libraries, which bind the data to the UI. Are there any code samples/snippets to use the same?</p>\r\n<p>&nbsp;&nbsp;Have uploaded the code sample at&nbsp;<a title=\"http://cid-8f83691dd01b3d44.skydrive.live.com/self.aspx/Prism/prismapp.v3.zip\" href=\"http://cid-8f83691dd01b3d44.skydrive.live.com/self.aspx/Prism/prismapp.v3.zip\">http://cid-8f83691dd01b3d44.skydrive.live.com/self.aspx/Prism/prismapp.v3.zip</a></p>\r\n<p>&nbsp;&nbsp;Thanks and regards,</p>\r\n<p>&nbsp;&nbsp;Pooran</p>",
+    "PostedDate": "2009-07-01T01:54:35.96-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "207672",
+    "ThreadId": "61167",
+    "Html": "<p>Pooran -</p>\r\n<p>While I haven't taken the time to review your application, I am using EF in my application.</p>\r\n<p>What I have done is the create my EF in a Data library, then during my shell init, I register the instance with the UNity container :&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">this</span>.Container.RegisterInstance&lt;Entities&gt;(<span style=\"color:Blue\">new</span> Entities(builder.ToString()));\r\n</pre>\r\n</div>\r\n<p>Then in my views, I set the DataContext to the approriate set :<br>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>      <span style=\"color:Blue\">public</span> CensusPresentationModel Model\r\n      {\r\n          <span style=\"color:Blue\">get</span> { <span style=\"color:Blue\">return</span> <span style=\"color:Blue\">this</span>.DataContext <span style=\"color:Blue\">as</span> CensusPresentationModel; }\r\n          <span style=\"color:Blue\">set</span>   \r\n          {\r\n              <span style=\"color:Blue\">this</span>.DataContext = value;\r\n              <span style=\"color:Blue\">if</span> (value != <span style=\"color:Blue\">null</span>)\r\n              {\r\n                  <span style=\"color:Blue\">this</span>.dg.ItemsSource = <span style=\"color:Blue\">this</span>.Model.ReferralEntities.ReferralSet;\r\n              }\r\n              <span style=\"color:Blue\">else</span>\r\n                  <span style=\"color:Blue\">this</span>.dg.ItemsSource = <span style=\"color:Blue\">null</span>;\r\n                    \r\n          }\r\n      }\r\n</pre>\r\n</div>\r\n</p>\r\n<p>In this case, the CensusPresentationModel just has a ReferralSet property from the EF.</p>\r\n<p>Then, binding as usual.</p>\r\n<p>&nbsp;</p>\r\n<p>I am having an issue with refreshing the WPF Data Grid, but will start a new thread on that. <br>Hope this helps.</p>",
+    "PostedDate": "2009-07-01T11:41:08.98-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "207795",
+    "ThreadId": "61167",
+    "Html": "<p>Interesting.. will try that and get back to you.</p>\r\n<p>Pooran</p>",
+    "PostedDate": "2009-07-01T20:47:22.45-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "207797",
+    "ThreadId": "61167",
+    "Html": "<p>Is it possible to share the sample<strong>&nbsp;</strong>skeleton&nbsp;codebase of the data library? I am kind of stuck in the syntax.</p>\r\n<p>Pooran</p>",
+    "PostedDate": "2009-07-01T20:55:31.847-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "207961",
+    "ThreadId": "61167",
+    "Html": "<p>I'll try here -</p>\r\n<p>First, this is just how *I* roll :)</p>\r\n<p>In your Bootstrapper, register the service as such (be sure to call it from your CreateShell ):</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>        <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> RegisterServices()\r\n        {\r\n            <span style=\"color:Green\">//you need to have a conn string in the shell app.config for SampleDataEntities.</span>\r\n            <span style=\"color:Blue\">this</span>.Container.RegisterInstance&lt;SampleDataEntities.SampleDataEntities&gt;(<span style=\"color:#A31515\">&quot;SampleDataService&quot;</span>, \r\n                <span style=\"color:Blue\">new</span> SampleDataEntities.SampleDataEntities(), \r\n                <span style=\"color:Blue\">new</span> Microsoft.Practices.Unity.ContainerControlledLifetimeManager());\r\n\r\n        }\r\n<br>Then in your view, I would add a property for your entities &amp; set it as your DataContext :<br><div style=\"color:Black;background-color:White\"><pre>        \r\nIUnityContainer container;\r\nIEventAggregator _eventAggregator;\r\n\r\n<span style=\"color:Blue\">public</span> <span style=\"color:Blue\">object</span> Entities\r\n {\r\n            <span style=\"color:Blue\">get</span> { <span style=\"color:Blue\">return</span> <span style=\"color:Blue\">this</span>.DataContext <span style=\"color:Blue\">as</span> SampleDataEntities; }\r\n            <span style=\"color:Blue\">set</span> { <span style=\"color:Blue\">this</span>.DataContext = value; }\r\n }\r\n \r\n <span style=\"color:Blue\">public</span> AdminView(IUnityContainer container, \r\n                            IEventAggregator eventAggregator) :<span style=\"color:Blue\">this</span>()\r\n {\r\n            <span style=\"color:Blue\">this</span>.container = container;\r\n            _eventAggregator = eventAggregator;\r\n            <span style=\"color:Blue\">this</span>.Entities = <span style=\"color:Blue\">this</span>.container.Resolve();\r\n\r\n }\r\n\r\n<br>Then your XAML can bind to the Entity directly  Text = {Binding Path=users.Username......} <br><br>Couple of things - Not sure why you are using the ModuleManager in your view, you should likely be using the IRegionManager, but I've only browsed the code.<br>Also, it appears that you are implementing a webservice as a custom authentication and membership provider based on SQL. <br>While I don't have specific links, I *know* this has been done before, and likely the SqlMembershipProvder can take care of your needs with configuration. I've been immersed in WSS for awhile, so <br>some of those things can taint my mind.<br><br>Hope this helps.<br>Good Luck! <br></pre>\r\nP.S. One thing I learned today - If you are going to use an EF Entity as a source, you likely need to wrap it in an ObservableCollection&lt;&gt; <br> this.Referrals = new ObservableCollection&lt;Referral&gt;( this.ReferralEntities.ReferralSet.ToList() );<br><br></div>\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-02T07:07:52.107-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "208186",
+    "ThreadId": "61167",
+    "Html": "<p>Thanks a lot for sharing the sample code.. I will give it a go and let you know.</p>\r\n<p>Module manager in a view.. I have to bind few more modules and views in that view with custom regions. Not implemented yet though.</p>\r\n<p>Webservice.. I might replace it with EF if that thing goes right. SqlMembershipProvider.. we are building a multiple logins including openid, live, and few other logins. So, custom implementation is what we preferred.</p>\r\n<p>Thanks again :)</p>\r\n<p>Pooran</p>",
+    "PostedDate": "2009-07-02T20:27:54.013-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

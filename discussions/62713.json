@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "212883",
+    "ThreadId": "62713",
+    "Html": "<p>Hi List,</p>\r\n<p>i have tho following structure in my code.</p>\r\n<p>If i start a module i run a 'xxxController'. This Controller cleans up my MainRegion and start the 'xxxListPresenter' when DoubleClick a ListItem, the Controller will be informed to change from 'xxxListPresenter' to 'xxxDetailPresenter'.</p>\r\n<p>In my DetailView i have 'Cancel' and #Save' Button. So far so good.</p>\r\n<p>What is the best way to&nbsp;let my DetailPresenter and/or my Controller know what's going on?</p>\r\n<p>Should the 'DetailPresenter', the 'DetailViewModel' or the Contoller' handle save of my Entity's.</p>\r\n<p>Should i use Events or Commands to inform my Controller.</p>\r\n<p>Thanks</p>\r\n<p>Peter</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-16T23:00:51.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213144",
+    "ThreadId": "62713",
+    "Html": "<p>Hi Peter,</p>\r\n<p>In this scenario whether to use events or commands is really a decision that should be made on the specific functionality you require. In my personal opinion, handle the save of your identities in any of those classes (you probably have a service to save the data, and Unity dependency injection, if you are using Unity, allows easy access to it) would be ok, but of course that really depends on what kind of logic you are using in each. Say, if you are handling the save functionality in the <strong>Controller</strong>, then your entire module (assuming the <strong>Controller</strong> works at module level), could use that functionality for maximum reusability.</p>\r\n<p>If the scenario has no major complications, using a command in the <strong>ViewModel</strong> (where you already have the data with no need to pass it around), could a good approach. Take into account that if you do decide to use events, you can use standard .Net events since you are working with references to the <strong>Presenters/Controllers</strong> as they are in the same module.</p>\r\n<p>You might find the<span style=\"color:#1f497d\"> <a href=\"http://msdn.microsoft.com/en-us/library/dd458858.aspx\">Quickstarts</a> </span>and the<span style=\"color:#1f497d\"> <a href=\"http://msdn.microsoft.com/en-us/library/dd458919.aspx\">Reference Implementation</a> </span>provided by the Guidance a good starting point. The Commanding Quickstast has a similar scenario for saving orders. The Reference Implementation also uses commands to save positions. The&nbsp; EventAggregator Quickstart uses events to add funds to customers.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-07-17T11:10:50.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213333",
+    "ThreadId": "62713",
+    "Html": "<p>Hi Demian,</p>\r\n<p>&lt;</p>\r\n<p>Say, if you are handling the save functionality in the <strong>Controller</strong>, then your entire module (assuming the <strong>Controller</strong> works at module level), could use that functionality for maximum reusability.</p>\r\n<p>&gt;</p>\r\n<p>this seems to be a very flexibel way to handle&nbsp;many of the overall nedded tasks in a module.</p>\r\n<p>thanks a lot</p>\r\n<p>Peter</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-18T01:57:27.72-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "236035",
+    "ThreadId": "62713",
+    "Html": "<p>Some of the Quickstarts use a Controller and some do not, and the RI does use Controllers.&nbsp; Unfortunately the Prism docs make no mention of controllers.&nbsp; What is the rhyme and reason behind Controllers?&nbsp; I'm not following their pattern of use.&nbsp; Help me please!&nbsp; Thanks.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-18T06:56:10.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "236246",
+    "ThreadId": "62713",
+    "Html": "<p id=7b80b220-86c7-012c-dd37-12313b00e181>Hi</p>\r\n<p id=7b80bb00-86c7-012c-dd38-12313b00e181>There is no particular reason for using controllers. As you might notice, most of these are module level controllers, and instead of handling the activity of a particular view they coordinate the functionality of entire modules.</p>\r\n<p id=7b80c740-86c7-012c-dd39-12313b00e181>The following threads deal with this question:</p>\r\n<ul>\r\n<li><a href=\"View.aspx?ThreadId=50763\">ViewDiscoveryComposition Employees Controller AND Presenter?</a></li>\r\n<li><a href=\"View.aspx?ThreadId=59318\">Presenter vs. PresentationModel vs. ViewModel vs. Controller</a></li>\r\n</ul>\r\n<p id=7b80d420-86c7-012c-dd3a-12313b00e181>Ward Bell explains more about managing views in these couple of posts (these are not related to controllers per se, but have some really interesting ideas in my opinion):</p>\r\n<ul>\r\n<li><a href=\"http://neverindoubtnet.blogspot.com/2009/06/screen-factory.html\">Screen Factory</a></li>\r\n<li><a href=\"http://neverindoubtnet.blogspot.com/2009/05/birth-and-death-of-m-v-vm-triads.html\">Birth and Death of M-V-VM Triads</a></li>\r\n</ul>\r\n<p id=7b80e510-86c7-012c-dd3b-12313b00e181>Please let me know if this helps.</p>\r\n<p id=7b80fa20-86c7-012c-dd3c-12313b00e181>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-09-18T14:25:51.71-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "236758",
+    "ThreadId": "62713",
+    "Html": "<p>Hi dschenkelman</p>\r\n<p>this was exactly what i'm looking for</p>\r\n<p>Thanks</p>\r\n<p>Peter</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-20T22:53:03.363-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

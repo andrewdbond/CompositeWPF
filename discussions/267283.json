@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "650490",
+    "ThreadId": "267283",
+    "Html": "<p>Hello.</p>\n<p>I use the MVVM-Pattern for my Views. In my ViewModel i start a DispatcherTimer in the constructor.</p>\n<p>When i navigate to another View via the Prism RegionManager.RequestNavigate-Method i want to remove the DispatcherTimer to avoid memory leaks.</p>\n<p>I implement IDisposable. In the Dispose-Method i stop the DispatcherTimer and set it null.</p>\n<p>&nbsp;</p>\n<p>I'm not sure if that is the right way. The Dispose-Method is called then i navigate to another View but when i Navigate back to this View via the RegionManager.RequestNavigate-Method i don't know where i have to instanziate the DispatcherTimer again.</p>",
+    "PostedDate": "2011-08-01T05:07:45.667-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "650703",
+    "ThreadId": "267283",
+    "Html": "<p>Hi Steve,</p>\r\n<p>You can implement the interface <a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.prism.regions.inavigationaware_methods%28v=PandP.40%29.aspx\">INavigationAware</a> in the <strong>ViewModel</strong> that your <strong>View</strong> uses, so that it is notificated when a navigation event takes place.</p>\r\n<p>Basically, the <strong>INavigationAware</strong> interface exposes two methods that are called during a navigation operation:</p>\r\n<ul>\r\n<li><span style=\"font: 7pt 'Times New Roman';\"></span><strong>OnNavigatedFrom</strong>, which is called before navigation takes place, when the active view is navigated away to another one, </li>\r\n<li><span style=\"font: 7pt 'Times New Roman';\">&nbsp;</span>And <strong>OnNavigatedTo</strong>, which is called after navigation is complete, when the view is navigated into from another one.</li>\r\n</ul>\r\n<p>In this case, you can start the <strong>DispatcherTimer</strong> in the <strong>OnNavigatedTo</strong> method and remove it in the <strong>OnNavigatedFrom</strong> method.</p>\r\n<p>You can find more information about this in the section <a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28v=PandP.40%29.aspx#sec9\">View and View Model Participation in Navigation</a> of <a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28v=PandP.40%29.aspx\">Chapter 8: Navigation</a> of the Prism documentation.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-08-01T11:53:09.263-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "650710",
+    "ThreadId": "267283",
+    "Html": "<p>Thanks for your fast answer.</p>\r\n<p>Do i understand it right that i don't need to set the timer null?</p>",
+    "PostedDate": "2011-08-01T12:04:59.73-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "651129",
+    "ThreadId": "267283",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding of your scenario, in order to avoid memory leaks you could unhook from the events of the Timer, and set it to null, and then instantiate it and hook to its events again in the <strong>OnNavigatedTo</strong> method.</p>\r\n<p>In case you unhook from the events, it's possbile that you don't need to set the timer to null.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-08-02T05:42:11-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

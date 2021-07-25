@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "472268",
+    "ThreadId": "221314",
+    "Html": "Hi,\r\n\r\nI have a scenario where each module resides in its own subfolder under the &quot;Modules&quot; folder found in the Shell.exe startup path. This is done because the modules are sort of different applications loaded on user demand similar to &quot;Project -&gt; New -&gt; Application 1&quot;. Each module loads some specific dlls that are not common among the modules so they reside in its own folder. However, using a directory module catalog (which is by specificaton) the &quot;Modules&quot; folder is supposed to contain the modules and subfolders are not searched.\r\n\r\nIs there a way fo instruct PRISM to search subfolders for modules as well? The only solution I can think of is to keep all modules in the &quot;Modules&quot; main folder and to have a subfolder for any module specific dlls and resources but it does not seem very clean solution.\r\n\r\nThanks for any help,\r\nTony",
+    "PostedDate": "2010-07-24T23:49:55.423-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "472742",
+    "ThreadId": "221314",
+    "Html": "<p>Hi Tony,</p>\r\n<p>This is something not supported by Prism out-of-box. The <a href=\"http://msdn.microsoft.com/en-us/library/ff648995.aspx\">DirectoryModuleCatelog</a> expects that all the modules assemblies will be stored in the ModulePath indicated, as explained <a href=\"http://msdn.microsoft.com/en-us/library/ff648995.aspx\">here</a>&nbsp;(see the first step&nbsp;&ndash; second bullet).</p>\r\n<p>Additionally, the provided DirectoryModuleCatalog implementation lacks of an extensibility point for modifying&nbsp;that logic.&nbsp;That said, you could extend Prism out-of-the-box implementation by providing your own ModuleCatalog implementation.&nbsp;</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-07-26T10:34:49.337-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "472983",
+    "ThreadId": "221314",
+    "Html": "Hi Fernando,\r\n\r\nThanks for the reply, it is most helpful. I also came to this conclusion after posting the question and tried inheriting the ModuleCatalog class into my own and overriding some virtual methods and it worked !\r\n\r\nThanks and best regards,\r\nTony",
+    "PostedDate": "2010-07-26T23:17:12.537-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

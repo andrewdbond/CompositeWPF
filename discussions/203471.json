@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "412909",
+    "ThreadId": "203471",
+    "Html": "<p>Here follows a brief description on basically what I want my application to do:<br>I'm going to create an application which will be used to facilitate adventuremaking in &quot;Paper and Pen RPG&quot; context (yeah I know, I'm a nerd). This application is meant to have support for, in principle, any kind of RPG.<br>Therefore is the need to load different M-V-VM modules based on the selected RPG. The &quot;product&quot; of a module will always be an adventure.<br><br>The thing is that when a new Campaign is created I want to show a list of all available RPGs (modules) without loading the assemblys, which after a while can become quite many. &nbsp;<br>I could probably (if I understand MEF correctly) do this the Lazy way with MEF and just read the metadata, but I rather not mix MEF with Prism unless necessary. But if that's the only way then so be it.</p>\r\n<p>Is it possible, in some relatively simple way, to do this with Prism only?<br>If not, then what would be the best approach to achieve this?<br><br>Thanks in advance!<br>Fredrik E&nbsp;</p>",
+    "PostedDate": "2010-03-01T15:27:50.867-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "414284",
+    "ThreadId": "203471",
+    "Html": "<p id=56161e40-09f2-012d-d3e2-1231390bc9e1>Hi Fredrik,</p>\r\n<p id=56162eb0-09f2-012d-d3e3-1231390bc9e1>One possible way to achieve this kind  of behavior is have all the RPG modules <a href=\"http://msdn.microsoft.com/en-us/library/dd458932.aspx\">load on demand</a>.  That way the view that is in charge of showing the available RPG modules can get  injected in its <strong>ViewModel</strong> with an instance of  <strong>IModuleCatalog </strong>to get all module names without loading all the modules. The code below can be used to get the list of  module names (you probably will use a Property in the VM to hold the views&rsquo;  names):</p>\r\n<p id=561648d0-09f2-012d-d3e4-1231390bc9e1><span style=\"font-family:Consolas;font-size:x-small\">List&lt;string&gt; moduleNames = new List&lt;string&gt;();  <br>catalog.Modules.ToList().ForEach(m =&gt;  moduleNames.Add(m.ModuleName));</span></p>\r\n<p id=56166630-09f2-012d-d3e5-1231390bc9e1>After that you can <a href=\"http://msdn.microsoft.com/en-us/library/dd458932.aspx\">load the module on  demand</a> based on the user&rsquo;s selection.</p>\r\n<p id=56168510-09f2-012d-d3e6-1231390bc9e1>Please let me know if this helps.</p>\r\n<p id=56169f10-09f2-012d-d3e7-1231390bc9e1>Damian Schenkelman <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-03-04T11:42:17.65-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "414412",
+    "ThreadId": "203471",
+    "Html": "<p>Sweet! That looks about what I've been looking around for in the www these past days. I'll throw in a quick update later next week or the week after that when I've started up the project and tried this.<br>Anyways, for now, many thanks! =)&nbsp;</p>",
+    "PostedDate": "2010-03-04T18:13:20.597-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

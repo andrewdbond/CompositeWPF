@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "90283",
+    "ThreadId": "27036",
+    "Html": "\r\nIn the discussion titled \"Presenter Class Dependency on IUnityContainer\", Glenn made the following comment:<br /><br />&gt;In \"Prism\" we are encouraging explicit use of your specific container. If you chose to use Unity in your app, then you are happy with Unity semantics, same with &gt;Windsor. Having an abstraction for resolving services is forcing you into using the \"One interface to unite them all\", and is self-defeating. We do have the &gt;IPrismContainer abstraction, but this is only for low-level core services.<br />&gt;<br />&gt;You can easily take the code in the RI and change it to use Windsor for example. We are not taking any hard dependencies in the design on any specific &gt;container.<br /><br />Both Prism and application code need to use the same container, but the development team should be free to choose which container to use.  An adapter xPrismContainer that implements IPrismContainer is created so Prism code (like ModuleLoaderService and RegionManagerService) is not hard wired to a specific container.  IPrismContainer only include the Resolve methods since that is all the it needs.  Application teams are responsible for registering/adding types to the container and will have the full syntax on their chosen container available to them.  The container choice can be made once at the beginning of the project and Prism will work with that container.  So if you choose Unity as the container, then all Prism code will use IPrismContainer and all application code will use IUnityContainer.<br /><br />In short, the purpose of IPrismContainer is not a full abstraction of the container so that anytime throughout the project lifetime a new container can be swapped in by changing just one line of code.  <br />",
+    "PostedDate": "2008-05-02T13:16:45.193-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "91151",
+    "ThreadId": "27036",
+    "Html": "\r\nMark is exactly right. In this case we want IPrismContainer to be uised only in edge cases, and deep below ground. The only person who might care about it is an ISV who is building some sort of service that relies on calling the container directly. If they want to support multiple containers, then IPrismContainer affords them this opportunity.<br />",
+    "PostedDate": "2008-05-08T00:30:46.45-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "661378",
+    "ThreadId": "269901",
+    "Html": "\r\n<p>Hi</p>\r\n<p>This is a bit related to <a href=\"http://compositewpf.codeplex.com/discussions/236762\">\r\nhttp://compositewpf.codeplex.com/discussions/236762</a>&nbsp;but unlike the example in that discussion, I think I do have a more valid reason to know where the NavigationJournal.GoBack() is going to and was wondering what approach I should take.&nbsp; I have\r\n two different views that can search for a record (one is a to-do view, the other is a filtered search view) and the user can also create a new record view the menu bar.&nbsp; When the user closes a record, I use GoBack() to take them back to whatever they\r\n used to find or create the record.&nbsp; The only problem is that if they open an existing record and then create a new record (via the menu), when they close the new record, the GoBack() takes them to the previous record, rather than the to-do or filtered\r\n search view.&nbsp; Basically, I don't want the record editing view to ever be put into the journal (the user should never go back to that view from any where else).</p>\r\n<p>What's the best way to do that?</p>\r\n<p>Thanks</p>\r\n<p>Craig</p>\r\n",
+    "PostedDate": "2011-08-21T21:17:34.047-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "662336",
+    "ThreadId": "269901",
+    "Html": "<p>Hi Craig,</p>\r\n<p>Currently, the default navigation journal used by Prism doesn&rsquo;t provide a way to define the URI used when navigating back or forward. However, Prism allows you to define you own navigation journal to implement whatever functionality you might need.</p>\r\n<p>For example, you could make a navigation journal that implements an overload of the <strong>GoBack</strong> method where you can give an URI as a parameter and if said URI exists in the journal is <strong>backStack</strong>, navigate to it. However, once you implement your own navigation journal, the decision of what functionalities you should add depend only of your preferences.</p>\r\n<p>For more information about how to implement a navigation journal you can check the <strong>RegionNavigationJournal</strong> class in the project <strong>Prism</strong> of the prism library.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-08-23T13:50:03.303-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "670537",
+    "ThreadId": "269901",
+    "Html": "<p>Hi Damian</p>\r\n<p>Thanks for the reply.&nbsp; Your suggestion works really well.</p>\r\n<p>Cheers</p>\r\n<p>Craig</p>",
+    "PostedDate": "2011-09-12T04:07:26.533-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1231062",
+    "ThreadId": "269901",
+    "Html": "Damian,\r<br />\n<br />\nThank you as well.  I was really starting to doubt how well my investment in Prism was when I wasn't able to access the Back Stack.  This is a pretty basic operation and I was just dumbfounded that it wasn't part of the architecture.  I'm a little less negative because this suggestion worked out pretty well.  I was able to replace the Journal with a custom one that provided the needed access to the stacks.\r<br />\n<br />\nStill, I don't understand the design decision.  Yes, you guys did good making it extensible, but every other navigation system allows you to at least modify the previous back journal entry.  Why was this left out of the default Prism library?<br />\n",
+    "PostedDate": "2014-04-06T18:01:44.487-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

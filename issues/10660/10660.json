@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": "",
+    "Description": "I tried to implement the INotifyDataErrorInfo based on this example in the documentation.\n\n[Implementing INotifyDataErrorInfo](http://msdn.microsoft.com/en-us/library/gg405484(v=pandp.40).aspx#sec16)\n\nThe problem is in this line \n```\nprivate ErrorsContainer<ValidationResult> errorsContainer =\n                    new ErrorsContainer<ValidationResult>(\n                       pn => this.RaiseErrorsChanged( pn ) );\n```\n\n\"Cannot access non static method \"RaiseErrorsChanged\" in static context\" \n\nThis line has to be replaced with this code\n\n```\n        private ErrorsContainer<ValidationResult> _errorsContainer;\n\n        private ErrorsContainer<ValidationResult> ErrorsContainer\n        {\n            get\n            {\n                return _errorsContainer ??\n                       (_errorsContainer = new ErrorsContainer<ValidationResult>(RaiseErrorsChanged));\n            }\n        }\n```\n\nI think someone has done this already, but forget to update the complete example.\nBecause if you look on the other lines of the example, you will find several calls to the \"ErrorsContainer\" property instead of the \"errorsContainer\" field. \n\nFor example:\n```\n public bool HasErrors\n    {\n        get { return this.ErrorsContainer.HasErrors; }\n    }\n```\n\nIt would be nice if this could be fixed, so that the next one doesn't waste another half an hour on google, before solves it by him self ;-)",
+    "LastUpdatedDate": "2014-06-20T04:39:57.103-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2014-06-20T04:39:02.237-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Implementing INotifyDataErrorInfo example in documentation isn't working",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 10660
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "457681",
+    "ThreadId": "216648",
+    "Html": "<p>Hi, I am new to Prism. A basic question: How do I make sure a module&nbsp;has been&nbsp;downloaded so that i can fire an event? Imagine that I have a toolbar module. The content, which is in a separate module, will be invoked when I click one of the toolbar button. However, it will cause problem if the content module is still in the process of downloading (asynchronously).&nbsp;What is&nbsp;the best practice on how to handle this? Thank you for any help provided.</p>",
+    "PostedDate": "2010-06-19T21:57:28.087-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "458608",
+    "ThreadId": "216648",
+    "Html": "<p>Hi,</p>\r\n<p>In order to make sure that a module has been initialized, you could check the  <strong>State</strong> property inside the <strong>ModuleInfo </strong>instance  corresponding to your module. You can access a  collection&nbsp;of&nbsp;<strong>ModuleInfo&nbsp;</strong>in the <strong>Modules</strong> property of&nbsp;<strong>IModuleCatalog</strong>.</p>\r\n<p>The code for that would look like this:</p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> ToolbarModule(IModuleCatalog catalog)\r\n\r\n{\r\n\r\nModuleState MyModuleState= catalog.Modules.Where(m =&gt; m.ModuleName == <span style=\"color:#a31515\">&quot;MyModule&quot;</span>).FirstOrDefault().State;\r\n\r\n<span style=\"color:blue\">if</span> (MyModuleState==ModuleState.Initialized)...\r\n\r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p><span style=\"font-family:Consolas\">&nbsp;</span></p>\r\n<p>Assuming that <em>catalog</em> is a reference to your  <strong>IModuleCatalog</strong> implementation, which you can&nbsp;access through <a href=\"http://msdn.microsoft.com/en-us/library/ff648080.aspx\">dependency  injection</a> (in this sample code i've used <a href=\"http://msdn.microsoft.com/en-us/library/ff660875(PandP.20).aspx\">Constructor Injection</a> with <a href=\"http://msdn.microsoft.com/en-us/library/ff647202.aspx\">Unity</a>).</p>\r\n<p>However, please note that if you are publishing an event&nbsp;using&nbsp;<a href=\"http://msdn.microsoft.com/en-us/library/ff649187.aspx\">Event  Aggregation</a> to communicate between modules, you shouldn&rsquo;t have problems if  you have no subscribers (that is, if no module is listening to that event).</p>\r\n<p>On the other hand,&nbsp;if you want a module to be loaded strictly before another  one, you could specify module dependencies, as explained on <a href=\"http://msdn.microsoft.com/en-us/library/ff649346.aspx\">this  article</a>&nbsp;from the Prism documentation.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-06-22T10:20:39.45-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "459967",
+    "ThreadId": "216648",
+    "Html": "<p>thank you very much. I will give it a try</p>",
+    "PostedDate": "2010-06-25T08:12:36.817-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "683972",
+    "ThreadId": "275816",
+    "Html": "<p>I need to create an on-demand module (lets name it ModuleManager) that can load modules from specified directory.</p>\n<p>I wrote:</p>\n<div style=\"background-color: white; color: black;\">\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> ModuleManager : IModule\r\n {\r\n  [Import]\r\n  AggregateCatalog _aggregateCatalog\r\n  {\r\n   <span style=\"color: blue;\">get</span>; <span style=\"color: blue;\">set</span>;\r\n  }\r\n\r\n  <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> Initialize()\r\n  {\r\n   DirectoryCatalog _directoryCatalog = <span style=\"color: blue;\">new</span> DirectoryCatalog(<span style=\"color: #a31515;\">\"Modules\"</span>);\r\n   <span style=\"color: blue;\">this</span>._aggregateCatalog.Catalogs.Add(_directoryCatalog);\r\n  }\r\n }\r\n</pre>\n</div>\n<p>I set a breakpoint at the line</p>\n<pre><span style=\"color: blue;\">this</span>._aggregateCatalog.Catalogs.Add(_directoryCatalog);\r\n</pre>\n<p><span style=\"color: #000000;\">and I see the types from the modules placed at \"Modules\" catalog inside this._aggregateCatalog.Parts property.</span></p>\n<p><span style=\"color: #000000;\">﻿But Initialize() methods from those modules are never called and no events from this modules are broadcasted too.</span></p>\n<p><span style=\"color: #000000;\">﻿It looks that I don't understand some basic things about module initialization in MEF.</span></p>\n<p><span style=\"color: #000000;\">Will be glad to get any help.</span></p>\n<p>&nbsp;</p>",
+    "PostedDate": "2011-10-13T13:49:52.39-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "684110",
+    "ThreadId": "275816",
+    "Html": "<p>I'm sorry,</p>\n<p>I found the reason why MEF do not load modules:</p>\n<div style=\"background-color: white; color: black;\">\n<pre>[ModuleExport(<span style=\"color: blue;\">typeof</span>(IModule))]\r\n\t<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> ModuleA: IModule\r\n\t{...}</pre>\n<pre>[ModuleExport(<span style=\"color: blue;\">typeof</span>(IModule))]<br /><span style=\"color: blue;\">\tpublic</span> <span style=\"color: blue;\">class</span> ModuleB: IModule<br />\t{...}</pre>\n</div>\n<p>should be:</p>\n<div style=\"background-color: white; color: black;\">\n<pre>[ModuleExport(<span style=\"color: blue;\">typeof</span>(ModuleA))]\r\n\t<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> ModuleA: IModule\r\n\t{...}</pre>\n<pre>[ModuleExport(<span style=\"color: blue;\">typeof</span>(ModuleB))]<br /><span style=\"color: blue;\">\tpublic</span> <span style=\"color: blue;\">class</span> ModuleB: IModule<br />\t{...}</pre>\n</div>",
+    "PostedDate": "2011-10-13T22:49:58.813-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

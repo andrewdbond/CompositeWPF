@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1044293",
+    "ThreadId": "443850",
+    "Html": "Hi,\r<br />\nwe have a requirement to create a WPF prism MVVM app using unity 3.0 .\r<br />\n<br />\nUser will be presented a 'Login Screen' , where he enters username and password , after which click on 'OK&quot; will check for permissions or security if user has access or not ,if no access , it will give  a error message. \r<br />\nclick on 'Cancel' will close the window itself.\r<br />\nIf he has access, a window gets opened with different views .\r<br />\nIn the login page, there is a button on click will pass data to other pages.\r<br />\n<br />\nplease need your suggesstions in designing this using prism wpf unity mvvm.\r<br />\n<br />\nKind Regards\r<br />\nKrishna<br />\n",
+    "PostedDate": "2013-05-16T00:05:20.84-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1044611",
+    "ThreadId": "443850",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding of your scenario, I believe that your application could be designed using the following approach. Take into account that I won't give details on how to initialize your application <strong>Bootstrapper</strong>, since I assume you know how to do it.<br />\n<h1></h1>\n<ul>\n<li>Define a region in your <strong>Shell</strong> (MainWindow in this case) using <strong>Region Manager</strong>, so you could manage which views will be shown.</li>\n<li>Your <strong>Login Screen</strong> could be a <strong>Module</strong> from your application. In this module, you will use the <strong>MVVM</strong> approach by defining a <strong>View</strong> in XAML, which will be your <strong>Login Screen UI</strong>, and a <strong>ViewModel</strong>, which will be in charge of managing the changes on your <strong>View</strong> through bindings, events and commands. Your <strong>View</strong> should be registered in your <strong>Shell</strong> region.</li>\n<li>Users information could be managed by defining a <strong>Shared Service</strong> following the <strong>Model</strong> approach from <strong>MVVM</strong>. Also, you could store which users can log in using another <strong>Shared Service</strong> and implement an <strong>Interface</strong> to communicate with it.</li>\n<li>The <strong>&quot;OK&quot;</strong> button could bind to a <strong>Command</strong> in your <strong>ViewModel</strong> from the Login Screen Module. Then, the <strong>ViewModel</strong> could do the authentication of the user through the interface you defined before, so you could know if the user is authorized or not and fire an event if necessary to update the UI and Views. The <strong>&quot;Cancel&quot;</strong> button could bind to a <strong>Command</strong> too.</li>\n<li>When the user has access, to show a different view, you could use <strong>Service Locator</strong> and <strong>Region Manager</strong> to get an instance of the view and activate it (so it will be shown in your MainWindow).</li>\n<li>\nIf I am correct, when you say &quot;pass data to other pages&quot;, I believe you are referring to pass user data to the views when the user has access. If this is the case, then you could just pass that data when you click the <strong>&quot;OK&quot;</strong> button and the authentication was successful, by just publishing an event through <strong>EventAggregator</strong> and pass the data. <br />\n</li>\n</ul>\nNevertheless, this is just a general idea on how to implement all of this, which you can modify based on your needs. For more information about how to implement this approach, you could read the following chapters of the Prism documentation:<br />\n<h1></h1>\n<ul>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405479(v=pandp.40).aspx\" rel=\"nofollow\">4: Modular Application Development</a></li>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405484(v=pandp.40).aspx\" rel=\"nofollow\">5: Implementing the MVVM Pattern</a></li>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40).aspx\" rel=\"nofollow\">8: Navigation</a></li>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921122(v=pandp.40).aspx\" rel=\"nofollow\">9: Communicating Between Loosely Coupled Components</a><br />\n</li>\n</ul>\nNote: Take into account that there is a known issue in <strong>Prism</strong> when trying to use the last release of <strong>Unity 3.0</strong>. More information <a href=\"https://compositewpf.codeplex.com/workitem/10110\" rel=\"nofollow\">here</a>.\r<br />\n<br />\nHope this helps,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-05-16T09:19:29.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1045867",
+    "ThreadId": "443850",
+    "Html": "Thanks a lot Martinez .\r<br />\n<br />\nCan we follow this approach ?\r<br />\n<br />\nThe LoginView.xaml will not be a part of 'Shell.Xaml ',instead we created another view in the same project as 'shell.xaml'.whenever shell initializes we show the login dialog, once user eneters details and click on 'ok' based on dialog result we show the Mainwindow.showor attach mainwindow to shell. is this approach correct or do you see any issues.\r<br />\nApart from this I also need your help in validating the attached flow. or suggest how many regions we require , first scrren has 3 regions and clicking on the button present on the first screen loads second screen which has different regions again , the same applies for third as well as foutrth.Need you suggestions in designing tha app,what all things should we consider and how should my shell.xaml look like, how many regions should i divide it into etc.\r<br />\n<br />\n<br />\n<br />\nI was unable to attach the sample screen here.let me know your email so that i can frwd it.but in general,\r<br />\n<br />\nScreen 1 : has \r<br />\n3 regions<br />\n<ol>\n<li>\nStatusRegion\r<br />\n2.Userregion (which has tabcontrols with different views)\r<br />\n3.Todo region ,which has 2 regions.<br />\n</li>\n</ol>\nScreen 2: clcik on button present in view presnt in useregion, this gets load ,it also has \r<br />\n1.Statusregion<br />\n<ol>\n<li>Userdetailregion ,which has views contains userpic,details </li>\n<li>\nIt has userdataregion which has tabitems which has different grids contains data.\r<br />\n   userdataregion also has a comments region at the end  where user can add comments.<br />\n</li>\n</ol>\nSame applies like screen 3 , where lciking on button on view in screen 2  ,\r<br />\ndifferent views or regions get loaded.\r<br />\n<br />\nHow many regions in total my shell should be divided into, how can i ft in these many views..how should i navigate between them,\r<br />\nneed suggestions for this type of applications.\r<br />\nThanks in advance.let em know if you need more detail!\r<br />\n[TEXT].\r<br />\n<br />\nRegards\r<br />\nKrishna<br />\n",
+    "PostedDate": "2013-05-19T23:50:16.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1046679",
+    "ThreadId": "443850",
+    "Html": "Hi Krishna\r<br />\n<br />\nRegarding the first part, the are several approaches that can be used to present a login screen. The one you are describing seems to be a valid one. Either you could show the <strong>Shell</strong> window only after the user is authenticated in the login screen or show the <strong>Shell</strong> from the beginning but only load the content after the authentication is completed.\r<br />\n<br />\nRegarding the second part of the views and the regions, there is no specific rule about how to structure your views or how many regions you should use. Those parameters will change depending of each scenario and what you are trying to achieve. Hence, it would be helpful if you could explain for what each view and region is used for, the navigation flow of your application, etc.\r<br />\n<br />\nIf you want to post a sample in this thread, you could upload it to a file hosting service of your preference (e.g. <a href=\"https://skydrive.live.com/\" rel=\"nofollow\">SkyDrive</a>) and post the link here.\r<br />\n<br />\nThanks\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-05-21T12:17:54.77-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1050008",
+    "ThreadId": "443850",
+    "Html": "Hi,\r<br />\n<br />\nI was able to design the page into 3 regions , the middle region is dynamically loaded with different views.\r<br />\nThe first region has a view , on click of a button I want to show a modal dialog , Currently I am facing an issue in showing that.\r<br />\nCan you please share if you have any links or code so that I can refer and work upon.\r<br />\n<br />\nI have a View,ViewModel, Model,DAL\r<br />\n<br />\nThe button command  is present in the viewmodel. On click of it , I am first getting the regionname and then I am struck when I want to retrieve the View (GetView (typeof(viewname) ,, the reason being ViewModel doesn't have reference of view . Already i created a reference of viewmodel in view and if i try to dao it viceversa circulardependncy occurs. I need to get the viewname .\\\r<br />\nShould I change any architecture here. (view,viewmodel,model,DAL)\r<br />\n<br />\nNeed urgent help in this regard.\r<br />\n<br />\nRegards\r<br />\nKrishna<br />\n",
+    "PostedDate": "2013-05-29T03:14:54.143-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1050232",
+    "ThreadId": "443850",
+    "Html": "This discussion is being continued in the following thread:<br />\n<ul>\n<li><a href=\"https://compositewpf.codeplex.com/discussions/445308\" rel=\"nofollow\">Issue in getiing the view name for showing the dialog in wpf prism</a></li>\n</ul>\n",
+    "PostedDate": "2013-05-29T10:57:20.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "531766",
+    "ThreadId": "237304",
+    "Html": "\r\n<p>hi,&nbsp;</p>\r\n<p>i searched a while but maybe i haven't used the right words. I want to build an application that has a menu with a &quot;New&quot; button. When i have loaded my article view, i want that the new command is forwarded to my article module that creates a new article.\r\n If my customer view is currently active, i want that a new customer is created. Can anybody give me some links with samples?</p>\r\n<p>Greetings</p>\r\n",
+    "PostedDate": "2010-12-06T07:21:37.89-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "531872",
+    "ThreadId": "237304",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>In this case, you could make use of the <strong>DelegateCommand </strong>available in Prism. If you need to achieve communication between different modules using commands, you could make the\r\n<strong>DelegateCommand </strong>available through a static class, following the approach described in\r\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28PandP.40%29.aspx\">this chapter</a> from the Prism documentation (under the section named &quot;Making a Command Globally Available&quot;).</p>\r\n<p>You might find the Commanding quickstart useful to clarify on how to use <strong>\r\nDelegateCommands</strong>.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-06T10:36:30.237-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533650",
+    "ThreadId": "237304",
+    "Html": "\r\n<p>Hi guide,&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>thanks for answering. I only got this working with the &nbsp;<span style=\"font-family:Consolas,'Courier New',Courier,monospace; white-space:pre\">CompositeCommand. This is also used in the commanding sample. But actually i always have only one target for\r\n my </span><span style=\"font-family:Consolas,'Courier New',Courier,monospace; white-space:pre\">command. If my customer view is open, i want that the &quot;New&quot;-command will create a new customer. If my article view is open, i want that this new-command is forwared\r\n to my</span></p>\r\n<p><span style=\"font-family:Consolas,'Courier New',Courier,monospace; white-space:pre\">article view\r\n</span><span style=\"font-family:Consolas,'Courier New',Courier,monospace; white-space:pre\">to create a new article. If i use the composite command, and i press new, it will create a new customer AND a new article... :-)</span></p>\r\n<p><span style=\"font-family:Consolas,'Courier New',Courier,monospace; white-space:pre\">Actually it should be like in outlook 2007. if i have my mailview open and i press &quot;New&quot;, a new Mail will open. if i have my calendar open, a new calendar entry will open,</span></p>\r\n<p><span style=\"font-family:Consolas,'Courier New',Courier,monospace; white-space:pre\">when i press\r\n</span><span style=\"font-family:Consolas,'Courier New',Courier,monospace; white-space:pre\">the new button.</span></p>\r\n<p><span style=\"font-family:Consolas,'Courier New',Courier,monospace; white-space:pre\">Is that also possible? Do you have samples for that behaviour?</span></p>\r\n<p>&nbsp;</p>\r\n<p>Greetings.</p>\r\n",
+    "PostedDate": "2010-12-09T14:23:46.74-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533864",
+    "ThreadId": "237304",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>The scenario you're describing is possible. You can expose two separate instances of Delegate Command, instead of exposing a single Composite Command that contains both. That way, you can bind the &quot;New Mail&quot; button to the &quot;New Mail Command&quot; and the &quot;New\r\n Calendar&quot; button to the &quot;New Calendar Command&quot;.</p>\r\n<p>You can find a sample of using different Delegate Commands in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921074%28PandP.40%29.aspx\">\r\nStock Trader Reference Implementation</a>.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-10T05:38:13.223-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "534352",
+    "ThreadId": "237304",
+    "Html": "\r\n<p>Well, unfortunately it seems that its not clear what i try to do. I tried to make this with MetaData, but i'm not able to set a command in the meta-data. I also did not find any sample in the stocktrader reference implementation.</p>\r\n<p>I only have ONE single button on my shell. only one. and i have my mainregion of course. my main-region can show a list of articles, and a list of customers (that can be selected with an radio-button). when i press my only single button, and currently my\r\n customers are listed, i want that a new customer is created. If i switch over to articles and i press my only single new button, i want that a new article is created.</p>\r\n<p>so i think i have to switch the commands. my customer module provides a &quot;CreateNewCustomerCommand&quot; and my article module provides a &quot;CreateNewArticleCommand&quot;. When i click on my customer radio button, i think i have to register my createCustomerCommand.\r\n And if i click on my article radio button, i have to deregister createcustomercommand on my single new button, and i have to register my createarticlecommand. Is that right? I hope now its clear what i want. Only one single new button. nothing else. but this\r\n single button has different behaviour, depending on the currently visible module...&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-11T06:09:19.17-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "534374",
+    "ThreadId": "237304",
+    "Html": "\r\n<p>I got it. I have used my GlobalCommands-Class, like writte in the documentation. I have a dictionary for my New-Commands and every module can add its own command. and when i change between my modules, i unregister all commands and register new currently\r\n selected module command. so my new button does exactly what i want. it depends on the currently loaded module and creates a new customer, if customer view is visible, otherwise, when article view is visible, it creates a new article. Thank you guido. Prism\r\n is cool...</p>\r\n",
+    "PostedDate": "2010-12-11T07:48:39.433-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "535026",
+    "ThreadId": "237304",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Thank you for sharing your findings with the rest of the community, as other users might find them useful for their scenarios.</p>\r\n<p>As a side note, you could use a Composite Command instead of creating a dictionary of your own, as it is the implementation that Prism provides for this kind of situations. That way, you could register and unregiser your commands from the Composite Command\r\n depending on which view is active, achieving the same behavior that you are explaining.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-13T07:30:18.023-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "253848",
+    "ThreadId": "74213",
+    "Html": "<p>Is there a way to loop through all configured modules?&nbsp; We have a &quot;Control Panel&quot; screen that we want load on demand, this exists in the shell.&nbsp; When the control panel is loaded I want to loop through all modules and request a&nbsp;list of items that each module wants added to the control panel.&nbsp; The module might or might not have already been loaded so in pseudo code what I would like to do is:</p>\r\n<p>for each mod in ModuleCatalog<br>&nbsp; if not mod.Loaded then loadModule(mod.Name)<br>&nbsp; dim l as list(of something)=mod.GetControlPanelList<br>&nbsp; mainlist.add(l)<br>next</p>\r\n<p>Is this possible?</p>\r\n<p>Thanks,</p>\r\n<p>Heather</p>",
+    "PostedDate": "2009-11-05T09:10:52.717-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "255134",
+    "ThreadId": "74213",
+    "Html": "<p id=ed4f25f0-af7d-012c-fc3c-12313b018621>Hi Heather,</p>\r\n<p id=ed4f3450-af7d-012c-fc3d-12313b018621>The approach you are suggesting above is not the best in my opinion, as you would be tight coupling the modules. If I understand your scenario correctly, you want to add some items from different modules to your &ldquo;Control Panel&rdquo;. A possible approach to do this, could be using an <a href=\"http://msdn.microsoft.com/en-us/library/dd458915.aspx\">EventAggregator</a> event, and subscribe to it in each of the modules that should add something to the Control Panel. Then, each of them could <a href=\"http://msdn.microsoft.com/en-us/library/dd458899.aspx\">add the required views</a> to the &ldquo;Control Panel&rdquo; region.</p>\r\n<p id=ed4f5180-af7d-012c-fc3e-12313b018621>As you explain the module might or might no have been loaded. Before publishing the event you should load the modules that have not been loaded. To get this done you can use code like this:</p>\r\n<p id=ed4fe770-af7d-012c-fc43-12313b018621>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">foreach</span> (<span style=\"color:Blue\">string</span> m <span style=\"color:Blue\">in</span> ModuleStrings)\r\n{\r\n    moduleManager.LoadModule(m);\r\n}\r\n</pre>\r\n</div>\r\nThe code above will only load modules that have not been loaded, and modules that already have will suffer no side effects.</p>\r\n<p id=ed500770-af7d-012c-fc44-12313b018621>You can read more about loading modules on demand <a href=\"http://msdn.microsoft.com/en-us/library/dd458932.aspx\">here</a>.</p>\r\n<p id=ed5029f0-af7d-012c-fc45-12313b018621>Please let me know if this helps.</p>\r\n<p id=ed504da0-af7d-012c-fc46-12313b018621>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-11-09T09:32:17.057-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "255621",
+    "ThreadId": "74213",
+    "Html": "<p>OK, we can use that approach.&nbsp; I would have tested to see that the module implemented a given interface before expecting to call to it to get a list of anything to try and reduce the coupling.&nbsp; In your example is ModuleStrings&nbsp;a global variable (or something similar)&nbsp;that is built during the bootstrapper load?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-11-10T10:24:12.667-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi Kevin,\r\n\r\nThank you for reporting this. It could be helpful to know that, as of the current release of Prism 4 the MefXapModuleTypeLoader was modified to address this issue.\r\n\r\nAs part of the fix, the downloadingModules field has been changed into a Dictionary<Uri, List<ModuleInfo>>.\r\n\r\nThank you again,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-03-10T10:01:07.467-08:00",
+    "CommentCount": 0,
+    "Custom": "",
+    "Description": "Hi Prism Team,\n \nI think I might have run into a bug with the MefXapModuleTypeLoader. It seems that if I have two modules defined in a single xap file, that only the first module finishes initializing when the download of the xap file completes. In seems as though if two modules are requested and both exist in the same xap file then LoadModuleType which calls DownloadModuleFromUri only remembers the first moduleInfo and when the download completes, the first module is the only module that is initialized.\n \nI fixed the problem by making the downloadingModules dictionary a Dictionary<Uri, List<ModuleInfo>> and then for each loadModuleType, remember the moduleInfo if the download is in progress and then when the download completes, having HandleDownloadCompleted call RaiseLoadModuleCompleted on each of the moduleInfos in that list.\n \nThis seems to solve the problem but I'm wondering if there is an easier way or a different fix I could apply?\n \nCheers\n \nKevin Rintoul\nLatitude Geographics",
+    "LastUpdatedDate": "2013-05-16T05:28:48.727-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-09-21T16:57:14.623-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "One Module Per XAP file? - A Possible bug In MefXapModuleTypeLoader?",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 7269
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

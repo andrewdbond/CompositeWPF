@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "529012",
+    "ThreadId": "236582",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I'm using &#65279;RequestNavigate to inject different views within a region.&nbsp; I need to have a central service to perform something, other than navigating&nbsp;like update content in other part of the application, everytime RequestNavigate is being called.\r\n Besides having &#65279;&#65279;NavigationCompleted event delegate that task. Is there any way to monitor this behavior?</p>\r\n<p>Thanks,</p>\r\n<p>T</p>\r\n",
+    "PostedDate": "2010-11-30T13:07:17.683-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "529565",
+    "ThreadId": "236582",
+    "Html": "\r\n<p>Hi T,</p>\r\n<p>When you implement the <strong>INavigationAware</strong> interface in your views, you have to provide an implementation for the\r\n<strong>IsNavigationTarget</strong> method. This method will be called during the navigation pipeline after calling the\r\n<strong>RequestNavigate</strong> method in the <strong>Region</strong> class.</p>\r\n<p>From the <a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.prism.regions.inavigationaware%28PandP.40%29.aspx\">\r\nINavigationAware</a> documentation on MSDN, it &ldquo;<em><span style=\"font-size:9.5pt; color:black\">Provides a way for objects involved in navigation to be notified of navigation activities&rdquo;.</span></em></p>\r\n<p>That said, a possible approach might be to add your code in this method. If you need more guidance about Navigation, you can take a look at the following links:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28v=PandP.40%29.aspx\" target=\"_blank\">Chapter 8: Navigation</a>.\r\n</li><li><a href=\"http://blogs.msdn.com/b/kashiffl/archive/2010/10/04/prism-v4-region-navigation-pipeline.aspx\">Prism v4 Region Navigation Pipeline</a>\r\n</li></ul>\r\n<p>Additionally, if the aforementioned does not fit in your scenario, another possible approach might be to add a handler to the\r\n<span lang=\"ES-AR\" style=\"font-size:9.5pt; color:black\"><a href=\"http://msdn2.microsoft.com/en-us/library/ms653382\" target=\"_blank\">CollectionChanged</a></span> event of the\r\n<a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.prism.regions.iregion.activeviews%28v=PandP.40%29.aspx\">\r\nActiveViews</a> property in the Region class. In that case, you would be notified when the active view is changed.</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-01T10:12:53.58-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

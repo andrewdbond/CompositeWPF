@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "695391",
+    "ThreadId": "278741",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>After updating Unity package via NuGet manager to version 2.1.505.0&nbsp; I got the following exception on executing base.ConfigureContainer() in UnityBootstrapper&nbsp;derived&nbsp;class :</p>\r\n<p><strong>Could not load file or assembly 'Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35' or one of its dependencies. The system cannot find the file specified.</strong></p>\r\n<p>Application worked pretty well before this update.</p>\r\n<p>Previous version of unity is 2.0</p>\r\n",
+    "PostedDate": "2011-11-08T08:55:44.247-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "695773",
+    "ThreadId": "278741",
+    "Html": "<p>Hi,</p>\n<p>We tried to reproduce the error that you are describing by updating various QuickStarts included in the Prism guidance to the <strong>Unity 2.1.505.0 version</strong> using the <strong>NuGet manager</strong>, but we couldn&rsquo;t reproduce your problem (all the QuickStarts worked properly). We tried this using both <strong>.NET Framework 4</strong> and <strong>.NET Framework 4 Client Profile</strong> in the QuickStarts' projects when applicable, but it worked appropriately as well.</p>\n<p>Also, we updated the Prism library to the <strong>Unity 2.1.505.0 version</strong>, ran its tests and found that they all pass. It seems that your problem might be caused by a missing reference.</p>\n<p>You can find a version of the <strong>Modularity QuickStart with Unity</strong> using the <strong>Unity 2.1.505.0 version</strong> in this <a href=\"https://skydrive.live.com/?cid=7890102b5b8bc928&amp;sc=documents&amp;uc=1&amp;id=7890102B5B8BC928%21103\"> SkyDrive account</a> (under the name <strong>ModularityWithUnity2-1-5.zip</strong>). This sample might be useful for you to compare your solution to it, so as to find possible differences that might be causing the exception you mentioned.</p>\n<p>If this does not help you solve your problem, it would be helpful if you could provide us with a repro sample application, so we can help you troubleshoot it.</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-11-09T04:30:08.68-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "695920",
+    "ThreadId": "278741",
+    "Html": "<p>Hi</p>\r\n<p>Thanks for reply.</p>\r\n<p>Yes, the matter was in assembly reference. For some reason when Nuget manager updated the Unity assembly, the reference to ServiceLocation was gone from the project... magic.</p>\r\n<p>I thint the reason is somewhere inside the NUGet package, e.g it&nbsp;tries to set the ServiceLocation&nbsp;&nbsp;reference&nbsp;&nbsp;to new location (\\packages\\Unity.2.0\\lib\\SL30 vs&nbsp;\\packages\\Unity.2.1.505.0\\lib\\NET35) but the assembly itself was not included in the package.</p>\r\n<p>Or something like. Anyway, it's nothing to do with Prism :)</p>",
+    "PostedDate": "2011-11-09T08:06:02.623-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

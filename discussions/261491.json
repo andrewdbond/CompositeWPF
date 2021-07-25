@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "628137",
+    "ThreadId": "261491",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I use the regionMemberLifetime attribute to control the view behaviour. When set to False, the view is destroyed. So far so good.</p>\r\n<p>However, each time I recreate the view, I get a new viewmodel that gets instantiated. The viewmodel IRegionMemberLifetime.KeepAlive is never called and I get a new thread each time. This doesn't seem to be consistent with the documentation available here\r\n : &nbsp;<a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28v=PandP.40%29.aspx\">http://msdn.microsoft.com/en-us/library/ff921098%28v=PandP.40%29.aspx</a></p>\r\n<p>Any idea on how to trigger viewmodel destruction when view is destroyed ?</p>\r\n<p>Thanks.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-06-15T07:19:51.853-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "628245",
+    "ThreadId": "261491",
+    "Html": "<p>Hi,</p>\r\n<p>It could be helpful if you could provide us with a repro sample (for example, uploading to <a href=\"http://skydrive.live.com/\">SkyDrive</a>) of your solution, so that we can help you find out the cause of the unexpected behavior you're experiencing.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-06-15T10:09:10.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "628665",
+    "ThreadId": "261491",
+    "Html": "<p>Hi Miguel,</p>\r\n<p>You can find a code sample and a description on http://cid-91dc8708483d8ca1.office.live.com/browse.aspx/KeepAlive%20sample&nbsp;</p>\r\n<p>Please let me know if you need clarification.</p>\r\n<p>Thanks</p>\r\n<p>Fabien</p>",
+    "PostedDate": "2011-06-16T06:24:48.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "628897",
+    "ThreadId": "261491",
+    "Html": "<p>Hi Fabien,</p>\r\n<p>We&rsquo;ve been able to reproduce your scenario as you described it. One possible reason why your view model is not been garbage collected could be that another composable part of your application <strong>stills have a reference to the view model class</strong>.</p>\r\n<p>We&rsquo;ve debug your sample with Prism&rsquo;s code, when you deactivate your <strong>ListeningControl View</strong>, it been removed from the <strong>ActiveView&rsquo;s collection</strong> and also is causing to be removed from the Region. This is the expected behavior. This means, your views&rsquo;s reference is no longer required and <em>can be garbage collected including it datacontext references</em> (<strong>ListeningControlViewModel</strong>).</p>\r\n<p>You could check the <strong>EventBus</strong> class, since it&rsquo;s been registered in the container as <em>singleton</em> (<strong>PartCreationPolicy.Shared</strong>).</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-06-16T13:13:27.923-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "629164",
+    "ThreadId": "261491",
+    "Html": "<p>Hi Miguel,</p>\n<p>Thanks for your quick answer, that's indeed the issue. When replacing with IEventAggregator, I don't get the issue.&nbsp;</p>\n<p>I guess I'd need to better understand how IEventAggregator is setup.</p>\n<p>Fabien</p>\n<p>&nbsp;</p>\n<p>EDIT : It takes time for the garbage collector to be called. Usually I still receive a few messages in the LeadingControl View, and then it stops. However when using webservices in the viewmodel, I now get other issues.&nbsp;</p>\n<p>Errors like :&nbsp;</p>\n<p>- \"Cannot access a disposed object. Object name: 'System.ServiceModel.Channels.HttpChannelFactory+HttpRequestChannel'.\"</p>\n<p>OR \"The underlying connection was closed: A connection that was expected to be kept alive was closed by the server.\"</p>\n<p>(while each time I call a service, I close it right after).&nbsp;</p>\n<p>So it seems the garbage collection interacts in some way with my service calls, making them fall, and&nbsp;I'm still trying to figure out how to make several modules talk to each other in a decoupled way, with viewmodels subscribing to messages and calling webservices to get data whenever required.&nbsp;</p>",
+    "PostedDate": "2011-06-17T03:42:04.393-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "629325",
+    "ThreadId": "261491",
+    "Html": "<p>Doing an unsubscribe action seems to work (at least from preliminary tests).</p>\r\n<p>Cheers.</p>",
+    "PostedDate": "2011-06-17T09:48:26.15-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

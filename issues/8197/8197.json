@@ -1,0 +1,56 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nI'm closing this work item, as it has been studied and determined that it is not an issue in Prism. If you need further support about this, we could continue the discussion in a new thread in the discussion board (http://compositewpf.codeplex.com/discussions).\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-05-04T09:56:00.55-07:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "In my project, I have\n \n[ModuleDependency(\"Dummy\")]\npublic class ModuleOd : Microsoft.Practices.Prism.Modularity.IModule\n \nthe Dummy Module doesn't exists, but ModuleOd can still be loaded successfully, no exception is raised. attachment is the project.",
+    "LastUpdatedDate": "2013-05-16T05:28:43.673-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-04-30T11:39:23.043-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ModuleDependencyAttribute doesn't work",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8197
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897984,
+      "FileName": "PrismStudy.rar",
+      "DownloadUrl": ".\\897984"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\nThe reason why ModuleOd is loaded successfully in your repro sample and is not failing is because you are instantiating ModuleOd in the bootstrapper as a new instance of ModuleInfo without specifying the DependsOn parameter. This means, your module is not using the ModuleDependencyAttribute for creation. If you set DependsOn as “Dummy”, when you run the application will fail, since the ModuleInfo is created with a dependency that not exists. For example, the following code in your bootstrapper would cause a ModularityException explaining that the dependent module can’t be loaded, which is the expected behavior:\r\n\r\nprotected override void ConfigureModuleCatalog()\r\n        {\r\n            base.ConfigureModuleCatalog();\r\n             (…)\r\n            var coll = new Collection();\r\n            coll.Add(\"Dummy\");\r\n            var odModule = typeof(OnDemondModule.ModuleOd);\r\n            var moduleOnDemand = new ModuleInfo()\r\n                                     {\r\n                                         ModuleName = odModule.Name,\r\n                                         ModuleType = odModule.AssemblyQualifiedName,\r\n                                         InitializationMode = InitializationMode.OnDemand,\r\n                                         DependsOn = coll\r\n                                     };\r\n            this.ModuleCatalog.AddModule(moduleOnDemand);           \r\n        }\r\n\r\nThe ModuleDependencyAttribute attribute is only used when you use the DirectoryModuleCatalog to load your modules (which is useful to load all the modules present in a specified directory) .\r\nIf you override the CreateModuleCatalog method in your bootstrapper to something like this, the ModuleDependencyAttribute will be recognized, thus triggering the expected behavior:\r\n\r\nprotected override IModuleCatalog CreateModuleCatalog()\r\n{\r\n   return new DirectoryModuleCatalog() { ModulePath = \".\" };\r\n}\r\n\r\n(Note that if you use a DirectoryModuleCatalog, you don’t need to override the ConfigureModuleCatalog method)\r\n\r\nI hope this helps you clarify the subject.\r\n\r\nThanks,\r\n\r\nMiguel Bronzovic\r\nhttp://blogs.southworks.net/mbronzovic\r\n",
+      "PostedDate": "2011-05-04T09:53:20.727-07:00",
+      "Id": 156443
+    },
+    {
+      "Message": "Thanks. it's clear now.",
+      "PostedDate": "2011-05-04T22:56:47.173-07:00",
+      "Id": 156444
+    }
+  ]
+}

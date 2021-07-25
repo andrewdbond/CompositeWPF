@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "631902",
+    "ThreadId": "262516",
+    "Html": "\r\n<p>Hi there,</p>\r\n<p>Recently when creating some test I found that I had an issue mocking RegionManager as the call RegisterViewWithRegion was a static extension method, I see that in RegionViewRegistry it is simply a regular method and can easily be mocked. I also tested my\r\n app, I guess from my limited understanding of the region manager that calling either or would work and I could interchange them easily and impact nothing else in the app (even though others are using RegionManager objects). I was correct, I simply switched\r\n my module to take a RegionViewRegistry object in the ctor and everything seems to work just fine.</p>\r\n<p>What I don't understand is why this is like this? Why are there two implementations of this method that do the same thing? (I think)... ultimately they seem to place stuff in the same region manager so it doesn't seem to be an issue but I would very much\r\n like to understand this better.</p>\r\n<p>Thanks for your input!</p>\r\n",
+    "PostedDate": "2011-06-23T08:25:43.243-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "632019",
+    "ThreadId": "262516",
+    "Html": "<p>Hi,</p>\n<p>As you can read in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28PandP.40%29.aspx\">UI Composition</a> chapter of the Prism MSDN documentation, there are two approaches for UI composition; <strong>view discovery</strong>, and <strong>view injection</strong>.</p>\n<p>The view injection approach involves <em>adding </em>(or \"injecting\") views directly into the specified region, and this requires obtaining an instance of the region, which is usually done through accessing the corresponding <strong>RegionManager</strong>'s <strong>Regions </strong>collection.</p>\n<p>On the other hand, the view discovery approach involves <em>registering</em> views in the <strong>RegionViewRegistry</strong>, which indicates that, when a region with the specified name is created, a certain view should be added into that region. When following this approach, you don't need to obtain a reference to the RegionManager.</p>\n<p>However, for usability purposes, an extension method was placed in the <strong> RegionManager </strong>class, which internally obtains a reference to the <strong> RegionViewRegistry</strong> and calls its <strong>RegisterViewWithRegion </strong> method (since it's likely that you will use both, and it could be more comfortable to have a single dependency on the <strong>RegionManager </strong>in your component).</p>\n<p>To illustrate this, here's the code for the <strong>RegisterViewWithRegion </strong> extension method in the <strong>RegionManager </strong>class:</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">static</span> IRegionManager RegisterViewWithRegion(<span style=\"color: blue;\">this</span> IRegionManager regionManager, <span style=\"color: blue;\">string</span> regionName, Type viewType)\n        {\n            <span style=\"color: blue;\">var</span> regionViewRegistry = ServiceLocator.Current.GetInstance&lt;IRegionViewRegistry&gt;();\n\n            regionViewRegistry.RegisterViewWithRegion(regionName, viewType);\n\n            <span style=\"color: blue;\">return</span> regionManager;\n        }\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-06-23T11:23:51.883-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "632083",
+    "ThreadId": "262516",
+    "Html": "<p>Thanks! Yes - that is very helpful and confirms what my tests already showed me, I will also take another look at the documentation :)</p>",
+    "PostedDate": "2011-06-23T13:14:55.87-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

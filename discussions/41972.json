@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "139324",
+    "ThreadId": "41972",
+    "Html": "Lost a few hours on this one... The fix - add a reference to Microsoft.Windows.Controls to your main (shell) project.<br>\r\n<br>\r\nBlogged about <a href=\"http://www.global-webnet.net/blogengine/post/2008/12/10/AG_E_PARSER_BAD_TYPE-Adding-Silverlight-Toolkit-control-to-module.aspx\">HERE</a>\r\n",
+    "PostedDate": "2008-12-10T08:39:37.1-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "140293",
+    "ThreadId": "41972",
+    "Html": "Hi Bill, this is actually related to the fact that you need to add the dll in the ModuleManifest.xaml, otherwise even if the toolkit is included in the XAP file when building the project, it cannot be loaded when the module gets initialized.<br>\r\nWe have a backlog item to replace this ModuleManifest.xaml with the AppManifest.xaml that Silverlight already builds, to help keep in sync the files that are included in the XAP, with the ones in the manifest (no manually writing the manifest).<br>\r\nAlthough conceptually you are not packaging a full Silverlight Application, the AppManifest contains very similar information to what we currently store in the ModuleManifest.<br>\r\n<br>\r\nI hope this helps clarifying the problem, and I hope you agree with replacing this hard-to-mantain ModuleManifest file.<br>\r\nJulian Dominguez<br>\r\n<a href=\"http://blogs.southworks.net/jdominguez\">http://blogs.southworks.net/jdominguez</a><br>\r\n<br>\r\n",
+    "PostedDate": "2008-12-13T12:55:44.94-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "141031",
+    "ThreadId": "41972",
+    "Html": "@JulianDominquez, we're running into a similiar issue with calling WCF services from Modules - I have two questions but before I ask them.  The error follows:<br>\r\n<br>\r\n<p><span style=\"font-size:10pt;color:navy;font-family:arial\">Could not find default endpoint element that references contract 'EmployeeServiceDAL.IEmployeeService' in the ServiceModel client configuration section. This might be because no configuration file was found for your application, or because no endpoint element matching this contract could be found in the client element.</span></p>\r\n<p><span style=\"font-size:10pt;color:navy;font-family:arial\"></span></p>\r\nThis time I was ready for it and simply added my EmployeeServiceDAL to the Shell (main) project and all was well.  <br>\r\n<br>\r\n1.  I'm not well-versed with Manifest (or the concept) so please bear with me but where exactly is the ModuleManifest.xaml file you were referring to?   With SCSF I was content with having a reference to each module so I could bypass the &quot;hard-to-maintain&quot; manifest file for Click-Once deployment but for our Silverlight app I think I'd rather learn how to manage it so we don't have to add references so our app will load/run.<br>\r\n<br>\r\n2.  How long is backlog?  Rough guestimate will do - I have to determine ROI for writing a utility we (the community) can use to &quot;easily&quot; develop our CompositeWPF/Prism apps.<br>\r\n<br>\r\nAppreciate your time :)<br>\r\nBill<br>\r\n<br>\r\n",
+    "PostedDate": "2008-12-16T09:47:35.077-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "141039",
+    "ThreadId": "41972",
+    "Html": "Hi Bill,<br>\r\nAre you using remote modules that are deployed as separate XAP files? I was assuming that you were doing this, but if you never created the ModuleManifest.xaml, this might not be the case.<br>\r\nAre you using modules that are statically referenced by the Shell project?<br>\r\nPlease let me know me know so I can help you better.<br>\r\n<br>\r\nAs for the backlog, we plan on releasing at the end of January (it's an estimate and not an official fixed date), but we're close to feature complete, so we'll be prioritizing bugs higher soon.<br>\r\n<br>\r\nRegards,<br>\r\nJulian\r\n",
+    "PostedDate": "2008-12-16T10:09:15.79-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "141068",
+    "ThreadId": "41972",
+    "Html": "Hi Julian,  &quot;remote modules&quot; - looks like I overlooked an important part of the documentation....  I'll be reading up on &quot;How to Prepare a Module for Remote Downloading&quot; and trust my issues will clear up :)   <br>\r\n<br>\r\nI appreciate your time and help!  <br>\r\n<br>\r\n",
+    "PostedDate": "2008-12-16T11:46:11.917-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "141755",
+    "ThreadId": "41972",
+    "Html": "@Julian,  it appears there &quot;may&quot; be an issue with WCF services called from modules; I'm being forced to add a Web Service reference to the main shell project for my application to run.   I had tried different variations of ModuleManifest.xaml to no avail (although I really don't have my brain around the need for it yet).<br>\r\n<br>\r\nI'll keep trying and keep you posted - just in case you want to give it a whirl yourself (against the next release code) the following thread references a blog, video demo and source code (plug'n play):<br>\r\n<br>\r\n<a href=\"http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=42589\">http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=42589</a> <br>\r\n",
+    "PostedDate": "2008-12-18T20:44:33.81-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "199886",
+    "ThreadId": "41972",
+    "Html": "<p>hello,</p>\r\n<p>&nbsp;</p>\r\n<p>I'm having the same issue and it drives me nut as I can't fix it :(&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>I've added Microsoft.Windows.Controls to my main project (Shell) and even to the module project to make sure. I've also read that this dll was replaced by System.Windows.Controls so I've added that one too to both projects. Yet I'm still getting the exception 'System.Windows.Markup.XamlParseException: AG_E_PARSER_BAD_TYPE [Line: 13 Position: 70]</p>\r\n<p>&nbsp;</p>\r\n<p>What else can I do ??</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2009-06-10T02:16:03.27-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "199959",
+    "ThreadId": "41972",
+    "Html": "<p>Try setting an x:Name on one of the controls from the toolkit. This will automatically generate C# code that references the toolkit.</p>\r\n<p>Sometimes, if you don't reference the types in a DLL from code and just reference it from XAML, when it get compiled into the XAP, it won't include these DLLs as an optimization, because it believes it is not being used.</p>\r\n<p>Let us know if this solves the problem,</p>\r\n<p>-Julian</p>",
+    "PostedDate": "2009-06-10T05:49:48.327-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "199997",
+    "ThreadId": "41972",
+    "Html": "<p>Thanks a lot, that worked ! So much time wasted on this :-(</p>\r\n<p>&nbsp;</p>\r\n<p>And the .dll to reference is not Microsoft.Windows.Controls but System.Windows.Controls.</p>\r\n<p>&nbsp;</p>\r\n<p>Again, thank you.</p>",
+    "PostedDate": "2009-06-10T07:28:44.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "227285",
+    "ThreadId": "41972",
+    "Html": "<p>Thanks for the solution Julian, this caused me so many problems as well and as my code is so simple I'll post it here to help other newbies like me:</p>\r\n<p>The trick was in following Julian's suggestion, in the following all I added was x:Name=&quot;test&quot; and all my databindings came to life (I don't actually refer to test anywhere else, it just being there solved the issue)</p>\r\n<p>&lt;UserControl</p>\r\n<p>xmlns:data=&quot;clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Data&quot;</p>\r\n<p>x:Class=&quot;SystemArchitect.users.listUsersPanel&quot;</p>\r\n<p>xmlns=<a href=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">http://schemas.microsoft.com/winfx/2006/xaml/presentation</a></p>\r\n<p>xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot; Width=&quot;725&quot;&gt;</p>\r\n<p>&lt;Grid x:Name=&quot;LayoutRoot&quot;&gt;</p>\r\n<p>&lt;data:DataGrid x:Name=&quot;test&quot; ItemsSource=&quot;{Binding}&quot; AutoGenerateColumns=&quot;True&quot; /&gt;</p>\r\n<p>&lt;/Grid&gt;</p>\r\n<p>&lt;/UserControl&gt;</p>\r\n<p>Thanks everyone, the earlier posts for giving me a glimpse of what the problem might be, and Julian for the Eureka!</p>",
+    "PostedDate": "2009-08-24T18:53:06.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "414274",
+    "ThreadId": "41972",
+    "Html": "<p>Thank you for the x:Name solution. It worked like a charm.</p>\r\n<p>- Emil Ingerslev</p>",
+    "PostedDate": "2010-03-04T11:08:05.913-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

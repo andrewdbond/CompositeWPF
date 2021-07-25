@@ -1,0 +1,66 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nI'm closing this work item as this is no longer an issue in Prism. As mentioned in this work item this problem does not appear since Prism v4.\r\n\r\nRegards,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+    "ClosedDate": "2012-06-28T13:07:15.797-07:00",
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "I am running into an issue where CanExecute sometimes is not called.  I think, week event handlers are somehow garbage collected.  I am using v.4\nThanks.",
+    "LastUpdatedDate": "2013-05-16T05:28:41.02-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-09-18T16:55:07.477-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "DelegateCommand looses event handlers",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8694
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897988,
+      "FileName": "SilverlightApplicationCommandIssue.zip",
+      "DownloadUrl": ".\\897988"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\nIt would be helpful if you could provide us with a repro sample application that portrays that problem.\r\n\r\nRegards,\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2011-09-23T11:41:03.357-07:00",
+      "Id": 156503
+    },
+    {
+      "Message": "Sure.  I have attached the demo.  It is really trivial to reproduce it, just force garbage collector to run.  I the attach sample, here are the repro steps\r\n1.  Click on Trigger Change button a dozen time.  Observe that Execute button changes state and state label corresponds to button state.  You will see in output window I am creating a random object to be garbage collected\r\n2.  Click on Execute button once, you should see in Output window that GS ran because a bunch of random objects got garbage collected\r\n3.  Click on trigger change button a few times.  You will see that state of the button stops changing, although label with the state continues to change\r\n\r\nThe problem is that week events listener used to support RaiseCanExecuteChange got GCed, and do not work as soon as garbage collector runs.  I fixed the issue by using regular handlers instead of week ones.\r\n\r\nPlease let me know if I can help you any more.  IMHO, this deserves SP, btw, as this is a critical issue.",
+      "PostedDate": "2011-09-25T08:30:17.023-07:00",
+      "Id": 156504
+    },
+    {
+      "Message": "Hi,\r\n\r\nWe have downloaded your repro-sample application and we could reproduce the behavior that you are describing. It may be helpful to know that, in Prism v4, this problem has been solved. Also, we have tested your repro-sample application using the latest version of the Prism library and we found that this behavior is not present anymore.\r\n\r\nYou could try upgrading your project to the November 2010 release of Prism, which you can find in the downloads page (http://compositewpf.codeplex.com/releases/view/55576) to avoid this problem.\r\n\r\nFor more information about this you can check the Appendix D: Upgrading from Previous Versions (http://msdn.microsoft.com/en-us/library/ff921073%28v=PandP.40%29.aspx) of the Prism v4 documentation.\r\n\r\nI hope you find this useful,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2011-09-27T13:58:32.77-07:00",
+      "Id": 156505
+    },
+    {
+      "Message": "Thanks.  Unfortunately, I cannot upgrade right now, but I will make a small change in the mean time.",
+      "PostedDate": "2011-09-29T20:02:59.687-07:00",
+      "Id": 156506
+    }
+  ]
+}

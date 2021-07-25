@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "140007",
+    "ThreadId": "42126",
+    "Html": "Hi,<br>\r\n<br>\r\nI have a module that uses a resource that should be closed before the application starts garbage collecting the works.<br>\r\n<br>\r\nI can think of several ways to do it, but I thought I'd ask if anyone out there has a  good pattern for it.<br>\r\n<br>\r\nOne option I tried was to call <br>\r\n<span style=\"font-size:13px;color:#008000\"><blockquote dir=ltr style=\"margin-right:0px\">\r\n<p>Container.Dispose();</p>\r\n</blockquote></span>in a new Bootstrapper.Close() method which I hooked up to <span style=\"font-size:13px;color:#2b91af\">Application</span><span style=\"font-size:13px\">.Current.Exit</span>, but that an infinite recursion =&gt; stack overflow. It seems that the UnityBootstrapper adds the container to itself (see <a href=\"http://www.codeplex.com/CompositeWPF/WorkItem/View.aspx?WorkItemId=2862\" title=\"Composite WPF Issue\">this post</a>).<br>\r\n<br>\r\nMy next attempt will be to, instead of disposing the container, publish an event ApplicationExit which any module may subscribe to. Anyone have an opinion of this, or a better idea?<br>\r\n<br>\r\n(Wouldn't it be nice to have an IModule.Close method?)<br>\r\n<br>\r\nRegards<br>\r\nFredrik\r\n",
+    "PostedDate": "2008-12-12T04:17:41.89-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "140323",
+    "ThreadId": "42126",
+    "Html": "Fredrik,<br>\r\n<br>\r\nI could make some assumptions here and try to reply but I got a bit lost. Can you please provide a bit more info of what resources you need to close, and what do you mean by closing resources before GC collecting the works?<br>\r\n <br>\r\nYou cannot dispose the root Prism unity container, or you can but you application will be gone as well and stack overflow exception is expected in this case. Also even if you would manage to get notification before GC, you would not be able to obtain the reference for your object as the GC would not collect it f there would be references. <br>\r\n<br>\r\nAnyhow, if you can provide a bit more info of what you want to accomplish... <br>\r\n<br>\r\nRegards,<br>\r\nAlexander \r\n",
+    "PostedDate": "2008-12-13T17:12:40.377-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "140404",
+    "ThreadId": "42126",
+    "Html": "I'll gladly provide more info.<br>\r\n<br>\r\nMy issue is that I have a WCF service which uses uses stateful semantics. My module calls the service which creates a computationally expensive report assigning it a certain report id. My module will call the service several times to access various parts of the report. When my module won't need the report it should call a service method <span style=\"font-size:13px\">\r\n<p>CloseStatusPeriodsReport(reportId);</p>\r\n</span> in order to free memory from the service. Specifically, when the applicaiton exits, the service method should be called. The service is shared between many clients.<br>\r\n<br>\r\n<p>\r\nThe service design is of course not the primary choice one would make but for performance reasons we had to make some sacrifices.</p>\r\n<p>By the way: Calling the service method from the finalizer won't work because apparently it will use an already disposed object, resulting in an ObjectDisposedException.</p>\r\n<br>\r\nRegards,<br>\r\nFredrik\r\n",
+    "PostedDate": "2008-12-14T09:35:21.313-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "140551",
+    "ThreadId": "42126",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:calibri\">This is a known issue that was solved in Unity 1.2 which is used by Prism-v2, as </span><a href=\"http://blogs.msdn.com/bobbrum/\"><span style=\"color:#0000ff;font-family:calibri\">Bob Brumfield</span></a><span style=\"font-family:calibri\"> explains in </span><a href=\"http://www.codeplex.com/CompositeWPF/WorkItem/View.aspx?WorkItemId=2862\"><span style=\"color:#0000ff;font-family:calibri\">an Issue Tracker WorkItem</span></a><span style=\"font-family:calibri\">. If you want to use Unity with Prism-v1 you might find this post by </span><a href=\"http://www.ademiller.com/blogs/tech/\"><span style=\"color:#0000ff;font-family:calibri\">Ade Miller</span></a><span style=\"font-family:calibri\"> useful:</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt 36pt\"><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><a href=\"http://www.ademiller.com/blogs/tech/2008/11/composite-application-guidance-for-wpf-with-entlib-41./\"><span style=\"color:#0000ff;font-family:calibri\">Composite Application Guidance for WPF with EntLib 4.1</span></a>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">After doing this, you can remove the Container.RegisterInstance&lt;IUnityContainer&gt; from the UnityBootstrapper.cs file. </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Please let me know if this helps.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\">Damian Schenkelman</span></p>\r\n<span style=\"font-size:11pt;font-family:'calibri','sans-serif'\"><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></span></span></p>\r\n",
+    "PostedDate": "2008-12-15T04:42:19.087-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

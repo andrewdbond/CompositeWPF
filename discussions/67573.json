@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "229662",
+    "ThreadId": "67573",
+    "Html": "<p>I have this code to register a view in a region:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>_regionManager.RegisterViewWithRegion(<span style=\"color:#A31515\">&quot;myMainRegion&quot;</span>, () =&gt; _container.Resolve&lt;ISomeViewModel&gt;().View);\r\n</pre>\r\n</div>\r\n</p>\r\n<p>but elsewhere, I really need to be able to switch views by using the view name. How can I set the view name and use the above code?</p>\r\n<p>I tried using</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>_regionManager.Regions[<span style=\"color:#A31515\">&quot;myMainRegion&quot;</span>].Add(<span style=\"color:Blue\">new</span> SomeView(), <span style=\"color:#A31515\">&quot;myViewName&quot;</span>);\r\n</pre>\r\n</div>\r\n</p>\r\n<p>but the essential Resolve-ing does not then take place -  for example, the view model constructor is never called.</p>\r\n<p>I am new to Prism and containers (Unity), so any help would be greatly apreciated</p>\r\n<p>James S</p>",
+    "PostedDate": "2009-09-01T04:54:50.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229682",
+    "ThreadId": "67573",
+    "Html": "<p>In your view's XAML use <strong>x:Name=&quot;myViewName&quot;</strong></p>",
+    "PostedDate": "2009-09-01T05:45:55.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229717",
+    "ThreadId": "67573",
+    "Html": "<p>Thanks - annoying how one misses the simple and obvious!</p>\r\n<p>BUT - there is still a problem... in the Prism source, in Region.cs, class Region, we have the GetView funtion for getting a named view in the region, with the essential line:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>ItemMetadata metadata = <span style=\"color:Blue\">this</span>.ItemMetadataCollection.FirstOrDefault(x =&gt; x.Name == viewName);\r\n</pre>\r\n</div>\r\n</p>\r\n<p>In debug, you can see that x is indeed the right view and a base class does have the name given in the XAML, but x.Name is still null here and so the function reports that the view is not in the region.</p>\r\n<p>Not sure what to do now...</p>\r\n<p>James S</p>",
+    "PostedDate": "2009-09-01T07:34:44.943-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229739",
+    "ThreadId": "67573",
+    "Html": "<p>I changed the above line to:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>ItemMetadata metadata = <span style=\"color:Blue\">this</span>.ItemMetadataCollection.FirstOrDefault(x =&gt; ((System.Windows.FrameworkElement)(x.Item)).Name == viewName);\r\n</pre>\r\n</div>\r\n</p>\r\n<p>and it now works (I added an additional GetView function rather than change the original code).</p>\r\n<p>The views, in my case, are dynamically-added User Controls and I did add <strong>x:name=&quot;NiceView&quot;</strong> (or whatever) to the XAML in the user control.</p>\r\n<p>I feel this is but a hack - any other ideas?</p>\r\n<p>James S</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-01T08:13:47.18-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229755",
+    "ThreadId": "67573",
+    "Html": "<p>Forest through the trees - been there, done that&nbsp;;)</p>\r\n<p><strong>[jastewart] but elsewhere, I really need to be able to switch views by using the view name. How can I set the view name and use the above code?</strong></p>\r\n<p>I'm not sure this will help but I'll offer it just in case - I have a MenuRegion that holds buttons; each buttons Tag property holds the View to activate it.&nbsp; Code follows:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Gray\">///</span> <span style=\"color:Gray\">&lt;summary&gt;</span>\r\n<span style=\"color:Gray\">///</span><span style=\"color:Green\"> Handles the Button Click - activates the view specified in the button's Tag </span>\r\n<span style=\"color:Gray\">///</span><span style=\"color:Green\"> for the &quot;MainRegion&quot;</span>\r\n<span style=\"color:Gray\">///</span> <span style=\"color:Gray\">&lt;/summary&gt;</span>\r\n<span style=\"color:Gray\">///</span> <span style=\"color:Gray\">&lt;param name=&quot;sender&quot;&gt;</span><span style=\"color:Green\">The sender.&lt;/param&gt;</span>\r\n<span style=\"color:Gray\">///</span> <span style=\"color:Gray\">&lt;param name=&quot;e&quot;&gt;</span><span style=\"color:Green\">The &lt;see cref=&quot;System.Windows.RoutedEventArgs&quot;/&gt; instance containing the event data.&lt;/param&gt;</span>\r\n<span style=\"color:Blue\">void</span> buttonClickHandler(<span style=\"color:Blue\">object</span> sender, System.Windows.RoutedEventArgs e)\r\n{\r\n    <span style=\"color:Green\">// Cast sender to button so we can access it easier</span>\r\n    Button button = sender <span style=\"color:Blue\">as</span> Button;\r\n\r\n    Logger.Log(<span style=\"color:Blue\">string</span>.Format(<span style=\"color:#A31515\">&quot;Button Click: {0} for View: {1}&quot;</span>,\r\n      button.Name, button.Tag), Category.Debug, Priority.None);\r\n\r\n    aggregator.GetEvent&lt;StatusEvent&gt;().Publish(<span style=\"color:Blue\">new</span> StatusEventArgs\r\n    {\r\n        Message = <span style=\"color:Blue\">string</span>.Format(<span style=\"color:#A31515\">&quot;View {0} selected&quot;</span>, button.Tag),\r\n        StatusPanel = StatusType.Left  <span style=\"color:Green\">// Left status bar</span>\r\n    });\r\n\r\n    <span style=\"color:Green\">// Disable the button just clicked</span>\r\n    button.IsEnabled = <span style=\"color:Blue\">false</span>;\r\n\r\n    <span style=\"color:Green\">// Get all views that are using MainRegion</span>\r\n    IRegion mainRegion = regionManager.Regions[<span style=\"color:#A31515\">&quot;MainRegion&quot;</span>];\r\n\r\n    <span style=\"color:Green\">// Activate the view if the view name matches the current</span>\r\n    <span style=\"color:Green\">// button's tag value.  </span>\r\n    <span style=\"color:Blue\">foreach</span> (IViewBase view <span style=\"color:Blue\">in</span> mainRegion.Views)\r\n        <span style=\"color:Blue\">if</span> (view.Name.Contains(button.Tag.ToString()))\r\n            mainRegion.Activate(view);\r\n\r\n}\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-01T08:55:59.287-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229762",
+    "ThreadId": "67573",
+    "Html": "<p>Thanks for the code sample - I have a similar context (menu region and main content region in which user controls are switched in and out) but am implementing things the MVVM way (so no code-behind!).</p>\r\n<p>To do the switching, the view model is bound to the view, but the essential code in the menu region is:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>      <span style=\"color:Blue\"></span><span style=\"color:Blue\">this</span>.eventAggregator.GetEvent&lt;EventShowOneView&gt;().Publish(ViewNames.ClientFind); </pre>\r\n</div>\r\n</p>\r\n<p>where each view subscribes to EventShowOneView (I will come up with a better name) which delivers the viewname of the view required to be shown. A view consuming this event will then show itself if the name is theirs, else it hides itself. e.g.</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>     _regionManager.Regions[RegionNames.MainRegion].Show(_myViewName)\r\n</pre>\r\n</div>\r\n</p>\r\n<p>I also made use of the Show/Hide fcns in WPFRegionExtensions&nbsp; - see http://blogs.southworks.net/matiasb/2009/07/02/how-to-hide-views-inside-composite-application-guidance-aka-prism-v2-regions/&nbsp; That show/hide code could be useful in factoring out your foreach loop... poss replace with one line:&nbsp; regionManager.Regions[&quot;MainRegion&quot;].Show(button.Tag.ToString());</p>\r\n<p>With my kludgy hack (see prev post) I have a workable solution - at least until the next gotcha rears its head!</p>\r\n<p>James S</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-01T09:17:29.947-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230158",
+    "ThreadId": "67573",
+    "Html": "<p>Thanks for the info - I'll have to read up on the blog (show/hide to refactor out loops).&nbsp;&nbsp; The code snippet actually resides in&nbsp;the views presenter (MVP-MVVM patterns); like yourself I don't put code in code-behind.</p>",
+    "PostedDate": "2009-09-02T05:17:37.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

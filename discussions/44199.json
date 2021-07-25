@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "147078",
+    "ThreadId": "44199",
+    "Html": "Hi there.<br>\r\n<br>\r\nI currently have a WPF app that I am migrating to use prism rather than SCSF (with WPF contrib), and have been looking at the order in which methods are executed in the Run(bool) method of the UnityBootstrapper class.  I was surprised to see that the call to InitializeModules was the last method called, and was called after the shell was created.  I am curious to know why this has been done like this.  In CAB, modules are initialised quite early on, and long before the shell is initialised, and this makes more sense to me.<br>\r\n<br>\r\nI have a custom configuration catalog implementation, that will only load modules based upon membership of AzMan roles, and after this has happened, within the shell, I then determine what what modules have been loaded, allowing me to configure menus etc accordingly.  As such, I load the modules before creating the Shell.  I can of course, edit the UnitBootstrapper file to load the modules first, but as I have said above, I am curious as to why you load the shell before the modules, and whether there are any implications of loading the modules before the shell.<br>\r\n<br>\r\nThis is on the V2 drop 8 version of CAL.<br>\r\n<br>\r\nCheers<br>\r\n<br>\r\nSteve \r\n",
+    "PostedDate": "2009-01-14T09:04:55.513-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "147092",
+    "ThreadId": "44199",
+    "Html": "According to the sequence of Run() steps the Shell is really created before loading modules. I think it's done this way just because of RegionManager usage. When modules are loading RegionManager is called for each module to access registered regions. This could be done only if at this time RegionManager already knows regions in the Shell. So you could note that just after the Shell is created RegionManager.SetRegionManager() method is called to register Shell's regions. I think this is a clue.<br>\r\n<br>\r\nCheers, Leonid.\r\n",
+    "PostedDate": "2009-01-14T10:02:45.927-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "147105",
+    "ThreadId": "44199",
+    "Html": "If you examine <a href=\"http://www.global-webnet.net/uml/prism.htm\">THIS</a> sequence diagram of the Prism boot process (w/two modules) you'll see at a high level that the entire infrastructure will be in place prior to the Modules being initialized (as you indicated).  As Leonid pointed out the next step after CreateShell is to SetRegionManager with the shell.<br>\r\n<br>\r\nAs the diagram will help show, if you attempt to InitializeModules first - you will not be able to utilize any features associated with the RegionManager.   You will quickly run into a &quot;chicken before the egg&quot; scenario that will cause you issues...<br>\r\n<br>\r\nThis <a href=\"http://www.global-webnet.net/blogengine/post/2008/12/18/Silverlight-CompositeWPF-Prism-regions.aspx\">BLOG</a> will provide some insight for the importance of the shell being available for the RegionManager; and why it is logical to have your Shell available for your modules (fully understanding that having the modules initialized before the view is also logical - but probably not a good practice with the CompositeWPF/Prism).   <br>\r\n<br>\r\nYou'll note in the blog that I have a MenuBar and StatusBar view that will be totally configurable from the Module initialization process.\r\n",
+    "PostedDate": "2009-01-14T11:04:29.963-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "147304",
+    "ThreadId": "44199",
+    "Html": "<p>Gents<br>\r\n<br>\r\nThanks for your prompt responses.  I have taken your comments on board, and understand the reasoning for the current ordering of the various method calls.</p>\r\n<p>Using the SDMS code as a sample, by moving the menu bar code and view into a separate module, I can achieve what I need to as you suggest.  By setting my MainWindowModule as dependent module, I can ensure it is the last module loaded, and then query for the already loaded modules, to determine what menus need to be loaded based upon the other loaded modules.<br>\r\n<br>\r\nThanks<br>\r\n<br>\r\nSteve</p>\r\n",
+    "PostedDate": "2009-01-15T02:12:07.23-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "147688",
+    "ThreadId": "44199",
+    "Html": "It seems that there is definitely a use case for loading the modules before the shell.  We are trying to make our views not have ModuleDependencyAttributes because, in a plug-in architecture, they shouldn't be aware of other modules... only the abstract classes and interfaces of views and services that they use.  Our idea is to have all modules register their implementation views and services before any views are instantiated.  The application will control view instantiation and the views will resolve the abstract types that they need from the container.  This is much more decoupled than an architecture which uses [ModuleDependency] attributes.  It seems that the default Prism behavior is the opposite of this and we're going to have to adjust it somehow.  Right?\r\n",
+    "PostedDate": "2009-01-16T06:02:50.663-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "147758",
+    "ThreadId": "44199",
+    "Html": "@2TallNY<br>\r\n<br>\r\nOn one of my contracts the team operates within the context of &quot;the Brick&quot; which a team member is responsible for maintaining.  The Brick is a TFS project that has all of the <span style=\"text-decoration:underline\">source code</span> for all P&amp;P solutions, e.g., CompositeWPF/Prism, Silverlight, Unity, Enterprise Library, etc.  When compiled the post event processing updates a repository of Shared libraries in a separate TFS Project that all of our applications share; all .DLLs are guaranteed to be compatible.   Only released code is allowed in the Brick and projects that rely on the Brick need to have Unit Test to ensure future upgrades won't break the project.<br>\r\n<br>\r\nWithin the context of the &quot;Brick&quot; and decoupled architecture as you define...<br>\r\n<br>\r\nI'd be curious to see if we could use both Static and Dynamic loading of modules so that the Dynamic loading (Directory Lookup) occurs first and then the Static loading (ModuleCatalog) occurs last;  I'll investigate this (prototype) for my SDMS system.<br>\r\n<br>\r\nAnother reason the Shell becomes important... The case where you you are not just relying on ADS.   We have a requirement (which I'm getting ready to code for) where we have to support both ADS and ASP.NET security.   If ADS authentication fails then a Login Screen needs to be presented so that ASP.NET Forms security can be used.   <br>\r\n<br>\r\nWe'll have to have a Shell first (Login screen)...   The Use Case is to have a single authentication process that will support both scenarios.<br>\r\n<br>\r\nYour thoughts / Suggestions?<br>\r\n<br>\r\nBill<br>\r\n",
+    "PostedDate": "2009-01-16T09:24:19.35-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "148355",
+    "ThreadId": "44199",
+    "Html": "Remember that CAL is merely guidance, that is, just pointing in a direction that might be good for you.  CAB/SCSFsolved many more problems than CAL's current release, and CAB/SCSF seemingly did this to a fault.  Hence, CAL remains lightweight and lacking of features such as an initial authentcation and continuous authorisation mechanism.  This is where the community comes in and the Contrib project might have implemented a bell or a whistle we're used to having.<div><br></div><div>At any rate, what you need to do is take CAL and make it your own.  Take that lovely pristine Shell Boostrapper and bastardise it to have a resolution of a custom IAuthenticationService on which it calls an &quot;Authenticate()&quot; method.  Do this before anything else perhaps (and make sure a concrete implementation of the service was registered prior).</div><div><br></div><div>If you feel like you don't want to tamper with the CAL libraries, I can respect that, but the boostrapper in the Shell shouldn't be considered part of that, not only is it fair game, but it's almost necessary in order for you to gain a robust solution.</div><div><br></div><div>By the way, I'm pretty sure the Contrib project has a composite module enumerator which will allow you to aggregate modules from all over the place by combining various existing module enumerating methods.  If it's not there it's somewhere on the Interweb.</div>",
+    "PostedDate": "2009-01-19T07:13:41.44-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "148362",
+    "ThreadId": "44199",
+    "Html": "@talktomikesmith:  Thanks for the tips.  I was unaware of the Contrib project.  There are some things in there I'm gonna have to play with.<br>\r\n<br>\r\nWe are currently playing with our own custom enumerator which does the authentication during enumeration (in the child appdomain).  We think this will be a better place for doing authentication... before we've even loaded into the current appdomain.\r\n",
+    "PostedDate": "2009-01-19T07:26:58.757-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

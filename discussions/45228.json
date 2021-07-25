@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "150824",
+    "ThreadId": "45228",
+    "Html": "Hello,<br>\r\n<br>\r\nIs there any roadmap for Validation? I have checked the validation that you guys implements in RI sample. I found that we can't click the button if the validation is not success. But if we are binding the Entity class with View, it's so hard to disable the button. <br>\r\n<br>\r\nLet's say we have a entity class called Employee. We bind this class with View. <br>\r\n<br>\r\nFor example: <br>\r\n<br>\r\n&lt;Textbox x:Name=&quot;employeeIDTextbox&quot; Text = &quot;{Binding ActiveEmployee.EmployeeID}&quot; /&gt; <br>\r\n&lt;Textbox x:Name=&quot;firstNameTextbox&quot; Text = &quot;{Binding ActiveEmployee.FirstName}&quot; /&gt; <br>\r\n&lt;Textbox x:Name=&quot;lastNameIDTextbox&quot; Text = &quot;{Binding ActiveEmployee.LastName}&quot; /&gt; <br>\r\n<br>\r\n&lt;Button Content=&quot;Save&quot; /&gt;<br>\r\n<br>\r\nThose three fields are mandatory fields so that the user has to enter it. and FirstName and LastName should be less than 50 characters. <br>\r\n<br>\r\nIf I have those three properties in Presenter or ViewModel instead of Entity class, I can add this validation in Setter and handle disabling\\enabling the &quot;Save&quot; button. But those properties are in Entity class so that I'm not sure how to validate it. I know that it's possible to use the event to notify the changes from Entity class to ViewModel but it might be too expensive.. <br>\r\n<br>\r\nHow I can validate this scenerio? <br>\r\n<br>\r\nIf I don't want to disable/enable the button, how I can validate in SaveCommand. For example: bool isValidationPassed = ValidateRule.Validate(ActivateEmployee);<br>\r\n<br>\r\nThanks. <br>\r\n<br>\r\n&lt;Textbox x:Name=&quot;employeeIDTextbox&quot; Text = &quot;{Binding ActiveEmployee.EmployeeID}&quot; /&gt; <br>\r\n<br>\r\n\r\n",
+    "PostedDate": "2009-01-25T23:12:39.863-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "157278",
+    "ThreadId": "45228",
+    "Html": "I am not sure I fully understand what you are asking. But here is what I think it is.<br>\r\n<br>\r\nHow can you disable a save/enable a save button if the validation rules are broken in your 'entity' object? <br>\r\n<br>\r\n//First name is required.<br>\r\n&lt;Textbox x:Name=&quot;firstNameTextbox&quot; Text = &quot;{Binding ActiveEmployee.FirstName}&quot; /&gt;<br>\r\n<br>\r\nAssuming ActiveEmployee is a property on your View Model, and that FirstName is a property on your 'Entity' object. Databinding will set the value of your textbox to the FirstName property of your 'Entity' object. At that point you will need you have your 'Entity' run its validation. If your entity fails validation you will have to set some some value on your entity such as IsValid = false.<br>\r\n<br>\r\npublic string FirstName<br>\r\n{<br>\r\n    get{return mFirstName;}<br>\r\n    set{mFirstName = value; CheckRules();}<br>\r\n}<br>\r\n<br>\r\npublic void CheckRules()<br>\r\n{<br>\r\n    if(string.IsNullOrEmpty(mFirstName))<br>\r\n    {<br>\r\n        IsValue = false;<br>\r\n    }<br>\r\n}<br>\r\n<br>\r\nYour SaveCommand in your ViewModel will then check IsValid value in its CanSaveExecute().<br>\r\n<br>\r\npublic bool CanSaveExecute(object parameter)<br>\r\n{<br>\r\n    if(ActiveEmployee.IsValue)<br>\r\n        return true;<br>\r\n    return false;<br>\r\n}<br>\r\n<br>\r\nHope this helps,<br>\r\nBrette21<br>\r\n",
+    "PostedDate": "2009-02-12T20:32:58.987-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

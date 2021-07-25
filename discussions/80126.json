@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "274576",
+    "ThreadId": "80126",
+    "Html": "<p>Hi,</p>\r\n<p>I think it is important to provide signed versions of the Composite WPF/Silverlight assemblies. This has been brought up before, and the answer was always &quot;Just compile and sign the source code&quot;.</p>\r\n<p>The problem is for library vendors that want to provide extensions for Composite WPF. For example, I'm building an open source library that helps with using Composite WPF. If I want to sign my library, I have to download, compile and sign the Composite WPF library too. But that means anyone consuming my library will have to use my special version of the signed Composite WPF assemblies.</p>\r\n<p>Now imagine that two open source libraries provide signed versions of the Composite WPF assemblies. The two libraries would be incompatible with each other simply because they would need different public keys. The user ends up having to recompile the universe just because there's no strong name.</p>\r\n<p>While it's nice to think users will just download composite WPF source code and learn from it without using it, I think that's quite rare. Would it be possible to ship signed assemblies? You can still ship the source code without the strong name key, so any locally-compiled code would not be signed.</p>\r\n<p>Paul</p>",
+    "PostedDate": "2010-01-07T18:06:24.92-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "274577",
+    "ThreadId": "80126",
+    "Html": "<p>I agree with Paul completely.</p>\r\n<p>With smaller libraries it might not matter as much but I've seen a lot of apps using Prism out of the box. And it certainly creates a good foundation for other projects that might want to enhance or extend (or perhaps replace) parts of the library.</p>\r\n<p>Unless the expectation is that we swallow this guidance 100% and don't mess with it?</p>\r\n<p>Paul, could you perhaps tell us what kind of cool extensions you are building on to Prism? Perhaps your library could be the foundation library that everyone else downloads instead, and therefore YOU can sign the Prism assemblies along with your own. Then everyone just downloads Prism along with your library instead, and only defers to the compositewpf codeplex project if they want to see the source.</p>\r\n<p>Steve</p>",
+    "PostedDate": "2010-01-07T18:19:36.587-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "274578",
+    "ThreadId": "80126",
+    "Html": "<p>Good points Paul,</p>\r\n<p>I'm also in favour of seeing the assemblies signed, for the reasons stated by Paul.</p>\r\n<p>I also think it would be an example of <em>good practice</em>.</p>\r\n<p>Jim</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-07T18:20:21.593-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "274581",
+    "ThreadId": "80126",
+    "Html": "<p>@Steve, it's an MVC library for WPF that has some Composite WPF extensions: <a href=\"http://www.paulstovell.com/magellan-composite-wpf\">http://www.paulstovell.com/magellan-composite-wpf</a></p>\r\n<p>My concern is that if I ship a signed version of my DLL, I have to ship a signed version of the Composite WPF DLL. But if someone was using, say, an Infragistics composite WPF DLL and they also had to provide a signed version, they wouldn't be able to use them side by side. So my only option seems to be to not provide a DLL of my own assembly and have people create it themselves from source referencing their own Composite WPF build, which puts the pain on the consumer's side.</p>",
+    "PostedDate": "2010-01-07T18:24:06.65-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "274616",
+    "ThreadId": "80126",
+    "Html": "<p>Why not just create a community signed version (using a community key) and throw it in Prism contrib? Then partners etc can build on that common contrib version?</p>\r\n<p>Glenn</p>",
+    "PostedDate": "2010-01-07T21:18:38.053-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

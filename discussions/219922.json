@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "469097",
+    "ThreadId": "219922",
+    "Html": "<p>Hi All.</p>\r\n<p>I have been using PRISM 2 for a long time. It is pretty easy to specify module info in the Shell with UnityBootstrapperv.GetModuleCatalog. Recently I need to move to PRISM 4. So I downloaded PRISM 4 Drop 4. To my surprise, this method has gone. The new samples use a different approach to specify the module info in the Shell. What really shocked me was the new approach needs to add reference of modules to the Shell. Thus modules and shell are tightly coupled. This is totally wrong! Any thoughts and advice?</p>",
+    "PostedDate": "2010-07-19T09:49:44-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "469112",
+    "ThreadId": "219922",
+    "Html": "<p>There are still a number of options for bringing modules into your application:</p>\r\n<ul>\r\n<li>Hard reference and adding modules directly in code in the bootstrapper</li>\r\n<li>Using XAML</li>\r\n<li>Using configuration (in WPF, but not silverlight)</li>\r\n<li>Pointing prism at a folder and having it import all the modules it finds (in WPF, but not silverlight)</li>\r\n</ul>\r\n<p>The modularity quickstarts show all four options in one sample, so you can see the basics of each approach. As a result, there are&nbsp;a few modules that are hard referenced for showing the first option.&nbsp; There are a few others that are discovered via XAML, config, or directory sweep.&nbsp;</p>\r\n<p>The GetModuleCatalog method was renamed for consistency as the Bootstrapper base class was pulled out and a few patterns that would probably be in any bootstrapper were distilled out.&nbsp; If you rename your existing GetModuleCatalog method to CreateModuleCatalog, you should be in good shape.&nbsp; There were one or two other renames and minor re-orangization&nbsp;in the bootstrapper, but they should be fairly obvious.&nbsp; WHen I updated the Stock Trader RI to work with the new version of the UnityBootstrapper, I think I changed about five lines of code, maybe six, in the bootstrapper;&nbsp; nothing else needed to change for it to work.&nbsp;</p>\r\n<p>In the next drop, we should have some solid documentation around the way modularity works, which is mostly the same as before with a few minor changes that facilitated&nbsp;the integration of MEF as another option for the DI container.&nbsp;</p>\r\n<p>I hope that helps,</p>\r\n<p>Michael Puleio</p>",
+    "PostedDate": "2010-07-19T10:19:45.313-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "476982",
+    "ThreadId": "219922",
+    "Html": "Michael,\r\n\r\nYour answer is in the context of bringing in modules to be loaded I'm assuming. However, I'm using GetModuleCatalog just to get a list of modules that have been loaded. I do this to build a list in my view model. My menu is then populated based on this list as an available menu items for opening views. Therefore, in version 4 how am I going to be able to get this list?\r\n\r\nThank You.",
+    "PostedDate": "2010-08-05T09:16:24.29-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

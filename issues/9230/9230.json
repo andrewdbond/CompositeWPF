@@ -1,0 +1,61 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "Repro :\n- add the Interactivity reference to your project (for example a class library).\n- in a XAML file (for example a UserControl), try to add the namespace by typing xmlns...\n- you will not have intellisense to complete the path of the namespace (like the prism one :  clr-namespace:Microsoft.Practices.Prism;assembly=Microsoft.Practices.Prism)\n- delete the reference to Interactivity and Rebuild\n- retry typing xmlns...\n- you have your intellisense back!\n \nMaybe the Prism.Interactivity 4.1.0.0 wasn't correctly built ?",
+    "LastUpdatedDate": "2013-02-21T18:38:01.55-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-03-05T00:52:08.993-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Prism.Interactivity break IntelliSense",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9230
+  },
+  "FileAttachments": [
+    {
+      "FileId": 898003,
+      "FileName": "TestPRISMInteractivity.zip",
+      "DownloadUrl": ".\\898003"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nWe tried to reproduce the error you are mentioning using the latest release of Prism 4.1 in both Silverlight and Desktop applications without success.\r\n\r\nIt would be helpful if you could provide us with more information regarding the scenario in which this behavior appears: for example, the Silverlight runtime and SDK versions, the Microsoft.Practices.Prism.Interactivity version (you can find it in the Add Reference dialog), any exception or error that appears when building the solution, etc.\r\n\r\nThanks,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-03-05T12:05:21.617-08:00",
+      "Id": 156589
+    },
+    {
+      "Message": "Hi,\r\n\r\nThanks for you answer.\r\n\r\nI use VS10SP1 and WPF on .Net 4.0. The Prism.Interactivity version is the 4.1.0.0 and I have no error, warning or message when I build my project.\r\n\r\nI have try with a new solution, just add a WPF project, try to add a xmlns, no problem I see all the differentes namespaces. I add the reference with interactivity, the xmlns intellisens is broken, I remove the reference, rebuild and the xmlns intellisens is back.\r\n\r\nI join my test solution with the interactivity dll (maybe it's corrupted ?), and in my work I use the old way of PRISM 4.0, with the Blend interactivity dll without a problem. But the PRISM one is way lighter and simpler so I would prefere to use it :) And not only the intellisens is broken, the xaml using the ActionCommandInvoke won't compile (VS don't recognize the xml tags).",
+      "PostedDate": "2012-03-06T01:41:34.807-08:00",
+      "Id": 156590
+    },
+    {
+      "Message": "Hi,\r\n\r\nI could reproduce the issue you are mentioning in a Silverlight application. So far, this problem seem to appear intermittently. Also, I couldn't reproduce the issue using your sample, so it seems that the problem is not related with it. \r\n\r\nOn the other hand, I found that this behavior was also reported in Prism v4, as you can find in the following thread:\r\n\r\nIntellisense not working for Prism Namespaces (http://compositewpf.codeplex.com/discussions/262472)\r\n\r\nI my case, when the problem appeared, I could fix it by adding the Microsoft.Expression.Interactions and System.Windows.Interactivity libraries into my project.\r\n\r\nI hope you find this helpful,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2012-03-07T08:49:52.407-08:00",
+      "Id": 156591
+    }
+  ]
+}

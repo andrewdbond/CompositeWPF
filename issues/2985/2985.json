@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "The issue has been solved in Unity 1.2.\r\n\r\nFor more information you could check this work item: http://www.codeplex.com/CompositeWPF/WorkItem/View.aspx?WorkItemId=2862.\r\n\r\nThank you for your feedback.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-01-18T07:02:06.893-08:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Using the Composite WPF HelloWorld project and disposing the container results in stack overflow exception.\n \nMy newbe analysis woulde be that the problem is related to that the UnityBootstrapper adds itself to the container and thereby recursive calls to Dispose are made until the stack overflows. The void Dispose(bool disposing) method of UnityContainer must handle the recursive call on the same instance.\n \nExample code taken from the HelloWord sample and added a Shutdown method that does the Dispose on the container:\n \ninternal class Bootstrapper : UnityBootstrapper\n    {\n        protected override IModuleEnumerator GetModuleEnumerator()\n        {\n            return new StaticModuleEnumerator()\n                .AddModule(typeof(HelloWorldModule));\n        }\n \n        protected override DependencyObject CreateShell()\n        {\n            Shell shell = new Shell();\n            shell.Show();\n \n            return shell;\n        }\n \n        public void Shutdown()\n        {\n            this.Container.Dispose();\n        }\n    }",
+    "LastUpdatedDate": "2013-05-16T05:29:03.01-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-09-11T01:57:41.82-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "System.StackOverflowException when disposing the container.",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 2985
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "This is the same issue as reported here http://www.codeplex.com/CompositeWPF/WorkItem/View.aspx?WorkItemId=2862, that is resolved in Unity 1.2.  See the comments for an approach to using Unity 1.2 with Prism V1.\r\n\r\nHTH,\r\n\r\n-b",
+      "PostedDate": "2009-01-15T11:03:19.59-08:00",
+      "Id": 156028
+    }
+  ]
+}

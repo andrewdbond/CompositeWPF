@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "536802",
+    "ThreadId": "238639",
+    "Html": "\r\n<p>I have a User object in my application that needs to be displayed in several views. When this object changes all the views should reflect the change. What is the best way to do this? I was trying to export the user object and import it in my views, but any\r\n changes to the object do not get reflected in the views (I assume because the export is by value and not by reference). Is there any way to do this using MEF? Or doing some sort of pub/sub using EventAggregator a better way?</p>\r\n<p>This is my code so far which does NOT work:</p>\r\n<pre>***** User *****\r\npublic class User : NotificationObject\r\n{\r\n    private string _username;\r\n    public string Username\r\n    {\r\n        get { return _username; }\r\n        set\r\n        {\r\n            _username = value;\r\n            this.RaisePropertyChanged(&quot;Username&quot;);\r\n        }\r\n    }\r\n\r\n    private string _firstName;\r\n    public string FirstName\r\n    {\r\n        ...\r\n    }\r\n\r\n    private string _lastName;\r\n    public string LastName\r\n    {\r\n        ...\r\n    }\r\n}\r\n\r\n\r\n***** MyBootStrapper *****\r\npublic class MyBootStrapper : MefBootstrapper\r\n{\r\n    ...\r\n    \r\n    protected override void ConfigureContainer()\r\n    {\r\n        base.ConfigureContainer();\r\n        this.Container.ComposeExportedValue(new User());\r\n    }\r\n}\r\n\r\n\r\n***** MyViewModel *****\r\n[Export]\r\n[PartCreationPolicy(CreationPolicy.NonShared)]\r\npublic class MyViewModel : NotificationObject\r\n{\r\n    public User User { get; set; }\r\n\r\n    [ImportingConstructor]\r\n    public MyViewModel(User user)\r\n    {\r\n        User = user;\r\n    }\r\n}\r\n</pre>\r\n",
+    "PostedDate": "2010-12-16T07:54:23.107-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "536851",
+    "ThreadId": "238639",
+    "Html": "\r\n<p>you might want to look at something like this...</p>\r\n<p><br>\r\npublic class UserCollection : ObservableCollection&lt;User&gt; <br>\r\n{&nbsp;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public UserCollection()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>\r\n<pre>  } </pre>\r\n<pre>}</pre>\r\n<pre>this gets you something that will respond to the changes of the individual properties of your object.  </pre>\r\n<pre>Obviously there is more to do in this collection object now but you will need to look ObservableCollection&lt;T&gt; to understand it fully.</pre>\r\n<pre>Your bootstrapper should have nothing to do with the user directly. Also your user hasn't been marked up for [Export], so in your viewmodel, it doesn't know how to process that.</pre>\r\n<pre>Hope this gets you in the right direction.</pre>\r\n<pre>Morgan.</pre>\r\n",
+    "PostedDate": "2010-12-16T09:04:51.71-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "536884",
+    "ThreadId": "238639",
+    "Html": "\r\n<p>I assume that the UserCollection would have to be exported. A similar approach I was thinking about was to create a holder object like UserHolder (containing the User object) and exporting that (since I really don't have a collection of users).</p>\r\n<p>BTW, I am effectively exporting the single User object in the bootstrapper (using Container.ComposeExportedValue). I believe that is equivalent to the [Export] markup and seems to be working well.</p>\r\n<p>While I try out these ideas, can anyone suggest other approaches they have used to solve this issue? I would have to think that this is a VERY common use case.</p>\r\n<p>Thanks.</p>\r\n<p>Naresh</p>\r\n",
+    "PostedDate": "2010-12-16T10:07:28.427-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "537144",
+    "ThreadId": "238639",
+    "Html": "\r\n<p>This is how I have solved the issue:</p>\r\n<pre>***** UserContext *****\r\n[Export]\r\n[PartCreationPolicy(CreationPolicy.Shared)]\r\npublic class UserContext\r\n{\r\n    public User User { get; set; }\r\n\r\n    public UserContext()\r\n    {\r\n        User = new User();\r\n    }\r\n}\r\n\r\n\r\n***** MyViewModel *****\r\n[Export]\r\n[PartCreationPolicy(CreationPolicy.NonShared)]\r\npublic class MyViewModel : NotificationObject\r\n{\r\n    public UserContext UserContext { get; set; }\r\n\r\n    [ImportingConstructor]\r\n    public LoginViewModel(UserContext userContext)\r\n    {\r\n        this.UserContext = userContext;\r\n    }\r\n}\r\n</pre>\r\n<p>UserContext holds a User object and this wrapper is imported by the view model (the wrapper just allows me to put more objects in the context in the future). Views now bind to UserContext.User.FirstName etc. Any change to User object's properties is reflected\r\n on the UI. Hope this helps others facing such issues. Feedback is always welcome!</p>\r\n<p>Thanks.</p>\r\n<p>Naresh</p>\r\n",
+    "PostedDate": "2010-12-16T23:40:23.213-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "537459",
+    "ThreadId": "238639",
+    "Html": "\r\n<p id=\"x_d8c4b950-ec39-012d-6647-123139081390\">Hi Naresh,</p>\r\n<p id=\"x_d8c4c1f0-ec39-012d-6648-123139081390\">Thank you for sharing your findings with the rest of the community.</p>\r\n<p id=\"x_d8c4cb50-ec39-012d-6649-123139081390\">Take into account that, with this approach you will only be notifying changes occurred in your view model to the view. However, when modifying your ViewModel's UserContext property, you won't be propagating the\r\n change to the UserContext shared export that you've defined. So if you wish to reflect the changes made to that property throughout components that could be placed in different modules, this approach could probably not be the most appropriate.</p>\r\n<p id=\"x_d8c4d5d0-ec39-012d-664a-123139081390\">However, you might find&nbsp; <a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28v=PandP.40%29.aspx\">\r\nChapter 9: Communicating Between Loosely Coupled Components</a> interesting (more specifically, the Event Aggregation section). Using this, you might reflect any change you produce in any view model not only in the Module they reside, but also across any other\r\n module in your application. An approach using the Event Aggregator would imply, for example, publsihing an event indicating that the UserContext has been changed, and subscribing to that event in another place of your application to reflect the changes accordingly.</p>\r\n<p id=\"x_d8c4e3c0-ec39-012d-664b-123139081390\">Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-17T11:19:15.91-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "537513",
+    "ThreadId": "238639",
+    "Html": "\r\n<p>Good point&nbsp;Miguel! In my current use case, I only need to propagate changes from UserContext to the views - so this approach works. I do have other use cases where I need changes to propagate changes across modules and I will surely be using event aggregation\r\n in those cases.</p>\r\n<p>Thanks.</p>\r\n<p>Naresh</p>\r\n",
+    "PostedDate": "2010-12-17T13:07:00.353-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

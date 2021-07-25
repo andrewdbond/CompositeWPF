@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "660780",
+    "ThreadId": "269745",
+    "Html": "\r\n<p><span>I would like</span>&nbsp;<span>to make a</span>&nbsp;<span>wizard</span>&nbsp;<span>in my application.</span>&nbsp;<span>Where can I</span>&nbsp;<span>find an example of</span>&nbsp;<span>create</span>&nbsp;<span>the wizard</span><span>?</span></p>\r\n<p><span><span>I mean</span>&nbsp;<span>it&nbsp;<a href=\"http://www.tenouk.com/clabworksheet/labworksheet3_files/win32consoleapp006.png\">win32consoleapp006.png</a>&nbsp;(</span></span>Previos, Next, Finish&nbsp;)</p>\r\n",
+    "PostedDate": "2011-08-19T13:19:15.17-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "662250",
+    "ThreadId": "269745",
+    "Html": "<p>Hi,</p>\r\n<p>Prism doesn't provide support for wizards, however you could try doing something to this:</p>\r\n<ol>\r\n<li>Create a \"wizard view\" (and it's view model) that will used as the \"wizard window.\" This view should have the regions where the views required by the wizard will be shown. Also, it may be convenient that this \"wizard view\" had its own scoped region manager (for more information about this, you can check <a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28v=PandP.40%29.aspx#sec42\">this page on MSDN</a> or <a href=\"http://compositewpf.codeplex.com/discussions/269367\">this thread</a>).</li>\r\n<li>Create the views and view models that will be used in the wizard. These can be used and navigated to like in a common prism application. For example, when clicking the \"Previous\" and \"Next\" buttons, the view inside the region that shows the content of the wizard could navigate to the next one and backwards.</li>\r\n<li>To store the results of the wizard and share them with the main application you can, for example, use a shared service that can be resolved using the container or imported when the \"wizard view\" is created. However, how to do this depends only of your preferences.</li>\r\n<li>Finally to show the view you can implement a behavior that shows the view in a new window. To do this you can check the <strong>Stock Trader Reference Implementation</strong>. This RI defines a behavior (the <strong>WindowDialogActivationBehavior</strong> in the desktop version and the <strong>PopupDialogActivationBehavior</strong> in the silverlight version) that makes it possible to show the view as a popup window.</li>\r\n</ol>\r\n<p>For more information about this you can check: <a href=\"http://msdn.microsoft.com/en-us/library/ff921074%28v=PandP.40%29.aspx\">Stock Trader RI on MSDN</a>.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-08-23T11:32:02.52-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "668169",
+    "ThreadId": "269745",
+    "Html": "<p>The Extended WPF Toolkit has a wizard control:</p>\r\n<p><a href=\"http://wpftoolkit.codeplex.com/\">http://wpftoolkit.codeplex.com/</a></p>",
+    "PostedDate": "2011-09-06T09:35:52.843-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "668209",
+    "ThreadId": "269745",
+    "Html": "<p>Hi,</p>\r\n<p>Thanks for sharing this with the rest of the community, as it might be useful for other users pursuing this scenario.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-09-06T10:51:10.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

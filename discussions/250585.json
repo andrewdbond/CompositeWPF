@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "584030",
+    "ThreadId": "250585",
+    "Html": "<p>Case is simple, I have a view with two new regions. The view is loaded with view injection.</p>\n<p>I tried using the IActiveAware and adding the views to the regions from the event, but at this point the new regions aren't discovered/registered yet, and I get an exception.</p>\n<p>So, how can I get notified when the new regions in my view are loaded and ready to be populated with views?</p>\n<p>&nbsp;</p>\n<p>Best,</p>\n<p>Ronny</p>",
+    "PostedDate": "2011-03-21T14:46:58.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "584438",
+    "ThreadId": "250585",
+    "Html": "<p>Hi Ronny,</p>\r\n<p>One possible way to achieve your requirement could be to subscribe to the <strong>CollectionChanged</strong> event in the <strong>RegionManager</strong>&acute;s <strong>Regions</strong> collection (since it&rsquo;s an <a href=\"http://msdn.microsoft.com/en-us/library/ms668604.aspx\">ObservableCollection</a>). By doing so, when a region is loaded and then added to the collection, you will be notified in the event handler you&rsquo;ve specified.</p>\r\n<p>This is possible because of two region behaviors: the <strong>DelayedRegionCreationBehavior</strong> and the <strong>RegionManagerRegistrationBehavior</strong>. The former is responsible for creating the regions only when the control that will host it is added to the region tree, and the latter is responsible for registrating the newly created region to the <strong>RegionManager</strong>; hence, you are guaranteed that the <strong>CollectionChanged</strong> event will only be raised when a region is actually loaded, and its control displayed. Take into account that, in order to know when a region has been added, in the event handler for the <strong>CollectionChanged </strong>you should check whether the <strong>NotifyCollectionChangedAction</strong> is&ldquo;Add&rdquo;.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-03-22T08:20:34.017-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "595112",
+    "ThreadId": "250585",
+    "Html": "<p>It was very useful! :)</p>",
+    "PostedDate": "2011-04-10T23:54:42.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

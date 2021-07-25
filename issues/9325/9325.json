@@ -1,0 +1,61 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "Function PropertySupport.ExtractPropertyName works only with MemberExpression, but, for example, nullable datetime property is of type UnaryExpression.\nSo, RaisePropertyChanged<T>(Expression<Func<T>> ex) and other functions that use ExtractPropertyName are not correct in such case.\n \nSolution:\npublic static string ExtractName<T>(Expression<Func<T>> expression)\n        {\n            if (expression == null)\n                throw new ArgumentNullException(\"expression\");\n \n            MemberExpression memberExpression;\n \n            if (expression.Body is UnaryExpression)\n                memberExpression = ((UnaryExpression)expression.Body).Operand as MemberExpression;\n            else\n                memberExpression = expression.Body as MemberExpression;\n \n            if (memberExpression == null)\n                throw new ArgumentException(@\"The expression is not a member access expression\", \"expression\");\n \n            var property = memberExpression.Member as PropertyInfo;\n            if (property == null)\n                throw new ArgumentException(@\"The member access expression does not access a property\", \"expression\");\n \n            var getMethod = property.GetGetMethod(true);\n            if (getMethod.IsStatic)\n                throw new ArgumentException(@\"The referenced property is a static property\", \"expression\");\n \n            return memberExpression.Member.Name;\n        }",
+    "LastUpdatedDate": "2013-02-21T18:38:00.597-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-04-12T07:51:43.083-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ExtractPropertyName doesn't work with nullable DateTime",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 1,
+    "Id": 9325
+  },
+  "FileAttachments": [
+    {
+      "FileId": 898005,
+      "FileName": "ReproSample.7z",
+      "DownloadUrl": ".\\898005"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nWe tried to simulate a common scenario in which this might cause an exception, using Prism, MVVM and properties with Nullable and so far we couldn't reproduce any errors. \r\n\r\nIt could be useful, if you could provide a little more information about this, for example in which scenarios this might cause problems to you.\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2012-04-19T10:38:09.027-07:00",
+      "Id": 156599
+    },
+    {
+      "Message": "Sorry, it was my mistake. ExtractPropertyName function work fine with nullable DateTime, but it would be nice if it'll support UnaryExpression in lambdas. \r\nI found some explanation about that: http://stackoverflow.com/questions/3567857/why-are-some-object-properties-unaryexpression-and-others-memberexpression\r\nRepro sample is attached",
+      "PostedDate": "2012-04-25T07:32:54.93-07:00",
+      "Id": 156600
+    },
+    {
+      "Message": "Hi,\r\n\r\nThanks for taking the time to share this with the rest of the community as this might be helpful for other pursuing similar scenarios.\r\n\r\nWe could check the sample you provided, and verify the case where the expression passed to the ExtractPropertyName is inferred as an UnaryExpression which leads to the mentioned exception.\r\n\r\nAlso we verify that your proposed work around seems to fix the problem. \r\n\r\nOn the other hand, as suggested in the thread you mentioned it seems that changing the type parameter to generic T instead of type object, also avoids this behavior.\r\n\r\nFor example I changed your PropertyNameEquals method like this, and no exception was thrown:\r\n\r\nprivate bool PropertyNameEquals(Expression> func, string propertyName)\r\n\r\nWe are leaving this work item open, so that the Prism team can analyze it for future releases.\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2012-05-04T10:33:44.34-07:00",
+      "Id": 156601
+    }
+  ]
+}

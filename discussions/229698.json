@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "502629",
+    "ThreadId": "229698",
+    "Html": "<p>So I have a module which implements IModule, and in the Initialize method I call&nbsp;</p>\r\n<p>_regionManager.RegisterViewWithRegion(&quot;ContentRegion&quot;, typeof(AttractorView));</p>\r\n<p>This works as expected. Initializes the ModelView (presenter) class that my view imports (via MEF) and then adds the view to the ContentRegion. The problem is that I want to .Deactivate the view so it isn't shown&nbsp;immediately&nbsp;even though it's registered.&nbsp;RegisterViewWithRegion() doesn't specify a view name when automagically adding the view to the region so doing something like below doesn't work:</p>\r\n<p>IRegion region = _regionManager.Regions[&quot;ContentRegion&quot;]; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>object view = region.GetView(typeof(viewName); //no view name was created by&nbsp;RegisterViewWithRegion<br>region.Deactivate(view);&nbsp;</p>\r\n<p>Do I have to go about this old school ie: the way I did in prism 2.1 and not use RegisterViewWithRegion and instead&nbsp;get a reference to the ModelView (presenter) via:</p>\r\n<p>this.RegisterViewsAndServices(); &nbsp;</p>\r\n<p>AttractorModelView modelView&nbsp;= _container.Resolve&lt;AttractorModelView&gt;();&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br>IRegion region= _regionManager.Regions[&quot;ContentRegion&quot;];&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>region.Add(modelView.View);</p>\r\n<p>protected void RegisterViewsAndServices()&nbsp;&nbsp; &nbsp; &nbsp; <br>{&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>&nbsp;&nbsp; &nbsp; _container.RegisterType&lt;IAttractorView, AttractorView&gt;();&nbsp;&nbsp; &nbsp; &nbsp; <br>}</p>\r\n<p>Thanks<br>DML&nbsp;</p>",
+    "PostedDate": "2010-10-05T11:02:59.85-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "502677",
+    "ThreadId": "229698",
+    "Html": "<p>Hi DML,</p>\r\n<p>In Prism there is two techniques for UI-Composition. When you register a view  in a region using the RegisterViewWithRegion method, you are using <strong>View  Discovery</strong>.&nbsp;But when you need explicit or programmatic control over when  a view is created and displayed, the recommendable approach is to use  <strong>View Injection</strong>. For more information on this topic, you could  read the following documentation section on MSDN:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921075(PandP.20).aspx\">UI  Composition</a> (see the <em>When to Use View Discovery vs. View Injection </em>section)</li>\r\n</ul>\r\n<p>That said your scenario seems to require an explicit control for deactivating  this view after adding this to a region. So I would recommend you to use the  View Injection approach.</p>\r\n<p>On the other hand, if your scenario requires to continue using View  Discovery, you could opt to use Region Behaviors (<a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.composite.presentation.regions.behaviors.regionactiveawarebehavior.aspx\">RegionActiveAwareBehavior</a>).  For more information you could take a look at the following thread, where&nbsp;this  topic&nbsp;has treated in detail:</p>\r\n<ul>\r\n<li><span><a href=\"View.aspx?ThreadId=225965\">Detecting  view model close</a></span></li>\r\n</ul>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-05T12:47:17.14-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "502739",
+    "ThreadId": "229698",
+    "Html": "<p>Hi Fernando ,&nbsp;Thanks for the quick reply. Looks like I'll need to use view injection. In prism 2.1 I did this via a unity container but now that I'm using MEF, are there any examples on how to do view injection with MEF?</p>\r\n<p>Thanks<br>DML&nbsp;</p>",
+    "PostedDate": "2010-10-05T15:49:38.793-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "502749",
+    "ThreadId": "229698",
+    "Html": "<p>Nervermind, I figured out all I have to do is an [Import] to get a reference to my exported view via MEF.</p>\r\n<p>Thanks<br>DML&nbsp;</p>",
+    "PostedDate": "2010-10-05T16:10:27.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "502997",
+    "ThreadId": "229698",
+    "Html": "<p>Hi DML,</p>\r\n<p>As you mentioned, you could use the Import attribute. Additionally, there is  an assembly for extending MEF in Prism, so I would recommend you to use the  attributes provided by this assembly (<strong>Prism.MEFExtensions</strong>). If you need more  information, you could take a look at the following documentation sections in  Prism4.chm:</p>\r\n<ul>\r\n<li>Appendix C: Prism Library (see the <em>Organization of the Prism Library </em>section)</li>\r\n<li><span id=nsrTitle>Modularity QuickStarts for WPF (updated)</span> </li>\r\n<li>Stock Trader Reference Implementation (updated)</li>\r\n</ul>\r\n<p>For example if you need to export a module or a view, you could use:</p>\r\n<ul>\r\n<li>ModuleExport</li>\r\n<li>ViewExport</li>\r\n</ul>\r\n<p>Additionally, if you need guidance on how your Composite Application can use  MEF, you could check the following&nbsp;Quickstart and Reference  Implementation&nbsp;provided in <a href=\"../releases/view/53420\">the latest drop (9)  of Prism</a>:</p>\r\n<ul>\r\n<li>Modularity Quickstart with MEF.  (<strong>Quickstarts\\Modularity\\Desktop\\ModularityWithMef\\</strong>)</li>\r\n<li>Stock Trader Reference Implementation.</li>\r\n</ul>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-06T07:26:39.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

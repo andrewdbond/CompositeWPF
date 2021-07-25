@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "417131",
+    "ThreadId": "204683",
+    "Html": "<p>I can't be the only one that has experienced something like this.</p>\r\n<p>I made a module with an embedded resource.&nbsp; An icon.&nbsp; During the module Initialize method, I read that file into a stream.&nbsp; As soon as I read that stream into an Image control, the module stops initializing.&nbsp; No error.&nbsp; Nothing.&nbsp; I have not been able to figure out anything or make any headway.</p>\r\n<p>The only thing I can imagine is that somehow reading the stream messes with something in the module initialization process, but I can't imagine what that would be.&nbsp; I could test this if I knew how to hook into the event system to try the stream read after initialization is complete.&nbsp; But I don't see any way to do this.&nbsp; So two questions here:</p>\r\n<p>Has anyone used embedded resources successfully in a module?</p>\r\n<p>Is there a ModuleInitializedEvent or some way to make one myself?</p>\r\n<p>Thanks.</p>",
+    "PostedDate": "2010-03-11T12:03:52.867-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "419793",
+    "ThreadId": "204683",
+    "Html": "<p>For anyone that cares to know, I figured out my problem.&nbsp; I don't know why but opening an 'embedded resource' into a stream and reading it into a bitmap and then converting it into a System.Windows.Controls.Image will stop a module from loading.&nbsp; It doesn't give an error.&nbsp; It just silently stops.&nbsp; But obviously, since this is WPF, we don't necessarily want to be using Windows Forms solutions and converting the output to WPF objects anyway.&nbsp; For WPF, we use a build action on the file of 'Resource' not 'Embedded Resource'.&nbsp; But the <a href=\"http://msdn.microsoft.com/en-us/library/aa970069.aspx\">http://msdn.microsoft.com/en-us/library/aa970069.aspx</a> page on building a Pack Uri didn't seem to help at all.&nbsp; The code couldn't find the 'Resource' no matter how many times I edited the string.&nbsp; I have since come to find out that the MSDN page seems to be completely wrong.&nbsp; In MSDN, the Pack Uri string looks something like this:</p>\r\n<p><span>pack://application:,,,/ReferencedAssembly;component/Subfolder/ResourceFile.xaml</span></p>\r\n<p><span>But it didn't work and I tried all kinds of variations.&nbsp; It just didn't work.&nbsp; This works and I got it from&nbsp;the Petzold&nbsp;WPF book.</span></p>\r\n<p><span>pack://application:,,/ReferencedAssembly;component/Subfolder/ResourceFile.xaml</span></p>\r\n<p><span>The only difference is two commas instead of three.&nbsp; I have no idea how that is possible because that page has three commas in every single example of a Pack Uri.&nbsp; </span>I don't really see how this could be so wrong, so if someone else has an insight, please share it.&nbsp; Also, it would be nice to know why the module quits loading when the bitmap from stream gets converted to an Image control.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-03-18T08:25:34.733-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

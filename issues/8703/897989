@@ -1,0 +1,49 @@
+using System.Diagnostics;
+
+namespace Microsoft.Practices.Prism
+{
+    /// <summary>
+    /// Checks run-time state of this application.
+    /// </summary>
+    /// <remarks>
+    /// The .NET Framework's DesignMode property for a UserControl only shows that it is 
+    /// in DesignMode if the immediate parent is viewed in the IDE.
+    /// For instance, if UserControl A has UserControlB placed on it, and UserControl B has UserControlC 
+    /// placed on it, and UserControl A is being viewed in the IDE, UserControl C will normally register 
+    /// its DesignMode flag as false.
+    /// This implementation of the DesignMode check utilizes a different method in determining 
+    /// this.
+    /// </remarks>
+	public sealed class DesignModeChecker
+	{
+        //Store this flag (see DesignMode get property for more info) in static variable to avoid repeated calls to get current process's name.
+        private static bool _isInDesignMode;
+
+        static DesignModeChecker()
+        {
+            try 
+            {
+                //Calls to GetCurrentProcess() method trigger reading of a performance counter, which
+                //in turn, require admin access to registry.
+                _isInDesignMode = (Process.GetCurrentProcess().ProcessName.ToLower() == "devenv");
+            } 
+            catch 
+            {
+                //if we fail, assume we are not in design mode.
+                _isInDesignMode = false;
+            }
+        }
+
+        /// <summary>
+        /// Indicates if the current application is in the run-time state.
+        /// </summary>
+        public static bool InDesignMode
+        {
+            get 
+            {
+                return _isInDesignMode;
+            }
+        }
+	}
+
+}

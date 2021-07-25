@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "816844",
+    "ThreadId": "350389",
+    "Html": "\r\n<p>I am upgrading from v1.2 and notice that IModuleCatalog has replaced IModuleEnumerator. The developer that originally did our implementation used something called a CompositeModuleEnumerator which effectively took a path to a directory, and then recursed\r\n through any subdirectories to find IModuleInfo implementations. This allowed us to organize our modules into their own folders.</p>\r\n<p>Is there a way to configure the DirectoryModuleCatalog to do the same thing?</p>\r\n<p>e.g.&nbsp;</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp; directoryModuleEnumerator.ModulePath = &quot;c:\\Modules&quot;;</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp; directoryModuleEnumerator.Load(); // scans all subdirectories of Modules for implementations of IModuleInfo</p>\r\n<p>&nbsp;</p>\r\n<p>assume a disk structure like:</p>\r\n<p>c:\\Modules\\ModuleA</p>\r\n<p>c:\\Modules\\ModuleB</p>\r\n<p>c:\\Modules\\ModuleC</p>\r\n<p>etc.</p>\r\n<p>So at the end the catalog would contain: ModuleA.dll, ModuleB.dll, ModuleC.dll etc.</p>\r\n<p>Thanks,</p>\r\n",
+    "PostedDate": "2012-03-28T15:29:24.56-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "817344",
+    "ThreadId": "350389",
+    "Html": "<p>Hi,</p>\r\n<p>As far as I know this functionality is not provided by Prism from out of the box.</p>\r\n<p>In my opinion you could try creating a custom implementation of the <strong>DirectoryModuleCatalog</strong>, which looks into all sub-directories of the <strong>ModulePath</strong>. For example you could obtain all sub-directories using the following line of code, as explained in this <a href=\"http://jbknet.blogspot.com.ar/2008/01/get-all-subdirectories-in-single-line.html\">blog post</a>:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">string</span>[] folders = System.IO.Directory.GetDirectories(ModulePath, <span style=\"color: #a31515;\">\"*\"</span>, System.IO.SearchOption.AllDirectories);\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Based on this, your <strong>CustomDirectoryModuleCatalog </strong>could be similar to this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> CustomDirectoryModuleCatalog : DirectoryModuleCatalog\r\n    {\r\n        <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> InnerLoad()\r\n        {\r\n            <span style=\"color: blue;\">base</span>.InnerLoad();\r\n\r\n            <span style=\"color: blue;\">string</span>[] folders = System.IO.Directory.GetDirectories(ModulePath, <span style=\"color: #a31515;\">\"*\"</span>, System.IO.SearchOption.AllDirectories);\r\n\r\n            <span style=\"color: blue;\">foreach</span> (<span style=\"color: blue;\">string</span> folder <span style=\"color: blue;\">in</span> folders)\r\n            {\r\n                ModulePath = folder;\r\n                <span style=\"color: blue;\">base</span>.InnerLoad();\r\n            }\r\n        }\r\n    }\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Finally you will only have to override the <strong>CreateModuleCatalog </strong>method in your bootstrapper in order to create your new directory module catalog class,for example like in the following code snippet:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre> <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> IModuleCatalog CreateModuleCatalog()\r\n        {\r\n            <span style=\"color: blue;\">return</span> <span style=\"color: blue;\">new</span> CustomDirectoryModuleCatalog() { ModulePath = <span style=\"color: #a31515;\">@\".\\Modules\"</span> };  \r\n        }\r\n</pre>\r\n</div>\r\nI hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2012-03-29T12:11:16.24-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "817358",
+    "ThreadId": "350389",
+    "Html": "<p>Ok, thanks. I was thinking that I might have to do this, but I thought that I would investigate first.</p>\r\n<p>Thanks,</p>\r\n<p>HS</p>",
+    "PostedDate": "2012-03-29T12:44:26.25-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

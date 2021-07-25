@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "440303",
+    "ThreadId": "211908",
+    "Html": "Hi,\r\n\r\nI'm new working with Prism with WPF, and I have a question which I can't find answer.\r\n\r\nWhy it is impossible to add a window in a Region ? I can understand there's a good reason, so I will need another solution to my problem.\r\n\r\nIt is quite simple, I got a LoginView (Window) which I want to appear first. For the previous reason, in my Region, I added a MainView (UserControl) where I just show my LoginView on the Loaded event.\r\n\r\nThe problem if the user quit the application or if he cancels his login, the MainView is still showing up.\r\n\r\nIt seems a stupid problem, but I can't find a smart solution.\r\n\r\nThanks for your time.",
+    "PostedDate": "2010-05-07T04:59:43.83-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "440435",
+    "ThreadId": "211908",
+    "Html": "<p>Hi,</p>\r\n<p>You can&rsquo;t add a window inside a Region because in WPF a Window class must be  the root of the logical tree, and since regions are controls that are children  of another Window, you would be doing an invalid operation in terms of the WPF  hierarchy. You can find a more detalied explanation on <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.window.aspx\">this  article</a>.</p>\r\n<p>You could&nbsp;use the <strong>RegionPopupBehavior </strong>to show&nbsp;views in  another window. You can check these threads for more information about this:</p>\r\n<p><a href=\"View.aspx?ThreadId=205349\">RegionPopupBehaviors</a> <br><a href=\"View.aspx?ThreadId=204920\">Show  modal dialogs with subregions in Prism app</a></p>\r\n<p>As for the login functionality, a possible approach would be to make the  Bootstrapper create a separate window where the&nbsp;login is performed&nbsp;before  loading the Shell. Then&nbsp;you should add a call to an authentication service in  your <strong>CreateShell</strong> method in the Bootstrapper so&nbsp;that the shell  is created only if the user is authenticated. In case the user isn&rsquo;t  authenticated, you could simply close the application, as shown on <a href=\"View.aspx?ThreadId=69993\">this  thread</a>.</p>\r\n<p>An example&nbsp;would be something like this:</p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> DependencyObject CreateShell()\r\n{\r\n    <span style=\"color:blue\">if</span> (Container.Resolve&lt;IAuthenticationService&gt;().IsAuthenticated(User))\r\n    {\r\n        Shell shell = <span style=\"color:blue\">new</span> Shell();\r\n        shell.Show();\r\n        <span style=\"color:blue\">return</span> shell;\r\n    }\r\n    <span style=\"color:blue\">else</span>\r\n    {\r\n        System.Windows.Application.Current.Shutdown(0);\r\n    }\r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p>You can also check these threads for alternative ways to achieve login  functionality,&nbsp;by showing a&nbsp;login modal dialog before creating the shell:</p>\r\n<p><a href=\"View.aspx?ThreadId=58292\">Show  login modal form before</a><br><a href=\"View.aspx?ThreadId=65777\">Best  practice to launch login modal before the shell</a></p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-05-07T11:03:05.027-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "441111",
+    "ThreadId": "211908",
+    "Html": "Unfortunately, we changed our approach for the project, so this problem is no more an obstacle for me. \r\nThis said, that's a great answer and this could help a lot of people, even me when it will be necessary again.\r\n\r\nThank you very much for your time.",
+    "PostedDate": "2010-05-10T08:30:40.297-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

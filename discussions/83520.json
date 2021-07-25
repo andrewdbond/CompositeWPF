@@ -1,0 +1,106 @@
+[
+  {
+    "Id": "287162",
+    "ThreadId": "83520",
+    "Html": "<p>Hi all. In Composite.Presentation library I found only one ready to use command &quot;Click&quot; wich always demonstrated in examples. How can I create my own command for UI controls to events such as TabItem1_Selected or ComboBoxItem_Selected...&nbsp; Please show how?</p>",
+    "PostedDate": "2010-02-08T07:27:41.18-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "288501",
+    "ThreadId": "83520",
+    "Html": "<p id=68aaeaf0-f8b0-012c-98dd-1231390c3851 style=\"margin-top:1em;margin-right:0px;margin-bottom:1em;margin-left:0px;text-align:justify;padding:0px\">Hi,</p>\r\n<p style=\"margin-top:1em;margin-right:0px;margin-bottom:1em;margin-left:0px;text-align:justify;padding:0px\">Prism provides an out of the box implementation for the attached behavior to hook the click event of a Button with a command in your ViewModel (you can read a deeper explanation&nbsp;<a style=\"padding:0px;margin:0px\" href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=83520\">here</a>). Take into account that the particular behavior was only meant for Silverlight, as&nbsp;<a style=\"padding:0px;margin:0px\" href=\"http://msdn.microsoft.com/en-us/library/ms753200.aspx\">WPF already provided that functionality</a>&nbsp;(currently&nbsp;<a style=\"padding:0px;margin:0px\" href=\"http://blogs.southworks.net/dschenkelman/2009/12/07/will-silverlight-4-icommand-support-simplify-using-commands-in-prism/\">Silverlight 4 also does</a>).</p>\r\n<p id=68ab0820-f8b0-012c-98df-1231390c3851 style=\"margin-top:1em;margin-right:0px;margin-bottom:1em;margin-left:0px;text-align:justify;padding:0px\">Some time ago I created a blog post that provides a code snippet to create commands with attached behaviors for other controls and events which might be useful for you. You can read about it&nbsp;<a style=\"padding:0px;margin:0px\" href=\"http://blogs.southworks.net/dschenkelman/2009/08/13/c-code-snippet-to-create-commands-with-attached-behaviors-using-prism/\">here</a>.</p>\r\n<p id=68ab1cc0-f8b0-012c-98e0-1231390c3851 style=\"margin-top:1em;margin-right:0px;margin-bottom:1em;margin-left:0px;text-align:justify;padding:0px\">Please let me know if this helps.</p>\r\n<p id=68ab3020-f8b0-012c-98e1-1231390c3851 style=\"margin-top:1em;margin-right:0px;margin-bottom:1em;margin-left:0px;text-align:justify;padding:0px\">Damian Schenkelman&nbsp;<br style=\"padding:0px;margin:0px\"><a style=\"padding:0px;margin:0px\" href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-02-10T15:26:36.9-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "363529",
+    "ThreadId": "83520",
+    "Html": "<p>Many thanks. That is, there are 2 ways:</p>\r\n<p>1) We have already written ButtonBaseClickCommandBehavior and CommandBehaviorBase to create commands with attached behaviors. Here is one question. Except static class command_name with DependencyPropertyes and Behavior we must describe at code behind our command: i.e.</p>\r\n<p>public ICommand TabItem2Activated { get; private set; }<br>this.TabItem2Activated = new DelegateCommand&lt;void&gt;(OnTabItem2ActivatedCommandExecuted);<br>eventAggregator.GetEvent&lt;MyEvent&gt;().Subscribe(OnTabItem2ActivatedCommandReceived);</p>\r\n<p>But how to hang a few events on the one control and use parametres? What is preferable DelegateCommand or CompositeCommand?</p>\r\n<p>2) Using ICommand interface where we will write executeMethod and canExecuteMethod methods. It easy to describe and bind in xaml:</p>\r\n<p>&lt;Button Command=&quot;{Binding SomeCommand}&quot;/&gt;</p>\r\n<p>But what benefits we lose?</p>",
+    "PostedDate": "2010-02-23T22:28:51.863-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "455497",
+    "ThreadId": "83520",
+    "Html": "<p>Comrades! Please give some examples of using ICommand with IEventAggregator subscribe and publish service!</p>",
+    "PostedDate": "2010-06-14T23:37:59.993-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "457416",
+    "ThreadId": "83520",
+    "Html": "<p>Hi,</p>\r\n<p>I&rsquo;ve created a sample application to show you how to use a  <strong>DelegateCommand</strong> with parameters and the  <strong>EventAggregator</strong>. You can download it from <a href=\"http://public.blu.livefilestore.com/y1pOe08wzvMnAT4Sxfe_ofRiHsJ1JnWI88nQmdCvWk7tXnARCzE9LdH9Hv5twB8Kk1-XWegA1QIGLDMMm15XCgXlw/CommandWithEventAggregatorSample.zip?download&psid=1\">here</a>.</p>\r\n<p>As for your questions,</p>\r\n<p>1) You don&rsquo;t necessarily have to write the command handler in the code  behind. If you are using a <a href=\"http://msdn.microsoft.com/en-us/library/ff647218.aspx\">separated  presentation</a> pattern such as <a href=\"http://msdn.microsoft.com/en-us/magazine/dd419663.aspx\">MVVM</a>, for  example, you could place the command declaration and the command handlers in  your <strong>ViewModel</strong>, as exemplified in the sample I&rsquo;ve provided to  you.</p>\r\n<p>If you are trying to bind different events to different commands, you could  use the <a href=\"http://blogs.southworks.net/dschenkelman/2009/08/13/c-code-snippet-to-create-commands-with-attached-behaviors-using-prism/\">snippet</a> from <a href=\"http://blogs.southworks.net/dschenkelman\">Damian&rsquo;s blog</a>. In  that case, you would be using <a href=\"http://blogs.msdn.com/b/johngossman/archive/2008/05/07/the-attached-behavior-pattern.aspx\">Attached  Behaviors</a> to bind different events in your control to separate instances of  <strong>DelegateCommand</strong>. On the other hand, the  <strong>CompositeCommand </strong>is used to group several child  <strong>DelegateCommands </strong>into a single command, bound to a single event  in a control (for example, a <strong>SubmitAll</strong> button that, when  clicked, executes multiple <strong>Submit</strong> commands). You can check the  <a href=\"http://msdn.microsoft.com/en-us/library/ff647166.aspx\">Commanding  Quickstart</a>&nbsp;to see more examples of the usage of  <strong>CompositeCommands</strong>.</p>\r\n<p>As an additional note, take into account that the <a href=\"http://msdn.microsoft.com/en-us/library/ff649187.aspx\">EventAggregator</a> is useful for communication between modules (as shown in the sample). If you  need to communicate between views in the same module, you could use regular .NET  events instead of the EventAggregator.</p>\r\n<p>2) If you implement <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.input.icommand.aspx\">ICommand</a>,  you must place the <strong>Execute</strong> and <strong>CanExecute</strong> methods inside the concrete class inheriting from it. Since you are not using  delegates, you would need to create a new command type for every instance where  you need <a href=\"http://msdn.microsoft.com/en-us/library/ms752308.aspx\">commanding</a>, and  you wouldn&rsquo;t be able to place the handlers (that is, the  <strong>Execute</strong> and <strong>CanExecute</strong> methods) for that  command in some other place. You can read more about delegates in <a href=\"http://msdn.microsoft.com/en-us/library/ms173171(VS.80).aspx\">this  article</a>.</p>\r\n<p>You can find more information about commanding in Prism in <a href=\"http://msdn.microsoft.com/en-us/library/ff647893.aspx\">this article</a> from the documentation.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-06-18T14:03:11.133-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "457564",
+    "ThreadId": "83520",
+    "Html": "<p>Thanks a lot! Very clearly and in detail. I looked into the MSDN:</p>\r\n<p>&quot;Commands in WPF are created by implementing the ICommand interface. WPF provides a number of classes which implement ICommandSource, such as Button, MenuItem, and ListBoxItem. WPF supplies a set of common routed commands spread across several classes: MediaCommands, ApplicationCommands, NavigationCommands, ComponentCommands, and EditingCommands. These classes consist only of the RoutedCommand objects and not the implementation logic of the command. &quot;</p>\r\n<p>In such a way we have only 'click behavior' for Button, MenuItem, and ListBoxItem. A shorthand notation like this: Command=&quot;{Binding MyCommand}&quot; as you demonstrated in sample.</p>\r\n<p>Application and Editing commands is not enough for rich internet/desktop applications. Therefore, we will describe their own behavior for all other controls and events :(</p>\r\n<p>May be easier to decribe the menu and windows behaviour in code-behind in the ordinary way and to use composite command only for special business logic buttons ( database or service calls) ?</p>",
+    "PostedDate": "2010-06-19T06:52:31.143-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "457593",
+    "ThreadId": "83520",
+    "Html": "&quot;As an additional note, take into account that the EventAggregator  is useful for communication between modules (as shown in the sample). If you need to communicate between views in the same module, you could use regular .NET events instead of the EventAggregator.&quot;\r\n\r\nHello guidomaliandi,\r\n\r\nCould you please explain / give an example of what you mean by regular .NET events.  Also who would it matter if it's within the same module or not ?\r\n\r\nThanks, \r\n\r\nRichard\r\n\r\n\r\nOne last question to anyone out there. How the heck can I make it so the text goes on multiple lines?",
+    "PostedDate": "2010-06-19T10:12:30.69-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "459815",
+    "ThreadId": "83520",
+    "Html": "<p>What do you think about my last post? MVVM or not MVVM at UI ?:)</p>",
+    "PostedDate": "2010-06-25T00:04:56.257-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "460082",
+    "ThreadId": "83520",
+    "Html": "<p id=02616c10-62a9-012d-ca57-12313b06d961>Hi SpaceMarine,</p>\r\n<p id=02618220-62a9-012d-ca58-12313b06d961>Using <a href=\"http://msdn.microsoft.com/en-us/library/ff647893.aspx\">Delegate  Commands</a> or not depends on whether you want to benefit from the advantages  of separating UI logic from UI layout and presentation. Choosing to place the  handlers for the menu and windows actions in the code behind of your view would  make the view responsible for executing those actions, which, as you&rsquo;ve  mentioned, breaks the <a href=\"http://msdn.microsoft.com/en-us/magazine/dd419663.aspx\">MVVM</a> pattern.  That decision depends on what you want to achieve. Based on your scenario, you  could consider if the benefits of MVVM are worth the overhead of having to  define the custom command behaviors. For example, if you place any behavior in  the code behind files, it will be hard to create unit tests for it.</p>\r\n<p>Another possibility&nbsp;to avoid the overhead of defining custom&nbsp;command  behaviors, while keeping the benefits of MVVM would be&nbsp;to use&nbsp;Blend Behaviors  Triggers and the&nbsp;<a href=\"http://msdn.microsoft.com/en-us/library/ff724018(Expression.40).aspx\">InvokeCommandAction</a>&nbsp;behavior  to specify that a command should be invoked on certain event. The code for that  would look like this:</p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre>&lt;ListBox x:Name=<span style=\"color:#a31515\">&quot;QuestionnaireTemplatesList&quot;</span> \r\n                 ItemsSource=<span style=\"color:#a31515\">&quot;{Binding QuestionnaireTemplates}&quot;</span>  &gt;\r\n            &lt;i:Interaction.Triggers&gt;               \r\n                &lt;i:EventTrigger EventName=<span style=\"color:#a31515\">&quot;SelectionChanged&quot;</span>&gt;\r\n                    &lt;i:InvokeCommandAction Command=<span style=\"color:#a31515\">&quot;{Binding QuestionnaireTemplateChangedCommand}&quot;</span> /&gt;\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Note that this sample was taken from the MVVM Quickstart in Prism 4.</p>\r\n<p id=02620540-62a9-012d-ca5b-12313b06d961>I hope you find this helpful.</p>\r\n<p id=026241e0-62a9-012d-ca5c-12313b06d961>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-06-25T13:49:58.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "460083",
+    "ThreadId": "83520",
+    "Html": "<p id=0261a500-62a9-012d-ca59-12313b06d961>Hi Richard,</p>\r\n<p id=969e3270-62c7-012d-b011-1231390f0a71>When I said regular .NET  events I was referring to just simply using the <a href=\"http://msdn.microsoft.com/en-us/library/8627sbea(VS.71).aspx\">event</a> keyword as opposed to using the <strong><a href=\"http://msdn.microsoft.com/en-us/library/ff649187.aspx\">CompositePresentationEvent</a></strong> provided by Prism. You can see examples of regular .NET events in <a href=\"http://msdn.microsoft.com/en-us/library/8627sbea(VS.71).aspx\">this  article</a> from MSDN.</p>\r\n<p id=0261d1d0-62a9-012d-ca5a-12313b06d961>I made that distinction  because the <strong>CompositePresentationEvent </strong>class, which is  the kind of events that the <strong>Event Aggregator</strong> can  contain, is useful for decoupling the subscriber from the publisher of  an event. If the subscriber and the publisher are located in the same  module, there is no need for decoupling between them. Therefore, you  don&rsquo;t have to use <strong>CompositePresentationEvents</strong>.</p>\r\n<p id=02620540-62a9-012d-ca5b-12313b06d961>I hope you find this helpful.</p>\r\n<p id=026241e0-62a9-012d-ca5c-12313b06d961>Guido Leandro Maliandi     <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-06-25T13:50:55.303-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "470100",
+    "ThreadId": "83520",
+    "Html": "<p>Many thanks!</p>\r\n<p>After installing Blend 4 and using expression/2010/interactions and interactivity i simply created commands for different events.</p>\r\n<p>Now tell as a geek: how would be better to associate view and viewmodel?</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp; public partial class MyView: UserControl<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; public MyView(MyViewModel viewModel) {}&nbsp; // channel9<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>or</p>\r\n<p>&nbsp; &nbsp;&nbsp; public MyViewModel(IService service, IEventAggregator eventAggregator, IMyView view)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.View = view;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.View.Model = this;&nbsp;&nbsp;&nbsp; // StockTraderRI<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.service = service;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.eventAggregator = eventAggregator;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p><span id=\"result_box\"><span>In which way is easier to manage the view from the viewmodel? </span></span>At my commands i needed to edit control properties.</p>",
+    "PostedDate": "2010-07-21T00:49:14.36-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "470614",
+    "ThreadId": "83520",
+    "Html": "<p>SpaceMarine: You might want to look at Drop 4 of Prism 4 that is available in the downloads. One of the current focuses in Prism 4 is MVVM. The drop includes a Basic MVVM example, an MVVM QuickStart, and an MVVM RI. We are getting away from the ViewModel-first approach in the Prism 2.2 and prior samples and are favoring View-First approach (view XAML hooks up the view model most often) because it works better with designers.</p>",
+    "PostedDate": "2010-07-21T17:22:33.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "481224",
+    "ThreadId": "83520",
+    "Html": "<p>reworking solution started :(</p>",
+    "PostedDate": "2010-08-16T23:37:08.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

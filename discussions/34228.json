@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "113515",
+    "ThreadId": "34228",
+    "Html": "I'm having a discussion with some guys on my team. I'm pretty sure that you don't want to put UI-related things (e.g., modal dialogs) directly in services (and controllers, as in the &quot;C&quot; in MVC, for that matter). It makes them hard to unit test. Am I being a bonehead, or is this actually the right idea?\r\n",
+    "PostedDate": "2008-08-25T10:22:43.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "113543",
+    "ThreadId": "34228",
+    "Html": "<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:Calibri\">Hi</span></p>\r\n<p><i><span style=\"font-size:11pt;font-family:'Calibri','sans-serif'\">“A service is an object that provides functionality to other components in a loosely coupled way through an interface and is often a singleton.”</span></i><span style=\"font-size:11pt;font-family:'Calibri','sans-serif'\"> (Source: Composite Application Guidance Help)</span></p>\r\n<p><span style=\"font-size:11pt;font-family:'Calibri','sans-serif'\">Therefore by adding “UI-related things” to a service you would be coupling it to a specific implementation of the UI which could change over time (e.g. to become a Label instead of a Dialog Box for instance). Thus not enabling you to re-use the service, which is one of its objectives. In general UI related elements are placed in views.</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:Calibri\">Please, let me know if it helps.</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:Calibri\">&nbsp;</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:Calibri\">Damian Schenkelman</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><a href=\"http://blogs.southworks.net/dschenkelman\"><span style=\"color:#0000ff;font-family:Calibri\">http://blogs.southworks.net/dschenkelman</span></a></p>\r\n",
+    "PostedDate": "2008-08-25T11:29:15.233-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "113550",
+    "ThreadId": "34228",
+    "Html": "Yes, thank you, that does help. As for singletons, well, I'm not convinced that they lend themselves to loose coupling (<a href=\"http://codebetter.com/blogs/jeremy.miller/archive/2005/08/04/130302.aspx\">http://codebetter.com/blogs/jeremy.miller/archive/2005/08/04/130302.aspx</a>), but that's a different topic.&nbsp;Thanks again for the help.\r\n",
+    "PostedDate": "2008-08-25T11:43:40.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "114363",
+    "ThreadId": "34228",
+    "Html": "@ID10T - I think you may be missing what is meant by &quot;Singleton&quot; with regard to a CAG service.<br>\r\n<br>\r\nJeremy is warning against depending upon a&nbsp;Singleton class because that couples your code to a particular concrete class and, therefore, to whatever that class delivers as its lone instance.<br>\r\n<br>\r\nThat is NOT what is meant by a &quot;singleton&quot; service in the CAG context. In CAG, the service instance is chosen and configured, typically at some early stage (e.g., bootstrapping), well before the client attempts to consume that service. When the client asks for the service (explicitly through ServiceLocation or implicitly through Dependency injection), the container delivers&nbsp;this externally&nbsp;determined&nbsp;service instance. Change the container configuration, and you change what the container delivers.<br>\r\n<br>\r\nThus there is no coupling of your client to any particular class as there would be if your client made a direct&nbsp;reference to a concrete Singleton class.&nbsp;<br>\r\n<br>\r\nLet's see that in code terms.<br>\r\n<br>\r\n<strong>Singleton</strong> (don't do this): &nbsp;&quot;FooService fooer = FooService.Instance&quot;&nbsp;<br>\r\n<strong>ServiceLocation</strong> (could do this): &nbsp;&quot;IFooService fooer = container.Resolve&lt;IFooService&gt;()&quot;.<br>\r\n<br>\r\nIn the first case, you are coupled to the FooService class ... which is what Jeremy is warning against. In the latter expression, you get an implementation of IFooService ... but you don't know which one. You actually can't be sure if the service you get is the same instance everyone else is using (the &quot;singleton&quot;) or perhaps a brand new instance made just in time for you.&nbsp;It all depends upon how&nbsp;IFooService was registered with the container.<br>\r\n<br>\r\nYou may well imagine that the real service is registered in production and a suitable TestDouble is registered during testing.<br>\r\n<br>\r\nI hope that helps.\r\n",
+    "PostedDate": "2008-08-28T01:53:07.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "114391",
+    "ThreadId": "34228",
+    "Html": "Excellent explanation - thanks, WardB!\r\n",
+    "PostedDate": "2008-08-28T05:46:21.2-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

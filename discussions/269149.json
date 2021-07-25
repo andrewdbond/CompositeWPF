@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "658451",
+    "ThreadId": "269149",
+    "Html": "\r\n<p>Are there any examples using PRISM and Unity with a UserControl Shell instead of a Window shell? &nbsp;Instead of typing everything out again here is the link to the original question:</p>\r\n<p>http://stackoverflow.com/questions/7060474/prism-unity-with-a-usercontrol-shell-instead-of-a-window-i-cant-get-modules</p>\r\n<p>Now I have been re-coding my original solution and I can get it into an infinite loop but it seems like there is no way to replace the following code in the bootstrapper when using a UserControl instead of a Window:</p>\r\n<p>Application.Current.MainWindow = (Window)this.Shell;<br>\r\nApplication.Current.MainWindow.Show();</p>\r\n<p>&nbsp;</p>\r\n<p>As well a UserControl does not have the below code either:</p>\r\n<p>public partial class App : Application<br>\r\n{<br>\r\nprotected override void OnStartup(StartupEventArgs e)<br>\r\n&nbsp; &nbsp; {</p>\r\n<p>&nbsp; &nbsp; &nbsp;base.OnStartup(e);<br>\r\n&nbsp; &nbsp; &nbsp;Bootstrapper bootstrapper = new Bootstrapper();<br>\r\n&nbsp; &nbsp; &nbsp;bootstrapper.Run();</p>\r\n<p>&nbsp; &nbsp; }<br>\r\n}</p>\r\n<p>I have tried to take the bootstrapper code from above and place it in OnInitialized() but that results in an infinite loop.</p>\r\n<p>I have not found a way to replace the MainWindow code either, there is no equivalent way to grab the UserControl from the bootstrapper. &nbsp;I have tried passing the returned composed view out of the bootstrapper but this never results in anything happening.</p>\r\n<p>I cannot find an example or any discussion regarding the proper way to use PRISM &amp; Unity with a UserControl as the shell.</p>\r\n<p>Why has nobody asked this question or shown an example of this? &nbsp;Is it crazy to want to have composable user controls? &nbsp;I would like to have a project that if I want to extend a control I make all I have to do is drop in another module, why is\r\n this not possible?</p>\r\n",
+    "PostedDate": "2011-08-15T12:08:26.123-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "659011",
+    "ThreadId": "269149",
+    "Html": "<p>Hi,</p>\r\n<p>We've created a sample application in which we have a regular window (which in your case would be the Palette control mentioned in the StackOverflow question) loaded in the WPF application as the start up uri, and then we host a Prism application inside of it, in which the Shell is just a UserControl that gets added to a StackPanel inside the hosting WPF view when the <strong>InitializeShell </strong>method is called.</p>\r\n<p>You can find the sample <a href=\"https://skydrive.live.com/?cid=12a8b70137345033&amp;sc=documents&amp;id=12A8B70137345033!150#\">in my skydrive account</a>, under the <strong>PrismInsideHostingApplicationSample</strong> name.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-08-16T12:10:43.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "662332",
+    "ThreadId": "269149",
+    "Html": "<p>Thank you so much GuidoMaliandi! I downloaded the code and looked into it, I haven't got chance to try it, but I have a strong feeling that your solution will work for me.</p>\r\n<p>Very smart idea. I will keep you posted the news after I apply it to my project</p>\r\n<p>thanks again .</p>",
+    "PostedDate": "2011-08-23T13:45:58.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

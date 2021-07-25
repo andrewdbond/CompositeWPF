@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "533868",
+    "ThreadId": "237871",
+    "Html": "\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:#0000ff\"><div style=\"color:black; background-color:white\"><pre>I am a newbie and I have a start date and end date on my xaml page. However the delegatecommand does not accept 2 parameters.&nbsp;</pre>\r\n<pre>How could go I about accessing both of these parameters in other modules which subscribe to this event. </pre>\r\n<pre><br></pre>\r\n<pre><br></pre>\r\n<pre>    <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> DateRangeViewModel :INotifyPropertyChanged\r\n    {\r\n        IEventAggregator eventAggregator;\r\n\r\n        <span style=\"color:blue\">public</span> ICommand RefreshDashboard { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">private</span> <span style=\"color:blue\">set</span>; }\r\n        \r\n        <span style=\"color:blue\">public</span> DateRangeViewModel(IEventAggregator eventAggregator)\r\n        {\r\n            <span style=\"color:blue\">this</span>.StartDate = DateTime.Now.AddDays(-30).ToShortDateString();\r\n            <span style=\"color:blue\">this</span>.EndDate = DateTime.Now.ToShortDateString();\r\n            <span style=\"color:blue\">this</span>.Refresh = <span style=\"color:blue\">new</span> DelegateCommand&lt;<span style=\"color:blue\">string</span>&gt;(OnGoClick);\r\n            <span style=\"color:blue\">this</span>.eventAggregator = eventAggregator;\r\n        }\r\n\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> OnGoClick(<span style=\"color:blue\">string</span> objDateRange)\r\n        {\r\n            eventAggregator.GetEvent&lt;DateRangeEvent&gt;().Publish(objDateRange);\r\n        }\r\n\r\n        <span style=\"color:blue\">private</span> <span style=\"color:blue\">string</span> startDate;\r\n        <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;summary&gt;</span>\r\n        <span style=\"color:gray\">///</span><span style=\"color:green\"> Gets or sets the start date of the currently selected period.</span>\r\n        <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;/summary&gt;</span>\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">string</span> StartDate\r\n        {\r\n            <span style=\"color:blue\">get</span>\r\n            {\r\n                <span style=\"color:blue\">return</span> <span style=\"color:blue\">this</span>.startDate;\r\n            }\r\n            <span style=\"color:blue\">set</span>\r\n            {\r\n                <span style=\"color:blue\">if</span> (<span style=\"color:blue\">this</span>.startDate != value)\r\n                {\r\n                    <span style=\"color:blue\">this</span>.startDate = value;\r\n                    OnPropertyChanged(<span style=\"color:#a31515\">&quot;StartDate&quot;</span>);\r\n                }\r\n            }\r\n        }\r\n\r\n        <span style=\"color:blue\">private</span> <span style=\"color:blue\">string</span> endDate;\r\n        <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;summary&gt;</span>\r\n        <span style=\"color:gray\">///</span><span style=\"color:green\"> Gets or sets the end date of the currently selected period.</span>\r\n        <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;/summary&gt;</span>\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">string</span> EndDate\r\n        {\r\n            <span style=\"color:blue\">get</span>\r\n            {\r\n                <span style=\"color:blue\">return</span> <span style=\"color:blue\">this</span>.endDate;\r\n            }\r\n            <span style=\"color:blue\">set</span>\r\n            {\r\n                <span style=\"color:blue\">if</span> (<span style=\"color:blue\">this</span>.endDate != value)\r\n                {\r\n                    <span style=\"color:blue\">this</span>.endDate = value;\r\n                    OnPropertyChanged(<span style=\"color:#a31515\">&quot;EndDate&quot;</span>);\r\n                }\r\n            }\r\n        }\r\n\r\n        <span style=\"color:blue\">#region</span> INotifyPropertyChanged Members\r\n\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">event</span> PropertyChangedEventHandler PropertyChanged;\r\n\r\n        <span style=\"color:blue\">protected</span> <span style=\"color:blue\">void</span> OnPropertyChanged(<span style=\"color:blue\">string</span> propertyName)\r\n        {\r\n            <span style=\"color:blue\">if</span> (<span style=\"color:blue\">this</span>.PropertyChanged != <span style=\"color:blue\">null</span>)\r\n            {\r\n                <span style=\"color:blue\">this</span>.PropertyChanged(<span style=\"color:blue\">this</span>, <span style=\"color:blue\">new</span> PropertyChangedEventArgs(propertyName));\r\n            }\r\n        }\r\n\r\n        <span style=\"color:blue\">#endregion</span>\r\n\r\n</pre>\r\n<pre><br></pre>\r\n<pre>XAML code:</pre>\r\n<pre><div style=\"color:black; background-color:white\"><pre> <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">sdk</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">DatePicker</span> <span style=\"color:red\">Text</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">{Binding Path=StartDate,Mode=TwoWay}</span><span style=\"color:black\">&quot;</span> <span style=\"color:blue\">/&gt;</span>\r\n <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">sdk</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">DatePicker</span> <span style=\"color:red\">Text</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">{Binding Path=EndDate,Mode=TwoWay}</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">/&gt;</span>\r\n  &lt;Button Content=&quot;Go&quot; Commands:Click.Command=&quot;{Binding Refresh}&quot;\r\n                    Commands:Click.CommandParameter=&quot;{Binding Path=EndDate}&quot;/&gt;\r\n</pre>\r\n</div>\r\n<br></pre>\r\n</div>\r\n<br></span></pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-10T06:05:25.84-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533895",
+    "ThreadId": "237871",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>A possible way to achieve this would be to create a new type (for example, called DateRange) which would contain two strings. Then, you could create a DelegateCommand&lt;DateRange&gt;, and pass a parameter of type DateRange as the Command Parameter.</p>\r\n<p>You could read more about Commanding in <a href=\"http://msdn.microsoft.com/en-us/library/ff921126%28PandP.20%29.aspx\">\r\nthis section</a> of the Prism documentation.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-10T06:49:00.623-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533943",
+    "ThreadId": "237871",
+    "Html": "\r\n<p>Thanks for the reply. I now have a class DateRange which has two other string types. How would I be referencing an object of this class in the xaml to bind to the datePicker and pass it in the CommandParameter.</p>\r\n",
+    "PostedDate": "2010-12-10T08:08:14.893-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533993",
+    "ThreadId": "237871",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>One way to pass multiple bindings to a command is to use the MultiBinding class.&nbsp; It allows you to easily bind multiple values available from multiple sources into any binding.&nbsp; I have found it most useful in command parameter cases.&nbsp;&nbsp;\r\n MSDN documentation is here:&nbsp;<a href=\"http://msdn.microsoft.com/en-us/library/system.windows.data.multibinding.aspx\">http://msdn.microsoft.com/en-us/library/system.windows.data.multibinding.aspx</a>.</p>\r\n<p>You'll need to use XAML elements to specify it rather than a single binding string (per the MSDN docs):</p>\r\n<p><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">TextBlock</span>\r\n<span style=\"color:red\">Name</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">textBox2</span><span style=\"color:black\">&quot;</span>\r\n<span style=\"color:red\">DataContext</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">{StaticResource NameListData}</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">&gt;</span><br>\r\n&nbsp; <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">TextBlock.Text</span><span style=\"color:blue\">&gt;</span><br>\r\n&nbsp;&nbsp;&nbsp; <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">MultiBinding</span>\r\n<span style=\"color:red\">Converter</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">{StaticResource myNameConverter}</span><span style=\"color:black\">&quot;</span><br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<span style=\"color:red\">ConverterParameter</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">FormatLastFirst</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">&gt;</span><br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">Binding</span>\r\n<span style=\"color:red\">Path</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">FirstName</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">/&gt;</span><br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">Binding</span>\r\n<span style=\"color:red\">Path</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">LastName</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">/&gt;</span><br>\r\n&nbsp;&nbsp;&nbsp; <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">MultiBinding</span><span style=\"color:blue\">&gt;</span><br>\r\n&nbsp; <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">TextBlock.Text</span><span style=\"color:blue\">&gt;</span><br>\r\n<span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">TextBlock</span><span style=\"color:blue\">&gt;</span></p>\r\n<p>Another option is to bind the calendar date to the the command parameter, then use that date as an index to look up the other data your command needs.&nbsp; You would need to create a structure or dictionary that contains the data you need keyed by date.</p>\r\n<p><br>\r\nHope this is helpful,</p>\r\n<p>Geoff Cox<br>\r\n<a href=\"http://blogs.southworks.net/geoff\">http://blogs.southworks.net/geoff</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-10T09:32:48.02-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "534047",
+    "ThreadId": "237871",
+    "Html": "\r\n<p>I get the below error when I insert MultiBinding tag in my xaml code.</p>\r\n<p>&quot;The type 'MultiBinding' was not found. verify that you are not missing an assembly reference and that all referenced assemblies have been built.&quot;</p>\r\n",
+    "PostedDate": "2010-12-10T11:00:43.353-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "534280",
+    "ThreadId": "237871",
+    "Html": "\r\n<p>Why do you even need a DateRange class? Since Start and End dates are bound with twoway mode your view model is going to have the updated values. So you dont need to send a command parameter to your command. Instead when your command gets called you can\r\n build the daterange in your OnGoClick&nbsp;using your StartDate and Enddate properties in&nbsp;your view model.</p>\r\n<p>I dont think you should always make use of CommandParameters. In cases like this you have updated properties in your view model so you can directly access them.</p>\r\n",
+    "PostedDate": "2010-12-10T21:59:59.48-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "535035",
+    "ThreadId": "237871",
+    "Html": "\r\n<p>Thanks for your help gan s. This seems to work however the string parameter on my delgate call to button click seems useless. Can I get rid of the parameter in the code below in the DelegateCommand</p>\r\n<p>this.RefreshDashboard = new DelegateCommand&lt;string&gt;(OnGoClick);</p>\r\n<p>and on the click event handler.</p>\r\n",
+    "PostedDate": "2010-12-13T07:41:15.407-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "535036",
+    "ThreadId": "237871",
+    "Html": "\r\n<p>That is fine. You cant avoid that as DelegateCommand is a generic.</p>\r\n<p>You could probably have it as</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">this</span>.RefreshDashboard = <span style=\"color:blue\">new</span> DelegateCommand&lt;<span style=\"color:blue\">object</span>&gt;(OnGoClick); </pre>\r\n</div>\r\n<p>instead.</p>\r\n<p>Cheers.</p>\r\n",
+    "PostedDate": "2010-12-13T07:45:08.5-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "535051",
+    "ThreadId": "237871",
+    "Html": "\r\n<p>Ok will do. Thanks all for your help.</p>\r\n",
+    "PostedDate": "2010-12-13T08:12:23.66-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

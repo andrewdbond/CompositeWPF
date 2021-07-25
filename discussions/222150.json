@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "475330",
+    "ThreadId": "222150",
+    "Html": "Hey guys,\r\n\r\nI'm having a bit of an issue with my Silverlight Application that uses Prism. Here's the deal:\r\nWhat I do is, everytime a user opens a window in my application I resolve a new Usercontrol with it's own ViewModel. So basically a user clicks something in a grid and it opens in a detail screen. The reason I do this is because I want to make it possible to open multiple detail screens at the same time. This way, it's possible for a user to open two different detail screens of the same type, let's say a contact for example. The problem is that these detail screen Usercontrols, their ViewModels and all the data they're holding will exist as long as the application does. \r\n\r\nSo my question is this: Is there any way to &quot;unresolve&quot; these usercontrols. To make the garbage collecter pick them up and get rid of them? Because right now there is some serious memory issues going on if a user uses my application for longer than a few hours.\r\n\r\nThanks for taking the time to read this.",
+    "PostedDate": "2010-08-02T00:56:55.82-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "476141",
+    "ThreadId": "222150",
+    "Html": "<p>Hi,</p>\r\n<p>I do not know your exact scenario, but there is no Unresolve method in Unity,  because when you call to the Resolve method it does not keep a reference of the  new instances.</p>\r\n<p>If you use the Unity RegisterInstance method to register views, please take  into account that this is not the most recommended approach. Therefore, if you  are doing it to get them available from different locations, you could switch to  use <a href=\"http://msdn.microsoft.com/en-us/library/ff649543.aspx\">ViewDiscovery</a>,  which allows you to discover views in a cross-module way, and does not keep  alive an object reference.&nbsp;</p>\r\n<p>In Prism there are different approaches to make a view either visible or  non-visible. But, in this particular case, the correct option would be to remove  the detail views from its region when users close them. This way, the garbage  collector should be able to collect the detail views. This might be achieved in  your scenario by using the following code line:</p>\r\n<pre>regionManager.Regions[<span style=\"color:#a31515\">&quot;MainRegion&quot;</span>].Remove(myViewInstance);</pre>\r\n<p>On the other hand, there are two known issues related with memory leak(s), <a href=\"http://blogs.southworks.net/dschenkelman/2009/11/02/prism-v21-composite-application-guidance-just-released-updated-version-for-silverlight-3/\">the  first one</a> is when using DelegateCommand (it was solved in Prism 2.1 &amp;  later), since it keeps an instance of the bound control and the view that  contains such control is not released. And the <a href=\"http://blogs.southworks.net/dschenkelman/2009/12/23/memory-leak-removing-view-with-child-regions-in-prism-v2/\">second  one</a> is when removing a view that contains child-regions.</p>\r\n<p>For more information about these topics, you could take a look at the  following posts in the <a href=\"http://blogs.southworks.net/dschenkelman/\">Damian&rsquo;s Blog</a>:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/dschenkelman/2009/11/02/prism-v21-composite-application-guidance-just-released-updated-version-for-silverlight-3/\">Prism  2.1 (Composite Application Guidance for WPF &amp; Silverlight 3) just released  (updated version for Silverlight 3)</a> </li>\r\n<li><a href=\"http://blogs.southworks.net/dschenkelman/2009/12/23/memory-leak-removing-view-with-child-regions-in-prism-v2/\">Memory  Leak removing View with child regions in Prism-v2</a> </li>\r\n</ul>\r\n<p>If it does not help in your scenario, please consider sharing any other  relevant information that might help to clarify this situation.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-08-03T14:13:58.54-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "476357",
+    "ThreadId": "222150",
+    "Html": "<p>Hey fantivero,</p>\r\n<p>I see what you're saying, and it seems very helpful. I will play around with it and see if I can make some progress. I will keep you updated and tell you if I have any further issues. Thanks a lot!</p>",
+    "PostedDate": "2010-08-04T03:19:22.387-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

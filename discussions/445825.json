@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "1052139",
+    "ThreadId": "445825",
+    "Html": "I have a PRISM WPF application which loads multiple modules when it is starting.\r<br />\nThis application starts when started alone by itself.\r<br />\n<br />\nNow I need to start this application from another .NET 3.5 Windows Forms Application.\r<br />\nWhen I do this using Process.Start, I get an error saying that one of the modules did not load.\r<br />\n<br />\nShould I modify the code below somehow?<br />\n<pre><code>ProcessStartInfo pInfo = new ProcessStartInfo();\npInfo.FileName = @&quot;C:\\Program Files (x86)\\App\\App.exe&quot;;\nProcess p = Process.Start(pInfo);\np.WaitForInputIdle(5000);\nif(p.Responding)\n{\n// Write code\n}</code></pre>\n\n",
+    "PostedDate": "2013-06-03T07:01:34.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1052259",
+    "ThreadId": "445825",
+    "Html": "Hi,\r<br />\n<br />\nI tried to reproduce your error, but for me is working fine in <strong>.NET 3.5</strong> of <strong>Windows Forms Application</strong> using the <strong>HelloWorld</strong> Quickstart as my Prism application. Therefore, it would be useful if you can provide us more information about how you are loading your modules (e.g. if you are using Module Catalog, or have a strong reference to the modules, etc.).\r<br />\n<br />\nRegards,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a> <br />\n",
+    "PostedDate": "2013-06-03T10:30:13.043-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1052328",
+    "ThreadId": "445825",
+    "Html": "Thanks for trying out my scenario.\r<br />\n<br />\nApp.exe which is the Shell loads 10 modules using the Module Catalog. There is a splash screen which is visible till all the modules are loaded.\r<br />\nOnce all modules are loaded the splash screen disappears and the start screen is visible.<br />\n",
+    "PostedDate": "2013-06-03T13:15:01.727-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1052377",
+    "ThreadId": "445825",
+    "Html": "Hi!\r<br />\n<br />\nAny special in the not-loaded module? \r<br />\nAll the other modules are loaded?\r<br />\n<br />\nI guess it is not a problem with your launching code.<br />\n",
+    "PostedDate": "2013-06-03T15:18:21.493-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1052505",
+    "ThreadId": "445825",
+    "Html": "It is a &quot;language module&quot; which is responsible for languages in the App which is not loading.\r<br />\n<br />\nWhen all modules are loaded the installer language is set by the &quot;language module&quot; with the help of a command which is subscribed to by every module.<br />\n",
+    "PostedDate": "2013-06-04T01:06:50.23-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1052792",
+    "ThreadId": "445825",
+    "Html": "Hi,\r<br />\n<br />\nIt could be useful if you could provide us with more information about the error you are receiving, for example the stack trace, inner exceptions, messages, etc, that could help us find the cause behind the error.\r<br />\n<br />\nAlso, it could also be useful to know if you are using <strong>MEF</strong> or <strong>Unity</strong> as the container in your application.\r<br />\n<br />\nWhat's more, does your main application and the <strong>Prism</strong> application reside in different folders? If so, the cause of the exception could be that the <strong>Prism</strong> application may no be able to locate some module files; or the modules can be found but they might not be able to load some assemblies they require.\r<br />\n<br />\nThanks,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-06-04T13:20:28.413-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1052995",
+    "ThreadId": "445825",
+    "Html": "The problem was solved when I set the working directory:\r<br />\npInfo.WorkingDirectory = @&quot;C:\\Program Files (x86)\\App\\&quot;;\r<br />\n<br />\nThanks for the interest.\r<br />\n<br />\nMore info:<br />\n<ul>\n<li>I am using MEF</li>\n<li>Yes, the calling App was in a different location than the PRISM App</li>\n</ul>\n",
+    "PostedDate": "2013-06-05T02:11:39.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1224838",
+    "ThreadId": "445825",
+    "Html": "Hi,\r<br />\n<br />\nI struck with the similar problem friends. Please help me.\r<br />\nI have a <strong>Wpf prism</strong> application. I made it as a <strong>Class library</strong> so that I am able to generate a dll for this Prism application.\r<br />\nNow I want to use this <strong>DLL</strong> in another <strong>Windows Application</strong>, and launch that application from <strong>windows form</strong>.\r<br />\n<br />\nAs we know that the launching process of Prism App is different.\r<br />\n<br />\nHow can i launch Prism App (Shell or Home Screen) from Windows form...?\r<br />\n<br />\nThanks,\r<br />\nSrini.<br />\n",
+    "PostedDate": "2014-03-20T07:53:52.16-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1224878",
+    "ThreadId": "445825",
+    "Html": "Hi Srini,\r<br />\n<br />\nI don't completely understand the scenario you are describing. What would be the reason that you need a <strong>Prism</strong> App gets executed into a <strong>Windows Form</strong> application.\r<br />\nAre you planning to perform an scheduler for running the <strong>Prism</strong> App, or would you run the <strong>Prism</strong> app as an Application's Plugin for example?\r<br />\n<br />\nIt could be useful to know how the <strong>Windows Form</strong> application would run and why it would be necessary to embedded the <strong>Prism</strong> App.\r<br />\n<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky.\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-03-20T09:08:20.097-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1225108",
+    "ThreadId": "445825",
+    "Html": "Hi Gabriel,<br />\n<br />\nThanks for your reply.<br />\n<br />\nBasically the scenario is,  We already have a one <strong>old  Windows Application</strong> at our client location. Now we need to put one <strong>button</strong> on the <strong>existing winforms</strong> and then from there i need to laucnh my PRISM APP.<br />\n<br />\nIn my project's initial stage, I thought its just like a separate executable. So that I developed my application in that way.<br />\n<br />\n<br />\nBut recently i came to know that, if it is a seaprate executable, I need to do lot of work  to move to QC environment . <br />\n(Because of my work Environment's standards and policies)<br />\n<br />\nIf i made it as a DLL it will easy to maintain in the QC Environment. So that the management decided that it should be as a DLL.<br />\n<br />\nIf my Prism APP is an executable i can launch this executable  by using  <strong>PROCESS</strong> concept from my Win Form. i have already done with this.<br />\n<br />\nBut Now, my Prism application is a DLL. So how can i launch my Prism App on button click event of WIN FORM now...?<br />\n<br />\nI hope you can understand the scenario. Please be patient with me. -:)<br />\n<br />\nThanks,<br />\nSrini<br />\n",
+    "PostedDate": "2014-03-20T23:56:42.927-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1227087",
+    "ThreadId": "445825",
+    "Html": "Hello Srini,\r<br />\n<br />\n<br />\nIt seems to be a known issue on this scenario of loading a <strong>Prism App</strong> from <strong>Windows Form</strong>. You may find useful the following discussion site for troubleshooting the known issue:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"https://compositewpf.codeplex.com/discussions/246195\" rel=\"nofollow\">Using Unitybootstrapper in WinForms</a><br />\n</li>\n</ul>\nThen, after changing the <strong><em>RegionManager's IsInDesignMode()</em></strong> method from the <strong>Prism Library</strong>, you would need to call the <strong><em>Bootstrapper's Run()</em></strong> method from your <strong><em>ButtonClick</em></strong> event handler. The <strong>Bootstrapper</strong> would create the <strong>Prism Shell</strong> instance and load the Container and every Module of the App. Therefore, you would just need to show the Shell from the <strong>Bootstrapper's InitializeShell()</strong> as follows:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">protected</span> <span style=\"color:Blue;\">override</span> <span style=\"color:Blue;\">void</span> InitializeShell()\n{\n     <span style=\"color:Blue;\">base</span>.InitializeShell();\n     ((Window)<span style=\"color:Blue;\">this</span>.Shell).Show();\n}\r\n</pre></div>I hope this helped,\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"http://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">http://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-03-26T12:22:58.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

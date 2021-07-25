@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "858627",
+    "ThreadId": "362346",
+    "Html": "\r\n<p>My project is built with SL5, Prism 4.1 &amp; MVVM.</p>\r\n<p>The following code <span style=\"text-decoration:underline\">does leak memory</span>, keeping the viewModel alive in memory after closing my View/VM in UI:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>viewModel = _container.Resolve&lt;IFileEvidenceSubViewModel&gt;();\n<br>\n</pre>\r\n</div>\r\n<p>To resolve this issue, I tried the below which again <span style=\"text-decoration:underline\">\r\ndoes leak memory</span> (keeping viewModel alive after closing my View/VM:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>viewModel = <span style=\"color:blue\">new</span> FileEvidenceSubViewModel(_container.Resolve&lt;IRegionManager&gt;(), _container.Resolve&lt;IEventAggregator(), _container.Resolve&lt;IUnityContainer&gt;(), <span style=\"color:blue\">new</span> ChildWindowLoader(_container.Resolve&lt;IRegionManager&gt;(), _container.Resolve&lt;IEventAggregator(), _container.Resolve&lt;IUnityContainer&gt;()));\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>The following however does <span style=\"text-decoration:underline\"><strong>not</strong> leak memory</span>:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>viewModel = <span style=\"color:blue\">new</span> FileEvidenceSubViewModel(_container.Resolve&lt;IRegionManager&gt;(), <span style=\"color:blue\">new</span> EventAggregator(), _container.Resolve&lt;IUnityContainer&gt;(), <span style=\"color:blue\">new</span> ChildWindowLoader(_container.Resolve&lt;IRegionManager&gt;(), <span style=\"color:blue\">new</span> EventAggregator(), _container.Resolve&lt;IUnityContainer&gt;()));\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>I am not registering EventAggregator anywhere with my container (Unity) explicitly.</p>\r\n<p>Also, to note, I am using View first approach elsewhere in my project, and my Views create ViewModels (throug constructor injection) and in these ViewModels, IEventAggregator is constructor injected implicitly. However, there,\r\n<span style=\"text-decoration:underline\"><strong>no</strong> memory leak</span> occurs.</p>\r\n<p>So, the following does <span style=\"text-decoration:underline\"><strong>not </strong>\r\n</span>leak memory:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>view = _container.Resolve&lt;IFileEvidenceSubView&gt;();<br></pre>\r\n</div>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> FileEvidenceSubView(FileEvidenceSubViewModel viewModel)\n{\n     InitializeComponent();\n     <span style=\"color:blue\">this</span>.DataContext = viewModel;\n     ....\n}\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>I verified this behavior in other projects as well (to bypass error, if any, specific to my viewmodel) with the same result.</p>\r\n<p>Thanks in advance,</p>\r\n<p>Dharmesh</p>\r\n",
+    "PostedDate": "2012-07-07T06:18:50.667-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "859843",
+    "ThreadId": "362346",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, this behavior could be caused by a strong reference held to your view model class.</p>\r\n<p>In my opinion a possible cause could be the way you are subscribing to the events rather than how you inject the <strong>EventAggregator </strong>in your view model.</p>\r\n<p>Take into account that if you use a strong reference subscription (by setting the <strong>keepSubscriberReferenceAlive </strong>parameter of the <strong>Subscribe </strong>method to <strong>true</strong>), you will have to manually unsubscribe it to enable proper garbage collection of your subscribing object when it is no longer used.</p>\r\n<p>Another thing to consider, is that as mentioned in <a href=\"http://msdn.microsoft.com/en-us/library/ff921122(v=pandp.40)#sec8\">this section</a> of the <strong>Prism </strong>documentation:</p>\r\n<p><em>Due to Silverlight's security model, the methods supplied to Subscribe must be publicly accessible methods if you want a weakly-held subscription (which is the default CompositePresentationEvent behavior). Because lambda expressions and anonymous delegates are generated as private classes and methods, these cannot be used in conjunction with weak subscriptions.</em></p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-07-10T10:46:54.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "860142",
+    "ThreadId": "362346",
+    "Html": "<p>Thanks Agustin,</p>\r\n<p>I am not using strong reference subscription. The gcroot output (from windbg) for the ViewModel that stays in memory looks like below:</p>\r\n<p><img src=\"http://www.resonant-services.com/eEnrol/dev/capture2.png\" alt=\"image\" /></p>\r\n<p>&nbsp;</p>\r\n<p>Also, if I don't use EventAggregator at all in the called view model, the leak still happens.</p>\r\n<p>Can you please look at the debug output above and tell me if something seems wrong to you...</p>\r\n<p>Thanks,</p>\r\n<p>Dharmesh</p>",
+    "PostedDate": "2012-07-10T22:04:57.183-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "860463",
+    "ThreadId": "362346",
+    "Html": "<p>Hi Dharmesh,</p>\r\n<p>I find it strange that if you don't use the <strong>EventAggregator </strong>at all in the view model you are experiencing a memory leak. Based on my understanding, just injecting the <strong>EventAggregator </strong>in your view model wouldn't create a strong reference to the view model; what is more, the <strong>EventAggregator</strong> should only hold references to instances of the <strong>EventBase </strong>class (this can be seen in the code of the <strong>EventAggregator </strong>class of the <strong>Prism </strong>library).</p>\r\n<p>By looking at the output of the <strong>CGRoot </strong>command you posted above, it seems like the view model is being referenced by a subscription to the <strong>LoadEntityEvent</strong>. If this subscription is not a strong reference subscription, it would be helpful if you could provide use with a repro-sample application isolating this problem so that we can check this in more detail.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-07-11T11:08:09.63-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "860637",
+    "ThreadId": "362346",
+    "Html": "<p>Got it!</p>\r\n<p>Yes, guys it was <strong>keepSubscriberReferenceAlive </strong>parameter that I had set to true. Regrets for giving wrong information earlier (so foolish of me to be so confident).</p>\r\n<p>Thanks a lot Agustin and&nbsp; Damian for your help. Prism rocks!!!</p>\r\n<p>Thanks again,</p>\r\n<p>Dharmesh</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-07-11T20:47:59.337-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

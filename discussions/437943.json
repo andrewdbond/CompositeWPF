@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1020877",
+    "ThreadId": "437943",
+    "Html": "I am a fresher for PRISM. I hope I can get help from here regarding an exception I got when I run the View-Switching Navigation QuickStart from the folder \\Source\\Quickstarts\\View-Switching Navigation\\Silverlight\\View-Switching Navigation.\r<br />\n<br />\nThe exception message said &quot;An Unhandled Exception('Unhandle Exception SliverLight Appliction...) Code 4004. ModuleTypeLoadingException.\r<br />\n<br />\nIt seems like an exception regarding the Module Loading. \r<br />\nI didn't change anything in the solution, and the following is the xaml file(ModulesCatalog.xaml):\r<br />\n<br />\n&lt;Modularity:ModuleCatalog xmlns=&quot;<a href=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" rel=\"nofollow\">http://schemas.microsoft.com/winfx/2006/xaml/presentation</a>&quot; <br />\n<pre><code>                      xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot; \n                      xmlns:sys=&quot;clr-namespace:System;assembly=mscorlib&quot; \n                      xmlns:Modularity=&quot;clr-namespace:Microsoft.Practices.Prism.Modularity;assembly=Microsoft.Practices.Prism&quot;&gt;\n&lt;Modularity:ModuleInfoGroup Ref=&quot;ViewSwitchingNavigation.Contacts.xap&quot; InitializationMode=&quot;WhenAvailable&quot;&gt;\n    &lt;Modularity:ModuleInfo ModuleName=&quot;ContactsModule&quot;/&gt;\n&lt;/Modularity:ModuleInfoGroup&gt;\n&lt;Modularity:ModuleInfoGroup Ref=&quot;ViewSwitchingNavigation.Email.xap&quot; InitializationMode=&quot;WhenAvailable&quot;&gt;\n    &lt;Modularity:ModuleInfo ModuleName=&quot;EmailModule&quot; /&gt;\n&lt;/Modularity:ModuleInfoGroup&gt;\n&lt;Modularity:ModuleInfoGroup Ref=&quot;ViewSwitchingNavigation.Calendar.xap&quot; InitializationMode=&quot;WhenAvailable&quot;&gt;\n    &lt;Modularity:ModuleInfo ModuleName=&quot;CalendarModule&quot;/&gt;\n&lt;/Modularity:ModuleInfoGroup&gt;</code></pre>\n\n&lt;/Modularity:ModuleCatalog&gt;\r<br />\n<br />\nIt looks correct to me. \r<br />\n<br />\nAny suggestion with the exception are welcome and appreciated.\r<br />\n<br />\nBTW, the environment I open the solution is PRISM 4/.Net 4/ SL 5, and I also tried change the target SL version to SL4, doesn't work and more errors about reference.\r<br />\n<br />\nThanks,\r<br />\nKevin<br />\n",
+    "PostedDate": "2013-03-25T13:51:02.403-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1021336",
+    "ThreadId": "437943",
+    "Html": "Hi Kevin,\r<br />\n<br />\nI just tested the <strong>View-Switching Navigation QuickStart</strong> of <strong>Prism 4</strong> (with <strong>Silverlight 4</strong>) and of <strong>Prism 4.1</strong> (with <strong>Silverlight 5</strong>) and both worked correctly as out of the box.\r<br />\n<br />\nAs a starting point to understand the cause behind this problem, you could check the exception in order to find more details about why the <strong>QuickStart</strong> is failing. To do so, you need to:<br />\n<ol>\n<li>Enable <strong>Silverlight</strong> debugging in the <strong>Web</strong> project: go to ViewSwitchingNavigation.Web's properties &gt; Web &gt; Debuggers &gt; check the Silverlight option.</li>\n<li>\nPut a break point in the <strong>Application_UnhandledException</strong> method of the <strong>App.xaml.cs</strong> class of the <strong>ViewSwitchingNavigation</strong> project.<br />\n</li>\n</ol>\nThen, when you run the <strong>QuickStart</strong> again, you should be able to find the exception in the <strong>ExceptionObject</strong> property of the <strong>e</strong> parameter. Please post your findings so that we can help you further with this.\r<br />\n<br />\nAs a side note, take into account that if you are using <strong>Silverlight 5</strong> it's recommended to use the <strong>Prism 4.1</strong> version instead of the <strong>Prism 4</strong> version.\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-03-26T10:25:31.957-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1021635",
+    "ThreadId": "437943",
+    "Html": "Hi Damian,<br />\n<br />\nThanks for your reply. I tested the solution at other PC with Windows 2008 Server( and PRISM 4/.Net 4/ SL 5).  It works well. Following your suggestion, I got the exception message as below.<br />\n<br />\nAnd I also checked the CopyLocal property of the reference to the MefExtensions in all the assemblies.<br />\n<br />\nThanks. <br />\n<ul>\n<li>\n[Microsoft.Practices.Prism.Modularity.ModuleTypeLoadingException]\t{Microsoft.Practices.Prism.Modularity.ModuleTypeLoadingException: Failed to load type for module CalendarModule. <br />\n</li>\n</ul>\nIf this error occurred when using MEF in a Silverlight application, please ensure that the CopyLocal property of the reference to the MefExtensions assembly is set to true in the main application/shell and false in all other assemblies. <br />\n<br />\nError was: An exception occurred during a WebClient request.. ---&gt; System.Net.WebException: An exception occurred during a WebClient request. ---&gt; System.NotSupportedException: The URI prefix is not recognized.<br />\n   at System.Net.WebRequest.Create(Uri requestUri)<br />\n   at System.Net.WebClient.GetWebRequest(Uri address)<br />\n   at System.Net.WebClient.OpenReadAsync(Uri address, Object userToken)<br />\n   --- End of inner exception stack trace ---<br />\n   --- End of inner exception stack trace ---<br />\n   at Microsoft.Practices.Prism.Modularity.ModuleManager.HandleModuleTypeLoadingError(ModuleInfo moduleInfo, Exception exception)<br />\n   at Microsoft.Practices.Prism.Modularity.ModuleManager.IModuleTypeLoader_LoadModuleCompleted(Object sender, LoadModuleCompletedEventArgs e)<br />\n   at Microsoft.Practices.Prism.MefExtensions.Modularity.MefXapModuleTypeLoader.RaiseLoadModuleCompleted(LoadModuleCompletedEventArgs e)<br />\n   at Microsoft.Practices.Prism.MefExtensions.Modularity.MefXapModuleTypeLoader.RaiseLoadModuleCompleted(ModuleInfo moduleInfo, Exception error)<br />\n   at Microsoft.Practices.Prism.MefExtensions.Modularity.MefXapModuleTypeLoader.HandleDownloadCompleted(DeploymentCatalog deploymentCatalog, AsyncCompletedEventArgs e)<br />\n   at Microsoft.Practices.Prism.MefExtensions.Modularity.MefXapModuleTypeLoader.DeploymentCatalog_DownloadCompleted(Object sender, AsyncCompletedEventArgs e)<br />\n   at System.ComponentModel.Composition.Hosting.DeploymentCatalog.OnDownloadCompleted(AsyncCompletedEventArgs e)<br />\n   at System.ComponentModel.Composition.Hosting.DeploymentCatalog.HandleOpenReadCompleted(Object sender, OpenReadCompletedEventArgs e)<br />\n   at System.Net.WebClient.OnOpenReadCompleted(OpenReadCompletedEventArgs e)<br />\n   at System.Net.WebClient.OpenReadOperationCompleted(Object arg)}\tMicrosoft.Practices.Prism.Modularity.ModuleTypeLoadingException<br />\n",
+    "PostedDate": "2013-03-27T02:12:37.903-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1022041",
+    "ThreadId": "437943",
+    "Html": "Hi Kevin,\r<br />\n<br />\nI tried to find the cause behind this problem and found that this same exception is thrown if the <strong>ViewSwitchingNavigation.Web</strong> project is not set as the entry point of your application.\r<br />\n<br />\nJust as a quick test, please check that that the <strong>ViewSwitchingNavigation.Web</strong> project is selected as the <strong>StartUp Project</strong>. If not, please select it doing right click on the project and then click on the <strong>Set as StartUp Project</strong> option.\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-03-27T14:22:16.403-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1022264",
+    "ThreadId": "437943",
+    "Html": "Thanks Damian. As your suggestion, I works well. It is a shame and thanks a lot for your help.\r<br />\n<br />\nRegards,\r<br />\nKevin<br />\n",
+    "PostedDate": "2013-03-28T01:44:17.74-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

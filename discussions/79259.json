@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "271374",
+    "ThreadId": "79259",
+    "Html": "<p>Hi.</p>\r\n<p>I have a shell with 2 regions: &quot;MenuRegion&quot;, &quot;MainRegion&quot;.<br>I have for example 1 module named CoolModule:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>        <span style=\"color:Blue\">public</span> CoolModule(IUnityContainer container)\r\n        {\r\n            _container = container;\r\n            _regionManager = _container.Resolve&lt;IRegionManager&gt;();\r\n            _manager = _container.Resolve&lt;IManager&gt;();\r\n            OpenView = <span style=\"color:Blue\">new</span> DelegateCommand&lt;<span style=\"color:Blue\">object</span>&gt;(ExecOpenView);\r\n\r\n            Menu = <span style=\"color:Blue\">new</span> MenuControl {DataContext = <span style=\"color:Blue\">this</span>};\r\n        }\r\n\r\n        <span style=\"color:Blue\">public</span> MenuControl Menu { <span style=\"color:Blue\">get</span>; <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">set</span>; }\r\n</pre>\r\n</div>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>I'd like, that whole program manager (IManager) will be able to add different views to MainRegion (TabControl).</pre>\r\n<pre>And, when I click to button on menu, ExecOpenView method will be executed.</pre>\r\n<pre><pre style=\"color:#000000;font-family:Consolas, 'Courier New', Courier, monospace;font-size:1em;margin:8px\">        <span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> ExecOpenView(<span style=\"color:blue\">object</span> obj)\r\n        {\r\n            <span style=\"color:blue\">var</span> container = _container.Resolve&lt;IContainerViewModel&gt;();\r\n            _manager.ManageView(container.View);\r\n        }\r\n</pre>\r\nIn this method I create new ViewModel with view and tell to IManager to place this in &quot;MainRegion&quot; region as a new TabPage.</pre>\r\n<pre>All works fine, until, IContainerView contains another View, that contains own region. The first view is created successfully, and the next throw Exception:<br>&quot;Specified element is already the logical child of another element. Disconnect it first.&quot;</pre>\r\n<pre>ContainerViewModel looks like:</pre>\r\n<pre><div style=\"color:Black;background-color:White\"><pre>        <span style=\"color:Blue\">public</span> ContainerViewModel(IUnityContainer container)\r\n        {\r\n            _container = container;\r\n            _regionManager = _container.Resolve&lt;IRegionManager&gt;();\r\n\r\n            <span style=\"color:Blue\">var</span> vm = _container.Resolve&lt;IDetailsViewModel&gt;();\r\n            _regionManager.RegisterViewWithRegion(<span style=\"color:#A31515\">&quot;Details&quot;</span>, () =&gt; vm.View);\r\n\r\n            Title = Guid.NewGuid().ToString();\r\n\r\n            View = _container.Resolve&lt;IContainerView&gt;();\r\n            View.Model = <span style=\"color:Blue\">this</span>;\r\n        }\r\n\r\n</pre>\r\n<pre>What I need to do to resolve my problem? I tried to change:</pre>\r\n<pre><pre style=\"color:#000000;font-family:Consolas, 'Courier New', Courier, monospace;font-size:1em;margin:8px\">            _regionManager = _container.Resolve&lt;IRegionManager&gt;()<strong>.CreateRegionManager();</strong></pre>\r\n<pre style=\"color:#000000;font-family:Consolas, 'Courier New', Courier, monospace;font-size:1em;margin:8px\">but nothing helps.</pre>\r\n</pre>\r\n</div>\r\nThe whole project is here: <a href=\"http://kyra.fi/testview.zip\">http://kyra.fi/testview.zip</a></pre>\r\n<pre>Thanks in advance and sorry for my English :)</pre>\r\n</div>\r\n&nbsp;\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-29T02:24:04.89-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "271867",
+    "ThreadId": "79259",
+    "Html": "<p>Not 100% sure but I suspect for this you are running into lifetime issues. Are the two instances of views supposed to be the same or in fact 2 separate instances? If they are separate, then it could be that you need to change the lifetime manager for the view to TransientLifetimeManager so it will create a new instance rather than getting the existing single instance.</p>",
+    "PostedDate": "2009-12-30T15:44:24.247-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "272894",
+    "ThreadId": "79259",
+    "Html": "<p>Two instances of views are really two different instances. I've checked by GetHashCode :)</p>",
+    "PostedDate": "2010-01-04T06:59:38.257-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1209241",
+    "ThreadId": "532258",
+    "Html": "Hi,\r<br />\n<br />\nI have created an application with one menu consisting of two menu items. My ShellView.xaml contains two regions: a LeftRegion and a MainRegion. Each menu loads different modules upon click on it. Each module consists of a MasterView (ListControl) and an EditView (ContentControl).\r<br />\n<br />\nMy goal is to load MasterView in the LeftRegion and EditView in the MainRegion when the user clicks on the respective menu items.\r<br />\n<br />\nHow can I approach this case?\r<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2014-02-16T23:11:09.543-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1209472",
+    "ThreadId": "532258",
+    "Html": "Hi abampakos,\r<br />\n<br />\nOne possible way of doing this would be to register both <strong><em>Master Views</em></strong> in <strong>LeftRegion</strong> and both <strong><em>Edit Views</em></strong> in the <strong>MainRegion</strong> from each Module's <strong><em>Initialize()</em></strong> method. However, you would need to register them with different names so they could be identified in the Region's View Collection. When you click on a menu item, the corresponding module would get initialized, performing registration of their <strong>Views</strong> into the corresponding <strong>Region</strong> for future <strong>Navigation</strong>. This would not be an issue for different modules as you may import the <strong>RegionManager</strong> through constructor and retreive the related <strong>Region</strong> from it.\r<br />\n<br />\nFinally, you would handle the menu click event by calling <strong><em>RequestNavigate()</em></strong> method for the two <strong>Regions</strong>.\r<br />\n<br />\nI hope this helped you, \r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky.\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-02-17T07:32:19.323-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1210030",
+    "ThreadId": "532258",
+    "Html": "Hi,<br />\n<br />\nThank you for your answer. <br />\nI would like to clarify that the menu commands exist in the <strong>ShellViewModel</strong>. How can I use <strong>RegionManager</strong> in it?<br />\nBelow is the code from my <strong>ShellViewModel</strong> with the <strong>RegionManager</strong> imported. Is this correct?<br />\n<pre><code>        [Import]\n        IModuleManager moduleManager { get; set; }\n\n        [Import]\n        IRegionManager regionManager { get; set; }\n\n        public ShellViewModel()\n        {\n            // Initialize this ViewModel's commands.\n            ExitCommand = new DelegateCommand&lt;object&gt;(AppExit, CanAppExit);\n            MembersCommand = new DelegateCommand&lt;object&gt;(AppMembers, CanAppMembers);\n            BoardCommand = new DelegateCommand&lt;object&gt;(AppBoard, CanAppBoard);\n        }\n\n        #region ExitCommand\n        public DelegateCommand&lt;object&gt; ExitCommand { get; private set; }\n\n        private void AppExit(object commandArg)\n        {\n            App.Current.Shutdown();\n        }\n\n        private bool CanAppExit(object commandArg)\n        {\n            return true;\n        }\n        #endregion\n\n        #region MembersCommand\n        public DelegateCommand&lt;object&gt; MembersCommand { get; private set; }\n\n        private void AppMembers(object commandArg)\n        {\n            moduleManager.LoadModule(&quot;MemberModule.ModuleInit&quot;);\n            regionManager.RequestNavigate(RegionNames.LeftRegion, new Uri(&quot;MemberMasterView&quot;, UriKind.Relative));\n        }\n\n        private bool CanAppMembers(object commandArg)\n        {\n            return true;\n        }\n        #endregion\n\n        #region BoardCommand\n        public DelegateCommand&lt;object&gt; BoardCommand { get; private set; }\n\n        private void AppBoard(object commandArg)\n        {\n            moduleManager.LoadModule(&quot;BoardModule.ModuleInit&quot;);\n            regionManager.RequestNavigate(RegionNames.LeftRegion, new Uri(&quot;BoardMasterView&quot;, UriKind.Relative));\n        }\n\n        private bool CanAppBoard(object commandArg)\n        {\n            return true;\n        }\n        #endregion</code></pre>\n\n",
+    "PostedDate": "2014-02-18T11:46:43.54-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1210702",
+    "ThreadId": "532258",
+    "Html": "Hi, \r<br />\n<br />\nYour implementation is correct in which you import the <strong>RegionManager</strong> from the container. In addition, you would also need to import the <strong>RegionManager</strong> on each <strong>Module</strong> class so you may be able to register the <strong>Views</strong> into each <strong>Region</strong> when initializing the module.\r<br />\n<br />\nWhen I mentioned that the <strong>RegionManager</strong> may be imported through constructor, I was referring to the following implementation although it basically behaves exactly as yours:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n[ImportingConstructor]\n<span style=\"color:Blue;\">public</span> ModuleA(IRegionManager regionManager, IModuleManager moduleManager)\n{\n    RegionManager = regionManager;\n    ModuleManager = moduleManager;\n}\n...\r\n</pre></div>Then, you would successfully navigate through <strong>Master Views</strong> like you described, but <strong>Edit Views</strong> would need their corresponding <strong><em>RequestNavigate()</em></strong> on the <strong>MainRegion</strong> too.\r<br />\n<br />\nFor more information you can refer to the following <strong>MSDN Prism Guide</strong> chapters:<br />\n<h1></h1>\n<ul>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921140(v=pandp.40).aspx\" rel=\"nofollow\">Managing Dependencies Between Components</a></li>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40).aspx#sec6\" rel=\"nofollow\">View-Based Navigation</a><br />\n</li>\n</ul>\nRegards,\r<br />\n<br />\nGabriel Ostrowsky.\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-02-19T11:02:32.973-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-02-20T01:37:49.17-08:00"
+  }
+]

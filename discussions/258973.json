@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "618112",
+    "ThreadId": "258973",
+    "Html": "\r\n<p>I wanted to add a file menu to the news reader popup so that the user could close the window a different way.</p>\r\n<p>What code do I need to put in my view model so that the DialogActivationBehavior will fire just like when the X button is pressed?</p>\r\n",
+    "PostedDate": "2011-05-25T08:48:15.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "618691",
+    "ThreadId": "258973",
+    "Html": "<p>Hi,</p>\n<p>You could try removing the view from the popup region you have created. That would cause the popup to be closed.</p>\n<p>For example, if you are using navigation, and you have registered your view in the DI container you're using with a contract named \"SomeView\", your code would look like this:</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">this</span>.regionManager.Regions[RegionNames.PopupRegion].Remove(ServiceLocator.Current.GetInstance&lt;<span style=\"color: blue;\">object</span>&gt;(<span style=\"color: #a31515;\">\"SomeView\"</span>));\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>Or if you have your view registered in the container with its type as the contract, your code could look like this:</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">this</span>.regionManager.Regions[RegionNames.PopupRegion].Remove(ServiceLocator.Current.GetInstance&lt;SomeViewType&gt;());\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>Assuming <strong>this.regionManager</strong> is an instance of the region manager, and the view is registered as a singleton instance.</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-05-26T07:00:07.603-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "618830",
+    "ThreadId": "258973",
+    "Html": "<p>Thanks!</p>\r\n<p>For some reason I was having issues with the ServiceLocator not finding the view so I made a method in my controller that can remove the views.</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> RemoveView(<span style=\"color: blue;\">string</span> regionName, <span style=\"color: blue;\">string</span> viewName)\r\n{\r\n    <span style=\"color: green;\">// Check to see if the region exists.</span>\r\n    <span style=\"color: blue;\">if</span> (<span style=\"color: blue;\">this</span>.regionManager.Regions.ContainsRegionWithName(regionName))\r\n    {\r\n        IRegion region = <span style=\"color: blue;\">this</span>.regionManager.Regions[regionName];\r\n\r\n        <span style=\"color: blue;\">object</span> currentView = region.GetView(viewName);\r\n\r\n        <span style=\"color: green;\">// If the view exists in the region remove it.</span>\r\n        <span style=\"color: blue;\">if</span> (currentView != <span style=\"color: blue;\">null</span>)\r\n        {\r\n            region.Remove(currentView);\r\n        }\r\n    }\r\n}\r\n</pre>\r\n</div>",
+    "PostedDate": "2011-05-26T10:01:18.36-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

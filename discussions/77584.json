@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "265261",
+    "ThreadId": "77584",
+    "Html": "<p>In my application, I sometimes need to show the same view in multiple places on screen at once. I'm using View Discovery (RegisterViewWithRegion) for some of those views. Up until now it has been working OK, but now I'm starting to see exceptions from the RegionManager about adding &gt;1 region with the same name.</p>\r\n<p>It looks like the only reason it has been working is that the RegionManagerRegistrationBehaviour was usually failing to find the RegionManager, so the view discovery worked but the actual region was never added to the RegionManager.</p>\r\n<p>Is this supposed to work? I get the feeling it isn't. I can see how having two regions with the same name would be problematic for View Injection.</p>\r\n<p>If not: It seems like the best way around this would be to divorce the View Discovery from the existing RegionManager entirely. I.e. remove the view discovery from the RegionManager, and have a ViewManager class that worked like the RegionManager, but only did View Discovery (not View Injection).</p>\r\n<p>Does that sound like a good idea? I've not looked to see how much work it would be, yet.</p>\r\n<p>James</p>",
+    "PostedDate": "2009-12-09T03:22:28.143-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "265314",
+    "ThreadId": "77584",
+    "Html": "<p id=43f6a200-c6f8-012c-548a-12313b03045a>Hi James,</p>\r\n<p id=43f6ae10-c6f8-012c-548b-12313b03045a><strong><span style=\"text-decoration:underline\">About adding &gt; 1 region with the same name</span></strong></p>\r\n<p>A <strong>RegionManager</strong> cannot have more than one region with the same name. However, scoped regions allow you to have multiple regions with the same name. You can read more about that <a href=\"View.aspx?ThreadId=76712\">here</a>.</p>\r\n<p id=43f6cee0-c6f8-012c-548d-12313b03045a><span style=\"text-decoration:underline\"><strong>About showing the same view in multiple places on screen at once</strong></span></p>\r\n<p id=43f6e050-c6f8-012c-548e-12313b03045a>If you want to show the same view instance, you should make sure that the delegate in charge of returning the view always returns the same instance. If you want to show the same type of view, then there is no problem with having it in more than one Region. Also take into account that a region cannot hold more than one view with the same name.</p>\r\n<p id=43f6f7d0-c6f8-012c-548f-12313b03045a>Please let me know if this helps.</p>\r\n<p id=43f710b0-c6f8-012c-5490-12313b03045a>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-12-09T06:19:26.603-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "265361",
+    "ThreadId": "77584",
+    "Html": "<p>Thanks, Damien.</p>\r\n<p>I thought it looked like we were limited to 1 region with a particular name at once.</p>\r\n<p>What I've done to workaround this is create a new attached property called &quot;ContentName&quot; with the following property change handler:</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static void OnContentNameChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string contentName = (string)e.NewValue;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegionManager.SetRegionName(d, String.Format(&quot;{0}|{1}&quot;, contentName, Guid.NewGuid()));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>I.e. It sets the RegionName to the ContentName + &quot;|&quot; + a GUID.</p>\r\n<p>I've then hooked in my own AutoPopulateRegionBehavior that only takes the part of the region name before the first &quot;|&quot; when it looks up the view.</p>\r\n<p>That gets around the unique region name constraint, whilst still letting the View Discovery stuff work pretty much as before.</p>\r\n<p>James</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-09T08:00:48.927-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

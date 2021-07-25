@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "737639",
+    "ThreadId": "291067",
+    "Html": "\r\n<p>Hi All,</p>\r\n<p>I'm just in the process of creating a new status bar service to provide progress reporting from background threads with event payloads delivered via the Event Aggregator.</p>\r\n<p><br>\r\nI was wondering what mechanisms other people are using to prioritise / aggregate messages that might be arriving from various processes on background threads in order to show the most important / still relevant messages and proress indication?</p>\r\n",
+    "PostedDate": "2012-02-03T02:32:30.717-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "737995",
+    "ThreadId": "291067",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, the implementation details of the features you are describing will depend mostly of your personal preferences and the requirement of your scenario.</p>\r\n<p>A possible approach could be to create a <strong>shared service</strong> that could receive the messages for each background thread. This could be done, for example, by making the <strong>service subscribe to an event in each thread</strong>: when the thread want to publish a message, its event could be raise and it would be handled by the service. As you can define your own <strong>payload </strong>type for the event, you could, for example, create a <strong>payload </strong>that could store the message you want to publish and its priority. When the event is raised, the service would receive this information and apply the required logic in the messages to shown them.</p>\r\n<p>For example, if you wish to show the message with the higher priority, you could store the messages published by the threads in a collection inside the service and each time this collection changes you could iterate through it to find the message with the higher priority and show it.</p>\r\n<p>You can find more information about shared services and event aggregation in the following chapter of the prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28PandP.40%29.aspx\">Chapter 9: Communicating Between Loosely Coupled Components</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-02-03T09:02:10.137-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "743418",
+    "ThreadId": "291067",
+    "Html": "<p>Hi Damian,</p>\r\n<p><br />I had this approach in mind (using a priority mechanism) and ID for publishers.&nbsp; Thanks for the info.</p>\r\n<p>Regards,</p>\r\n<p>james</p>",
+    "PostedDate": "2012-02-06T09:42:56.907-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

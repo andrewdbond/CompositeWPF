@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "112257",
+    "ThreadId": "33875",
+    "Html": "Here is the pseudo code:<br>\r\n<br>\r\nIn my presenter, I have:<br>\r\n<br>\r\npublic DelegateCommand&lt;object&gt; RefreshCommand { get; private set; }<br>\r\nthis.RefreshCommand = new DelegateCommand&lt;object&gt;(OnRefresh, OnCanExecuteOnRefresh);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>\r\nRefreshCommand.IsActive = View.IsActive;<br>\r\nView.IsActiveChanged += view_IsActiveChanged;<br>\r\n<br>\r\nprivate void OnRefresh(object parameter)<br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp; PopulatePresentationModel();//do something<br>\r\n}<br>\r\n<br>\r\nvoid view_IsActiveChanged(object sender, EventArgs e)<br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp; RefreshCommand.IsActive = View.IsActive;<br>\r\n}<br>\r\n<br>\r\n// unneccessary overhead?<br>\r\nprivate bool OnCanExecuteOnRefresh(object parameter)<br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp; return RefreshCommand.IsActive;<br>\r\n}<br>\r\n<br>\r\nIs that correct behavior or I am missing something?<br>\r\n<br>\r\nThanks in advance, Sanjin<br>\r\n",
+    "PostedDate": "2008-08-20T01:09:51.96-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "112524",
+    "ThreadId": "33875",
+    "Html": "Hi Smatusan,&nbsp; I believe&nbsp;my recent response&nbsp;in the following message thread: <a href=\"http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=33147\"><span class=CodePlexPageHeader>Commanding Problem on ListView Context Menu.</span></a>&nbsp;will address your question.&nbsp; If not let us know (perhaps with an example as Hulk did).&nbsp; Note: I believe the issue may be that you are not executing RefreshCommand.RaiseCanExecuteChanged()&nbsp;as a result&nbsp;OnCanExecuteOnRefresh() only fires once and maintains the initial value.<br>\r\n",
+    "PostedDate": "2008-08-20T19:58:52.97-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "906929",
+    "ThreadId": "393942",
+    "Html": "\r\n<p>I have a situation in which I would like to <strong>access all the regions in a shell, including sub regions.\r\n</strong>The reason is fairly simple, I would like to get notified whenever a view/viewmodel is loaded in to any of these regions, including sub regions, so that I could take some necessary actions.</p>\r\n<p>Is there a way to achieve this?</p>\r\n<p>Thanks,<br>\r\nSudarsan Srinivasan</p>\r\n",
+    "PostedDate": "2012-08-31T09:01:23.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "906997",
+    "ThreadId": "393942",
+    "Html": "<p>Hi,</p>\r\n<p>As far as I know, obtaining all the <strong>RegionManagers </strong>of the application is not supported in <strong>Prism </strong>as out of the box.</p>\r\n<p>As a possible approach to achieve this I believe you could create a <strong>Shared Service</strong> where you could add the <strong>RegionManagers </strong>as they are created. Then, when you need to access all the <strong>RegionManagers </strong>you could consume the service to obtain them.</p>\r\n<p>You can find more information about <strong>Shared Services</strong> in the following section of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122(v=pandp.40)#sec7\">Chapter 9 - Communicating Between Loosely Coupled Components - Shared Services</a></li>\r\n</ul>\r\n<p>Take into account that this could create memory leaks if unused <strong>RegionManagers </strong>are being referenced by the service, causing them to not be garbage collected. As a possible approach to avoid this, you could store the references to the <strong>RegionManagers </strong>inside the service using <strong>Weak References</strong>.</p>\r\n<p>You can find more information about <strong>Weak References</strong> in the following article on <strong>MSDN</strong>:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ms404247%28v=vs.100%29.aspx\">Weak References</a></li>\r\n</ul>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-08-31T10:53:24.3-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

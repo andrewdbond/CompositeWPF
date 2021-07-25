@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "522852",
+    "ThreadId": "234934",
+    "Html": "\r\n<p>Hy Guys,&nbsp;</p>\r\n<p>Are there any restrictions for using the MEF with static class?</p>\r\n<p>I have that class: </p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>    <span style=\"color:blue\">public</span> <span style=\"color:blue\">interface</span> IDataService\r\n    {\r\n        ASDomainContext Context { <span style=\"color:blue\">get</span>; }\r\n    }\r\n\r\n [Export(<span style=\"color:blue\">typeof</span>(IDataService))]\r\n    [PartCreationPolicy(CreationPolicy.Shared)]\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> DataService : IDataService\r\n    {\r\n        <span style=\"color:blue\">private</span> ASDomainContext _context;\r\n\r\n        <span style=\"color:blue\">public</span> ASDomainContext Context\r\n        {\r\n            <span style=\"color:blue\">get</span>\r\n            {\r\n                <span style=\"color:blue\">if</span> (_context == <span style=\"color:blue\">null</span>)\r\n                {\r\n                    _context = <span style=\"color:blue\">new</span> ASDomainContext();\r\n                }\r\n                <span style=\"color:blue\">return</span> _context;\r\n            }\r\n        }\r\n\r\n        <span style=\"color:blue\">public</span> DataService()\r\n        {\r\n            \r\n        }\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>&nbsp;</p>\r\n<p>and i need to use that in a Static class like that:</p>\r\n<p></p>\r\n<pre> public static partial class Helpers\r\n    {\r\n\r\n        [Import]\r\n        public static IDataService DataService;\r\n\r\n    }</pre>\r\n<p></p>\r\n<p>but its always null.</p>\r\n<p>&nbsp;</p>\r\n<p>How can i do that?</p>\r\n",
+    "PostedDate": "2010-11-16T11:06:24.143-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "522875",
+    "ThreadId": "234934",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>MEF does not support static imports. This is why your import is not being satisfied. You can find the following forum threads interesting from MEF's forum:</p>\r\n<ul>\r\n<li><a href=\"http://mef.codeplex.com/Thread/View.aspx?ThreadId=83090\"><span>Imported objeсts not created at constructor time</span></a>\r\n</li><li><a href=\"http://mef.codeplex.com/Thread/View.aspx?ThreadId=39722\"><span>&nbsp;</span></a><a>Composing with Static Classes</a>\r\n</li></ul>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-16T11:44:03.497-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "523218",
+    "ThreadId": "234934",
+    "Html": "\r\n<p>that solution didnt work for me,</p>\r\n<p>&nbsp;</p>\r\n<p>i tried another one, but still not working.</p>\r\n<p>i changed my Helpers class to non static class:</p>\r\n<pre><span style=\"font-family:'Segoe UI','Microsoft Sans Serif',Arial,Geneva,sans-serif\"><span style=\"white-space:normal\"><div style=\"color:black; background-color:white\"><pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">partial</span> <span style=\"color:blue\">class</span> Helpers\r\n    {\r\n        <span style=\"color:blue\">private</span> <span style=\"color:blue\">static</span> Helpers _instance;\r\n\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">static</span> Helpers Instance\r\n        {\r\n            <span style=\"color:blue\">get</span> { <span style=\"color:blue\">return</span> _instance ?? (_instance = <span style=\"color:blue\">new</span> Helpers()); }\r\n        }\r\n\r\n        <span style=\"color:blue\">public</span> Helpers()\r\n        {\r\n            \r\n        }\r\n\r\n        <span style=\"color:blue\">private</span> LoginInfo _loginInfo;\r\n        \r\n        <span style=\"color:blue\">public</span> LoginInfo LoginInfoInstance\r\n        {\r\n            <span style=\"color:blue\">get</span> { <span style=\"color:blue\">return</span> _loginInfo ?? (_loginInfo = <span style=\"color:blue\">new</span> LoginInfo()); }\r\n        }\r\n\r\n    }\r\n\r\n  <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> LoginInfo\r\n    {  \r\n        \r\n        [Import]\r\n        <span style=\"color:blue\">public</span> IDataService _dataService;\r\n\r\n        \r\n        <span style=\"color:blue\">public</span> LoginInfo()\r\n        {\r\n            \r\n        }\r\n}\r\n</pre>\r\n</div>\r\n<br></span></span></pre>\r\n<p>The LoginInfo class is not static, and the import is not working. What am i doing wrong here?</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-17T06:00:17.197-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "523239",
+    "ThreadId": "234934",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>When you need to satisfy the imports in a particular class (LoginInfo), you will need either export that class or call the\r\n<strong>SatisfyImports </strong>method in the <strong>CompositionInitializer</strong> class from the constructor.</p>\r\n<p>That said, your code might be similar to the following:</p>\r\n<pre>[Export]<br><span style=\"color:blue\">public class </span><span style=\"color:#2b91af\">LoginInfo<br></span>{<br>    [Import]<br>    <span style=\"color:blue\">public </span>IDataService _dataService;<br>    <span style=\"color:blue\">public </span>LoginInfo() { }<br>}<br>...<br>container.GetExportedValue&lt;<span style=\"color:#2b91af\">LoginInfo</span>&gt;<br>...<br></pre>\r\n<p>Or you could use the <strong>CompositionInitializer </strong>class, which resides in\r\n<strong>System.ComponentModel.Composition.Initialization</strong> assembly:</p>\r\n<pre><span style=\"color:blue\">public class </span><span style=\"color:#2b91af\">LoginInfo<br></span>{<br>    [Import]<br>    <span style=\"color:blue\">public </span>IDataService _dataService;<br>    <span style=\"color:blue\">public </span>LoginInfo() <br>    { <br>        CompositionInitializer.SatisfyImports(<span style=\"color:blue\">this</span>);<br>    }<br>}<br></pre>\r\n<p>If you need more information about the <strong>CompositionInitializer</strong> class, you could take a look at the following documentation section:\r\n<a href=\"http://mef.codeplex.com/wikipage?title=CompsitionInitializer\">Hosting MEF in Silverlight</a></p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-17T06:45:45.06-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "523357",
+    "ThreadId": "234934",
+    "Html": "\r\n<p>th Fernando,</p>\r\n<pre>CompositionInitializer.SatisfyImports(<span>this</span>); </pre>\r\n<pre><br></pre>\r\n<pre>Works fine..</pre>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-17T09:37:07.7-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "523360",
+    "ThreadId": "234934",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I am glad that you find this useful in your scenario. Please, let me know if you have any other question.</p>\r\n<p>Have a great day.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n",
+    "PostedDate": "2010-11-17T09:40:52.163-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

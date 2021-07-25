@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "113339",
+    "ThreadId": "34192",
+    "Html": "<p>Ex-CAB junkies may not know that the equivalent of the workhorse &quot;DeckWorkspace&quot; in CAL (Prism) is the ContentControl. Or so it seems to me.<br>\r\n<br>\r\nThe cornerstone of my Shell is:<br>\r\n<br>\r\n<blockquote dir=ltr style=\"margin-right:0px\">&lt;ContentControl x:Name=&quot;MainRegion&quot;<br>\r\n&nbsp;&nbsp; cal:RegionManager.RegionName=&quot;{x:Static f:RegionNames.MainRegion}&quot; <br>\r\n&nbsp;&nbsp; Width=&quot;Auto&quot; Height=&quot;Auto&quot; Margin=&quot;5&quot;<br>\r\n&nbsp;&nbsp; HorizontalAlignment=&quot;Stretch&quot;&nbsp; VerticalAlignment=&quot;Stretch&quot;/&gt;<br>\r\n<br>\r\n<em>Aside:</em> the &quot;f:&quot; in &quot;f:RegionNames&quot; is an xmlns pointing to my Foundation.Interface assembly where I keep all my Region name&nbsp;constants ... just as we did in CAB with WorkspaceNames. </blockquote>\r\n<p>Remember to Activate the view you want to see; simply adding a view to the region will not make it appear.</p>\r\n",
+    "PostedDate": "2008-08-24T23:25:58.67-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "114729",
+    "ThreadId": "34192",
+    "Html": "Actually, I would argue that a true &quot;deck&quot; workspace in WPF would be a custom implementation of the System.Windows.Controls.Primitives.Selector.&nbsp; It would thus inherit SelectedItem, SelectionChanged, etc.&nbsp; Try something like this:<br>\r\n<pre>public class DeckPanel : Selector\r\n{\r\n    static DeckPanel()\r\n    {\r\n        DefaultStyleKeyProperty.OverrideMetadata(\r\n            typeof(DeckPanel),\r\n            new FrameworkPropertyMetadata(typeof(DeckPanel)));\r\n    }\r\n\r\n    protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e)\r\n    {\r\n        base.OnItemsChanged(e);\r\n        \r\n        if (this.SelectedIndex &gt;= 0)\r\n            return;\r\n\r\n        if ((e.Action == NotifyCollectionChangedAction.Add) &amp;&amp;  (e.NewItems.Count &gt; 0))\r\n            this.SelectedItem = e.NewItems[e.NewItems.Count - 1];\r\n        else if (this.Items.Count &gt; 0)\r\n            this.SelectedItem = this.Items[this.Items.Count - 1];\r\n    }\r\n}\r\n\r\n&lt;Style TargetType=&quot;{x:Type local:DeckPanel}&quot;&gt;\r\n  &lt;Setter Property=&quot;Template&quot;&gt;\r\n    &lt;Setter.Value&gt;\r\n      &lt;ControlTemplate TargetType=&quot;{x:Type local:DeckPanel}&quot;&gt;\r\n        &lt;ContentPresenter Content=&quot;{TemplateBinding SelectedItem}&quot; /&gt;\r\n      &lt;/ControlTemplate&gt;\r\n    &lt;/Setter.Value&gt;\r\n  &lt;/Setter&gt;\r\n&lt;/Style&gt;</pre>\r\n",
+    "PostedDate": "2008-08-29T10:45:21.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

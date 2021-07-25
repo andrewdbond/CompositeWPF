@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "607073",
+    "ThreadId": "256313",
+    "Html": "\r\n<p>Hi - I'm trying to figure out a way to decouple the configuration my modules need from the Shell's app.config.&nbsp; My scenario is this:</p>\r\n<p>I'm running a fairly large project based on prism.&nbsp; I've got different teams of developers working on different modules, each of which has it's own build/test/release schedule.&nbsp; The modules use WCF services for data access, so I need configuration\r\n information persisted to support each module (URL for the service, Behaviors, etc).&nbsp; I also have an authorization scheme that lets me specify what roles have access to what modules - I'm currently tracking the roles-module relationship in my app.config\r\n as well (suboptimal, but that's what I've got).&nbsp; Finally, I use ClickOnce to deploy the shell and all of it's modules when I've got a new release.</p>\r\n<p>In terms of deployment, I'd prefer to have my shell.exe deployed by ClickOnce along with very basic configuration information - basically just a couple of user settings for last window size and position, and then a pointer to a directory where the shell\r\n can find it's modules.&nbsp; I've tested loading the modules from a network directory that shares it's root with the shell's ClickOnce instance and that seems to work fine.&nbsp; Now I'd like to be able to deploy a module.config file for each module - this\r\n config would contain, at&nbsp;a minimum, the WCF configuration required to support the module.&nbsp; I'd also like it to contain the list of roles that are permitted to see the module, but I can live without that.&nbsp; The benefit to my project would be that\r\n we no longer need to redeploy the shell and all modules when a new module comes along or an existing module has fixes to be deployed.&nbsp; I also wouldn't need to rebuild/redeploy my Shell project whenever a WCF configuration change was required.</p>\r\n<p>Anyone have suggestions?</p>\r\n<p>Thanks in advance.</p>\r\n",
+    "PostedDate": "2011-05-04T05:58:57.9-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "607102",
+    "ThreadId": "256313",
+    "Html": "<p>having config files per module ain't&nbsp; a solution. Have a single config file for application. Load the modules via your config modules, henceforth you won't require to redeploy shell and all modules when a new module is introduced. You can differentiate every module by different namespace and hence can have various WCF configurations within a single file for respective modules.</p>",
+    "PostedDate": "2011-05-04T06:49:52.447-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "607309",
+    "ThreadId": "256313",
+    "Html": "<font style=\"font-size:11.0pt; font-family:\">The problem I'm having is with ClickOnce and app.config. If I use the app.config as my single point of config, I *do* have to redeploy the shell every time I add a new module - every module has its own service\r\n dependencies/configuration and there's no way I could predict them in advance.<br>\r\n<br>\r\nOut of curiosity, why don't you think modules carrying their own config is a good idea? I understand why a common assembly doing this would be troublesome, but modules won't be shared between applications. Also, without this ability the module isn't really\r\n loosely coupled any more - the shell needs specific knowledge of the module's dependencies for everything to work - kind of opposite to the dependency-injection philosophy as I understand it.</font><br>\r\n<br>\r\n<div style=\"border:none; border-top:solid #B5C4DF 1.0pt; padding:3.0pt 0in 0in 0in\">\r\n<font style=\"font-size:10.0pt; font-family:\"><b>From</b>: amoral [email removed] <br>\r\n<b>Sent</b>: Wednesday, May 04, 2011 09:49 AM<br>\r\n<b>To</b>: Jamie Fraser <br>\r\n<b>Subject</b>: Re: Custom module configuration for Prism WPF modules [CompositeWPF:256313]\r\n<br>\r\n</font><br>\r\n</div>\r\n<p>From: amoral</p>\r\n<div id=\"x_x_ThreadNotificationPostBody\">\r\n<p>having config files per module ain't a solution. Have a single config file for application. Load the modules via your config modules, henceforth you won't require to redeploy shell and all modules when a new module is introduced. You can differentiate every\r\n module by different namespace and hence can have various WCF configurations within a single file for respective modules.</p>\r\n</div>\r\n",
+    "PostedDate": "2011-05-04T10:54:38.153-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

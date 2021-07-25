@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "596038",
+    "ThreadId": "253585",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I am new to Prism and MEF but I am in need of assistance with an application that I am creating. I have a large application that is built with multiple modules. The first module that shows is a login screen. Once user has entered a login, I need the application\r\n to load a view from another module within the shell. I have been stuck on this for the past few days. There are plenty of examples of navigating views within the same module but I have not found any examples of navigating views within seperate modules. Can\r\n someone direct me to an example please.</p>\r\n<p>Thanks!</p>\r\n",
+    "PostedDate": "2011-04-12T09:20:14.803-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "596048",
+    "ThreadId": "253585",
+    "Html": "<p>Hi,</p>\n<p>As Region Navigation is designed to be able to navigate between loosely coupled views, there should be no difference between navigating to a view in a separate module, as you only need to pass a Uri to the <strong>RequestNavigate </strong>method.</p>\n<p>You could check the <a href=\"http://msdn.microsoft.com/en-us/library/gg430881%28PandP.40%29.aspx\"> View-Switching Navigation QuickStart</a>, which might be useful to learn more about this.</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-04-12T09:52:41.287-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "596126",
+    "ThreadId": "253585",
+    "Html": "<p>Thanks for the reply Guido but I am coming across some annoying errors. I cant even seem to load up the login module as the first page. Im not even on the navigation part yet. I have copied the code exactly as it shows on the View-Switching Navigation Quickstart solution. Here is what I have, maybe you can see what I am not:</p>\n<p><strong>LoginView <br /></strong></p>\n<p>[Export(</p>\n<p><span style=\"color: #a31515;\">\"LoginView\"</span>)]<br />&nbsp;&nbsp;&nbsp; <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> LoginView : UserControl <br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"color: blue;\">public</span> LoginView()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeComponent();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\n<p>&nbsp;</p>\n<p><strong>Bootstrapper<br /></strong></p>\n<div style=\"background-color: white; color: black;\">\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> Bootstrapper : MefBootstrapper\r\n    {\r\n\r\n        <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> DependencyObject CreateShell()\r\n        {\r\n            <span style=\"color: blue;\">return</span> <span style=\"color: blue;\">this</span>.Container.GetExportedValue&lt;Shell&gt;();\r\n        }\r\n\r\n        <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> ConfigureAggregateCatalog()\r\n        {\r\n            <span style=\"color: blue;\">base</span>.ConfigureAggregateCatalog();\r\n            <span style=\"color: blue;\">this</span>.AggregateCatalog.Catalogs.Add(<span style=\"color: blue;\">new</span> AssemblyCatalog(<span style=\"color: blue;\">typeof</span>(Bootstrapper).Assembly));\r\n        }\r\n\r\n        <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> InitializeShell()\r\n        {\r\n            <span style=\"color: blue;\">base</span>.InitializeShell();\r\n            Application.Current.RootVisual = (UIElement)<span style=\"color: blue;\">this</span>.Shell;\r\n           \r\n        }\r\n\r\n        <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> IModuleCatalog CreateModuleCatalog()\r\n        {\r\n            <span style=\"color: blue;\">return</span>\r\n                Microsoft.Practices.Prism.Modularity.ModuleCatalog.CreateFromXaml(\r\n                    <span style=\"color: blue;\">new</span> Uri(<span style=\"color: #a31515;\">\"/EmployeeKiosk.Silverlight;component/ModulesCatalog.xaml\"</span>, UriKind.Relative));\r\n        }\r\n    }\r\n</pre>\n</div>\n<p>&nbsp;</p>\n<p><strong>﻿LoginModule</strong></p>\n<p><strong><strong>﻿</strong></strong>[ModuleExport(<span style=\"color: blue;\">typeof</span>(LoginModule))]<br />&nbsp;&nbsp;&nbsp; <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> LoginModule : IModule<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Import]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"color: blue;\">public</span> IRegionManager regionManager;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> Initialize()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"color: blue;\">this</span>.regionManager.RegisterViewWithRegion(RegionNames.MainRegion, <span style=\"color: blue;\">typeof</span>(LoginView));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }</p>",
+    "PostedDate": "2011-04-12T12:20:53.017-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "596127",
+    "ThreadId": "253585",
+    "Html": "<p>and the shell:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>[Export]\r\n    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> Shell : UserControl, IPartImportsSatisfiedNotification\r\n    {\r\n        <span style=\"color: blue;\">public</span> Shell()\r\n        {\r\n            InitializeComponent();\r\n        }\r\n\r\n        [Import(AllowRecomposition = <span style=\"color: blue;\">false</span>)]\r\n        <span style=\"color: blue;\">public</span> IModuleManager moduleManager;\r\n\r\n        [Import(AllowRecomposition = <span style=\"color: blue;\">false</span>)]\r\n        <span style=\"color: blue;\">public</span> IRegionManager regionManager;\r\n\r\n        <span style=\"color: gray;\">///</span> <span style=\"color: gray;\">&lt;summary&gt;</span>\r\n        <span style=\"color: gray;\">///</span><span style=\"color: green;\"> Called when a part's imports have been satisfied and it is safe to use.</span>\r\n        <span style=\"color: gray;\">///</span> <span style=\"color: gray;\">&lt;/summary&gt;</span>\r\n        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> OnImportsSatisfied()\r\n        {\r\n            <span style=\"color: blue;\">this</span>.moduleManager.LoadModuleCompleted += (s, e) =&gt;\r\n                {\r\n                    <span style=\"color: blue;\">if</span> (e.ModuleInfo.ModuleName == <span style=\"color: #a31515;\">\"LoginModule\"</span>)\r\n                    {\r\n                        <span style=\"color: blue;\">this</span>.regionManager.RequestNavigate(\r\n                            RegionNames.MainRegion, <span style=\"color: blue;\">new</span> Uri(<span style=\"color: #a31515;\">\"LoginView\"</span>, UriKind.Relative));\r\n                    }\r\n                };\r\n        }\r\n    }\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>Please let me know what I am missing....it looks so simple but is turning out to be more trouble than benefit.</p>",
+    "PostedDate": "2011-04-12T12:23:15.133-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "596235",
+    "ThreadId": "253585",
+    "Html": "<p>Anyone see what I am missing?</p>",
+    "PostedDate": "2011-04-12T15:31:00.847-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "596587",
+    "ThreadId": "253585",
+    "Html": "<p>Hi,</p>\r\n<p>The <strong>RegisterViewWithRegion</strong> method makes your view to be resolved and added to the region once the region is created. That method, however, will try to get an export with the contract name that is the type you've specified. However, your view is registered with another contract type (\"LoginView\"), therefore that method will cause an error because the view wont' be found by the service locator.</p>\r\n<p>You could try replacing the call to <strong>RegisterViewWithRegion </strong>in your module's Initialize method with the call to <strong>RequestNavigate</strong> you have on the <strong>LoadModuleCompleted </strong>event handler, and performing no navigation in the <strong>LoadModuleCompleted</strong> event.</p>\r\n<p>You might find the following chapters of the Prism MSDN documentation useful:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098(PandP.40).aspx\">Chapter 7: Composing the User Interface</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28PandP.40%29.aspx\">Chapter 8: Navigation</a></li>\r\n</ul>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-04-13T07:11:33.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

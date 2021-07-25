@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "234256",
+    "ThreadId": "68847",
+    "Html": "<p>Hello, I&rsquo;m just wondering whether there is any easy way to use Click Once Deployment for WPF Applications built using the lastly published WPF Composite Application block. The issue I&rsquo;m facing is that the main exe assembly is by reference NOT dependent on the modules (rather by configuration), so Click Once will not add the modules to the deployment package. The Manifest Manager Utility looked like a good problem resolution however&nbsp;editing the applicatio manifest (providing additional assemblies)&nbsp;I got this error (which seems to be a common problem lot of people complining about)</p>\r\n<p>ERROR SUMMARY<br>&nbsp;Below is a summary of the errors, details of these errors are listed later in the log.<br>&nbsp;* Activation of http://mydomain/ClickOnceComposite/ConfigurationModularity.application resulted in exception. Following failure messages were detected:<br>&nbsp;&nbsp;+ Exception reading manifest from http://mydomain/ClickOnceComposite/Application Files/ConfigurationModularity_1_0_0_0/ConfigurationModularity.exe.manifest:<strong><span style=\"color:#ff0000\"> the manifest may not be valid or the file could not be opened.<br></span></strong>&nbsp;&nbsp;+ Parsing and DOM creation of the manifest resulted in error. Following parsing errors were noticed:</p>\r\n<p>+ Parsing and DOM creation of the manifest resulted in error. Following parsing errors were noticed: <br>&nbsp;&nbsp;&nbsp;-HRESULT: <strong>&nbsp;0x80070c81</strong><br>&nbsp;&nbsp;&nbsp; Start line: &nbsp;0<br>&nbsp;&nbsp;&nbsp; Start column: &nbsp;0<br>&nbsp;&nbsp;&nbsp; Host file: &nbsp;<br>&nbsp;&nbsp;+ Exception from HRESULT: 0x80070C81</p>\r\n<p>COMPONENT STORE TRANSACTION FAILURE SUMMARY<br>&nbsp;No transaction error was detected.</p>",
+    "PostedDate": "2009-09-14T04:31:37.71-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "234284",
+    "ThreadId": "68847",
+    "Html": "<p>We encountered the same issue with the Smart Client Software Factory, there were many reference (I believe even a utility) to update the manifest but by far the easiest work-around was to simply add the module reference to the shell application.</p>",
+    "PostedDate": "2009-09-14T06:17:04.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "234322",
+    "ThreadId": "68847",
+    "Html": "<p>Hi, lastly I figured! This error was caused by duplicate assemblies in the <strong>Modules</strong> directory. While buiding the application within Visual Studio, at least two dlls are added into the Modules subfolder, e.g. the Microsoft.Practices.Composite.dll and Microsoft.Practices.ServiceLocation.dll. These assemblies however exists in the root directory, so there is no need for them at all (my mistake was to add them using the Manifest Manager Utility). Removing these assemblies resolved the problem. <strong>To summarize:</strong> <strong>the issue was caused by duplicate assemblies</strong>. Removing those assemblies will resolve the problem.</p>",
+    "PostedDate": "2009-09-14T07:50:57.143-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "531641",
+    "ThreadId": "237265",
+    "Html": "\r\n<p>One of the early promises made for PRISM v4 is that Blendability would be a key topic area covered in the documentation and quickstarts.</p>\r\n<p>Maybe I'm missing something but a search on Blendability reveals just two hits: one in\r\n<strong>Basic MVVM QuickStart </strong>which states &quot;If <em>you do that, make sure you do so in a way that will not break the designer.&nbsp; For more information about how to do that, see Blendability</em>.&quot; The word Blendability is highlighted in a different\r\n color in the pdf as if it should be a hyperlink, but it isn't.&nbsp; Can anyone point to me where this &quot;Blendability&quot; section is, or did it just get missed out?</p>\r\n<p>The other hit on a search for &quot;Blendability&quot;&nbsp;is &quot;<strong>Chapter 7: Composing the User Interface</strong>&quot; but again there are just some vague references to using Blend rather than&nbsp;specific code examples showing how to achieve this when using Unity\r\n for dependency injection (when suddenly a constructor with parameters needs to be called, precluding use of the traditional declarative XAML approach for hooking&nbsp;up the View to the ViewModel).</p>\r\n<p>The overly simplistic &quot;MVVM Reference Implementation&quot; doesn't help much either because it's not doing the sorts of things I would expect a real reference application to do (eg event aggregation injection with Unity). I want a reference&nbsp;implementation\r\n to include examples of&nbsp;all the PRISM functionality&nbsp;rather than a very small subset of the PRISM functionality (the Stock Reference Implementation does a much better job of this, but relies on the MEF approach rather than the Unity one and doesn't\r\n really serve as a good MVVM reference application). The QuickStarts concentrate on individual areas but again there's no real example of bringing everything together.</p>\r\n<p>For now I'm using code behind in the View to specify the ViewModel as a Unity [Dependency] object:</p>\r\n<pre>[Dependency]\r\npublic MyModuleViewModel MyModuleViewModel\r\n{\r\n   get { return DataContext as MyModuleViewModel; }\r\n   set {DataContext = value; }\r\n}</pre>\r\n<p>This is not as &quot;clean&quot; as the declarative approach (such as that used by MVVM Light's ViewModelLocator class and resource specification) Is this a good way to achieve what is required, or are there better ways?&nbsp; Links to good blog posts on this subject\r\n would be appreciated.</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2010-12-06T02:34:54.727-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "531910",
+    "ThreadId": "237265",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>The section of the documentation that provides guidance on blendability is in <a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28PandP.40%29.aspx\">\r\nthis chapter</a>, under the title &quot;Guidelines for Creating Designer Friendly Views&quot;. You might also find\r\n<a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=224396\">this thread</a> useful to your purpose.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-06T11:33:56.56-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

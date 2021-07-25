@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "612653",
+    "ThreadId": "257596",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>I have run into a very strange behavior with WPF .NET 4 and PRISM v4. &nbsp;When one of our modules adds its view to an ItemsControl region in the shell, the Foreground value of TextBlocks within that view are all set to the default inherited value of the\r\n window (Black). &nbsp;All of the other values set in the TextBlock style are applied correctly, and if I change the region to be a ContentControl (for example) then the issue goes away - and the TextBlocks receive the correct Foreground color from the style.\r\n &nbsp;I'm setting the style on the TextBlock using a DynamicResource markup and the style is defined in a resource dictionary in a separate assembly, which gets loaded at runtime (so no reference to the skin assembly from the other projects).</p>\r\n<p>I did some debugging and found that the style's value is set initially on the TextBlock, however after that the foreground is set a second time to the inherited default value (the ValueSource in the dependency property changed handler indicated &quot;Inherited&quot;\r\n and the value was Black).</p>\r\n<p>I was able to strip down our application and reproduce the issue. &nbsp;Here is a link to download the .zip file from MediaFire: &nbsp;<a rel=\"nofollow\" href=\"http://www.mediafire.com/?cn918gi15uph1xe\">http://www.mediafire.com/?cn918gi15uph1xe</a>&nbsp;</p>\r\n<p>I am not sure if this has anything to do with the ItemsControlRegionAdapter and the fact that the ItemsSource is pointing to a list containing the view UserControl? &nbsp;I am completely stumped, to be honest, and I need to resolve this issue ASAP.</p>\r\n<p>If you are able to try out the sample project, look at line 20 in ShellView.xaml of the Shell project. &nbsp;Run the app and verify that at the top of the screen is black text (it's difficult to read, sorry - forgot to change the background to a lighter\r\n color), and in the center is white text. &nbsp;Then go back to the ShellView and change the region on line 20 to a ContentControl. &nbsp;Run the app again, and you will see that both the text at the top and bottom are white - as the style specifies.</p>\r\n<p>Valerie</p>\r\n",
+    "PostedDate": "2011-05-13T16:12:42.22-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "613529",
+    "ThreadId": "257596",
+    "Html": "<p>Hi Valerie,</p>\r\n<p>After debugging your application we&rsquo;ve found that if you load your skins configuration files before adding the views into Shell&acute;s regions the styles are loaded correctly as you expect.</p>\r\n<p>We modified your App.xaml.cs class like this:</p>\r\n<p><span style=\"font-size: 9pt;\" lang=\"EN-US\">\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\"><div style=\"color: black; background-color: white;\"><pre><span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> OnStartup(StartupEventArgs e)\r\n{\r\n    <span style=\"color: blue;\">base</span>.OnStartup(e);\r\n \r\n    IUnityContainer Container = <span style=\"color: blue;\">new</span> UnityContainer();\r\n    Container.RegisterInstance&lt;IUnityContainer&gt;(Container, <span style=\"color: blue;\">new</span> ContainerControlledLifetimeManager());\r\n \r\n    Container.RegisterInstance&lt;SkinManager&gt;(Container.Resolve&lt;SkinManager&gt;(), <span style=\"color: blue;\">new</span> ContainerControlledLifetimeManager());\r\n    <span style=\"color: green;\">//load skins here&hellip;</span>\r\n    Container.Resolve&lt;SkinManager&gt;().LoadSkinFromConfigurationData();\r\n    <span style=\"color: green;\">// We are good to go, kick off the bootstrapper</span>\r\n    Bootstrapper bootstrapper = <span style=\"color: blue;\">new</span> Bootstrapper(Container, () =&gt; Container.Resolve&lt;ShellView&gt;());\r\n    bootstrapper.Run();\r\n \r\n    <span style=\"color: green;\">// Load the app skin ---&gt; not here...</span>\r\n    <span style=\"color: green;\">//Container.Resolve&lt;SkinManager&gt;().LoadSkinFromConfigurationData();</span>\r\n \r\n    ((Window)bootstrapper.ShellView).Show();\r\n    <span style=\"color: blue;\">while</span> (!((Window)bootstrapper.ShellView).Activate()) { }\r\n}\r\n</pre>\r\n</div>\r\n</span></pre>\r\n</div>\r\n</span></p>\r\n<p>Please let me know if this information helps you.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-16T12:52:06.1-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "613592",
+    "ThreadId": "257596",
+    "Html": "<p>Hi Miguel,</p>\n<p>Thank you for the reply. &nbsp;That does seem to fix the issue, however it would be very beneficial to know why I need to load the skins before loading any views? &nbsp;Since all of the style setters besides Foreground are correctly applied... &nbsp;I don't understand  what is \"wrong\" with the code to cause Foreground to get reset.</p>\n<p>EDIT: &nbsp;In other words, I'd like to understand what actually was happening in WPF/PRISM to cause this problem, not just how to fix it :-)</p>\n<p>Thanks,</p>\n<p>Valerie</p>",
+    "PostedDate": "2011-05-16T15:12:07.183-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "637493",
+    "ThreadId": "257596",
+    "Html": "<p>Hello</p>\n<p>i'm experiencing the same issue</p>\n<p>no solution found yet</p>",
+    "PostedDate": "2011-07-05T07:01:36.813-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "693351",
+    "ThreadId": "257596",
+    "Html": "<p>Hi,</p>\r\n<p>It seems that the problem when setting the <strong>Foreground</strong> property happens because the explicit style is not overriding the inherited value of this property in the control. In the following <a href=\"http://compositewpf.codeplex.com/workitem/8248\">workitem</a>, we provided a sample that isolates this behavior (<strong>ForegroundIssueTestIsolated.zip</strong>), and found that this problem only appears when adding content to an <strong>ItemsControl</strong> using its <strong>ItemsSource</strong> property (i.e., when using the <strong>Items</strong> property, the <strong>Foreground</strong> is correctly set). This is also true when removing every <strong>Prism </strong>component in the sample.</p>\r\n<p>We also found that a similar <a href=\"http://social.msdn.microsoft.com/Forums/en-US/wpf/thread/3501ed19-ab40-4064-81b5-e9b7b9d35b56\">discussion</a> was started in <strong>WPF</strong>, <strong>MSDN</strong> forums. In this thread the user Paul Brown provided another workaround, based on setting the inheritance behavior in the control as follows:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">this</span>.InheritanceBehavior = InheritanceBehavior.SkipToAppNext;\r\n</pre>\r\n</div>\r\n</p>\r\n<p>This workaround is applied in the aforementioned sample<strong></strong> (<strong>TextBlockView.xaml.cs</strong> file, Line 16).</p>\r\n<p>Regards,</p>\r\n<p>﻿Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-11-03T07:54:17.033-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

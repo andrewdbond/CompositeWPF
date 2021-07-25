@@ -1,0 +1,79 @@
+<div class="wikidoc"><h1>Migrating Prism v2 RI from static to dynamic module loading</h1>This article explains how to modify the <b>Prism-v2 Reference Implementation</b> so it uses <b>Dynamic Module Loading</b>. It provides good guidance on how to enable any solution that uses Static Module Loading to use Remote Module Loading, by adapting some specifics (like the module catalog).
+<ul><li>You can get this article in .pdf format from <a href=".\276e9456-4c9e-4d95-b47c-7127941e557b">here</a> </li>
+<li>You can get the source code of the Prism-v2 RI using Dynamic Module Loading from <a href=".\0c82a565-9cc5-428c-858d-fe8705c94fec">here</a> </li></ul>
+<table><tr><td><b>Disclaimer:</b> The code is provided &quot;AS IS&quot; with no warranties, and confers no rights</td></tr></table><br /><br />The different steps to be performed are:
+<ul><li><a href="#Updating">Updating Silverlight class library projects to Silverlight application projects to generate XAP files</a></li>
+<li><a href="#Setting">Setting up remote module loading</a></li>
+<li><a href="#Creating">Creating a Web Application to host the RI</a></li></ul>
+<h2>Updating Silverlight class library projects to Silverlight application projects to generate XAP files<a name="Updating"></a></h2>To be able to load the modules dynamically a .xap file must be obtained from each of them. This requires the modification of <b>Silverlight Class Libraries</b> (which generate .dll files) to <b>Silverlight Applications</b> (which generate .xap files). Perform the following steps for each module in the Prism-v2 Reference Implementation:
+<ul><li>1. Unload the module from the solution.</li>
+<li>2. Open the .csproj file for edition.</li></ul>
+<img src="http://download-codeplex.sec.s-msft.com/Download?ProjectName=CompositeWPF&DownloadId=56990" alt="editproject.png" title="editproject.png" />
+<ul><li>3. Set the content of the &lt;SilverlightApplication&gt; node to <b>true</b> like this:</li></ul>
+<pre>
+&lt;SilverlightApplication&gt;true&lt;/SilverlightApplication&gt;</pre>
+<ul><li>4. Add the following node right below the &lt;SilverlightApplication&gt; node:</li></ul>
+<pre>
+&lt;XapOutputs&gt;true&lt;/XapOutputs&gt;</pre>
+<ul><li>5. Reload the module project. </li>
+<li>6. Add an XML file to the <b>Properties</b> folder of the project, named <b>AppManifest.xml</b> with this content:</li></ul>
+<pre>
+&lt;Deployment xmlns=&quot;http://schemas.microsoft.com/client/2007/deployment&quot; 
+xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;&gt;
+	&lt;Deployment.Parts&gt;
+	&lt;/Deployment.Parts&gt;
+&lt;/Deployment&gt;</pre>
+<ul><li>7. Set the <b>Build Action</b> property of the <b>AppManifest.xml</b> file to <b>‘None’</b>.</li>
+<li>8. Open the <b>Properties</b> dialog of the project and in the <b>Silverlight</b> tab, set the following parameters:
+<ul><li>In the <b>Xap file name</b> texbox, copy the module assembly name adding the ‘.xap’ suffix (i.e.: If the assembly name is <b>Module1</b> then you should put <b>Module1.xap</b>).</li>
+<li>Check the <b>Generate Silverlight manifest file</b> option. </li>
+<li>Write the following in the <b>Manifest file template</b> text box: <b>Properties\AppManifest.xml</b></li></ul></li>
+<li>9. Set the <b>Copy Local</b> property value to <b>false</b> in each reference of the module that is also referenced in your shell project.</li></ul>
+
+<h2>Setting up dynamic module loading <a name="Setting"></a></h2>To set up dynamic module loading a few modifications must be made to the <b>StockTraderRI.Silverlight</b> project and a <b>ModulesCatalog</b> to state each module, and how it should be loaded, has to be added to this project.
+<ul><li>1.In your <b>Shell</b> project, remove references to every module in the Reference Implementation (all four of them). </li>
+<li>2.Open the <b>Bootstrapper.cs</b> file and remove the using statements to the modules’ namespaces.</li>
+<li>3.Add an XML Document named <b>ModulesCatalog.xaml</b> and replace its content with the following lines inside it:</li></ul>
+<pre>
+&lt;Modularity:ModuleCatalog xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;
+                          xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;
+                          xmlns:sys=&quot;clr-namespace:System;assembly=mscorlib&quot;
+                          xmlns:Modularity=&quot;clr-namespace:Microsoft.Practices.Composite.Modularity;assembly=Microsoft.Practices.Composite&quot;&gt;
+    &lt;Modularity:ModuleInfo Ref=&quot;StockTraderRI.Modules.Market.xap&quot; ModuleName=&quot;MarketModule&quot; ModuleType=&quot;StockTraderRI.Modules.Market.MarketModule, StockTraderRI.Modules.Market, 
+	Version=1.0.0.0&quot; InitializationMode=&quot;WhenAvailable&quot;/&gt;
+    &lt;Modularity:ModuleInfo Ref=&quot;StockTraderRI.Modules.Position.xap&quot;  ModuleName=&quot;PositionModule&quot; ModuleType=&quot;StockTraderRI.Modules.Position.PositionModule, StockTraderRI.Modules.Position,
+	 Version=1.0.0.0&quot; InitializationMode=&quot;WhenAvailable&quot;&gt;
+        &lt;Modularity:ModuleInfo.DependsOn&gt;
+            &lt;sys:String&gt;MarketModule&lt;/sys:String&gt;
+	        &lt;/Modularity:ModuleInfo.DependsOn&gt;
+    &lt;/Modularity:ModuleInfo&gt;
+	    &lt;Modularity:ModuleInfo Ref=&quot;StockTraderRI.Modules.Watch.xap&quot; ModuleName=&quot;WatchModule&quot; ModuleType=&quot;StockTraderRI.Modules.Watch.WatchModule, StockTraderRI.Modules.Watch, 
+	Version=1.0.0.0&quot; InitializationMode=&quot;WhenAvailable&quot;&gt;
+        &lt;Modularity:ModuleInfo.DependsOn&gt;
+            &lt;sys:String&gt;MarketModule&lt;/sys:String&gt;
+            &lt;sys:String&gt;PositionModule&lt;/sys:String&gt;
+        &lt;/Modularity:ModuleInfo.DependsOn&gt;
+	    &lt;/Modularity:ModuleInfo&gt;
+    &lt;Modularity:ModuleInfo Ref=&quot;StockTraderRI.Modules.News.xap&quot; ModuleName=&quot;NewsModule&quot; ModuleType=&quot;StockTraderRI.Modules.News.NewsModule, StockTraderRI.Modules.News,
+	 Version=1.0.0.0&quot; /&gt;
+&lt;/Modularity:ModuleCatalog&gt;</pre>
+<ul><li>4.Set the <b>Build Action</b> property of the <b>ModulesCatalog.xaml</b> file to <b>Resource</b>.</li>
+<li>5.Change the Bootstrapper’s GetModuleCatalog method’s implementation for the following one:</li></ul>
+<pre>
+protected override IModuleCatalog GetModuleCatalog()
+{
+	return ModuleCatalog.CreateFromXaml(
+	new Uri(&quot;/StockTraderRI;component/ModulesCatalog.xaml&quot;, UriKind.Relative));
+} </pre><br />
+<h2>Creating a Web Application to host the Reference Implementation’s Modules <a name="Creating"></a></h2>To be able to download the different modules (XAP files) from the server, the Reference Implementation modules must be hosted in a Web Application. The following steps describe how to do this:
+<ul><li>1.Create a new ASP.NET Web Application in the Silverlight folder named <b>StockTraderRI.Silverlight.Web</b>.</li>
+<li>2.Open the <b>Properties</b> dialog of the new Web Application Project and go to the <b>Silverlight Applications</b> tab.</li>
+<li>3.Click the Add button to add each module of the RI. Make sure that you uncheck the <b>“Add a test page that references the control”</b> checkbox.</li>
+<li>4.After adding the RI’s modules, add the Shell project (StockTraderRI.Silverlight), but this time leave the “Add a test page that references the control” checkbox option checked.</li></ul>
+<img src="http://download-codeplex.sec.s-msft.com/Download?ProjectName=CompositeWPF&DownloadId=56992" alt="Add&#32;Silverlight&#32;Application.png" title="Add&#32;Silverlight&#32;Application.png" />
+<ul><li>5.Close the properties dialog.</li>
+<li>6.Set as the start page the page generated to test the Shell project. The name of the page should be something similar to <b>StockTraderRI.SilverlightTestPage.aspx</b>.</li>
+<li>7.Set the new <b>Web Application</b> as the <b>StartUp Project</b>.</li>
+<li>8.Rebuild the solution.</li>
+<li>9.Run the solution.</li></ul>
+<br />Having performed these steps, the Prism-v2 Reference Implementation for Silverlight will be loading its modules dynamically.</div><div class="ClearBoth"></div>

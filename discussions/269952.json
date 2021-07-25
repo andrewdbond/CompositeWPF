@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "661552",
+    "ThreadId": "269952",
+    "Html": "\r\n<p>Hi, all</p>\r\n<p>I am new to the Unity and prism, and trying to use it in my project but encounter some problems in a strange scenario.</p>\r\n<p>Here is the scenario.</p>\r\n<ol>\r\n<li>Our project is only to develop a tab page (All functionalities will be on this tab page) as part of a complex hospital application.\r\n</li><li>The tab page is a desktop wpf control. (User control with the implementation some tab control framework developed by our framework team.)\r\n</li><li>The tab page will be activate from the top level framework, which is out of our control.\r\n</li><li>There is no shell at all. </li></ol>\r\n<p>&nbsp;</p>\r\n<p>Here is the usage of Prism.</p>\r\n<ol>\r\n<li>I tried to use Unity frame work to do the dependency injections. </li><li>I can manage to use bootstrapper to register most of types. </li><li>I can get the modulemanager to initialize. </li></ol>\r\n<p>Here is the problem.</p>\r\n<ol>\r\n<li>Since there is no shell at all, and the RegionManager cannot be set to the tab page (my main wpf control) &nbsp;I designed, which in turn, I cannot inject any views to the region which I define in the tabpage. the modual is initialized ok, but there is\r\n no regionmanager can be used. </li><li>I try to create a regionmanager, but it cannot be attached to the main user control. so even I can invoke regionviewwithregion successfully if I create a region myself, the view won't be displayed.\r\n</li></ol>\r\n<p>&nbsp;</p>\r\n<p>Is there any alternative that I can use the RegionManager to link to my first control, and then inject the views later on? How to do it?&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks a lot.</p>\r\n",
+    "PostedDate": "2011-08-22T07:13:52.25-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "662199",
+    "ThreadId": "269952",
+    "Html": "<p>Hi, <br /> <br /> Based on my understanding of your scenario, first if you are using a regular <strong> tabcontrol</strong> you can define a region on it. Nevertheless if you are using a control which is not supported by the Prism Library you will have to create a <strong>region adapter</strong> that suits your requirements.</p>\n<p>You might find the following chapter useful, where this topic is explained:</p>\n<ul>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430866%28v=PandP.40%29.aspx\">Extending Prism</a>: <a href=\"http://msdn.microsoft.com/en-us/library/gg430866%28v=PandP.40%29.aspx#sec24\"> Region Adapters</a> </li>\n</ul>\n<p>Also this other thread might help you, here you can download a basic example that shows you how to host a Prism Application inside another non-Prism application (i.e. how to have a Prism application in which the Shell is not the main window).</p>\n<ul>\n<li><a href=\"http://compositewpf.codeplex.com/discussions/269149\">WPF Usercontrol Shell</a></li>\n</ul>\n<p>If you still are unable to fulfill your requirements after trying the aforementioned suggestions, it would be helpful if you could provide us with a repro sample application. <br /> I hope you find this information handy.</p>\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-08-23T10:08:56.937-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "662334",
+    "ThreadId": "269952",
+    "Html": "<p>&nbsp;</p>\r\n<p>Thank you so much aadami! I downloaded the code and looked into it, I haven't got chance to try it, but I have a strong feeling that the solution will work for me. (WPF Usercontrol shell.)</p>\r\n<p>Very smart idea. I will keep you posted the news after I apply it to my project</p>\r\n<p>thanks again .</p>",
+    "PostedDate": "2011-08-23T13:47:58.193-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

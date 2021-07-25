@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nWe are closing this work item as this is not strictly related to the guidance provided in Prism. You might find better support regarding this topic in David Hill's blog posts: Prism Template Pack 1.4: Now with MEF Support! (http://blogs.msdn.com/b/dphill/archive/2011/03/04/prism-template-pack-1-4-now-with-mef-support.aspx).\r\n\r\nFor any other doubt you might have, you can create a new thread in the discussion forums where we will help you with you concerns. Also, thanks for sharing your findings with the rest of the community.\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini ",
+    "ClosedDate": "2012-01-27T08:43:17.43-08:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "ModuleTypeLoader Not Found Exception on bootstrapper.Run line within App.Xaml.vb\n \nThis occurs when I create a Prism WPF 4.0 QuickStart solution (Unity) in VS2010 then compile and Run.\nI'm using the 'out of the box' QuickStart Solution ... have not added any of my own code.  The solution uses a ModuleCatalog.xaml with the CreateFromXaml option in the CreateModuleCatalog Function in bootstrapper.vb.\n \nThe issue does not occur if I use the C# equivalent template!",
+    "LastUpdatedDate": "2013-05-16T05:28:39-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-01-13T19:06:44.993-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "VB.Net ModuleCatalog LoadFrom XAML ModuleTypeLoader Exception",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9120
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nPrism does not provide templates from out of the box. Based on my understanding, I believe you might be using the ones provided by David Hill's in his blog post (http://blogs.msdn.com/b/dphill/archive/2011/03/04/prism-template-pack-1-4-now-with-mef-support.aspx). Take into account that, as far as I know, there is no official support for the aforementioned templates.\r\n\r\nOn the other hand, we tried using the template you mentioned (from David Hill's template pack v1.4, which we believe is the latest version) and couldn't reproduce the issue you are describing. It might be possible that you are not using the latest version of the templates or that the references are not being resolved correctly.\r\n\r\nAlso, I believe you could find the included Reference Implementations and QuickStarts shipped with Prism useful (http://www.microsoft.com/download/en/details.aspx?id=16800).\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-01-17T12:32:10.783-08:00",
+      "Id": 156571
+    },
+    {
+      "Message": "Damian: Thanks for reply. I'm using David Hill's template package as you mention above. I re-installed the templates but get same result.  C# works fine, VB give ModuleTypeLoader exeption.\r\nIf I add Module 1 and Module 2 projects as references to Shell project, VB works fine but to my understanding this defeats the purpose of loading the projects using the ModuleCatalog.xaml!\r\n\r\nHave compared all references between C# and VB.Net template versions and they are identical.",
+      "PostedDate": "2012-01-17T16:28:29.57-08:00",
+      "Id": 156572
+    },
+    {
+      "Message": "The issue seems to be around how VB handles namespaces versus C#. VB allows use of a root namespace (C# allows a default namespace) which is auto-appended by the vb compiler to all classes and modules (ref. http://social.msdn.microsoft.com/Forums/en-US/vblanguage/thread/0f014f91-304b-4ceb-b455-13664d7e836a).\r\nFound that if re-code VB template to avoid use of Root namespace (i.e. get similar behaviour to C# except now need to manually add namespace to all classes and modules) then the VB templates work ok.  Have noted that the VB version of StockTraderRI uses this approach.\r\nDon't know why use of the Root namespace feature in VB.Net causes this issue!",
+      "PostedDate": "2012-01-20T03:53:44.937-08:00",
+      "Id": 156573
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "The Prism v4 project should fix this for you.  Grab a recent drop.",
+    "ClosedDate": "2010-08-02T10:14:30.67-07:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "FYI, Looks like IQueryAmbient got moved.   After adding the System.Xaml to both projects all was well.\n \nError\t5\tThe type 'System.Windows.Markup.IQueryAmbient' is defined in an assembly that is not referenced. You must add a reference to assembly 'System.Xaml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.\tC:\\_\\VS2010\\CASKDotNet2010\\Library\\CAG\\CAL\\Desktop\\Composite.Presentation.Tests\\Regions\\RegionAdapterMappingsFixture.cs\t110\t15\tComposite.Presentation.Desktop.Tests\n \nError\t1\tThe type 'System.Windows.Markup.IQueryAmbient' is defined in an assembly that is not referenced. You must add a reference to assembly 'System.Xaml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.\tC:\\_\\VS2010\\CASKDotNet2010\\Library\\CAG\\CAL\\Desktop\\Composite.UnityExtensions.Tests\\UnityBootstrapperFixture.cs\t84\t13\tComposite.UnityExtensions.Desktop.Tests",
+    "LastUpdatedDate": "2013-05-16T05:28:55.48-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-11-07T04:30:28.25-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Build breaks on VS2010 out of the box",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 5,
+    "Id": 5440
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Same problem, but solved. \r\n\r\nTo solve you have to add the System.Xaml reference to the \"Composite.Presentation.Desktop.Tests\" project and Composite.UnityExtensions.Desktop.Tests. it will compile with few warnings.",
+      "PostedDate": "2010-02-11T19:06:08.39-08:00",
+      "Id": 156185
+    },
+    {
+      "Message": "I cannot get the Prism assemblies to build using Unity 2.0.  I have been trying for two days.  The problem is that the IUnityContainer.AddNewExtension no longer exists.  There is a generic method that is gone.  And there is no mention of it in any of the Unity 2.0 documentation.  They did document plenty of the changes and deprecation on Unity 2.0, like the merge of ObjectBuilder2 into Unity and the deprecation of the Microsoft.Practices.ObjectBuilder2.BuildFailedException.  But there is no mention of the elimination of the AddNewExtension.  I pulled down the Unity 2.0 source code and confirmed the method is missing.  The Prism test projects use it extensively and they won't build along with the UnityBootstrapperExtension from the Composite.UnityExtensions.Desktop assembly.  I really need a Prism for Unity 2.0.  I have no choice but to keep trying to build it myself and the Unity 2.0 documentation has a hole in it.  What shall I do?\r\n\r\n\r\n",
+      "PostedDate": "2010-05-26T13:00:41.15-07:00",
+      "Id": 156186
+    },
+    {
+      "Message": "At Prism v2.2, Composite.Desktop is configurate as Framework 3.5, you need change at 4.0 to use System.Xaml ",
+      "PostedDate": "2010-05-29T14:24:52.183-07:00",
+      "Id": 156187
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "903550",
+    "ThreadId": "392936",
+    "Html": "\r\n<p>&nbsp;</p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif'; color:black; font-size:10pt\">In our application some modules need to prompt the user to save changes if the user requests to close the module. This is a WPF application using UNITY. We require all calls to\r\n our service layers (WFC) be asynchronice and never block the UI thread.</span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif'; color:black; font-size:10pt\">When closing a module using IConfirmNavigationRequest the module detects if the user has made changes and prompts them to save from within the ConfirmNavigationRequest method.\r\n If user chooses to save, we make the async call to the WCF service, and return &quot;true&quot; for the continuationCallback action in method ConfirmNavigationRequest.\r\n</span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif'; color:black; font-size:10pt\">Is this the correct way to do this? The module does save correctly but it also closes the view immediately while the async call is performing the save on a different thread. I'm\r\n just not sure if this is going to give us issues moving forward with memory management.</span></p>\r\n",
+    "PostedDate": "2012-08-24T05:22:20.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "903749",
+    "ThreadId": "392936",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding this seems to be a valid approach for achieving this kind of functionality. In my opinion you should be able to avoid that the view closes immediately while the asynchronous call is being performed by calling the <strong>continuationCallback </strong>action when the service completes. As far as I know, when working with this kind of services you should be able to pass a callback method which will we called when the execution of the service ends. For example this callback method could be a lambda expression which ends up calling the <strong>continuationCallback</strong>(<strong>true</strong>) method allowing the navigation to continue.</p>\r\n<p>You could find more information about this in the following resources:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405494(v=pandp.40)#sec8\">Handling Asynchronous Interactions</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ms730059.aspx\">How to: Call WCF Service Operations</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ms731177.aspx\">How to: Implement an Asynchronous Service Operation</a></li>\r\n</ul>\r\n<p>On the other hand, depending on the requirements of your scenario you should also consider implementing the <strong>IRegionMemberLifetime </strong>interface provided with <strong>Prism</strong>, in your view / viewmodel. This will allow you to control the lifetime of views within regions by allowing you to specify whether deactivated views are to be removed from the region or simply marked as deactivated. The <strong>IRegionMemberLifetime </strong>interface defines a <strong>KeepAlive </strong>property, and if this property returns <strong>false</strong>, the view will be removed from the region when it is deactivated (in your case when the navigation is confirmed). This is Because the region no longer has a reference to the view, and it then becomes eligible for garbage collection (unless some other component in your application maintains a reference<br />to it).<br /><br />I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-08-24T12:37:29.587-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

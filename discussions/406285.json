@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "954106",
+    "ThreadId": "406285",
+    "Html": "\r\n<p>HI</p>\r\n<p>Is there any way to get region name from view registered with region ?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-12-10T10:46:57.54-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "954139",
+    "ThreadId": "406285",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding what you want to do is, from inside a view, obtain the name of the region where the view was registered (for example with\r\n<strong>RegisterViewWithRegion</strong>).</p>\r\n<p>As far as I know, <strong>Prism </strong>does not provide any specific functionalities to achieve this. However, I believe a possible approach could be to iterate over the collection of regions to find which ones contains the view. For example, you could\r\n do something similar to this inside the corresponding view:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">foreach</span>(<span style=\"color:blue\">var</span> region <span style=\"color:blue\">in</span> regionManager.Regions)\r\n{\r\n\t<span style=\"color:blue\">if</span>(region.Views.Contains(<span style=\"color:blue\">this</span>))\r\n\t{\r\n\t\tregionName = region.Name;\r\n\t\t<span style=\"color:blue\">break</span>;\r\n\t}\r\n}\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>Please, let us know if we have misunderstood your scenario,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2012-12-10T11:59:28.073-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "954194",
+    "ThreadId": "406285",
+    "Html": "\r\n<p>&nbsp;</p>\r\n<p>&nbsp;What about this?</p>\r\n<pre>RegionManager.GetObservableRegion(<span style=\"color:blue\">this</span>).Name</pre>\r\n<p><br>\r\n<br>\r\n</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>RegionContext.GetObservableContext(<span style=\"color:blue\">this</span>)</pre>\r\n<br>\r\n<br>\r\nworks fine</div>\r\n",
+    "PostedDate": "2012-12-10T14:30:41.237-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "954569",
+    "ThreadId": "406285",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding the <strong>GetObservableRegion </strong>will return the\r\n<strong>IRegion </strong>that is hosted by the control you passed as the parameter which may not be useful if you want to retrieve the region where the passed control is registered. In which case calling the following line:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>RegionManager.GetObservableRegion(<span style=\"color:blue\">this</span>).Name \r\n</pre>\r\n</div>\r\nMay behave similarly to calling the following method:\r\n<p></p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>RegionManager.GetRegionName(<span style=\"color:blue\">this</span>);\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>On the other hand, the <strong>RegionContext </strong>can be useful to share contextual information between the hosting region and the views in it. In which case, I believe this could be used to pass the name of the hosting region to its child views. However,\r\n you will have to ensure you are sharing the correct information when setting the value passed through the\r\n<strong>RegionContext </strong>property.</p>\r\n<p>Please let me know if you are using a different approach to achieve this kind of scenario,<br>\r\n<br>\r\nRegards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-12-11T06:51:39.757-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

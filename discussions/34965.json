@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "116183",
+    "ThreadId": "34965",
+    "Html": "Hello, <br>\r\n<br>\r\nI'm using a nice docking control (Sandock from divelements).&nbsp; However, my program 'Blue Screens' my box when I drag a dockable window to another portion of the screen.&nbsp;<br>\r\n<br>\r\n<p>In my app, when I attempt to move a dockable window (let's say from the right side of my screen to dock on the left) ... an exception is thrown within this block of code: </p>\r\n<p>public class ContentControlRegionAdapter : RegionAdapterBase&lt;ContentControl&gt;<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// Adapts a &lt;see cref=&quot;ContentControl&quot;/&gt; to an &lt;see cref=&quot;IRegion&quot;/&gt;.<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;param name=&quot;region&quot;&gt;The new region being used.&lt;/param&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;param name=&quot;regionTarget&quot;&gt;The object to adapt.&lt;/param&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void Adapt(IRegion region, ContentControl regionTarget)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (regionTarget.Content != null || (BindingOperations.GetBinding(regionTarget, ContentControl.ContentProperty) != null))<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new InvalidOperationException(Resources.ContentControlHasContentException);</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; region.ActiveViews.CollectionChanged += delegate<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; regionTarget.Content = region.ActiveViews.FirstOrDefault();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// Creates a new instance of &lt;see cref=&quot;SingleActiveRegion&quot;/&gt;.<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;returns&gt;A new instance of &lt;see cref=&quot;SingleActiveRegion&quot;/&gt;.&lt;/returns&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override IRegion CreateRegion()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return new SingleActiveRegion();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp; }</p>\r\n<p>This is the line of code that throws the error: </p>\r\n<p>if (regionTarget.Content != null || (BindingOperations.GetBinding(regionTarget, ContentControl.ContentProperty) != null))</p>\r\n<p>This is the error text: <br>\r\nContentControl's Content property is not empty. <br>\r\n&nbsp;&nbsp;&nbsp; This control is being associated with a region, but the control is already bound to something else. <br>\r\n&nbsp;&nbsp;&nbsp; If you did not explicitly set the control's Content property, <br>\r\n&nbsp;&nbsp;&nbsp; this exception may be caused by a change in the value of the inherited RegionManager attached property.</p>\r\n<p>In other words, it seems I am dragging one of the dockable windows to a different 'region' with the composite app and viola, problem occurs ... </p>\r\n<p>Any ideas, suggestions or advice?</p>\r\n",
+    "PostedDate": "2008-09-04T15:12:18.653-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "121288",
+    "ThreadId": "34965",
+    "Html": "I am having the same problem. I have an infragistics docking control. Any control with region manager attached property throw the above exception, when attempting to dock, attach, hide .. the content pane.<br>\r\n<br>\r\nAny ideas would be welcome.\r\n",
+    "PostedDate": "2008-09-26T22:28:29.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "121371",
+    "ThreadId": "34965",
+    "Html": "I believe this is happening because the Dock control is changing the logical tree when moving views around.<br>\r\nThis makes the RegionManager attached property (which inherits its value from parent controls) on the control that has a RegionName attached property change its value constantly when moving it, triggering a behavior to attach a new region on that control.<br>\r\nOne possible way to stop the RegionManager attached property on the control to continually change its value when moving it, is to explicitly set its value, instead on relying on the logical tree for value inheritance.<br>\r\n<br>\r\nFor example:<br>\r\n&lt;ItemsControl RegionName=&quot;MyThrowingExceptionRegion&quot; <strong>RegionManager=&quot;{StaticResource RegionManager}&quot;</strong> /&gt;<br>\r\n<br>\r\nIn the example you would have to register RegionManager as a resource, but you could also use binding or any other approach.<br>\r\n<br>\r\nPlease let me know if this helps,<br>\r\nJulian Dominguez<br>\r\n<a href=\"http://blogs.southworks.net/jdominguez\">http://blogs.southworks.net/jdominguez</a><br>\r\n",
+    "PostedDate": "2008-09-27T16:00:19.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "126495",
+    "ThreadId": "34965",
+    "Html": "Julian: <br>\r\n<br>\r\nthank you for the information. I tried setting the regionmanager attached property on the control, but it throws an exception when the module gets loaded and is trying to resolve the view. The code snippet is from my Shell_View/Shell_ViewModel, where I have a property in the Shell_VM which exposes the IRegionManager, and dont have any scoped region managers. <br>\r\n<br>\r\nThe module, when loading uses, <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IRegion iRegion = RegionManager.Regions[RegionNames.ConfigureRegion];<br>\r\nto determine the region. But <strong>utils:RegionNames.ConfigureRegion</strong> does not exist in the dictionary.<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;igDock:SplitPane Name=&quot;Region2&quot; <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; igDock:XamDockManager.InitialLocation=&quot;DockedLeft&quot;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Focusable=&quot;False&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;igDock:TabGroupPane Name=&quot;Configure&quot; <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AllowDrop=&quot;False&quot;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BorderThickness=&quot;1&quot;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cal:RegionManager.RegionManager=&quot;{Binding Path=MyRegionManager}&quot;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cal:RegionManager.RegionName=&quot;{x:Static utils:RegionNames.ConfigureRegion}&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/igDock:TabGroupPane&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/igDock:SplitPane&gt;<br>\r\n<br>\r\nResolution of the dependency failed, type = &quot;ConfigurationController&quot;, name = &quot;&quot;. Exception message is: The current build operation (build key Build Key[ProjectTemp.ConfigurationModule.Controller.ConfigurationController, null]) failed: The given key was not present in the dictionary. (Strategy type Microsoft.Practices.ObjectBuilder2.BuildPlanStrategy, index 2)<br>\r\n<br>\r\n<br>\r\nwhen I change it to use a static resource as you had shown,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;cal:RegionManager x:Key=&quot;regionManger&quot;/&gt;<br>\r\nan exception is thrown when the Shell_ViewModel/View is being resolved.<br>\r\n<br>\r\nException message is: The current build operation (build key Build Key[ProjectTemp.ShellVM, null]) failed: The parameter view could not be resolved when attempting to call constructor ProjectTemp.ShellVM(ProjectTemp.IShellView view, Microsoft.Practices.Composite.Events.IEventAggregator eventAggregator, Microsoft.Practices.Composite.Regions.IRegionManager regionManager). (Strategy type Microsoft.Practices.ObjectBuilder2.BuildPlanStrategy, index 2)<br>\r\n<br>\r\nwhat am I missing ?<br>\r\n<br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2008-10-21T04:52:34.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "126793",
+    "ThreadId": "34965",
+    "Html": "Hi<br>\r\n<br>\r\nI am just converting a WPF CAB project to use Infragistics Dockable panels and I have the same problem when&nbsp;simply I&nbsp;unpinning a Panel. (which is a named CAB Region)<br>\r\n<br>\r\nIf you discover a solution (or even any extra information) do please update this, I will also do the same.<br>\r\n<br>\r\nI am on an Infragistics course next week.. you can guess my first question to them !!!<br>\r\n<br>\r\ncheers<br>\r\nMartin<br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2008-10-22T00:41:54.223-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "126810",
+    "ThreadId": "34965",
+    "Html": "[removed some code, did not 100% work]\r\n",
+    "PostedDate": "2008-10-22T01:53:44.433-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "126814",
+    "ThreadId": "34965",
+    "Html": "[removed some code examples, did not 100% work]\r\n",
+    "PostedDate": "2008-10-22T02:09:18.743-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "126954",
+    "ThreadId": "34965",
+    "Html": "Hi nishanta.<br>\r\nApparently the container cannot resolve the IShellView property from the container. Are you registering it in the container?\r\n",
+    "PostedDate": "2008-10-22T10:10:09.527-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "149339",
+    "ThreadId": "34965",
+    "Html": "<strong>EDIT: Sorry, This Looks to be fixed in the latest release<br>\r\n</strong><br>\r\nHello,<br>\r\n<br>\r\nI'm having the same problem as the original posters. I get this regardless of whether I use Infragistic's DockManager or DevComponents.<br>\r\n<br>\r\nDoes anyone know of a fix?<br>\r\n<br>\r\nRegards<br>\r\n<br>\r\nPaul. \r\n",
+    "PostedDate": "2009-01-21T09:47:54.71-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

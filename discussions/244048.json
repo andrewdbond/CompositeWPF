@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "558325",
+    "ThreadId": "244048",
+    "Html": "\r\n<pre>I'm having trouble understanding what exactly this exception is telling me.  The project has two modules which both use regions. &nbsp;</pre>\r\n<pre>They both load usercontrols into a single region called NavigationRegion.  NavigationRegion is defined in the Shell view xaml file as so:</pre>\r\n<pre><pre><span>&lt;</span><span>ItemsControl</span><span>&nbsp;x</span><span>:</span><span>Name</span><span>=</span><span>&quot;NavigationRegion&quot;</span>&nbsp;<br>\t\t<span>prism</span><span>:</span><span>RegionManager.RegionName</span><span>=</span><span>&quot;NavigationRegion&quot;</span>&nbsp;<br>\t\tV<span>erticalContentAlignment</span><span>=</span><span>&quot;Top&quot;</span>&nbsp;<br>\t\t<span>HorizontalContentAlignment</span><span>=</span><span>&quot;Stretch&quot;</span><span>&nbsp;/&gt;</span></pre>\r\n<br></pre>\r\n<pre><br></pre>\r\n<pre>Whenever the module initializes, I call the following line of code in my project:</pre>\r\n<pre>_regionViewRegistry.RegisterViewWithRegion(<span>&quot;NavigationRegion&quot;</span>,&nbsp;<span>typeof</span>(NavigationControlItemView));</pre>\r\n<p>&nbsp;</p>\r\n<p>I get this exception immediately:</p>\r\n<p>An exception occurred while initializing module 'Module'.&nbsp;&nbsp;&nbsp; &nbsp;- The exception message was: An exception has occurred while trying to add a view to region 'NavigationRegion'.&nbsp;&nbsp;&nbsp; &nbsp;- The most likely causing exception\r\n was was: 'System.InvalidOperationException: Sequence contains more than one element&nbsp;&nbsp; at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)&nbsp;&nbsp; at Microsoft.Practices.Prism.MefExtensions.MefServiceLocatorAdapter.DoGetInstance(Type\r\n serviceType, String key) in c:\\release\\WorkingDir\\PrismLibraryBuild\\PrismLibrary\\Desktop\\Prism.MefExtensions\\MefServiceLocatorAdapter.cs:line 73&nbsp;&nbsp; at Microsoft.Practices.ServiceLocation.ServiceLocatorImplBase.GetInstance(Type serviceType, String\r\n key)'.</p>\r\n<p>&nbsp;</p>\r\n<p>In general, what is causing this exception?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks!</p>\r\n<p>Brett</p>\r\n",
+    "PostedDate": "2011-01-31T14:07:42.247-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "558452",
+    "ThreadId": "244048",
+    "Html": "\r\n<p>&gt;&gt;Sequence contains more than one element</p>\r\n<p>Any chance you have more than one class exporting<span> typeof</span>(NavigationControlItemView)?</p>\r\n",
+    "PostedDate": "2011-01-31T20:19:41.093-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "558704",
+    "ThreadId": "244048",
+    "Html": "\r\n<p>I don't think I do. &nbsp;I don't add that type to the catalog, and I only export it in the class itself.</p>\r\n<p>&nbsp;</p>\r\n<p>Ahh! &nbsp;Problem solved! &nbsp;I registered the assembly twice in the MEF catalog in my shell:</p>\r\n<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>this.AggregateCatalog.Catalogs.Add(</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&nbsp;&nbsp;&nbsp;&nbsp;new&nbsp;AssemblyCatalog(typeof(SomeClass1).Assembly));</span></pre>\r\n<pre><span><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>this.AggregateCatalog.Catalogs.Add(</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&nbsp;&nbsp;&nbsp;&nbsp;new&nbsp;AssemblyCatalog(typeof(SomeClass2).Assembly));</span></pre>\r\n<br></span></pre>\r\n<p>Didn't notice the .Assembly part, so it was completely hosed when it saw two exports.</p>\r\n",
+    "PostedDate": "2011-02-01T07:20:09.123-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

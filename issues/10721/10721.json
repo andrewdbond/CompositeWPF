@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "In many professional products, when popup comes up, we may not want to show the title bar. Instead show a very well designed screen. In order to do this, I had to derive from PopupWindowAction and change the style.\r\n\r\n\r\n```\r\n\r\n public class MillPopupWindowAction : PopupWindowAction \r\n    {\r\n        protected override System.Windows.Window GetWindow(Microsoft.Practices.Prism.Interactivity.InteractionRequest.INotification notification)\r\n        {\r\n            Window wrapperWindow; \r\n\r\n            if (this.WindowContent != null) \r\n            { \r\n                wrapperWindow = new Window();\r\n\r\n              _wrapperWindow.WindowStyle = WindowStyle.None;\r\n\r\n                // If the WindowContent does not have its own DataContext, it will inherit this one. \r\n                wrapperWindow.DataContext = notification; \r\n                wrapperWindow.Title = notification.Title; \r\n\r\n\r\n                this.PrepareContentForWindow(notification, wrapperWindow); \r\n            } \r\n            else \r\n            { \r\n                wrapperWindow = this.CreateDefaultWindow(notification); \r\n            } \r\n\r\n\r\n            return wrapperWindow; \r\n        }\r\n    }\r\n```",
+    "LastUpdatedDate": "2014-11-19T07:13:59.043-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2014-11-19T07:13:59.043-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "PopupWindowAction - We should be able to control the window styles",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 10721
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

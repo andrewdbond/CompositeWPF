@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "706385",
+    "ThreadId": "281587",
+    "Html": "\r\n<p>Goal: I want all my views (viewmodels) to be able to do in place view switching (independent of the regions (navigation) behavior) and also implement some mechanism to return some values to the previous view on removing the view (kind of a dialog box but\r\n inplace and not blocking the app, just the view below it).</p>\r\n<p>Problem: When you create a region associated with a tab control, then when a view in a tab&nbsp;navigates to the same (current)&nbsp;region, a new tab will be created instead of being overlaid with a new view.</p>\r\n<p>Example:</p>\r\n<p>You have an order view in which you need to select a customer. This customer selection could implemented in some module. When clicking on some button &quot;Select Customer&quot; a new view appears over the current view, and after selecting a customer, that selected\r\n customer is returned to the previous view (/ viewmodel).</p>\r\n<p>Question: What are the best ways to accomplish this with prism.</p>\r\n<p>&nbsp;</p>\r\n<p>Kind regards,</p>\r\n<p>Alex</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-12-02T03:38:36.943-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "706519",
+    "ThreadId": "281587",
+    "Html": "<p>Alex</p>\r\n<p>You could do this</p>\r\n<ul>\r\n<li>Create a region in the tab</li>\r\n<li>load your order view in it</li>\r\n<li>when clicking on Select Customer, load the module (using modulemanager) where the select customer view is and then navigate to the view using region navigation.</li>\r\n<li>once done navigate back to the order view</li>\r\n</ul>\r\n<p>In effect you are in the same tab. Is this what you are looking for?</p>",
+    "PostedDate": "2011-12-02T08:40:08.88-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "707491",
+    "ThreadId": "281587",
+    "Html": "<p>Technically that would work.</p>\r\n<p>But what name would you give your region. If you want to use a fixed name (to make code independent of it), than one also have to create a nested regionmanager. If you don't&nbsp;, the other tab pages would also create the same region name&nbsp;which is not allowed.</p>\r\n<p>How can the viewmodel be injected with the \"current\" regionmanager ?</p>\r\n<p>I assume that it is best to encapsulate this behavior in some Service.</p>\r\n<p>Would this not be something you would expect prism to provide out of the box ?</p>",
+    "PostedDate": "2011-12-05T05:32:51.257-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

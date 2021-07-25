@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Fixed in Prism 5.0",
+    "ClosedDate": "2014-05-01T10:36:01.507-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "When I write __... Ref=\"file://MyFile.dll\" ....__ in my  XAML module catalog, the __MefFileModuleTypeLoader__ returns __\"yFile.dll\"__ instead of __\"MyFile.dll\"__ .\n\nIn project __Prism.MefExtensions.Desktop__ , file __Modularity\\MefFileModuleTypeLoader.Desktop.cs__ Line __105__\n```\nstring path = moduleInfo.Ref.Substring(RefFilePrefix.Length + 1);\n```\nIt should be changed to:\n```\nstring path = moduleInfo.Ref.Substring(RefFilePrefix.Length);\n```\nIn project __Prism.Desktop__ , file __Modularity\\FileModuleTypeLoader.Desktop.cs__ Line __133__\n```\nstring path = moduleInfo.Ref.Substring(RefFilePrefix.Length + 1);\n```\nIt should be changed to:\n```\nstring path = moduleInfo.Ref.Substring(RefFilePrefix.Length);\n```",
+    "LastUpdatedDate": "2014-05-01T10:36:01.507-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2013-02-11T17:18:35.05-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "A bug when using XAML module catalog in WPF",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 9906
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi Hamson,\r\n\r\nThe issue you are reporting seems to be similar the issue described in this work item:* [Issue with ModuleCatalog.CreateFromXaml for WPF application with MEF Bootstrapper](http://compositewpf.codeplex.com/workitem/7215)\r\n\r\nIs this correct? If so, a possible workaround you can use in the mean time is to add an extra character after __\"file://\"__ and before the assembly file name. For example, if you write __\"file://xMyFile.dll\"__ the __MefFileModuleTypeLoader__ should read __\"MyFile.dll\"__ .\r\n\r\nAlso, it seems that several users in the aforementioned work item have confirmed that performing the changes you are describing seem to fix the problem without any other undesired effect.\r\n\r\nRegards,\r\n\r\nDamian Cherubinihttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2013-02-18T10:54:02.773-08:00",
+      "Id": 156629
+    }
+  ]
+}

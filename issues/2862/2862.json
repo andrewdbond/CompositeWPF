@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "This should be closed with the Prism V2 release.",
+    "ClosedDate": "2009-03-10T11:30:41.83-07:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "Hi,\n \nI want to dispose the unity container of my shell before stopping my application. But calling Dispose() on the container results in a stack overflow exception. It seems that this is caused by a bug in the class UnityBootstrapper in the method ConfigureContainer:\n \nInstead of:\n \n            Container.RegisterInstance<IUnityContainer>(Container);\n \nthis call should be made:\n \n            Container.RegisterInstance<IUnityContainer>(Container, new ExternallyControlledLifetimeManager());\n \nOtherwise the container is recursively disposed which causes this stack overflow. Please include this fix in your next release.\n \nRegards,\ntschaena",
+    "LastUpdatedDate": "2013-05-16T05:29:04.323-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-08-13T06:56:29.617-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Dispose() of UnityContainer results in stack overflow",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 5,
+    "Id": 2862
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Just to let you know this is solved with Unity 1.2 and which the Prism v2 stuff will use..  Unity 1.2 is adding itself to the container and properly handles dispose.  This means we no longer need to explicitly register IUnityContainer, but it will be available if you need to resolve it.\r\n\r\nIf you want to use Unity 1.2 with Prism v1, check out this post on using Prism v1 and EntLib 4.1 http://www.ademiller.com/blogs/tech/2008/11/composite-application-guidance-for-wpf-with-entlib-41.\r\n\r\nYou can then remove the Container.RegisterInstance from the UnityBootstrapper.cs file.\r\n\r\nHTH,\r\n\r\n-b\r\n\r\n",
+      "PostedDate": "2008-12-12T13:26:15.803-08:00",
+      "Id": 156016
+    },
+    {
+      "Message": "Just curious, why does one need to resolve the container itself?  I mean if you have the reference to the container, why do you need to resolve again?\r\nI don't know what situation would require such configuration.  Can someone elaborate?",
+      "PostedDate": "2009-04-16T12:46:12.413-07:00",
+      "Id": 156017
+    }
+  ]
+}

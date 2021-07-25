@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "588506",
+    "ThreadId": "251714",
+    "Html": "\r\n<p>I've got an in and OOB Silverlight/Unity Prism app going.</p>\r\n<p>I'm using <a href=\"http://blogs.southworks.net/dschenkelman/2011/01/10/how-to-load-prism-modules-packaged-in-a-separate-xap-file-in-an-oob-application/\">\r\nDamain Schenkelman's CachingXapModuleTypeLoader</a> to get the XAPs into ISO. (&#65279;&#65279;&#65279;</p>\r\n<p>My modules are loaded according to a webservice, and I have a scheme worked out that if the webservice tells me the version is greater than the one I have in ISO, I delete and re-download it. I also do this ALL the time if running localhost so that developers\r\n don't have to continually clear ISO to get their updated modules to run.</p>\r\n<p>All this has been tested extensively and works just perfect In Browser.</p>\r\n<p>OOB is a different story, I might not get any modules, or I might get them all. Generally, however, I am one or two short. Logging shows me that it is failing on a WebClient_OpenReadCompleted call with the error telling me the XAP was not found. The full\r\n name of the XAP is correct, and the message is bogus since the next time I run it may load.</p>\r\n<p>Anybody have any thoughts on why I would be having trouble downloading XAPs to ISO while OOB? -- remember, IN browser it works perfectly, and sometimes does as well OOB... just not reliably.</p>\r\n<p>Any help would be wonderful!</p>\r\n<p>-Dave</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-03-29T15:47:07.17-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "588803",
+    "ThreadId": "251714",
+    "Html": "<p>Hi Dave,</p>\n<p>We've been reported this previously in the following thread:</p>\n<p><a href=\"http://compositewpf.codeplex.com/discussions/242463\"><span>Intermittent NotFound error with Prism Modules +MEF when running Silverlight out of browser </span></a></p>\n<p>After researching the issue further, we've found that the problem is related to Silverlight. When loading modules from a XAP file, Prism internally uses a <a href=\"http://msdn.microsoft.com/en-us/library/system.net.webclient%28VS.95%29.aspx\"> WebClient</a> request, which intermittently fails in certain scenarios in Silverlight OOB applications. We've reproduced this behavior when hosting the solution in Cassini, but you could try hosting it in IIS to see if you still experience this problem.</p>\n<p>As a workaround, you could load your xap files sequentially (that is to say, download a xap file on-demand after the other has been loaded, and so forth), since the problem only seems to occur when processing two simultaneous <strong>WebClient </strong>requests.</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-30T06:25:51.667-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

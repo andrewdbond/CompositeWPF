@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "481158",
+    "ThreadId": "223748",
+    "Html": "<p>Trying to use this behavior for popup windows.&nbsp; How can I get the instance of the Composition Container in my Infrastructure project, ServiceLocator fails miserably?&nbsp; Not sure what else to use. This is needed for an instance of IRegionManager to be able to add to the RM, the popup window region.</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre>            <span style=\"color:green\">//IRegionManager regionaManager = Container.GetExportedValue&lt;IRegionManager&gt;();</span>\r\n            IRegionManager regionManager = ServiceLocator.Current.GetInstance&lt;IRegionManager&gt;(); // blows up here\r\n            <span style=\"color:blue\">if</span> (regionManager != <span style=\"color:blue\">null</span>)\r\n            {\r\n                IRegion region = <span style=\"color:blue\">new</span> SingleActiveRegion();\r\n                DialogActivationBehavior behavior;\r\n<span style=\"color:blue\">#if</span> SILVERLIGHT\r\n                behavior = <span style=\"color:blue\">new</span> PopupDialogActivationBehavior();\r\n<span style=\"color:blue\">#else</span>\r\n                behavior = <span style=\"color:blue\">new</span> WindowDialogActivationBehavior();\r\n<span style=\"color:blue\">#endif</span>\r\n                behavior.HostControl = owner;\r\n                region.Behaviors.Add(DialogActivationBehavior.BehaviorKey, behavior);\r\n                regionManager.Regions.Add(regionName, region);\r\n            }\r\n</pre>\r\n<br><br>note: this is part of a static class for the dependency properties based on the ST-RI implementation.</div>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-08-16T16:52:22.267-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "492930",
+    "ThreadId": "223748",
+    "Html": "<p>As long as the MefBootstrapper is run the ServiceLocator should have been established appropriately.&nbsp; What's the timing of when this code is run?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-13T11:17:44.267-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

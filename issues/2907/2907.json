@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "For people who are running into this issue, it could be useful to know that in Prism v4.0, this scenario has been addressed, by updating the GetNotAllreadyLoadedModuleInfos method in the DirectoryModuleCatalog class to ignore non-. NET assemblies.\r\n\r\nYou can find more information on the following work items:\r\n\r\nhttp://compositewpf.codeplex.com/workitem/4835\r\nhttp://compositewpf.codeplex.com/workitem/4022",
+    "ClosedDate": "2011-01-03T10:13:02.723-08:00",
+    "CommentCount": 0,
+    "Custom": "",
+    "Description": "DirectoryLookupModuleEnumerator scans for all the assemblies given at a specific path. The problem raises when native assemblies reside at that path as well, such as MS SQL CE 3.5. As a result, the InnerModuleInfoLoader throws an exception when is trying to use Assembly.ReflectionOnlyLoadFrom(). \nMy solution was to add another filter on to filter out those assemblies that are not loadable. Introduces an overhead, since I have to call Assembly.ReflectionOnlyLoadFrom() twice for an assembly that is managed code, but that's the best could figure out.\n \nNote: putting non-managed assemblies in a different location is not an option.",
+    "LastUpdatedDate": "2013-05-16T05:29:03.737-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-08-25T10:25:25.13-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "DirectoryLookupModuleEnumerator fails when native assemblies present in modules forlder",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 4,
+    "Id": 2907
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

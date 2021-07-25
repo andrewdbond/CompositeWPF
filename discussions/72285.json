@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "246754",
+    "ThreadId": "72285",
+    "Html": "<p>Hey guys - I am relatively new to Prism, Silverlight and MVVM.&nbsp; I would like to describe the approach I have taken to implementing closable views, and get feedback on if I am going down the right path or not.</p>\r\n<p>I have a ViewModel base class that has a DelegateCommand named CloseCommand.&nbsp; It also has 3 virtual methods - CanCloseView, OnViewClosing, OnViewClosed.&nbsp; Currently CloseCommand is bound to a Button in the HeaderTemplate of a TabItem.</p>\r\n<p>Whenever I create a View, I do the following:&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>IRegion mainRegion = _regionManager.Regions[<span style=\"color:#A31515\">&quot;MainRegion&quot;</span>];\r\n<span style=\"color:Blue\">string</span> viewName = <span style=\"color:#A31515\">&quot;OrderListView&quot;</span>;\r\n\r\nOrderListView view = _container.Resolve&lt;OrderListView&gt;();\r\nOrderListViewModel = _container.Resolve&lt;OrderListViewModel&gt;();\r\n\r\nview.DataContext = viewModel;\r\n\r\nmainRegion.Add(view, viewName);\r\n\r\nviewModel.CloseCommand = <span style=\"color:Blue\">new</span> DelegateCommand&lt;<span style=\"color:Blue\">object</span>&gt;(\r\n   o =&gt; { viewModel.OnViewClosing(); mainRegion.Remove(view); viewModel.OnViewClose(); },\r\n   o =&gt; { <span style=\"color:Blue\">return</span> viewModel.CanCloseView();  });</pre>\r\n</div>\r\n<p>My intent was for the View and ViewModel to continue to be ignorant of eachother as well as whatever Region the View may be residing in, but now I have this bit of code that is very aware of all of the above.</p>\r\n<p>Is there a better way to accomplish this?</p>",
+    "PostedDate": "2009-10-16T17:36:03.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "246934",
+    "ThreadId": "72285",
+    "Html": "<p>Lots of options. First I would propose a different view (no pun intended) on this that perhaps gets you to where you want to be:</p>\r\n<p>&nbsp;</p>\r\n<p>Consider --&gt;</p>\r\n<p>&nbsp;</p>\r\n<pre><br>IViewModel vm = _container.Resolve&lt;IViewModel&gt;(&quot;OrderListVm&quot;);<br><br><br>- this is all that needs to happen to get the view all 'wired up'. Obviously you previously wired up IViewModel to the concrete type(s).<br>....<br><br> <br><br>note - Here I am using the vm where it really should be a seperate controller as the vm is handling too much. It violated 'single responsibility' but you should see my point - by using concrete types in Unity <br>instead of contracts your lack of coupling in v-vm is fine but the larger<br>and giving up the ability to think about the fundamental contract vs. concrete aspect this makes any v-vm coupling a secondary issue. In fact you would solve both if you had this in a controller I think you will<br>see.<br><br><br><br><br>public class OrderListViewModel : IViewModel, INotifyPropertyChanged {<br><br>public OrderListViewModel(IRegionManager regionManager, [Dependency(<span style=\"color:#a31515\">&quot;OrderListView&quot;</span>)] FrameworkElement view){<br><br><pre>IRegion mainRegion = regionManager.Regions[<span style=\"color:#a31515\">&quot;MainRegion&quot;</span>];<br></pre>\r\n<br>\r\n<pre>mainRegion.Add(view,<span style=\"color:#a31515\">&quot;OrderListView&quot;</span>);<br></pre>\r\n<pre>CloseCommand = <span style=\"color:blue\">new</span> DelegateCommand&lt;<span style=\"color:blue\">object</span>&gt;(<br>  o =&gt; { OnViewClosing(); mainRegion.Remove(view); OnViewClose(); },<br>   o =&gt; { <span style=\"color:blue\">return</span> CanCloseView();  });</pre>\r\n<br>}<br><br></pre>\r\n<pre><pre>DelegateCommand&lt;<span style=\"color:Blue\">object</span>&gt; CloseCommand ........<br><br>...<br><br>etc.<br><br><br>}<pre>\r\n</pre>\r\n</pre>\r\n</pre>\r\n<p>&nbsp;</p>\r\n<p>Damon Carr</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-17T15:32:07.62-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "246968",
+    "ThreadId": "72285",
+    "Html": "<p>Check the Screen Factory class described by Ward Bell in this <a title=\"Screen Factory\" href=\"http://neverindoubtnet.blogspot.com/2009/06/screen-factory.html\">article</a>.</p>",
+    "PostedDate": "2009-10-17T19:04:10.99-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

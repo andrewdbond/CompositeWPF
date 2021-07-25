@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "223200",
+    "ThreadId": "65538",
+    "Html": "<p>I'm trying to enforce some code analysis rules against my Silverlight projects based on Prism.&nbsp; I'm running into errors with regard to the Bootstrapper.</p>\r\n<p>Specifically, I'm getthing the following errors when trying to test the bootstrapper,</p>\r\n<p>Method 'CreateShell' in type 'Test.MyBootstrapper' from assembly 'Test', Version=1.0.0.0, Culture=neutral, PublicKeyToken=null' does not have an implementation.</p>\r\n<p>Is there an incompatability with FxCop that I'm not aware of?</p>\r\n<p>Thanks</p>\r\n<p>Rick</p>",
+    "PostedDate": "2009-08-13T18:44:09.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "223337",
+    "ThreadId": "65538",
+    "Html": "<p>Did you implement the method? Bootstrapper is derived from UnityBootstrapper, which is an abstract class, and the implementation of &quot;CreateShell&quot; is required.</p>",
+    "PostedDate": "2009-08-14T03:50:39.43-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "223515",
+    "ThreadId": "65538",
+    "Html": "<div style=\"color:Black;background-color:White\">\r\n<pre>Here's the class that I'm using.</pre>\r\n<pre>    <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span><span style=\"color:MediumTurquoise\"> MyBootstrapper : UnityBootstrapper\r\n    </span>{\r\n        <span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">override</span> DependencyObject CreateShell()\r\n        {\r\n            ShellView shell = Container.Resolve&lt;IShellViewModel&gt;().View <span style=\"color:Blue\">as</span> ShellView;\r\n            Application.Current.RootVisual = shell;\r\n            <span style=\"color:Blue\">return</span> shell;\r\n        }\r\n\r\n        <span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">override</span> <span style=\"color:Blue\">void</span> ConfigureContainer()\r\n        {\r\n            <span style=\"color:Blue\">base</span>.ConfigureContainer();\r\n\r\n            Container.RegisterType&lt;IAuthenticationContext, AuthenticationContext&gt;(<span style=\"color:Blue\">new</span> ContainerControlledLifetimeManager());\r\n            Container.RegisterType&lt;IAuthorizationContext, AuthorizationContext&gt;(<span style=\"color:Blue\">new</span> ContainerControlledLifetimeManager());\r\n            Container.RegisterType&lt;ISessionContext, SessionContext&gt;(<span style=\"color:Blue\">new</span> ContainerControlledLifetimeManager());\r\n\r\n            Container.RegisterType&lt;IShellModel, ShellModel&gt;(<span style=\"color:Blue\">new</span> ContainerControlledLifetimeManager());\r\n            Container.RegisterType&lt;IShellViewModel, ShellViewModel&gt;();\r\n            Container.RegisterType&lt;IShellView, ShellView&gt;();\r\n\r\n            Container.Resolve&lt;ISessionContext&gt;();\r\n        }\r\n\r\n        <span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">override</span> IModuleCatalog GetModuleCatalog()\r\n        {\r\n            ModuleCatalog catalog = ModuleCatalog.CreateFromXaml(\r\n                    <span style=\"color:Blue\">new</span> Uri(<span style=\"color:#A31515\">&quot;ModuleCatalog.xaml&quot;</span>, UriKind.Relative));\r\n\r\n            <span style=\"color:Blue\">return</span> catalog;\r\n        }\r\n    }\r\n</pre>\r\n</div>",
+    "PostedDate": "2009-08-14T07:26:04.153-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "223612",
+    "ThreadId": "65538",
+    "Html": "<p>Hi Rick,</p>\r\n<p>I have just talked with a colleague of mine who has been developing an application using Prism, Silverlight 3 and <strong>FxCop</strong> for a long time now. He says he had no issues while developing so far and <strong>FxCop</strong> works correctly.</p>\r\n<p>If blackjack&rsquo;s suggestion was not accurate for your scenario, you could check if you are not missing any assembly references, or if anything of your environment is reproducing a bug Visual Studio might have (I am no<span style=\"color:#1f497d\">t</span> aware of anything related to this, but surfing the Web might throw some answers).</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-08-14T10:53:08.77-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "223614",
+    "ThreadId": "65538",
+    "Html": "<p>Thanks for looking into this.&nbsp; The project builds just fine, so I'm going to reflect through FxCop and see where it's breaking and I'll see how it is trying to activeate the code.</p>",
+    "PostedDate": "2009-08-14T10:56:30.307-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "223686",
+    "ThreadId": "65538",
+    "Html": "<p>Seems that when our custom rules the problem is arising when we try to load the assemblies to compare types,</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>Assembly asm = Assembly.LoadFrom(type.DeclaringModule.Location);\r\n</pre>\r\n</div>\r\n<p>This was causing the exception.&nbsp; I removed the depnedence on this and use the FrameworkType to evaluate the TypeNodes,</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">if</span> (type.IsAssignableTo(FrameworkTypes.Attribute))\r\n</pre>\r\n</div>\r\n<p>Thanks again for looking into this.</p>",
+    "PostedDate": "2009-08-14T13:40:02.317-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

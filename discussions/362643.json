@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "859580",
+    "ThreadId": "362643",
+    "Html": "\r\n<p>I'm using RequestNavigate/Region through all my application. It works good and well for main window and dialog windows. But now I'm stuck trying to navigate to region inside simple WPF Popup control. As far as I understood RegionManager.Regions isn't populating\r\n with my region created inside Popup. I set region with:</p>\r\n<p>RegionManager.SetRegionName(content, Common.RegionNames.PopupFilter);</p>\r\n<p>Probably somewhere inside Prism engine, it tries to find parent Window object and fails because Popup doesn't belong to any window<br>\r\n<br>\r\nPlease advice</p>\r\n",
+    "PostedDate": "2012-07-10T03:48:34.087-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "859667",
+    "ThreadId": "362643",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding if your are simple showing a new popup window, and defining regions within it. You will have to manually set the\r\n<strong>RegionManager </strong>for this new window. For example like this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>RegionManager.SetRegionManager(popupWindow, <span style=\"color:blue\">this</span>.Container.Resolve&lt;IRegionManager&gt;());\nRegionManager.UpdateRegions();\n</pre>\r\n</div>\r\n<p>An example of this can also be seen in the following blog post and related work item:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/dschenkelman/2010/01/26/creating-a-multi-shell-application-in-prism-v2/\">Creating a multi-shell application in Prism-v2</a>\r\n</li><li><a href=\"http://compositewpf.codeplex.com/workitem/3216\">Applications may have multiple shell windows</a>\r\n</li></ul>\r\n<p>Also, in my case I have used the <strong>WindowDialogActivationBehavior </strong>\r\nincluded with the <strong>Stock Trader RI</strong>, which allows you to define a region that, when a view is added to it, will be shown in a new window/popup. With this approach you should also be able to see regions defined inside your popups.</p>\r\n<p>For more information on this topic, you could take a look at the following code files (in the\r\n<strong>WPF </strong>version of the RI):</p>\r\n<ul>\r\n<li><em>StockTraderRI_Desktop\\StockTraderRI.Infrastructure\\Behaviors\\RegionPopupBehavior.cs</em>\r\n</li><li><em>StockTraderRI_Desktop\\StockTraderRI.Infrastructure\\Behaviors\\WindowsDialogActivationBehavior.cs</em>\r\n</li></ul>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-07-10T06:51:08.343-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "859674",
+    "ThreadId": "362643",
+    "Html": "<p>Wow, that was really simple<br /><br />Thank you</p>",
+    "PostedDate": "2012-07-10T07:06:37.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

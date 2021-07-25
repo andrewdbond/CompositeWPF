@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "452949",
+    "ThreadId": "215308",
+    "Html": "<p>Hello,</p>\r\n<p>I want to communicate between two modules without using EventAggregator, as well as without giving reference of module.</p>\r\n<p>Is there any way to do this kind of Stuff ?</p>\r\n<p>Thanks,</p>\r\n<p>Rajnikant Rajwadi</p>",
+    "PostedDate": "2010-06-08T06:09:13.053-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "453139",
+    "ThreadId": "215308",
+    "Html": "<p>Hi Rajnikant,</p>\r\n<p>The EventAggregator is not the only way you can use to communicate between  two modules without directly referencing them. Depending on your requirements,  you could use the different approaches stated on <a href=\"http://msdn.microsoft.com/en-us/library/ff647735.aspx\">this article</a> of  the prism documentation.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-06-08T11:52:34.763-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "453423",
+    "ThreadId": "215308",
+    "Html": "<p>Hi guidomaliandi,</p>\r\n<p>I see this article, but i can not find solution over there.</p>\r\n<p>See my problem is</p>\r\n<p>I have one module, that module have a view that hold a popup control. inside this popup control I have a region that load another view from different module.</p>\r\n<p>I can do this. But problem is that I have to pass one value.</p>\r\n<p>I dont want to do this thru event aggregator.</p>\r\n<p>can u help me for this ?</p>\r\n<p>Thanks,</p>\r\n<p>Rajnikant Rajwadi</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-06-09T02:31:32.52-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "471570",
+    "ThreadId": "215308",
+    "Html": "Hi Rajnikant,\r\n\r\nDid you any solution for your problem?\r\nI am also having the same problem.\r\nIf you get any solution or workaround please share that.\r\n\r\nRegards,\r\nHarish\r\n\r\n",
+    "PostedDate": "2010-07-23T05:37:58.863-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "471614",
+    "ThreadId": "215308",
+    "Html": "<p id=1f98fb20-7890-012d-1989-12313b101101>Hi guys,</p>\r\n<p id=1f990f70-7890-012d-198a-12313b101101>Based on our understanding you need to communicate two modules without using event aggregator. There are 4 different ways for <a href=\"http://msdn.microsoft.com/en-us/library/ff647735.aspx\">communication</a>&nbsp;supported by Prism out-of-the-box.</p>\r\n<p id=1f992ab0-7890-012d-198b-12313b101101>However, based on your specs you could use <a href=\"http://msdn.microsoft.com/en-us/library/ff647735.aspx\">Shared Services</a> (see the <em>Shared Service</em> section), which is also cross-module like Event Aggregator. From the documentation at MSDN: <em>Service instances are shared across modules, so you can share data and <strong>pass messages</strong> between modules.</em></p>\r\n<p id=1f994cf0-7890-012d-198c-12313b101101>Therefore, it seems to be the right solution for you, and it is simple to use by registering your service, as shown in the following code:</p>\r\n<blockquote>\r\n<p id=1f9970f0-7890-012d-198d-12313b101101>protected void RegisterViewsAndServices() <br>{<br>&nbsp;&nbsp;&nbsp; _container.RegisterType&lt;IMarketFeedService, MarketFeedService&gt;(new ContainerControlledLifetimeManager()); <br>&nbsp;&nbsp;&nbsp; //... <br>}</p>\r\n</blockquote>\r\n<p id=1f999320-7890-012d-198e-12313b101101>For more information about this, you could take a look at the following documentation section:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff650141.aspx\">How to: Register and Use Services</a></li>\r\n</ul>\r\n<p id=1f99b3f0-7890-012d-198f-12313b101101>Additionally, in the <a href=\"http://msdn.microsoft.com/en-us/library/ff647434.aspx\">Stock Trader RI</a>, you'll find an example (see the <strong>RegisterViewsAndServices</strong> method in <strong>MarketModule.cs</strong>).</p>\r\n<p id=1f99f5e0-7890-012d-1991-12313b101101>Please let me know if this helps.</p>\r\n<p id=1f9a1700-7890-012d-1992-12313b101101>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-07-23T06:52:43.83-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "661555",
+    "ThreadId": "215308",
+    "Html": "<blockquote style=\"border: solid .1em #ccc; font-style: italic; margin: .25em 1em 0 1em; padding: 0 .25em 0 .25em;\"><strong>fantivero wrote:</strong><br />\r\n<blockquote>\r\n<p id=\"1f9970f0-7890-012d-198d-12313b101101\">protected void RegisterViewsAndServices() <br /> {<br /> &nbsp;&nbsp;&nbsp; _container.RegisterType&lt;IMarketFeedService, MarketFeedService&gt;(new ContainerControlledLifetimeManager()); <br /> &nbsp;&nbsp;&nbsp; //... <br /> }</p>\r\n</blockquote>\r\n<p id=\"1f999320-7890-012d-198e-12313b101101\">For more information about this, you could take a look at the following documentation section:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff650141.aspx\">How to: Register and Use Services</a></li>\r\n</ul>\r\n<p>&nbsp;</p>\r\n</blockquote>\r\n<p>fantivero--</p>\r\n<p>The code you cite above is out of date. It no longer appears in the Stock Trader RI example. The comments in \"MarketModule.cs\" say this:&nbsp;\"This module is intentionally left empty because views, services, and other types are discovered through declarative attributes. View registration for this module is done through the ViewExportAttribute.\"</p>\r\n<p>So basically, the MSDN documentation is no longer useful. I am unable to find examples of the \"new\" way of the ViewExportAttribute approach.</p>\r\n<p>Thanks, though, for the \"How to\" link. I hand never found that page. It's probably written for VS2008, but at least it's something that appears to be useful.</p>",
+    "PostedDate": "2011-08-22T07:17:19.157-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "662068",
+    "ThreadId": "215308",
+    "Html": "<p>Hi, <br /> You could try downloading the<a href=\"http://prismtk.codeplex.com/releases/view/56048\"> Prism Training Kit</a>, where you might find some useful examples, like the one in the <strong>MEF Lab</strong>, exercise 2 which implements <strong>ViewExport Attribute</strong>.<br /> <br /> I hope you find this information handy.</p>\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-08-23T06:04:03.033-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "233988",
+    "ThreadId": "68762",
+    "Html": "<div>\r\n<p>How do I close a View from its ViewModel?</p>\r\n<p>I've a WPF window which has defined multiple Regions and being used as a Shell to host views for my application. I would like to have a View able to remove itself from the Region, or close it from a tabbed container. How can I accomplish this behavior from ViewModel.</p>\r\n</div>",
+    "PostedDate": "2009-09-13T01:22:28.753-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "234178",
+    "ThreadId": "68762",
+    "Html": "<p>Hi,</p>\r\n<p>&nbsp;At some point you must have used the RegionManager to register the view with a region (let's say the TabRegion). All you have to do is to remove the view from that region in order to close it.</p>",
+    "PostedDate": "2009-09-13T22:57:13.783-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "234183",
+    "ThreadId": "68762",
+    "Html": "<p>Yes, but how can I access RegionManager from ViewModel? Or where should I hook an event to be raised from ViewModel that could remove View from RegionManager?</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2009-09-13T23:17:24.657-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "234219",
+    "ThreadId": "68762",
+    "Html": "<p>u could do the following</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">class</span><span style=\"color:MediumTurquoise\"> ViewModel\r\n</span>{\r\n     <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">event</span> RequestClose;\r\n     <span style=\"color:Blue\">public</span> ICommand CloseCommand { get; private set; } <span style=\"color:Green\">// Bind to some button?</span>\r\n\r\n     <span style=\"color:Blue\">public</span> ViewModel\r\n     {\r\n        <span style=\"color:Blue\">this</span>.CloseCommand = <span style=\"color:Blue\">new</span> DelegateCommand&lt;<span style=\"color:Blue\">object</span>&gt;(() =&gt; RequestClose(<span style=\"color:Blue\">this</span>, <span style=\"color:Blue\">null</span>), () =&gt; RequestClose != <span style=\"color:Blue\">null</span>);\r\n     }\r\n}\r\n\r\n\r\n<span style=\"color:Blue\">class</span><span style=\"color:MediumTurquoise\"> ShellView\r\n</span>{\r\n     IRegionManager regionManager;\r\n     <span style=\"color:Blue\">public</span> ShellView(IRegionManager regionManager)\r\n     {\r\n         <span style=\"color:Blue\">this</span>.regionManager = regionManager;\r\n     } \r\n\r\n     <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">void</span> Initialize()\r\n     {\r\n           ViewModel vm  = <span style=\"color:Blue\">new</span> ViewModel();\r\n           regionManager.Regions[<span style=\"color:#A31515\">&quot;MyRegion&quot;</span>].Add(vm);\r\n           vm.RequestClose += () =&gt; regionManager.Regions[<span style=\"color:#A31515\">&quot;MyRegion&quot;</span>].Remove(vm);\r\n     }\r\n\r\n}\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-14T02:18:12.29-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

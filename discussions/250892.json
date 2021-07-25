@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "585131",
+    "ThreadId": "250892",
+    "Html": "<p>Is it possible to register a region adapter within a module? Please note that I'm using MEF</p>\n<p>I have a ContentControl in my Shell.xaml set to region \"MainRegion\" that currently gets populated with a module containing the AvalonDock control. I currently have the AvalonDock region adapter in my Shell app but would like to place it in the module and  register itself. I want to keep this program flexible so that if we decide to use something other than AvalonDock, I can easily use another module without having to modify my Shell assembly (removing the avalondock region adapter).</p>\n<p>I imagine something like this is possible. Has anyone done this before?</p>",
+    "PostedDate": "2011-03-23T09:40:50.77-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "585146",
+    "ThreadId": "250892",
+    "Html": "<p>Hi,</p>\r\n<p>The scenario you're describing is possible. Although custom region adapters are intended to be registered in the <strong>﻿RegionAdapterMappings</strong> in the Bootstrapper's <strong>ConfigureRegionAdapterMappings</strong> method, it is possible to register a custom region adapter from within a module.</p>\r\n<p>You could, for example, obtain a reference to the <strong>RegionAdapterMappings</strong> in your <strong>Module</strong> class by using constructor injection, and call the <a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.prism.regions.regionadaptermappings.registermapping%28PandP.40%29.aspx\">RegisterMapping</a> method there. This is possible since there is a class named <strong>MefRegionAdapterMappings</strong>, which exports the <strong>RegionAdapterMappings </strong>as a shared export. Note that you should be aware of the timing issues that may arise due to this. You should be careful to register the custom mapping before attempting to create a region which uses that adapter.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-23T09:59:49.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "585182",
+    "ThreadId": "250892",
+    "Html": "<p>Thanks, adding RegionAdapterMappings to my constructor worked.</p>",
+    "PostedDate": "2011-03-23T10:33:49.007-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "910371",
+    "ThreadId": "250892",
+    "Html": "<p>Hi</p>\r\n<p>I am trying add a stackpanel region&nbsp;, where I have to add usercontrol to it from my module.(WPF app).</p>\r\n<p>Can I use RegionAdapterMappings? can you please post the code?</p>",
+    "PostedDate": "2012-09-10T04:19:47.923-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "910415",
+    "ThreadId": "250892",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I believe you could check the following thread, where the user <a href=\"http://www.codeplex.com/site/users/view/tzuhsun\">\r\ntzuhsun</a> posted an possible approach on how to implement a <strong>StackPanel </strong>\r\nregion adapter:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/273831\">How to sort/rearrange Views in StackPanel</a>\r\n</li></ul>\r\n<p>Based on this approach, your region adapter could be like this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> StackPanelRegionAdapter : RegionAdapterBase&lt;StackPanel&gt;\n    {\n\n        <span style=\"color:blue\">public</span> StackPanelRegionAdapter(IRegionBehaviorFactory regionBehaviorFactory)\n            : <span style=\"color:blue\">base</span>(regionBehaviorFactory)\n        {\n        }\n\n        <span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> <span style=\"color:blue\">void</span> Adapt(IRegion region, StackPanel regionTarget)\n        {\n            <span style=\"color:blue\">if</span> (region == <span style=\"color:blue\">null</span>) <span style=\"color:blue\">return</span>;\n\n            region.Views.CollectionChanged &#43;= (sender, e) =&gt;\n            {\n                <span style=\"color:blue\">switch</span> (e.Action)\n                {\n                    <span style=\"color:blue\">case</span> NotifyCollectionChangedAction.Add:\n\n                        <span style=\"color:blue\">foreach</span> (UIElement element <span style=\"color:blue\">in</span> e.NewItems)\n                        {\n                            regionTarget.Children.Add(element);\n                        }\n                        <span style=\"color:blue\">break</span>;\n\n                    <span style=\"color:blue\">case</span> NotifyCollectionChangedAction.Remove:\n\n                        <span style=\"color:blue\">foreach</span> (UIElement elementLoopVariable <span style=\"color:blue\">in</span> e.OldItems)\n                        {\n                            <span style=\"color:blue\">var</span> element = elementLoopVariable;\n\n                            <span style=\"color:blue\">if</span> (regionTarget.Children.Contains(element))\n                            {\n                                regionTarget.Children.Remove(element);\n                            }\n                        }\n                        <span style=\"color:blue\">break</span>;\n                }\n            };\n        }\n\n        <span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> IRegion CreateRegion()\n        {\n            <span style=\"color:blue\">return</span> <span style=\"color:blue\">new</span> AllActiveRegion();\n        }\n    }\n</pre>\r\n</div>\r\n<p>Once you created your region adapter, you could customize the <strong>Region Adapter Mappings\r\n</strong>for example by overriding the <strong>ConfigureRegionAdapterMappings</strong> method in your\r\n<strong>bootstrapper </strong>like this:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> Microsoft.Practices.Prism.Regions.RegionAdapterMappings ConfigureRegionAdapterMappings()\n        {\n            RegionAdapterMappings regionAdapterMappings = <span style=\"color:blue\">base</span>.ConfigureRegionAdapterMappings();\n            regionAdapterMappings.RegisterMapping(<span style=\"color:blue\">typeof</span>(StackPanel), ServiceLocator.Current.GetInstance&lt;StackPanelRegionAdapter&gt;());\n            <span style=\"color:blue\">return</span> regionAdapterMappings;\n        }\n</pre>\r\n</div>\r\n<p>Additionally, for more information on how to create a custom Region Adapter you could check the following section of the\r\n<strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430866(v=pandp.40)#sec25\">Appendix E: Extending Prism, Region Adapters</a>\r\n</li></ul>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-09-10T06:17:11.887-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

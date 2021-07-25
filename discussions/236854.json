@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "530028",
+    "ThreadId": "236854",
+    "Html": "\r\n<p>I am able to access the RegionManager from the ModuleInit of a module.</p>\r\n<p>Using this I can add the module to a region.</p>\r\n<p>However I cannot access the RegionManager from the Shell.</p>\r\n<p>How do I add a module to a region from the Shell?</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-02T05:37:37.71-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "530087",
+    "ThreadId": "236854",
+    "Html": "\r\n<p>If you don't have a shellviewmodel it might help things. At least that is how I get other things into the ShellView of my application.</p>\r\n",
+    "PostedDate": "2010-12-02T07:20:15.52-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "530259",
+    "ThreadId": "236854",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Firstly, take into account that you can add views to regions, not modules. Views are visual components, while modules are functional unities. You can read more about this in\r\n<a href=\"View.aspx?ThreadId=204808\" target=\"_blank\">this thread</a>.</p>\r\n<p>That said, it isn&acute;t a recommended practice to add views into regions from the shell itself. This is because the purpose of adding views to regions is to allow loosely coupled components (modules) to add visual components (views) into an integrated\r\n layout. So, it could be better practice to place the views in separate modules. If you need to place a visual component in the shell, which will not come from a Module then you could simply add this component in the XAML file of your shell. You can read more\r\n about this, in <a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28v=PandP.40%29.aspx\" target=\"_blank\">\r\nthis chapter</a> from Prism v4 MSDN documentation.</p>\r\n<p>As for accessing the <strong>RegionManager</strong> from the <strong>Shell</strong>, you could implement constructor injection in your shell&rsquo;s code behind, and inject the\r\n<strong>RegionManager </strong>class. For example, you can read about constructor injection in MEF\r\n<a href=\"http://mef.codeplex.com/wikipage?title=Declaring%20Imports&referringTitle=Guide\" target=\"_blank\">\r\nhere</a>, and in Unity <a href=\"http://msdn.microsoft.com/en-us/library/ff660875%28v=PandP.20%29.aspx\" target=\"_blank\">\r\nhere</a>.</p>\r\n<p>However, if your scenario requires performing some action in a specific region from within the shell, you will need to handle the\r\n<strong>RegionManager</strong>&rsquo;s <strong>Region</strong> property&rsquo;s <strong>\r\nCollectionChanged</strong> event in your <strong>Shell</strong> class. This is because after the initialization of the Shell, the regions within are not instantly created. In\r\n<a href=\"View.aspx?ThreadId=235477\" target=\"_blank\">this</a> post you can see an example on how to detect Region&acute;s\r\n<strong>CollectionChanged</strong> event.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-02T12:02:33.46-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "530580",
+    "ThreadId": "236854",
+    "Html": "\r\n<p>Thanks for the clear explanation :)</p>\r\n",
+    "PostedDate": "2010-12-03T03:46:09.81-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "586207",
+    "ThreadId": "236854",
+    "Html": "<p>Hi Guido,</p>\r\n<p>The link shared does not work anymore! Could you please share the link once again.</p>\r\n<p>Thanks a lot,</p>\r\n<p>Indrasis</p>",
+    "PostedDate": "2011-03-24T22:58:42.943-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "586208",
+    "ThreadId": "236854",
+    "Html": "<p>Hi Guido,</p>\r\n<p>The link shared does not work anymore! Could you please share the link once again.</p>\r\n<p>Thanks a lot,</p>\r\n<p>Indrasis</p>",
+    "PostedDate": "2011-03-24T22:58:45.98-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "587612",
+    "ThreadId": "236854",
+    "Html": "<p>Hi Indrasis,</p>\r\n<p>The thread I've shared with you in the previous post can be found in the following address:</p>\r\n<p><a href=\"http://compositewpf.codeplex.com/discussions/235477\">http://compositewpf.codeplex.com/discussions/235477</a></p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-28T07:43:39.327-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

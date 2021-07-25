@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "517966",
+    "ThreadId": "233690",
+    "Html": "\r\n<p>Running prism v4 for sl4 drop 10. &nbsp;I have a&nbsp;continuous&nbsp;animation running and only when I activate a module (loaded prior to animation start) the animation pauses for a second during the below code call.</p>\r\n<p>//show the view&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>\r\nIRegion region = _regionManager.Regions[ViewRegions.ContentRegion.ToString()];&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<br>\r\nobject view = region.GetView(Views.ContactInfo.ToString());&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\r\n<br>\r\nregion.Activate(view);</p>\r\n<p>If i do anything else in the app such as long running process, loading controls dynamically (without prism) or even running other animations at the same time this visual artifact is not present. What is prism doing during the activate process that is causing\r\n the UI thread to seize? Is there a way to get around this? (I've already tried new threads, dispatching the activate event from the new thread to the UI thread and even using the event aggregators&nbsp;ThreadOption.UIThread to no avail)</p>\r\n<p>Thanks<br>\r\nDML&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-05T14:55:34.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "518926",
+    "ThreadId": "233690",
+    "Html": "\r\n<p>Hi DML,</p>\r\n<p>There is no similar issues reported so far. On the other hand, I tried to reproduce this behavior and found no issues.</p>\r\n<p>I added a RepeatBehavior &quot;<strong>Forever</strong>&quot; to the logo animation in the Stock Trader RI. Then I added some views to a region using View Injection as shown in your code. You can download a repro sample from\r\n<a href=\"http://cid-60a74023ee1812bd.office.live.com/self.aspx/.Public/AnimationWithViewInjectionSample.zip\">\r\nhere</a>.</p>\r\n<p>Have you detected the same situation using a different animation?&nbsp;</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-08T11:46:57.52-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "520680",
+    "ThreadId": "233690",
+    "Html": "\r\n<p>Turns out the underlying problem related to Silverlight and not Prism and how it refreshes the view stack when&nbsp;modifying&nbsp;the&nbsp;visibility&nbsp;property on controls. Thank you for looking into this though, I&nbsp;appreciate&nbsp;it!</p>\r\n<p>Thanks<br>\r\nDML&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-11T09:46:41.367-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "520713",
+    "ThreadId": "233690",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Nice to see that you found the basis of this situation, and thanks for sharing this with the rest of the community, since other users with similar situations can find this helpful.</p>\r\n<p>Please let me know if you have any other question.</p>\r\n<p>Fernando Antivero&nbsp;<br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-11T11:03:13.357-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

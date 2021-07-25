@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "460368",
+    "ThreadId": "217483",
+    "Html": "<p>I have an application with about 10 modules including a shell module that controls all the rest. The shell module comes down first and loads the others on demand.</p>\r\n<p>The trouble here is that I have Unity, Prizm and MEF libraries in ALL the XAP files for each module. This creates an empty module of about 340K in size.</p>\r\n<p>I want to only include the libraries for MEF, Unity and Prizm in the first module (shell) to download to the client then have the others use those libraries instead of downloading all the libraries for every module. This seems like a common thing we would need to do. Is there an article or documentation on how to do this somewhere? If I remove the libraries by hand from the XAP files the application hangs because it can't find the required libraries.</p>",
+    "PostedDate": "2010-06-27T09:35:00.11-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "462785",
+    "ThreadId": "217483",
+    "Html": "<p>Hi,</p>\r\n<p>In order to avoid the references of your modules to be copied to their local  project paths, you must <a href=\"http://msdn.microsoft.com/en-us/library/t1zz5y8c.aspx\">set their copy  local property</a> to false. You can read about this in <a href=\"http://msdn.microsoft.com/en-us/library/ff647246.aspx\">this article</a> from the Prism documentation. Another possibility would be to use  Silverlight&rsquo;s&nbsp;<a href=\"http://msdn.microsoft.com/en-us/library/dd833069(VS.95).aspx\">Application  Library Caching</a>. You can read about it in this <a href=\"http://timheuer.com/blog/archive/2009/07/13/silverlight-3-cached-assembly-feature.aspx\">blog  post</a> by <a href=\"http://timheuer.com/blog/\">Tim Heuer</a>.</p>\r\n<p>As an additional note, please take into account that with Prism 4, it is  suggested to use MEF or Unity, but not the two at the same time.&nbsp;You can read  more about this in this <a href=\"http://blogs.msdn.com/b/blaine/archive/2010/06/16/prism-4-0-plan-amp-drop-available-on-codeplex.aspx\">blog  post</a>.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-07-02T12:20:19.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

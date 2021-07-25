@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "890192",
+    "ThreadId": "388241",
+    "Html": "\r\n<p>I have a set of Forms that i need to create under my Parent View which is also my parent object.</p>\r\n<p>In my Parent View i have a ContentControl with a region ChildRegion which loads my ChildView.</p>\r\n<p>But all the child objects in my Child View need to point to the Parent Object.</p>\r\n<p>How can i acheive this is WPF Prism using controllers?</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-07-24T14:47:36.397-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "891319",
+    "ThreadId": "388241",
+    "Html": "<p>Hi,</p>\r\n<p>If I am understanding your scenario correctly, you have a <strong>parent view</strong> (with its own <strong>parent view model</strong>) which contains a region where a <strong>child view</strong> (with its own <strong>child view model</strong>) is injected and what you want is your <strong>child view model</strong> to access / communicate with your <strong>parent view model</strong>.</p>\r\n<p>As a starting point, communication between the two view models can be achieved using a <strong>shared service</strong>, the <strong>event aggregator</strong> or other communication mechanism provided by <strong>Prism</strong>. You can find more information about this in the following chapter of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28v=pandp.40%29\">Chapter 9 -&nbsp; Communicating Between Loosely Coupled Components</a></li>\r\n</ul>\r\n<p>If instead you want to access to the parent view model itself a possible approach could be to register the<strong> parent view model</strong> as a singleton in the <strong>container</strong>. Like this each time a <strong>parent view model</strong> is required, the container will always inject the same instance. You can use this approach to inject the same <strong>parent view model</strong> in both the <strong>parent view</strong> and the <strong>child view</strong>.</p>\r\n<p>Please let us know if we have misunderstood your scenario.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-07-25T12:53:51.123-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "891816",
+    "ThreadId": "388241",
+    "Html": "<p>DCherubini,</p>\r\n<p>From reading information on the link you posted, shared services are needed for cross module communucation, but in my case the views are in the same module.</p>",
+    "PostedDate": "2012-07-26T09:23:17.447-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "891953",
+    "ThreadId": "388241",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>As mentioned in the previous answer, <strong>Prism </strong>provides several communication approaches:\r\n<strong>shared services</strong>, <strong>event aggregation</strong>, <strong>region context</strong> and\r\n<strong>solution commanding</strong>, each with their own capabilities and restrictions. Which one you should use would depend mostly of your personal preferences and the requirements of your scenario. You can find more information about the aforementioned\r\n approaches in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28v=pandp.40%29\">\r\naforementioned chapter</a> of <strong>Prism</strong>'s documentation.</p>\r\n<p>Regarding shared services, as far as I know there is not an specific restriction about &quot;where&quot; they should be used. As you said, shared services are useful for cross module communications; however, I believe a shared service could also be used to communicate\r\n components of the same module. If using a shared service is not suitable in your scenario, you could follow any of the other aforementioned communication approaches.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2012-07-26T13:39:49.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "893165",
+    "ThreadId": "388241",
+    "Html": "<p>DCherubini,</p>\r\n<p>Can you show me an example of how to implement a Shared Service? I am having a hard time finding on the internet.</p>",
+    "PostedDate": "2012-07-30T10:11:38.297-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "893224",
+    "ThreadId": "388241",
+    "Html": "<p>Hi,</p>\r\n<p>For examples on how to implement a <strong>Shared Service</strong>, I believe you could check the <strong>MarketFeedService.cs</strong> and <strong>MarketHistoryService.cs</strong> files in the the <a href=\"http://msdn.microsoft.com/en-us/library/ff921074(v=pandp.40)\">Stocktrader RI</a> (in this sample the services are exported into the <strong>MEF </strong>container) or the <strong>OrdersRepository.cs</strong> in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921082%28v=pandp.40%29\">Commanding Quickstart</a> where the <strong>Unity</strong> container is used, both samples are provided along with the <strong>Prism </strong>library.</p>\r\n<p>As you may find a <strong>Shared Service </strong>is a class registered in a container that can be accessed through a common interface. Typically, shared services are found in a shared assembly, but this is not always the case, for example in the <strong>Commanding Quickstart</strong> you can find that the aforementioned service is registered and consumed within the same module.</p>\r\n<p>Additionally, I believe you could also check the<strong> Dependency Injection Lab</strong> of the <a href=\"http://prismtk.codeplex.com/\">Prism Training Kit</a>, which explains step by step how to register and consume services in a decoupled way.</p>\r\n<p>On the other hand, take into account that there are several communication approaches that can be used between components and depending on your scenario you will have to decide which one suits your needs. For example if loose coupling is not a requirement, perhaps using <strong>.NET</strong> Framework events could be the most simple and straightforward approach.</p>\r\n<p>I hope you find this helpful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-07-30T12:09:28.38-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

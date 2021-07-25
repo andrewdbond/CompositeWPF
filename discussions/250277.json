@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "582674",
+    "ThreadId": "250277",
+    "Html": "\r\n<p>I am experimenting with the ViewSwitchingNavigation sample.&nbsp; What I am trying to accomplish is the following:</p>\r\n<p>1.) Add a contracts library to the solution (Contracts) that contains one interface:</p>\r\n<p>interface ITest { string Name { get; set; }}</p>\r\n<p>2.) Add a shared library to the solution (Shared - contains references to System.ComponentModel.Composition and Contracts) that contains one class:</p>\r\n<p>[Export] public class Test : ITest { public string Name { get; set; }}</p>\r\n<p>3.) Add references to the Contracts and Shared libraries&nbsp;in the ViewSwitchingNavigation Project</p>\r\n<p>4.) Add a reference to the Contracts library in the ViewSwitchingNavigation.Email project</p>\r\n<p>5.) In the ViewSwitchingNavigation.Email project, add the following statements to the EmailNavigationItemView.cs file:</p>\r\n<p>[Import] public ITest TestInstance;</p>\r\n<p>&nbsp;</p>\r\n<p>So what I'm attempting to achieve is the following:</p>\r\n<p>1.) Email project should not have any dependency on shared library, only on interfaces (Contracts project).&nbsp;</p>\r\n<p>2.) Shell project should plug in concrete instance of ITest at runtime (which it obtains from Shared project), when requested by EmailNavigationItemView.</p>\r\n<p>However, when I run the project after making said changes, I get the ViewRegistrationException exception.</p>\r\n<p>In the debug window, I'm also getting the infamous MEF exception:&nbsp;</p>\r\n<p><span style=\"font-family:Consolas; font-size:xx-small\"><span style=\"font-family:Consolas; font-size:xx-small\"><span style=\"font-family:Consolas; font-size:xx-small\"><span style=\"font-family:Consolas; font-size:xx-small\"></p>\r\n<p>1) No valid exports were found that match the constraint '((exportDefinition.ContractName == &quot;Contracts.ITest&quot;) AndAlso (exportDefinition.Metadata.ContainsKey(&quot;ExportTypeIdentity&quot;) AndAlso &quot;Contracts.ITest&quot;.Equals(exportDefinition.Metadata.get_Item(&quot;ExportTypeIdentity&quot;))))',\r\n invalid exports may have been rejected.</p>\r\n</span></span></span></span>\r\n<p></p>\r\n<p></p>\r\n<div>What am I forgetting to do?&nbsp; Do I need to have the bootstrapper add the Shared library to the AssemblyCatalog or similar?&nbsp; Thanks!</div>\r\n<p></p>\r\n<p><span style=\"font-family:Consolas; font-size:xx-small\"><span style=\"font-family:Consolas; font-size:xx-small\">&nbsp;</span></span></p>\r\n",
+    "PostedDate": "2011-03-18T08:39:59.167-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "582684",
+    "ThreadId": "250277",
+    "Html": "<p>Problem solved.&nbsp; I was thinking that the issue had to do with the way I had my projects setup and how they referenced other assemblies.&nbsp;</p>\r\n<p>Step 2 above should be:</p>\r\n<p>[Export(typeof(ITest))] public class Test : ITest { public string Name { get; set; }}</p>\r\n<p>Apparently I don't know MEF as well as I thought I did.&nbsp; Hopefully this helps someone...</p>",
+    "PostedDate": "2011-03-18T08:51:16.07-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "582695",
+    "ThreadId": "250277",
+    "Html": "<p>Ok, now I took the same concept and applied it towards the ModularityWithMef project.&nbsp; The only difference is that I added a reference to the Contracts library in the ModuleF project, and added the following statement to ModuleF.cs:</p>\n<p>[Import] public ITest TestInstance;</p>\n<p>And of course, ModuleF won't load and the application crashes.&nbsp; This is really the behavior I need (dynamic downloads and having the shell satisfy imports on the dynamically downloaded module)</p>\n<p>\"Unable to locate the module with type 'ModuleF.ModuleF, ModuleF, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null' among the exported modules. Make sure the module name in the module catalog matches that specified on ModuleExportAttribute for the module type.\"</p>\n<p>Any thoughts?</p>",
+    "PostedDate": "2011-03-18T09:04:07.4-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "582747",
+    "ThreadId": "250277",
+    "Html": "<p>Another update.&nbsp; If I move the Test class from the Shared project to the ViewSwitchingNavigation project, the Import in the ModuleF class is successfully satisified.</p>\r\n<p>Hoping someone can shed light as to why the ModuleF.ITest cannot be satisfied when the Test class is contained within the Shared project.</p>",
+    "PostedDate": "2011-03-18T10:32:14.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "582766",
+    "ThreadId": "250277",
+    "Html": "<p>Hi,</p>\r\n<p>The problem you're experiencing could be caused by the fact that you haven't added the <strong>AssemblyCatalog </strong>containing your <strong>Test </strong>export to the <strong>AggregateCatalog</strong>.</p>\r\n<p>You could try adding a reference to the <strong>Shared </strong>and <strong>Contracts </strong>assemblies in your shell project, and add a line like the following to the <strong>ConfigureAggregateCatalog </strong>method override in your bootstrapper class:</p>\r\n<pre><span style=\"color: blue;\">this</span>.AggregateCatalog.Catalogs.Add(<span style=\"color: blue;\">new</span> AssemblyCatalog(<span style=\"color: blue;\">typeof</span>(Shared.Test).Assembly));<br /></pre>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-18T10:55:27.097-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "582768",
+    "ThreadId": "250277",
+    "Html": "<p>Problem solved.&nbsp; again.&nbsp; Here's what <span style=\"text-decoration: underline;\">I didn't do</span> that needed to be done:</p>\r\n<p>1.) Add a class the the Shared project that implements IModule (I named the class SharedModule)</p>\r\n<p>2.) Apply the [ModuleExport] attribute to the SharedModule class</p>\r\n<p>3.) Add the following line of code to the ConfigureAggregateCatalog() method of the QuickstartBootstrapper classs in the ViewSwitchingNavigation project:</p>\r\n<p><span style=\"color: blue;\">this</span>.AggregateCatalog.Catalogs.Add(<span style=\"color: blue;\">new</span>&nbsp;<span style=\"color: #2b91af;\">AssemblyCatalog</span>(<span style=\"color: blue;\">typeof</span>(Shared.<span style=\"color: #2b91af;\">SharedModule</span>).Assembly));</p>\r\n<p>Having done that, I can now use a standalone library that my plug-ins do not need to reference and whose classes do not need to reside in the Shell's project.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-03-18T10:59:54.553-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "582779",
+    "ThreadId": "250277",
+    "Html": "<p>Hi,</p>\r\n<p>You don't necessarily have to create a module in order to access to shared exports. By just adding the assembly catalog it should be enough for you to be able to access the exports defined in that class from within other modules.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-18T11:10:43.69-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "582792",
+    "ThreadId": "250277",
+    "Html": "<p>Guido, this was very helpful.&nbsp; It's good to know that the IModule is not needed.&nbsp; Thanks much!</p>",
+    "PostedDate": "2011-03-18T11:28:33.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

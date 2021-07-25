@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "599251",
+    "ThreadId": "254380",
+    "Html": "\r\n<p>Hi</p>\r\n<p>I am fairly new to Prism and WPF so please bear with me.</p>\r\n<p>I want to create a modal dialog box in my application (for the moment - a simple About Box).</p>\r\n<p>Looking at the docs and the sample StockTrader RI application, it seems that the approach I should take is as follows:<br>\r\n01) Create a standard MVVM module which contains the AboutBoxView (user control), AboutBoxViewModel class, and AboutBoxModel class<br>\r\n02) Register these with Prism / the container like I do with any other module. However, the view won't be registered in a region<br>\r\n03) Create a CompositePresentationEvent which will be used to&nbsp;tell the application that I want to display the about box<br>\r\ne.g. public class AboutBoxRequestedEvent : CompositePresentationEvent&lt;string&gt; {}<br>\r\n04) On my toolbar or menuitem's viewmodel, I can publish the event&nbsp;in the ExecuteAboutBoxMenuItemCommand<br>\r\ne.g. EventAggregator.GetEvent&lt;AboutBoxRequestedEvent&gt;().Publish(null);<br>\r\n05) Not too sure where I should put the event Subscribe code. I was thinking of putting it into the main Shell viewmodel class. Is this what people normally do, please let me know. Perhaps there is a better place for it.<br>\r\n06) The code to actually display the AboutBoxView will leverage the classes contained in the Infrastructure\\Behaviours classes contained in the StockTraderRI sample.</p>\r\n<p>Just wanted to get other peoples opinion on this approach before I start.</p>\r\n<p>Thanks<br>\r\nLiam</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-04-18T10:34:28.113-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "599312",
+    "ThreadId": "254380",
+    "Html": "<p>Hi Liam,</p>\r\n<p>The approach you&rsquo;re mentioning is a valid possibility to fulfill a set of use cases in Prism grouped into a module.</p>\r\n<p>You should take into account the following:</p>\r\n<p>03) The composite presentation event should be placed in an infrastructure project, since the event needs to be able to be referenced from within other modules that wish to publish or subscribe to that event, without having to reference your module.</p>\r\n<p>05) You should subscribe to that event from within your module, since that module is responsible for fulfilling the use case of displaying an about box.</p>\r\n<p>Take into account that if your use case is as simple as displaying an about box, the overhead of using the <strong>EventAggregator</strong> and placing the code in a separate module might not be worth the benefits of isolating it, hence you could place that behavior in your shell project or in another module if appropriate.</p>\r\n<p>You can read more about this topics in the following links:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405479(PandP.40).aspx\">Chapter 4: Modular Application Development</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122(PandP.40).aspx\">Chapter 9: Communicating Between Loosely Coupled Components</a></li>\r\n</ul>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-04-18T12:13:59.697-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

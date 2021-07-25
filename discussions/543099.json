@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1237149",
+    "ThreadId": "543099",
+    "Html": "Hi,\r<br />\ntwo Problems while updating to Prism 5.0 with Nuget\r<br />\na) It seems that Nuget installs   the wrong Version for Unity (Unity 3.5.1404)\r<br />\nb) after downgrade Unity to 3.0.1304.1 i got a very strange error:\r<br />\nFileLoadException: The File 'unity.dll' is already loaded from a different place.\r<br />\n<br />\nAny idea's\r<br />\nThanks\r<br />\nPeter<br />\n",
+    "PostedDate": "2014-04-23T09:42:18.67-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1237175",
+    "ThreadId": "543099",
+    "Html": "Hi Peter,\r<br />\n<br />\nOne possible cause could be that the first Nuget is still installed in the corresponding Project that raise the exception. Therefore, the error mentioned above is raised when trying to load the same assembly from another Nuget or assembly reference.\r<br />\n<br />\nIt would be helpful if you could describe which project is raising the error, and what Prism related assemblies it references. I suggest you verify every Nuget package installed in the solution and which projects would be installed on.\r<br />\n<br />\nI hope this helped you,\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-04-23T10:26:49.727-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1237206",
+    "ThreadId": "543099",
+    "Html": "Hi Gabriel,\r<br />\nthanks for the very fast answer.\r<br />\n<br />\nAs far as i can see, the error ist raised in UnityBootstrapper.\r<br />\n// In UnityBootstrapper:<br />\n<pre><code>    protected override void InitializeModules()\n    {\n        try \n        {\n            base.InitializeModules();                // Error here\n        } \n        catch (Exception e) \n        {\n            MessageBox.Show(e.InnerException.ToString());\n        }\n\n        Logger.Log(&quot;Ribbon1 was successfully initialized.&quot;,\n            Category.Info, Priority.None);\n    }\n</code></pre>\n\nTo update the Projects i use Nuget/Update, so, the 'old' References should be removed and replaced by the new ones.\r<br />\n<br />\nPeter<br />\n",
+    "PostedDate": "2014-04-23T11:56:57.003-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1237759",
+    "ThreadId": "543099",
+    "Html": "We are working on updating Prism.UnityExtensions to reference the new Unity v3.5. Should be out soon.\r<br />\n-Francis<br />\n",
+    "PostedDate": "2014-04-24T14:42:47.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1241804",
+    "ThreadId": "543099",
+    "Html": "Peter,\r<br />\n<br />\nWe just updated the Prism.UnityExtensions NuGet package to support Unity v3.5. Additionally the source package now also support Unity v3.5 at <a href=\"http://aka.ms/prism-wpf-code\" rel=\"nofollow\">http://aka.ms/prism-wpf-code</a>.\r<br />\n<br />\nblaine<br />\n",
+    "PostedDate": "2014-05-05T15:55:46.45-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1243661",
+    "ThreadId": "543099",
+    "Html": "Thanks\r<br />\nPeter<br />\n",
+    "PostedDate": "2014-05-09T13:40:32.283-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

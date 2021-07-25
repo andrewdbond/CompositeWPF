@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "940285",
+    "ThreadId": "402860",
+    "Html": "\r\n<p>I am making a proof of concept WPF application with Prism 4 and Unity, but I run into some basic problems.&nbsp;</p>\r\n<p><br>\r\nIn our solution we have the following projects:</p>\r\n<pre>-AppName.Desktop\n-AppName.Modules.ModuleA\n-AppName.Modules.ModuleB\n</pre>\r\n<p>Having followed some tutorials, explored some examples and searched the internet, I wasn't able to find a suitable answer to a very rudimentary question; how can I switch between two views in different DLL's.</p>\r\n<p>The first view (ModuleAView) is loaded in the Initialize method of ModuleA:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> Initialize() { \nregionManager.RegisterViewWithRegion(<span style=\"color:#a31515\">&quot;MainRegion&quot;</span>, <span style=\"color:blue\">typeof</span>(Views.ModuleAView));}\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>When I click in ModuleAView (or on a button in ModuleAView) I want to switch to ModuleBView.&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;</p>\r\n<p>&nbsp;</p>\r\n<pre>private void SomeEventInModuleAView(object sender, RoutedEventArgs e) { \n\tUri viewNav = new Uri(&quot;ModuleBView&quot;, UriKind.Absolute);\tregionManager.RequestNavigate(RegionNames.MainRegion, viewNav);� � \n}\n\n</pre>\r\n<p>Obviously this won't work, since ModuleA doesn't know where to find ModuleBView. I have read about changing the URI with pack/application/component etc, but I can't seem to make it work.&nbsp; &nbsp;&nbsp;I was thinking something like this:&nbsp; &nbsp;&nbsp;&nbsp;\r\n &nbsp;</p>\r\n<p>&nbsp;</p>\r\n<pre>Uri(&quot;pack://application:,,,/AppName.Modules.ModuleB;component/Views/ModuleBView.xaml&quot;, UriKind.Absolute);\n\n</pre>\r\n<p>Since loading modules from different assemblies is one of the purposes of Prism, I think it's strange that there aren't any examples in the Prism download to show how this works.&nbsp;</p>\r\n",
+    "PostedDate": "2012-11-12T06:12:27.883-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "940396",
+    "ThreadId": "402860",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding of your scenario, it seems that you are not registering the <strong>ModuleBView </strong>to be used with navigation.</p>\r\n<p>Basically, when performing a navigation request in a region, <strong>Prism </strong>will try to construct the corresponding view through the dependency injection container of your application (in this case <strong>Unity</strong>) using the view's name passed in the Uri. Hence, if the view is not registered with that name in the dependency injection container, <strong>Prism </strong>would not be able to resolve it and the navigation request would fail.</p>\r\n<p>In order for a view to be used with <strong>navigation </strong>in <strong>Unity </strong>you need to register it like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>container.RegisterType&lt;<span style=\"color: blue;\">object</span>,ViewClass&gt;(<span style=\"color: #a31515;\">\"ViewClass\"</span>);\r\n</pre>\r\n</div>\r\n</p>\r\n<p>For example, you can register the <strong>ModuleBView </strong>like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: green;\">// Module B</span>\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> Initialize()\r\n{ \r\n    container.RegisterType&lt;<span style=\"color: blue;\">object</span>,ModuleBView&gt;(<span style=\"color: #a31515;\">\"ModuleBView\"</span>);\r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Doing this, you can navigate to different views in different modules without needing for the modules to know each other or their assemblies.</p>\r\n<p>You can find more information about this in the following chapter of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28v=pandp.40%29.aspx\">Chapter 8 - Navigation</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-11-12T08:57:35.357-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "940732",
+    "ThreadId": "402860",
+    "Html": "\r\n<p>Hi Damian,</p>\r\n<p>That definitely did the trick! Thanks for this clear explanation.</p>\r\n<p>I have bought the book, but I guess I need to shuffle the chapters a bit ;-)</p>\r\n",
+    "PostedDate": "2012-11-12T23:15:36.493-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

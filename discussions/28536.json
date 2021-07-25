@@ -1,0 +1,114 @@
+[
+  {
+    "Id": "95149",
+    "ThreadId": "28536",
+    "Html": "How can you access the shell from modules?<br>\r\nI have a menu in my shell that I want to add some menuitems to from loaded modules.\r\n",
+    "PostedDate": "2008-05-28T01:17:05.023-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "95162",
+    "ThreadId": "28536",
+    "Html": "Hi Kiarz,<br>\r\n<br>\r\nThe way I am currently handling this situation is to create a Service in the Infrastructure project that deals exclusively with manipulating the Shell UI. I've called it ShellExtensionService, and once registered on startup I can resolve and instance of it from any module and call various methods to update menus, status bars etc in the Shell.<br>\r\n<br>\r\nI've got a post just under yours questioning whether this is the best way to do this in prism (it's certainly how it was done in CAB).<br>\r\n<br>\r\nIf you want any more help with this, feel free to contact me.<br>\r\n<br>\r\nCheers<br>\r\n<br>\r\nJustin<br>\r\n",
+    "PostedDate": "2008-05-28T02:45:33.397-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "95187",
+    "ThreadId": "28536",
+    "Html": "Hi Justin,<br>\r\n<br>\r\nThanks for the response. <br>\r\nI handled the problem by using events. Every time a module wants to f.e. add a new menu item, it fires the event which shell has subscribed to.<br>\r\nBut your solution seems more appropriate.<br>\r\n<br>\r\nCheers<br>\r\nKia<br>\r\n <br>\r\n",
+    "PostedDate": "2008-05-28T04:14:45.003-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "95345",
+    "ThreadId": "28536",
+    "Html": "Justin,<br>\r\nIf you wouldn't mind, could you please post a sample of how you created the ShellExtensionService.  I don't have a great handle on working with the services.<br>\r\n<br>\r\nBen\r\n",
+    "PostedDate": "2008-05-28T15:58:27.013-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "95369",
+    "ThreadId": "28536",
+    "Html": "<p>Hi Ben,</p>\r\n<p>Here is rough example of how my Service works. It assumes you have a common View with a Toolbar in it and you want to add buttons to that toolbar.</p>\r\n<p>Here is the service itself:</p>\r\n<p><span style=\"font-family:courier new\">&nbsp;public class UIExtensionService : IUIExtensionService<br>\r\n&nbsp;{ </span></p>\r\n<p><span style=\"font-family:courier new\">&nbsp;&nbsp;private IToolbarPresenter _toolbarPresenter; </span></p>\r\n<p><span style=\"font-family:courier new\">&nbsp;<br>\r\n&nbsp;&nbsp; &nbsp;&nbsp;public UIExtensionService(IToolbarPresenter toolbarPresenter )<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;{<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;_toolbarPresenter= toolbarPresenter ;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp; </span></p>\r\n<p><span style=\"font-family:courier new\">&nbsp;</span></p>\r\n<p><span style=\"font-family:courier new\">&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;#region IUIExtensionService Members&nbsp;&nbsp; </span></p>\r\n<p><span style=\"font-family:courier new\">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;public void AddLauncherItem(string text, string itemId)<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;{<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;_toolbarPresenter.AddToolbarItem(text, itemId);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;}&nbsp;&nbsp; </span></p>\r\n<p><span style=\"font-family:courier new\">&nbsp;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;#endregion<br>\r\n&nbsp;}</span></p>\r\n<p>Then in your ToolbarPresenter class you simply fill in the AddToolbarItem method to do whatever it is you want to do. E.g.</p>\r\n<p>&nbsp;&nbsp;&nbsp; <span style=\"font-family:courier new\">this.View.Toolbar.AddItem(text, itemId); </span><br>\r\n&nbsp;</p>\r\n<p>You add the following to your container configurator</p>\r\n<p>&nbsp;&nbsp;&nbsp; <span style=\"font-family:courier new\">container.RegisterType&lt;IUIExtensionService, UIExtensionService&gt;(new ContainerControlledLifetimeManager());</span></p>\r\n<p>Then to add to the UI from within your module, in the Initialize() for example you add</p>\r\n<p><span style=\"font-family:courier new\">&nbsp;&nbsp;&nbsp; IUIExtensionService uiExtender = this._container.Resolve&lt;IUIExtensionService&gt;();<br>\r\n&nbsp;&nbsp;&nbsp; uiExtender.AddToolbarItem(&quot;Sites&quot;, Guid.NewGuid().ToString());</span></p>\r\n<p>Hope this helps. Give me a shout if you want to know any more.</p>\r\n<p>Cheers</p>\r\n<p>Justin </p>\r\n",
+    "PostedDate": "2008-05-28T18:25:49.797-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "96096",
+    "ThreadId": "28536",
+    "Html": "Another approach is to use Regions and templates. As in the new drops the default regions for displaying items are item controls.<br>\r\n<br>\r\n1. Add an items control to your view and mark it as a MenuRegion. <br>\r\n2. Create a new model UICommandModel (or whichever name you choose) to represent each item in the menu. The model should contain a Command property of type ICommand. It may also contain additional things such as IconURI, Description, etc.<br>\r\n3. Create an ItemsTemplate for the ItemsControl that will render the UICommandModel appropriately for example as a toolbar button. As part of the template call the underlying command on the model i.e. &lt;Button Command=&quot;{Binding}&quot;/&gt;.<br>\r\n4. In your module(s) you can now grab the &quot;MenuRegion&quot; through the RegionManager. Create instances of UICommandModel and then add them to the region. Instantly you will see the menu items appear.<br>\r\n<br>\r\nYou can also use an alternative approach of passing around a shared model and rendering that model with templates. This is similar to using the region approach, only instead of uisng the RegionManager and the methods on the IRegion interface, you are simply directly accessing the model.<br>\r\n<br>\r\n1. Create the UICommandModel described above. <br>\r\n2. Create a MenuModel which contains a MenuItems property of type ObservableCollection&lt;UICommandModel&gt;. <br>\r\n3. Create an ItemsControl which will represent the menu.<br>\r\n4. Create an ItemsTemplate for rendering UICommandModel including binding to the UICommand.<br>\r\n5. Set the ItemsControl source to the MenuModel.MenuItems.<br>\r\n6. Register the MenuModel in the container.<br>\r\n7. In your module inject the MenuModel as a dependency. <br>\r\n8. Add / Remove UICommandModel instances to the model and voila, the menu will update.<br>\r\n",
+    "PostedDate": "2008-06-01T15:08:57.767-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "96119",
+    "ThreadId": "28536",
+    "Html": "I think I prefer Glenn's method better than my own. It's definitely more WPF-y.<br>\r\n",
+    "PostedDate": "2008-06-01T19:21:40.447-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "96200",
+    "ThreadId": "28536",
+    "Html": "Hi Glenn,<br>\r\n<br>\r\n&lt;Another approach is to use Regions and templates. As in the new drops the default regions for displaying items are item controls.&gt;<br>\r\n<br>\r\ni think this is a very interesting approach and lot#s of people are interested about this.<br>\r\n.Can you post some code?<br>\r\n<br>\r\nThanks<br>\r\nPeter<br>\r\n",
+    "PostedDate": "2008-06-02T04:31:30.663-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "97168",
+    "ThreadId": "28536",
+    "Html": "Hi Peter,<br>\r\n<br>\r\nSince Glenn is at Tech Ed. preaching the gospel of PRISM I thought I'd post my implementation of what he's suggested for your perusal. I hope you find it useful.<br>\r\n<br>\r\nA little bit of background. I have a shell that allows multiple &quot;instances&quot; of the main view of module to be shown in a main region. To allow for switching between these I have a control very similar to the windows task bar. I.e. When the module adds a view, I want a button on the task bar that will reactivate that view should I switch away from it later.<br>\r\n<br>\r\nSo - first thing, is the task bar itself which appears in Shell.xaml. As Glenn suggested this is just an ItemsControl<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsControl prism:RegionManager.RegionName=&quot;Taskbar&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsControl.ItemsPanel&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsPanelTemplate&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;StackPanel Orientation=&quot;Horizontal&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsPanelTemplate&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsControl.ItemsPanel&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsControl.ItemTemplate&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;DataTemplate DataType=&quot;{x:Type UIModels:TaskbarItemModel}&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button Height=&quot;26&quot; Content=&quot;{Binding Text}&quot; Command=&quot;{Binding Command}&quot; CommandParameter=&quot;{Binding Parameter}&quot;&gt;&lt;/Button&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/DataTemplate&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsControl.ItemTemplate&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsControl&gt;<br>\r\n<br>\r\nYou can see that this will basically be represented as a Horizontal Stack Panel. The important part is the ItemTemplate which targets my custom class called TaskBarItemModel. The class definition for this class looks like this:<br>\r\nusing System.Windows.Input;<br>\r\n<br>\r\nnamespace MyProject.Infrastructure.CommonUI.Models<br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp; public class TaskbarItemModel<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string Text<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public ICommand Command<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string Parameter<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp; }<br>\r\n}<br>\r\n<br>\r\nThe final piece of the puzzle is to actually add an item when a view is put in the main region. I have a ShowModule() method that includes the following code<br>\r\n<br>\r\nprotected void ShowModule()<br>\r\n{<br>\r\n<blockquote>this._regionManager.GetRegion(&quot;MainRegion&quot;).Add(myPresenter.View as UIElement, myPresenter.View.Id, true);<br>\r\n<br>\r\n...<br>\r\n...<br>\r\n<br>\r\nTaskbarItemModel taskbarItem = new TaskbarItemModel()<br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp; Text = &quot;Site&quot;,<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Command = ActivateViewCommand,<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Parameter = sitePresenter.View.Id<br>\r\n};<br>\r\n<br>\r\nthis._regionManager.GetRegion(&quot;Taskbar&quot;).Add(taskbarItem);<br>\r\n</blockquote>}<br>\r\n<br>\r\nThe ActivateViewCommand you see in the above method is just a delegate command that takes a string:<br>\r\n<br>\r\n<blockquote>public DelegateCommand&lt;string&gt; ActivateViewCommand { get; private set; }<br>\r\n</blockquote><br>\r\nIn my constructor for the module I initialize it like this:<br>\r\n<br>\r\n<blockquote>ActivateViewCommand = new DelegateCommand&lt;string&gt;(ActivateView);<br>\r\n</blockquote><br>\r\nActivateView is just a method that handles my view activation logic<br>\r\n<br>\r\nprivate void ActivateView(string viewId)<br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //stuff gets done here to reactivate an existing view<br>\r\n}<br>\r\n<br>\r\nSo with those few little pieces of code you will basically end up with a ItemsControl filled with TaskbarItemModels, however, what appears on the screen is a StackPanel filled with buttons where the command calls back to a method within a the moduel that added the button.<br>\r\n<br>\r\nI hope this is helpful to you, please let me know if there's anything I ahven't made clear.<br>\r\n<br>\r\nCheers<br>\r\n<br>\r\nJustin<br>\r\n<br>\r\n<br>\r\n<br>\r\n<br>\r\n<br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2008-06-05T19:42:28.743-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "97396",
+    "ThreadId": "28536",
+    "Html": "Hi justin,<br>\r\nthanks a lot. Your post was very helpfull. for me and i think for other users of prism as well<br>\r\n<br>\r\nPeter<br>\r\n",
+    "PostedDate": "2008-06-07T00:59:21.747-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "97499",
+    "ThreadId": "28536",
+    "Html": "Thank you for all your input.  I have been playing with this in my app prototype.<br>\r\n<br>\r\nI have successfully added a toolbar as suggested above.  When taking these suggestions and applying them to a menu, you end up with a nested menu item.  The menu will place a menuitem wrapper around the ItemsControl.  I found this artical that discusses a similar problem.<br>\r\n&quot;Three Ways to Create Dynamic Menus&quot; <a href=\"http://weblogs.asp.net/okloeten/archive/2007/11/14/5149692.aspx\">http://weblogs.asp.net/okloeten/archive/2007/11/14/5149692.aspx</a><br>\r\n<br>\r\nI am looking into creating my own custom region based on wrapping MenuItem.  The only problem is this still doesn't give me exactly what I would like.  My ideal world would consist of being able to specify in the module the suggested parent MenuItem.  If it exists, it would attach my menu item to it.  If it doesn't create it at that level.  This way I can have a dynamic module that can have it's own sub menu item, and any modules it loads can attach to this sub menu item.<br>\r\n<br>\r\nFor example:<br>\r\n<span style=\"font-family:courier new\">File        Reports<br>\r\n  Exit        Clinic Reports &lt;&lt;Clinic Module it the parent menu&gt;     <br>\r\n                Report1  &lt;&lt;Report from sub-module1 loaded from Clinic Module&gt;&gt;<br>\r\n                Report2  &lt;&lt;Report from sub-module2 also loade from Clinic Modules&gt;&gt;<br>\r\n</span><br>\r\nThe Main parent module should not need to know that Clinic Reports is one of the menuitems.<br>\r\n<br>\r\nDoes anyone have any other suggestions on adding to the menu with out creating a new region wrapper or any additional comments/suggestions on creating a dynamic menu without building my own menu control?<br>\r\n<br>\r\nBen\r\n",
+    "PostedDate": "2008-06-08T06:57:07.36-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "104546",
+    "ThreadId": "28536",
+    "Html": "Hi Ben<br>\r\n<br>\r\nDid you have any luck with this? <br>\r\n<br>\r\nI'm just starting on a prototype app and I would like my menus to do exactly as your example shows.<br>\r\n<br>\r\nKr<br>\r\nGeorge\r\n",
+    "PostedDate": "2008-07-14T07:52:22.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "210405",
+    "ThreadId": "28536",
+    "Html": "<p>Glenn's solution works only if all your Regions are at the top level, meaning the region containing the toolbar is not nested (as in a ControlTemplate) inside of another region, eg.</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MainRegion</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - NestedToolBarRegion (within the ControlTemplate of MainRegion's host)</p>\r\n<p>&nbsp;</p>\r\n<p>In that case the RegionManager cannot resolve the nested region and causes an exception with a message like &quot;This RegionManager does not contain a Region with the name 'NestedToolBarRegion'&quot;</p>\r\n<p>&nbsp;</p>\r\n<p>Just a caveat to remember</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-09T06:41:05.573-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "211926",
+    "ThreadId": "28536",
+    "Html": "<p>&quot;Glenn's solution works only if all your Regions are at the top level&quot;</p>\r\n<p>This is not technically true, you could easily register the nested RegionManager for resolution upon it's creation and resolve it further down the tree.</p>\r\n<p>Cheers</p>\r\n<p>Justin</p>",
+    "PostedDate": "2009-07-14T19:26:24.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

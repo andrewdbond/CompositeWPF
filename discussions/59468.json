@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "201311",
+    "ThreadId": "59468",
+    "Html": "<p>I can't seem to load embedded fonts into the shell using the following notation:</p>\r\n<p><span>&lt;</span><span>TextBlock</span> <span>x:Name</span><span>=&quot;Header&quot;</span> <span>FontFamily</span><span>=&quot;timheuer.ttf#Tim Heuer Normal&quot;</span> <span>/&gt;</span></p>\r\n<p><span>I have been able to do this in other silverlight apps, but not&nbsp;when using Prism.&nbsp; Can you tell me how to do this?</span></p>",
+    "PostedDate": "2009-06-14T09:15:36.157-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "207558",
+    "ThreadId": "59468",
+    "Html": "<p>Ozzy1: Were you able to resolve this? I'm running into the same issue and the Composite docs simply refer to the general &quot;Using Fonts in Silverlight&quot; articles which clearly don't account for Composite differences.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-01T07:46:29.113-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "208283",
+    "ThreadId": "59468",
+    "Html": "<p>Sort of. I ended up loading the font in the ShellView, which works but isn't really satisfactory because when the app starts the default font is shown briefly before the custom font is loaded. There is probably a way to preload the font, but I haven't yet tried to improve on this.</p>\r\n<pre>        <span style=\"color:Blue\">void</span> LoadCustomFont()\r\n        {\r\n            WebClient client = <span style=\"color:Blue\">new</span> WebClient();\r\n            client.OpenReadCompleted += <span style=\"color:Blue\">new</span> OpenReadCompletedEventHandler(client_OpenReadCompleted);\r\n            client.OpenReadAsync(<span style=\"color:Blue\">new</span> Uri(<span style=\"color:#A31515\">&quot;/Fonts/MINYN___.TTF&quot;</span>, UriKind.RelativeOrAbsolute));\r\n        }\r\n\r\n        <span style=\"color:Blue\">void</span> client_OpenReadCompleted(<span style=\"color:Blue\">object</span> sender, OpenReadCompletedEventArgs e)\r\n        {\r\n            <span style=\"color:Blue\">if</span> (e.Error == <span style=\"color:Blue\">null</span> &amp;&amp; !e.Cancelledl)\r\n            {\r\n                FontSource fontSource = <span style=\"color:Blue\">new</span> FontSource(e.Result);\r\n                AppHeaderTitle.FontSource = fontSource;\r\n                AppHeaderTitle.FontFamily = <span style=\"color:Blue\">new</span> FontFamily(<span style=\"color:#A31515\">&quot;Minya Nouvelle&quot;</span>);\r\n            }\r\n        }\r\n</pre>",
+    "PostedDate": "2009-07-03T03:49:11.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

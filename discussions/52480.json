@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "176372",
+    "ThreadId": "52480",
+    "Html": "Hi <br>\r\n<br>\r\nI am new to Composite WPF so learning curve has been steep - hopefully someone can help offer some help/advice;<br>\r\n<br>\r\nFooling around with DX Carousel to view varying amounts of images pulled off a server. I have an RasterItemModule which contains view, services, presentationModel etc for converting and loading images into viewer. I also have a CarouselModule which contains the CarouselView - this consists of CarouselItemsControl which I presume is of type ItemsControl. What I cannot work out is how to get the RasterItem views  into the carousel view ie where would I put the region name for each item view? Also - I assume I will need to create a scoped region for every image pulled off the server and use something like the filename to name each region? Lastly - is a controller the best place to do all this view injection?<br>\r\n<br>\r\nThanks in advance<br>\r\n<br>\r\nKern<br>\r\n",
+    "PostedDate": "2009-04-06T16:29:27.297-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "176788",
+    "ThreadId": "52480",
+    "Html": "So, to be clear, you're trying to inject views into a carousel?  And the carousel contains images?  What else is contained in the views?  \r\n",
+    "PostedDate": "2009-04-07T12:52:53.043-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "176797",
+    "ThreadId": "52480",
+    "Html": "The RasterItemModule contains a view. The view consists of 3rd party image viewer control and the module has all services for image loading and conversion etc. The view only contains an image - just for navigation and display.<br>\r\nThe CarouselModule has it's own view which contains the CarouselItemsControl and nothing else - really basic for now.<br>\r\nSo I am assuming that I need to create a RasterItemModule for each file held on server and this would require the use of scoped regions?<br>\r\nI also need to work out where or how to create a region name (if possible) so that the views created above will display in carousel?<br>\r\n<br>\r\nThanks<br>\r\nKern<br>\r\n",
+    "PostedDate": "2009-04-07T13:20:54.37-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "177231",
+    "ThreadId": "52480",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi Kern, </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:calibri\">Though I don't know your exact scenario, I think best way to get RasterItem views into the carousel view is using </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458920.aspx\"><span style=\"font-family:calibri\">View injection</span></a><span style=\"font-family:calibri\">, so that you can load Raster views at different times.</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:calibri\">To keep modules loosely coupled a good place to put this view injection logic would be the RasterItemModuleController. These will be the class that will know how to retrieve images from the server and create RasterItem view, so once it's done it can inject that view into the corresponding region. You might find usefull the </span><a href=\"http://msdn.microsoft.com/en-us/library/cc707883.aspx\"><span style=\"font-family:calibri\">UI Composition</span></a><span style=\"font-family:calibri\"> design concept from the documentation.</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> \r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">I think that it won't be necessary to create scoped regions for each image. In general the RegionManager acts as a locator, used by external modules to be able to find UI containers defined on other modules in a loosely coupled way (in this case RasterItem module will locate the Carousel region to inject each image).  So, unless other modules need to find images and use them as container for other views, you don't have to associate a region for each image. </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-size:10pt;font-family:'courier new'\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-size:10pt;font-family:'courier new'\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hope it helps!</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Matias Bonaventura</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><a href=\"http://blogs.southworks.net/\"><span style=\"color:#0000ff;font-family:calibri\">http://blogs.southworks.net/matiasb</span></a> </p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n</span></p>\r\n",
+    "PostedDate": "2009-04-08T09:16:47.34-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "177405",
+    "ThreadId": "52480",
+    "Html": "Hi Mattias;<br>\r\n<br>\r\nThanks for reply - getting there slowly but I think I have not explained fully (typical)<br>\r\n<br>\r\nFor example;<br>\r\nThere are 10 images sitting on server - but the amount is dynamic throughout the day;<br>\r\nMy thinking so far has been this:<br>\r\nI need to create a seperate RasterItemView for each image as each view will contain a Leadtool image viewer control for viewing a single image;<br>\r\nEach view then needs to be registered in a region within the CarouselModule which contains the Developer Express carousel control;<br>\r\nFrom my limited understanding of XAML and WPF this control is of type ItemsControl - so I think I need each item to have a region to allow<br>\r\neach view to be injected into?<br>\r\n<br>\r\nThanks for patience and help so far<br>\r\n<br>\r\nKern<br>\r\n",
+    "PostedDate": "2009-04-08T16:22:00.337-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

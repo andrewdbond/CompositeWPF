@@ -1,0 +1,80 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Thank you for your suggestion.\r\n\r\nWe believe that there are sufficient workarounds available to cover this scenario that have been listed here.\r\n\r\nWe have not done any work in this space for Prism v4.\r\n\r\nHave a nice day,\r\n\r\nKarl\r\n\r\n",
+    "ClosedDate": "2010-09-15T15:02:00.04-07:00",
+    "CommentCount": 8,
+    "Custom": "",
+    "Description": "Hello,\n \nHave you got plans to make ModuleLoaderService able to reload modules without restarting an application? This is definitely very important feature which is absent in SCSF.\n \n-\nThanks",
+    "LastUpdatedDate": "2013-11-05T14:39:48.853-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-04-18T23:52:09.63-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ModuleLoaderService: reload modules",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 9,
+    "Id": 1895
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Do you mean reloading the assembly from scratch (presuambly through some AppDomain magic) or simply calling Initialize() again on the Module class? ",
+      "PostedDate": "2008-04-30T13:53:23.623-07:00",
+      "Id": 155987
+    },
+    {
+      "Message": "@Leonid, are you asking to reload or re-initialize?",
+      "PostedDate": "2008-05-02T18:55:45.37-07:00",
+      "Id": 155988
+    },
+    {
+      "Message": "When my modules are loaded the views are added to a region which is implemented as a tab control. If the tab the view is on is closed, currently there is no way to show it again.\r\n\r\nModuleLoader.Initialize(ModuleInfo[] moduleInfos) only calls Initialize on modules that have not already been loaded - should it been changed to call Initialize on all modules whether or not they are already loaded. Perhaps this behaviour could be configurable.... ",
+      "PostedDate": "2008-06-20T03:43:39.99-07:00",
+      "Id": 155989
+    },
+    {
+      "Message": "@mallen101, I think reloading the module or calling Iitialize() again to get your view back might not be the best approach, I use a command bound to a menu item to reshow the view. Take a look at Product Prism, the \"Welcome\" module demonstrates this http://code.google.com/p/cwpfsamples/\r\n\r\nI hope to add this to the new Late Night sample today, but first I need coffee.",
+      "PostedDate": "2008-06-21T17:48:57.007-07:00",
+      "Id": 155990
+    },
+    {
+      "Message": "@brettryan yep, I think you're right! I've refactored my monolithic module into a module for registering service etc and a controller that take care of opening/closing the views. Cheers\r\n\r\n-1 off the votes from me",
+      "PostedDate": "2008-06-27T11:32:48.6-07:00",
+      "Id": 155991
+    },
+    {
+      "Message": "I mean really unloading and loading again. Just imagine if you want to update module's dll without the need of closing the application. You unload a module, replace dll and load a module again. We already able to dynamically download and load modules from WAN but still has to quite when updating. I believe this feature is exactly one of the things the composable application has to do in 2009, hasn't it? :)",
+      "PostedDate": "2009-01-14T10:20:52.64-08:00",
+      "Id": 155992
+    },
+    {
+      "Message": "I will add a vote to this one. Its related to a scenario in my last project. \r\n1. bootstrapper loads just a layout module into shell that shows a login screen first\r\n2. login screen performs authentication and then loads modules based on authorization of user, and loads main shell view (looks like outlook)\r\n3. User A logged out, we log the user out and show login screen again. (user does NOT close the application)\r\n4. User B logs in on the same machine. \r\n5. Now we get into trouble, 3 modules are already loaded and their InitializeModule has been called in the previous user session, user B may not have access to 1 of the already loaded modules. and may have access to additional 2 modules instead.\r\n\r\n\r\nMaybe I dint approach it the right way, in which case please suggest the right way. However, I think there should be a way to \"unload\" a module (which I will use on logout) so my module loading logic (based on authorization) doesnt crash and burn.",
+      "PostedDate": "2010-08-06T21:19:37.95-07:00",
+      "Id": 155993
+    },
+    {
+      "Message": "It would be really nice to have someone actually follow up on this question instead of just closing the issue.",
+      "PostedDate": "2013-11-05T14:39:48.853-08:00",
+      "Id": 155994
+    }
+  ]
+}

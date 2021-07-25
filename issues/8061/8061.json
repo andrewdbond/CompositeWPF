@@ -1,0 +1,96 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 9,
+    "Custom": "",
+    "Description": "\"I have a view that was added to a scoped region.  This view references a composite command that is defined globally (static) to the application.  I toggle the active state of all commands registered with the composite command when the active state of the view changes, i.e., IActiveAware.  My issue is that the scoped view is always active because scoped views are never made aware of when a parent view is activated or deactivated.  I have written a region behavior called SyncIsActiveAwareBehavior which syncs the active state of scoped views based upon the active state of a parent view (owner of the scoped region,) but I'm not sure if this is the best way to handle this type of scenario.  Is there any guidance on how best to work with scoped regions?  It seems like Prism really breaks down once you have to manage a lot of scoped regions, say in a MDI interface.  I'm hoping that there is some guidance in this area currently and that future versions of Prism will provide a better programming model for dealing with scoped regions.\"\n \nMore information here:\nhttp://compositewpf.codeplex.com/discussions/100423",
+    "LastUpdatedDate": "2013-02-21T18:38:18.143-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-03-28T08:07:40.15-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Sync ActiveAware state of views throughout scoped regions",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 5,
+    "Id": 8061
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897979,
+      "FileName": "RecursiveRegionActiveAwareBehavior.cs",
+      "DownloadUrl": ".\\897979"
+    },
+    {
+      "FileId": 897980,
+      "FileName": "NestedRegionActiveAwareBehavior.cs",
+      "DownloadUrl": ".\\897980"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "This fix would be greatly appreciated.\r\nIt's the intuitive and expected functionality and a lot of \"ugly\" code has to be written to get around it.",
+      "PostedDate": "2011-04-05T23:35:54.16-07:00",
+      "Id": 156413
+    },
+    {
+      "Message": "Hey, is it possible to get the implementation of yours SyncIsActiveAwareBehavior? Could you attach a file or something. Thanks!",
+      "PostedDate": "2011-05-20T12:19:24.733-07:00",
+      "Id": 156414
+    },
+    {
+      "Message": "Hi,\r\n\r\nI'm posting your comment in the original thread (http://compositewpf.codeplex.com/discussions/100423), so that the user jcain00, who has developed the implementation of the SyncIsActiveBehavior is notified of your request.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-05-23T10:26:24.103-07:00",
+      "Id": 156415
+    },
+    {
+      "Message": "This would be really nice, perhaps somethning called NestedRegionActiveAwareBehavior. However using the VisualTreeHelper may be expensive, however I don't know how else you'd do it. \r\n\r\nAlso if you add an object to the view, and are expecting the xaml engine to bind it to a datatemplate, within that datatemplate you had regions. How do you know in your behavior that then need to be set active.",
+      "PostedDate": "2011-06-17T04:03:20.26-07:00",
+      "Id": 156416
+    },
+    {
+      "Message": "Guys,\r\n\r\nI made the recursive active aware behavior. It works pretty good for me. It does go through the all scoped regions and looking for IActiveAware implementors the same way as original RegionActiveAwareBehavior does.\r\n\r\nI'm attaching the class. Have fun.",
+      "PostedDate": "2011-06-17T09:52:27.513-07:00",
+      "Id": 156417
+    },
+    {
+      "Message": "RecursiveRegionActiveAwareBehavior.cs does not work for us when calling IRegion.Activate(view) for nested views where IActiveAware.IsActive should remain false. (e.g. during startup when adding views and activating them to avoid TabControls without an active tab.)\r\n\r\nThe attached NestedRegionActiveAwareBehavior replaces it and the normal RegionActiveAwareBehavior, and is deactivated by default to avoid the above problem. Small quirk: The bootstrapper should call NestedRegionActiveAwareBehavior.SetIsActive(regionManager, true); after setting the region manager to activate the behavior in all top level regions.",
+      "PostedDate": "2011-07-22T05:23:10.783-07:00",
+      "Id": 156418
+    },
+    {
+      "Message": "Hi,\r\n \r\nFor those interested in this subject, you might find it useful to know that scenarios where it’s desired to keep the active state of views inside a scoped region in sync with the parent view are now supported since Prism 4.1 release (http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=28950).\r\n\r\nTo make this possible the RegionActiveAwareBehavior behavior was modified, which now updates child views Active state only if they are decorated with an attribute defined as SyncActiveState. Therefore, by adding this attribute to the child view or view model implementing IActiveAware, it’s possible to keep them in sync, unless the child view is not in the Region’s ActiveViews collection (in that case its IsActive property will not be set to true.)\r\n \r\nFor example, to define this, the SyncActiveStateAttribute must be specified in the child view or view model, like this:\r\n \r\n[SyncActiveState]\r\npublic class MyViewModel : NotificationObject, IActiveAware\r\n{\r\n       (...)\r\n}\r\n \r\nRegards,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2012-03-08T11:22:56.68-08:00",
+      "Id": 156419
+    },
+    {
+      "Message": "Hi,\r\nThat sounds great. I just upgraded to Prism 4.1 to test this. Unfortunately it doesn't seem to work in my case.\r\n\r\nSame as the first workaround that was posted here, it doesn't seem to keep IActiveAware.IsActive remaining false for subviews of TabControls during startup.\r\n\r\nI have a TabControl region with regionScoped views, each of which has a subregion with an activeaware (and SyncActiveState) subview. But after startup all these subviews are set to active, even though obviously only one tab is active.",
+      "PostedDate": "2012-03-30T05:51:09.37-07:00",
+      "Id": 156420
+    },
+    {
+      "Message": "Hi rumzeus,\r\n\r\nWe were able to reproduce the behavior you are mentioning. Based on my understanding, it seems that, as the RegionActiveAwareBehavior executes its logic only when the ActiveViews collection is changed; if you add a sub view to a deactivated view, the state of the sub view will not be synchronized with the state of its parent view.\r\n\r\nYou can find more information about this and a possible workaround for this undesired behavior in the following blog post:\r\n - Sync active state when adding views ( http://blogs.southworks.net/dcherubini/2012/04/19/sync-active-state-when-adding-views/ )\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-04-19T10:05:10.16-07:00",
+      "Id": 156421
+    }
+  ]
+}

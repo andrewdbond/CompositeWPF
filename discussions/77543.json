@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "265154",
+    "ThreadId": "77543",
+    "Html": "<p>Hi all,</p>\r\n<p>I have a control in a view and I need to do something about it in its associated viewmodel's constructor.<br>I know I can use a ClickCommand and then pass the control as a parameter but really I want this to happen when the view/viewmodel is loaded...</p>\r\n<p>Something like this:</p>\r\n<p>public MyViewModel()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // here needs to assign the control to a method<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; someMethod.ControlToUse = controlNameInTheView;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>Is this possible??</p>\r\n<p>Any help would be much appreciated!</p>\r\n<p>Regards,<br>Xin</p>",
+    "PostedDate": "2009-12-08T19:13:48.093-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "265316",
+    "ThreadId": "77543",
+    "Html": "<p id=c33b0ad0-c6f3-012c-544f-12313b03045a>Hi Xin,</p>\r\n<p id=c33b1650-c6f3-012c-5450-12313b03045a>While you could expose the control&nbsp; as a property of the view to have access to it in the ViewModel this is not the recommended approach. The <strong>ViewModel</strong> should not know about the controls you are using, as that is mostly UI related. Without fully knowing the scenario I can think of two options:</p>\r\n<ul>\r\n<li>If possible use bindings to achieve the desire functionality in your control.</li>\r\n<li>If the above is not viable, you can always perform your required actions in the View&rsquo;s constructor. As the view is in charge of handling UI related concerns, this would be the place to do it if necessary.</li>\r\n</ul>\r\n<p id=c33b2670-c6f3-012c-5451-12313b03045a>In my personal opinion if you require a particular control instance to run a method, which is something UI related, you might consider adding this kind of code to the View&rsquo;s code-behind as well.</p>\r\n<p id=c33b3f30-c6f3-012c-5452-12313b03045a>You can read more about using MVVM with Prism in <a href=\"http://blogs.southworks.net/dschenkelman/2009/11/16/learning-prism-composite-application-guidance-for-wpf-silverlight-mvvm-fundamentals/\">this blog post</a>.</p>\r\n<p id=c33b5730-c6f3-012c-5453-12313b03045a>Please let me know if this helps.</p>\r\n<p id=c33b6cb0-c6f3-012c-5454-12313b03045a>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-12-09T06:23:05.833-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

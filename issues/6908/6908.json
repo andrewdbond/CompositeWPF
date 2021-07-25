@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "We are closing this work item, as this is probably not an issue in Prism.\r\nFor additional support regarding this subject, you could create a thread in the discussions section, where we will help you with your concerns.\r\nAlso you might find this thread useful where a similar concern is addressed: http://compositewpf.codeplex.com/discussions/269149",
+    "ClosedDate": "2011-09-09T12:50:33.17-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "I have following code:\n \nprotected override void OnStartup(StartupEventArgs e)\n        {\n            if (LogIn())\n            {\n                base.OnStartup(e);\n                Bootstraper b = new Bootstraper();\n                b.Run();\n            }\n        }\n \n        private static bool LogIn()\n        {\n            LoginWindow loginWindow = new LoginWindow();\n            loginWindow.ShowDialog();\n            return loginWindow.SuccessfullyLoggedIn;\n        }\n \n// Bootstrapper \n \npublic sealed class Bootstraper : UnityBootstrapper\n    {\n        protected override DependencyObject CreateShell()\n        {\n            Shell shell = Container.Resolve<Shell>();\n            shell.Show();\n            return shell;\n        }\n \n        protected override IModuleCatalog GetModuleCatalog()\n        {\n            var catalog = new ModuleCatalog();\n            catalog.AddModule(typeof(ProfileModule));\n            return catalog;\n        }\n    }\n \nAfter login dialog shown main window will not be shown. If you comment line  \" if (LogIn()) \" in the first snippet then main window will appear as usual. Also I tried to create Shell window via new operator (not the UnityContainer), result the same. I also tried to paste login code inside bootstrapper's CreateShell() - result the same.",
+    "LastUpdatedDate": "2013-05-16T05:28:52.54-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-06-28T08:41:44.92-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "If you create wpf window before bootstrapper then application won't work",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 6908
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Do this\r\n\r\nShutdownMode = ShutdownMode.OnExplicitShutdown;\r\nif ( login() )\r\n{\r\n   ShutdownMode = ShutdownMode.OnMainWindowClose;\r\n   bootstrapper.......\r\n   ......\r\n}\r\nelse\r\n{\r\n   .. tell the user the app is going away\r\n   Shutdown();  // or whatever you want \r\n}\r\n\r\n\r\n\r\n",
+      "PostedDate": "2010-08-04T05:03:02.047-07:00",
+      "Id": 156249
+    }
+  ]
+}

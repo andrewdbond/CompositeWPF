@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1199072",
+    "ThreadId": "527408",
+    "Html": "I have a module that is a user control of a data grid. I want this data grid to be able to take any view model that implements IFreq_BO. The grid will then display the right columns depending on what view model was passed in.<br />\n<br />\nMy ViewModel for the module:<br />\n<pre><code> class FrequencyEditVM : ViewModelBase\n    {\n        public FrequencyEditVM(ViewModelBase baseinterface, IFrequency_BO bointerface)\n        { \n        } \n\n    }</code></pre>\n\nI have 5 menu options, all of which will open this window with this user control data grid. But what I want is to make it so each menu option will pass a different view model to the constructor of this VM. I want to only write the code once for the control of course. How would I go about doing this with prism?<br />\n<br />\nSo I guess the core issue is: Depending on which menu option the user selects, how do I CONDITIONALLY inject one of 5 view models?<br />\n",
+    "PostedDate": "2014-01-27T11:20:28.44-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1199830",
+    "ThreadId": "527408",
+    "Html": "You would have to have your menu options instantiate the correct IFrequency_BO object they want to pass in.  Then follow this post\r<br />\n<br />\n<a href=\"http://stackoverflow.com/a/20170410/1798889\" rel=\"nofollow\">http://stackoverflow.com/a/20170410/1798889</a>\r<br />\n<br />\nWhich allows you to send in dependency overrides.   Code is based on using Unity as your DI.<br />\n",
+    "PostedDate": "2014-01-28T05:50:27.483-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1199865",
+    "ThreadId": "527408",
+    "Html": "If I understood correctly, you would like to create a particular instance of <strong>FrequencyEditVM</strong> and display it with the corresponding <strong>ViewModelBase</strong> that depends on selecting any menu option.\r<br />\n<br />\nOne possible way of selecting the proper <strong>ViewModel</strong> would be by using the container which may be retrieved from the <strong>IModule</strong> class constructor. Each menu option would have an associated command, so each one would call the constructor and navigation of <strong>FrequencyEditVM</strong>, passing the corresponding <strong>ViewModel</strong> as follows:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\nOption1CommandHandler()\n{\n    <span style=\"color:Blue;\">this</span>.container.Resolve&lt;ViewModel1&gt;();\n    NavigateToWindow(viewModel);\n}\nOption2CommandHandler()\n...\n\nNavigateToWindow(ViewModelBase viewModel)\n{\n    <span style=\"color:Green;\">// Create FrequencyEditVM instance passing Base viewModel through parameter.</span>\n    <span style=\"color:Green;\">// Open window and display FrequencyEditVM&#39;s View.</span>\n}\r\n</pre></div>I hope this helped, Regards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-01-28T06:28:10.033-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-01-28T10:46:32.343-08:00"
+  },
+  {
+    "Id": "1199997",
+    "ThreadId": "527408",
+    "Html": "Ah, that makes perfect sense. Thank you so much! For some reason, when I am learning new frameworks, simple things seem convoluted while in the learning process. Thanks to both of you!<br />\n",
+    "PostedDate": "2014-01-28T08:48:59.447-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

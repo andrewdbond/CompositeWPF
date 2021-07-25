@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1052710",
+    "ThreadId": "445974",
+    "Html": "I am using Prism with MEF bootstrapper and MVVM design pattern.\r<br />\n<br />\nI have a TabControl and I am creating a new scoped region manager for every tabItem which holds the same usercontrol (which has nested regions in it): regionManager.Regions[&quot;TAB_REGION&quot;].Add(theView, null, true);\r<br />\n<br />\n[I am not assigning any variable to the new scoped regionmanager. Also, theView is NonShared and is created for each tabItem and contains some regions Also theView has prism:ClearChildViewsRegionBehavior.ClearChildViews=&quot;True&quot;].\r<br />\n<br />\nUsing ViewModel-First approach, when I remove a TabItem from the TabControl, I call a CloseThisViewModel() method on my theViewModel:\r<br />\n<br />\npublic void CloseThisViewModel(){<br />\n<pre><code>        this._theView.CloseThisView();\n        this._theView = null;</code></pre>\n\n}\r<br />\nand in theView:\r<br />\n<br />\npublic void CloseThisView(){<br />\n<pre><code>        this.DataContext = null;</code></pre>\n\n}\r<br />\nI manually call GarbageCollector:<br />\n<pre><code>    GC.Collect();\n    GC.WaitForPendingFinalizers();\n    GC.Collect();</code></pre>\n\nI have a destructor/Finalizer in my ViewModel and this.Dispatcher.ShutdownStarted in my View. I do not have any unmanaged code in my View.\r<br />\n<br />\nI observe that TheViewModel destructor is called after closing the tabItem.\r<br />\nDispatcher.ShutdownStarted is only called when main application exits.\r<br />\nCould anyone provide inputs on the following:\r<br />\n<br />\nSince I open/close many tabitems, I want to ensure that the unused usercontrols (my views) are not floating/dangling around. I know that corresponding viewmodels are properly disposed off. Also, I don't intend to close my main application ever.\r<br />\nCan there be a memory leak?\r<br />\nIs there a way to call Dispatcher.ShutdownStarted from outside UI Thread?\r<br />\nHow can I verify, before application exits, that the view with a null reference are garbage collected?\r<br />\nPlease let me know if I could provide more information.\r<br />\n<br />\nAny help is highly appreciated.<br />\n",
+    "PostedDate": "2013-06-04T09:45:06.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1052781",
+    "ThreadId": "445974",
+    "Html": "Hi,\r<br />\n<br />\nFirst of all, if there is no strong reference that is pointing to your views, then there should be no memory leaks as they would be garbage-collected when needed.\r<br />\n<br />\nBased on my understanding, the <strong>ShotdownStarted</strong> event is invoked when the corresponding <strong>Dispatcher</strong> of the thread is closed (which usually happens when the thread finished its execution.) Hence, this event should not be used to detect when the components are being disposed and neither should be fired manually. Regarding this same subject, I believe you might find the following threads in the MSDN forums interesting:<br />\n<ul>\n<li><a href=\"http://social.msdn.microsoft.com/Forums/en-US/wpf/thread/0ac9c94c-2f69-4f9b-b3f5-662599b371c9\" rel=\"nofollow\">How to know when a FrameworkElement goes out of scope?</a></li>\n<li>\n<a href=\"http://social.msdn.microsoft.com/Forums/en-US/wpf/thread/afa6cc76-92f4-4144-99c5-e8f5fdc88029/\" rel=\"nofollow\">How Dispose WPF controls?</a><br />\n</li>\n</ul>\nAlso, based on my understanding, when an application exits, all it's resources included the memory allocated is releases, so it doesn't seem to be necessary to check if a view was garbage-collected a this point.\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-06-04T12:58:10.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1054168",
+    "ThreadId": "445974",
+    "Html": "Thanks Damian.\r<br />\n<br />\nThis resolves my concerns regarding the memory leaks and disposing WPF controls.\r<br />\n<br />\n-RDV<br />\n",
+    "PostedDate": "2013-06-07T12:57:27.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

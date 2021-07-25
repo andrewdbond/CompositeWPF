@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "1060888",
+    "ThreadId": "448162",
+    "Html": "As it seems, Prism was designed as a single-windowed navigation-based platform in which the shell contains static regions and it navigates between views by changing the regions content. <br />\n  I had to design a project that would contain multiple potentially parallel windows. I decided to keep using the shell as a master page, and to add windows as regions using scoped regions.<br />\n  The problem was the syntactical complexity of adding scoped region managers to views, in regions, again defined in views with some different  scoped region managers - all of it in code and for each window.<br />\n<br />\n<br />\n   My solution, which I wish to share here, was basically to define a window as a XDom, for example, in the pattern :<br />\n<pre><code>   &lt;View view_name=&quot;...&quot;, view_contract_name=&quot;...&quot;,  ...&gt;\n       &lt;Region region_name=&quot;...&quot;, ...&gt;\n             &lt;View view_name=&quot;...&quot;, view_contract_name=&quot;...&quot;,  .../&gt;\n             &lt;View view_name=&quot;...&quot;, view_contract_name=&quot;...&quot;,  ...&gt; \n                   &lt;Region region_name=&quot;...&quot;, ...&gt;\n                        &lt;View view_name=&quot;...&quot;, view_contract_name=&quot;...&quot;,  .../&gt;\n                   &lt;/Region&gt; \n              &lt;/View&gt;\n        &lt;/Region&gt;\n   &lt;/View&gt;   \n</code></pre>\n\nkeeping it as a string in a dedicated exported class ( I use DI with MEF), and using a dedicated controller which uses a recursive procedure with Linq to XML to reproduce the windows when needed.<br />\n<pre><code>The controller would be defined just once, and as you see, that leaves us with a XAML-like approach in which first we write the &quot;XAML&quot; (actually the xml) for the composition of parts and then the real XAML for every part in turn, in line with the overall approach.\n\nWhat do you think of that ?</code></pre>\n\n",
+    "PostedDate": "2013-06-25T06:52:00.3-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1061022",
+    "ThreadId": "448162",
+    "Html": "Hi,\r<br />\n<br />\nThis seems to be an interesting approach. \r<br />\n<br />\nThanks for sharing it as it might be useful for other users of the community.\r<br />\n<br />\nRegards,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a> <br />\n",
+    "PostedDate": "2013-06-25T10:39:54.02-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1061028",
+    "ThreadId": "448162",
+    "Html": "Actually, there may be more to it. We can add attributes or attribute values, for example, to the XDom instances. I use commands which send events to the controller through the event aggregator. Now, the event argument is an object - we can add there some attribute values for the XDom (while activating the command in some viewmodel) - and add some custom &quot;triggers&quot; in the XDom class beforehand to be interpreted by the controller in connection with the attribute values while creating the windows, and we get conditional Composition.<br />\n   I use XDoms instead of real XAML because I want to use Composition and Prism regions/views. It may be possible to implement Composition in XAML, though... ;-)  <br />\n",
+    "PostedDate": "2013-06-25T10:58:02.457-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1061095",
+    "ThreadId": "448162",
+    "Html": "It seems it is indeed possible to do all the forementioned stuff by using only plain XAML, by using value converters.<br />\n<br />\n   One possible way to do it can be based on the following two issues:<br />\n<ol>\n<li>\nValue converters act as a kind of delegates from the XAML to their class implementations functions. Therefore, supposing that we want to declare a certain control in our window's XAML as a region, we can assign a region name, for example, to the tag property using a value converter, and the control itself as the object parameter. The value converter, in turn, in code, would do all the regular stuff of creating a region manager and so on, and would perhaps return  ...   ;-)  the original string (as the region name). Alternatively, we could declare our own custom region property.<br />\n</li>\n<li>\nXAML can contain elements without UI. We can use them as the control children to designate the other components and would declare them as above - using (different) value convertors.<br />\n</li>\n</ol>\nThe window XAML would be kept in a dedicated dll which in turn would be exported using a contract (we're using MEF).<br />\n<br />\n   It may all seem quite complex, but once the pattern is laid down , we can continue just by using XAML.<br />\n<br />\n<br />\n   I will elaborate on it in a different post - on using DI and MEF and PRISM with XAML. I hope I am not mistaken - but if I am ,please correct me. <br />\n",
+    "PostedDate": "2013-06-25T13:42:09.253-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1062743",
+    "ThreadId": "448162",
+    "Html": "I was told that the usage of MEF's Input and Output abilities renders Prism's regions superfluous.\r<br />\n   Can someone comment on it please ?  <br />\n",
+    "PostedDate": "2013-06-29T03:38:44.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1063271",
+    "ThreadId": "448162",
+    "Html": "Hi,\r<br />\n<br />\nI might not be understanding what you meant by &quot;Input and Output abilities,&quot; but as far as I know, <strong>MEF</strong> and <strong>Prism's Regions</strong> address different requirements:<br />\n<h1></h1>\n<ul>\n<li><strong>MEF</strong> allows you to <strong>register and compose parts</strong> which are simply classes that define dependencies and are registered in the container to be available to other parts. Basically, it works as a dependency injection container.</li>\n<li>\n<strong>Prism's Regions</strong> provide a mechanism to <strong>compose the IU</strong> by decoupling the different views in your application through the <strong>Regions</strong>, allowing you to dynamically change the UI composition without interacting with the visual elements themselves.<br />\n</li>\n</ul>\nAlthough <strong>MEF</strong>'s capabilities are used to create views and resolve their dependencies, I don't see how they can be used to provide region capabilities such as UI composition, navigation, etc, on it's own.\r<br />\n<br />\nIf I had misunderstood what you meant, it would be helpful if you could elaborate a little more about what <strong>MEF</strong> capabilities you are referring to and how could they be used to perform UI composition.\r<br />\n<br />\nThanks,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-07-01T11:06:40.437-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1063328",
+    "ThreadId": "448162",
+    "Html": "Hi,<br />\nFirst, thank you for your answer and for being so helpful in this forum.<br />\n<br />\n<br />\n<br />\nIndeed, I was referring the different ways to compose UI and the degree of overlaping between them.<br />\n<br />\nI meant to compare the different designs, as wholes, and not the MEF technology in itself and on its own as opposed to the usage of regions. <br />\nActually, I wanted to check the argument that a design using (not only) MEF but without using regions can achieve<br />\nmuch of the same things we can do with regions. <br />\n<br />\nIndeed again, MEF has no navigation abilities. But I envisaged a design intended to create multiple windows in which <br />\ninstead of region navigation to views for content, we would  have dynamic UI creation and deletion ( by the new windows). And besides, we can add custom navigation.<br />\n<br />\nRegarding UI composition - we can use controllers and/or services and MEF's Import and Export abilities (that was what I meant by<br />\n Input and Output - and sorry for not being clear).<br />\n<br />\nI do know that there are differences between the designs. I wished to discuss them and their possible implications.<br />\n<br />\nAgain, thanks.<br />\n<br />\n<br />\n<br />\nP.S. - Essentially you are saying that the region concept encapsulates UI composition abilities that are missing in MEF<br />\n and that we would have to design on our own if we give up using the regions, and therefore the region concept can not be overlaping but complementary to using MEF ?<br />\n",
+    "PostedDate": "2013-07-01T13:16:29.287-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1063748",
+    "ThreadId": "448162",
+    "Html": "Hi,\r<br />\n<br />\nI think I understand what you mean now.\r<br />\nIn my opinion, this is relative to each scenario and how regions are used in them.\r<br />\n<br />\nFor simple scenarios where the regions are only used to problematically add and remove views for different parts of the UI, it could be possible to remove the regions and change the composition of the UI manually. This could be achieved using several different approaches: using controllers as you mentioned, managing visual states in the view, using data templates and view-model-first, etc.\r<br />\n<br />\nHowever, this is not so trivial for more complex scenarios where <strong>navigation</strong> and <strong>region behaviors</strong> are used. The first one provide a mechanism to navigate and pass parameters back and forth between views in a decoupled fashion. The seconds are used to provide logic that would execute automatically when a change in a region occurs (and possible, affect the hosted views in consequence.) Hence, in order to remove regions for such scenarios, additional logic would be needed to provide functionalities similar to those ones.\r<br />\n<br />\nIndeed, I believe that <strong>Regions</strong> and <strong>MEF</strong> are complementary rather that overlapping APIs. Regions are used to compose the UI but they have no container-like abilities to build parts like <strong>MEF</strong> does. For this, the Regions delegate the responsibility of building and initializing the views (when needed) to the composition container of your application (for example <strong>MEF</strong>.) Hence, in a <strong>Prism</strong> application the region API and <strong>MEF</strong> work complementing each other.\r<br />\n<br />\nThanks,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-07-02T11:48:50.403-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1063929",
+    "ThreadId": "448162",
+    "Html": "Hi,<br />\n<br />\nPrism was created as a set of best practices in designing WPF Composite applications. Regrettably, while there are many good books <br />\nand articles on WPF, there is only one book about Prism which actually rewrites the MSDN reference, and we must rely on MSDN <br />\nand blogs and forums for documentation.<br />\nThat is why I wish to thank Mr. Damian and  Mr. Federico for their efforts.<br />\n<br />\n<br />\nAnd that is why Mr. Damian may write a great book on the subject.<br />\n<br />\n<br />\nFor I see he can do it.<br />\n",
+    "PostedDate": "2013-07-02T23:17:12.963-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

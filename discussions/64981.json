@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "221301",
+    "ThreadId": "64981",
+    "Html": "<p>Hello,</p>\r\n<p>I'm having a problem with PRISM v2 detecting a region defined in XAML when using a 3rd party controls. There are a few posts here similar, but are probably a bit old and refer to PRISM v1.</p>\r\n<p>In my project the Shell just as a ContentControl:-<br><br>&lt;Window&gt;<br>&nbsp;&nbsp;&nbsp; &lt;ContentControl cal:RegionManager.RegionName=&quot;ShellWindow&quot;&gt;</p>\r\n<p>This Region is detected with no problem.</p>\r\n<p>&nbsp;</p>\r\n<p>A Module is loaded which defines a new Region. If this is Microsoft controls, there is also no problem, and the 2nd region is detected.</p>\r\n<p>&lt;UserControl&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsControl cal:RegionManager.RegionName=&quot;MainWindow&quot;&gt;</p>\r\n<p>&nbsp;</p>\r\n<p>However, if a 3rd party control is placed in the Module's View, the 2nd Region is not detected.</p>\r\n<p>&lt;UserControl&gt;<br>&nbsp;&nbsp;&nbsp; &lt;ThirdPartyControl&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsControl cal:RegionManager.RegionName=&quot;MainWindow&quot;&gt;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>Can you suggest what the problem is?</p>\r\n<p>If someone would explain how the Regions are detected by the CAL libary from the XAML it would help me debug.</p>\r\n<p>I can see that RegionManager:Add(IRegion region), is not being called a second time when using the 3rd party controls. But need some help in the steps that preceed it,</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>\r\n<p>John</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-09T12:27:01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "221495",
+    "ThreadId": "64981",
+    "Html": "<p>I saw some message traffic on this topic a while back - I found it for you at</p>\r\n<p><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=29822\">http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=29822</a></p>\r\n<p>It is addressed by the gurus so it might give you a good starting place.</p>",
+    "PostedDate": "2009-08-10T05:43:00.207-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "221634",
+    "ThreadId": "64981",
+    "Html": "<p>Hello billrat,</p>\r\n<p>Thanks for posting. I did look at your SDMS, but I think it's VS Team edition, so I can't open.</p>\r\n<p>I did find this post earlier, and check to see InitializeComponent() was present in my code.</p>\r\n<p>But as it was a Prism v1 post in 2008, it did not seem to answer my specific problem.</p>\r\n<p>Anyway, I've now tried a lot of MS nested controls, and the RegionName is found without problem, whereas with the 3rd-Party, it's not.</p>\r\n<p>I am convinced now that the issue is the System.Windows, LogicalTreeHelper.GetParent not being supported by the 3rd party controls.</p>\r\n<p>See CAL, FindRegionManager(...),</p>\r\n<p>But in rereading post and the 305 page doc, I can see I can set the RegionName in code. Which I have done, and it works.</p>\r\n<p>&nbsp;</p>\r\n<p>So, I'd like to know whether you think LogicalTreeHelper should work on 3rd party controls, and if so I post a bug report with them</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>\r\n<p>John</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-10T11:09:40.107-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "221975",
+    "ThreadId": "64981",
+    "Html": "<p>I definately would tell the 3rd party folks their product does not support PRISM - I trust they will make it a requirement to be resolved.&nbsp;&nbsp;</p>",
+    "PostedDate": "2009-08-11T04:51:22.84-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

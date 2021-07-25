@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "467984",
+    "ThreadId": "219630",
+    "Html": "<p>Hello,</p>\r\n<p>The scenario is as follows (Silverlight 4 application, PRISM 2.2):</p>\r\n<p>I have 3 modules defined in a XAML based catalog:</p>\r\n<p>1) ModuleMain - set to&nbsp;InitializationMode=WhenAvailable</p>\r\n<p>2) ModuleA - set to&nbsp;<strong>InitializationMode=OnDemand</strong> and <strong>depends on ModuleB</strong> and also on ModuleMain</p>\r\n<p>3) ModuleB -&nbsp;set to&nbsp;<strong>InitializationMode=OnDemand</strong> also depends on ModuleMain</p>\r\n<p>After the bootstrapper kicks in ModuleMain is loaded. Somewhere down the code (in ModuleMain) I load ModuleA (via the IModuleManager interface).</p>\r\n<p>Now from my understanding ModuleA should not be loaded because it depends on ModuleB and ModuleB has not been loaded yet. However the call to IModuleManager.LoadModule(&quot;ModuleA&quot;) automatically loads ModuleB.</p>\r\n<p>Is this the expected behavior ? Am I missing something ?</p>\r\n<p>Thanks</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-07-15T15:14:18.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "468000",
+    "ThreadId": "219630",
+    "Html": "<p>That sounds like the expected behavior.&nbsp; The module loader will do dependency chaining and pull in the other necessary modules.</p>\r\n<p>Are you looking for a different behavior?</p>\r\n<p>Michael Puleio</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-07-15T16:15:50.163-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "468233",
+    "ThreadId": "219630",
+    "Html": "<p>I guess it makes sense...</p>\r\n<p>I thought dependent modules in prism had a different meaning than dependencies of a DI container.&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-07-16T07:34:22.95-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "468304",
+    "ThreadId": "219630",
+    "Html": "<p>Dependencies and dependency chaining do have a slightly different meaning between modules and a DI container.</p>\r\n<p>&nbsp;I was being a bit terse in my reply above.&nbsp; Here is the longer, more detailed explanation :</p>\r\n<p>&nbsp;In the situation you described above, when you ask the module manager to load moduleA a lot of things happen.&nbsp; the following is from memory w/o looking at the code, but the high level ideas should be close to reality:</p>\r\n<ul>\r\n<li>Module manager looks at moduleA and sees that it is OnDemand and has not been loaded yet</li>\r\n<li>Module manager then looks at the dependency list for ModuleA (which points to moduleB) </li>\r\n<li>It determines that moduleB has not been loaded and has no dependencies</li>\r\n<li>the module manager asks the module type loader to load the ModuleB module type</li>\r\n<li>the module type loader determines it needs to download ModuleB, and downloads it</li>\r\n<li>The ModuleB type gets loaded</li>\r\n<li>the module manager asks the module type loader to load the ModuleA module type</li>\r\n<li>the module type loader determines it needs to download ModuleA, and downloads it</li>\r\n<li>The ModuleA type gets loaded</li>\r\n<li>Then the instances get created via DI dependency chaining.</li>\r\n</ul>\r\n<p>So basically, the modularity dependency chaining ensures that all the types are available in the app domain for the DI container can do its things.&nbsp; Of course, the modularity chaining is looking at the module info metadata, not the actual types involved, to determine the assemblies that need to be loaded.</p>\r\n<p>I hope that helps with the confusion,</p>\r\n<p>Michael Puleio</p>",
+    "PostedDate": "2010-07-16T11:13:13.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "468504",
+    "ThreadId": "219630",
+    "Html": "<p>Got my head straight.</p>\r\n<p>Thank you for the detailed explanation !</p>",
+    "PostedDate": "2010-07-17T07:20:00.28-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

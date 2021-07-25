@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "111383",
+    "ThreadId": "33608",
+    "Html": "I want the application to be capable of updating modules either via internet or by some sort of xcopy. What is the best way of loading a module for already running application and initializing it? This&nbsp;means&nbsp;also unloading some of the existing modules. Can the module perform some sort of TearDown when being unloaded in case the unload is supported of course?\r\n",
+    "PostedDate": "2008-08-15T09:13:51.423-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "111931",
+    "ThreadId": "33608",
+    "Html": "CompositeWPF cannot unload modules; this is not a limitation of the CompositeWPF - it is a .NET thing reference&nbsp;<a href=\"http://msdn.microsoft.com/en-us/library/ms173101(VS.80).aspx\">http://msdn.microsoft.com/en-us/library/ms173101(VS.80).aspx</a>.&nbsp;&nbsp; This isn't to suggest that it can't be done, reference <a href=\"http://www.google.com/search?hl=en&q=C%23+Unloading+AppDomain\">GOOGLE search here</a>, it will just require some work.<br>\r\n<br>\r\n",
+    "PostedDate": "2008-08-18T18:56:50.33-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "111978",
+    "ThreadId": "33608",
+    "Html": "Thanks for the response and links. I have experience working with application domains and loading/unloading assemblies. But I'm afraid this might be regarded as some fundamental part when speaking about modules within CompositeWPF block as rewiring module initialization seems more like a walkaround for limitations rather than feature implementation. Do you think &quot;native&quot; out-of-box&nbsp;multidomain support won't be sufficient for the products based on CompositeWPF?<br>\r\n<br>\r\nWith kind regards, Denis<br>\r\nhttp://dvuyka.spaces.live.com<br>\r\n<br>\r\n",
+    "PostedDate": "2008-08-19T00:40:15.97-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "112024",
+    "ThreadId": "33608",
+    "Html": "[Denis]&nbsp;&nbsp;I have experience working with application domains and loading/unloading assemblies<br>\r\n<br>\r\nYour the expert in this conversation then ;)&nbsp; I've read up on them but in&nbsp;a world where user requirements/projects are constant (with tight suspenses) I've not been in a situation where we could consider them (we keep things simple and moving fast).&nbsp;&nbsp; We find that Click-Once deployment meets our module deployment needs.<br>\r\n<br>\r\nIn light of your experience I'd be curious what the benefits would be?<br>\r\n",
+    "PostedDate": "2008-08-19T05:34:34.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "112045",
+    "ThreadId": "33608",
+    "Html": "For simple example please imagine the IDE-based application where content, pads, ribbon items, etc are represented by different modules bringing logic besides UI injection. Some of the modules may also interoperate with web services, databases, etc. Assuming&nbsp;that modules in this case can be written by different&nbsp;teams&nbsp;you might want dynamic updates for some of them rather that closing the whole application to apply changes, or provide internet-based updates for the separate modules but not a click-once scenario for the overall application (very important feature in my opinion).<br>\r\nSpeaking about single application domain like it is now&nbsp;we cannot unload any module without closing an aplication. Multiple application domains approach might provide possibilities for unloading modules (tear down procedure also appears here for correct removal of the module UI already injected into regions) and loading newer versions. <br>\r\nLevel of CompositeWPF tuning in this case will make me require the full set sources rather than playing with virtual methods and modules enumerators, this is why I was speaking about possible needs of out-of-box support for that. I'm sure the &quot;module unloading&quot; questions will arise a lot of times as soon as more complex applications are being prototyped with CompositeWPF.<br>\r\n",
+    "PostedDate": "2008-08-19T07:03:13.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "112100",
+    "ThreadId": "33608",
+    "Html": "<strong>Denis:</strong> <em>I have experience working with application domains and loading/unloading assemblies</em><br>\r\n<br>\r\n<strong>Bill:</strong> <em>In light of your experience I'd be curious what the benefits would be?</em><br>\r\n<br>\r\nIf I might jump in to this conversation, I had a project quite a while ago where a desired use case was to allow updates to almost any part of the application without shutting the application down. This was in the context of a emergency dispatch center where they wanted pretty much zero downtime. Being able to really unload DLLs using UnloadLibrary was needed for this to work and we had to be careful that it was ok to do this before doing it. Yes it's not &quot;safe&quot; in the .net sense since there could potentially be objects using that code, but that's why we get paid the big bucks right?<br>\r\n",
+    "PostedDate": "2008-08-19T09:50:05.45-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "112109",
+    "ThreadId": "33608",
+    "Html": "Yep, this is something I'm trying to explain. Very often it is&nbsp;quite critical for a scalable&nbsp;application not to be shut down while updating key components. If such support&nbsp;is not in the project plan for the nearest future we could at least collect the least minimum required for developers to replace the module loading behavior and easily enhance the existing model with unloading support.\r\n",
+    "PostedDate": "2008-08-19T10:30:23.733-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

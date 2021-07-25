@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "112175",
+    "ThreadId": "33849",
+    "Html": "Wierd,<br>\r\n<br>\r\nI tried assigning an x:Name value to the ModuleA.AddFundView in the EventAggregation solution. I kept getting an error: <br>\r\n<br>\r\nDescription: The type name 'AddFundView' does not exist in the type 'ModuleA.ModuleA'&nbsp;<br>\r\nFile: AddFundView.xaml&nbsp;<br>\r\nProject: ModuleA<br>\r\n<br>\r\nAfter some more investigation, I realized that there is an issue with MS compiler when auto-generating code. Because I assigned the x:Name property, the compiler must auto-generate this. When it does, it has a problem retrieving ModuleB.ActivityView as&nbsp;Class[IModule].Class&nbsp;when it should be looking for the view as&nbsp;Namespace.Class.<br>\r\n<br>\r\nThe solution would be to change either the name of the namespace or the name of the ambiguous class in question. I ended up changing the class.<br>\r\n<br>\r\nSo at the end, please keep this in mind when creating sample apps: Keep distributed resources less error prone.<br>\r\n<br>\r\nThank you.&nbsp;<br>\r\n<br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2008-08-19T14:48:15.607-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

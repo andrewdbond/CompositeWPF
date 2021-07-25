@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "I'm attempting to use the Prism Library in my application, which I want to be CLS Compliant. The problem is that even though the Prism Library _IS_ CLS Compliant, it does not have the appropriate attribute specifying that it is. This causes any types that I create to extend the types from within prism to be marked as non-CLS compliant, as well as other issues.\n \nFor example, when I attempt to use the Notification class as a parameter in my method, it is impossible to do so for a public/protected abstract method. If I attempt to mark the method as CLSCompliant(false) then I get a compiler error CS3011. If I remove the attribute then I get a compiler error stating that \"Argument type 'Microsoft.Practices.Prism.Interactivity.InteractionRequest.Notification' is not CLS-Compliant.\"\n \nPlease apply the CLSCompliant(true) attribute to the assemblies. Thank you.",
+    "LastUpdatedDate": "2014-09-15T04:24:52.827-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-07-19T02:48:34.6-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "CLS Compliance",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 9505
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nAfter analyzing the assemblies in the Prism library, I confirmed that the Microsoft.Practices.Prism.Interactivity assembly has not the CLSCompliantAttribute and as mentioned in this article (http://msdn.microsoft.com/en-us/library/bhc3fa7f%28v=vs.100%29.aspx) an assembly that is not marked as CLS-compliant is considered to be not CLS compliant.\r\n\r\nHence, I believe, that adding the CLSCompliant attribute to this assembly could be a valid suggestion, to avoid this kind of errors.\r\n\r\nAlso, as an alternative I believe you could also try marking the class that contains the abstract method with the [CLSCompliant(false)] attribute (instead of marking the method). This could help to avoid the CS3011 error which states that:\r\n\r\nA class member cannot be both abstract and non-compliant with the Common Language Specification (CLS). The CLS specifies that all class members shall be implemented.\r\n\r\nRegards,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2012-08-17T10:51:32.117-07:00",
+      "Id": 156611
+    }
+  ]
+}

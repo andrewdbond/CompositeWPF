@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "The current Composite Application Library (CAL) samples show the registration of views and services happening in a module’s Initialize() method.\n \nThe Configuration Module Enumerator currently calls Initialize() immediately on a module it created.\n \nThe combination of these two behaviours means that module dependencies must be specified in the configuration file so that the modules are loaded in the correct sequence in order to avoid an exception such as a ResolutionFailedException.\n \nThere are at least a couple of problems with having to specify module dependencies in the configuration file.\n \n1) The more information that must be specified in a configuration file to make an application run successfully the more likely the application will fail on start up due to incorrect configuration.\n2) In many cases module dependencies are not dynamic and therefore should not have to be specified in a dynamic way.\n \nIf modules are statically loaded the problem may be avoided without having to create and initialize the modules in the correct sequence by doing the following.\n \n1) Create each module.\n2) Register services etc. in a module when it is created.\n3) Initialize each module.\n \nThe Configuration Module Enumerator could be changed to create all the modules first and then initialize each module.\n \nWhile this removes the need for specifying dependencies for dependency injection using interfaces there is still a problem with CAL region dependencies. One solution is to use code as is done for the Project module display in the UIComposition QuickStarts sample. However it may be possible to resolve the problem by allowing something like the following.\n \n1) Allow a module to ‘register’ a region (that is, the module indicates that it will eventually attach an object to adapt to the region)\n2) Allow a module to add a view to a region before the object to adapt to the region has been added\n3) Allow the module that registered the region to attach an object to adapt to the region at which time active views are display etc.\n \nAllowing modules to advertise their services (regions, ...) before other modules try to access them removes the need for unnecessarily specifying module dependencies in configuration.",
+    "LastUpdatedDate": "2013-02-21T18:38:59.407-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-06-27T12:29:18.717-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Reduce the need for dependencies in configuration",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 4,
+    "Id": 2576
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Module dependencies can also be specified through using the [ModuleDependency] attribute on the module class.",
+      "PostedDate": "2008-08-21T23:51:24.767-07:00",
+      "Id": 156004
+    },
+    {
+      "Message": "Maybe I’m missing something but it seems to me that the ModuleDependency attribute creates a tight coupling between modules. Module A may depend on Interface 1. Modules B, C, and D may implement Interface 1 (and you may need to create more modules implementing the interface in the future). The module used (B, C, D, ...) may depend on something like the type of hardware being used. I don’t want to tie Module A to a module through the ModuleDependency attribute since to change the attribute I need to change the code and recompile.\r\n\r\nHowever, instead of ModuleDependency, an attribute such as ModuleResourceProvided could be used to specify a resource like a service interface or region name that is provided by the module for use by other modules and ModuleResourceRequired could be used to specify a resource that is required by the module but provided by another module. The module enumerator could then use this information to build a module dependency tree in order to determine the construction/initialization order. Something like this could provide a loose coupling between modules and remove the need to specify dependencies in a configuration file.",
+      "PostedDate": "2008-08-28T06:19:55.67-07:00",
+      "Id": 156005
+    },
+    {
+      "Message": "Hi,\r\n\r\nBased on my understanding, the way modules are loaded, initialized, and their need for dependencies in configuration, is currently by design.  \r\n\r\nAlso as mentioned in the Extending Prism Chapter (http://msdn.microsoft.com/en-us/library/gg430866(v=PandP.40).aspx) of the Prism documentation at MSDN: “the Prism Library provides various ways to populate the module catalog and load modules; however, your scenario may have needs that the library does not provide, if so the library can be extended to meet them…” For example the ModuleManager provides many virtual methods that can be overridden to change how modules are loaded and initialized.\r\n\r\nOn the other hand, if you need to load the container before the modules (so when loading your modules, the mappings will be in place and your module's dependencies will be resolved), you may consider the following article useful, as it shows how to configure Unity from a separate configuration file (which should help keeping concerns clear, as the Unity configuration will be separated from the modules' configuration):\r\n\r\nUnity Configuration from Separate Configuration File (http://www.pnpguidance.net/post/UnityConfigurationSeparateConfigurationFile.aspx)\r\n\r\nAdditionally, it would be useful to know that the concept of ModuleEnumerators mentioned was used in Prism V1 and changed since Prism V2 to ModuleCatalog. More information about this can be found in the following MSDN blog post (http://blogs.msdn.com/b/erwinvandervalk/archive/2008/10/14/prism-v2-drop-3-is-out.aspx).\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami ",
+      "PostedDate": "2011-12-30T08:55:59.443-08:00",
+      "Id": 156006
+    }
+  ]
+}

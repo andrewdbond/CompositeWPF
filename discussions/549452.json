@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1259026",
+    "ThreadId": "549452",
+    "Html": "I'm starting a new WPF application and planning on using Prism 5.  I've seen plenty of discussions regarding Unity vs. MEF, however I was wondering about using a wholly different DI container like LightInject.\r<br />\n<br />\nI know that using a different DI container with Prism is possible, but has anyone actually done it?  I know it involves a custom implementation of IServiceLocator inheriting from ServiceLocatorImplBase, but to before going down that road I'm trying to determine if I'm opening a can of worms.  Perhaps its best to conform to Unity or MEF.\r<br />\n<br />\nWhat is the level of effort, and are there any examples/posts regarding all the steps involved in using a non-Unity/MEF DI container?<br />\n",
+    "PostedDate": "2014-06-23T12:49:45.69-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1259542",
+    "ThreadId": "549452",
+    "Html": "Hello,\r<br />\n<br />\nI am new to Prism and Composite UI patter as well and  first time I need to study that approach because a customer need to be able to design the layout of the UI.\r<br />\nSo first thing I do is running the Getting started sample in order to get the basics and usually I like to keep tight to what the sample use , this first for simplicity understanding and maybe also to be quite sure of the proven implementation.\r<br />\n<br />\nPrism seems to be a big complex package, so why adding a new complexity by using an other Container type as it is already providing it ?\r<br />\n<br />\nregards<br />\n",
+    "PostedDate": "2014-06-25T01:45:32.313-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1260654",
+    "ThreadId": "549452",
+    "Html": "Hi,\r<br />\n \r<br />\nPrism can be used with other container beside the ones that are supported as out of the box, but it requires to perform certain tasks to “adapt” the container to Prism. To start, you will need to:\r<br />\n \r<br />\n·         Create a custom implementation of <strong>IServiceLocator</strong> like you mentioned above.\r<br />\n<br />\n·         Create a custom implementation of a bootstrapper.\r<br />\n<br />\n·         Register all the services and types provided by Prism in the new container.\r<br />\n<br />\n \r<br />\nHowever, if the container you want to use is well known by the community, you might be able to find a post or project describing an approach to use it .\r<br />\n \r<br />\nA good example of what changes you might need to adapt the container to Prism can be found in Prism’s source code. The project <strong>Prism.Desktop</strong> contains most of the main functionality used in Prism but does not depend on any container. The extensions required to use <strong>MEF</strong> and <strong>Unity</strong> are located in the corresponding <strong>Prism.MefExtensions</strong> and <strong>Prism.UnityExtensions</strong> projects. There it can also be seen that the amount of effort required to adapt the container depends on the container itself: <strong>Unity</strong> just requires a couple of classes while <strong>MEF</strong> needs to create subclasses of almost any Prism service to be able to export them.\r<br />\n \r<br />\nIn my opinion, using a different container might be worth the effort if the container provides a functionality that is not available in MEF or Unity and that you need to use in your project. If not, then it might be simpler to use the containers that are supported as out of the box.\r<br />\n<br />\nThanks,\r<br />\nEzequiel Jadib\r<br />\n<a href=\"http://blogs.southworks.net\" rel=\"nofollow\">http://blogs.southworks.net</a><br />\n",
+    "PostedDate": "2014-06-27T19:16:35-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

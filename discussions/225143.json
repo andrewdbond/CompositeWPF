@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "485905",
+    "ThreadId": "225143",
+    "Html": "<p>In previous versions of Prism/CAL we were able to use locally built versions of Unity, Service Locator and CAL.&nbsp; Looks like with the newer version of Prism we need to use a specific strong named version of Unity.&nbsp; Even though we are using the supplied Unity 2.0 source code it looks like the service locator supplied with Prism is dependent on a specific version of Unity.&nbsp; Our bootstrapper pukes when trying to resolve RegionBehaviorFactory(IServiceLocator serviceLocator)&nbsp;during construction of SelectorRegionAdapter.&nbsp; I am not that familiar with signed assemblies besides why they are used.&nbsp; Is there any way to remove this dependency?&nbsp; To the best of my knowledge we are using the correct version of unity, but we are building it locally vs using the DLLs MS provides with their unity msi.</p>\r\n<p>Thanks for any responses.<br>Dave Wendland</p>",
+    "PostedDate": "2010-08-27T18:47:59.583-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "494082",
+    "ThreadId": "225143",
+    "Html": "This discussion has been copied to a work item. Click <a href=\"http://compositewpf.codeplex.com/workitem/7247\">here</a> to go to the work item and continue the discussion.",
+    "PostedDate": "2010-09-15T13:49:55.35-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "494083",
+    "ThreadId": "225143",
+    "Html": "<p>Hi Dave,</p>\r\n<p>In the latests drops of Prism we are including the compiled assemblies of Unity and Service Locator. In our code, we reference those strong named libraries. Therefore if you use non-signed assemblies the references won't work.</p>\r\n<p>If you want to use your own compiled assemblies, you can download Unity's source code from <a href=\"http://unity.codeplex.com/\">here</a>. Compile the source code, remove the original references, and add new references to your compiled assemblies. In this way the <strong>Strong Name</strong> property of the reference will be set to False and you will be able to use the assembly.</p>\r\n<p>I will create a <a href=\"http://compositewpf.codeplex.com/workitem/7247\">work item</a> for this, so the community can vote if they want this feature to be in future Prism drops.</p>\r\n<p>Hope this helps,</p>\r\n<p>Diego</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-15T13:51:44.273-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

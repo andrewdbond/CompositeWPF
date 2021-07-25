@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "631728",
+    "ThreadId": "262472",
+    "Html": "<p>Hi,</p>\n<p>I have created a sample HelloWorld prism application which builds and runs fine. However, I am not getting the IntelliSense (auto complete feature) for Prism namespaces in my xaml files. I have copied the Prism dll and Xml files in sub folder of my project  and then added reference to that folder. Here is how I am declaring the xml namespace</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">UserControl</span> <span style=\"color: red;\">x:Class</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">PrismHelloWorld.HelloWorld</span><span style=\"color: black;\">\"</span>\n             <span style=\"color: red;\">xmlns</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">http://schemas.microsoft.com/winfx/2006/xaml/presentation</span><span style=\"color: black;\">\"</span>\n             <span style=\"color: red;\">xmlns:x</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">http://schemas.microsoft.com/winfx/2006/xaml</span><span style=\"color: black;\">\"</span>\n             <span style=\"color: red;\">xmlns:local</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">clr-namespace:PrismHelloWorld</span><span style=\"color: black;\">\"</span>\n             <span style=\"color: red;\">xmlns:prism</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">http://www.codeplex.com/prism</span><span style=\"color: black;\">\"</span>\n             <span style=\"color: blue;\">&gt;</span>\n\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>When I type &lt;prism: in xaml, I do not get any auto-complete entries box. The Visual Studio instead lists the following error in Errors window</p>\n<p>\"Error<span> </span>3<span> </span>The type 'prism:&lt;Unknown&gt;' was not found. Verify that you are not missing an assembly reference and that all referenced assemblies have been built.<span> </span>D:\\C#_Practice\\Prism\\PrismHelloWorld\\PrismHelloWorld\\HelloWorld.xaml<span> </span>12<span> </span>6<span> </span>PrismHelloWorld\"</p>\n<p>Any ideas why Visual Studio prints the above error (and also why there is not intellisense for prism namespace) ? Please note that the application is still able to run properly, inspite of these errors.</p>\n<p>regards,</p>\n<p>Nirvan.</p>",
+    "PostedDate": "2011-06-23T03:35:56.91-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "631986",
+    "ThreadId": "262472",
+    "Html": "<p>I have identified when this problem occurs but don't know how to solve it. The IntelliSense breaks up after I add Reference to \"Microsoft.Practices.Prism.Interactivity.dll\" in my project. Can anyone please help me resolve this problem ?</p>\r\n<p>regards,</p>\r\n<p>Nirvan.</p>",
+    "PostedDate": "2011-06-23T10:31:05.34-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "632016",
+    "ThreadId": "262472",
+    "Html": "<p>Hi Nirvan,</p>\r\n<p>I tried to reproduce this issue on my environment, but I found that the intellisense is working properly with the Prism namespace, whether I add a reference to the <strong>Prism.Interactivity </strong>library or not.</p>\r\n<p>You could try executing the <strong>RegisterPrismBinaries.bat</strong> file, located in the installation folder in order to register Prism in the <strong>GAC</strong>, and then reference the Prism binaries from the <strong>.NET</strong> tab in the <strong>Add Reference Dialog</strong>.</p>\r\n<p>If that doesn&rsquo;t help, the problem you&rsquo;re experiencing might be related to the configuration of your environment.</p>\r\n<p>Please, let me know if this information helps you.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-06-23T11:18:55.723-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "632045",
+    "ThreadId": "262472",
+    "Html": "<p>Miguel,</p>\n<p>I am pretty sure that I get the problem only after adding <strong>Prism.Interactivity dll </strong>to the project<strong>. </strong>To confirm that when I remove the <strong> Prism.Interactivity</strong>&nbsp;from my project and rebuild the project, I get the Intellisense working for Prism namespace. I am using Visual Studio Express, so I cannot use <strong>RegisterPrismBinaries.bat.&nbsp;</strong></p>\n<p>Thanks for the response.</p>\n<p>Nirvan.</p>",
+    "PostedDate": "2011-06-23T12:02:21.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "632273",
+    "ThreadId": "262472",
+    "Html": "<p>I am really struggling to get this problem resolved. Out of all the six dll's in Prism bin folder, only the <strong>Microsoft.Practices.Prism.Interactivity.dll </strong>is causing the &lt;prism: namespace Intellisense to break. Any help please.&nbsp;</p>\n<p>regards,</p>\n<p>Nirvan.</p>",
+    "PostedDate": "2011-06-23T21:33:01.89-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "632482",
+    "ThreadId": "262472",
+    "Html": "<p>Hi Nirvan,</p>\r\n<p>We've not received similar issues so far. We've tried to reproduce your problem under different scenarios but we were unable to experience the error you're mentioning.</p>\r\n<p>You could try adding the <strong>Microsoft.Expression.Interactions</strong> and <strong>System.Windows.Interactivity</strong> libraries into your project.</p>\r\n<p>If that doesn't fix the problem, you could create a work item in the <a href=\"http://compositewpf.codeplex.com/workitem/list/advanced\">issue tracker</a>, so that the Prism team considers reviewing this on a future version.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-06-24T06:02:37.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "632520",
+    "ThreadId": "262472",
+    "Html": "<p>Guido,</p>\r\n<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Your tricked worked. Indeed adding&nbsp;<strong>Microsoft.Expression.Interactions</strong>&nbsp;and&nbsp;<strong>System.Windows.Interactivity </strong>somehow got Intellisense for all namespaces (including Prism) to work properly.</p>\r\n<p>Thanks a lot.</p>\r\n<p>Nirvan</p>",
+    "PostedDate": "2011-06-24T07:06:00.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

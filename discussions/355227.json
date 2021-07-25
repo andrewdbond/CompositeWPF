@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "834447",
+    "ThreadId": "355227",
+    "Html": "\r\n<p>I need to create a utility modal dialog to prompt users to select items from a list and return the list of what was selected - returning a csv string would be fine. &nbsp;The dialog needs to be available to multiple modules in the prism application.</p>\r\n<p>How can I define this dialog only once yet make it available to all the modules without duplicating code?</p>\r\n<p>Gary</p>\r\n",
+    "PostedDate": "2012-05-10T01:41:34.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "834820",
+    "ThreadId": "355227",
+    "Html": "<p>Hi,</p>\r\n<p>I believe a possible approach to achieve showing dialog windows like you mentioned could be using<strong> Interaction Requests</strong>. You will find that the <strong>Prism </strong>library provides many examples and&nbsp; documentation on this subject.</p>\r\n<p>In particular you could find useful information about this in the following section of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405494(v=pandp.40)#sec10\">Chapter 6: Advanced MVVM Scenarios, User Interaction Patterns</a></li>\r\n</ul>\r\n<p>Although, as mentioned in <a href=\"http://compositewpf.codeplex.com/discussions/236756\">this thread</a>, currently all demo applications provided with <strong>Prism </strong>as out of the box are related to <strong>Silverlight</strong>, but an useful example of <strong>Interaction Requests </strong>with <strong>WPF </strong>applications can be found in the following training kit:</p>\r\n<ul>\r\n<li><a href=\"http://visualstudiogallery.msdn.microsoft.com/3ab5f02f-0c54-453c-b437-8e8d57eb9942/\">In the Box &ndash; MVVM Training</a></li>\r\n</ul>\r\n<p>Take into account that different <strong>triggers </strong>and <strong>actions </strong>can be defined to support different interaction mechanisms. The implementation of the <strong>Prism InteractionRequestTrigger </strong>and <strong>PopupChildWindowAction </strong>classes can be used as a basis for the development of your own <strong>triggers </strong>and <strong>actions</strong>, which will depend mostly on your personal preferences and the requirements of your scenario.</p>\r\n<p>Recently, I created a blog post regarding <strong>Interaction Requests</strong> with<strong> WPF</strong>. You could find it here:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/aadami/2012/05/09/prism-interactionrequest-and-popupmodalwindowaction-for-wpf-applications/\">Prism: InteractionRequest and PopupModalWindowAction for WPF applications</a></li>\r\n</ul>\r\n<p>Based on the sample in this blog post, I also created an example on how these interactions can be used to achieve scenarios like the one you mentioned. You can find it in <a href=\"https://skydrive.live.com/#cid=7890102B5B8BC928&amp;id=7890102B5B8BC928!103\">my skydrive account</a> under the name \"<strong>CustomPopupModalWindowAction\"</strong>.<br /><br />I hope you find these useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-05-10T14:02:23.657-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "835304",
+    "ThreadId": "355227",
+    "Html": "<p>hello,</p>\r\n<p>Based on your example, if I want to create a modal dialog for the user to edit/add new record for example?&nbsp; The modal dialog will need to take a view and view model so I can do all the things I need in there, and every module in my application will have to use this with its' unique view and viewmodel.</p>\r\n<p>How do I accomplish this with the above example you provided please?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-05-11T14:10:11.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "836165",
+    "ThreadId": "355227",
+    "Html": "<p>Hi BishMan,</p>\r\n<p>Based on my understanding of your scenario, if you want to be able to show views with their corresponding view models according to the task performed by each module, I believe the <strong>WindowDialogActivationBehavior </strong>provided in the <strong>Stock Trader RI</strong> would be more suitable. This behavior simply defines a region so that when a view is injected in it, the region with its view will be shown in a new window. Therefore, you would be able to inject any view you need. Also, if you need to pass data between the parent and dialog views / view model, you can achieve this through different communication approaches like using the <strong>EventAggregator </strong>or a <strong>shared service</strong>. Take into account that the implementation details for this will depend mostly of your personal preferences and the requirements of your scenario.</p>\r\n<p>As a side note, by default the <strong>WindowDialogActivationBehavior </strong>provided in the <strong>Stock Trader RI</strong><strong> </strong>does not show a dialog window; however, this can be changed by replacing the following line in the <strong>Show </strong>method of the <strong>WindowWrapper </strong>class:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">this</span>.window.Show();\r\n</pre>\r\n</div>\r\n<p>With this one:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">this</span>.window.ShowDialog();\r\n</pre>\r\n</div>\r\n<p>You can find more information about this and a small sample portraying this approach in the following thread:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/350747\">Showing view in a DialogBox</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-05-14T10:15:42.797-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "840453",
+    "ThreadId": "355227",
+    "Html": "<p>Hello,</p>\r\n<p>Thank you so much for your reply, but this will not address my issue.&nbsp; I would like to open 2 dialog boxes from 2 different modules at the same time.</p>\r\n<p>How can I accomplish this please.</p>",
+    "PostedDate": "2012-05-24T07:38:25.223-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "840545",
+    "ThreadId": "355227",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>As it seems that you have created a new thread regarding this topic, I believe it would be helpful to continue the discussion in that thread:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/357015\">Open 2 message boxes from 2 different modules at the same time</a>\r\n</li></ul>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2012-05-24T10:36:44.44-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

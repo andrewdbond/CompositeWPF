@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "687309",
+    "ThreadId": "276685",
+    "Html": "\r\n<p>I have this code:</p>\r\n<p>ModuleManager.LoadModule(&quot;ModuleA&quot;)</p>\r\n<p>EventAggregrator.Public(EventA....)</p>\r\n<p>ModuleA does have a subscriber to consume the the EventA.</p>\r\n<p>But it won't worked when its being loading. It only worked the module is loaded.</p>\r\n<p>How can I make ModuleA to consume EventA in the event it is being load-on-demand?</p>\r\n<p>I try to make a wrapper around the ModuleManager to do a synchronous module loading, but I think this won't work as they are running on ui thread, either the thread will block the whole loading, or just back to same issue.</p>\r\n",
+    "PostedDate": "2011-10-21T02:33:49.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "687564",
+    "ThreadId": "276685",
+    "Html": "<p>Hi,</p>\n<p>Based on my understanding one way you could achieve this is to confirm that your module was initialized, to ensure your suscription is made before publishing the event. To do this you could define an <strong>EventAgreggator </strong>wrapper class to obtain which modules were initialized and publish the event accordingly. You could compare the <strong>ModuleCatalog.Modules</strong> collection and check if your required module was initialized. An example of this could be the following method:</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> IsModuleInitialized(<span style=\"color: blue;\">string</span> requiredModuleName)\n{\n    <span style=\"color: blue;\">return</span> moduleCatalog.Modules.Where(e =&gt; e.State == ModuleState.Initialized).Where(e =&gt; e.ModuleName == requiredModuleName).FirstOrDefault() != <span style=\"color: blue;\">null</span>;\n}\n</pre>\n</div>\n<p>In case the module was initialized you could publish the event using the <strong> EventAgreggator</strong>. If not, you could subscribe to the <strong>ModuleManager.LoadModuleCompleted</strong> event and then request to load your required module, so you can publish the event when the module ends loading.</p>\n<p>While this approach will probably help you in your specific scenario, it would be worth noting that this implies a little bit of coupling between the modules in your application. As the documentation mentions,</p>\n<p><em>\"To keep the application and modules loosely coupled, the application should avoid using this event to integrate the module with the application...\"</em></p>\n<p>So, in my opinion you could try loading the module before publishing the event to avoid this situation.</p>\n<p>I hope you find this useful.</p>\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-10-21T10:39:31.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "695069",
+    "ThreadId": "276685",
+    "Html": "<blockquote style=\"padding-bottom: 0px; font-style: italic; margin: 0.25em 1em 0px; padding-left: 0.25em; padding-right: 0.25em; padding-top: 0px; border: #ccc 0.1em solid;\"><strong>aadami wrote:</strong><br />\n<p>...</p>\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br />http://blogs.southworks.net/aadami</a>﻿</p>\n</blockquote>\n<p><br />Thx.</p>\n<p>I attempted to look into synchronous approach, but this seems to be a no-way.</p>\n<p>The event aggregrator is being adopted, using delegate method to&nbsp;execute post-loaded routine. this has to break/change my codes/design :(</p>",
+    "PostedDate": "2011-11-07T19:31:40.02-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "I started this topic as a question over in the Discussions (http://compositewpf.codeplex.com/discussions/260016), and it seems like it has some merit as a feature request for a future version of Prism.\n \nThe feature request is to be able to optionally look through subdirectories for modules/DLLs when adding a directory to the DirectoryCatalog. Instead of the code below, we might be able to do something like:\n                DirectoryCatalog thirdparty= new DirectoryCatalog(Directory=@\"C:\\CompApp\\vbin\\\", IncludeSubdirectories=true);\n \n \nWe're using MEF for module discovery, and often the modules have some external dependencies on third-party DLLs, like Prism, Enterprise Library, and Telerik among possible others.\n \nIn order to not keep all of these DLLs in the same directory, and to have a standard location where each developer should be including them, we have setup a simple directory structure for our \"helper\" DLLs (all under c:\\CompApp\\vbin\\).\n \nIn the Bootstrapper.cs, then, we are doing this:\n \n            DirectoryCatalog prism = new DirectoryCatalog(@\"C:\\CompApp\\vbin\\Prism\\\");\n            DirectoryCatalog telerik = new DirectoryCatalog(@\"C:\\CompApp\\vbin\\Telerik\\\");\n            DirectoryCatalog entlib = new DirectoryCatalog(@\"C:\\CompApp\\vbin\\EntLib\\\");            DirectoryCatalog catalog = new DirectoryCatalog(@\"C:\\CompApp\\bin\\Modules\\\");\n \n            this.AggregateCatalog.Catalogs.Add(prism);\n            this.AggregateCatalog.Catalogs.Add(telerik);\n            this.AggregateCatalog.Catalogs.Add(entlib);\n            this.AggregateCatalog.Catalogs.Add(catalog);",
+    "LastUpdatedDate": "2014-11-12T14:17:06.623-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-06-03T06:32:47.31-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Include Subdirectories as option for MEF in DirectoryCatalog",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 5,
+    "Id": 8324
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nBased on my understanding DirectoryCatalog and AggregateCatalog are classes from the MEF framework. Hence, this could also be a valid suggestion for the MEF forums.\r\n\r\nAs a quick work around to achieve this kind of scenarios I believe you could try overriding the ConfigureAggregateCatalog like in the following code snippet:\r\n\r\nprotected override void ConfigureAggregateCatalog()\r\n        {\r\n            base.ConfigureAggregateCatalog();\r\n\r\n           (...)\r\n         \r\n            //This line is used to retrieve all sub directories in an specific path (as explained in this blog:\r\n\t    // (http://jbknet.blogspot.com.ar/2008/01/get-all-subdirectories-in-single-line.html) \r\n\r\n\t    string[] folders = System.IO.Directory.GetDirectories(@\".\\Modules\", \"*\", System.IO.SearchOption.AllDirectories);\r\n\r\n            foreach (string folder in folders)\r\n            {\r\n                DirectoryCatalog catalog = new DirectoryCatalog(folder);\r\n                this.AggregateCatalog.Catalogs.Add(catalog);\r\n            }\r\n        }\r\n\r\nAdditionally, another option could be creating a custom DirectoryModuleCatalog which also applies for Unity, as proposed in this thread:\r\n\r\n   -DirectoryModuleCatalog in Prism 4.0 (http://compositewpf.codeplex.com/discussions/350389)\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2012-03-30T05:41:56.91-07:00",
+      "Id": 156464
+    }
+  ]
+}

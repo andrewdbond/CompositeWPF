@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "632395",
+    "ThreadId": "262636",
+    "Html": "<p>Hi,</p>\n<p>How to load the single view into the multiple region of the shell in the Silverlight/WPF using PRISM and MEF.</p>\n<p>Scenario:</p>\n<p>Assume having two regions \"MainRegion\" and \"SubRegion\" in the shell. I want to load the \"OrderView \" from the module in the 2 regions.</p>\n<p>Thanks</p>\n<p>Mahesh</p>",
+    "PostedDate": "2011-06-24T02:41:20.133-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "632479",
+    "ThreadId": "262636",
+    "Html": "<p>Hi Mahesh,</p>\r\n<p>Depending on the approach you're using for adding views to regions, you could do the following:</p>\r\n<p>If you're using View Discovery, you could register the view in both regions, for example:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>ServiceLocator.Current.GetInstance&lt;IRegionViewRegistry&gt;().RegisterViewWithRegion(<span style=\"color: #a31515;\">\"MainRegion\"</span>, <span style=\"color: blue;\">typeof</span>(OrderView));\r\n\r\nServiceLocator.Current.GetInstance&lt;IRegionViewRegistry&gt;().RegisterViewWithRegion(<span style=\"color: #a31515;\">\"SubRegion\"</span>, <span style=\"color: blue;\">typeof</span>(OrderView));\r\n</pre>\r\n</div>\r\n<p>On the other hand, if you're using View Injection, you could add the view to both regions, for example:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">var</span> viewInstance1= ServiceLocator.Current.GetInstance&lt;OrderView&gt;();\r\n\r\n<span style=\"color: blue;\">var</span> viewInstance2= ServiceLocator.Current.GetInstance&lt;OrderView&gt;();\r\n\r\nServiceLocator.Current.GetInstance&lt;IRegionManager&gt;().Regions[<span style=\"color: #a31515;\">\"MainRegion\"</span>].Add(viewInstance1);\r\n\r\nServiceLocator.Current.GetInstance&lt;IRegionManager&gt;().Regions[<span style=\"color: #a31515;\">\"SubRegion\"</span>].Add(viewInstance2);\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>Note that you should make sure that you're adding different instances of the view into the different regions (because the same instance of a visual component cannot be added twice in the visual stree), so you should make sure that you have registered your view as a non shared instance (by either adding the <strong>PartCreationPolicy </strong>attribute with the <strong>CreationPolicy.NonShared</strong> value in MEF, or registering the type without specifying a <strong>ContainerControlledLifetimeManager </strong>in Unity).</p>\r\n<p>You can read more about the UI Composition mechanisms in <a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28PandP.40%29.aspx\">this chapter</a>, and you can read more about Dependency Injection in Prism in <a href=\"http://msdn.microsoft.com/en-us/library/ff921140%28PandP.40%29.aspx\">this chapter</a> from the MSDN documentation.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-06-24T05:58:00.577-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "637370",
+    "ThreadId": "262636",
+    "Html": "<p>Hi,</p>\r\n<p>Thanks a lot. It works fine.</p>\r\n<p>Thanks</p>\r\n<p>Mahesh</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-07-05T02:36:14.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "688387",
+    "ThreadId": "276985",
+    "Html": "\r\n<p>I'm&nbsp;new to building composite applications and Prism and would like some input on how to deal with data access.</p>\r\n<p>The Prism reference implementation has data (xml files) defined in each module. In my case I would like to share the data access across modules. I suppose in a modular application only the module know what specific entities and repositories are to be specified.\r\n Also only the data access layer will know how to persistence the data and I suppose it would be not clever to duplicate this logic over several modules.</p>\r\n<p>Today I have a generic repository / interface in the DAL.</p>\r\n<p>Should this be a own&nbsp;Prism module, or a dll reference in each module who needs data access? I suppose the latter is easier, but not as loosely coupled?</p>\r\n<p>Any hint on how to approach?</p>\r\n",
+    "PostedDate": "2011-10-24T05:47:05.307-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "688563",
+    "ThreadId": "276985",
+    "Html": "<p>Hi,</p>\r\n<p>In my opinion, a good approach to fulfill this requirement would be to define the interface for your service in an infrastructure project (probably, if your service retrieves and saves instances of a specific model, you would have to put that model class in the infrastructure project as well); and then, define an implementation of that service on a certain module, and export it to the container using the aforementioned interface as the contract type.</p>\r\n<p>This way, since infrastructure projects are usually referenced throughout all your other projects in the application, every component will be able to consume your service, but without knowing its concrete implementation. This is known as shared services, and you can read more about it in the following section from the Communication chapter in the Prism MSDN documentation:</p>\r\n<ul>\r\n<li><strong><a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28PandP.40%29.aspx#sec7\">Shared Services</a></strong></li>\r\n</ul>\r\n<p>You might also find the following blog post useful, where an example of this scenario can be seen. In this case, the data access layer is a mock service that returns mock values, but the idea is similar to what I mentioned above:<a href=\"http://blogs.southworks.net/gmaliandi/2011/10/using-wcf-services-in-prism-silverlight-applications/\"></a></p>\r\n<p><a href=\"http://blogs.southworks.net/gmaliandi/2011/10/using-wcf-services-in-prism-silverlight-applications/\">Using WCF services in Prism Silverlight applications</a></p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi&nbsp;<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n<h2 class=\"title small\"><a href=\"http://blogs.southworks.net/gmaliandi/2011/10/using-wcf-services-in-prism-silverlight-applications/\"><br /></a></h2>",
+    "PostedDate": "2011-10-24T11:16:48.013-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "688790",
+    "ThreadId": "276985",
+    "Html": "<p>Thank you for your detailed answer Guido! Your approach seems reasonable - I&nbsp;will look into your links and hopefully get a grasp on this :)</p>",
+    "PostedDate": "2011-10-24T23:50:48.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "699387",
+    "ThreadId": "276985",
+    "Html": "<p>A little follow up question on this one</p>\n<p>So I got my modules set up (Unity)&nbsp;and a data module that will do my&nbsp;persistence. That is done with nHibernate. Using nHibernate I have a IRepository&lt;T&gt; and a Repository&lt;T&gt; that will do my most basic CRUD operations and also from which specialized repositories can inherit in different modules.</p>\n<p>Ideally I'd like my data module to be independent on the ORM (say in 5 years everyone is all excited about some new technology/ORM). I find this hard as a repository takes in an ISession (nHibernate interface) to work on.</p>\n<p>What I'd like to do is (and very open to other suggestions)</p>\n<p>-- Infrastructure<br />&nbsp;|- IRepository&lt;T&gt;&nbsp;where&nbsp;T : IEntity<br />&nbsp;|- IEntity<br />&nbsp;|-&nbsp;Customer : IEntity</p>\n<p>-- Modules.Data<br />|- Repository&lt;T&gt;(ISession session)&nbsp;(register as a service in module Initialize)<br />|- SessionFactory (as a service) (singleton with OpenSession() method)</p>\n<p>-- Modules.Customer<br />|- CustomerRepository&lt;Customer&gt;(ISession session) : Repository&lt;T&gt;(session)</p>\n<p>Reading <a href=\"http://msdn.microsoft.com/en-us/magazine/ee819139.aspx\">this article</a>&nbsp;of best practices using nHibernate with Windows application it encourages to have a session-per-form scenario. Then I have a dependecy on my session object type (ISession)&nbsp;throughout my application. Unplugging my data module and inserting a new one will not work as I will have to sort out all the places ISession were used.</p>\n<p>Also I found registering generic services (Repository&lt;T&gt;) hard as I would like my module to define that T. A way around is to move the &lt;T&gt; to the method implementations instead&nbsp;(GetById&lt;T&gt; where T : IEntity)</p>\n<p>But my biggest problem is that how to inherit from my base repository from my modules. Does it makes sense to move it to Infrastructure? Then only my SessionFactory will be left in my Data module with some conventions.</p>\n<p>So to sum it up - I (think I) understand the concept of sharing services and so on in Prism, but how to do it in a generic way and without getting a dependency on my ORM implementation? Adding a business layer&nbsp;module&nbsp;that will hold all the session implementation? As such I will only have to change two modules in the future.</p>\n<p>Any thoughts on this is appreciated :)</p>",
+    "PostedDate": "2011-11-17T00:15:37.27-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "699587",
+    "ThreadId": "276985",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding you could apply a structural pattern such as the <strong> Adapter </strong>or <strong>Fa&ccedil;ade </strong>patterns, to obtain abstraction over the <strong>NHibernate </strong>interface.</p>\r\n<p>You can find more information about these patterns in  the following links:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921146%28v=pandp.40%29.aspx\">Patterns in the Prism Library</a> (in the Prism Documentation) </li>\r\n</ul>\r\n<blockquote>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921146(v=pandp.40).aspx#sec1\">Adapter Pattern</a></li>\r\n</ul>\r\n</blockquote>\r\n<blockquote>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921146(v=pandp.40).aspx#sec7\">Fa&ccedil;ade Pattern</a></li>\r\n</ul>\r\n</blockquote>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff963554.aspx\">Adapting Object-Oriented Patterns﻿</a></li>\r\n</ul>\r\n<p>I hope you find this helpful</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-11-17T06:46:09.933-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

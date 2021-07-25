@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "659234",
+    "ThreadId": "269353",
+    "Html": "\r\n<p>How I can show one View on many region with <span id=\"result_box\" lang=\"en\">\r\n<span>different names?</span></span></p>\r\n",
+    "PostedDate": "2011-08-16T22:31:26.69-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "659537",
+    "ThreadId": "269353",
+    "Html": "<p>Hi,<br /><br />Based on my understanding of your scenario, you want to show a single view on multiple regions. In order to do this you can register the view in each region like this:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">this</span>.regionManager.RegisterViewWithRegion(<span style=\"color: #a31515;\">\"Region1\"</span>,<span style=\"color: blue;\">typeof</span>(MyView));\r\n<span style=\"color: blue;\">this</span>.regionManager.RegisterViewWithRegion(<span style=\"color: #a31515;\">\"Region2\"</span>,<span style=\"color: blue;\">typeof</span>(MyView));\r\n\r\n[...]\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>Or, if you want to show the view programmatically, like this:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">var</span> firstInstanceOfMyView = <span style=\"color: blue;\">this</span>.serviceLocator.GetInstance(<span style=\"color: blue;\">typeof</span>(MyView));\r\n\r\nIRegion region1 = <span style=\"color: blue;\">this</span>.regionManager.Regions[<span style=\"color: #a31515;\">\"Region1\"</span>];\r\nregion1.Add(firstInstanceOfMyView);\r\nregion1.Activate(firstInstanceOfMyView);<br /><span style=\"color: blue;\"><br />var</span> secondInstanceOfMyView = <span style=\"color: blue;\">&nbsp;</span><span style=\"color: blue;\">this</span>.serviceLocator.GetInstance(<span style=\"color: blue;\">typeof</span>(MyView));<br /><br />IRegion region2 = <span style=\"color: blue;\">this</span>.regionManager.Regions[<span style=\"color: #a31515;\">\"Region2\"</span>];\r\nregion2.Add(secondInstanceOfMyView);\r\nregion2.Activate(secondInstanceOfMyView);\r\n\r\n[...]\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>Note that you have to add a different instance of the view in each region (as shown above) because the same instance cannot be added twice in the same visual tree. In case you are using Unity, its default behavior is to create a new instance of the view each time it is resolved (unless you have used the <strong>RegisterInstance </strong>method or the <strong>RegisterType </strong>method passing a <strong>ContainerControlledLifetimeManager </strong>as a parameter), however, if you are using MEF you will have to decorate your view with the <strong>PartCreationPolicy</strong> attribute specifying the <strong>NonShared</strong> value. You can read more about this in the following chapter from the Prism MSDN documentation:</p>\r\n<ul>\r\n<li><a href=\"Chapter 3: Managing Dependencies Between Components\">Chapter 3 - Managing Dependencies Between Components of the Prism documentation</a></li>\r\n</ul>\r\n<p>You can find more information about how to show a view in a region here:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28v=PandP.40%29.aspx\">Chapter 7 - Composing the User Interface of the Prism documentation</a></li>\r\n</ul>\r\n<p>Please, let us know if we misunderstood your scenario.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-08-17T10:58:17.423-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "659773",
+    "ThreadId": "269353",
+    "Html": "<p>Thanks.</p>\r\n<p>This, is work?</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">var</span> firstInstanceOfMyView = <span style=\"color: blue;\">this</span>.serviceLocator.GetInstance(<span style=\"color: blue;\">typeof</span>(MyView));\r\n\r\nIRegion region1 = <span style=\"color: blue;\">this</span>.regionManager.Regions[<span style=\"color: #a31515;\">\"Region1\"</span>];\r\nregion1.Add(firstInstanceOfMyView);\r\nregion1.Activate(firstInstanceOfMyView);\r\n\r\nIRegion region2 = <span style=\"color: blue;\">this</span>.regionManager.Regions[<span style=\"color: #a31515;\">\"Region2\"</span>];\r\nregion2.Add(firstInstanceOfMyView);\r\nregion2.Activate(firstInstanceOfMyView);\r\n\r\n[...]\r\n</pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2011-08-17T22:30:52.387-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "659838",
+    "ThreadId": "269353",
+    "Html": "<p>Sorry, <span id=\"result_box\" class=\"short_text\" lang=\"en\"><span class=\"hps\">it does not work</span><span>, probably.</span></span></p>",
+    "PostedDate": "2011-08-18T00:57:30.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "659862",
+    "ThreadId": "269353",
+    "Html": "<p><span id=\"result_box\" lang=\"en\"><span class=\"hps\">I understand</span> <span class=\"hps\">that</span> <span class=\"hps\">there is no</span> <span class=\"hps\">general</span> <span class=\"hps\">way to add</span> <span class=\"hps\">the same</span> View<span class=\"hps\"></span> <span class=\"hps\">in different Regions,</span> <span class=\"hps\">belonging to the same</span> <span class=\"hps\">RegionManager</span> <span class=\"hps\">also</span> <span class=\"hps\">different</span> <span class=\"hps\">RegionManager.</span> <span class=\"hps\">Ie</span> <span class=\"hps\">in any case</span> <span class=\"hps\">can not show</span> <span class=\"hps\">a single instance</span> <span class=\"hps\">representation</span> <span class=\"hps\">in several regions</span><span>, right?</span></span></p>",
+    "PostedDate": "2011-08-18T01:58:37.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "660157",
+    "ThreadId": "269353",
+    "Html": "<p>Hi,</p>\n<p>The reason why you cannot add the same instance of a view more than one time is because the WPF's Visual Tree does not allow it. You can find more information about the Visual Tree <a href=\"http://msdn.microsoft.com/en-us/library/ms748373.aspx#visual_tree\">here</a>.</p>\n<p>However, as a possible approach to do this, you could add different instances of the view in each region and use the same view model for all the views.</p>\n<p>In this case, as a view obtains all the data from the view model, all the instances of that view will show the same content and will react to changes made in the view model's properties.</p>\n<p>If you wish to implement this approach and you are injecting the view model in the view, you will have to export the <span style=\"text-decoration: underline;\">view model</span> as a singleton instance:</p>\n<ul>\n<li>If you are using <strong>Unity</strong> you can use the <strong>RegisterInstance </strong>method or the <strong>RegisterType </strong>method passing a <strong>ContainerControlledLifetimeManager </strong>as a parameter. </li>\n<li>If you are using <strong>MEF</strong> you can decorate your view with the <strong> PartCreationPolicy</strong> attribute specifying the <strong>Shared</strong> value. </li>\n</ul>\n<p>Also, please note that the view <span style=\"text-decoration: underline;\">should not</span> be exported as a singleton.</p>\n<p>I hope you find this useful,</p>\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-08-18T11:10:26.54-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "660333",
+    "ThreadId": "269353",
+    "Html": "<p>Thanks.</p>\r\n<p><span id=\"result_box\" class=\"short_text\" lang=\"en\"><span class=\"hps\">I understood everything</span><span>.</span></span></p>",
+    "PostedDate": "2011-08-18T19:24:06.703-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "Because of a bugfix for Silverlight 3, the TabItemHeader binding is not updated correctly in Silverlight 4 and 5.\n \n \nMy \"TabControlRegionAdapter.ItemContainerStyle\" in Silverlight 5 :\n<Style x:Key=\"CustomTabItemStyle\" TargetType=\"sdk:TabItem\">\n\t<Setter Property=\"Header\" Value=\"{Binding Path=HeaderInfo}\" />\n</Style>\n \nFor Silverlight 4 you can use a ControlTemplate.\n \nIf you change (in TabControlRegionSyncBehavior.cs) :\n \nprotected virtual TabItem PrepareContainerForItem( object item, DependencyObject parent )\n{\n\tTabItem container = item as TabItem;\n\tif ( container == null )\n\t{\n\t\tobject dataContext = GetDataContext( item );\n\t\tcontainer = new TabItem( );\n\t\tcontainer.Content = item;\n\t\tcontainer.Style = TabControlRegionAdapter.GetItemContainerStyle( parent );\n\t\tcontainer.DataContext = dataContext; // To run with SL 2\n\t\tcontainer.Header = dataContext; // To run with SL 3\n\t\tcontainer.SetValue( IsGeneratedProperty, true );\n\t}\n\treturn container;\n}\n \nTo: (removing the line \"container.Header = dataContext; // To run with SL 3\" )\n \nprotected virtual TabItem PrepareContainerForItem( object item, DependencyObject parent )\n{\n\tTabItem container = item as TabItem;\n\tif ( container == null )\n\t{\n\t\tobject dataContext = GetDataContext( item );\n\t\tcontainer = new TabItem( );\n\t\tcontainer.Content = item;\n\t\tcontainer.Style = TabControlRegionAdapter.GetItemContainerStyle( parent );\n\t\tcontainer.DataContext = dataContext; // To run with SL 2\n\t\t//container.Header = dataContext; // To run with SL 3\n\t\tcontainer.SetValue( IsGeneratedProperty, true );\n\t}\n\treturn container;\n}\n \nNow it works correctly. \nMaybe it's possible to put it between #if #endif or some version of a SL version check.\n \nThere are workarounds like changing the DataContext on the Loaded event.",
+    "LastUpdatedDate": "2013-02-21T18:38:02.33-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-02-27T09:04:04.297-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "TabItemHeader binding fails in SL5 because of SL3 bugfix",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 9218
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nWe were able to reproduce the issue you are mentioning in both Silverlight 4 and Silverlight 5. We also have checked that removing the line mentioned above seems to solve the problem.\r\n\r\nAs a possible workaround to avoid modifying the Prism library, you could override the ToString method in the view model, so that it returns the string you want to display in the TabItem's header.\r\n\r\nAlso, if you want to change this behavior without needing to re-compile the Prism library, you could create your own TabControlRegionSyncBehavior (copy-pasting the original source code) in the Shell project without the aforementioned line. However, to be able to use it, you will also need to create your own TabControlRegionAdapter (also copy-pasting the original source code) that uses this behavior in the AttachBehaviors method instead of the original one. Then, you would need to register this adapter overriding the ConfigureRegionAdapterMappings in the Bootstrapper.\r\n\r\nI hope you find this useful,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-03-08T12:15:09.64-08:00",
+      "Id": 156585
+    },
+    {
+      "Message": "Thank you. ",
+      "PostedDate": "2012-03-09T07:16:21.583-08:00",
+      "Id": 156586
+    }
+  ]
+}

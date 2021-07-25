@@ -1,0 +1,97 @@
+﻿using System;
+using Microsoft.Practices.ServiceLocation;
+
+namespace Microsoft.Practices.ServiceLocation.Extensions
+{
+    /// <summary>
+    /// Provides extension methods for the IServiceLocator interface.
+    /// </summary>
+    public static class IServiceLocatorExtensions
+    {
+        /// <summary>
+        /// Tries to get an instance of the given serviceType.
+        /// </summary>
+        /// <param name="serviceType">Type of object requested.</param>
+        /// <param name="instance">Reference to pass to the object requested.</param>
+        /// <returns><see langword="true"/> if the object could be obtained, <see langword="false"/> otherwise.</returns>
+        public static bool TryGetInstance(this IServiceLocator service, Type serviceType, out object instance)
+        {
+            try
+            {
+                instance = service.GetInstance(serviceType);
+            }
+            catch (ActivationException)
+            {
+                instance = null;
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Tries to get an instance of the given serviceType.
+        /// </summary>
+        /// <param name="serviceType">Type of object requested.</param>
+        /// <param name="key">Name the object was registered with.</param>
+        /// <param name="instance">Reference to pass to the object requested.</param>
+        /// <returns><see langword="true"/> if the object could be obtained, <see langword="false"/> otherwise.</returns>
+        public static bool TryGetInstance(this IServiceLocator service, Type serviceType, string key, out object instance)
+        {
+            try
+            {
+                instance = service.GetInstance(serviceType, key);
+            }
+            catch (ActivationException)
+            {
+                instance = null;
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Tries to get an instance of the given serviceType.
+        /// </summary>
+        /// <param name="TService">Type of object requested.</param>
+        /// <param name="instance">Reference to pass to the object requested.</param>
+        /// <returns><see langword="true"/> if the object could be obtained, <see langword="false"/> otherwise.</returns>
+        public static bool TryGetInstance<TService>(this IServiceLocator service, out TService instance)
+        {
+            try
+            {
+                instance = service.GetInstance<TService>();
+            }
+            catch (ActivationException)
+            {
+                instance = default(TService);
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Tries to get an instance of the given serviceType.
+        /// </summary>
+        /// <param name="TService">Type of object requested.</param>
+        /// <param name="key">Name the object was registered with.</param>
+        /// <param name="instance">Reference to pass to the object requested.</param>
+        /// <returns><see langword="true"/> if the object could be obtained, <see langword="false"/> otherwise.</returns>
+        public static bool TryGetInstance<TService>(this IServiceLocator service, string key, out TService instance)
+        {
+            try
+            {
+                instance = service.GetInstance<TService>(key);
+            }
+            catch (ActivationException)
+            {
+                instance = default(TService);
+                return false;
+            }
+
+            return true;
+        }
+    }
+}

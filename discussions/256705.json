@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "608735",
+    "ThreadId": "256705",
+    "Html": "<p>I'm using Prism4 and having some difficulty with data binding.</p>\n<p>My view has a list box which contains a list of buttons, with the intention of having each button bound to a simple \"Slot\", here is my xaml:</p>\n<div style=\"color: black; background-color: white;\">\n<pre>&lt;ListBox\n       ItemsSource=<span style=\"color: #a31515;\">\"{Binding Slots}\"</span>&gt;\n            &lt;ListBox.ItemTemplate&gt;\n                &lt;DataTemplate&gt;\n                        &lt;Button\n                            Command= {Binding SlotChangedCommand}\"\n                            CommandParameter=<span style=\"color: #a31515;\">\"{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem}\"</span>\n                            Content=<span style=\"color: #a31515;\">\"{Binding SlotID}\"</span>&gt;                    \n                        &lt;/Button&gt;\n                &lt;/DataTemplate&gt;\n            &lt;/ListBox.ItemTemplate&gt;\n&lt;/ListBox&gt;\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>And here is my ViewModel code:</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">private</span> ObservableCollection&lt;Slot&gt; slots;\n<span style=\"color: blue;\">public</span> ObservableCollection&lt;Slot&gt; Slots\n    {\n      <span style=\"color: blue;\">get</span>\n      {\n        <span style=\"color: blue;\">return</span> slots;\n      }\n      <span style=\"color: blue;\">set</span>\n      {\n        slots= value;\n        FirePropertyChanged(<span style=\"color: #a31515;\">\"Slots\"</span>);\n      }\n    }\n\n<span style=\"color: blue;\">private</span> ICommand slotChangedCommand;\n <span style=\"color: blue;\">public</span> ICommand SlotChangedCommand\n    {\n      <span style=\"color: blue;\">get</span>\n      {\n        <span style=\"color: blue;\">if</span> (slotChangedCommand == <span style=\"color: blue;\">null</span>)\n        {\n          slotChangedCommand =\n            <span style=\"color: blue;\">new</span> DelegateCommand&lt;Slot&gt;\n              OnSlotChanged );\n        }\n        <span style=\"color: blue;\">return</span> (slotChangedCommand);\n      }\n    }\n\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> OnSlotChanged (Slot slot)\n    {\n      <span style=\"color: green;\">// slot is always null, why?</span>\n    }</pre>\n</div>\n<p>&nbsp;</p>\n<p>Slot is a simple class with 2 string properties: SlotName and SlotID. The binding works fine and I see my list of buttons with the button text set to their ID's, and when I click on it I can get to the correct Command handling method, however the parameter  is always null, can someone point out what I'm doing wrong?</p>",
+    "PostedDate": "2011-05-06T14:49:40.073-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "609746",
+    "ThreadId": "256705",
+    "Html": "<p>Hi,</p>\r\n<p>It could be helpful if you could provide us with a repro sample (for example using&nbsp;<a href=\"http://skydrive.live.com/\">SkyDrive</a>) of your solution, so that we can help you find out the cause of the unexpected behavior you're experiencing.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-09T13:21:17.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "609931",
+    "ThreadId": "256705",
+    "Html": "<p>Use <a href=\"http://www.scottlogic.co.uk/blog/colin/2009/02/relativesource-binding-in-silverlight/\">this</a> instead of RelativeSource. It doesnt work well in silverlight 3/4.</p>\r\n<p>Your code now look like this</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><div style=\"color: black; background-color: white;\"><pre><span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">ListBox</span>\r\n       <span style=\"color: red;\">ItemsSource</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">{Binding Slots}</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">&gt;</span>\r\n            <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">ListBox.ItemTemplate</span><span style=\"color: blue;\">&gt;</span>\r\n                <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">DataTemplate</span><span style=\"color: blue;\">&gt;</span>\r\n                        <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">Button</span> <span style=\"color: red;\">Command</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">{Binding SlotChangedCommand}</span><span style=\"color: black;\">\"</span> <span style=\"color: red;\">CommandParameter</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">{Binding RelativeSource={RelativeSource Self}, Tag}</span><span style=\"color: black;\">\"</span>                          \t\t\t\t<span style=\"color: red;\">Content</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">{Binding SlotID}</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">&gt;</span>       \r\n\t\t\t\t<span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">BindingHelper.Binding</span><span style=\"color: blue;\">&gt;</span>             \r\n\t\t\t\t\t<span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">BindingProperties</span> <span style=\"color: red;\">TargetProperty</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">Tag</span><span style=\"color: black;\">\"</span> <span style=\"color: red;\">SourceProperty</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">SelectedItem</span><span style=\"color: black;\">\"</span> <span style=\"color: red;\">RelativeSourceAncestorType</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">ListBox</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">/&gt;</span>\r\n\t\t\t\t<span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">BindingHelper.Binding</span><span style=\"color: blue;\">&gt;</span>\r\n                        <span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">Button</span><span style=\"color: blue;\">&gt;</span>\r\n                <span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">DataTemplate</span><span style=\"color: blue;\">&gt;</span>\r\n            <span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">ListBox.ItemTemplate</span><span style=\"color: blue;\">&gt;</span>\r\n<span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">ListBox</span><span style=\"color: blue;\">&gt;</span>\r\n\r\n</pre>\r\n</div>\r\nWith Silverlight 5 it would have the FindAncestor to traverse up the visual tree.</pre>\r\n<pre>Cheers.</pre>\r\n</div>\r\n</div>",
+    "PostedDate": "2011-05-09T20:15:56.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "611910",
+    "ThreadId": "256705",
+    "Html": "<p>Thanks gan_s for your help, but unfortunately your code didn't work for me.</p>\n<p><a class=\"UserProfileLink\" href=\"http://www.codeplex.com/site/users/view/mbronzovic\">mbronzovic</a>: thanks for your suggestion, I've uploaded my code sample to SkyDive, this is my first time using it, so please let me know if you have trouble accessing it.</p>\n<p>With this code for some reason I'm having trouble even reaching the  command handler:&nbsp;</p>\n<p><a href=\"http://cid-4e8c3454c0c409f3.skydrive.live.com/redir.aspx?resid=4E8C3454C0C409F3!105\">http://cid-4e8c3454c0c409f3.skydrive.live.com/redir.aspx?resid=4E8C3454C0C409F3!105</a></p>\n<p>Thanks sooo much in advance!!</p>",
+    "PostedDate": "2011-05-12T11:59:45.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "611978",
+    "ThreadId": "256705",
+    "Html": "<p>Hi,</p>\r\n<p>In order to trigger the command you define inside the ListBox&acute;s Item Template, you need to access your command that resides in your <strong>ViewModel</strong> from within the <strong>DataTemplate</strong> (whose <strong>DataContext</strong> is overridden), therefore you should implement one of the possibilities described in the following threads:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/242032\">Commanding in datagrid not works</a></li>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/64514\">Click command for Button into dataTemplate</a></li>\r\n</ul>\r\n<p>I uploaded the modified solution <a href=\"http://cid-c29751940e840420.office.live.com/self.aspx/p%5E0p%20samples/SlotExampleApp.zip?sa=165157358\">here</a>, so you can check the modifications.</p>\r\n<p>Please, let us know if this information helps you.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-12T13:01:58.61-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "612136",
+    "ThreadId": "256705",
+    "Html": "<p>I'm using it all over my app. You probably have done something wrong. The code definitely works like a charm !</p>",
+    "PostedDate": "2011-05-12T20:24:38.633-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "612484",
+    "ThreadId": "256705",
+    "Html": "<p>Thanks Miguel for looking at the code and modifying it, it works great now!! Thanks so much!!</p>\r\n<p>gan_s, yes I probably was doing something wrong but just wasn't able to figure out how to make it work as your suggested. Thanks nevertheless!!</p>",
+    "PostedDate": "2011-05-13T09:22:17.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

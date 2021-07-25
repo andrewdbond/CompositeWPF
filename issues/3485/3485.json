@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nI'm closing the issue, as it is not possible to run the bootstrapper twice, as explained in the comment by Miguel Bronzovic; For additional support regarding this subject, you could create a thread in the discussions section (http://compositewpf.codeplex.com/discussions), where we will help you with your concerns.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-08-19T07:46:57.297-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Problem: Calling the Run() method a second time on any instance of a UnityBootstrapper results in failure. This is problematic if you want to restart the application in the same appdomain (perhaps after switching the user). The RegionAdapterMappings and RegionManager will have cached data and will throw exceptions when re-initialized by a new instance of a UnityBootstrapper. \n \nSolution: Calls to the Run() method should clear any previously cached Static initialization data before continuing.\n \nRegionAdapterMappings.RegisterMapping()\n\tThrows InvalidOperationException - Mapping with the given type is already registered\n \nRegionManager.AttachNewRegion()\n\tThrows ArgumentException - Region with the given name is already registered\n \nThis limitation prohibits a workaround to a related work item: http://www.codeplex.com/CompositeWPF/WorkItem/View.aspx?WorkItemId=3216 whereby a multiple instances of a bootstrapper type could each support an instance of a shell; providing dual-monitor capability for this related work item.",
+    "LastUpdatedDate": "2013-05-16T05:29:01.363-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-12-10T14:07:57.29-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "UnityBootstrapper cannot be run twice",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 3485
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\nIn Prism it’s not possible to run the Bootstrapper twice.\r\nFor example you wouldn’t be able to perform the module initialization twice, as modules cannot be unloaded. As explained in this thread by Jeremy Likness “This is a CLR restriction, not a PRISM or even a Silverlight restriction. You can only unload an entire AppDomain, not individual assemblies within the domain…”\r\n\r\nAs for the work item you’re mentioning (http://www.codeplex.com/CompositeWPF/WorkItem/View.aspx?WorkItemId=3216), it’s possible to have multiple shells while having only one Bootstrapper, as explained in Damian Schenkelman’s blog post (http://blogs.southworks.net/dschenkelman/2010/01/26/creating-a-multi-shell-application-in-prism-v2).\r\n\r\nThank you for your feedback.\r\n\r\nMiguel Bronzovic\r\nhttp://blogs.southworks.net/mbronzovic\r\n",
+      "PostedDate": "2011-01-17T12:05:10.68-08:00",
+      "Id": 156064
+    }
+  ]
+}

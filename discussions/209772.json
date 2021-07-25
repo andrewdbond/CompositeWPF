@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "432689",
+    "ThreadId": "209772",
+    "Html": "<p>Hello All,</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I am working on a project with CAL framework. I am facing the issue that one of my modules has a WPF Web Browser control. Sometimes, when the web get stuck, the entire application get stuck too! Is there any way to run the modules in a different thread?</p>\r\n<p>&nbsp;</p>\r\n<p>Many Thanks!</p>",
+    "PostedDate": "2010-04-19T05:46:56.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432821",
+    "ThreadId": "209772",
+    "Html": "<p id=eaf6ac40-2e0d-012d-2f6b-12313b069c21>Hi,</p>\r\n<p id=eaf6b5a0-2e0d-012d-2f6c-12313b069c21>Prism does not provide this  capability out of the box, but it should be achievable by initializing  the modules in different threads (in the <strong>ModuleInitializer</strong>).<strong> </strong>This however, might be troublesome, as there could be some  complexities interacting with the UI.</p>\r\n<p id=eaf6c3f0-2e0d-012d-2f6d-12313b069c21>Take into account that as WPF <a href=\"http://msdn.microsoft.com/en-us/library/ms741870.aspx\">has a  single UI Thread</a> for its application, running the module in a  different thread might not solve your problem if the WPF Web Browser  is causing it. If the cause of the issue is not the specific control,  running the operations that are causing the delay in another  thread/asynchronously might bring some improvement. The <a href=\"http://msdn.microsoft.com/en-us/devlabs/ee794896.aspx\">Reactive  Extensions for .NET (Rx)</a> might be useful for you in this case.</p>\r\n<p id=eaf6d990-2e0d-012d-2f6e-12313b069c21>Please let me know if this  helps.</p>\r\n<p id=eaf6ee40-2e0d-012d-2f6f-12313b069c21>Damian  Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-04-19T11:51:08.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432846",
+    "ThreadId": "209772",
+    "Html": "<p>Thanks Damian,</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; My issue is that i have a WPF web Browser embedded in one module, and with some popups, it freezes. The issue is that the entire GUI freezes and not allowing me to kill that module only causing the application to crash.</p>\r\n<p>&nbsp;</p>\r\n<p>I tried to create the WebBrowser control from another thread but i am receiving the exception &quot;The calling thread must be STA, because many UI components require this.&quot;</p>\r\n<p>&nbsp;</p>\r\n<p>I want to figure out a way that a if a module freezes, the entire application could keep working.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>\r\n<p>&nbsp;</p>\r\n<p>Fede</p>",
+    "PostedDate": "2010-04-19T12:48:52.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432887",
+    "ThreadId": "209772",
+    "Html": "<p>Try opening your WPF window with the browser control on a separate thread. This way the window will have its own message pump and it won't block the entire application if the window freezes.</p>\r\n<p>&nbsp;</p>\r\n<p>\r\n<pre>            threadBrowser = new Thread(new ThreadStart(ShowBrowser));\r\n            threadBrowser.SetApartmentState(ApartmentState.STA);\r\n            threadBrowser.Name = &quot;Browser&quot;;\r\n            threadBrowser.Start();\r\n\r\n\r\n\r\n        void ShowBrowser()\r\n        {\r\n            myWindow = new MyBrowserWindow();\r\n            myWindow.Show();\r\n            myWindow.Closed += (s, e) =&gt; { myWindow.Dispatcher.InvokeShutdown(); myWindow = null; };\r\n            Dispatcher.Run();\r\n        }</pre>\r\n</p>",
+    "PostedDate": "2010-04-19T14:18:20.547-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "433621",
+    "ThreadId": "209772",
+    "Html": "<p>I tried it, but as i create the Window (in this case a Control) in another thread, i can inject the view into the RegionManager that is running in another thread.. :(</p>\r\n<p>&nbsp;</p>\r\n<p>I tried also to create the Window and the WebBrowser control in other thread, but it fails while injecting the WebBrowser control into the Window...</p>\r\n<p>&nbsp;</p>\r\n<p>Any ideas?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks!</p>",
+    "PostedDate": "2010-04-21T06:44:10.073-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

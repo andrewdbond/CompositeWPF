@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": null,
+    "Description": "DelegateCommand & WeakEventManager assume there is only 1 UI thread.  Need multiple UI thread support to meet performance requirements for multi-monitor complex UI apps.",
+    "LastUpdatedDate": "2015-09-10T11:27:08.547-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2015-04-25T16:58:31.883-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "DelegateCommand support for one UI thread per window",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 2,
+    "Id": 10732
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Correct - I have encountered this problem too.  The code as it currently exists is flawed, because it depends on what thread the WeakEventHandlerManager is initialized on.\n\nI encountered a problem because I use a separate thread to display a splashscreen for my application, and the WeakEventHandlerManager was being initialized there since I am using a DelegateCommand for the UI portion.  Later, when I  use DelegateCommands in my main app, the events are never fired.\n\nIt would seem that this could easily be fixed by not caching the SynchronizationContext in WeakEventManager.\n\nMy suggestion would be to do something like this instead:\n\n        private static void CallHandler(object sender, EventHandler eventHandler)\n        {\n            if (eventHandler != null)\n            {\n               SynchronizationContext syncContext = SynchronizationContext.Current;\n                if (syncContext != null)\n                {\n                    syncContext.Post((o) => eventHandler(sender,  EventArgs.Empty), null);\n                }\n                else\n                {\n                    eventHandler(sender, EventArgs.Empty);\n                }\n            }\n        }\n\nWhat was the original intent of caching the SynchronizationContext?  Why was something like the above not used instead?\n",
+      "PostedDate": "2015-09-10T11:27:00.797-07:00",
+      "Id": 190077
+    }
+  ]
+}

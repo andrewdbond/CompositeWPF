@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "503998",
+    "ThreadId": "230085",
+    "Html": "<p>I have a listbox, that when an item is clicked, it will replace the region with a detail view of that record.<br>I am having a hard time figuring out how to pass the entity to the constructor of the viewmodel before activating the region.<br>This is what I have so far.</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:green\">// RecordViewModel.cs</span>\r\n<span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> ShowEdit(TableA param)\r\n{\r\n    IRegion region = <span style=\"color:blue\">this</span>.regionManager.Regions[RegionNames.MainRegion];\r\n\r\n    <span style=\"color:blue\">object</span> viewToActivate = region.GetView(<span style=\"color:#a31515\">&quot;DetailView&quot;</span>);\r\n    <span style=\"color:blue\">if</span> (viewToActivate == <span style=\"color:blue\">null</span>)\r\n    {\r\n        <span style=\"color:blue\">var</span> configurationViewModel = <span style=\"color:blue\">this</span>.container.Resolve&lt;IConfigurationViewModel&gt;();\r\n\r\n        <span style=\"color:green\">// What goes here so I can pass param to ConfigurationViewModel?</span>\r\n\r\n        <span style=\"color:blue\">this</span>.regionManager.Regions[RegionNames.MainRegion].Add(viewToActivate, <span style=\"color:#a31515\">&quot;DetailView&quot;</span>);\r\n    }\r\n\r\n    regionManager.Regions[RegionNames.MainRegion].Activate(viewToActivate);\r\n}\r\n\r\n\r\n<span style=\"color:green\">// ConfigurationViewModel.cs</span>\r\n<span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> ConfigurationViewModel : IConfigurationViewModel\r\n{\r\n    <span style=\"color:blue\">private</span> TableA tableA;\r\n\r\n    <span style=\"color:blue\">public</span> ConfigurationViewModel(TableA tableA)\r\n    {\r\n        <span style=\"color:blue\">this</span>.tableA = tableA;\r\n\r\n        <span style=\"color:blue\">this</span>.PopulateData(<span style=\"color:blue\">this</span>.tableA);\r\n    }\r\n}\r\n\r\n<span style=\"color:green\">// WorkspaceAModule.cs</span>\r\n<span style=\"color:blue\">protected</span> <span style=\"color:blue\">void</span> RegisterViewsAndServices()\r\n{\r\n    <span style=\"color:blue\">this</span>.container.RegisterType&lt;IConfigurationViewModel, ConfigurationViewModel&gt;();\r\n}\r\n</pre>\r\n</div>",
+    "PostedDate": "2010-10-07T18:20:36.64-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "504277",
+    "ThreadId": "230085",
+    "Html": "<p>Hi,</p>\r\n<p>In Unity you could resolve a type and indicate its constructor parameters by using Overrides.  Therefore, you code might look as shown below:</p>\r\n<p><span><span id=\"ctl00_MTCS_main_ctl48_ctl00_ctl01\">\r\n<pre id=\"ctl00_MTCS_main_ctl48_ctl00_ctl01_code\">var viewModel = container.Resolve&lt;IConfigurationViewModel&gt;(<span style=\"color:blue\">new</span> ParameterOverride(<span style=\"color:maroon\"><span style=\"color:maroon\">&quot;tableA&quot;</span></span>, param));</pre>\r\n</span></span></p>\r\n<p>For more information on this topic you could take a look at the following  documentation section on MSDN:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff660920(PandP.20).aspx\">Resolving  Objects by Using Overrides</a></li>\r\n</ul>\r\n<p>&nbsp;Hope this helps.</p>\r\n<p>Fernando Antivero&nbsp;<br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-08T07:35:26.307-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "504396",
+    "ThreadId": "230085",
+    "Html": "<p>Thank you. That helped out a lot.</p>\r\n<p>After getting it to work, I read that I should not be registering entities to the IoC container.</p>\r\n<p>Do any of the quick starts show how to do this properly?</p>",
+    "PostedDate": "2010-10-08T10:31:06.363-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "504455",
+    "ThreadId": "230085",
+    "Html": "<p>Hi,</p>\r\n<p>Nice to see that you achieved your scenario.&nbsp; Regarding to your question  there is an specific section in the documentation&nbsp;of Prism (Prism4.chm)&nbsp;about  this:</p>\r\n<ul>\r\n<li><span id=nsrTitle><strong>Chapter 3: Managing Dependencies Between  Components (updated)</strong>, see the </span><em>Considerations for using the  Container </em>section</li>\r\n</ul>\r\n<p>Additionally, you could obtain guidance about this taking a look at the  the Stock Trader Reference Implementation.</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero&nbsp;<br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-08T11:44:58.147-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

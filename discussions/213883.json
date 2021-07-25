@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "447505",
+    "ThreadId": "213883",
+    "Html": "i m using interface inheritance (to control which parts of class are exposed  in different cases)\r\nwhat is the best way to register those interfaces in the container so that their class is singleton?",
+    "PostedDate": "2010-05-26T02:31:12.957-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "448880",
+    "ThreadId": "213883",
+    "Html": "<p id=5d867800-4c8f-012d-905b-12313b071d41>Hi,</p>\r\n<p id=5d868060-4c8f-012d-905c-12313b071d41>By default, the <strong>RegisterType </strong>method in the <strong>UnityContainer</strong> registers types for a  transient lifetime, which means that a new instance will be created on each call  to the <strong>Resolve </strong>method. If you want to register an interface  mapping in the container, so that the concrete class that implements that  interface is registered as a singleton instance, you have to include an instance  of the <strong>ContainerControlledLifetimeManager</strong> in the  <strong>RegisterType </strong>method.</p>\r\n<p>The code for that would look like this:</p>\r\n<pre><div style=\"color:black;background-color:white\"><pre>myContainer.RegisterType&lt;IMyService, CustomerService&gt;(<span style=\"color:blue\">new</span> ContainerControlledLifetimeManager());</pre>\r\n</div>\r\n</pre>\r\n<p>You can find more information on the subject in <a href=\"http://msdn.microsoft.com/en-us/library/ff648211.aspx#ks_registersingleton\">this  article</a>.</p>\r\n<p id=5d869020-4c8f-012d-905d-12313b071d41>I hope you find this helpful.</p>\r\n<p id=5d86a000-4c8f-012d-905e-12313b071d41>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-05-28T14:42:56.813-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "449194",
+    "ThreadId": "213883",
+    "Html": "yes i m familiar with the ContainerControlledLifetimeManager. i m using it all the time.\r\n\r\nso you are claiming that if i got an interface inheritance, e.g. : ...public interface IAppGlobalData : IAppGlobalDataCommon{}\r\n\r\nand i want to register both to the container pointing to the same class...\r\nthe best way would be to go RegisterType&lt;&gt; twice??? like so:\r\n\r\ntheContainer.RegisterType&lt;IAppGlobalDataCommon, AppGlobalData&gt;(new ContainerControlledLifetimeManager());\r\ntheContainer.RegisterType&lt;IAppGlobalData, AppGlobalData&gt;(new ContainerControlledLifetimeManager());\r\n\r\nnotice that both interfaces are pointing to the same class.\r\nright?",
+    "PostedDate": "2010-05-30T00:33:33.82-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "450720",
+    "ThreadId": "213883",
+    "Html": "<p id=504865d0-5084-012d-adb4-12313b04bc71>Hi,</p>\r\n<p id=50487040-5084-012d-adb5-12313b04bc71>You approach seems correct. If you  want to map both interfaces to the same implementation, you should call the  <strong>RegisterType&lt;T&gt;</strong> method for each interface mapping,  regardless of the fact that they inherit from each other.</p>\r\n<p>As this is not strictly related to Prism, you may get better support in the  <a href=\"http://unity.codeplex.com/Thread/List.aspx\">Unity forum</a>.</p>\r\n<p id=50488260-5084-012d-adb6-12313b04bc71>I hope you find this helpful.</p>\r\n<p id=50488ff0-5084-012d-adb7-12313b04bc71>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-06-02T10:14:41.793-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

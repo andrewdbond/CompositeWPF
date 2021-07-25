@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "671864",
+    "ThreadId": "272593",
+    "Html": "\r\n<p>I have a controller class that is managing an import process.&nbsp; The controller has reference to my ShellViewModel that was injected by Unity.&nbsp; My ShellViewModel has an ShowErrorMessage() method that raises an InteractionRequest that when raised\r\n causes the ShellView to display a notification popup.&nbsp; The pop up works just find as long as the ShowErrorMessage() method is called from the ShellViewModel directly.&nbsp; However, when my controller calls ShellViewModel.ShowErrorMessage() the popup\r\n is not displayed.&nbsp; Why is the InteractionRequest ignored unless called from within the ViewModel?</p>\r\n<p>I register the ShellViewModel in the module as a singleton, so I am always getting the same view model that is injected into the ShellView:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>_container.RegisterType&lt;ShellViewModel&gt;(<span style=\"color:blue\">new</span> ContainerControlledLifetimeManager());\r\n</pre>\r\n</div>\r\n<p>In my controller class I am calling the ShowErrorMessage() on the ShellViewModel.</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>        <span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> ShowImplanUploadErrorMessage(<span style=\"color:blue\">string</span> errorMsg)\r\n        {\r\n            _shellViewModel.ShowErrorMessage(errorMsg, <span style=\"color:#a31515\">&quot;Import Failed&quot;</span>);\r\n        }\r\n</pre>\r\n</div>\r\n<p>Here is the ShowErrorMessage() in my ShellViewModel:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>        <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> ShowErrorMessage(<span style=\"color:blue\">string</span> message, <span style=\"color:blue\">string</span> title)\r\n        {\r\n            NotifyRequest.Raise(<span style=\"color:blue\">new</span> Notification {Content = message, Title = title});\r\n        }\r\n</pre>\r\n</div>\r\n",
+    "PostedDate": "2011-09-14T11:55:25.77-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "672317",
+    "ThreadId": "272593",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding it&acute;s likely that your problem is caused by a threading issue. Therefore, you should make sure that you are calling the method you mentioned on your ViewModel from the UI Thread; if you plan to modify anything that will affect UI state, you will need to dispatch the response to the UI thread, typically using the thread <strong>Dispatcher</strong>.</p>\r\n<p>You'll find more information regarding that in the following link of the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405494(v=PandP.40).aspx#sec8\">Handling Asynchronous Interactions</a></li>\r\n</ul>\r\n<p>If you can't find a solution to your problem by reading the aforementioned suggestion, it would be helpful if you could provide us with a repro sample application, so that we can help you further with this.﻿</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-09-15T09:27:59.003-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

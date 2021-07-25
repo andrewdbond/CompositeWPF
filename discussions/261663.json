@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "628778",
+    "ThreadId": "261663",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I was browsing the source and found the following methods in ModuleCatalog. &nbsp;Notice that when the collection change it only does something if validated and the method it calls only does something if not validated - so nothing can ever happen. &nbsp;I\r\n think this is a cut and paste bug and should read to set Validated to false when the collection changes, then call EnsureCatalogValidated. &nbsp;It might be worth walking through the validation sequence to determine what the expected behavior is when the catalog\r\n changes.</p>\r\n<p>&nbsp;</p>\r\n<pre><span style=\"font-family:Consolas\"><span><span style=\"color:gray\">        ///</span><span style=\"color:green\">&nbsp;</span><span style=\"color:gray\">&lt;summary&gt;</span>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:gray\">///</span><span style=\"color:green\">&nbsp;Ensures&nbsp;that&nbsp;the&nbsp;catalog&nbsp;is&nbsp;validated.</span>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:gray\">///</span><span style=\"color:green\">&nbsp;</span><span style=\"color:gray\">&lt;/summary&gt;</span>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">protected</span>&nbsp;<span style=\"color:blue\">virtual</span>&nbsp;<span style=\"color:blue\">void</span>&nbsp;EnsureCatalogValidated()\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">if</span>&nbsp;(!<span style=\"color:blue\">this</span>.Validated)\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">this</span>.Validate();\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}\r\n \r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">private</span>&nbsp;<span style=\"color:blue\">void</span>&nbsp;ItemsCollectionChanged(<span style=\"color:blue\">object</span>&nbsp;sender,&nbsp;<span style=\"color:#2b91af\">NotifyCollectionChangedEventArgs</span>&nbsp;e)\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">if</span>&nbsp;(<span style=\"color:blue\">this</span>.Validated)\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">this</span>.EnsureCatalogValidated();\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span></span></pre>\r\n",
+    "PostedDate": "2011-06-16T09:20:27.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "628906",
+    "ThreadId": "261663",
+    "Html": "<p>Hi,</p>\r\n<p>Thank you for notifying this.</p>\r\n<p>We have created a <a href=\"http://compositewpf.codeplex.com/workitem/8372\">work item</a> in the Issue Tracker to notify the team about this behavior</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-06-16T13:30:52.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

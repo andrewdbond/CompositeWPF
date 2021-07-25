@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "251326",
+    "ThreadId": "73533",
+    "Html": "<p>Hi,</p>\r\n<p>I'm a newbie in Prism and I'm in a fix here. Below is my ViewModel class.</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span> DataViewModel : INotifyPropertyChanged\r\n{\r\n<span style=\"color:Blue\">private</span> <span style=\"color:Blue\">readonly</span> IDataService DataService;\r\n<span style=\"color:Blue\">private</span> <span style=\"color:Blue\">string</span> time;\r\n\r\n<span style=\"color:Blue\">public</span> DataViewModel(IDataService dataService)\r\n{\r\n    DataService = dataService;\r\n    Time = DataService.GetTime();\r\n}\r\n\r\n<span style=\"color:Blue\">public</span> <span style=\"color:Blue\">string</span> Time\r\n{\r\n    <span style=\"color:Blue\">get</span>\r\n    {\r\n        <span style=\"color:Blue\">return</span> time;\r\n    }\r\n    <span style=\"color:Blue\">set</span>\r\n    {\r\n        time = value;\r\n        RaisePropertyChanged(<span style=\"color:#A31515\">&quot;Time&quot;</span>);\r\n    }\r\n}\r\n\r\n<span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> RaisePropertyChanged(<span style=\"color:Blue\">string</span> propertyName)\r\n{\r\n    <span style=\"color:Blue\">if</span> (PropertyChanged != <span style=\"color:Blue\">null</span>)\r\n    {\r\n        PropertyChanged(<span style=\"color:Blue\">this</span>, <span style=\"color:Blue\">new</span> PropertyChangedEventArgs(propertyName));\r\n    }\r\n}\r\n\r\n<span style=\"color:Blue\">#region</span> INotifyPropertyChanged Members\r\n<span style=\"color:Blue\">public</span> <span style=\"color:Blue\">event</span> PropertyChangedEventHandler PropertyChanged;\r\n<span style=\"color:Blue\">#endregion</span>\r\n}\r\n</pre>\r\n</div>\r\nMy view has its DataContext set to this model. The issue I'm having here is that the model is getting bound to the view before the web service (DataService) completes the async task of getting the 'Time' data. How to I resolve this?</p>",
+    "PostedDate": "2009-10-29T12:22:15.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "251733",
+    "ThreadId": "73533",
+    "Html": "<p>hi</p>\r\n<p>Try to inject your web service (DataService) in your viewModel by using Unity Container.</p>\r\n<p>This should work.</p>\r\n<p>Let me know</p>\r\n<p>Thanks</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>Blochaou Francois</p>",
+    "PostedDate": "2009-10-30T12:22:18.537-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "251807",
+    "ThreadId": "73533",
+    "Html": "<p>Can you please give code snippet for this?</p>\r\n<p>I do have the DataService injected into the DataViewModel (as per the code above). I know you're saying something sensible, but I'm missing it. Below is my ViewModule class:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span> ViewModule : IModule \r\n{\r\n    <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">readonly</span> IUnityContainer Container;\r\n    <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">readonly</span> IRegionManager RegionManager;\r\n\r\n    <span style=\"color:Blue\">public</span> ViewModule(IUnityContainer container, IRegionManager regionManager)\r\n    {\r\n        Container = container;\r\n        RegionManager = regionManager;\r\n    }\r\n\r\n    <span style=\"color:Blue\">#region</span> IModule Members\r\n    <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">void</span> Initialize()\r\n    {\r\n        RegisterService();\r\n        RegisterViews();\r\n    }\r\n    <span style=\"color:Blue\">#endregion</span>\r\n\r\n    <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> RegisterViews()\r\n    {\r\n        RegionManager.RegisterViewWithRegion(<span style=\"color:#A31515\">&quot;FirstRegion&quot;</span>,\r\n                                             <span style=\"color:Blue\">typeof</span> (TabViewOne));\r\n\r\n        RegionManager.RegisterViewWithRegion(<span style=\"color:#A31515\">&quot;SecondRegion&quot;</span>,\r\n                                             <span style=\"color:Blue\">typeof</span>(TabViewTwo));\r\n\r\n        RegionManager.RegisterViewWithRegion(<span style=\"color:#A31515\">&quot;ThirdRegion&quot;</span>,\r\n                                             <span style=\"color:Blue\">typeof</span>(TabViewThree));\r\n    }\r\n\r\n    <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> RegisterService()\r\n    {\r\n        Container.RegisterInstance&lt;IDataService&gt;(<span style=\"color:Blue\">new</span> DataService());\r\n    }\r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Thanks<br>Arun</p>",
+    "PostedDate": "2009-10-30T16:06:13.257-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "251846",
+    "ThreadId": "73533",
+    "Html": "<p>Add an event handler to your DataService class:&nbsp;</p>\r\n<p>event EventHandler&lt;TimeEventArgs&gt; TimeCompleted;</p>\r\n<p>Then add&nbsp;the following&nbsp;in your view model:</p>\r\n<p>this.DataService.TimeCompleted += this.DataService_OnTimeCompleted;</p>",
+    "PostedDate": "2009-10-30T19:36:26.387-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "251860",
+    "ThreadId": "73533",
+    "Html": "<p>Robb, I tried your solution, but in the viewmodel, I do not get the TimeCompleted through intellisense. I even declare the event as public, but still did not work.</p>\r\n<p>Is there an test application or an article that describes the whole process?</p>\r\n<p>Thanks<br>Arun</p>",
+    "PostedDate": "2009-10-30T21:28:06.24-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "252039",
+    "ThreadId": "73533",
+    "Html": "<p>&nbsp;&nbsp;&nbsp; Is this how your DataService is setup?</p>\r\n<p>&nbsp;&nbsp;&nbsp; //Interface</p>\r\n<p>&nbsp;&nbsp;&nbsp; public interface IDataService<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void GetTime();</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; event EventHandler&lt;TimeEventArgs&gt; TimeCompleted;<br>&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;&nbsp;&nbsp;</p>\r\n<p>&nbsp;&nbsp;&nbsp; //Class</p>\r\n<p><br>&nbsp;&nbsp;&nbsp; public class DataService : IDataService <br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public event EventHandler&lt;TimeEventArgs&gt; TimeCompleted;</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void GetTime()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Get Time Stuff</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.TimeCompleted(this, args);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }</p>",
+    "PostedDate": "2009-10-31T15:36:51.42-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "252145",
+    "ThreadId": "73533",
+    "Html": "<p>Thanks to the both of you, I found the solution here: <a title=here href=\"http://channel9.msdn.com/posts/akMSFT/Creating-a-modular-application-using-Prism-V2-Part-1-of-4--Creating-a-shell-and-modules/\">http://channel9.msdn.com/posts/akMSFT/Creating-a-modular-application-using-Prism-V2-Part-1-of-4--Creating-a-shell-and-modules/</a></p>\r\n<p>I'm not sure how to assign points or mark your posts as answers, but if there's a way to do this, can the moderators please give credit for both <a id=\"ctl00_ctl00_MasterContent_Content_PostRepeater_ctl02_UserNameLink\" href=\"http://www.codeplex.com/site/users/view/blochaou\">blochaou</a> and <a id=\"ctl00_ctl00_MasterContent_Content_PostRepeater_ctl10_UserNameLink\" href=\"http://www.codeplex.com/site/users/view/RobbSmith\">RobbSmith?</a></p>",
+    "PostedDate": "2009-11-01T09:01:43.68-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

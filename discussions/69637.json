@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "237042",
+    "ThreadId": "69637",
+    "Html": "<p>Hi!</p>\r\n<p>I have a button which is bound to a delegate command:</p>\r\n<p><span style=\"color:#0000ff;font-size:small\"></span>\r\n<p><span style=\"color:#a31515;font-size:small\"><span style=\"color:#a31515;font-size:small\"><span style=\"color:#0000ff\">&lt;</span>Button</span></span><span style=\"color:#ff0000;font-size:small\"><span style=\"color:#ff0000;font-size:small\"> Name</span></span><span style=\"color:#0000ff;font-size:small\"><span style=\"color:#0000ff;font-size:small\">=&quot;myButton&quot;</span></span><span style=\"color:#ff0000;font-size:small\"><span style=\"color:#ff0000;font-size:small\">&nbsp;</span></span><span style=\"color:#ff0000;font-size:small\"><span style=\"color:#ff0000;font-size:small\">Content</span></span><span style=\"color:#0000ff;font-size:small\"><span style=\"color:#0000ff;font-size:small\">=&quot;Test&quot;</span></span><span style=\"color:#ff0000;font-size:small\"><span style=\"color:#ff0000;font-size:small\"> cmd</span></span><span style=\"color:#0000ff;font-size:small\"><span style=\"color:#0000ff;font-size:small\">:</span></span><span style=\"color:#ff0000;font-size:small\"><span style=\"color:#ff0000;font-size:small\">Click.Command</span></span><span style=\"color:#0000ff;font-size:small\"><span style=\"color:#0000ff;font-size:small\">=&quot;{</span></span><span style=\"color:#a31515;font-size:small\"><span style=\"color:#a31515;font-size:small\">Binding</span></span><span style=\"color:#ff0000;font-size:small\"><span style=\"color:#ff0000;font-size:small\"> MyCommand</span></span><span style=\"color:#0000ff;font-size:small\"><span style=\"color:#0000ff;font-size:small\">}&quot;&gt;&lt;/</span></span><span style=\"color:#a31515;font-size:small\"><span style=\"color:#a31515;font-size:small\">Button</span></span><span style=\"color:#0000ff;font-size:small\"><span style=\"color:#0000ff;font-size:small\">&gt;</span></span></p>\r\n</p>\r\n<p>I notice that there is no exception if MyCommand does not exist (or mispelled etc).</p>\r\n<p>I would say that this policy is bug prone. Isn't it?</p>",
+    "PostedDate": "2009-09-21T13:56:29.053-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "237169",
+    "ThreadId": "69637",
+    "Html": "<p>Yes, it might be better to detect if it is in DEBUG mode and change how it deals with these. However, I noticed that if you are running with VS2008, the output window will log this missing information so you can look there to see if there were any name mismatches. Not great but something to use.</p>",
+    "PostedDate": "2009-09-22T00:20:44.53-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "237178",
+    "ThreadId": "69637",
+    "Html": "<p>I am running VS2008, I have msbuild log level set to Normal but I don't see anything in output window.</p>\r\n<p>Hmmm... I think the problem is the way I'm defining the binding. I'm using code behind my view:&nbsp;<span style=\"color:#0000ff;font-size:small\"><span style=\"color:#0000ff;font-size:small\">this</span></span><span style=\"font-size:small\">.DataContext = </span><span style=\"color:#0000ff;font-size:small\"><span style=\"color:#0000ff;font-size:small\">this</span></span><span style=\"font-size:small\">.viewModel;</span></p>\r\n<p>So there is not way that the designer could know about the error. Right?</p>",
+    "PostedDate": "2009-09-22T00:39:56.023-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "237373",
+    "ThreadId": "69637",
+    "Html": "<p>There is a way for the designer to know BUT that is not something they implemented. The parts I mentioned was not in the build logs but in the debug logs as it is running. It will give you the information as you load the controls while testing so you can at least see that there is a problem finding something. This is useful for example in databinding in the DataGrid column template.</p>",
+    "PostedDate": "2009-09-22T08:37:55.4-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "238531",
+    "ThreadId": "69637",
+    "Html": "<p>This is by design. &nbsp;All of WPF databinding works like this. &nbsp;It's to make the views more flexible in certain situations and makes scenarios like designing your views using Expression Blend easier. &nbsp;It makes the same view work for multiple data contexts with a minimum of problems.</p>",
+    "PostedDate": "2009-09-24T14:35:02.147-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

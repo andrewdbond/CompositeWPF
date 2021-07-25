@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "486983",
+    "ThreadId": "225464",
+    "Html": "<p>Hi all,</p>\r\n<p>I want to achieve some exception policies assembly (which are Prism modules) wrapping.</p>\r\n<p>Is it possible to integrate PIAB with MEF (Prism)? without using some kind of factory?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-08-31T07:30:31.617-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "492914",
+    "ThreadId": "225464",
+    "Html": "<p>Hello,</p>\r\n<p>Policy Injection Application Block (PIAB) doesn't have any MEF export attributes on it.&nbsp; There are several easy (although tedious) techniques to get them into the MEF composition container.</p>\r\n<p>1.&nbsp; For each PIAB class, derive a class and apply the [Export] attribute, passing typeof either the interface to export or the PIAB concrete type name.&nbsp; Prism v4 uses this technique in the Prism.MefExtensions component.&nbsp; Once you have all the type exports in a component, then during bootstrapping add that component via AssemblyCatalog to the MefBootstrapper's AggregateCatalog.</p>\r\n<p>2. If #1 doesn't work because the PIAB class is sealed.&nbsp; You can use a similar technique, but instead of deriving, you export the PIAB class as a property.&nbsp; Glenn Block has a blog post about these MEF &quot;buddy classes&quot;.&nbsp; In the get accessor, you simply return a singleton or new up another instance.&nbsp; You have to make sure to compose the buddy class into the container so that it's exports are available.</p>\r\n<p>3. During the bootstrapping process, you can use the composition container and call ComposeExportedValue repeatedly for each type in PIAB you want in the container.&nbsp; This isn't recommended though as it is harder to debug and static analysis tools won't be able to see this code.</p>\r\n<p>4. As a last resort, you could apply the MEF export attribute to each of the PIAB classes and recompile the application block.</p>\r\n<p>Gvie #1 a try and let me know what issues you run into.&nbsp;</p>\r\n<p>Geoff Cox<br>Southworks</p>",
+    "PostedDate": "2010-09-13T10:34:22.723-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "493673",
+    "ThreadId": "225464",
+    "Html": "<p>Thank you so much</p>\r\n<p>but as i learned MEF and PIAB are not meant to go hand by hand, Therefor i dropped the issue. Nevertheless, your solutions are very elegant and cover all possible situations IMHO and im sure this could be a great benefit since this is certainly the way to go.</p>\r\n<p>&nbsp;</p>\r\n<p>one thing i still dont understand. where do you apply the PolicyInjection.Wrap&lt;&gt;() method on the import/export Prism modules instantiation (without using somekind of factory)?</p>\r\n<p>Thank you.</p>",
+    "PostedDate": "2010-09-14T23:52:33.343-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "493901",
+    "ThreadId": "225464",
+    "Html": "<p>You're welcome :-)</p>\r\n<p>MEF provides some limited support for generics and you may indeed require a factory or other intermediate class in some cases.&nbsp; The [InheritedExport] can work well in some cases to allow the concrete types to export the correct interface.</p>\r\n<p>Geoff Cox<br>Southworks</p>",
+    "PostedDate": "2010-09-15T08:43:53.177-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

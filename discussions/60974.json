@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "206689",
+    "ThreadId": "60974",
+    "Html": "<p>We have a large existing application written in WinForms that we are slowly migrating to WPF. &nbsp;We are trying to composite the application to include regions for modules to load views into. &nbsp;Right now this requires us to slowly add regions to the application using the ElementHost interop WinForms control.</p>\r\n<p>Everything about this seems to work fine, except when regions are automatically created. &nbsp;This particular method seems to fall down:</p>\r\n<blockquote>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">private</span> <span style=\"color:Blue\">static</span> <span style=\"color:Blue\">bool</span> IsInDesignMode(DependencyObject element)\r\n{\r\n    <span style=\"color:Green\">// Due to a known issue in Cider, GetIsInDesignMode attached property value is not enough to know if it's in design mode.</span>\r\n    <span style=\"color:Blue\">return</span> DesignerProperties.GetIsInDesignMode(element) || Application.Current == <span style=\"color:Blue\">null</span>\r\n           || Application.Current.GetType() == <span style=\"color:Blue\">typeof</span>(Application);\r\n}\r\n</pre>\r\n</div>\r\n</blockquote>\r\n<p>Because this is a WinForms hosted application, rather than a WPF application, the Application.Current property is null. &nbsp;Modifying this line of code to exclude the Application.Current checks makes everything work swimmingly, however as you can imagine I'm a bit worried about the impact of this when we fully convert the shell to WPF.</p>\r\n<p>Can anyone shed some light on this? &nbsp;Is there a more accurate way to determine if the element is displayed in design mode? &nbsp;Is the issue in WPF designer alluded to in this statement resolved?</p>\r\n<p>Thanks!</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-06-29T10:29:22.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "206718",
+    "ThreadId": "60974",
+    "Html": "<p>Nevermind... there is already an issue posted for this.</p>\r\n<p><a href=\"http://compositewpf.codeplex.com/WorkItem/View.aspx?WorkItemId=3552\">http://compositewpf.codeplex.com/WorkItem/View.aspx?WorkItemId=3552</a></p>",
+    "PostedDate": "2009-06-29T11:54:46.923-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

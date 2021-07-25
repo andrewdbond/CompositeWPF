@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "685262",
+    "ThreadId": "276169",
+    "Html": "<p>I am developing a modular silverlight application with MEF. Up to this point my module catalog had specified each module to load automatically (WhenAvailable). I then changed the modules to load OnDemand and used the ModuleManager to manually load the modules.  I am getting the following error:</p>\n<p><em>Unable to locate the module with type 'MyCompany.MyProject.Module1.Module1Module, MyCompany.MyProject.Module1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null' among the exported modules. Make sure the module name in the module catalog matches  that specified on ModuleExportAttribute for the module type.</em></p>\n<p>I get this error for each module I attempt to manually load. However, the modules are loading fine because I can still navigate to the views within the module XAP.</p>\n<p>My module classes are declared in a regular way:</p>\n<pre>[ModuleExport(<span>typeof</span>(Module1Module))]\n<span>public</span> <span>class</span> Module1Module : IModule\n{\n}</pre>\n<p>I also tried specifying&nbsp;<span style=\"font-family: Consolas,'Courier New',Courier,monospace; white-space: pre;\">InitializationMode.OnDemand in the ModuleExportAttribute.</span></p>\n<p><span style=\"font-family: Consolas,'Courier New',Courier,monospace; white-space: pre;\">The MefModuleManager.OnModuleLoaded event is not raised even though the modules are being loaded.</span></p>\n<p><span style=\"font-family: Consolas,'Courier New',Courier,monospace; white-space: pre;\">It seems like MEF may be failing on some other import and not the module class itself, but I don't see how. None of my modules register any services. Right now they all contain  only views and viewmodels.</span></p>\n<p><span style=\"font-family: Consolas,'Courier New',Courier,monospace;\"><span style=\"white-space: pre;\">Again, everything seems to work fine loading them OnDemand except I get the error.</span></span></p>\n<p><span style=\"font-family: Consolas,'Courier New',Courier,monospace;\"><span style=\"white-space: pre;\">Any ideas?</span></span></p>",
+    "PostedDate": "2011-10-17T09:51:33.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "685415",
+    "ThreadId": "276169",
+    "Html": "<p>Hi,</p>\r\n<p>You might find the following thread useful where a similar behavior is described:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/251672\">ModuleInfo.ModuleName with MefBootstrapper</a></li>\r\n</ul>\r\n<p>Also, you can check the <a href=\"http://msdn.microsoft.com/en-us/library/ff921163%28v=PandP.40%29.aspx\">Modularity Quickstart with Silverlight</a> included in the Prism guidance where it's shown how to load modules on demand when using MEF.</p>\r\n<p>If the aforementioned links where not useful to solve this, you could sent us a repro-sample application portraying this problem so we could analyze it and help you find the reason behind this undesired behavior.</p>\r\n<p>I hope you find it useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-10-17T13:51:19.92-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "685847",
+    "ThreadId": "276169",
+    "Html": "<p>The exception is being thrown from Prism Library: MefModuleInitializer.CreateModule(ModuleInfo moduleInfo)&nbsp;<a href=\"https://prism.svn.codeplex.com/svn/V4/PrismLibrary/Desktop/Prism.MefExtensions/Modularity/MefModuleInitializer.cs\">https://prism.svn.codeplex.com/svn/V4/PrismLibrary/Desktop/Prism.MefExtensions/Modularity/MefModuleInitializer.cs</a></p>\n<div style=\"color: black; background-color: white;\">\n<pre><div style=\"color: black; background-color: white;\"><pre><span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> IModule CreateModule(ModuleInfo moduleInfo)\n        {\n            <span style=\"color: green;\">// If there is a catalog that needs to be integrated with the AggregateCatalog as part of initialization, I add it to the container's catalog.</span>\n            ComposablePartCatalog partCatalog;\n            <span style=\"color: blue;\">if</span> (<span style=\"color: blue;\">this</span>.downloadedPartCatalogs.TryGet(moduleInfo, <span style=\"color: blue;\">out</span> partCatalog))\n            {\n                <span style=\"color: blue;\">if</span> (!<span style=\"color: blue;\">this</span>.aggregateCatalog.Catalogs.Contains(partCatalog))\n                {\n                    <span style=\"color: blue;\">this</span>.aggregateCatalog.Catalogs.Add(partCatalog);\n                }\n\n                <span style=\"color: blue;\">this</span>.downloadedPartCatalogs.Remove(moduleInfo);\n            }\n\n            <span style=\"color: blue;\">if</span> (<span style=\"color: blue;\">this</span>.ImportedModules != <span style=\"color: blue;\">null</span> &amp;&amp; <span style=\"color: blue;\">this</span>.ImportedModules.Count() != 0)\n            {\n                Lazy&lt;IModule, IModuleExport&gt; lazyModule =\n                    <span style=\"color: blue;\">this</span>.ImportedModules.FirstOrDefault(x =&gt; (x.Metadata.ModuleName == moduleInfo.ModuleName));\n                <span style=\"color: blue;\">if</span> (lazyModule != <span style=\"color: blue;\">null</span>)\n                {\n                    <span style=\"color: blue;\">return</span> lazyModule.Value;\n                }\n            }\n\n            <span style=\"color: green;\">// This does not fall back to the base implementation because the type must be in the MEF container and not just in the application domain.</span>\n            <span style=\"color: blue;\">throw</span> <span style=\"color: blue;\">new</span> ModuleInitializeException(\n                <span style=\"color: blue;\">string</span>.Format(CultureInfo.CurrentCulture, Properties.Resources.FailedToGetType, moduleInfo.ModuleType));\n        }</pre>\n</div>\n</pre>\n</div>\n<p>The first part of the function works fine. It gets the parts from each module and adds them to the aggregate catalog. That is why my views and viewmodels are working despite the error. The problem is this.ImportedModules has 0 count and so it throws the  exception.</p>\n<div style=\"color: black; background-color: white;\">\n<pre>        [ImportMany(AllowRecomposition = <span style=\"color: blue;\">true</span>)]\n        <span style=\"color: blue;\">public</span> IEnumerable&lt;Lazy&lt;IModule, IModuleExport&gt;&gt; ImportedModules { <span style=\"color: blue;\">get</span>; <span style=\"color: blue;\">set</span>; }\n</pre>\n</div>\n<p>My module definition class is clearly there in the partCatalog that was downloaded, but ImportedModules is not being updated...</p>\n<p><a href=\"http://tinypic.com?ref=vosmxu\" target=\"_blank\"><img src=\"http://i56.tinypic.com/vosmxu.jpg\" border=\"0\" alt=\"Image and video hosting by TinyPic\" /></a></p>",
+    "PostedDate": "2011-10-18T09:12:31.3-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "685893",
+    "ThreadId": "276169",
+    "Html": "<p>Hi,</p>\r\n<p>It would be helpful if you could provide us with a sample application that portrays this issue in isolation, so we can help you understand its causes and provide a possible solution or workaround for it.</p>\r\n<p>Thanks,</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-10-18T10:19:42.457-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "685921",
+    "ThreadId": "276169",
+    "Html": "<p>Hi,&nbsp;</p>\r\n<p>I was able to find the cause of the problem.</p>\r\n<p>I am using MEFedMVVM library and it has its own CompositionContainer. So I needed to register the IModuleManager export with this container.</p>\r\n<p>The error was NOT prism related, so you can delete this thread. Thank you.</p>",
+    "PostedDate": "2011-10-18T11:26:20.82-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

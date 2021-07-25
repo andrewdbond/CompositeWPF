@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "238352",
+    "ThreadId": "69993",
+    "Html": "<p>I have a need to shutdown the application from within a module.&nbsp; I was thinking that the Bootstrapper could stuff the Application.Current into the Unity container and I could call Shutdown on that, however that leads to tight binding.&nbsp; Theoretically my module could throw a SecurityException from within Initialize and I could catch that but from where?&nbsp; Ideas?</p>",
+    "PostedDate": "2009-09-24T08:23:08.493-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "238365",
+    "ThreadId": "69993",
+    "Html": "<p>Can the bootstrapper respond to commands or events?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-24T08:53:34.19-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "238399",
+    "ThreadId": "69993",
+    "Html": "<p id=784003d0-8b56-012c-7bfa-12313b00b831>Hi</p>\r\n<p id=78400ea0-8b56-012c-7bfb-12313b00b831>You can use the following code to close the shutdown the application:</p>\r\n<p id=784019f0-8b56-012c-7bfc-12313b00b831><span style=\"font-family:Courier New;font-size:x-small\">System.Windows.Application.Current.Shutdown(0);</span></p>\r\n<p id=78402710-8b56-012c-7bfd-12313b00b831><span style=\"font-size:x-small\">Brian Noyes blogged about <a href=\"http://www.softinsight.com/bnoyes/2009/09/05/SupportingGracefulShutdownAndSavingOnCloseFromAWPFPrismApp.aspx\">Supporting Graceful Shutdown and Saving on Close From a WPF Prism App</a> some time ago. You might find some useful ideas in that post.</span></p>\r\n<p id=784038d0-8b56-012c-7bfe-12313b00b831>Please let me know if this helps.</p>\r\n<p id=78404b70-8b56-012c-7bff-12313b00b831>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-09-24T10:09:51.823-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "238779",
+    "ThreadId": "69993",
+    "Html": "<p>Damian,</p>\r\n<p>&nbsp; I saw that article while Google'ing around.&nbsp; Here is what I did.&nbsp; I created an CompositePresentationEvent derived class, AuthenticationEvent.</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>    <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span> AuthenticationEvent : CompositePresentationEvent&lt;AuthenticationEvent&gt; {\r\n\r\n        <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">string</span> UserCode { <span style=\"color:Blue\">get</span>; <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">set</span>; }\r\n        <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">bool</span> Success { <span style=\"color:Blue\">get</span>; <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">set</span>; }\r\n\r\n        <span style=\"color:Blue\">public</span> AuthenticationEvent() {\r\n        }\r\n\r\n        <span style=\"color:Blue\">public</span> AuthenticationEvent(<span style=\"color:Blue\">string</span> userCode, <span style=\"color:Blue\">bool</span> success) {\r\n            UserCode = userCode;\r\n            Success = success;\r\n        }\r\n    }\r\n</pre>\r\n</div>\r\n</p>\r\n<p>After reviewing the code for the UnityBootstrapper baseclass, I saw that an IEventAggregator was added to the container prior to the call to InitializeModules.&nbsp; Therefore, in my derived Bootstrapper class, I overrided the InitializeModules method like this:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>        <span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">override</span> <span style=\"color:Blue\">void</span> InitializeModules() {\r\n\r\n            <span style=\"color:Blue\">var</span> eventAggregator = Container.Resolve&lt;IEventAggregator&gt;();\r\n            <span style=\"color:Blue\">var</span> authenticationEvent = eventAggregator.GetEvent&lt;AuthenticationEvent&gt;();\r\n            authenticationEvent.Subscribe(ShutdownApplication, ThreadOption.UIThread);\r\n\r\n            <span style=\"color:Blue\">base</span>.InitializeModules();\r\n        }\r\n</pre>\r\n</div>\r\n</p>\r\n<p>and then in my event handler I have this:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>        <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> ShutdownApplication(AuthenticationEvent e) {\r\n            LoggerFacade.Log(String.Format(<span style=\"color:#A31515\">&quot;Login {0} for: {1}&quot;</span>, e.Success, e.UserCode), Category.Debug, Priority.Low);\r\n\r\n            <span style=\"color:Blue\">if</span> (e.Success)\r\n                _shell.Show();\r\n            <span style=\"color:Blue\">else</span> {\r\n                Application.Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;\r\n                Application.Current.Shutdown(1);\r\n            }\r\n        }\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Note that I moved the _shell.Show() from the CreateShell method to here.&nbsp; My login box is using CredUI, so I have no need for the Shell unless the user authenticates.&nbsp; Also, during the authentication process, which occurs inside my SecurityModule, permissions are stuffed into a custom IPrincipal object and then assigned to the Thread.CurrentPrincipal. I can then later use that info to dynamically load modules based on user permissions using the IModuleManager.</p>\r\n<p>This works like a charm.&nbsp; The whole idea was to shutdown the application in the application and not inside a module.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-25T06:36:44.71-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

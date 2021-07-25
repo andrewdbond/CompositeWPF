@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "145204",
+    "ThreadId": "43664",
+    "Html": "I am learning to use the Prism framework and plan on developing an application that will potentially load 3rd party modules, as well as those I write myself.<br>\r\n<br>\r\nOne of the requirements for this application is that it support multiple languages and that the UI instantly reflect changes to the current language setting.&nbsp; Aside from the fact that WPF doesn't provide a strong OOTB localization solution, has anyone found a good strategy for handling localization in a Prism application?&nbsp; It seems that each module must have its own set of resource assemblies tied to the current thread's locale setting.&nbsp; The real trick is getting the UI to respond immediately to settings changes.&nbsp; It'd be nice if there was an elegant solution for this available.<br>\r\n<br>\r\nThanks...<br>\r\n",
+    "PostedDate": "2009-01-07T12:41:24.7-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "145235",
+    "ThreadId": "43664",
+    "Html": "We discovered getting the app to change languages on the fly was waay too much work for the reward. Most people (except language testers) don't need to flip the language of an app while it is running.<br>\r\n<br>\r\nTamir Khason has a nice library that manages localization for any dependency property you can bind a static Resource to. Colors, fonts sizes, RTL settings... you name it. <br>\r\n<br>\r\nOne cool thing a teammate of mine did was take the &quot;.NET Internationalization&quot; book, used the example for querying a Web translation source and wrote a little app that will automatically take our English resx files and make N-language versions of it. You can even do psuedo-translations to see where your UI will break down before translators get a hold of it.<br>\r\n<br>\r\nMS does need something better than &quot;Add UID's to everything and run LOCBAML&quot;<br>\r\n<br>\r\nAdam\r\n",
+    "PostedDate": "2009-01-07T15:03:16.41-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "146043",
+    "ThreadId": "43664",
+    "Html": "I'm using the classes shown in <a href=\"http://www.codeproject.com/KB/WPF/WPF_Localization.aspx\">http://www.codeproject.com/KB/WPF/WPF_Localization.aspx</a> by Jecho Jekov, they work very well.<br>\r\n<br>\r\nBe care that the resource file used by all the modules is the Shell resource file.<br>\r\n<br>\r\nMarcos\r\n",
+    "PostedDate": "2009-01-11T03:59:07.433-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "146111",
+    "ThreadId": "43664",
+    "Html": "How can 3rd party modules use the Shell resource file from our app?  <br>\r\n<br>\r\nThis is the entire difficulty with localizing Composite WPF.  It seems that each module must have its own set of resources.  So how do you get immediate run-time UI response to locale changes from all modules?\r\n",
+    "PostedDate": "2009-01-11T12:16:58.517-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "149589",
+    "ThreadId": "43664",
+    "Html": "I'm posting here to bring this thread back up to get some attention. For me this is a very important question &quot;What is the recommended or best approach for localization in Composite WPF?&quot;<br>\r\n<br>\r\nThere seem to be quite a lot of approaches available and even after some time investigating and comparing these approaches I find it quite hard to judge them and decide which is best. Any suggestions here.<br>\r\nMaybe a combination between <a href=\"http://blogs.microsoft.co.il/blogs/tomershamam/archive/2007/10/30/wpf-localization-on-the-fly-language-selection.aspx\">link</a> for &quot;global&quot; localization and the best practice approache (<a href=\"http://msdn.microsoft.com/en-us/library/ms788718.aspx\">link</a>) from Microsoft for module wide localization. So you would have system-wide XML localization dictionarys plus satellite DLLs for Module specific localization.<br>\r\n",
+    "PostedDate": "2009-01-21T23:55:43.587-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

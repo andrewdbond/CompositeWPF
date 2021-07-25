@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "537424",
+    "ThreadId": "238766",
+    "Html": "\r\n<p>I now have my head around how the MVVM RI works. Contrary to other posts here, is does use Prism bits (NotificationObject and Interactivity). Anyway, I'd like to add a status bar to my Shell (MainPage in RI) and update it. Do I need to go the full Bootstrapper\r\n route, create a VM for my Shell, and use the EventAggregator? Further, if I go the Bootstrapper route, do I abandon the UIService and rely on Prism view composition? Thanks.</p>\r\n",
+    "PostedDate": "2010-12-17T10:32:22.82-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "537431",
+    "ThreadId": "238766",
+    "Html": "\r\n<p>Using EventAggregator would be what I would use.&nbsp; Since it sounds as if you already have a service in place for UI communication, I wouldn't up and change just to satisfy the need to change your routine or the pattern implemented.</p>\r\n",
+    "PostedDate": "2010-12-17T10:42:58.823-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "537444",
+    "ThreadId": "238766",
+    "Html": "\r\n<p>Therefore requiring the use of a Bootstrapper, yes?</p>\r\n",
+    "PostedDate": "2010-12-17T11:04:57.023-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "537507",
+    "ThreadId": "238766",
+    "Html": "\r\n<p><span lang=\"EN-US\" style=\"font-size:11pt\">Hi,<br>\r\n</span><span lang=\"EN-US\" style=\"font-size:11pt\"><br>\r\nThere is no need to use the Bootstrapper to make use of the Event Aggregator. From this chapter of the Prism MSDN Documentation: &ldquo;<em>It is important to note that Prism was designed so that you can use any of Prism's capabilities and design patterns individually,\r\n or all together, depending on your requirements and your application scenario. Prism was designed so that it could be incrementally adopted, allowing you to use the capabilities and design patterns that make sense for your particular application without requiring\r\n major structural changes. </em>&ldquo;<br>\r\n<br>\r\nAs an example, you could check <a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=235745\">\r\nthis post</a> in which a standalone event aggregator for Silverlight is portrayed. Take into account that a similar scenario could be implemented in WPF.</span></p>\r\n<p><span lang=\"EN-US\" style=\"font-size:11pt\">You can read more about Event Aggregator in\r\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921098(v=PandP.40).aspx\">Chapter 7:&nbsp; Composing the User Interface<br>\r\n</a><br>\r\nIn fact, if you decide to use a boostrapper, you don&rsquo;t necessarily have to use the UI Composition mechanisms provided by Prism. However, the Bootstrapper registers, for example, the Region Manager, the Region Adapter Mappings, among other components of\r\n the UI Composition mechanisms, so if you intend not to use them, you should modify your boostrapper to register your implementations instead.</span></p>\r\n<p><span lang=\"EN-US\" style=\"font-size:11pt\">I hope you find this information useful.</span></p>\r\n<p><span lang=\"EN-US\" style=\"font-size:11pt\">Thanks,</span></p>\r\n<p><span lang=\"EN-US\" style=\"font-size:11pt\">Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a><br>\r\n</span></p>\r\n",
+    "PostedDate": "2010-12-17T12:56:28.68-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538385",
+    "ThreadId": "238766",
+    "Html": "\r\n<p>I went through the code for the MefBootstrapper, and discovered that all I needed was to create a class the derived from EventAggregator and adorn it with an [Export(typeof(IEventAggregator))] attribute like this:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>[Export(<span style=\"color:blue\">typeof</span>(IEventAggregator))]\r\n<span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> ContractLoaderEventAggregator : EventAggregator {\r\n}</pre>\r\n</div>\r\n<p></p>\r\n<p>The MVVM RI adds itself to the container, and this in turn registered the event aggregator. The other change I had to do was to modify the SingleViewUiService and the ViewFactory. This is because I needed the container to compose my Shell and it's ViewModel.</p>\r\n<p>The first change was to the SingleViewUiService. I commented out the instantiation of the TMainView in the ctor. I moved it to the MainWindow get accessor like so:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> IMainView MainWindow {\r\n    <span style=\"color:blue\">get</span> { <span style=\"color:blue\">return</span> _mainWindow ?? (_mainWindow = ViewFactory.GetView&lt;TMainView&gt;()); }\r\n}\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>The next step was to create an overload for GetView in the ViewFactory class like this (this could be refactored along with the other GetView) :</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> T GetView&lt;T&gt;() <span style=\"color:blue\">where</span> T : ContentControl {\r\n    <span style=\"color:blue\">var</span> view = _container.GetExportedValueOrDefault&lt;T&gt;();\r\n    <span style=\"color:blue\">if</span>(view == <span style=\"color:blue\">null</span>)\r\n        <span style=\"color:blue\">throw</span> <span style=\"color:blue\">new</span> InvalidOperationException(String.Format(<span style=\"color:#a31515\">&quot;Unable to locate view with type {0}.&quot;</span>, <span style=\"color:blue\">typeof</span>(T)));\r\n    <span style=\"color:blue\">return</span> view;\r\n}\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>Now, for my Shell, all I added was the [Export] attribute in my Shell.xaml.cs file, because the factory wasn't going to instantiate it by contract name (hence no [ExportView(string)] attribute). I import my ViewModel into the Shell via a property just like\r\n the other Views in the MVVM RI. My ShellViewModel looks like this:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>[Export]\r\n[PartCreationPolicy(CreationPolicy.NonShared)]\r\n<span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> ShellViewModel : WorkspaceViewModel {\r\n    <span style=\"color:blue\">private</span> <span style=\"color:blue\">string</span> _statusMessage;\r\n\r\n    [ImportingConstructor]\r\n    <span style=\"color:blue\">public</span> ShellViewModel(IEventAggregator eventAggregator)\r\n        : <span style=\"color:blue\">base</span>(eventAggregator) {\r\n        Subscribe();\r\n    }\r\n\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">string</span> StatusMessage {\r\n        <span style=\"color:blue\">get</span> { <span style=\"color:blue\">return</span> _statusMessage; }\r\n        <span style=\"color:blue\">set</span> {\r\n            _statusMessage = value;\r\n            RaisePropertyChanged(() =&gt; StatusMessage);\r\n        }\r\n    }\r\n\r\n    <span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> Subscribe() {\r\n        EventAggregator.GetEvent&lt;StatusEvent&gt;().Subscribe(\r\n            OnStatusEvent,\r\n            ThreadOption.UIThread,\r\n            <span style=\"color:blue\">true</span>,\r\n            StatusEventPredicate\r\n            );\r\n    }\r\n\r\n    <span style=\"color:blue\">private</span> <span style=\"color:blue\">static</span> <span style=\"color:blue\">bool</span> StatusEventPredicate(StatusEventPayload payload) {\r\n        <span style=\"color:blue\">return</span> <span style=\"color:blue\">true</span>;\r\n    }\r\n\r\n    <span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> OnStatusEvent(StatusEventPayload payload) {\r\n        StatusMessage = payload.Status;\r\n        Debug.WriteLine(StatusMessage);\r\n    }\r\n}\r\n</pre>\r\n</div>\r\nWorkspaceViewModel is an abstract class of mine with some extra stuff in it, which derives from NotificationObject. The event notifications work like a charm.\r\n<p></p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-20T10:20:58.64-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538388",
+    "ThreadId": "238766",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Thanks for sharing your findings with the rest of the community, as other users might find them useful for their situations.</p>\r\n<p>Guido Leandro Maliandi <br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-20T10:28:02.683-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538389",
+    "ThreadId": "238766",
+    "Html": "Perhaps they could find there way into the RI, or at least a contrib.<br>\r\n<br>\r\nOn Mon, Dec 20, 2010 at 1:28 PM, guidomaliandi<br>\r\n&lt;notifications@codeplex.com&gt; wrote:<br>\r\n&gt; From: guidomaliandi<br>\r\n&gt;<br>\r\n&gt; Hi,<br>\r\n&gt;<br>\r\n&gt; Thanks for sharing your findings with the rest of the community, as other<br>\r\n&gt; users might find them useful for their situations.<br>\r\n&gt;<br>\r\n&gt; Guido Leandro Maliandi<br>\r\n&gt; http://blogs.southworks.net/gmaliandi<br>\r\n&gt;<br>\r\n&gt; Read the full discussion online.<br>\r\n&gt;<br>\r\n&gt; To add a post to this discussion, reply to this email<br>\r\n&gt; ([email removed])<br>\r\n&gt;<br>\r\n&gt; To start a new discussion for this project, email<br>\r\n&gt; [email removed]<br>\r\n&gt;<br>\r\n&gt; You are receiving this email because you subscribed to this discussion on<br>\r\n&gt; CodePlex. You can unsubscribe on CodePlex.com.<br>\r\n&gt;<br>\r\n&gt; Please note: Images and attachments will be removed from emails. Any posts<br>\r\n&gt; to this discussion will also be available online at CodePlex.com<br>\r\n<br>\r\n<br>\r\n<br>\r\n-- <br>\r\n<br>\r\n---<br>\r\nDavid B. Bitton<br>\r\nCode No Evil, LLC<br>\r\n<br>\r\nCode Made Fresh Daily.",
+    "PostedDate": "2010-12-20T10:32:10.727-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

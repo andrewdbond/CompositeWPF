@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "483235",
+    "ThreadId": "224396",
+    "Html": "<p>Hello</p>\r\n<p>I'm newbie under PRISM 4. I block on problem. In a simple MVVM applicaton with no modules. With one Shell, two User control.</p>\r\n<p>My problem is i want to use aggregator between this two user controls. How can I do to send unity container at two VM but I want to keep &quot;blendability&quot; ?</p>\r\n<p>Thanxs a lot for your help.</p>\r\n<p>&nbsp;</p>\r\n<p><em>Nobody for help me ?</em></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-08-22T03:35:31.793-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "485819",
+    "ThreadId": "224396",
+    "Html": "<p id=f1766bc0-9108-012d-0d79-12313b100c31>Hi,</p>\r\n<p>If the usercontrols reside in two different modules, event aggregator could be the appropriated approach to communicate these two components, though in your scenario you could use regular .Net events.</p>\r\n<p>Therefore, if you need to use Event Aggregator in your application, you could take a look at the following documentation section on MSDN. Take into account these links assume that the application has a bootstrapper that properly configures the event aggregator. Your scenario if you are only using MVVM (e.g. MVVM RI or MVVM Quickstart) you might not have this bootstrapper in place:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122(PandP.20).aspx\">Event Aggregator</a> </li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921148(PandP.20).aspx\">How to: Create and Publish Events</a> </li>\r\n</ul>\r\n<p>There is no guidance for blendability using DI containers, so far. Regarding to blendability you could check the following document in the Prism4.chm of the latest drop:</p>\r\n<ul>\r\n<li>Achieving Blendability (new)</li>\r\n</ul>\r\n<p>Not taking into account blendability you could could check the MVVM RI, which use MEF as the composition container.</p>\r\n<p id=f17678c0-9108-012d-0d7a-12313b100c31>Please let me know if this helps.</p>\r\n<p id=f1768650-9108-012d-0d7b-12313b100c31>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-08-27T13:16:56.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "496070",
+    "ThreadId": "224396",
+    "Html": "<p>Hello,</p>\r\n<p>Sorry for my late answer.</p>\r\n<p>I read various articles that you gave me in the comment.</p>\r\n<p>I find a solution but i don't know if it respect MVVM design pattern.</p>\r\n<p>My solution : I have a static class in where i have a static property where i put a instance of container.</p>\r\n<p>In the ConfigureContainer bootstrapper, I update this property.</p>\r\n<p>I use in my differents viewmodels. About my blendability, in the modelview ctor, i test if i was in indesignmodel or not. And if I not in design a call the container throught my 'infrastructure' property.</p>\r\n<p>What do you find about this approach ?</p>\r\n<p>Thanxs a lot for your help.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-20T08:58:59.163-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "496223",
+    "ThreadId": "224396",
+    "Html": "<p>Hi,</p>\r\n<p>If you are using Unity, you could use DI to retrieve your container  from everywhere (ViewModel) using Constructor Injection, Dependency Property,  etc. You could see this in the following pseudo-code:</p>\r\n<p><strong>public class VM</strong><br><strong>{</strong><br><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ctor (IUnityContainer container)</strong><br><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</strong><br><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //your code here</strong><br><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</strong><br><strong>}</strong></p>\r\n<p>Regarding to your approach, it seems that has not issues with MVVM  pattern, but that approach is not use in the Quickstarts or Reference Implementation in Prism.&nbsp;</p>\r\n<p>The team is actually working on this, as you can check in today's drop 8 of Prism, since the document for achieving blendability and the MVVM RI have been updated with a new approach. So I would suggest to you to take a look at this new drop (you could download the lasted version <a href=\"../releases/view/52647\">here</a>).</p>\r\n<p>Fernando Antivero<br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-09-20T14:34:59.56-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "496360",
+    "ThreadId": "224396",
+    "Html": "<p>Hi,</p>\r\n<p>but if i use this approach I lost the blendability because blend not found a default ctor.</p>\r\n<p>I download and look the Drop 8 of PRISM.</p>\r\n<p>Thanxs for your help</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-21T01:05:42.423-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1000944",
+    "ThreadId": "433064",
+    "Html": "I've followed <a href=\"http://blogs.southworks.net/dcherubini/2012/05/24/popupwindowaction-using-custom-views-instead-of-windows-in-wpf-and-prism/\" rel=\"nofollow\">this</a> post by Damian to use custom views and viewmodels in modal dialogs displayed to the user by raising InteractionRequests. Everything is going well and I've converted all of my notifications to the user to now use InteractionRequests. I've built my own &quot;MessageBox&quot; variant with the same code.<br />\n<br />\nNow I want to use an interaction request as a means to display a &quot;busy&quot; dialog. I want to raise the InteractionRequest, do some work, and then interact with the IPopupWindowActionAware object I passed to the InteractionRequest to close the HostWindow. My question is, what is an appropriate way to do this. At first, I wrapped the &quot;work&quot; and the call to close the host window inside of a Task, started it, and then raised the InteractionRequest. <br />\n<pre><code>var notificationRequest = new InteractionRequest&lt;MyActionNotification&gt;() // Bound to an action that'll display a modal window\n\nvar notification = new MyActionNotification();\n\nTask.Factory.StartNew(() =&gt;\n{\n    doWork();\n    Application.Current.Dispatcher.BeginInvoke((Action)(() =&gt; notification.CloseWindow()));\n});\n\nnotificationRequest.Raise();</code></pre>\n\nBut by doing this, I risk the case that &quot;doWork&quot; completes before I raise the &quot;notificationRequest&quot; and then I end up stuck after the Raise because the thread is stuck on a ShowDialog<br />\n",
+    "PostedDate": "2013-02-13T21:23:12.277-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1001443",
+    "ThreadId": "433064",
+    "Html": "Hi,\r<br />\n<br />\nI am glad you found my blog post useful.\r<br />\n<br />\nRegarding the problem you are describing, I don't have much experienced in the use of asynchronous tasks, but as a possible approach I believe you could try raising the notification in the asynchronous task doing something like this:<br />\n<pre><code>var notification = new MyActionNotification();\n\nTask.Factory.StartNew(() =&gt;\n{\n    Application.Current.Dispatcher.BeginInvoke( (Action) ( () =&gt; this.notificationRequest.Raise(notification) ) );\n    doWork();\n    Application.Current.Dispatcher.BeginInvoke( (Action) ( () =&gt; notification.CloseWindow() ) );\n});</code></pre>\n\nBased on my understanding, by doing this I believe that the notification should be raised before &quot;doing the work&quot;.\r<br />\n<br />\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-02-14T12:18:48.85-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1001450",
+    "ThreadId": "433064",
+    "Html": "Thanks so much for the reply. I'll give that a shot. Another question I have, and I'm not sure if it should be another discussion topic, is related to your design of IPopupWindowActionAware. I was thinking that instead of it having a &quot;Window&quot; object, it could have an &quot;IWindow&quot; object (similar to the IWindow in the Stock Trader RI) and then my InteractionRequest context would get this IWindow object. This would allow for easier testing I believe, but I'm not sure if it's the better route to take? What do you think? I was thinking it would look something like this:<br />\n<pre><code>/// &lt;summary&gt;\n/// Defines the interface for the Dialogs that are shown by &lt;see cref=&quot;PopupWindowAction&quot;/&gt;.\n/// This allows us to mock a different &quot;window&quot; object when running unit tests with InteractionRequests and the PopupWindowAction\n/// &lt;/summary&gt;\npublic interface IWindow\n{\n        /// &lt;summary&gt;\n        /// Ocurrs when the &lt;see cref=&quot;IWindow&quot;/&gt; is closed.\n        /// &lt;/summary&gt;\n        event EventHandler Closed;\n\n        /// &lt;summary&gt;\n        /// Gets or sets the content for the &lt;see cref=&quot;IWindow&quot;/&gt;.\n        /// &lt;/summary&gt;\n        object Content { get; set; }\n\n        /// &lt;summary&gt;\n        /// Gets or sets the owner control of the &lt;see cref=&quot;IWindow&quot;/&gt;.\n        /// &lt;/summary&gt;\n        object Owner { get; set; }\n\n        /// &lt;summary&gt;\n        /// Gets or sets the &lt;see cref=&quot;System.Windows.Style&quot;/&gt; to apply to the &lt;see cref=&quot;IWindow&quot;/&gt;.\n        /// &lt;/summary&gt;\n        Style Style { get; set; }\n\n        /// &lt;summary&gt;\n        /// Gets or sets the data context for the &lt;see cref=&quot;IWindow&quot;/&gt;.\n        /// &lt;/summary&gt;\n        object DataContext { get; set; }\n\n        /// &lt;summary&gt;\n        /// Gets or sets the height for the &lt;see cref=&quot;IWindow&quot;/&gt;.\n        /// &lt;/summary&gt;\n        double Height { get; set; }\n\n        /// &lt;summary&gt;\n        /// Gets or sets the width for the &lt;see cref=&quot;IWindow&quot;/&gt;.\n        /// &lt;/summary&gt;\n        double Width { get; set; }\n\n        /// &lt;summary&gt;\n        /// Gets or sets the title for the &lt;see cref=&quot;IWindow&quot;/&gt;.\n        /// &lt;/summary&gt;\n        string Title { get; set; }\n\n        /// &lt;summary&gt;\n        /// Opens the &lt;see cref=&quot;IWindow&quot;/&gt;.\n        /// &lt;/summary&gt;\n        void Show();\n\n        /// &lt;summary&gt;\n        /// Opens the &lt;see cref=&quot;IWindow&quot;/&gt; as a modal window.\n        /// &lt;/summary&gt;\n        void ShowDialog();\n\n        /// &lt;summary&gt;\n        /// Closes the &lt;see cref=&quot;IWindow&quot;/&gt;.\n        /// &lt;/summary&gt;\n        void Close();\n}</code></pre>\n\nI assume then when I'm unit testing methods on my notification viewmodels, I could create a test implementation of the IWindow.<br />\n",
+    "PostedDate": "2013-02-14T12:31:32.63-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1001946",
+    "ThreadId": "433064",
+    "Html": "Hi,\r<br />\n<br />\nYou are right, the current implementation of the <strong>IPopupWindowActionAware</strong> interface forces your <strong>Notification</strong> object to have a <strong>Window</strong> , which is not MVVM friendly as it would make it more difficult to test. In fact, I have already received comments about this in my blog post.\r<br />\n<br />\nWhat you are describing about modifying the <strong>IPopupWindowActionAware</strong> to receive an <strong>IWindow</strong> seems to be a good approach to solve this. Based on my understanding, you will also need to modify the <strong>PopupWindowAction</strong> to instantiate a window that implements the <strong>IWindow</strong> interface and pass it to the corresponding <strong>Notification</strong> object when needed.\r<br />\n<br />\nThanks,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-02-15T11:00:00.85-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1004242",
+    "ThreadId": "433064",
+    "Html": "Hi rms2219\r<br />\n<br />\nI was wondering if you ever succeeded with your implementation of IWindow and modification of IPopupWindowActionAware? I'm considering abstracting away the Window reference from the ViewModels, but I would like to know how you did this? Can you maybe provide some more details?\r<br />\n<br />\nIt would be a really nice addition to IPopupWindowActionAware which I think is a nice solution.\r<br />\n<br />\nBest,\r<br />\nTommy<br />\n",
+    "PostedDate": "2013-02-20T13:44:46.26-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

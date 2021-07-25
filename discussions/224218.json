@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "482662",
+    "ThreadId": "224218",
+    "Html": "<p>The WPF reference implementation StockTraderRI uses a nice animated tab control (AnimatedTabControl). I would like to use it in my application, but there is one annoying issue: The first time I click a tab after application&nbsp;initialization&nbsp;it won't react or the animation effect looks really bad. I assume this is related to late loading of modules/views. Does anyone have a solution to this?</p>",
+    "PostedDate": "2010-08-20T03:01:50.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "492969",
+    "ThreadId": "224218",
+    "Html": "<p>Are you using a recent drop?&nbsp; There was a bug fix in the animated tab control a while back for either Prism v2.2 or the initial work on Prism v4 that may help.&nbsp; If not, let me know and we can investigate a bit.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-13T12:36:52.847-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "493263",
+    "ThreadId": "224218",
+    "Html": "<p>Thank you for the response. I've testet a little bit, and it seems that the bug is fixed. It works fine in the current drop (v4 drop 7).</p>",
+    "PostedDate": "2010-09-14T04:52:25.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "493334",
+    "ThreadId": "224218",
+    "Html": "<p>That is good to hear.</p>\r\n<p>Thanks for reporting the problem.</p>",
+    "PostedDate": "2010-09-14T07:47:43.183-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "495967",
+    "ThreadId": "224218",
+    "Html": "<p>For information only.</p>\r\n<p>It seems that the only change since v2.2 is a skipped if check in AnimatedTabControl.Desktop.cs --&gt; OnSelectionChanged.</p>\r\n<p>If you&nbsp;compile v.2.2 with this change, the tab control seems to work fine:</p>\r\n<p>...</p>\r\n<pre style=\"font-family:consolas\"><span style=\"color:blue\">protected</span>&nbsp;<span style=\"color:blue\">override</span>&nbsp;<span style=\"color:blue\">void</span>&nbsp;OnSelectionChanged(<span style=\"color:#2b91af\">SelectionChangedEventArgs</span>&nbsp;e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:green\">//&nbsp;if&nbsp;(e.RemovedItems.Count&nbsp;&gt;&nbsp;0)</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:green\">//&nbsp;{</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">this</span>.RaiseSelectionChangingEvent();<br> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">this</span>.StopTimer();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">this</span>.lastArgs&nbsp;=&nbsp;e;<br> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">this</span>.timer&nbsp;=&nbsp;<span style=\"color:blue\">new</span>&nbsp;<span style=\"color:#2b91af\">DispatcherTimer</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Interval&nbsp;=&nbsp;<span style=\"color:blue\">new</span>&nbsp;<span style=\"color:#2b91af\">TimeSpan</span>(0,&nbsp;0,&nbsp;0,&nbsp;0,&nbsp;500)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<br> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">this</span>.timer.Tick&nbsp;+=&nbsp;<span style=\"color:blue\">this</span>.Timer_Tick;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">this</span>.timer.Start();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:green\">//&nbsp;}</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>\r\n<p>...</p>",
+    "PostedDate": "2010-09-20T05:46:48.947-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

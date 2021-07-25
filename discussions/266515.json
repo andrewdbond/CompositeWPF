@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "647360",
+    "ThreadId": "266515",
+    "Html": "\r\n<p>I am using Code Analysis in VS2010 Ultimate and I see this warning in my PRISM project.</p>\r\n<p>I am setting data bound properties in my ViewModel overloaded constructor.</p>\r\n<p>Each of these properties have a call made to the <span>OnPropertyChanged in their setters.</span></p>\r\n<p>Can I use Safe Constructor Patterns for DependencyObjects (<a href=\"http://msdn.microsoft.com/de-ch/library/ms754149(v=VS.100\">http://msdn.microsoft.com/de-ch/library/ms754149(v=VS.100</a>)) to overcome this problem?</p>\r\n<p>Is this a warning I should take seriously or should I suppress it?</p>\r\n<p><strong>Detailed warning:</strong></p>\r\n<p>Warning&nbsp;1&nbsp;CA2214 : Microsoft.Usage : 'ViewModel(View, bool, bool)' contains a call chain that results in a call to a virtual method defined by the class. Review the following call stack for unintended consequences:</p>\r\n<p>ViewModel..ctor(View, Boolean, Boolean)<br>\r\nViewModel.set_ItemHighlight(Boolean):Void<br>\r\nViewModelBase.OnPropertyChanged(String):Void&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-07-25T14:15:38.487-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "647727",
+    "ThreadId": "266515",
+    "Html": "<p>Hi,</p>\r\n<p>When an object is constructed, its constructors are run in order from the base class to the most derived class (in your case, first the constructor in <strong>NotificationObject </strong>or the class you're using that exposes the <strong>RaisePropertyChanged/OnPropertyChanged </strong>method, and then your view model class). However, even though the constructors are called in that order, the virtual method calls will point to the override defined in the most derived class (which might be another class that inherits from your view model class); therefore, calling these methods from the constructor might cause some unexpected behavior.</p>\r\n<p>If you mark your ViewModel class as sealed, you will avoid this from happening, since it will be imposible for a class to inherit from it and define a different behavior for the <strong>RaisePropertyChanged/OnPropertyChanged </strong>method. You will note that, if you mark your class as sealed, the code analysis warning will not appear anymore.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-26T06:47:41.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "647743",
+    "ThreadId": "266515",
+    "Html": "<p>Thanks Guido for the explanation and usage of \"sealed\".</p>\r\n<p>In this case sealing the class removes the warning and also ensures that nobody else inherits the ViewModel.</p>",
+    "PostedDate": "2011-07-26T07:04:49.89-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "712088",
+    "ThreadId": "266515",
+    "Html": "<p>Thanks also. This is the first explanation that simply explains the message and hwo to resolve it in 99% of cases!!</p>\r\n<p>Thanks Nicholas</p>",
+    "PostedDate": "2011-12-14T05:25:12.877-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

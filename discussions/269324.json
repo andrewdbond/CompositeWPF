@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "659109",
+    "ThreadId": "269324",
+    "Html": "\r\n<p>Hi all,</p>\r\n<p>Somehow I cannot get this working: I would like one MEF module publish events and another MEF module subcribing to that event. I have based my code on the Prism templates. But I can't get the subscriber to respond to published events.</p>\r\n<p>Here's the code&nbsp;I have so far: The publisher part</p>\r\n<pre>   _EventAggregator.GetEvent(Of PersonSelected)().Publish(Person))</pre>\r\n<p>The subscriber part:</p>\r\n<pre>_EventAggregator.GetEvent(Of PersonSelected)().Subscribe(New Action(Of Person)(AddressOf HandlePersonChanged), True)</pre>\r\n<p>And the handler code:</p>\r\n<pre>    Private Shared Sub HandlePersonChanged(ByVal obj As Person)\r\n        'code to handle the Person object'\r\n        MessageBox.Show(obj.ID)\r\n    End Sub</pre>\r\n<p>The subscriber, as said before, won't respond. What am I missing here?</p>\r\n",
+    "PostedDate": "2011-08-16T15:19:38.44-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "659613",
+    "ThreadId": "269324",
+    "Html": "<p>Hi Peter,<br /><br />You could try declaring your handler <strong>HandlePersonChanged</strong> as Public. This is a common issue when using <strong>Silverlight</strong>.<br />Also note that you must be careful with the timing. Make sure that you had already subscribed to your event at the moment you published it.<br />If you still can't find a solution to your problem, it would be helpful if you could provide us with a repro sample application, so that we can help you further with this.<br /><br />I hope you find this useful.</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-08-17T13:24:38.053-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "659648",
+    "ThreadId": "269324",
+    "Html": "<p>HI Aadami,</p>\n<p>Thanks for your reply, but unfortunately the \"Public\" suggestion you give does not help. I had tried this before. Assembling a concise version of my project will take some time, so a couple of days I guess. Bare with me...</p>\n<p>&nbsp;</p>\n<p>In the mean time, I have been studying the bootstrapper again, the issue might come from there. What is the correct statement to initialize an EventAggregator in the (MEF) bootstrapper?</p>\n<p>Regards,</p>\n<p>Peter</p>",
+    "PostedDate": "2011-08-17T14:15:21.563-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "660024",
+    "ThreadId": "269324",
+    "Html": "<p>Peter,</p>\r\n<p>You can find how the <strong>EventAggregator</strong> is made available to the container when using MEF in the <strong></strong><strong>MefEventAggregator</strong> class, which can be found in the <strong>Events </strong>folder in the <strong>Prism.MefExtensions </strong>project. You can check the content of that class below:</p>\r\n<p>[<strong>Export</strong>(typeof(<strong>IEventAggregator</strong>))]<br />&nbsp;&nbsp;&nbsp; public class <strong>MefEventAggregator </strong>: <strong>EventAggregator</strong><br />&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp; }</p>\r\n<p>This exports the default implementation of the <strong>EventAggregator </strong>using the <strong>IEventAggregator </strong>interface as the contract, so as to enable to you access the event aggregator service through that interface.</p>\r\n<p>Also you might find the following <a href=\"../Thread/View.aspx?ThreadId=235745\"> thread</a> very useful where this topic is covered.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-08-18T07:18:59.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "661537",
+    "ThreadId": "269324",
+    "Html": "<p>@ Aadami,</p>\r\n<p>I'm still in the dark... I can see in the Container of my application that there is a MEFEventAggregator allright. But how do I inject that into a module, while that module is in a separate project? If I use this statement:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>  &lt;ImportingConstructor()&gt;\r\n    <span style=\"color: blue;\">Public</span> <span style=\"color: blue;\">Sub</span> <span style=\"color: blue;\">New</span>(<span style=\"color: blue;\">ByVal</span> par_EventAggregator <span style=\"color: blue;\">As</span> IEventAggregator)\r\n</pre>\r\n</div>\r\n<p>then I get an error message that there is no parameterless constructor for the module. Now what?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-08-22T06:52:06.957-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "662101",
+    "ThreadId": "269324",
+    "Html": "<p>Hi,<br />It would be helpful if you could provide us with a <strong>repro sample</strong> application that portrays that behavior. <br /><br />Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-08-23T07:11:44.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "662795",
+    "ThreadId": "269324",
+    "Html": "<p>HI Aadami,</p>\r\n<p>In the mean time I have found a workaround. The cause of my problem appeared to be the following:</p>\r\n<p>1. I instantiate a View via a separate Init process (like in the MEF template projects in Visual Studio)<span style=\"font-family: Consolas; font-size: xx-small;\"><span style=\"font-family: Consolas; font-size: xx-small;\"></span></span>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>   <span style=\"color: blue;\">Public</span> <span style=\"color: blue;\">Sub</span> Initialize() <span style=\"color: blue;\">Implements</span> IModule.Initialize\r\n        _regionManager.RegisterViewWithRegion(strRegionName, <span style=\"color: blue;\">Function</span>() _serviceLocator.GetInstance(Of PersonBannerView)())\r\n    <span style=\"color: blue;\">End</span> <span style=\"color: blue;\">Sub</span>\r\n</pre>\r\n</div>\r\n<p>2. in the XAML code for the View I refer to the ViewModel in order to use it's properties, so the View instantiates it's related ViewModel, without any parameters</p>\r\n<p>﻿&lt;UserControl.Resources&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ViewModel:PersonBannerViewModel x:Key=\"MyViewModel\"/&gt;<br />&lt;/UserControl.Resources&gt;</p>\r\n<p>3 the constructor of the ViewModel is like I showed in my previous message, so with the IEventAggregator. That constructor does have one parameter, so causes the error message.</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>    &lt;ImportingConstructor()&gt; _\r\n    <span style=\"color: blue;\">Public</span> <span style=\"color: blue;\">Sub</span> <span style=\"color: blue;\">New</span>(<span style=\"color: blue;\">ByVal</span> eventAggregator <span style=\"color: blue;\">As</span> IEventAggregator)\r\n                m_eventAggregator = eventAggregator\r\n    <span style=\"color: blue;\">End</span> <span style=\"color: blue;\">Sub</span>\r\n</pre>\r\n</div>\r\n<p>The workaround I have found is that I instantiate the ViewModel from the View's code-behind instead, where it can be done without the parameter-confusion. What I miss in this construction is the advantage of being able to get to the properties of the ViewModel.&nbsp;&nbsp;I cannot set the ViewModel in the UserControl.Resources and hence not refer to it as a StaticResource. If you have a better suggestion, please come up with it. I keep the feeling that I have lost some advantages of MVVM I used to have before.</p>\r\n<p>Peter</p>\r\n</p>",
+    "PostedDate": "2011-08-24T11:09:16.72-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "662837",
+    "ThreadId": "269324",
+    "Html": "<p>Hi Peter,<br /><br />I'm glad you've found the solution to your problem; thank you for sharing it with the rest of the community.<br /><br />Best regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-08-24T12:06:22.617-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

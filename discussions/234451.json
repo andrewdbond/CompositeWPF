@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "521042",
+    "ThreadId": "234451",
+    "Html": "\r\n<p>Hi.</p>\r\n<p>I want to create a behavior which would call Load/Unload methods for ViewModels connected with Views.</p>\r\n<p>I understand that I can create a RegionAdapter and override AttachBehaviors method. But my region is ContentControl for which an adapter already exists.</p>\r\n<p>How can I create a behavior without creating a RegionAdapter?</p>\r\n<div id=\"x_x__mcePaste\" style=\"left:-10000px; top:0px; width:1px; height:1px; overflow:hidden\">\r\n&#65279;</div>\r\n",
+    "PostedDate": "2010-11-12T04:57:27.263-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "521070",
+    "ThreadId": "234451",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>If your scenario requires to create a Region Behavior, it will be not necessary to modify an existent Region Apdater or create a new one. But first of all, I would suggest you to take a look at the RegionMemberLifetimeBehavior, which is part of Prism 4.\r\n This behavior removes views from a region when they become deactivated. So you could use this as a reference as well as you could extend this behavior to call methods in your view models. For more information about this you could check the\r\n<a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.prism.regions.behaviors.regionmemberlifetimebehavior%28PandP.40%29.aspx\">\r\nRegionMemberLifetimeBehavior </a>Class on MSDN.</p>\r\n<p>If you decide to create a new Region Behavior, you need to add this for all regions by overriding the\r\n<strong>ConfigureDefaultRegionBehaviors</strong> in the bootstrapper. So you code might be similar to the following:</p>\r\n<p><span id=\"x_ctl00_MTCS_main_ctl26\"></p>\r\n<pre id=\"x_ctl00_MTCS_main_ctl26_code\">protected override IRegionBehaviorFactory ConfigureDefaultRegionBehaviors()<br>{<br>    IRegionBehaviorFactory factory = base.ConfigureDefaultRegionBehaviors();<br>    factory.AddIfMissing(&quot;MyBehavior&quot;, typeof(MyCustomBehavior));<br>}</pre>\r\n</span>\r\n<p></p>\r\n<p>If you need more guidance on how to create your own Region Behaviors, you could check the following section on MSDN:\r\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921075%28PandP.20%29.aspx\">UI Composition</a>, see the\r\n<em>Extending Region Behaviors</em> section.</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero<br>\r\n<a href=\"http://blogs.southworks.net/fantivero\"><span style=\"color:#0066cc\">http://blogs.southworks.net/fantivero</span></a></p>\r\n",
+    "PostedDate": "2010-11-12T05:51:33.79-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "521195",
+    "ThreadId": "234451",
+    "Html": "\r\n<p>Thanks.</p>\r\n<p>RegionMemberLifetimeBehavior looks nice, I've implemented my behavior with the same idea - monitoring Region.ActiveViews collection.</p>\r\n<p>Adding a behavior of all regions (in the bootstrappers's ConfigureDfaultRegionBehavior) can be handy, but not in my case. I need to add my behavior for the only one region (which is ContentControl). How to do this?</p>\r\n",
+    "PostedDate": "2010-11-12T10:04:07.91-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "521212",
+    "ThreadId": "234451",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>This is not possible in Prism out-of-the-box. But there are different ways to achieve this scenario. For example, if you use the\r\n<strong>RegionActiveAwareBehavior</strong>, it is required to implement the interface\r\n<strong>IActiveAware </strong>in your views. Following this example, you could implement an interface either in your views or view models in which you want to call to the Load/Unload method. This way, in your custom behavior, you could evaluate if an object\r\n implement a specific interface. So your code might be similar to the following:</p>\r\n<p>var activeAware = item <span style=\"color:blue\">as </span>IActiveAware;</p>\r\n<pre><span style=\"color:blue\">if </span>(activeAware != <span style=\"color:blue\">null</span>)<br>{<br>    ...<br>}</pre>\r\n<p>For more information you could take a look at the <strong>RegionActiveAwareBehavior\r\n</strong>class.<br>\r\n<br>\r\nOn the other hand, you could create a Attached Property for your regions and add this in those regions of your choice. But I would suggest you to follow the approach proposed by the product team, which is implementing a interface in particular classes. If you\r\n have a lot of classes, you might prefer to create a base class for this purpose and implement on it the interface.</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero<br>\r\n<a href=\"http://blogs.southworks.net/fantivero\"><span style=\"color:#0066cc\">http://blogs.southworks.net/fantivero</span></a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-12T10:30:35.177-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "521215",
+    "ThreadId": "234451",
+    "Html": "\r\n<p>I've found the way.</p>\r\n<p>In my bootstrapper's InitializeShell:</p>\r\n<p><span style=\"font-family:Consolas,'Courier New',Courier,monospace; white-space:pre\"><span>protected</span>&nbsp;<span>override</span>&nbsp;<span>void</span>&nbsp;<span>InitializeShell</span>()<br>\r\n</span><span style=\"font-family:Consolas,'Courier New',Courier,monospace; white-space:pre\">{<br>\r\n</span><span style=\"font-family:Consolas,'Courier New',Courier,monospace; white-space:pre\"><span>IRegion</span>&nbsp;<span>region</span>&nbsp;=&nbsp;<span>Container</span>.<span>GetExportedValue</span>&lt;<span>IRegionManager</span>&gt;().<span>Regions</span>[<span>RegionNames</span>.<span>MainRegion</span>];<br>\r\n</span><span style=\"font-family:Consolas,'Courier New',Courier,monospace; white-space:pre\"><span>region</span>.<span>Behaviors</span>.<span>Add</span>(<span>ViewModelRegionBehavior</span>.<span>BehaviorKey</span>,&nbsp;<span>new</span>&nbsp;<span>ViewModelRegionBehavior</span>());</span></p>\r\n<pre>}</pre>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-12T10:37:44.99-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "521220",
+    "ThreadId": "234451",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Sorry, I missed that detail, nice to see that you found the solution for your scenario. And thanks for sharing this with the rest of the community, since other users with a similar situation can find this really helpful.</p>\r\n<p>Fernando Antivero<br>\r\n<a href=\"http://blogs.southworks.net/fantivero\"><span style=\"color:#0066cc\">http://blogs.southworks.net/fantivero</span></a></p>\r\n",
+    "PostedDate": "2010-11-12T10:44:28.72-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

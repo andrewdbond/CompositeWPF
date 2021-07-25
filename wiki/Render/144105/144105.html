@@ -1,0 +1,14 @@
+<div class="wikidoc">If a TabControl is marked as a region with multiple views, activating a view through the region does not activate the tab containing the view.  In Prism V1, this activating a view for a TabControl region would select the tab containing the view.<br /><br /><b>Example Code</b><br /><br />Given a TabControl as a region named &quot;TabRegion&quot;<br /><br /><pre>
+    var view1 = new TextBlock() { Text = &quot;Tab1&quot; };
+    var view2 = new TextBlock() { Text = &quot;Tab2&quot; };
+    var region = regionManager.Regions[&quot;TabRegion&quot;];
+
+    region.Add(view1);
+    region.Add(view2);
+
+    region.Activate(view2);  // Does not properly activate view2
+</pre><br />
+<h3>Cause</h3>The <b>SelectorItemsSourceSyncBehavior</b> attached to the TabControl did not update the TabControl.SelectedItem when the Regions ActiveViews collection changed.<br />
+<h3>Fix</h3>The <a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=fa07e1ce-ca3f-4b9b-a21b-e3fa10d013dd&amp;DisplayLang=en">MSDN download</a> has been update to correct this problem.<br />
+<h3>Disscussion and Issue</h3><ul><li><a href="https://compositewpf.codeplex.com/workitem/3889">Go here</a> to see the related issue.</li>
+<li><a href="https://compositewpf.codeplex.com/discussions/48586">Go here</a> to see the related discussion.</li></ul></div><div class="ClearBoth"></div>

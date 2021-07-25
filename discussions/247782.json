@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "572902",
+    "ThreadId": "247782",
+    "Html": "\r\n<p>I am building an OOB Silverlight app that needs constant updates, i will call&nbsp;CheckAndDownloadUpdateAsync, and by reading the prism documentation i understand that this will only update the main XAP file, not the modules. &nbsp;How do i build prism\r\n modules that are all contained inside a the single main XAP so i can update my hole app? &nbsp;I don't care that my users are downloading all the modules, &nbsp;and if this is possible can i selectively&nbsp;load my modules offline from that single XAP?</p>\r\n<p>Thank you.</p>\r\n",
+    "PostedDate": "2011-02-27T13:44:27.107-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573360",
+    "ThreadId": "247782",
+    "Html": "<p>Hi,</p>\r\n<p>In order to include your modules inside the main XAP file, you could make your modules based on the Silverlight Class library template. You might find the following thread useful, as it provides further explanations about this:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/240958\">How to have XAP against every module</a></li>\r\n</ul>\r\n<p>Also you might find additional support in the <a href=\"http://forums.silverlight.net/forums/\">Silverlight forums</a>.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-02-28T10:01:09.137-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573509",
+    "ThreadId": "247782",
+    "Html": "<p>i can make this work with unity by making a silverlight class library and then adding a reference to it on the shell. &nbsp;but if i try this with MEF :</p>\r\n<p>&nbsp;</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>            moduleCatalog.AddModule\r\n            (\r\n                <span style=\"color: blue;\">new</span> ModuleInfo\r\n                {\r\n                    InitializationMode = InitializationMode.WhenAvailable,\r\n                    Ref = <span style=\"color: #a31515;\">\"DllModule\"</span>,\r\n                    ModuleName = <span style=\"color: #a31515;\">\"DllModuleImp\"</span>,\r\n                    ModuleType = <span style=\"color: #a31515;\">\"DllModule.DllModuleImp,DllModule , Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\"</span>\r\n                }\r\n            );\r\n\r\n</pre>\r\n</div>\r\n</p>\r\n<p>I get this error:</p>\r\n<p>&nbsp;</p>\r\n<p>Microsoft JScript runtime error: Unhandled Error in Silverlight Application&nbsp;Code: 4004 &nbsp; &nbsp;</p>\r\n<p>Category: ManagedRuntimeError &nbsp; &nbsp; &nbsp;</p>\r\n<p>&nbsp;Message: Microsoft.Practices.Prism.Modularity.ModuleTypeLoadingException: Failed to load type for module Module1Impl.&nbsp;</p>\r\n<p>If this error occurred when using MEF in a Silverlight application, please ensure that the CopyLocal property of the reference to the MefExtensions assembly is set to true in the main application/shell and false in all other assemblies.&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>I&nbsp;naturally&nbsp;done &nbsp;what the error&nbsp;suggested&nbsp;but it still fails</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-02-28T13:43:09.743-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573911",
+    "ThreadId": "247782",
+    "Html": "<p>Hi,</p>\r\n<p>You could try adding an assembly catalog to the Aggregate Catalog, as it is done with modules A and C in the MEF <a href=\"http://msdn.microsoft.com/en-us/library/ff921163%28PandP.40%29.aspx\">Modularity QuickStart</a>.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-01T08:52:43.917-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

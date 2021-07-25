@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "138336",
+    "ThreadId": "41673",
+    "Html": "Ok after a few weeks looking at the Stock sample application I am hoping I can get a little confirmation on some of the patterns. Namely the PresentationModel pattern. For the most part I understand that pattern and I really like it for UI frameworks with strong databinding support such as WPF. However in the sample application I get a little mixed up because there seems to be a lot of intermixing of the patterns.<br>\r\n<br>\r\nThe source of the confusion is around the use of the service classes and the controller classes. For instance in a PresentationModel pattern you have the following artifacts.<br>\r\n<br>\r\nView --- PresentationModel -- Model(Objects)<br>\r\n<br>\r\nHowever in some cases it looks like there is a controller and service added into the mix to make something like this.<br>\r\n<br>\r\nView --- PresentationModel -- Controller -- Service -- Model(Objects)<br>\r\n<br>\r\nAlso throughout the application presentationModels have references to services and controllers and other presentationModels. And in the documentation this is never discussed. Could someone please fill the gaps for me?<br>\r\n<br>\r\nWhat role do the services classes play? And when would I decide to you use one, as opposed to hitting the model directly from the PM? Same questions with the controller classes.<br>\r\n<br>\r\nAny insight would be great. Thanks for all the work guys!<br>\r\n<br>\r\nBrette\r\n",
+    "PostedDate": "2008-12-06T17:59:52.15-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138409",
+    "ThreadId": "41673",
+    "Html": "Brette,<br>\r\n<p><span style=\"font-family:'times new roman','serif';font-size:12pt\">There is a great article from Glenn Block on MSDN Magazine that describes the Prism for WPF and these patterns in generally. See the link <a href=\"http://msdn.microsoft.com/en-us/magazine/cc785479.aspx\"><span style=\"color:#3e62a6\">http://msdn.microsoft.com/en-us/magazine/cc785479.aspx</span></a> <br>\r\n<br>\r\nI have one quick screen cast of this on my CodePlex project where I Walkthrough the Alfa 1 code. I quickly explain the views, presenters, and models (supervising and passive), service and controller on the project code. Take a look the link below and see if it helps </span><span style=\"font-family:'segoe ui','sans-serif';font-size:9.5pt\"><a href=\"http://www.xentree.com/SL2WithPrism/CodeWalk/\"><span style=\"color:#0000ff\">http://www.xentree.com/SL2WithPrism/CodeWalk/</span></a> </span></p>\r\n<p style=\"line-height:normal;margin:0in 0in 10pt\"><span style=\"font-family:'times new roman','serif';font-size:12pt\">The project itself is located at </span><span style=\"font-family:'segoe ui','sans-serif';font-size:9.5pt\"><a href=\"http://www.codeplex.com/SL2WithPrism\">http://www.codeplex.com/SL2WithPrism</a> </span></p>\r\n<p style=\"line-height:normal;margin:0in 0in 10pt\"><span style=\"font-family:'times new roman','serif';font-size:12pt\">Regards,<br>\r\nAlexander</span></p>\r\n",
+    "PostedDate": "2008-12-07T10:35:06.32-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138443",
+    "ThreadId": "41673",
+    "Html": "Alexander,<br>\r\n<br>\r\nThanks so much for the info. I watched your presentation, and very much enjoyed it. I also just read the article you mentioned this was also very good. With that said, would it be sufficient to say the following.<br>\r\n<br>\r\nIn the Model View Presenter and the PresentationModel patterns, a Controller class is used as a type of mediator to facilitate View to View communication. Or in other words a Controller provides a contract and implmentation that two views agree to communicate with. <br>\r\n<br>\r\nI think the light bulb is finally turning on. Please correct me if the above statements are incorrect.<br>\r\n<br>\r\nThanks again this forum has been very helpful to CAL newbe like myself.<br>\r\n<br>\r\nBrette21\r\n",
+    "PostedDate": "2008-12-07T14:34:39.13-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138448",
+    "ThreadId": "41673",
+    "Html": "<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:'calibri','sans-serif';color:#1f497d;font-size:11pt\">You are right, please keep in mind that I followed the principal of separation this way, someone else could add something else on controller as it would make sense on that design or requirements.  </span><span style=\"font-family:'calibri','sans-serif';color:#1f497d;font-size:11pt\">You are on good practice as long as you follow the rule of separation of concerns (SoC) <a href=\"http://en.wikipedia.org/wiki/Separation_of_concerns\"><span style=\"color:#0000ff\">http://en.wikipedia.org/wiki/Separation_of_concerns</span></a> , and the single responsibility principle <a href=\"http://en.wikipedia.org/wiki/Single_responsibility_principle\"><span style=\"color:#0000ff\">http://en.wikipedia.org/wiki/Single_responsibility_principle</span></a> in your design and coding that utilizes the MVP concept.</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:'calibri','sans-serif';color:#1f497d;font-size:11pt\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:'calibri','sans-serif';color:#1f497d;font-size:11pt\">If you want to learn more about it, see Martin Flower’s site, </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:'calibri','sans-serif';color:#1f497d;font-size:11pt\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:'calibri','sans-serif';color:#1f497d;font-size:11pt\">GUI Architectures</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:'calibri','sans-serif';color:#1f497d;font-size:11pt\"><a href=\"http://martinfowler.com/eaaDev/uiArchs.html\"><span style=\"color:#0000ff\">http://martinfowler.com/eaaDev/uiArchs.html</span></a></span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:'calibri','sans-serif';color:#1f497d;font-size:11pt\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:'calibri','sans-serif';color:#1f497d;font-size:11pt\">Retirement note for Model View Presenter Pattern</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><a href=\"http://martinfowler.com/eaaDev/ModelViewPresenter.html\"><span style=\"color:#0000ff\">http://martinfowler.com/eaaDev/ModelViewPresenter.html</span></a> </p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:'calibri','sans-serif';color:#1f497d;font-size:11pt\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:'calibri','sans-serif';color:#1f497d;font-size:11pt\">Regards,</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:'calibri','sans-serif';color:#1f497d;font-size:11pt\">Alexander</span></p>\r\n",
+    "PostedDate": "2008-12-07T15:06:06.05-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138452",
+    "ThreadId": "41673",
+    "Html": "Good stuff! Thanks again for the help. Very excited to be using teh CAL. Looks like it was very well thought out.\r\n",
+    "PostedDate": "2008-12-07T15:42:02.747-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

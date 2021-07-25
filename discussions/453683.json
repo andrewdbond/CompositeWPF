@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1081639",
+    "ThreadId": "453683",
+    "Html": "Hi,<br />\n<br />\nI am using prism 4.1 with MEF in my application. Everything works well but we have big performance issue each time when we load a MDI module thru menu in the Shell app, below is the main layout of my WPF application with Prism:<br />\n<br />\n<strong>Shell module</strong>: it will load MDI views thru contentcontrol from MDI module A1,A2,An,etc. on-demand via MDI region adapter written by myself.<br />\n<br />\n<strong>MDI Module A1,A2,A3,etc</strong>.: it will load 2-3 shared views(using contentcontrol) that are included in the Shared modules via <strong>Regions.RequestNavigate API</strong>.<br />\n<br />\n<strong>Shared Module S1,S2,S3,etc.</strong><br />\n<br />\nEach module has a couple of views and corresponding viewmodels.<br />\n<br />\nAfter testing we found that it took about 4 seconds to show each MDI view. It took about 1 second for viewmodels to retrieve data from database, that means it took 3 seconds to show the MDI views. Currently each MDI view only have 1 tabitem that includes 3 shared views, it should be a terrible thing if i add more tabitem in each MDI view if any of them will take 3 seconds.<br />\n<br />\nHow to solve the performance issues when using Prism? Could someone help me out on this? Any input wll be much appreciated.<br />\n",
+    "PostedDate": "2013-08-17T07:31:12.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1082732",
+    "ThreadId": "453683",
+    "Html": "Hi,\r<br />\n<br />\nYou mentioned that each <strong>MDI</strong> view (which takes 4 seconds to load) is composed of a <strong>TabItem</strong> which contains other 3 views. Does each of this views have a view model that retrieves data from a database? If so, the measurement of 1 second is the total time required to retrieve the information for the three view models, or for a single one. Are those request to the data base being executed parallel to each other or sequentially? (for example, the thread is blocked until the request comes back from the data base.) I'm asking these questions mainly to have a better understanding of the composition of your <strong>MDI</strong> views and in order to discard the communication with the data base as the cause of the problem.\r<br />\n<br />\nOther tests you could do to track down the cause behind the delay include adding more views to the <strong>MDI</strong> view and check if the time required to show the view increases. Also, you could try using mock data in your view models, instead of retrieving data from the data base to check if this have any influence in the loading time of the view.\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-08-20T08:32:26.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

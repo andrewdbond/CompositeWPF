@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "240766",
+    "ThreadId": "70672",
+    "Html": "<p>Hi,</p>\r\n<p>I'm new to prism and try to build my first app. So, Apologizes if my question sounds stupid.</p>\r\n<p>Got two views in the same module. The first one is loaded at module init and displayed as a RibbonTab.</p>\r\n<p>In this tab, I've got a simple button which I want to load another view of the module in another region than the Ribbon.</p>\r\n<p>How can I achieve that ? How can I get access to regionManager from the first view in order to load the second one ? GlobalCommand ? Service ?</p>\r\n<p>&nbsp;</p>\r\n<p>Many thanks for your help.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-30T23:57:21.723-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "241094",
+    "ThreadId": "70672",
+    "Html": "<p id=8691c120-90e2-012c-b448-12313b003891>Hi</p>\r\n<p id=8691cbf0-90e2-012c-b449-12313b003891>To access the RegionManager you should use either <a href=\"http://msdn.microsoft.com/en-us/library/dd203129.aspx\">constructor</a> or <a href=\"http://msdn.microsoft.com/en-us/library/dd203147.aspx\">property</a> injection in the class that will need access to the RegionManager..</p>\r\n<p id=8691db80-90e2-012c-b44a-12313b003891>The thread below explains the code required to add the view to the region on demand:</p>\r\n<ul>\r\n<li><a href=\"View.aspx?ThreadId=69680\">Load Views On Demand</a></li>\r\n</ul>\r\n<p id=8691ecb0-90e2-012c-b44b-12313b003891>You can check the <a href=\"http://msdn.microsoft.com/en-us/library/dd458934.aspx\">ViewDiscovery</a>/<a href=\"http://msdn.microsoft.com/en-us/library/dd458920.aspx\">ViewInjection</a> Quickstarts and the <a href=\"http://msdn.microsoft.com/en-us/library/dd458919.aspx\">Prism RI</a> as they show views on demand in different scenarios.</p>\r\n<p id=869208a0-90e2-012c-b44c-12313b003891>Please let me know if this helps.</p>\r\n<p id=86921f70-90e2-012c-b44d-12313b003891>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-10-01T16:17:46.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "242080",
+    "ThreadId": "70672",
+    "Html": "<p>Create an ICommand property in your ViewModel and bind it to Button in the View:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> ICommand Command\r\n{\r\n    <span style=\"color:Blue\">get</span>\r\n    {\r\n        <span style=\"color:Blue\">if</span> (_command == <span style=\"color:Blue\">null</span>)\r\n        {\r\n            _command = <span style=\"color:Blue\">new</span> DelegateCommand&lt;<span style=\"color:Blue\">object</span>&gt;(<span style=\"color:Blue\">this</span>.Execute, <span style=\"color:Blue\">this</span>.CanExecute);\r\n        }\r\n        <span style=\"color:Blue\">return</span> _command;\r\n    }\r\n}\r\n\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Raise an event from the Execute function using an EventHandler declared in the related ViewModel:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">event</span> EventHandler&lt;MenuEventArgs&gt; MenuHandler;\r\n\r\n<span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> Execute(<span style=\"color:Blue\">object</span> param)\r\n{\r\n    EventHandler&lt;MenuEventArgs&gt; handler = <span style=\"color:Blue\">this</span>.MenuHandler;\r\n    <span style=\"color:Blue\">if</span> (handler != <span style=\"color:Blue\">null</span>)\r\n        handler(<span style=\"color:Blue\">this</span>, <span style=\"color:Blue\">new</span> MenuEventArgs(<span style=\"color:#A31515\">&quot;viewClass&quot;</span>, <span style=\"color:#A31515\">&quot;presenterClass&quot;</span>));\r\n}\r\n\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Since you have declared the EventHandler public, the Controller class which loads the first View can gain access to it and respond to events raised by it.</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> HeaderController(IRegionManager regionManager, IMenuViewModel menuViewModel)<br>{<br>    <span style=\"color:Blue\">this</span>.regionManager = regionManager;<br>    <span style=\"color:Blue\">this</span>.menuViewModel = menuViewModel;<br>    <span style=\"color:Blue\">this</span>.menuViewModel.MenuHandler += <span style=\"color:Blue\">new</span> EventHandler&lt;MenuEventArgs&gt;(menuViewModel_MenuHandler);<br>this.regionManager.Regions[&quot;HeaderRegion&quot;].Add(menuViewModel.View, &quot;MenuView&quot;);<br>}\r\n\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Something like the above code should be able to handle events raised by your first View. I have used EventHandler&lt;T&gt; to pass parameters, a Generic EventHandler should also work.</p>\r\n<p>HTH.</p>",
+    "PostedDate": "2009-10-05T02:13:57.93-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

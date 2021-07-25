@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "118691",
+    "ThreadId": "35715",
+    "Html": "I have probably some project settings wrong but the shell window is being opened twice every time i run the project.<br>\r\nI use this code to invoke shell window:<br>\r\n(it's in bootstrapper) <br>\r\nprotected override DependencyObject CreateShell()<br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Shell shell = Container.Resolve&lt;Shell&gt;();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; shell.Show();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return shell;<br>\r\n}<br>\r\n<br>\r\nThis openes window with modules loaded in it but in a second after that another(empty this time) shows up.<br>\r\nWhat do i do wrong?<br>\r\n<br>\r\nregards,<br>\r\nP.K.<br>\r\n",
+    "PostedDate": "2008-09-15T16:40:56.817-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "118809",
+    "ThreadId": "35715",
+    "Html": "<p style=\"margin:0in 0in 0pt\"><span><span style=\"font-family:Calibri\">Hi</span></span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span><span style=\"font-family:Calibri\">Did you removed the <b>StartupUri</b> attribute from the <b>App.xaml </b>file? You are manually instantiating the <b>Shell</b> window in your <b>Bootstrapper</b> class, so this attribute is not required.</span></span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span><span style=\"font-family:Calibri\">To remove the <b>StartupUri</b> attribute follow this steps:</span></span></p>\r\n<p style=\"margin:0in 0in 0pt 0.25in\"><span><span style=\"font-family:Calibri\">1.</span><span style=\"font:7pt 'Times New Roman'\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span><span style=\"font-family:Calibri\">Open the <b>App.xaml</b> file located in the project that contains the Shell.</span></span></p>\r\n<p style=\"margin:0in 0in 0pt 0.25in\"><span><span style=\"font-family:Calibri\">2.</span><span style=\"font:7pt 'Times New Roman'\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span><span style=\"font-family:Calibri\">Remove the following attribute in the XAML:</span></span></p>\r\n<p style=\"margin:0in 0in 0pt -0.25in\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><b><span style=\"font-size:10pt;font-family:'Courier New'\">StartupUri=&quot;Shell.xaml&quot;</span></b></p>\r\n<p style=\"margin:0in 0in 0pt -0.25in\"><b><span><span style=\"font-family:Calibri\">&nbsp;</span></span></b></p>\r\n<p style=\"margin:0in 0in 0pt 0.25in\"><span><span style=\"font-family:Calibri\">3.</span><span style=\"font:7pt 'Times New Roman'\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span><span style=\"font-family:Calibri\">The code in the <b>App.xaml</b> file should look like the following:</span></span></p>\r\n<p style=\"margin:0in 0in 0pt -0.25in\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'Courier New'\">&lt;Application x:Class=&quot;MyNamespace.App&quot;</span></p>\r\n<p style=\"margin:0in 0in 0pt 1in\"><span style=\"font-size:10pt;font-family:'Courier New'\">xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;</span></p>\r\n<p style=\"margin:0in 0in 0pt 1in\"><span style=\"font-size:10pt;font-family:'Courier New'\">xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;&gt;</span></p>\r\n<p style=\"margin:0in 0in 0pt 1in\"><span style=\"font-size:10pt;font-family:'Courier New'\">&lt;Application.Resources&gt;</span></p>\r\n<p style=\"margin:0in 0in 0pt 1in\"><span style=\"font-size:10pt;font-family:'Courier New'\">&lt;/Application.Resources&gt;</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'Courier New'\">&lt;/Application&gt;</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span><span style=\"font-family:Calibri\">Please, let me know if it helps.</span></span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"color:#1f497d\"><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span><span style=\"font-family:Calibri\">Mariano Converti</span></span></p>\r\n<p style=\"margin:0in 0in 0pt\"><a href=\"http://blogs.southworks.net/mconverti\"><span><span style=\"font-family:Calibri\">http://blogs.southworks.net/mconverti</span></span></a></p>\r\n",
+    "PostedDate": "2008-09-16T05:26:24.123-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "118815",
+    "ThreadId": "35715",
+    "Html": "That was it...<br>\r\n<br>\r\nThanks a lot.<br>\r\n<br>\r\nregards,<br>\r\nP.K.<br>\r\n",
+    "PostedDate": "2008-09-16T05:58:16.767-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

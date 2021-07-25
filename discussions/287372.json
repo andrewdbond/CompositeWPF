@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "730538",
+    "ThreadId": "287372",
+    "Html": "<p>Hi all</p>\n<p>I have a viewmodel that implements INavigationAware interface. &nbsp;In IsNavigationTarget I'm returning false as I would like a new view opened, but what is happening is that the same view is being displayed in the region with previous values.</p>\n<p>This is a login screen with 2 properties(username and password). &nbsp;I'm using MEF to export the viewmodel as follows:</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre>[Export(<span style=\"color: blue;\">typeof</span>(ILoginViewModel))]\n[PartCreationPolicy(CreationPolicy.NonShared)]\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> LoginViewModel : BaseINPC, ILoginViewModel, INavigationAware\n    {\n         <span style=\"color: green;\">//public username and password properties</span>\n         <span style=\"color: green;\">//with property changed</span>\n\n\n        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">bool</span> IsNavigationTarget(NavigationContext navigationContext)\n        {\n            <span style=\"color: blue;\">return</span> <span style=\"color: blue;\">false</span>;\n        }\n\n    }\n</pre>\n<pre><br /></pre>\n<pre>My loginview.cs is as follows:</pre>\n<pre><div style=\"color: black; background-color: white;\"><pre>[Export(<span style=\"color: #a31515;\">\"LoginView\"</span>)]\n    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> LoginView : UserControl\n    {\n        [Import]\n        <span style=\"color: blue;\">public</span> ILoginViewModel ViewModel\n        {\n            <span style=\"color: blue;\">set</span> { <span style=\"color: blue;\">this</span>.DataContext = value; }\n        }\n\n        <span style=\"color: blue;\">public</span> LoginView()\n        {\n            InitializeComponent();\n        }\n    }</pre>\n<pre>When loading the loginview I use the following:But the problem arises&nbsp;</pre>\n<pre><span style=\"background-color: white;\">when the user logs out, I want to show the&nbsp;loginview so I requestnavigate to the view:</span></pre>\n<pre>_regionManager.RequestNavigate(\"MainRegion\", \"LoginView\");<br /><br />The view loads but the values for username and password are still the values&nbsp;from the&nbsp;</pre>\n<pre>first time the loginview was loaded so I'm not getting a new view/viewmodel.<br />I put a breakpoint in the IsNavigationTarget but it's not been hit.</pre>\n<pre>This must be something simple, looked at other posts regarding&nbsp;contract names etc&nbsp;</pre>\n<pre>but to no avail, any help much appreciated.<br />Thanks<br />Paul<br /></pre>\nps tried to fix formatting but no luck.</div>\n</pre>\n</div>",
+    "PostedDate": "2012-01-25T07:55:24.49-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "730569",
+    "ThreadId": "287372",
+    "Html": "<p>Hi,</p>\r\n<p>I believe that your problem could be related to the fact that your <strong>LoginView </strong>is exported as a singleton (as this is the default behavior in MEF). Therefore, each time you perform navigation the container returns the same instance of this view.</p>\r\n<p>Based on this, you could try including <strong>[PartCreationPolicy(CreationPolicy.NonShared)] </strong>attribute also in the <strong>LoginView </strong>view.</p>\r\n<p>I hope you find this helpful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2012-01-25T08:35:11.24-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "730597",
+    "ThreadId": "287372",
+    "Html": "<p>Agustin to the rescue yet again :)</p>\r\n<p>Thanks that was it, new it was something simple but couldn't see the wood from the trees.</p>\r\n<p>Paul</p>",
+    "PostedDate": "2012-01-25T09:13:56.033-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "852619",
+    "ThreadId": "360602",
+    "Html": "\r\n<p>I've got several questions about the UICompositionQuickStart project:</p>\r\n<ol>\r\n<li>&nbsp;It's Application_StartUp method is empty, shouldn't it be (new UICompositionBootstrapper()).Run()?\r\n</li><li>The ShellView class constructor receives it's view model. How does it work. <strong>\r\nWho is sending the ShellViewModel as a parameter to the&nbsp;ShellView constructor</strong>?. As a matter of fact, all Views in this project work the same way. I like this approach, but I need to know how it works.\r\n</li><li>It's modules catalog Uri is defined as <strong>&quot;/UIComposition.Shell;component</strong>/ModulesCatalog.xaml&quot;, in other examples I just see CreateFromXaml(new Uri(&quot;ModulesCatalog.xaml&quot;, UriKind.Relative));, why the dufference?, What benefit do I get from\r\n specifying the shell in the ModulesCatalog Uri? </li></ol>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-06-22T08:09:50.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "852742",
+    "ThreadId": "360602",
+    "Html": "<p>Hi,<br /><br />I'll try to answer you questions in order:</p>\r\n<p><strong>1.</strong> Based on my understanding the <strong>Application_Startup</strong> method in <strong>App.xaml.cs</strong>, defined in the main project (in this case <strong>UIComposition.Shell </strong>project) is the one that creates and runs the QuickStart's bootstrapper as you mentioned. Hence, I believe you may be lookind at the <strong>App.xaml</strong> file of the module project which is not used for this.</p>\r\n<p><strong>2.</strong> This functionality is achieved by benefiting from the use of a dependency injection container. As you might find in the applications bootstraper, <strong>CreateShell</strong> method the <strong>ShellView </strong>class is resolved from the application's container, in this case <strong>Unity</strong>. When resolving a type from the container, this will also resolve the parameters defined in its constructor (e.g. <strong>ShellViewModel</strong>).</p>\r\n<p>If you are interested on how the <strong>Unity </strong>container works, I believe you could check the following resources:</p>\r\n<ul>\r\n<li><a href=\"http://www.msdn.com/unity\">Unity Application Block</a></li>\r\n<li><a href=\"http://www.codeplex.com/unity\">Unity community site</a></li>\r\n</ul>\r\n<p>Also, for more information about the approaches used in the<strong> UI Composition Quickstart </strong>to compose its <strong>UI</strong>, you could check the following chapters of the <strong>Prism</strong> documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921174(v=pandp.40)#sec5\">UI Composition QuickStart, Composing the User Interface</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28v=pandp.40%29\">Chapter 7: Composing the User Interface</a></li>\r\n</ul>\r\n<p><strong>3.</strong> Based on my understanding, this definition is used to define the specific location of your <strong>ModuleCatalog</strong>, as far as I know when creating a <strong>Silverlight </strong>application defining this will be necesary, as your relative path will be pointing to the top level of the <strong>XAP </strong>file and not the project where your <strong>ModuleCatalog</strong> resides. Perhaps, the examples you have seen were <strong>WPF </strong>applications and the module catalog in this applications were defined in its startup project, hence just defining the module's catalog name in the <strong>URI </strong>was enough.</p>\r\n<p>I hope you find this helpful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-06-22T12:44:11.047-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "852822",
+    "ThreadId": "360602",
+    "Html": "<p>Thank you Agustin. I'll check those resources...</p>",
+    "PostedDate": "2012-06-22T19:50:23.387-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

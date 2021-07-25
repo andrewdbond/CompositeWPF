@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "989385",
+    "ThreadId": "430200",
+    "Html": "\r\n<p>Hello&nbsp;</p>\r\n<p>I have an event that uses an eventarg class that has a generic parameter. I want to publish this event and have the subscriber act on the generic parameter that was passed.</p>\r\n<p>on the Publish side I have this:</p>\r\n<p><span style=\"font-family:Consolas,'Courier New',Courier,monospace; font-size:1em\">PublishPrismEvent.Publish(</span><span style=\"color:blue\">new</span><span style=\"font-family:Consolas,'Courier New',Courier,monospace; font-size:1em\"> PrismPublishEventArgs&lt;TPayload&gt;(</span><span style=\"color:blue\">this</span><span style=\"font-family:Consolas,'Courier New',Courier,monospace; font-size:1em\">.MethodName,\r\n</span><span style=\"color:blue\">this</span><span style=\"font-family:Consolas,'Courier New',Courier,monospace; font-size:1em\">.TargetName, argument));</span></p>\r\n<p><span style=\"font-size:10pt\">&quot;argument&quot; is defined as a generic parameter in the PrismPublishEventArgs class. On the subscribe side, I wish to subscribe to this event and then analyze that generic parameter using reflection, for example, in the\r\n event handler. I have: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></p>\r\n<p>PrismPublishEvent PrismInternalPublishEvent = EventAggregator.GetEvent&lt;PrismPublishEvent&gt;(); PrismInternalPublishEvent.Subscribe(PrismInternalPublishEventHandler, ThreadOption.UIThread, false);</p>\r\n<p><span style=\"font-size:10pt\">but it is throwing an error saying &quot;Incorrect number of type parameters in reference to class PrismPublishEvent&lt;T&gt;&quot;This should be doable... any help would be greatly appreciated.&nbsp;</span></p>\r\n<p>Thanks</p>\r\n<p>Harold</p>\r\n",
+    "PostedDate": "2013-01-20T10:51:25.31-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "989728",
+    "ThreadId": "430200",
+    "Html": "\r\n<p>Never mind on this.. found a much simpler solution...</p>\r\n<p>&nbsp;</p>\r\n<p>thanks</p>\r\n<p>Harold</p>\r\n",
+    "PostedDate": "2013-01-21T06:29:00.82-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "989747",
+    "ThreadId": "430200",
+    "Html": "\r\n<p>Hi Harold,</p>\r\n<p>I'm glad you found a solution for this. So far the only approach I have seen to achieve this kind of scenarios is the one mentioned by\r\n<em>Glenn Block</em> in this blog post:</p>\r\n<ul>\r\n<li><a href=\"http://codebetter.com/glennblock/2008/08/22/firing-generic-events-with-eventaggregator/\">Firing generic events with EventAggregator</a>\r\n</li></ul>\r\n<p>On the other hand, if you have found a different approach to achieve this functionality, perhaps you could share it with the rest of the community, as it might be useful for other users pursuing similar scenarios.</p>\r\n<p>Best Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2013-01-21T06:51:15.6-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "989992",
+    "ThreadId": "430200",
+    "Html": "\r\n<p>hi Agustin,</p>\r\n<p>&nbsp;</p>\r\n<p>Yes, that was the blog post I had read too.. but all i needed for my circumstance was using an object type parameter instead of a generic... worked the way I needed it to... thanks very much for your reply!</p>\r\n<p>&nbsp;</p>\r\n<p>Harold</p>\r\n",
+    "PostedDate": "2013-01-21T13:56:36.397-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

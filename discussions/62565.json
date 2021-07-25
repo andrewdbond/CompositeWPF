@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "212379",
+    "ThreadId": "62565",
+    "Html": "<p style=\"margin-bottom:0in\">I have a requirement to use popup windows in my WPF app&nbsp;to allow the user to add and edit records of data. I'm using RegionPopupBehaviors to show the edit form. I have two Views, a DisplayView that displays all the records and allows the user to pick a record to edit and a EditView that can be used to edit the chosen record. The DisplayViewModel contains an ObservableCollection of my business entities. All works well when editing a record, I'm using a Controller to show the EditView and pass it the entity the user wants to edit, user edits the data and the changes are immediately reflected in the DisplayView. However, I'm struggling when in comes to creating a new record. Right now I have the EditView create the record, but since the edit view does not have a reference to the ObservableCollection in the DisplayViewModel, the addition of a new record is not reflected in the DisplayView. I have remedied the problem by using the Controller to pass the newly created entity to the DisplayViewModel which then can add it to its ObservableCollection, but it just seems like there must be a better way to do this. I'm new to Prism and WPF so I'm basically looking for a sanity check...What are my other option to make the ObservableCollection updatable from another ViewModel.</p>",
+    "PostedDate": "2009-07-15T18:30:02.177-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213036",
+    "ThreadId": "62565",
+    "Html": "<p>Hi Richard,</p>\r\n<p>This particular scenario really depends on whether the views are in different modules or not. I will assume your views are in the same module since they have related concerns and you say you simply used a controller to pass the edited entity. If this is the case, you can also share the collection of business entities between both views <strong>ViewModels</strong> as you normally would do it. You would still notify the <strong>EditView</strong> which customer it is editing (in case it is editing any), but you would have the same collection in both <strong>ViewModels</strong>. <strong>DataBinding</strong> should take care of updating the <strong>DisplayView</strong> once a new customer is created. <span style=\"color:#1f497d\"><br></span>To avoid the coupling between views, this collection could also be available at module level, so you can have access to it anywhere in the module. You might look at the<span style=\"color:#1f497d\"> <a href=\"http://msdn.microsoft.com/en-us/library/cc707837.aspx\">Commanding Quickstart</a> </span>that used a similar approach to share the orders between views using an OrderRepository.<br>If the business entities are to be used in other modules, a possible approach could be creating a <span style=\"color:#1f497d\"><a href=\"http://msdn.microsoft.com/en-us/library/cc707881.aspx\">service</a></span> that wraps the collection and allows you to know when it has been modified, so you can perform the required operations.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-07-17T06:53:37.027-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "922635",
+    "ThreadId": "398238",
+    "Html": "\r\n<p>Hi again, I'm trying to publish using click once a quickstart project (ModularityWithUnity.Desktop) following the directions that appear in the Prism guidelines, but I get 3 warnings that may be causing that the application does not get copied to the traget\r\n folder. First, I did build the project&nbsp; successfully, but when I tried to publish it, I got the following warnings:</p>\r\n<p>Warning&nbsp;1&nbsp;Item 'Microsoft.Windows.Installer.3.1' could not be located in 'C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v8.0A\\Bootstrapper\\'.&nbsp;ModularityWithUnity.Desktop</p>\r\n<p><br>\r\nWarning&nbsp;2&nbsp;Item 'Windows Installer 4.5' is required by 'Microsoft .NET Framework 4 Client Profile (x86 and x64)', but was not included.&nbsp;ModularityWithUnity.Desktop</p>\r\n<p><br>\r\nWarning&nbsp;3&nbsp;Unable to view published application at <a href=\"http://&lt;machinename&gt;:8080/PrismDeploymentHOL/\">\r\nhttp://&lt;machinename&gt;:8080/PrismDeploymentHOL/</a>.&nbsp;&nbsp;1&nbsp;1&nbsp;ModularityWithUnity.Desktop</p>\r\n<p>&nbsp;</p>\r\n<p>I have a 64 bit machine, and I notice that the target platform of the project is x86. However, when I tried to download the files that supposedly needs the installer told me that the update did not apply for the machine.</p>\r\n<p>Thanks in advance for any help</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-10-05T13:41:34.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "924175",
+    "ThreadId": "398238",
+    "Html": "<p>Hi,</p>\r\n<p>I believe that the cause of this problem could be that you are using <strong>Visual Studio 2012</strong>, which have the<strong> Windows Installer 4.5</strong> package by default. And you are trying to retrieve the <strong>3.1</strong> version which may not be present in the Bootstrapper packages location, hence to avoid the first two warnings for example you could try changing the installation prerequisites, to do this go to the <strong>ModularityWithUnity.Desktop WPF</strong> project, right-click the project in Solution Explorer, and then click <strong>Properties</strong>. In the project settings, click the <strong>Publish </strong>tab and click on the <strong>Prerequisites </strong>button, there you could select the available <strong>Windows Installer</strong> version.</p>\r\n<p>Also, for more information on how to add additional <strong>Bootstrapper Packages</strong> I believe you could find the following article interesting:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ms165429.aspx\">Creating Bootstrapper Packages</a></li>\r\n</ul>\r\n<p>Regarding the third warning, I believe this is expected, as mentioned in the <a href=\" http://msdn.microsoft.com/en-us/library/gg405497%28v=pandp.40%29.aspx\">WPF Prism Deployment Hands-On Lab</a>:</p>\r\n<p><em>Depending on the computer you publish to and the security settings, you may get a warning that Visual Studio is unable to view the published application. This simply means it was unable to launch a browser and navigate to the publish location URL. However, the application is not really ready to install yet at this point because you need to add the dynamic modules to the manifests in the next task.</em><br /><br />I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-10-09T11:13:38.25-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "924311",
+    "ThreadId": "398238",
+    "Html": "<p>Thanks so much Agustin, that did it. After I changed the prerequisites to use the installer provided by VS2012 (i.e. 4.5), I got rid of the</p>\r\n<p>warnings referencing the 3.1 installer, but the .application file did not get created. I believe it was because I do not have a local IIS, and I was</p>\r\n<p>assuming that if I just created the folder I could use the localhost address. I changed the URL ination address to use the regular file system, and the</p>\r\n<p>file got created. Then, after that everything was smooth. How could I use a URL address? I do have windows 7 enterprise but I do not see a local IIS installed.</p>\r\n<p>Is it in a separate component of the installation? Thanks again!</p>",
+    "PostedDate": "2012-10-09T15:07:12.54-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "924638",
+    "ThreadId": "398238",
+    "Html": "<p>Hi,</p>\r\n<p>I'm glad this help you with your problem. Regarding how to install <strong>IIS </strong>on your local machine I believe you could find the following article from the <a href=\"http://www.iis.net/\">Official IIS Site</a> helpful:</p>\r\n<ul>\r\n<li><a href=\"http://www.iis.net/learn/install/installing-iis-7/installing-iis-on-windows-vista-and-windows-7\">Installing IIS 7 on Windows Vista and Windows 7</a></li>\r\n</ul>\r\n<p>Best Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-10-10T05:41:14.587-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

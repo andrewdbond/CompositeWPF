@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1240955",
+    "ThreadId": "544127",
+    "Html": "Hi,<br />\n<br />\nI am working on windows store app and it has multiple view scenario where I publish one object from Main view to secondary view using Event Aggregator (PRISM). while assigning that object to a property of same type in subscriber class I receive below error.<br />\n<br />\n<br />\nA first chance exception of type 'System.InvalidCastException' occurred in Microsoft.Practices.Prism.StoreApps.DLL<br />\n<br />\nAdditional information: Unable to cast COM object of type 'System.ComponentModel.PropertyChangedEventHandler' to class type 'System.ComponentModel.PropertyChangedEventHandler'. Instances of types that represent COM components cannot be cast to types that do not represent COM components; however they can be cast to interfaces as long as the underlying COM component supports QueryInterface calls for the IID of the interface.<br />\n<br />\nIf there is a handler for this exception, the program may be safely continued.<br />\n<br />\n<br />\n<br />\nThis error occurs in below property on line which is bold.<br />\n<pre><code>string _playingSong;\n        public string PlayingSong\n        {\n            get { return _playingSong; }\n            set\n            {\n                if (value != null)\n                  SetProperty(ref _playingSong, value);\n            }\n        }\n</code></pre>\n\nif I remove SetProperty and set field value directly as below, code doesn't throw any error. it looks like error occurs while raising propertychangedevent.<br />\n<pre><code>        string _playingSong;\n        public string PlayingSong\n        {\n            get { return _playingSong; }\n            set\n            {\n                if (value != null)\n                    _playingSong = value;\n            }\n        }\n</code></pre>\n\nI use PRISM to bind view with ViewModels.<br />\n<br />\n<br />\nAppreciate any help.<br />\n",
+    "PostedDate": "2014-05-03T00:38:40.787-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1241661",
+    "ThreadId": "544127",
+    "Html": "Hi,\r<br />\n<br />\nFirst of all, I would like to mention that Apps of <strong>Windows Store</strong> use another Prism project known as <strong>Prism for Windows Runtime</strong>. Therefore, questions for <strong>Windows Store Apps</strong> with <strong>Prism</strong> have their own forum site in order to keep track of them. The following <strong>Codeplex</strong> site corresponds to <strong>Prism for Windows Runtime</strong>:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"https://prismwindowsruntime.codeplex.com\" rel=\"nofollow\">Prism for Windows Runtime</a><br />\n</li>\n</ul>\nAnyway, the error may be ocurring when assigning the value to the parameter variable. I would suggest you to raise the <strong><em>PropertyEventChanged</em></strong> event directly from the Property's set block statement, rigth after setting the value to the _<strong><em>playingSong</em></strong> variable as shown in the second code block.\r<br />\n<br />\nI hope this helped you,\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-05-05T10:15:17-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,61 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "DelegateCommand is now extendable in Prism 5.0.",
+    "ClosedDate": "2014-05-01T11:21:09.99-07:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "The Execute method on DelegateCommand is not marked as virtual, which means that the DelegateCommand class cannot be extended.\n \nWe would like to derive from DelegateCommand so that we can add some common behavior in our application commands (feature use logging, async command execution, error handling)\n \nCurrently I think that is not possible without modifying the source code.",
+    "LastUpdatedDate": "2014-05-01T11:21:09.99-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-04-07T20:25:54.647-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "DelegateCommand is not extendable",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 4,
+    "Id": 8101
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897981,
+      "FileName": "DelegateCommandBase.cs",
+      "DownloadUrl": ".\\897981"
+    },
+    {
+      "FileId": 897982,
+      "FileName": "SimpleCommand.cs",
+      "DownloadUrl": ".\\897982"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi, \r\n\r\nFor those that would like to design custom commands that implement the features of a DelegateCommand, we are attaching in this work item a modified version of the DelegateCommandBase.cs code file from which you can inherit to create your custom commands.\r\n\r\nBased on my understanding, the public Execute and CanExecute methods defined in the DelegateCommand class are only used to invoke a command programmatically, and are not used during the regular execution of the command (for example, when binding a button with the command). So, if you wish to implement a different behavior you need to inherit from the DelegateCommandBase class and override its protected Execute and CanExecute methods (which are now made virtual in the custom  DelegateCommandBase we provided).\r\n\r\nAlso, we are attaching a SimpleCommand class that inherits from the modified DelegateCommandBase class as an example of how you can define you own commands (this one simply shows a message when the command executes).\r\n\r\nI am leaving this work item open as a suggestion so that the Prism team takes this into account for future releases. \r\n\r\nI hope you find this useful,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2011-09-09T11:47:22.647-07:00",
+      "Id": 156424
+    },
+    {
+      "Message": "(Attaching SimpleCommand.cs file)",
+      "PostedDate": "2011-09-09T11:48:33.573-07:00",
+      "Id": 156425
+    }
+  ]
+}

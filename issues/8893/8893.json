@@ -1,0 +1,56 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "An update to the code Microsoft.Practices.Prism.Regions.Region.DefaultSortComparison to \n \n        public static int DefaultSortComparison(object x, object y)\n        {\n            if (x == null)\n            {\n                if (y == null)\n                {\n                    return 0;\n                }\n                else\n                {\n                    return -1;\n                }\n            }\n            else\n            {\n                if (y == null)\n                {\n                    return 1;\n                }\n                else\n                {\n                    //Type xType = x.GetType();\n                    //Type yType = y.GetType();\n \n                    //ViewSortHintAttribute xAttribute = xType.GetCustomAttributes(typeof(ViewSortHintAttribute), true).FirstOrDefault() as ViewSortHintAttribute;\n                    //ViewSortHintAttribute yAttribute = yType.GetCustomAttributes(typeof(ViewSortHintAttribute), true).FirstOrDefault() as ViewSortHintAttribute;\n \n                    var xAttribute = TypeDescriptor.GetAttributes(x).OfType<ViewSortHintAttribute>().FirstOrDefault();\n                    var yAttribute = TypeDescriptor.GetAttributes(y).OfType<ViewSortHintAttribute>().FirstOrDefault();\n \n                    return ViewSortHintAttributeComparison(xAttribute, yAttribute);\n                }\n            }\n        }\n \nwould allow the views injected to a region to be sorted based upon attributes attached to an instance.\n \nI found this useful when I wanted to create a generic view which I could create on demand and not have to have a new class which inherited a base for each version.\n \ne.g.\n \npublic partial class SimpleMenuItem : UserControl\n    {\n        public SimpleMenuItem(string menuText, string targetView, string viewSortHint)\n        {\n            InitializeComponent();\n \n            btnMenuItem.Content = menuText;\n            btnMenuItem.CommandParameter = targetView;  // SimpleMenuItemViewModel will load a view into the main region based on this view name\n \n            // NB: This requires a tweak to the Microsoft.Practices.Prism.Regions.Region.DefaultSortComparison method\n            // to use TypeDescriptor to get attributes from an instance instead of from the Type\n            \n            ViewSortHintAttribute vs = new ViewSortHintAttribute(viewSortHint);\n            TypeDescriptor.AddAttributes(this, new Attribute[] { vs });\n \n        }\n \nThis view could then be added to a region as follows:\n \n            RegionManager.RegisterViewWithRegion(\"MainMenuRegion\", () => new SimpleMenuItem(\"Menu Text\",\"ViewName\",\"300\"));\n \nThe same code can be used in multiple modules without the need to create local versions that inherit from the base view.\n \nWithout the change the sorting hint is ignored as it is only on the instance and not the type",
+    "LastUpdatedDate": "2013-02-21T18:38:06.347-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-11-07T04:05:26.403-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Sort ViewSortHintAttribute based on instance attributes",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8893
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897993,
+      "FileName": "InstanceBasedViewSortHintBehavior.zip",
+      "DownloadUrl": ".\\897993"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nThanks for sharing this with the rest of the community. We verified your workaround and it seems to work. We applied the modifications to our local copy of the Prism Library and ran all the tests, which passed.\r\n\r\nOn the other hand, we thought of a possible way to apply those changes without modifying the Prism Library. We’re attaching a sample application for those interested in this subject, under the name InstanceBasedViewSortHintBehavior.zip. There we define a custom behavior that implements the aforementioned modifications. Note that this solution is possible only in WPF as the TypeDescriptor Class is not available in Silverlight.\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami﻿",
+      "PostedDate": "2011-11-08T06:16:24.247-08:00",
+      "Id": 156532
+    },
+    {
+      "Message": "Hi,\r\n\r\nThanks for that.  Your modified behoviour is a much more elegant solution and has taught me a little something as well.  I'm relatively new to Prism and hadn't come across Region behavious yet.\r\n\r\nThanks for quick response,\r\n\r\nAlan",
+      "PostedDate": "2011-11-09T03:27:22.257-08:00",
+      "Id": 156533
+    }
+  ]
+}

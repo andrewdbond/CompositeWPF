@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "Hi, i'm new to Prism, so i'm still learning how to use it properly\n \ni'm writing an application with a structure similar to this one:\n \n \nMain Silverlight Client Project: it's only purpose is to download Xap files (with xaml catalog), load assemblies and manage regions. (doesn't reference any other assembly in my solution)\nGrouped Interface Libraries: a certain number of Silverlight Class Libraries. Each group of functionalities is identified by it's own class library.\nGrouped Implementation Libraries: for every Interface Library, there're multiple implementations, each one in it's own project and each one exported, with MEF, as interface.\nGrouped Interface Modules: only used to download one of the Class Libraries containing a group of interfaces\nGrouped Implementation Modules: used to download one of the ﻿Class Libraries containing an implementation. every module has a viewmodel that consume the interface implementation. every module Depends On the module containing the interface.\n \nso, when i want to load a functionality, i've to download the interface that corresponds to that functionality and load the assembly, then i can download one of the implementations (one is enough, but i could get more of them), load it and register the view with the region manager.\n \nas soon as i start downloading an implementation module, prism starts downloading the required interface module, because of the DependsOn parameter.\n \nif the implementation module's download is finished before the interface's one, the application throw a ModuleTypeLoadingException, because, i think, MEF is trying to export a class that require an interface that is in an assembly that isn't already available (DependsOn only defers the call to the Module constructor and to the IModule Initialize method)\n \ni'm not sure if this is the correct approach but i want to do is:\n \n \n keeping everything out of the main silverlight application\ngroup funcionality by shared interfaces\n \nhere is a sample application\n \n﻿﻿﻿http://rapidshare.com/files/417527440/PrismTest03.zip",
+    "LastUpdatedDate": "2013-02-21T18:38:30.88-08:00",
+    "PlannedForRelease": "Prism 4.0 - Drop 6",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "High",
+      "Severity": 150,
+      "Id": 3
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-09-07T13:07:42.123-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Mef and Module Dependencies in Silverlight",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 5,
+    "Id": 7224
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Same issue here: http://compositewpf.codeplex.com/discussions/252802\r\n",
+      "PostedDate": "2011-05-19T07:24:14.36-07:00",
+      "Id": 156302
+    },
+    {
+      "Message": "Hi,\r\n\r\nWe examined further the scenarios described in this work item and the related discussion, and found that the exception is thrown from the DeploymentCatalog (part of MEF). This happens because, although the type is not instantiated, the DeploymentCatalog immediately attempts to inspect the type when downloading is complete. MEF fails to be able to reflect on the type because the module that contains the required interface has not been downloaded, so that interface is not loaded into the catalog nor the application domain.  MEF is likely walking the inheritance hierarchy to determine the complete set of available exports.  One of the key goals of MEF is static analysis of export and import requirements, so not having an interface dependency and throwing the exception is likely “by design”.\r\n\r\nWhile setting CopyLocal to true would solve the problem, if the shared library has any MEF export attributes there will be double-composition exceptions.\r\n\r\nThis doesn’t happen for Unity because the file downloader parses the types directly from the XAP manifest and adds them to the application domain, but does not reflect on the members of the type. There isn’t any further instantiation on the type until all the dependent modules are downloaded.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2012-01-19T10:08:04.473-08:00",
+      "Id": 156303
+    }
+  ]
+}

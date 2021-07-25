@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "568068",
+    "ThreadId": "246531",
+    "Html": "<p>I currently initialize my modules using a UnityBootStrapper. The bootstrapper gets a list of ModuleInfos by deserializing(from a xml file) a list of ModuleInfos and the module infos are added to the ModuleCatalog. The modules are instantiated and initialized  by the bootstrapper and thats all good. My question is, how do I then inject custom data(deserialized from a file) that belongs to a specific module. For example I have a class below;</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> ModuleA : IModule\n{\n<span style=\"color: blue;\"><span style=\"white-space: pre;\">\t</span>public</span> List&lt;<span style=\"color: blue;\">string</span>&gt; NameList {<span style=\"color: blue;\">get</span>;<span style=\"color: blue;\">set</span>}\n\n}\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>What would would be the right practice for me to inject an existing(deserialized) NameList to ModuleA?&nbsp;</p>\n<p>I read up on Annotating Objects into Constructor;</p>\n<p><a href=\"http://msdn.microsoft.com/en-us/library/dd203129.aspx\">http://msdn.microsoft.com/en-us/library/dd203129.aspx</a></p>\n<p>and</p>\n<p>Annotating Objects into Properties;</p>\n<p><a href=\"http://msdn.microsoft.com/en-us/library/dd203147.aspx\">http://msdn.microsoft.com/en-us/library/dd203147.aspx</a></p>\n<p>&nbsp;</p>\n<p>but im still missing something here because how do I match the serialized data with a particular module that will be initialized by the UnityBootStrapper based on whats in the ModuleCatalog.</p>\n<p>Is there anywhere I can attach data to a ModuleInfo(or even a custom IModuleCatalogItem) that 'somehow' the ModuleCatalog in the UnityBootstrapper knows how to create the module and inject the custom data onto the modules property.</p>\n<p>This would seem like a common problem because how else would you specify the region name of a shell that you want your view to inject onto during module.Initialize()? I definitely dont want to hardcode the region name. Wouldnt it be nice if you can somehow  easily set that in a xaml file or configuration file that specifies a region name for the module to mount that view onto?</p>\n<p>Any help would be appreciated.</p>",
+    "PostedDate": "2011-02-17T11:25:48.39-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "568122",
+    "ThreadId": "246531",
+    "Html": "<p>Would having a custom IModuleInitializer work in this?</p>\n<p>Do you think for my case, a better approach would just be deserializing the modules(different module types that implements IModules) itself and use BuildUp to buildup the other necessary properties I use like the UnityContainer, RegionManager and EventAggregator?  In this case, my modules will have all the deserialized data with it.</p>",
+    "PostedDate": "2011-02-17T12:45:01.95-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "568620",
+    "ThreadId": "246531",
+    "Html": "<p>Hi,</p>\r\n<p>One possibility in order not to hard code the region names would be to define constants for the region names in an infrastructure project (one that would be referenced by your shell and all your modules).</p>\r\n<p>As for the approach for deserializing your data, I wouldn't recommend to place such logic in the <strong>IModule</strong> class. One possibility for that would be to place the logic for deserializing your data in the component that will be responsible of handling it, such as a controller or a service.</p>\r\n<p>If you scenario strictly requires you to place that logic inside the <strong>IModule</strong>, the approach you're mentioning in your second post seems to be a valid one.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-02-18T08:44:31.273-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "568650",
+    "ThreadId": "246531",
+    "Html": "<p>Thank you very much for your suggestions Guido. I will have to think abit more here in terms of how I would design my infrastructure.</p>",
+    "PostedDate": "2011-02-18T09:33:55.547-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

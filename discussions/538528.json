@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1221074",
+    "ThreadId": "538528",
+    "Html": "Now that you can pass in separate Navigation parameters, it makes it a little difficult to use the Navigation Journal, as this does not include them.<br />\n<br />\nBefore I would do this:<br />\n<br />\nvar params = new UriQuery();<br />\nparams.Add(&quot;SomeId&quot;, _someId.ToString());<br />\nregionmanager.RequestNavigate(&quot;SomeRegion&quot;, &quot;SomeView&quot; + params);<br />\n<br />\nBut now it would ideally be:<br />\n<br />\nvar params = new NavigationParameters();<br />\nparams.Add(&quot;SomeId&quot;, _someId); //As an int<br />\nregionmanager.RequestNavigate(&quot;SomeRegion&quot;, &quot;SomeView&quot;, params);<br />\n<br />\nBut this now means that the NavigationJournal is not aware of the parameters. And so on IsNavigationTarget method it cannot compare if it is the correct viewmodel and so tries to open up a new one. As in some views they are editing records, so it always brings the same one back if they are editing that one.<br />\n",
+    "PostedDate": "2014-03-10T08:23:33.587-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1222811",
+    "ThreadId": "538528",
+    "Html": "Any advice on this? It would be appreciated, I've broken things in journal navigation at present, but could do with a best way to handle these kind of situations.<br />\n",
+    "PostedDate": "2014-03-14T08:39:44.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1224028",
+    "ThreadId": "538528",
+    "Html": "Hi James,\r<br />\n<br />\nThe next drop of Prism has this issue addressed, as navigation parameters are saved in the Navigation Journal. However, as a very easy workaround for now, you could use the old approach of passing query string parameters, since you just needs an int to be passed, in the following way.\r<br />\n<br />\nvar params = new NavigationParameters(); \r<br />\nparams.Add(&quot;SomeId&quot;, _someId); //As an int or string\r<br />\nregionmanager.RequestNavigate(&quot;SomeRegion&quot;, &quot;SomeView&quot; + params.ToString());\r<br />\n<br />\nThis is the old way of doing it and it is still supported in Prism, but now the UriQuery class is renamed to NavigationParameters, maintaining the old functionality and adding support for object parameters.\r<br />\n<br />\nHope this helps,\r<br />\nDiego Poza<br />\n",
+    "PostedDate": "2014-03-18T08:34:03.243-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1224032",
+    "ThreadId": "538528",
+    "Html": "Ahh that's good then! Any idea on the time scale of this next drop?<br />\n",
+    "PostedDate": "2014-03-18T08:39:48.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1233830",
+    "ThreadId": "538528",
+    "Html": "Sorry to chase on this. But what's happening? Haven't seen any news on the actual release of 4.2 for a while now?<br />\n",
+    "PostedDate": "2014-04-14T03:04:58.11-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1234864",
+    "ThreadId": "538528",
+    "Html": "We will finish everything this week and publish early next week. Documentation is taking longer than expected.<br />\n",
+    "PostedDate": "2014-04-16T14:09:44.437-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1235500",
+    "ThreadId": "538528",
+    "Html": "The release is complete and we are now starting to publish the different components. We just published the NuGet packages.<br />\n",
+    "PostedDate": "2014-04-18T11:41:43.393-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

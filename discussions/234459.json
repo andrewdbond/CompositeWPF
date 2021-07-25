@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "521061",
+    "ThreadId": "234459",
+    "Html": "\r\n<p>Hello, I new to Prism and MEF. I'm trying to import the implementation of my service into a value converter.</p>\r\n<p><span style=\"text-decoration:underline\">Infrastructure Module</span></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\"><br>public</span> <span style=\"color:blue\">interface</span> IService { <span style=\"color:blue\">void</span> DoSometing(); }\r\n\r\n<span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> MyConverter : IValueConverter\r\n{\r\n   <span style=\"color:blue\">private</span> IService _service;\r\n\r\n   [Import AllowDefault = <span style=\"color:blue\">true</span>, AllowRecomposition = <span style=\"color:blue\">true</span>]\r\n   <span style=\"color:blue\">public</span> IService Service { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">set</span> ; }\r\n\r\n   <span style=\"color:blue\">public</span> <span style=\"color:blue\">object</span> Convert(<span style=\"color:blue\">object</span> value, Type targetType, <span style=\"color:blue\">object</span> parameter, CultureInfo culture)\r\n   {\r\n        Service.DoSomething();\r\n   }\r\n\r\n   <span style=\"color:blue\">public</span> <span style=\"color:blue\">object</span> ConvertBack(<span style=\"color:blue\">object</span> value, Type targetType, <span style=\"color:blue\">object</span> parameter, CultureInfo culture)\r\n   {\r\n        <span style=\"color:blue\">throw</span> <span style=\"color:blue\">new</span> NotImplementedException();\r\n   }\r\n}\r\n\r\n<br><span style=\"text-decoration:underline\">Feature module</span><br></pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>   [Export(<span style=\"color:blue\">typeof</span>(IService))]<br>   [PartCreationPolicy(CreationPolicy.Shared)]<br>   <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> MyService : IService<br>   {<br>      <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> DoSomething() {}<br>   }<br><br><br>On a view:<br><pre>&lt;Converters:MyConverer x:Key=&quot;myConverter /&gt;\r\n\r\n&lt;TextBlock Text={Binding MyProperty, Converter={StaticResource myConverter}} /&gt; <br><br>Unfortunately, the Service property on the value converter is always null. <br>Is this scenario possible? <br><br>Best regards<br><br></pre>\r\n</pre>\r\n</div>\r\n",
+    "PostedDate": "2010-11-12T05:41:14.03-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "521079",
+    "ThreadId": "234459",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Nice to see that you started using Prism. Your scenario seems to be something possible. I checked the code that you shared and found the following:<br>\r\n<br>\r\n&nbsp;&nbsp; 1. The Export attribute indicate a typeof <strong>ILookupService</strong>. So I assume that\r\n<strong>IService </strong>derives from <strong>ILookupService</strong>. Is this ok? or\r\n<strong>ILookupService </strong>should derive from <strong>IService</strong>. Anyway, I would suggest you to specify in the typeof the interface implemented in your class, in this particular case, the\r\n<strong>IService </strong>interface.<br>\r\n&nbsp;&nbsp; 2. If you decide to continue exporting <strong>ILookupService</strong>, I would recommend you to import\r\n<strong>ILookupService </strong>in the Service property in the <strong>MyConverter\r\n</strong>class. <br>\r\n&nbsp;&nbsp; 3. In the XAML code, the binding is targeting to <strong>MyProperty </strong>\r\nand it is not an existent property at <strong>MyConverter </strong>class. <br>\r\n<br>\r\nHope this helps.</p>\r\n<p>Fernando Antivero<br>\r\n<a href=\"http://blogs.southworks.net/fantivero\"><span style=\"color:#0066cc\">http://blogs.southworks.net/fantivero</span></a></p>\r\n",
+    "PostedDate": "2010-11-12T06:15:14.543-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "521107",
+    "ThreadId": "234459",
+    "Html": "\r\n<p>First, thanks for your fast reply.</p>\r\n<p>Hi, I have edited my previous post. First, forget about the ILookupService it was a copy/paste mistake.\r\n<br>\r\nSecondly, MyProperty is a property of the ViewModel imported on the view.</p>\r\n<p>Hope you could help.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-12T06:58:17.62-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "521227",
+    "ThreadId": "234459",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>A possible reason for this is that the converter is not created using the MEF container, so it does not inject your properties that are decorated with Import. So, if you need to achieve this scenario, you might need to create your converter programmatically\r\n with MEF.</p>\r\n<p>But I was wondering if a converter is the correct place to call a service. That said, is not a view model the right place for doing something like this?</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero<br>\r\n<a href=\"http://blogs.southworks.net/fantivero\"><span style=\"color:#0066cc\">http://blogs.southworks.net/fantivero</span></a></p>\r\n",
+    "PostedDate": "2010-11-12T10:52:31.43-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

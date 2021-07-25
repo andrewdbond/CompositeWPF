@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1069422",
+    "ThreadId": "450301",
+    "Html": "Hi All,<br />\n<br />\nI am using Prism 4.1 and WPF MVVM as my base app platform. I have a login window with a busy indicator control. I am using BackgroundWorker class so that user can see the busy indicator when prism is loading all modules.<br />\n<br />\ncode snippets look like below:<br />\n<pre><code>var backgroundWorker = new BackgroundWorker();\nbackgroundWorker.DoWork += OnBackgroundWorkerDoWork;\nbackgroundWorker.RunWorkerAsync();\n\npublic void OnBackgroundWorkerDoWork(object sender, DoWorkEventArgs e)\n{ \n    Bootstrapper bootstrapper = new Bootstrapper();\n    bootstrapper.Run();\n} \n</code></pre>\n\nHowever, when the bootstrapper is running, the login window is frozen. Why? how to work around this? <br />\n<br />\nI also tried Application.Current.Dispatcher.BeginInvoke to run Bootstrapper but no luck.<br />\n<br />\nApplication.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new LoginDelegate(Login));<br />\n",
+    "PostedDate": "2013-07-17T02:08:53.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1069700",
+    "ThreadId": "450301",
+    "Html": "Hi,\r<br />\n<br />\nUnfortunately, running the <strong>bootstrapper</strong> in a background thread is not a trivial task. Basically, there are two main problems you will find when trying to do so:<br />\n<h1></h1>\n<ul>\n<li>Beside the initialization on the modules, the <strong>bootstrapper</strong> is also in charge of initializing the shell. Hence, you will need to invoke all logic related to the creation, initialization and activation of the shell to the UI thread (for example, via the <strong>Dispatcher</strong>.)</li>\n<li>\nUsually during their initialization, the modules might need to interact with the with the UI too, for example by adding or registering views to a region. This logic also needs to be invoked in the UI thread.<br />\n</li>\n</ul>\nIn my opinion, an easier implementation could be to show a new &quot;window&quot; though a different STA thread and then run the <strong>bootstrapper</strong> in the main thread normally. In this new &quot;window&quot; can show any information you might need to inform the user that the application is being loaded (using busy indicators, progress bars, etc.)\r<br />\n<br />\nThis approach is similar to the one used to show non-static splash screens in the following thread:<br />\n<ul>\n<li>\n<a href=\"https://compositewpf.codeplex.com/discussions/374744\" rel=\"nofollow\">How to create XAML splash screen with PRISM</a><br />\n</li>\n</ul>\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-07-17T13:16:50.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1069801",
+    "ThreadId": "450301",
+    "Html": "Thanks Damian very much. That's a nice approach, it's working for me!<br />\n",
+    "PostedDate": "2013-07-17T18:38:32.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

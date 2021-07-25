@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "564359",
+    "ThreadId": "245557",
+    "Html": "<p><strong>Edit: This was resolved below, it had nothing to do with regions or navigation, it turns out that even if you mark your export as NonShared Mef will hold a reference to it if it implements IDisposable or it AllowsRecomposition, see below.</strong></p>\n<p>I'm fighting with a Memory Leak and I'm not sure how to resolve it.</p>\n<p>A rough outline of my app is:</p>\n<p>ShellWindow<br /> --ContentControl MainRegion<br /> ----UserControl1<br /> ------ContentControl L1Region<br /> --------UserControl2</p>\n<p>When I navigate it might look like this:</p>\n<p>ShellWindow<br /> --ContentControl MainRegion<br /> ----<strong>UserControl3</strong><br /> ------ContentControl L1Region<br /> --------UserControl2</p>\n<p>Before I add UserControl3 I remove all views from the MainRegion and the L1Region and then I remove the L1Region from the region manager.</p>\n<p>UserControl2s ViewModel never get's disposed.&nbsp; And based on what I saw while I was debugging L1Region is never being picked up by the garbage collector.</p>\n<p>I've reviewed my code carefully and removed anything I thought might have a remote chance of causing this.&nbsp; So far no luck.&nbsp; A repro app is going to take a bit to write, so I thought I'd see if anyone had any ideas for me while I work on that.</p>",
+    "PostedDate": "2011-02-10T20:40:32.473-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "564606",
+    "ThreadId": "245557",
+    "Html": "<p>When you remove a view from a region, it will be disposed as well as its objects (e.g. a View Model) when the garbage collection occurs. Take into account that the garbage collector will dispose all these components successfully if you don&rsquo;t have any pointer alive to your objects from other place.</p>\r\n<p>Therefore, your view models should be disposed when your views are disposed from memory.</p>\r\n<p>On the other hand a memory leak has been detected and you might find <a href=\"http://compositewpf.codeplex.com/discussions/244917\">this thread</a> handy where this kind of issue is covered.</p>\r\n<p>Please let me know if this information helps you.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-02-11T06:16:31.84-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "564762",
+    "ThreadId": "245557",
+    "Html": "<p>That blog post does look like my issue, but just adding his code didn't resolve it for me.&nbsp;</p>\r\n<p>I'm working in an app to reproduce the issue.&nbsp; And knowing about that possibility will be a definite help, so thanks!!!</p>\r\n<p>I'll let you know what turns up in the repro app.&nbsp; Probably just some silly error on my part, I'm still learning prism.</p>",
+    "PostedDate": "2011-02-11T09:57:14.843-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "564857",
+    "ThreadId": "245557",
+    "Html": "<blockquote style=\"padding-bottom: 0px; font-style: italic; margin: 0.25em 1em 0px; padding-left: 0.25em; padding-right: 0.25em; padding-top: 0px; border: #ccc 0.1em solid;\"><strong>JohnFenton wrote:</strong><br />\r\n<p>That blog post does look like my issue, but just adding his code didn't resolve it for me.&nbsp;</p>\r\n<p>I'm working in an app to reproduce the issue.&nbsp; And knowing about that possibility will be a definite help, so thanks!!!</p>\r\n<p>I'll let you know what turns up in the repro app.&nbsp; Probably just some silly error on my part, I'm still learning prism.</p>\r\n</blockquote>\r\n<p><br />The ANTS Memeory Profiler was instrumental in helping me locate our memory leak.&nbsp;&nbsp; I was able to resolve it during the trail period but found it so useful we ended up purchasing it.&nbsp;&nbsp; You basically take a snapshot, run part of the application, exit it,&nbsp;and take another snapshot.&nbsp;&nbsp; It provides a great deal of information (to include whether it wasn't GC'd because of event subscriptions).</p>\r\n<p>&nbsp;<a href=\"http://www.red-gate.com/products/dotnet-development/ants-memory-profiler/\">http://www.red-gate.com/products/dotnet-development/ants-memory-profiler/</a>&nbsp;has a 14 day free trial.</p>",
+    "PostedDate": "2011-02-11T12:24:56.233-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "564901",
+    "ThreadId": "245557",
+    "Html": "<p>It was easier to reproduce than I thought!</p>\n<p>This (which I'm guessing is the wrong way to do it) is how I am removing the views:</p>\n<div style=\"color: black; background-color: white;\">\n<pre>        List&lt;<span style=\"color: blue;\">object</span>&gt; views = <span style=\"color: blue;\">new</span> List&lt;<span style=\"color: blue;\">object</span>&gt;();\n        <span style=\"color: blue;\">foreach</span> (<span style=\"color: blue;\">var</span> item <span style=\"color: blue;\">in</span> region.Views)\n          {\n          views.Add(item);\n          }\n        <span style=\"color: blue;\">foreach</span> (<span style=\"color: blue;\">var</span> item <span style=\"color: blue;\">in</span> views)\n          {\n          region.Remove(item);\n          }\n</pre>\n</div>\n<p>It is not doing it, even when there are no child views on the views I am removing.</p>\n<p>Note, I am not implementing KeepAlive as that did not release the views quickly enough for me to be able to add another view with the same region names in it.&nbsp; Instead I am trying to manually remove and release the views/regions.</p>\n<p>@<a class=\"UserProfileLink\" href=\"http://www.codeplex.com/site/users/view/Billkrat\">Billkrat</a> Ants is great!&nbsp; But, my trial period is up and it's not in the budget at the moment :-(</p>\n<p>I can put up a simplified repro app sometime tonight or tomorrow.&nbsp; But that code appears to be the source of my troubles, it's not doing what I think it should do.&nbsp; The view models that are attached to those views that I am removing do not dispose till the application exits. (I am forcing the GC to run)</p>\n<div id=\"_mcePaste\" class=\"mcePaste\" style=\"position: absolute; left: -10000px; top: 0px; width: 1px; height: 1px; overflow: hidden;\">\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; List&lt;object&gt; views = new List&lt;object&gt;();<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var item in region.Views)<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; views.Add(item);<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var item in views)<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; region.Remove(item);<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\n<p>This is t</p>\n<p>&nbsp;</p>\n</div>",
+    "PostedDate": "2011-02-11T13:35:36.163-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "565027",
+    "ThreadId": "245557",
+    "Html": "<p>OK, here is the app that reproduces this issue:</p>\n<p>(See below, no longer needed, so it has been deleted)</p>\n<p>I pared it down to almost nothing.&nbsp; Play a few times with the buttons, watch the debug Output window, you'll see it requesting the new view and removing the old view.&nbsp; But you won't see any disposed messages.&nbsp; Hit X on the window and you will see all the  VeiwModels now get disposed.</p>\n<p>I would greatly appreciated if some one else could run this and confirm that you can reproduce the error.</p>\n<p>Note: I link to the prism DLLs directly so you may need to fix the dlls in the References for this to run.</p>",
+    "PostedDate": "2011-02-11T21:30:58.07-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "565169",
+    "ThreadId": "245557",
+    "Html": "<p>It appears to be something in how I am creating the views.&nbsp; I removed the region.Add and they still persist.&nbsp;</p>",
+    "PostedDate": "2011-02-12T09:40:29.16-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "565193",
+    "ThreadId": "245557",
+    "Html": "<p>LOL &amp; Dang, tripped up by my own testing procedures.</p>\n<blockquote style=\"border: 0.1em solid #cccccc; font-style: italic; margin: 0.25em 1em 0pt; padding: 0pt 0.25em;\"><a href=\"http://hammett.castleproject.org/?p=339\" target=\"_blank\"><strong>From MEF &amp; Lifetime:</strong></a><br />\n<p>The CompositionContainer will not hold references to parts it creates, unless for the following cases:</p>\n<p>1. The ComposablePart.RequiresDisposal returns true &ndash; which for our default programming will be true only when it wraps an object instance that implements IDisposable</p>\n<p>2. The part has one or more imports marked with AllowRecomposition=true. In this case, though, we hold conditional references, which means that while there&rsquo;s an alive export instance the GC won&rsquo;t collect the part instance.</p>\n<p>3. Shared parts</p>\n</blockquote>\n<p>Rather ironic, but they were not disposing because they implemented IDisposable!</p>\n<p>I removed the IDisposable, and switched the test to storing weak references and checking IsAlive.&nbsp; The objects are now getting GCed.</p>\n<p>However, this does open a rather interesting question.</p>\n<p>Prisms ServiceLocator does not Implement the Mef ReleaseExport, is there a way to do that in Prism?</p>",
+    "PostedDate": "2011-02-12T11:08:01.203-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

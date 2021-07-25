@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1076549",
+    "ThreadId": "452384",
+    "Html": "Hi to all friends out there.<br />\n<br />\nI am not able to acheive iew base navigation . In my application i have to change view in region and this i need to achieve with navigation.<br />\n<br />\nBelow is my code.<br />\n<br />\npublic class StartUpScreenViewModel : IRegionMemberLifetime<br />\n<pre><code>{\n    public IUnityContainer appContainer ;\n    public IRegionManager appRegionMngr ;\n    public bool KeepAlive\n    {\n        get { return true; }\n    }\n\n    public StartUpScreenViewModel()\n    {\n        appContainer = ServiceLocator.Current.GetInstance&lt;IUnityContainer&gt;();\n        appRegionMngr = ServiceLocator.Current.GetInstance&lt;IRegionManager&gt;();\n        registerViews();\n    }\n\n    private void registerViews()\n    {\n\n        appContainer.RegisterType&lt;object, Register&gt;(&quot;register&quot;);\n        appContainer.RegisterType&lt;object, AuthenticatedUser&gt;(&quot;Authenticated&quot;);\n        appContainer.RegisterType&lt;object, Authenticate&gt;(&quot;Authenticate&quot;);\n        appContainer.RegisterType&lt;object, StartUpScreen&gt;(&quot;StartUpScreen&quot;);\n    }\n}\n</code></pre>\n\nand on linkbutton i bind this delegate having this method.<br />\n<br />\n regionmngr.RequestNavigate(&quot;mainRegion&quot;, new Uri(&quot;register&quot;, UriKind.Relative));<br />\n<br />\nwhenever i click on button, view do not changes. It remain same. Even i checked with callback method of navigation but there is no error and nothing. <br />\n<br />\nSo can you please tell me what i am doing wrong which is not letting my view to change.I need to show one view at time.<br />\n<br />\nThanks in advance.<br />\n",
+    "PostedDate": "2013-08-04T17:16:52.317-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1076889",
+    "ThreadId": "452384",
+    "Html": "Hello PankajGoswami,<br />\n<br />\nAs far as I can see on the code you provided everything seems to be on the right track. <br />\nPlease verify that:<br />\n<h1></h1>\n<ul>\n<li>The <strong>RequestNavigate</strong> call is being performed. Assuming you are using a command, the issue might be related to an incorrect binding.</li>\n<li>\nThe <strong>StartUpScreenViewModel</strong> class is instantiated before the <strong>RequestNavigate()</strong> call occurs. Otherwise, the view won’t be registered in the container.<br />\n</li>\n</ul>\nNotice that the <em>mainRegion</em> should be a <strong>SingleActiveRegion</strong> (use a <strong>ContentControl</strong>), which only display one view at the same time.<br />\nIs there a reason why you are performing the views registrations into the container from the view model, instead of doing it when the module is initialized?<br />\n<br />\nIf the above does not help, please send a small repro sample (or code that provides more context) so I can troubleshoot the cause for the issue.<br />\n<br />\nI hope this helps, <br />\n<br />\nGabriel Ostrowsky<br />\n<a href=\"http://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">http://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2013-08-05T11:12:37.38-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1080018",
+    "ThreadId": "452384",
+    "Html": "Thanks for your reply.\r<br />\nHere is my sample project for navigation. In this my application view gets changed form menu. \r<br />\n<br />\nI am not able to figure out why it is not working. Even i did on Module as you had mentioned.\r<br />\n<br />\nHere is link from where you can download the navigation sample.\r<br />\n<a href=\"https://skydrive.live.com/redir?resid=261BDEB26CE42B85!123\" rel=\"nofollow\">Download</a>\r<br />\n<br />\n In this i want to load one view when its loads and gets changes form menu by clicking them. I register my views in ModuleClass.\r<br />\n<br />\nplease let me know also what wrong i was doing.\r<br />\nLooking forward to your reply.<br />\n",
+    "PostedDate": "2013-08-13T03:57:05.19-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1080171",
+    "ThreadId": "452384",
+    "Html": "Hi Pankaj,\r<br />\n<br />\nAfter checking your sample we found the following problems:<br />\n<h1></h1>\n<ul>\n<li>The region defined in the <strong>Shell</strong> is named as &quot;mainRegion&quot;, but when invoking the request navigate you are passing the region name as &quot;mainregion&quot; instead.</li>\n<li>The <strong><em>register</em></strong> view was registered with the name of &quot;register&quot; in the container, but in the navigation request you are asking for a &quot;registerView&quot; instead. Those names need to be the same in order for the navigation to work.</li>\n<li>The &quot;mainregion&quot; defined in the <strong>Shell</strong> is an <strong>ItemsControl</strong>. By default, regions based on <strong>ItemsControls</strong> cannot deactivate views and therefore they will always show all the views they contain. If you wish to show only one view at a time you will need to use a <strong>ContentControl</strong> instead.</li>\n<li>\nAlso, the &quot;main&quot; and &quot;menu&quot; regions were defined on the first row of the <strong>Grid</strong>, which caused them to overlap. This can be changed by adding the property <strong>Grid.Row=”1”</strong> on the main region tab item.<br />\n</li>\n</ul>\nYou can find a modified version of your sample with the aforementioned fixes made by Gabriel in the following link:<br />\n<ul>\n<li>\n<a href=\"https://skydrive.live.com/redir?resid=3EE28791A0DF3126!107\" rel=\"nofollow\">NavigationSample - Fixed</a><br />\n</li>\n</ul>\nHope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-08-13T10:16:32.637-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1080483",
+    "ThreadId": "452384",
+    "Html": "Thanks for reply. \r<br />\nIt works.I need to ask one thing also that does <strong>ContentControl</strong> creates new control every time ? when required view is loaded in region than any view which were present get deactivated  by default?And what if i need to persist the value of view.\r<br />\n<br />\nJust these are few points which i want to get cleared .\r<br />\n<br />\nThanks in advance.<br />\n",
+    "PostedDate": "2013-08-14T05:28:24.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1080725",
+    "ThreadId": "452384",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding a region based on a <strong>ContentControl</strong> only maintains one active view at the same time. Therefore, during navigation any previous views in the region will be deactivated. If you want to maintain a deactivated view alive inside the region, you can make it implement the <strong>IRegionMemberLifetime</strong> interface in its view model and return <strong><em>true</em></strong> in its <strong>KeepAlive</strong> property. If you wish to reuse an existing view that is being kept alive in the region, you can make it implement the <strong>INavigationAware</strong> interface. If its <strong>IsNavigationTarget</strong> method returns <strong><em>true</em></strong>, the region will navigate to the existing view. If it returns <strong><em>false</em></strong>, a new view will be used instead.\r<br />\n<br />\nAlso, in order for this to work correctly you need to register the views in the container using the exact name of the view type. For example:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\nappContainer.RegisterType&lt;<span style=\"color:Blue;\">object</span>, AuthenticatedUser&gt;(<span style=\"color:#A31515;\">&quot;AuthenticatedUser&quot;</span>);\r\n</pre></div>Hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-08-14T13:55:22.43-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "114580",
+    "ThreadId": "34512",
+    "Html": "I was preparing to do a build of CAL today and thought I'd run the unit tests before committing the .dll to TFS.&nbsp; I had already switched to Release.&nbsp; To my surprise, one of the unit tests failed, &quot;NotKeepAliveKeepsDelegateIfStillAlive&quot; (in DelegateReferenceFixture.cs).&nbsp; After some digging the only conclusion I can come to is that in Release mode either the C# compiler or the JIT compiler do some optimization that causes the unit test to fail (even though I'm quite certain the WeakReference object being used by DelegateReference works as it should).<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; [TestMethod]<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public void NotKeepAliveKeepsDelegateIfStillAlive()<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; var delegates = new SomeClassHandler();<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; var delegateReference = new DelegateReference((Action&lt;string&gt;) delegates.DoEvent, false);<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; GC.Collect();<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Assert.IsNotNull(delegateReference.Target);&nbsp; // This Assert fails in &quot;Release&quot;<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; delegates = null;<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; GC.Collect();<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Assert.IsNull(delegateReference.Target);<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\nOut of curiousity, can anyone explain why?<br>\r\n",
+    "PostedDate": "2008-08-28T18:09:50.8-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "114781",
+    "ThreadId": "34512",
+    "Html": "Hi Jeremy,<br>\r\nThanks for the heads up. We ran into a similar thing while we were doing perfomance testing on CompositeWpfEvent. As you said, the issue is not in DelegateReference, but in the test.<br>\r\nThe compiler makes some optimizations because <strong>delegates </strong>variable is not being used anymore, so it removes the reference immediately.<br>\r\nIf you for example add the following line, the test will work correctly:<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Assert.IsNotNull(delegateReference.Target);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<em><strong>Assert.IsNotNull(delegates);</strong></em>&nbsp;&nbsp;&nbsp; //this uses delegates in order to avoid compiler optimizations<br>\r\n&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; delegates = null;<br>\r\n<br>\r\nThanks, and I'll make sure we fix this test for next release,<br>\r\nJulian Dominguez<br>\r\n<a href=\"http://blogs.southworks.net/jdominguez\">http://blogs.southworks.net/jdominguez</a><br>\r\n",
+    "PostedDate": "2008-08-29T12:53:21.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "114785",
+    "ThreadId": "34512",
+    "Html": "Yes this is definitely due to optimziation.&nbsp; You could also do:<br>\r\n<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;Assert.IsNotNull(delegateReference.Target);<br>\r\n<em><strong>&nbsp;&nbsp;&nbsp;&nbsp;GC.KeepAlive(delegates);<br>\r\n</strong></em>&nbsp;&nbsp;&nbsp;&nbsp;delegates = null;<br>\r\n<br>\r\nWhich will keep the delegates alive until that point.&nbsp; I like this better as it may help explain it in-code a bit better.<br>\r\n<br>\r\n-b<br>\r\n<br>\r\n",
+    "PostedDate": "2008-08-29T12:59:11.673-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

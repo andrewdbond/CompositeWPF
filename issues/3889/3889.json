@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "We've refreshed the release to make the behavior consistent with Prism V1.  You can download the latest source from MSDN to get this fix:\n\nhttp://www.microsoft.com/downloads/details.aspx?FamilyID=fa07e1ce-ca3f-4b9b-a21b-e3fa10d013dd&DisplayLang=en",
+    "ClosedDate": "2009-02-26T11:54:12.217-08:00",
+    "CommentCount": 0,
+    "Custom": "",
+    "Description": "We have noticed that since we migrated to Prism V2 our region attached to TabControl in some situation result in multiple ActiveViews.\n \nExpected:\nSelectorItemsSourceSyncBehavior should not allow more than one active view inside the region.\n \nTo replicate the issue:\n \n1. Create a region on a Selector control such as a TabControl.\n2. Add and activate a first via code a view to the SelectorActive region.\n3. Add and activate a second via code a view to the SelectorActive region.\n4. You will noticed that you now have two ActiveViews  for the SelectorActive region.\n \nIn XAML:\n \n<TabControl cal:RegionManager.RegionName=\"TabRegion\" />\n \nIn Code:\n \nIView1 view1 = this.container.Resolve<IView1>();\nthis.regionManager.Regions[\"TabRegion\"].Add(view1, \"view1\");\nthis.regionManager.Regions[\"TabRegion\"].Activate(view1);\n \nIView2 view2 = this.container.Resolve<IView2>();\nthis.regionManager.Regions[\"TabRegion\"].Add(view2, \"view2\");\nthis.regionManager.Regions[\"TabRegion\"].Activate(view2);\n \n \nSolution: \n \nIn the SelectorItemsSourceSyncBehavior file, add to the ActiveViews_CollectionChanged handler code to deactivate existing view  in ActiveViews collection when new views are added to the ActiveViews collection.\n \nHere is the revised handler code for CollectionChanged :\n \n        private void ActiveViews_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)\n        {\n            if (this.updating)\n            {\n                return;\n            }\n \n            try\n            {\n                this.updating = true;\n \n                if (e.Action == NotifyCollectionChangedAction.Add)\n                {\n                    // Items previously Activated should be deactivate\n                    // as only one item can be active in a Selector Active Region.\n                    List<object> toDeactivateItems = new List<object>();\n \n                    foreach (object item in this.Region.ActiveViews)\n                    {\n                        if (item != e.NewItems[0] && this.Region.Views.Contains(item))\n                        {\n                            toDeactivateItems.Add(item);                    \n                        }\n                    }\n \n                    foreach (object item in toDeactivateItems)\n                    {\n                        this.Region.Deactivate(item);\n                    }\n \n                    this.hostControl.SelectedItem = e.NewItems[0];\n                }\n                else if (e.Action == NotifyCollectionChangedAction.Remove &&\n                         e.OldItems.Contains(this.hostControl.SelectedItem))\n                {\n                    this.hostControl.SelectedItem = null;\n                }\n            }\n            finally\n            {\n                this.updating = false;\n            }\n        }",
+    "LastUpdatedDate": "2013-05-16T05:28:59.713-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-02-26T06:41:44.87-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "SelectorItemsSourceSyncBehavior allows multiple ActiveViews",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 3889
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

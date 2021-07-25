@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "572809",
+    "ThreadId": "247761",
+    "Html": "\r\n<p><span style=\"color:black; font-size:10pt\">Dear All,</span></p>\r\n<p><span style=\"color:black; font-size:10pt\">I load&nbsp;a view using the following code:</span></p>\r\n<p><span style=\"color:black; font-size:10pt\"></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>RegionManager.RegisterViewWithRegion(RegionNames.AccountsDetailsRegion, () =&gt; ServiceLocator.Current.GetInstance&lt;AccountsView&gt;());\r\n\r\nThis view is showing a list of accounts, when the user select any and click edit, the view needs to load another View(with specific parameters) </pre>\r\n<pre>within the same region to show the details of the selected account</pre>\r\n<pre><span style=\"color:black; font-size:10pt\">so I load the view using the following code:</span></pre>\r\n</div>\r\n</span>\r\n<p></p>\r\n<p><span style=\"color:black; font-size:10pt\">&nbsp;</span>&nbsp;<span style=\"color:black; font-size:10pt\">RegionManager.RequestNavigate(RegionNames.AccountsDetailsRegion, new Uri(builder.ToString(), UriKind.Relative),NavigationCompleted);</span></p>\r\n<p><span style=\"color:black; font-size:10pt\"><span style=\"color:black; font-size:10pt\">In the debugger the region manager successfully loads the view and I can see it, also the NavigationCompleted event handler shows no errors...</span></span></p>\r\n<p><span style=\"color:black; font-size:10pt\"></span><span style=\"color:black; font-size:10pt\">What is possibly causing this .... !!</span></p>\r\n<p><span style=\"color:black; font-size:10pt\">Best regards</span></p>\r\n<p><span style=\"color:black; font-size:10pt\">Waleed</span></p>\r\n",
+    "PostedDate": "2011-02-27T08:06:19.41-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573097",
+    "ThreadId": "247761",
+    "Html": "<p>I have found that I am using ItemsControl to host the region not a ContentControl ...</p>\r\n<p>What is the difference, ItemsControl should be fine, right ...</p>\r\n<p>One more thing related to the issue;</p>\r\n<p>in the navigated view, I have a goback command and the navigationJournal is okay, but not going back, any help on this .</p>\r\n<p>Best regards</p>\r\n<p>Waleed</p>",
+    "PostedDate": "2011-02-28T00:35:38.827-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573227",
+    "ThreadId": "247761",
+    "Html": "<p>Dear all</p>\r\n<p>If anyone is intrested, the fix is load the first view using RequestNavigate in order to register this view as the start of the navigation.</p>\r\n<p>Best regards</p>\r\n<p>Waleed</p>",
+    "PostedDate": "2011-02-28T05:37:38.893-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573401",
+    "ThreadId": "247761",
+    "Html": "<p>Hi Waleed,</p>\r\n<p>I'm glad that you've solved your problem regarding navigation, and I thank you for sharing your insight with the rest of the community.</p>\r\n<p>As regarding your initial concern, there should be no difference between using an <strong>ItemsControl </strong>and a <strong>ContentControl </strong>in your case. For example, you could check the <em>HelloWorld QuickStart</em>, which has a region that is hosted on an <strong>ItemsControl</strong>, in which a single item is added.</p>\r\n<p>We've also tried adding a view to a region hosted in an ItemsControl using navigation, as you've done, and we faced no difficulties. Note that if you're using Unity as the Dependency Injection container, you should register a type mapping similar to the following in order for region navigation to work:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>ServiceLocator.Current.GetInstance&lt;IUnityContainer&gt;().RegisterType(<span style=\"color: blue;\">typeof</span>(<span style=\"color: blue;\">object</span>),<span style=\"color: blue;\">typeof</span>(Views.HelloWorldView),<span style=\"color: #a31515;\">\"HelloWorldView\"</span>);\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>This is necessary since the default implementation of the <strong>RegionNavigationContentLoader </strong>internally tries to resolve an instance of type object with the name specified in the <strong>RequestNavigate </strong>method (which, in case you're using MEF, is the contract name specified in the <strong>Export </strong>attribute).</p>\r\n<p>Here's the code of the <strong>RegionNavigationContentLoader.CreateNewRegionItem</strong> method to illustrate the aforementioned:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>        <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">virtual</span> <span style=\"color: blue;\">object</span> CreateNewRegionItem(<span style=\"color: blue;\">string</span> candidateTargetContract)\r\n        {\r\n            <span style=\"color: blue;\">object</span> newRegionItem;\r\n            <span style=\"color: blue;\">try</span>\r\n            {          \r\n                newRegionItem = <span style=\"color: blue;\">this</span>.serviceLocator.GetInstance&lt;<span style=\"color: blue;\">object</span>&gt;(candidateTargetContract);\r\n            }\r\n            <span style=\"color: blue;\">catch</span> (ActivationException e)\r\n            {\r\n                <span style=\"color: blue;\">throw</span> <span style=\"color: blue;\">new</span> InvalidOperationException(\r\n                    <span style=\"color: blue;\">string</span>.Format(CultureInfo.CurrentCulture, Resources.CannotCreateNavigationTarget, candidateTargetContract),\r\n                    e);\r\n            }\r\n            <span style=\"color: blue;\">return</span> newRegionItem;\r\n        }\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>If you are blocked by this behavior and can't find the reason why it happens, it could be helpful if you could provide us with a repro sample, so that we can help you diagnose what could be causing your issue.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-02-28T11:07:18.173-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573926",
+    "ThreadId": "247761",
+    "Html": "<p>I agree with you the ItemsControl is the same as the ContentControl.</p>\r\n<p>Appreciate your feedback...</p>\r\n<p>I need to ask about the CreationPolicy of the views (shared). how can this be used ... I always get the view already exists when I call the RequestNavigate.</p>\r\n<p>Any advice will be great.</p>\r\n<p>Waleed</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-03-01T09:09:47.613-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573940",
+    "ThreadId": "247761",
+    "Html": "<p>In order to specify that an export should not act as a singleton, you need to decorate your exported class with the <strong>PartCreationPolicy </strong>attribute in the following manner:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>[PartCreationPolicy(CreationPolicy.NonShared)]\r\n</pre>\r\n</div>\r\n</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-01T09:20:57.33-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573946",
+    "ThreadId": "247761",
+    "Html": "<p>Yes Guido, this is what I am doing ... but when I try to load the same view again using <strong>RequestNavigate </strong>I got an error saying <em>view already exists </em>!!</p>\r\n<p>Is there any handling script to this, or this should be working automatically by PRISM .. as I assume.</p>\r\n<p>Please advice</p>\r\n<p>Waleed</p>",
+    "PostedDate": "2011-03-01T09:27:40.967-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573953",
+    "ThreadId": "247761",
+    "Html": "<p>Waleed,</p>\r\n<p>The problem you're experiencing could be happening because the <strong>INavigationAware.NavigationTarget</strong> method in your view is returning true, hence the navigation service considers that the view already exists.</p>\r\n<p>You might find the explanation in the <a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28PandP.40%29.aspx\">Navigation chapter</a> of the Prism MSDN documentation useful for this.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-01T09:46:57.943-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "574032",
+    "ThreadId": "247761",
+    "Html": "<p>Dear Guido,</p>\r\n<p>The explanation is understood ... what is the solution .. should I activate the existing view or what ...</p>\r\n<p>Regards</p>\r\n<p>Waleed</p>",
+    "PostedDate": "2011-03-01T11:54:16.25-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "574430",
+    "ThreadId": "247761",
+    "Html": "<p>Hi Waleed,</p>\r\n<p>The solution I referred to in my previous answer was to make the <strong>INavigationAware.NavigationTarget</strong> method in your view to return false.</p>\r\n<p>In case that doesn't work, it would be helpful if you could provide us with further details regarding how you're implementing Navigation, or a repro sample for us to help you further.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-02T06:29:57.677-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "576109",
+    "ThreadId": "247761",
+    "Html": "<p>Dear Guido,</p>\r\n<p>I found the solution in this post : <a href=\"http://compositewpf.codeplex.com/discussions/247930\">http://compositewpf.codeplex.com/discussions/247930</a></p>\r\n<p>I implemented the&nbsp;<strong>IRegionMemberLifetime</strong> interface and everthing is working as excpected.</p>\r\n<p>Thanks</p>\r\n<p>Waleed</p>",
+    "PostedDate": "2011-03-05T13:39:57.1-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

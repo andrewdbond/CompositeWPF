@@ -1,0 +1,75 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Please see Prism 4.0 CTP - August 2010 at http://compositewpf.codeplex.com/releases/view/49963",
+    "ClosedDate": "2010-08-02T13:57:49.667-07:00",
+    "CommentCount": 7,
+    "Custom": "",
+    "Description": "I'm creating a sample application from scratch and I found that when I'm using the MefBootstrapper it seems regions I defined in Shell.xaml doen't register into the IRegionManager. When I try to add a View to a Region the RegionManager throws and exception stating the RegionName is not found. The Regions collection in the regionmanager is empty. \nIf I change the bootstrapper to UnityBootstrapper the example runs fine and the Region is found.\n \nMy code works this way:\n \n1) in the bootstrapper I create the Shell instance and assign it to Application.RootVisual\n2) in the Shell.xaml I 've declared an ItemsControl with RegionName = \"body\" and a button\n3) in a module I get the instance of MefRegionManager throught an Import\n4) in the module initialization I try to add a view to the region called \"body\".\n5) the region manager does not contains any region\n \nMy application runs with Silverlight 4.0.",
+    "LastUpdatedDate": "2013-05-16T05:28:51.47-07:00",
+    "PlannedForRelease": "Prism 4.0 CTP - August 2010",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Medium",
+      "Severity": 100,
+      "Id": 2
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-07-14T02:19:11.43-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Regions doesn't register in RegionManager when using MefBootstrapper with Silverlight 4.0",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 4,
+    "Id": 6985
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "I found that the MefBootstrapper miss the RegionManager initialization. While Unity bootstrapper contains these rows, they are not present in the mef version:\r\n\r\nRegionManager.SetRegionManager(this.Shell, this.Container.Resolve());\r\nRegionManager.UpdateRegions();\r\n\r\nI solved adding them into the InitializeShell method, changing the Resolve() method in GetExportedValues().\r\n\r\nIs this the right way to handle the region manager in mef?",
+      "PostedDate": "2010-07-14T04:54:50.633-07:00",
+      "Id": 156259
+    },
+    {
+      "Message": "I think that this problem is caused by a problem in the MefServiceLocatorAdapter, called by this line (line 126) of the RegionManager.cs file.\r\n\r\n->>>   DelayedRegionCreationBehavior regionCreationBehavior = locator.GetInstance();\r\n\r\nWhen i call the GetInstance of the ServiceLocator the method DoGetInstance of the MefServiceLocatorAdapter class are called, but it aways return the same instance of DelayedRegionCreationBehavior. With this problem only the last region defined in the Shell.xaml are usable, the others regions are overwrited. Using the UnityServiceLocatorAdapter this problem dosent occurs, because the method DoGetInstance return a different instance of the DelayedRegionCreationBehavior class every time that the method GetInstance of ServiceLocator are called.\r\n\r\nI dont know if that is one bug, or this is the way things shod be.\r\n",
+      "PostedDate": "2010-07-14T16:10:07.58-07:00",
+      "Id": 156260
+    },
+    {
+      "Message": "I do not think this is part of my issue. I found there is not any region registered into the RegionManager after the first load of the application. Adding the two lines I posted in the comment, in the InitializeShell override, solve the issue. After this solution I got the problem you are speaking, that prevent me to add more than one region in the shell.\r\nThanks for the support.",
+      "PostedDate": "2010-07-14T23:58:03.307-07:00",
+      "Id": 156261
+    },
+    {
+      "Message": "To solve this problem i do this:\r\n\r\nadd this line:\r\n[PartCreationPolicy(CreationPolicy.NonShared)]\r\n\r\nbefore the class declaration in the following files (part of the Composite.MefExtensions.Desktop project):\r\n\r\nSource\\CAL\\Desktop\\Composite.MefExtensions\\Regions\\Behaviors\\MefAutoPopulateRegionBehavior.cs\r\nSource\\CAL\\Desktop\\Composite.MefExtensions\\Regions\\Behaviors\\MefBindRegionContextToDependencyObjectBehavior.cs\r\nSource\\CAL\\Desktop\\Composite.MefExtensions\\Regions\\Behaviors\\MefDelayedRegionCreationBehavior.cs\r\nSource\\CAL\\Desktop\\Composite.MefExtensions\\Regions\\Behaviors\\MefRegionActiveAwareBehavior.cs\r\nSource\\CAL\\Desktop\\Composite.MefExtensions\\Regions\\Behaviors\\MefRegionManagerRegistrationBehavior.cs\r\nSource\\CAL\\Desktop\\Composite.MefExtensions\\Regions\\Behaviors\\MefSelectorItemsSourceSyncBehavior.cs\r\nSource\\CAL\\Desktop\\Composite.MefExtensions\\Regions\\Behaviors\\MefSyncRegionContextWithHostBehavior.cs\r\n\r\n\r\nThe result will look like this (example):\r\n\r\n...\r\n    [Export(typeof(AutoPopulateRegionBehavior))]\r\n    [PartCreationPolicy(CreationPolicy.NonShared)]\r\n    public class MefAutoPopulateRegionBehavior : AutoPopulateRegionBehavior\r\n    {\r\n...\r\n\r\n\r\nWith this changes now all my regions are loaded.\r\n\r\n\r\nBye",
+      "PostedDate": "2010-07-15T15:17:46.043-07:00",
+      "Id": 156262
+    },
+    {
+      "Message": "Hi - tracking this issue.  Can you give us a code sample?\r\n\r\nthanks larry",
+      "PostedDate": "2010-07-19T17:12:03.807-07:00",
+      "Id": 156263
+    },
+    {
+      "Message": "Oooops.\r\nWe hadn't needed the Region manager yet with out MEF samples, and we didn't port the necessary hook up code over into the MefBootstrapper.  The fix I added was to register the region manager with the Composition Container in ConfigureContainer, then in the Run method, adding the equivelent of the two missing lines that codeblock called out above.\r\n\r\nThanks for finding the issue.  The fix should be in the next drop...\r\n",
+      "PostedDate": "2010-07-20T13:26:16.017-07:00",
+      "Id": 156264
+    },
+    {
+      "Message": "Unfortunately I'm out of office for 2 weeks long holiday. I'm happy you finnaly found my issue. If you need some more help please feel free to contact me again.\r\nI'm back August 2nd. Thanks\r\n",
+      "PostedDate": "2010-07-23T15:06:28.667-07:00",
+      "Id": 156265
+    }
+  ]
+}

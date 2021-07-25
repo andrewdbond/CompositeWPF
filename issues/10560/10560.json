@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2014-05-01T10:21:42.967-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "I am unable to compile the PrismLibrary.  Here is where I am starting after loading the solution into Visual Studio 2013 from the PrismLibrary Link.  I would like to use this release, but I cannot get it compiled so I can grab the assemblies.\n\nInitially opening in VS 2013 get this error:\n\nWarning\t1\tThe referenced project 'MefModulesForTesting' is targeting a higher framework version (4.5.1) than this project’s current target framework version (4.5). This may lead to build failures if types from assemblies outside this project’s target framework are used by any project in the dependency chain.\tPrism.MefExtensions.Desktop.Tests\n\nSet project to target 4.5  Don't know why the release has the wrong framework targeted.\n\n\nRan Build -> Build Solution\n\nGot these errors\n\n\nError\t1\tThe underlying connection was closed: An unexpected error occurred on a send.\tPrism.TestSupport\n\nError\t2\tMetadata file 'D:\\Development\\Prism\\Source\\PrismLibrary\\Desktop\\Prism\\bin\\Debug\\Microsoft.Practices.Prism.dll' could not be found\tD:\\Development\\Prism\\Source\\PrismLibrary\\Desktop\\MefModulesForTesting\\CSC\tMefModulesForTesting\n\nError\t3\tMetadata file 'D:\\Development\\Prism\\Source\\PrismLibrary\\Desktop\\Prism.MefExtensions\\bin\\Debug\\Microsoft.Practices.Prism.MefExtensions.dll' could not be found\tD:\\Development\\Prism\\Source\\PrismLibrary\\Desktop\\MefModulesForTesting\\CSC\tMefModulesForTesting\n\nHad 25 Warnings related to the errors or something that was unused.\n\nFound Prism.PubSubEvents.Tests is referencing Microsoft.Practices.Prism.PubSubEvents, but do not see this in the solution.",
+    "LastUpdatedDate": "2014-05-01T10:21:42.967-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2014-03-18T07:16:26.707-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Cannot Compile Prism 4.2",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 10560
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hello,\r\n\r\nFirst of all, I'm afraid I wasn't able to reproduce the compile errors you mentioned after executing the repro steps described above. Where would the error occur? Do you have every system requirements installed? Also, I would like to know what version of __Visual Studio 2013__ are you running?\r\n\r\nOn the other hand, the warning messages you talk about do exist on the related __Prism__ package. The ___MefModulesForTesting___ project would not have any particular explanation for being targeted to __.Net 4.5.1__ other than this related drop may not be a completely clean release. \r\n\r\nHowever, these warnings should not impact in any way on the correct compilation and therefore, generation of every __Prism__ library assemblies. Changing the ___MefModulesForTesting___ framework target to 4.5 should successfully build the library.\r\n\r\nFinally, the ___PubSubEvents___ project is added to the solution as a __Nuget__ package, thus the project source code would not be needed. Unfortunately, this way it makes the ___PubSubEvents___ source code to not be available for debugging.\r\n\r\nI hope this helped you,Regards.\r\n\r\nGabriel Ostrowskyhttps://blogs.southworks.net/gostrowsky",
+      "PostedDate": "2014-03-19T10:22:55.407-07:00",
+      "Id": 156692
+    }
+  ]
+}

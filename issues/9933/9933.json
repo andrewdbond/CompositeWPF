@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\n\nWe are closing this work item as this doesn't seem to be an issue in Prism and the user reported that his problem was solved successfully.\n\nIf further support regarding this is needed, you can create a new thread in the discussion section, where we will try to help you with your concerns:\n - http://compositewpf.codeplex.com/discussions\n\nRegards,\n\nDamian Cherubini\nhttp://blogs.southworks.net/dcherubini",
+    "ClosedDate": "2013-03-08T10:42:06.933-08:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "I have developed an application using PRISM.\nWhen I run the application it crashes without any message.\nLoking in the Windows log I found the following entries.\nDoes anyone have an idea of the possible cause. This is happening only in one PC, while in the others all works.\n\nThank you for the help\nMassimo\n\n__Application error:__\nName of the application that generated the error: Collaborate.exe, version: 1.0.0.0, time stamp: 0x5122784a\nName of the module that generated the error: KERNELBASE.dll, version: 6.1.7601.17651, time stamp: 0x4e21213c\nException code: 0xe0434352\nOffset error 0x000000000000cacd\nID process that caused the error: 0x88c\nStart time of the application that generated the error: 0x01ce166cd9c16261\nPath to the application that generated the error: C: \\ Program Files \\ Collaborate \\ Collaborate.exe\nPath of the module that generated the error: C: \\ Windows \\ system32 \\ KERNELBASE.dll\nReport ID: 222eb0df-8260-11e2-B258-f46d0451a8fd\n\n__Errore .NET Runtime:__\nApplication: Collaborate.exe\nFramework version: v4.0.30319\nDescription: The process was terminated due to an unhandled exception.\nException information: Microsoft.Practices.Prism.Modularity.ModuleInitializeException\nStack:\n   in Microsoft.Practices.Prism.Modularity.ModuleInitializer.HandleModuleInitializationError(Microsoft.Practices.Prism.Modularity.ModuleInfo, System.String, System.Exception)\n   in Microsoft.Practices.Prism.Modularity.ModuleInitializer.Initialize(Microsoft.Practices.Prism.Modularity.ModuleInfo)\n   in Microsoft.Practices.Prism.Modularity.ModuleManager.InitializeModule(Microsoft.Practices.Prism.Modularity.ModuleInfo)\n   in Microsoft.Practices.Prism.Modularity.ModuleManager.LoadModulesThatAreReadyForLoad()\n   in Microsoft.Practices.Prism.Modularity.ModuleManager.LoadModuleTypes(System.Collections.Generic.IEnumerable`1<Microsoft.Practices.Prism.Modularity.ModuleInfo>)\n   in Microsoft.Practices.Prism.UnityExtensions.UnityBootstrapper.InitializeModules()\n   in Microsoft.Practices.Prism.UnityExtensions.UnityBootstrapper.Run(Boolean)\n   in Collaborate.App.RunInDebugMode()\n   in Collaborate.App.OnStartup(System.Windows.StartupEventArgs)\n   in System.Windows.Application.<.ctor>b__1(System.Object)\n   in System.Windows.Threading.ExceptionWrapper.InternalRealCall(System.Delegate, System.Object, Int32)\n   in MS.Internal.Threading.ExceptionFilterHelper.TryCatchWhen(System.Object, System.Delegate, System.Object, Int32, System.Delegate)\n   in System.Windows.Threading.Dispatcher.WrappedInvoke(System.Delegate, System.Object, Int32, System.Delegate)\n   in System.Windows.Threading.DispatcherOperation.InvokeImpl()\n   in System.Threading.ExecutionContext.runTryCode(System.Object)\n   in System.Runtime.CompilerServices.RuntimeHelpers.ExecuteCodeWithGuaranteedCleanup(TryCode, CleanupCode, System.Object)\n   in System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object, Boolean)\n   in System.Threading.ExecutionContext.Run(System.Threading.ExecutionContext, System.Threading.ContextCallback, System.Object)\n   in System.Windows.Threading.DispatcherOperation.Invoke()\n   in System.Windows.Threading.Dispatcher.ProcessQueue()\n   in System.Windows.Threading.Dispatcher.WndProcHook(IntPtr, Int32, IntPtr, IntPtr, Boolean ByRef)\n   in MS.Win32.HwndWrapper.WndProc(IntPtr, Int32, IntPtr, IntPtr, Boolean ByRef)\n   in MS.Win32.HwndSubclass.DispatcherCallbackOperation(System.Object)\n   in System.Windows.Threading.ExceptionWrapper.InternalRealCall(System.Delegate, System.Object, Int32)\n   in MS.Internal.Threading.ExceptionFilterHelper.TryCatchWhen(System.Object, System.Delegate, System.Object, Int32, System.Delegate)\n   in System.Windows.Threading.Dispatcher.WrappedInvoke(System.Delegate, System.Object, Int32, System.Delegate)\n   in System.Windows.Threading.Dispatcher.InvokeImpl(System.Windows.Threading.DispatcherPriority, System.TimeSpan, System.Delegate, System.Object, Int32)\n   in MS.Win32.HwndSubclass.SubclassWndProc(IntPtr, Int32, IntPtr, IntPtr)\n   in MS.Win32.UnsafeNativeMethods.DispatchMessage(System.Windows.Interop.MSG ByRef)\n   in System.Windows.Threading.Dispatcher.PushFrameImpl(System.Windows.Threading.DispatcherFrame)\n   in System.Windows.Application.RunInternal(System.Windows.Window)\n   in System.Windows.Application.Run()\n   in Collaborate.App.Main()",
+    "LastUpdatedDate": "2013-05-16T05:28:37.257-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2013-03-05T05:33:52.737-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Error while starting the application",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9933
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nBased on the stack trace of the exception, it seems that one of the modules in your application could not be initialized. Sadly, it doesn't seem to provide any information about what module failed or why it failed. As a possible approach to find the cause behind the exception, you could modify your application in order to catch the exception and show information about it. In order to do so, I believe you could use the __LoadModuleCompleted__ event of the __ModuleManager__ . You can find more information about it in the following section of the __Prism__ documentation:- [Chapter 4 - Modular Application Development - Detecting When a Module Has Been Loaded](http://msdn.microsoft.com/en-us/library/gg405479%28v=pandp.40%29.aspx#sec37)\r\n\r\nOn the other hand, if the application is working correctly in other computers, this problem might be related to the environment of that specific computer. As a starting point, you could check what differences can be found between that computer and the other ones, such as the __Windows__ version, the __.NET Framework__ version, etc.\r\n\r\nI hope this helps,\r\n\r\nDamian Cherubinihttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2013-03-06T11:20:19.033-08:00",
+      "Id": 156630
+    },
+    {
+      "Message": "Hi Damian,I finally put a try catch in the bootstrapper and I was able to get the problem.One of my modules was loading a local xml file that was not well formed.\r\n\r\nThank you for your helpMassimo Landi",
+      "PostedDate": "2013-03-07T06:40:51.497-08:00",
+      "Id": 156631
+    }
+  ]
+}

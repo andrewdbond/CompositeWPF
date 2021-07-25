@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "697696",
+    "ThreadId": "279325",
+    "Html": "<p>&nbsp;Hi! I created a prism design. It includes 3 of the project: Module A, Module B and ControllerModule.<br />The controller contains a reference to modules A and B.</p>\n<p>In the constructor of the controller creates a subscription to an event \"TestEvent\".</p>\n<p><br />_eventAggregator.GetEvent&lt;TestEvent&gt;().Subscribe(Test,true );</p>\n<p><br />The event \"TestEvent\" is initialized in the module A.</p>\n<p>&nbsp;_eventAggregator.GetEvent&lt;TestEvent&gt;().Publish(commandArg);</p>\n<p>Also, the controller defined an event handler \"Test\".</p>\n<p><br />private void Test(object obj) <br />{ <br />IRegion actionRegion = _regionManager.Regions[\"MainListRegion\" ];</p>\n<p>if (actionRegion != null ) <br />{</p>\n<p>MainListView mainListView = actionRegion.GetView(\"MainListView \") as MainListView ;</p>\n<p>if (twitListView == null )</p>\n<p>&nbsp; {</p>\n<p>mainListView= _container.Resolve&lt;MainListView &gt;();</p>\n<p>actionRegion.Add(mainListView,\"TwitListView\" );</p>\n<p>}</p>\n<p>((MainListViewModel)mainListView.DataContext).Text = obj.ToString();</p>\n<p><br />actionRegion.NavigationService.RequestNavigate(\"MainListView \" );</p>\n<p>}}</p>\n<p><br />Everything seems to work. But I can not understand why the property is not set Text! That is no data Show in Module A.</p>\n<p>Tell me please how to change the property of the controller module A?</p>",
+    "PostedDate": "2011-11-14T00:21:18.627-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "697968",
+    "ThreadId": "279325",
+    "Html": "<p>Hi,</p>\r\n<p>There are various factors that could produce the behavior you are experiencing. For example, it's possible that the <strong>Text </strong>property is being set correctly, but that your view is not being notified of this change. To notify the view of a property change in the view model you could implement the <a href=\"http://msdn.microsoft.com/en-us/library/system.componentmodel.inotifypropertychanged.aspx\">INofityPropertyChanged </a>interface in the view model and raise the <strong>PropertyChanged </strong>event in the setter of the <strong>Text </strong>property. Also, you might find useful to inherit your view model from the <a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.prism.viewmodel.notificationobject%28v=pandp.39%29.aspx\">NotificationObject </a>class as it provides an implementation of the aforementioned interface.</p>\r\n<p>Another possibility is that the <strong>Text </strong>property is being set correctly, but when you call the <strong>RequestNavigate </strong>method that view is removed or deactivated from the region and a new instance of the view (the one you exported with the \"MainListView\" name) is created. This new instance might have different view model with its own Text property. You can find more information about this here:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28PandP.40%29.aspx\">Chapter 8: Navigation in MSDN</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-11-14T10:11:25.017-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "698232",
+    "ThreadId": "279325",
+    "Html": "<p><span id=\"result_box\" lang=\"en\"><span class=\"hps\">In my project</span> <span class=\"hps\">implements the interface</span> <span class=\"hps\">INotifyPropertyChanged.</span> <span class=\"hps\">But</span> <span class=\"hps\">sorry</span> <span class=\"hps\">to</span> <span class=\"hps\">change</span> <span class=\"hps\">the properties of</span> <span class=\"hps\">the text is not</span> <span class=\"hps\">happening!</span><br /><br /> <span class=\"hps\">If you</span> <span class=\"hps\">use a smart</span> <span class=\"hps\">module</span> <span class=\"hps\">\"Controller\"</span> <span class=\"hps\">in which the</span> <span class=\"hps\">subscription</span> <span class=\"hps\">to all events</span> <span class=\"hps\">and will be processed</span><span>, then</span> <span class=\"hps\">\"Controller\"</span> <span class=\"hps\">can not change the</span> <span class=\"hps\">properties</span> <span class=\"hps\">of another module</span> <span class=\"hps\">in the processing of</span> <span class=\"hps\">events.</span><br /><br /> <span class=\"hps\">And if you</span> <span class=\"hps\">handle the event</span> <span class=\"hps\">in the unit</span> <span class=\"hps\">where you want to</span> <span class=\"hps\">change the properties of</span> <span class=\"hps\">all the</span> <span class=\"hps\">works fine!<br /></span></span></p>",
+    "PostedDate": "2011-11-14T22:13:09.397-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "698546",
+    "ThreadId": "279325",
+    "Html": "<p>Hi,</p>\r\n<p>If you are still experiencing this undesired behavior, it would be useful if you could provide us with a repro-sample application portraying this problem so we can help you find the cause behind it.</p>\r\n<p>You can upload it, for example, to <a href=\"http://www.google.com.ar/url?sa=t&amp;rct=j&amp;q=skydrive&amp;source=web&amp;cd=1&amp;ved=0CC0QFjAA&amp;url=http%3A%2F%2Fskydrive.live.com%2F&amp;ei=XK3CTpE0wdWBB_3EzYAP&amp;usg=AFQjCNFPjnOyRxzlh7QAhbJRBxrV9FhZUA&amp;sig2=5pk4iOaekxSUViITZGusRg&amp;cad=rja\">Skydrive</a> or to another web storage service of your preference.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-11-15T10:25:56.103-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

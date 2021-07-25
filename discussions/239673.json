@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "540871",
+    "ThreadId": "239673",
+    "Html": "\r\n<p>I have a&nbsp;region defined inside a Third party Child Window. The child window is instantiated in the shell by subscribing to an event. The region is defined in ModuleA which has content for this child window. How can I get the parameters from the event\r\n subscription in this ModuleAViewModel from the shell.</p>\r\n<p>&nbsp;</p>\r\n<p>example shell:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre> <span style=\"color:blue\">public</span> Shell(IEventAggregator aggregator)\r\n        {\r\n            InitializeComponent();\r\n            <span style=\"color:blue\">this</span>.aggregator = aggregator;\r\n            <span style=\"color:blue\">this</span>.aggregator.GetEvent&lt;RadWindowShowEvent&gt;().Subscribe(<span style=\"color:blue\">this</span>.ShowRadWindow);\r\n        }\r\n\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> ShowRadWindow(<span style=\"color:blue\">string</span> commandName)\r\n        {\r\n           &nbsp;&nbsp;MyRadWindow obj = new MyRadWindow();</pre>\r\n<pre>  &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; obj.ShowDialog();\r\n        }\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>How can I either subscribe to this event in ModuleAViewModel or have access to string commandName?&nbsp;</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2010-12-27T09:24:53.363-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "540888",
+    "ThreadId": "239673",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>As explained in <a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28PandP.40%29.aspx\">\r\nthis chapter</a> from the Prism MSDN documentation, the Event Aggregator provides multicast eventing functionality between loosely coupled components. That is to say, you could subscribe to an event in several components, all of which will recibe the event\r\n simultaneously. So, you could import the Event Aggregator in your view model and subscribe to the event, as you're doing in your shell.</p>\r\n<p>Additionally, if you need to inject different views inside a region and switch between them based on the application's flow, you might find\r\n<a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28PandP.40%29.aspx\">Prism Navigation</a> useful to your scenario.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-27T10:28:05.15-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "540911",
+    "ThreadId": "239673",
+    "Html": "\r\n<p>Thanks. I was trying to do that however I wasn't able to trigger the method on the child window. I had to move MyRadWindow instantiation in the public shell and that worked.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-27T12:10:27.977-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

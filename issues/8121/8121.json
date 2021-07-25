@@ -1,0 +1,76 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 6,
+    "Custom": "",
+    "Description": "If I use a ContentControl as my navigation region, the first time I navigate that region to a view it works fine. When I navigate to a different view, that works fine. However, when I navigate back to the original view, I get an error - \"View already exists in region\" and the original view is not activated. I expected my existing view to get activated instead of getting this error. How can I properly work around this so that the original view is simply activated?\n \nI'm using Unity.",
+    "LastUpdatedDate": "2013-03-14T11:40:27.95-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-04-14T00:18:51.08-07:00",
+    "Status": {
+      "Name": "Active",
+      "Id": 2
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Prism ContentControl Region RequestNavigate - \"View already exists in region\"",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 3,
+    "Id": 8121
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897983,
+      "FileName": "UnityRegionNavigationContentLoader.cs",
+      "DownloadUrl": ".\\897983"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "I wonder if someone can advise me on the RequestNavigate. I did post the question and log an incident on the patterns and practises website for Prism but nobody responded.\r\nWe use RequestNavigate extensively to populate the different regions on the composite UI. In this scenario, I’ve got a user control with a region and using RequestNavigate I populate the region with a user control that consist out of its own regions where I load other user controls.\r\n\r\nThis works perfectly on most areas but for some reason if I implement the INavigationAware in the viewmodels and set the inner RequestNavigation to load all the other user controls in the OnNavigatedTo as stated above it load the first time perfectly without any issues but if I navigate away and then back it fails to load the inner user controls. If I move the RequestNavigate from the OnNavigatedTo to the load of the user control it works.\r\nSo I did solve the problem but don't like the solution and would like to keep everything in the viewmodel. Any advice will be appreciated?\r\n\r\n\r\n",
+      "PostedDate": "2011-04-18T01:09:16.15-07:00",
+      "Id": 156434
+    },
+    {
+      "Message": "Hi,\r\n\r\nAs requested in the related thread in the discussion board (http://compositewpf.codeplex.com/discussions/233232), it would be helpful if you could provide us with a repro sample, so that we can help you determine the cause of this unexpected behavior and propose a way to solve your issue.\r\n\r\nPlease, let us continue the discussion in the discussion board until we find the cause of this behavior.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-04-20T11:40:36.88-07:00",
+      "Id": 156435
+    },
+    {
+      "Message": "I almost met the same problem, and I solved the problem by following steps:\r\n1, User View injection method only.\r\n2, specify [RegionMemberLifetime(KeepAlive=false)] to sure the view now exist after deactive.\r\n\r\nI hope this can give you some clue\r\n",
+      "PostedDate": "2011-06-06T06:24:57.19-07:00",
+      "Id": 156436
+    },
+    {
+      "Message": "Hi,\r\n\r\nIt is possible that you're experiencing this problem because you're specifying a contract name different to the view's type name. You might find the following blog post by Agustin Adami useful, where this problem is explained in further detail, and a possible modification that might address it is proposed:\r\nhttp://blogs.southworks.net/aadami/2011/10/14/matching-contract-names-and-view-names-in-prism-region-navigation/\r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi ",
+      "PostedDate": "2011-10-14T13:29:03.797-07:00",
+      "Id": 156437
+    },
+    {
+      "Message": "Please see my related issue, which has now been folded into this one. I was using Prism with MEF and my problem was fixed by renaming the export contract to match that pattern that the RegionNavigationContentLoader.GetCandidatesFromRegion method was looking for.\r\n\r\n- http://compositewpf.codeplex.com/workitem/7468",
+      "PostedDate": "2011-10-28T13:17:26.723-07:00",
+      "Id": 156438
+    },
+    {
+      "Message": "Hi\r\n\r\nFor those interested in this subject, we are attaching a UnityRegionNavigationContentLoader class that overrides the GetCandidatesFromRegion method in order to find the regions' views that were registered in the container with the specified contract name (even if the contract name is different from the type).\r\n\r\nUsing this, you should be able to workaround the following two issues:\r\n - When you try to navigate to a singleton view that were register with a contract name different from its type, the navigation fails.\r\n - When you try to navigate to a non-singleton view that were registered with a contract name different from its type, a new view is injected in the region regardless of the value returned from the IsNavigationTarget method.\r\n\r\nIn order to use this content loader, you need to register it by overriding the ConfigureContainer method of your bootstrapper.\r\n\r\nThis class is based on the code fix proposed by the user LucaGanio in the following work item, to workaround this same issue when using MEF:\r\n- http://compositewpf.codeplex.com/workitem/9439\r\n\r\nI hope you find this useful,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-06-27T12:11:02.513-07:00",
+      "Id": 156439
+    }
+  ]
+}

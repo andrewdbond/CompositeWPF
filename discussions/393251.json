@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "904746",
+    "ThreadId": "393251",
+    "Html": "\r\n<p>Suppose I have a region with several views registered in it.</p>\r\n<p>I have always been navigating to one of them.</p>\r\n<p>Is there a simple way&nbsp;of getting the name of the currently navigated view on a region?</p>\r\n<p>Silverlight 5 Prism 4.1</p>\r\n<p>&nbsp;</p>\r\n<p>Rafael</p>\r\n",
+    "PostedDate": "2012-08-27T13:18:54.927-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "905080",
+    "ThreadId": "393251",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding if you are using region-based navigation operations you could retrieve the current navigation entry of the content that is currently displayed by benefiting of the Navigation Journal's <strong>CurrentEntry </strong>property. For example you could try something like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">this</span>.regionManager.Regions[<span style=\"color: #a31515;\">\"MyRegion\"</span>].NavigationService.Journal.CurrentEntry.Uri;\r\n</pre>\r\n</div>\r\n</p>\r\n<p>For more information about the <strong>Navigation Journal</strong> you could check the following section of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40)#sec13\">Chapter 8: Navigation, Using the Navigation Journal</a></li>\r\n</ul>\r\n<p>Also, if what you want is to retrieve the current active view in a single active region, for example you could retrieve it using the <strong>ActiveViews </strong>property defined in the <strong>Region </strong>class, which returns the collection of all the active views in the region. For example like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">this</span>.regionManager.Regions[<span style=\"color: #a31515;\">\"MyRegion\"</span>].ActiveViews.FirstOrDefault();\r\n</pre>\r\n</div>\r\nI hope you find this helpful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-08-28T05:56:16.537-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,297 @@
+<div class="wikidoc"><h1>Summary of what&#39;s new</h1><ul><li><a href="#RegionManager">Region Manager &#47; Region implementation has been replaced with an extensible mechanism</a></li>
+<li><a href="#CollapsibleRegion">Collapsible region functionality has now been refactored to a Collabsible tab control</a></li>
+<li><a href="#BuySellScreeen">New transactional buy-sell screen</a>
+<ul><li>New toolbar region for buy-sell commands</li>
+<li>New generic commanding infrastructure for simple and multi-cast scenarios.</li></ul></li></ul>
+<a name="RegionManager"></a>
+<h2>RegionManager</h2>In the last release, the <b>RegionManagerService</b> was hardcoded to create only two types of Regions namely a <b>PanelRegion</b> which is a simple container for one view, and an <b>ItemsControlRegion</b> which can contain many childen. The decision on which one to use was based on whether or not the <b>UIElement</b> derived from a <b>Panel</b> or from an Item container. This works for fairly simple scenarios, but breaks down when you want to support a new type of region, say a <b>TabRegion</b>. It either requires you to modify the <b>RegionManagerService</b> to add specific support for the new type, or it requires you to create a custom control that has ends up intercepting when the item is added to the ItemsControlRegion in order to get the desired effect. <br /><br />In CAB, Workspaces (which are equivalent to Regions in many ways) were extensible. All a Workspace needed was implement IWorkspace and you are done.<br />In Prism however because we are leveraging attached properties for registration of Regions, the case is a little different. There&#39;s only so much information we have at the time the region is registered. One option was to add an additional attached property that would allow specifying the specific type of Region to create. From a maintainbility standpoint this is a bit ugly, plus requires hard-coding in the XAML.<br /><br />The solution we came up with was to have the RegionManagerService resolve the appropriate container to use, without requiring the additional attached property. The way this works is through utilizing the new <br /><br /><b>IRegion&lt;T&gt;</b> and <b>IRegionAdapter</b> interfaces. Essentially what happens now in the RegionManager service, is when a region is added, the service looks at the UIElement type for the container element (the element that has the Region attached property set). <br /><br /><pre>
+IRegion&lt;T&gt;
+
+    public interface IRegion&lt;T&gt; : IRegion, IRegionAdapter
+    {
+       
+    }
+
+IRegionAdapter.cs
+
+    public interface IRegionAdapter
+    {
+        void Initialize(DependencyObject obj);
+    }
+</pre><br />It then resolves against the container for an <b>IRegion&lt;T&gt;</b> where T is the container element type. If nothing is returned, then the service will move to the base type, and continue to walk up the hierarchy until it finds an <b>IRegion&lt;&gt;</b>. Once it does, then the Region is casted to an <b>IRegionAdapter</b> (<b>IRegion&lt;T&gt;</b> implements <b>IRegionAdapter</b>). That casted adapter will then have it&#39;s initialize method called, and the container element will be passed in. Next the adapter (which is also the region) will be added to the RegionManagerService&#39;s region dictionary which effectively registers the region.<br /><br /><pre>
+RegionManagerService.cs
+
+    public void SetRegion(DependencyObject containerElement, string regionName)
+    {
+        IPrismContainer container = PrismContainerProvider.Provider;
+
+        Type currentType = containerElement.GetType();
+
+        while (currentType != typeof(DependencyObject))
+        {
+            IRegionAdapter region = (IRegionAdapter)container.TryResolve(typeof(IRegion&lt;&gt;).MakeGenericType(currentType));
+
+            if (region != null)
+            {
+                region.Initialize(containerElement);
+                _regions.Add(regionName, (IRegion)region);
+                return;
+            }
+
+            currentType = currentType.BaseType;
+        }
+    }
+</pre><br />In order for the regions to be discovered, they need to be registered in the container. In the RI we are now doing this in the <b>Bootstrapper.RegisterRegions</b> method, though nothing stops this from happening in a module. In this case we are doing this at the bootstrapper level as these types of regions are global for all modules.<br /><br /><pre>
+Bootstrapper.cs
+
+    private void RegisterRegions()
+    {
+        container.RegisterType&lt;IRegion&lt;Panel&gt;, PanelRegion&gt;();
+        container.RegisterType&lt;IRegion&lt;ItemsControl&gt;, ItemsControlRegion&gt;();
+    }
+</pre><br />So how would you now extend to add additional regions? One way would be to create a new custom control that inherits from one of the existing controls and then associate the region with it. For example you can create a new DeckPanel and simply inherit from WPF Grid without adding anything else. Then make your DeckRegion implement <b>IRegion&lt;DeckRegion&gt;. </b><br /><br /><pre>
+DeckPanel.cs
+    public class DeckPanel : Grid
+    {
+        public DeckPanel()
+        {
+           
+        }
+    }
+
+DeckRegion.cs
+    public class DeckRegion : IRegion&lt;DeckPanel&gt;
+    {
+        //DeckRegion implementation goes here
+        ...
+    }
+</pre><br />Next register the DeckRegion as the associated type. <br /><br /><pre>
+    private void RegisterRegions()
+    {
+        ...
+        container.RegisterType&lt;IRegion&lt;DeckPanel&gt;, DeckRegion&gt;();
+    }
+</pre><br />Finally go and add your region in the XAML<br /><br /><pre>
+    &lt;Border Grid.Row=&quot;1&quot; BorderBrush=&quot;Navy&quot; BorderThickness=&quot;2&quot; &gt;
+        &lt;!--&lt;StackPanel Prism:RegionManager.Region=&quot;contentRegion&quot;/&gt;--&gt;
+        &lt;Controls:DeckPanel Prism:RegionManager.Region=&quot;contentRegion&quot;/&gt;
+    &lt;/Border&gt;
+</pre><br />Expect to see more refactoring as we go forward and more leveraging of this capability. <br /><a name="CollapsibleRegion"></a>
+<h2>Collapsible region</h2>In the previous build, the Collapsible region functionality was handled through a <b>SlidingTemplate</b> style that was applied to a TabControl. We weren&#39;t very happy with this as it made the XAML very difficult to maintain. We&#39;ve now refactored the functionality to a <b>CollapsibleTabControl</b>. The control manages the collapsible state and handles various mouse events.<br /><br /><pre>
+CollapsibleTabControl.cs
+
+    public class CollapsibleTabControl : TabControl
+    {
+        public static ICommand ToggleDockedStateCommand = new RoutedCommand();
+        public static DependencyProperty CollapsingStateProperty;
+
+        static CollapsibleTabControl()
+        {
+	    ... 
+        }
+
+        public CollapsibleTabControl()
+        {
+	    ... 
+        }
+
+        void CollapsibleTabControl_ToggleDockedStateCommandExecutedRoutedEventHandler(object sender, ExecutedRoutedEventArgs e)
+        {
+	    ... 
+        }
+
+        void CollapsibleTabControl_MouseLeave(object sender, MouseEventArgs e)
+        {
+	    ... 
+        }
+
+        void CollapsibleTabControl_MouseEnter(object sender, MouseEventArgs e)
+        {
+	    ... 
+        }
+
+        public CollapsingState CollapsingState
+        {
+	    ... 
+        }
+    }
+</pre><br />The control also has an associated style with a control template that is set in the a resource dictionary in the themes folder.<br /><br /><pre>
+Generic.xaml
+
+&lt;ResourceDictionary
+    xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;
+    xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;
+    xmlns:local=&quot;clr-namespace:StockTraderRI.Controls&quot;&gt;
+
+    &lt;Style TargetType=&quot;{x:Type local:CollapsibleTabControl}&quot;&gt;
+        &lt;Setter Property=&quot;Template&quot;&gt;
+            &lt;Setter.Value&gt;
+                &lt;ControlTemplate TargetType=&quot;{x:Type local:CollapsibleTabControl}&quot;&gt;
+</pre><br />Having the functionality moved into a control, makes the Shell.xaml much cleaner and easier to maintain.<br /><br /><pre>
+Shell.xaml
+
+    &lt;controls:CollapsibleTabControl x:Name=&quot;CollapsibleTab&quot; Grid.Row=&quot;1&quot; Grid.Column=&quot;1&quot; prism:RegionManager.Region=&quot;CollapsibleRegion&quot;/&gt;
+</pre><br />Notice the <b>CollapsibleRegion</b> above. You might be thinking it&#39;s using the new <b>RegionManager</b> functionality we described in the last section. It&#39;s not :) However, this is one of the areas I was hinting at that we might to refactor to that model (IRegion&lt;CollapsibleTabControl&gt; if it makes sense. Let us know if you think this makes sense.<br /><a name="BuySellScreeen"></a>
+<h2>Buy-Sell screen &amp; Commanding infrastructure</h2>In this iteration, our top-priority was to focus more on the commanding. In the past iterations, we looked at simple commanding scenarios. In this iteration, we wanted to focus on more complex, multi-instance scenarios. By mutli-instance, we mean multiple instances of the same screen that each have their own commands. These commands are linked to a common toolbar, which brings out the challenge of how to target the correct commands based on whichever screen is active. This is further complicated in a composite, because these screen instances may in themselves be composites, with the commands being handled by one of it&#39;s inner presenters. The other challenge is around doing a batch operation, that needs to act on all of the instances. <br /><br />In order to drive this out,We added a new Buy-Sell screen which allows a trader to purchase or sell shares. The screen is based on a batching concept meaning that multiple buy-sells can be created and then be submitted either individually or in one shot. The Buy-Sell functionality contains several parts. 
+<ul><li><b>TransactionView</b> is the composite view that represents the Buy/Sell transaction.</li>
+<li><b>BuySellDetailsview</b> is a child view that represents the data for the buy/sell.</li>
+<li><b>BuySellCommandView</b> is a child view that contains the commands for the transaction view.</li>
+<li>In the shell, there is a (MainToolbarRegion* that has a <b>TransactionControl</b> added to it which contains buttons related to the active buy/sell transaction.</li>
+<li>The <b>PositionGrid</b> contains a <b>watchlistContextMenu</b> that pops up for creating new Buy/Sell transactions.</li></ul>
+<br /><pre>
+Shell.xaml
+
+    &lt;ToolBarTray Grid.Row=&quot;0&quot; Grid.ColumnSpan=&quot;2&quot;&gt;
+        &lt;ToolBar Name=&quot;MainToolbar&quot; prism:RegionManager.Region=&quot;MainToolbarRegion&quot;/&gt;
+    &lt;/ToolBarTray&gt;
+</pre><br /><br />TransactionControl.xaml<br /><br />    &lt;Grid&gt;<br />        &lt;StackPanel Orientation=&quot;Horizontal&quot;&gt;<br />            &lt;Button Name=&quot;SubmitToolbarButton&quot; Margin=&quot;2,0 2,0&quot;&gt;Submit&lt;/Button&gt;<br />            &lt;Button Name=&quot;CancelToolbarButton&quot; Margin=&quot;0,0 2,0&quot;&gt;Cancel&lt;/Button&gt;<br />            &lt;Button Name=&quot;SubmitAllToolbarButton&quot; Margin=&quot;0,0 2,0&quot; Command=&quot;{x:Static inf:StockTraderRICommands.SubmitAllTransactionCommand}&quot;&gt;Submit All&lt;/Button&gt;<br />            &lt;Button Name=&quot;CancelAllToolbarButton&quot; Margin=&quot;0,0 2,0&quot; Command=&quot;{x:Static inf:StockTraderRICommands.CancelAllTransactionCommand}&quot;&gt;Cancel All&lt;/Button&gt;<br />            &lt;/StackPanel&gt;<br />    &lt;/Grid&gt;<br />}}<br /><b>Note:</b>We know that for this simple RI, this is somehwhat contrived. We could have easily implemented the functionality without using a Composite View. However, we&#39;ve heard from customers that handling complex Composite Views that contain similar setups are fairly common. As such in order to look at adderss those scenarios, we need to address them somehow. Although in this case having a composite is probably not the most realistic, if this RI had similar to complexity as to what is common in Composite apps, it is entirely possible that you would have transactional composite views that contain commands.<br /><b>Technical Challenges</b><br />The Buy/Sell screen contains quite a few techincal challenges relating to commands
+<ul><li>Submit/Cancel button and toolbar buttons should only submit/cancel the current transaction.</li>
+<li>Submit All/Cancel All toolbar button should submit/cancel all transactions.</li>
+<li>submit/Submit All buttons and toolbar buttons should be disabled if there are any validation errors</li>
+<li>Submit/Cancel button and toolbar button need to close the transaction view and remove it from the region.</li></ul>
+All of the above relate to one thing, command routing. Now WPF has it&#39;s own built in <b>RoutedUICommand</b>, however as we mentioned previously, <b>RoutedUICommands</b> only walk up the visual tree which means the command handling must be at the view level. In this case we want the commands to route directly to the Presenters. The other problem is that RoutedUICommands, don&#39;t allow sibling views to handle the command. For example in the case of the Buy/Sell screen, the submit button lives in the BuySellCommandView, while the BuySellDetailsView which is its sibing, handles CanExecute and Execute. With a RoutedUICommand, the BuySellDetailsView will never get notified. <br /><br />Also there is the issue of disabling the SubmitAll. Whenever the transaction is invalid, Submit and SubmitAll both need to disable. It is possible to handle this, but it requires a lot of wiring. What is needed is a way to wire up a set of commands together so that disabling one, disables the other and vice versa. You also need for SubmitAll, a way to have it to notify each of the different buy/sell screens that they should submit. We looked at several different ways to address this including using RoutedUICommands, and an EventBroker type mechanism. We found neither to be optimal, which led to our third option, a set of new commands including a set of core reusable commands.
+<h2>TransactionCommand</h2>The TransactionCommand is used for initiating a new Buy/Sell and is wired up to the Buy/Sell context menu in the positions screen. This command fires off a StartTransaction event passing in the appropriate parameters for whether it is a buy or a sell.<br /><br /><pre>
+TransactionCommand.cs
+
+    public class TransactionCommand : ICommand
+    {
+        public TransactionType TransactionType { get; set; }
+        
+        public event EventHandler CanExecuteChanged;
+
+        public void Execute(object parameter)
+        {
+            var transactionInfo = new TransactionInfo() { TransactionType = this.TransactionType, TickerSymbol = parameter as string };
+            StartTransaction(this, new DataEventArgs&lt;TransactionInfo&gt;(transactionInfo));
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public event EventHandler&lt;DataEventArgs&lt;TransactionInfo&gt;&gt; StartTransaction = delegate { };
+    }
+</pre>
+<h2>DelegateCommand</h2>This type of command does not contain logic to in the Execute or CanExecute methods, instead, it invokes delegates supplied by the class consumer. The consumer in this case is a Presenter which handles the command. Below you can see the CanExecute and Execute methods.<br /><br /><pre>
+DelegateCommand.cs
+
+public class DelegateCommand : ICommand
+{
+    Action&lt;object&gt; executeMethod = null;
+    Func&lt;object, bool&gt; canExecuteMethod = null;
+
+    public DelegateCommand(Action&lt;object&gt; executeMethod, Func&lt;object, bool&gt; canExecuteMethod)
+    {
+        if (executeMethod == null)
+            throw new ArgumentNullException(&quot;executeMethod&quot;);
+
+        this.executeMethod = executeMethod;
+        this.canExecuteMethod = canExecuteMethod;
+    }
+
+    public bool CanExecute(object parameter)
+    {
+        if (canExecuteMethod != null)
+        {
+            return canExecuteMethod(parameter);
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    public void Execute(object parameter)
+    {
+        executeMethod(parameter);
+    }
+}
+</pre>
+<h2>MultidispatchCommand</h2>This type of command holds a queue of commands that are to be executed when the command is executed. Users of this class can register or unregister commands. By using this class, multiple subscribers can handle a single command. Using the MultiDispatchCommand also allows each of the child commands to vote as to whether or not the command is enabled, as the CanExecute method on the MultiDispatchCommand will poll each of the children.<br /><br />A common scenario for MultiDispatchCommand is when you have a SaveAll command, that executes individual Save commands. In the RI we are using the MultiDispatchCommand for the Buy/Sell scenario for SubmitAll and CancelAll. The SaveAll command automatically disables if any of the child Saves are disabled. Below you can see the Execute and CanExecute methods.<br /><br /><pre>
+MultiDispatchCommand.cs
+
+public class MultiDispatchCommand : ICommand
+{
+    //TODO: Consider making this list a weakreference in case the subscribing command needs to go away.
+
+    readonly List&lt;ICommand&gt; registeredCommands = new List&lt;ICommand&gt;();
+
+    public MultiDispatchCommand()
+    {
+    }
+
+    public bool CanExecute(object parameter)
+    {
+        bool hasEnabledCommandsThatShouldBeExecuted = false;
+
+        foreach (var command in registeredCommands)
+        {
+            if (ShouldExecute(command))
+            {
+                if (!command.CanExecute(parameter))
+                {
+                    return false;
+                }
+
+                hasEnabledCommandsThatShouldBeExecuted = true;
+            }
+
+        }
+        return hasEnabledCommandsThatShouldBeExecuted;
+    }
+
+    public event EventHandler CanExecuteChanged = delegate { };
+
+    public virtual void Execute(object parameter)
+    {
+        Queue&lt;ICommand&gt; commands = new Queue&lt;ICommand&gt;(registeredCommands);
+
+        while (commands.Count &gt; 0)
+        {
+            ICommand command = commands.Dequeue();
+            if (ShouldExecute(command))
+                command.Execute(parameter);
+        }
+    }
+
+}
+</pre>
+<h2>AciveAwareDelegateCommand</h2>This class is an extension to the DelegateCommand class. This class adds the notion of &quot;active&quot; to the command, by implementing the IActiveAware interface, which contains the IsActive property. The IActiveAware interface is shown below:<br /><br /><pre>
+IActiveAware.cs
+
+public interface IActiveAware
+{
+    bool IsActive { get; }
+    event EventHandler IsActiveChanged;
+}
+</pre><br />!!ActiveAwareMultiDispatchCommand<br />This class is an extension of the MultiDispatchCommand class. This class handles commands that implement the IActiveAware interface. When executing, this command only dispatches commands that are active by checking the IsActive property of each command. As each command is registered, the ActiveAwareMultiDispatchCommand subscribes to the IsActiveChanged event.	<br /><pre>
+ActiveAwareMultiDispatchCommand.cs
+
+public class ActiveAwareMultiDispatchCommand : MultiDispatchCommand
+{
+    protected override bool ShouldExecute(System.Windows.Input.ICommand command)
+    {
+        var activeAwareCommand = command as IActiveAware;
+
+        if (activeAwareCommand == null)
+        {
+            return base.ShouldExecute(command);
+        }
+        else
+        {
+            return (activeAwareCommand.IsActive &amp;&amp; base.ShouldExecute(command));
+        }
+    }
+
+    public override void RegisterCommand(System.Windows.Input.ICommand command)
+    {
+        base.RegisterCommand(command);
+        var activeAwareCommand = command as IActiveAware;
+        if (activeAwareCommand != null)
+        {
+            activeAwareCommand.IsActiveChanged += activeAwareCommand_IsActiveChanged;
+        }
+    }	
+}
+</pre><br /></div><div class="ClearBoth"></div>

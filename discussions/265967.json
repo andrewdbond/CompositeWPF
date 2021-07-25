@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "645289",
+    "ThreadId": "265967",
+    "Html": "\r\n<p>While looking at the implementation of this base class, I noticed that in the UpdateEnabledState method, a strong reference is not created before using TargetObject.&nbsp; I thought the correct use of weak reference was to first make a strong reference,\r\n then check if that reference == null?&nbsp; I'm probably missing something here, but isn't it possible that TargetObject could be collected between the if statement and where its used in the else statement, as extremely unlikely as that may be?</p>\r\n",
+    "PostedDate": "2011-07-20T19:28:54.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "646153",
+    "ThreadId": "265967",
+    "Html": "<p>Hi,</p>\r\n<p>The use of a weak reference is to prevent an object to be kept in memory by that reference (that is to say, the object will remain in memory if it has at least one strong reference anywhere else). If you make a strong reference first, the purpose of the weak reference will be broken, as the target object would be kept in memory unnecessarily, only being referenced by the Command Behavior.</p>\r\n<p>As for the possibility you're mentioning, based on my understanding of the working of garbage collection in .NET, it seems that the risk for that to happen shouldn't account for the cost of using a strong reference (since the object is being used in the same block of code, which flows synchronously).</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-22T07:38:18.13-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

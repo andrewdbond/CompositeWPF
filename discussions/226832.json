@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "492058",
+    "ThreadId": "226832",
+    "Html": "<p><span style=\"font-size:9.5pt\">Using: Prism Prism v4 - Drop 7, RibbonControlsLibrary 3.5.40729.1</span></p>\r\n<p><span style=\"font-size:9.5pt\">I have a RibbonContextualTabGroupItemsControl that is a region. My ribbon binds to this for its ContextualTabGroupsSource property. This is so modules can register their own contexts for ribbon tabs they may inject.</span></p>\r\n<p><span style=\"font-size:9.5pt\">&nbsp;</span><span style=\"font-size:9.5pt\">When I call RegisterViewWithRegion with 1 context, everything works fine. When I attempt to register another context Microsoft.Practices.Prism.Regions.</span> <span style=\"font-size:9.5pt\">ViewsCollection. OnCollectionChanged() throws an index out of range exception. As an experiment I wrapped the call in a try catch block and the ribbon does get both context objects, but neither will actually display.</span></p>\r\n<p><span style=\"font-size:9.5pt\">&nbsp;</span><span style=\"font-size:9.5pt\">As a temporary work around I am binding the ItemsSource of the RibbonContextualTabGroupItemsControl to a collection in my shell's view model and it works but I have to reference my modules in the shell so this is not good.</span></p>\r\n<p><span style=\"font-size:9.5pt\">Note that I do not have a region adapter for the ribbon, I just have those particular views inheriting from the objects the ribbon controls expect, which works fine for the ribbon tabs, just not for more than 1 RibbonTabContextualTabGroup.</span></p>\r\n<p><span style=\"font-size:9.5pt\">Thanks</span></p>",
+    "PostedDate": "2010-09-10T18:41:33.743-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "492210",
+    "ThreadId": "226832",
+    "Html": "<p>disregard didn't catch the last note.</p>\r\n<p>&nbsp;</p>\r\n<p>Morgan.</p>",
+    "PostedDate": "2010-09-11T08:33:41.92-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "497173",
+    "ThreadId": "226832",
+    "Html": "<p>Hi,</p>\r\n<p>Base on my understanding in your scenario you have <span style=\"font-size:9.5pt\">RibbonContextualTabGroupItemsControl, which derives  from ItemsControl, so it acts as the main region of your application. The  problem if you register more than one view to&nbsp;the region is that&nbsp;you&nbsp;get an  error. </span></p>\r\n<p>As you mentioned, you should not reference your modules from your shell. I&rsquo;m  not aware how RibbonControlsLibrary&nbsp;works, but&nbsp;did you try using View Injection  instead? <a href=\"http://msdn.microsoft.com/en-us/library/ff921076(PandP.20).aspx\">How  to: Show a View in a Region Using View Injection UI Composition</a></p>\r\n<p>I&rsquo;m not sure if that can solve your problem, but it might give us some  idea&nbsp;to clarify&nbsp;the scenario.</p>\r\n<p>A repro sample would help too; do you have one at hand?</p>\r\n<p>Fernando Antivero<br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-09-22T12:56:06.023-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

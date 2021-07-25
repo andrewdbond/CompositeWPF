@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\nIt could be helpful to know that, as of the current release of Prism v4, the MefBootstrapper .RegisterBootstrapperProvidedTypes method (which gets called by the MefBootstrapper.ConfigureContainer method) no longer registers an additional instance of the Region Manager, leaving only one instance exported, which is the one exported by the MefRegionManager class.\r\nThank you for your feedback.\r\n",
+    "ClosedDate": "2011-02-11T07:40:27.737-08:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Hi\n \ni am using MefBootstrapper (Prism 4.0 CTP) in my application but when i call this method :\n \nvar regionManager = ServiceLocator.Current.GetInstance<IRegionManager>();\n \ni got exception, so i change this to this new code :\n \nvar regionManagers = ServiceLocator.Current.GetAllInstances<IRegionManager>();\n \nand i found that there are this 2 region manager in my Container\nRegionManager & MefRegionManager \n \nthen i remove this line of code in MefBootstrapper.ConfigureContainer \n \nthis.Container.ComposeExportedValue<IRegionManager>(new RegionManager());\n \nand all things work good.",
+    "LastUpdatedDate": "2013-05-16T05:28:50.623-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-08-19T00:49:45.867-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "MefBootstrapper & 2 RegionManager",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 7129
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "I'll share this issue with the team.\r\nThanks",
+      "PostedDate": "2010-08-19T10:34:21.23-07:00",
+      "Id": 156288
+    }
+  ]
+}

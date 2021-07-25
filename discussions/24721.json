@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "82878",
+    "ThreadId": "24721",
+    "Html": "\r\nRight now, NewsService is responsible to lookup regions, view and metadata in order to see whether a news is already being shown or not.<br /><br />If so, it returns immediatly. It not, if resolve the presenter and then it is the presenter's responsability to get the region, setup the view and metadata.<br /><br />That is HIGHLY coupled.<br /><br />I think the presenter's interface should contain something like: <br /><br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\npublic interface INewsViewPresenter\r\n{\r\n  IEnumerable&lt;string&gt; ShownSymbols { get; }\r\n  void ShowSymbol(string symbol);\r\n}\r\n</pre><br />Furthermore, why INewsService exist anyways? Couldn't PositionSummaryPresenter deal directly with INewsViewPresenter?<br /><br />Or is it because the sample is too simple and normally the service would contain lots of logic?<br /><br />If such a service is justified, have you considered thinking in terms of flow (use cases) instead of services?<br /><br />When IPositionSummaryView.NewsRequested, it launches the AddNewsFlow.Execute(symbol);<br />",
+    "PostedDate": "2008-03-25T22:38:39.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "83084",
+    "ThreadId": "24721",
+    "Html": "\r\nHi Francois,<br /><br />Thank you for the feedback. You are absolutely right: this is highly coupled. The idea was not to tackle communication between modules in that iteration.<br />This is definetely going to be revisited when we discuss the different communication options we could use to solve these kind of issues.<br />In fact, there is a <i>TO DO</i> comment on the top of the NewsService class that says that the class will be removed after adding communication capabilities.<br />We are trying to avoid YAGNI as much as we can, but be sure this will be properly addressed.<br /><br />On the other hand, there is also an issue in that <i>\"service\"</i> that is not related to communication, and it's regarding the responsability to know what other symbols were already shown. We are currently thinking that there should be a way to have <i>named</i> views, in order to not adding a view again if it was already added, without having to look into its inner implementation.<br /><br />Thanks!<br />Julian Dominguez<br />",
+    "PostedDate": "2008-03-26T14:51:17.59-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

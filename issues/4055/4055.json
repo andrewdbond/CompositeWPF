@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nI'm closing the issue, as it is likely that the undesired behavior explained in it was fixed in Prism v4. For additional support regarding this subject, you could create a thread in the discussions section (http://compositewpf.codeplex.com/discussions), where we will help you with your concerns.\r\n\r\nThanks,\r\n\r\nGuido leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-08-19T07:48:39.9-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Setting a region name on an ItemsControl that has a single group of radio buttons as the items breaks the group behaviour in a Silverlight application when using the Feb 2009 release of CAG. It worked fine in a WPF applicaton using the June 2008 CAG.\n \nThe following excerpts are from a simple Silverlight application created to demonstrate the problem.\n \nExceprt from Shell.xaml:\n<UserControl x:Class=\"TrySilverlightControls.Shell\"\n    xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" \n    xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"\n    xmlns:swc=\"clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls\"\n    xmlns:Regions=\"clr-namespace:Microsoft.Practices.Composite.Presentation.Regions;assembly=Microsoft.Practices.Composite.Presentation\"\n    >\n    <Grid>\n        <ItemsControl Name=\"NavigationItemsControl\" >\n            <ItemsControl.ItemsPanel>\n                <ItemsPanelTemplate>\n                    <StackPanel Orientation=\"Horizontal\" Background=\"Yellow\" >\n                    </StackPanel>\n                </ItemsPanelTemplate>\n            </ItemsControl.ItemsPanel>\n        </ItemsControl>\n      </Grid>\n</UserControl>\n \nExcerpt from Shell.xaml.cs:\nnamespace TrySilverlightControls\n{\n    public partial class Shell : UserControl\n    {\n        public Shell()\n        {\n            InitializeComponent();\n            RadioButton button1 = new RadioButton();\n            button1.Content = \"One\";\n            button1.GroupName = \"Group1\";\n            RadioButton button2 = new RadioButton();\n            button2.Content = \"Two\";\n            button2.GroupName = \"Group1\";\n            NavigationItemsControl.Items.Add(button1);\n            NavigationItemsControl.Items.Add(button2);\n            // Comment out SetRegionName and the radio buttons work in a group as expected\n            RegionManager.SetRegionName(NavigationItemsControl, \"NavigationRegion\");\n        }\n    }\n}",
+    "LastUpdatedDate": "2013-05-16T05:28:58.137-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-05-13T11:29:02.253-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "SetRegionName breaks RadioButton Group",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 4055
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nI've tried to reproduce the behavior you're mentioning, and found that in Prism v4 setting the region name to a region doesn't interfere with the RadioButton grouping.\r\n\r\nThank you for reporting this.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-03-10T10:12:17.503-08:00",
+      "Id": 156137
+    }
+  ]
+}

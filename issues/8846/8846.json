@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Mark,\r\n\r\nThank you for reporting this. You might find the following work item (http://compositewpf.codeplex.com/workitem/7381) useful, where a similar problem is discussed.\r\n\r\nI'm closing this work item to centralize discussion and votes in the aforementioned one. If you have further concerns about it, please continue the discussion in that work item.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-10-24T06:41:24.153-07:00",
+    "CommentCount": 0,
+    "Custom": "",
+    "Description": "Removing a view from a region with:\n_regionManager.Regions[\"Rgn1\"].Remove( view );\nand then adding it to a second region as follows:\n_regionManager.Regions[\"Rgn2\"].Add( view, null, true );\ncauses an exception to be thrown next time RegionManager.UpdateViews() is called, if the view that was moved contains regions.\n \nThere appears to be a bug in RegionManagerRegistrationBehaviour.TryRegisterRegion(). Recursion into UpdateViews() when fixing the attachedRegionManager after the region manager for a region is changed causes the code to attempt to add the region to the manager twice.\n \n        private void TryRegisterRegion()\n        {\n            DependencyObject targetElement = this.HostControl;\n            if (targetElement.CheckAccess())\n            {\n                IRegionManager regionManager = this.FindRegionManager(targetElement);\n \n                IRegionManager attachedRegionManager = this.GetAttachedRegionManager();\n \n                if (regionManager != attachedRegionManager)\n                {\n                    if (attachedRegionManager != null)\n                    {\n                        this.attachedRegionManagerWeakReference = null;\n                        attachedRegionManager.Regions.Remove(this.Region.Name);      // <-- This causes UpdateRegions to be called\n                    }\n \n                    if (regionManager != null)\n                    {\n                        this.attachedRegionManagerWeakReference = new WeakReference(regionManager);\n \n                        regionManager.Regions.Add(this.Region);                                    // <-- After recursion has unwound, the region has already been added => Kaboom\n                    }\n                }\n            }\n        }\n \n \nThis change appears to fix the problem:\n                if (regionManager != attachedRegionManager)\n                {\n                    if (regionManager != null)\n                    {\n                        this.attachedRegionManagerWeakReference = new WeakReference( regionManager );\n                    }\n                    else\n                    {\n                        this.attachedRegionManagerWeakReference = null;\n                    }\n \n                    if (attachedRegionManager != null)\n                    {\n                        attachedRegionManager.Regions.Remove(this.Region.Name);\n                    }\n \n                    if (regionManager != null)\n                    {\n                        regionManager.Regions.Add(this.Region);\n                    }\n                }\n \nBut really it would be better if the UpdateRegions() call could be supressed while adding & removing regions in TryRegisterRegion...?\n \nCheers,\nMark",
+    "LastUpdatedDate": "2013-05-16T05:28:40.227-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-10-24T04:15:05.383-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Re-parenting a view with a scoped region manager",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8846
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

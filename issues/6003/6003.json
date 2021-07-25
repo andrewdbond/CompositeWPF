@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nI'm closing this issue so as to centralize the discussion on this subject, as well as the votes, in this other work item, which portrays the same problem:\r\nRegion Registration Fails w/ Templated Controls (http://compositewpf.codeplex.com/workitem/3612)\r\n\r\nAlso, you might find the following blog post useful where a possible approach for this problem is proposed:\r\nRegions inside DataTemplates in Prism v4 using a region behavior (http://blogs.southworks.net/dcherubini/2011/11/10/regions-inside-datatemplates-in-prism-v4-using-a-region-behavior/)\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini ",
+    "ClosedDate": "2011-11-10T10:34:12.063-08:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Hi.\n \nI thied to modify a bit the usage of region manager relating to my app needs and met really strange behavior.\n \nWhen i'm specifying the region in window template it can't be found by region manager.\n \nAfter some deep debugging i found the method when you are trying to get the region manager related to dependency object.\nWhen it is working for region specified in control or in window it can be found. but not if you are specifying it in template.\nIn my code i changed it from LogicalTreeHelper to VisualTreeHelper and now it is working.\n \n \nRegionManagerRegistrationBehavior.cs line 163\n \nwas\n  parent = LogicalTreeHelper.GetParent(dependencyObject);\nnow\n  parent = System.Windows.Media.VisualTreeHelper.GetParent(dependencyObject);\n \n \nSo my question is about may be you know some better way to do this?.. \n \nbecause i'm planning to use your bits not my ones. so it will be a bit complicated to have own region registration behavior which is differs from yours only with the mentioned stuff.\n \nThanks.",
+    "LastUpdatedDate": "2013-05-16T05:28:54.59-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-02-10T02:27:34.22-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "LogicalTree vs VisualTree when looking for RegionManager",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 6003
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\nYou might find this work item useful to achieve your scenario:\r\nhttp://compositewpf.codeplex.com/workitem/3612\r\n\r\nHope this helps.\r\n",
+      "PostedDate": "2011-02-11T07:32:45.563-08:00",
+      "Id": 156213
+    }
+  ]
+}

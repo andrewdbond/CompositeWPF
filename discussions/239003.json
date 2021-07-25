@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "538271",
+    "ThreadId": "239003",
+    "Html": "\r\n<p>What is the best way to know that all modules are loaded?</p>\r\n<p>Would something like this work?</p>\r\n<p>ModuleManager</p>\r\n<p>- List of modules with Initialized flag set to false</p>\r\n<p>Module</p>\r\n<p>- After Initialization sends a global command or raises a event that it is initialized</p>\r\n<p>ModuleManager</p>\r\n<p>- Once all module Initialitzed flags are true we we know that all modules are loaded.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-20T06:25:57.743-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538320",
+    "ThreadId": "239003",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>The approach you're mentioning seems a valid one to determine when all the modules are loaded. You might also find more information on the subject in the\r\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921068%28PandP.40%29.aspx\">Modularity Quickstarts</a> (for which there is a MEF version and a Unity one as well).</p>\r\n<p>Thanks for sharing your insight with the community, and I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-20T08:26:14.383-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538325",
+    "ThreadId": "239003",
+    "Html": "\r\n<p>Hi Guido,</p>\r\n<p>I am still looking at different approaches.</p>\r\n<p>I am surprised no one needed this event till now.</p>\r\n<p>I am even considering implementing a IObserver interface for the ModuleManager and IObservable interface for the modules.</p>\r\n<p>Do you know&nbsp;where I can hook into the Initialization of a module when it&nbsp;is complete? (ModuleInfo.State = Initialized)</p>\r\n<p>Cheers,</p>\r\n<p>Ranjith</p>\r\n",
+    "PostedDate": "2010-12-20T08:37:04.187-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538328",
+    "ThreadId": "239003",
+    "Html": "\r\n<p>Too quick, thanks for pointing me to the Modularity QuickStart.</p>\r\n<p>I think they have something I could reuse :)</p>\r\n",
+    "PostedDate": "2010-12-20T08:45:47.307-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538335",
+    "ThreadId": "239003",
+    "Html": "\r\n<p>Hi Ranjith,</p>\r\n<p>I'm glad you can reuse components from the Modularity QuickStart. As it is shown in the QuickStart, there is a\r\n<strong>LoadModuleCompleted </strong>event in the <strong>IModuleManager </strong>\r\ninterface that you can subscribe to, in order to determine when a module has been loaded.</p>\r\n<p>Also, the subject has been discussed in the following threads, but for Prism v2. Prism v4 has introduced changes in the way modules are managed. You can read more about it in\r\n<a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28PandP.40%29.aspx\">this chapter</a> from the MSDN documentation.</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=70159\"><span>How to know that a module is already loaded</span></a>\r\n</li><li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=225854\">Module Loaded Event</a>\r\n</li></ul>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-20T09:02:48.43-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538657",
+    "ThreadId": "239003",
+    "Html": "\r\n<p>Hi Guido,</p>\r\n<p>I was looking into the Modularity Quickstart.</p>\r\n<p>It has a Module Tracker with its own State variables in the class &quot;ModuleInitializationStatus&quot;.</p>\r\n<p>Why are the State variables in ModuleInfo.State not used?&nbsp;</p>\r\n<p>Are the PRISM inbuilt State variables updated&nbsp;after the Module.Initialize function is called?&nbsp;</p>\r\n<p>Cheers,</p>\r\n<p>Ranjith</p>\r\n",
+    "PostedDate": "2010-12-21T01:31:50.54-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538821",
+    "ThreadId": "239003",
+    "Html": "\r\n<p>Hi Ranjith,</p>\r\n<p>The <strong>ModuleInitializationStatus </strong>is the enumeration used for tracking a modules's state in the\r\n<strong>ModuleTracker</strong> class for the <strong>QuickStart</strong>. From the documentation, &quot;<em>This QuickStart has additional classes that help to track module initialization state. These classes are for demonstration purposes only and are not intended\r\n for shipping applications. The Shell user interface contains a <strong>ModuleControl</strong> for each module. The Shell also has the\r\n<strong>ModuleTracker</strong> class as its <strong>DataContext</strong>. </em><em>The\r\n<strong>ModuleTracker</strong> contains a <strong>ModuleTrackingState</strong> for each module.\r\n<strong>ModuleControl</strong> data binds to <strong>ModuleTrackingState</strong> and uses a custom style to visually display the downloading and initialized state of the module.</em>&quot;</p>\r\n<p>The QuickStart uses the <strong>ModuleInitializationStatus</strong> to fulfill its scenario (for example, that enumeration contains a\r\n<em>Downloading </em>state that is not present in <strong>ModuleInfo.State</strong>), but you could use whichever mechanism you need (including the\r\n<strong>ModuleInfo.State</strong> property) to track the state of your modules.</p>\r\n<p>As for your last question, even when using a custom mechanism to track the Module's initialization status, the ones in the\r\n<strong>ModuleInfo.State</strong> are also updated.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-21T08:57:26.863-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

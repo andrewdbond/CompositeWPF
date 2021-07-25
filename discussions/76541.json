@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "261708",
+    "ThreadId": "76541",
+    "Html": "<p>Hi,</p>\r\n<p>Just a quick question: I have my shell with a button and 2 regions. I have created the necessary event classes and they work fine if I publish the event directly from the modules assigned to each region.</p>\r\n<p>This is the constructor of one module</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> itemsPresentationModel(Views.IListItemsView pv,IEventAggregator pea)\r\n        {\r\n            <span style=\"color:Blue\">this</span>.InitializeItems();\r\n            <span style=\"color:Blue\">this</span>.ListView = pv;\r\n            <span style=\"color:Blue\">this</span>.ListView.Model = <span style=\"color:Blue\">this</span>;\r\n            <span style=\"color:Blue\">this</span>._eventAgregator = pea; // &lt;----------- HERE I ASSIGN THE IEventAggregator to a local variable\r\n\r\n            <span style=\"color:Blue\">this</span>.SelectCommand = <span style=\"color:Blue\">new</span> DelegateCommand&lt;businessEntities.categoriesEntities&gt;(OnSelect);\r\n        } <span style=\"color:Green\">// itemsPresentationModel</span>\r\n</pre>\r\n<pre>And here I publish the event:</pre>\r\n<pre><pre>private void OnSelect(businessEntities.categoriesEntities pv)\r\n        {\r\n            PTTInfrastructure.SelectedItem lselectedItem =\r\n                new PTTInfrastructure.SelectedItem { company = pv.company, store = pv.store, id = pv.category, text = pv.title1 };\r\n            this._eventAgregator.GetEvent().Publish(lselectedItem);\r\n        } // OnSelect</pre>\r\n</pre>\r\n<pre>Not much complicated, but now I want from the shell to publish the event. I have a local IEventAggregator local variable, but how am I going to initialize it? </pre>\r\n<pre>I guess since this is going to be a simple call to publish the event I can use the Windows events in the Shell and from there publish the IEventAggregator event:</pre>\r\n<pre><div style=\"color:Black;background-color:White\"><pre>        <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> btnAdd_Click(<span style=\"color:Blue\">object</span> sender, RoutedEventArgs e)\r\n        {\r\n            // What goes here?\r\n        } <span style=\"color:Green\">// Shell()</span>\r\n</pre>\r\n</div>\r\n</pre>\r\n<pre>I'll appreciate your comments.</pre>\r\n</div>",
+    "PostedDate": "2009-11-29T21:07:02.717-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "261857",
+    "ThreadId": "76541",
+    "Html": "<p id=21bd3a20-bfdf-012c-0114-12313b030466>Hi,</p>\r\n<p id=21bd46b0-bfdf-012c-0115-12313b030466>One possibility could be having a presenter for the Shell and injecting the event aggregator when it is constructed. Then you will be able to make the calls as in any other place. If you modify the <strong>ShellPresenter </strong>class from the <a href=\"http://msdn.microsoft.com/en-us/library/dd458919.aspx\">Stock Trader RI</a> with the following code, you will be able to see an example of this:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">private</span> <span style=\"color:Blue\">readonly</span> IEventAggregator eventAggregator;\r\n\r\n<span style=\"color:Blue\">public</span> ShellPresenter(IShellView view, IEventAggregator eventAggregator)\r\n{\r\n    View = view;\r\n    <span style=\"color:Blue\">this</span>.eventAggregator = eventAggregator;\r\n}\r\n\r\n<span style=\"color:Blue\">public</span> IShellView View { <span style=\"color:Blue\">get</span>; <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">set</span>; }\r\n</pre>\r\n</div>\r\n</p>\r\n<p id=21bd88c0-bfdf-012c-011a-12313b030466>Another possibility could be using the <a href=\"http://www.codeplex.com/CommonServiceLocator\">Service Locator</a> to get the instance of the Event Aggregator (you must reference the Microsoft.Practices.ServiceLocation assembly, located in the LIB folder):</p>\r\n<p id=21bd96b0-bfdf-012c-011b-12313b030466><span style=\"font-family:Courier New;font-size:x-small\">\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\"><span>this</span></span><span>.eventAggregator = ServiceLocator.Current.GetInstance&lt;IEventAggregator&gt;();\r\n</span></pre>\r\n</div>\r\n</span>Please let me know if this helps.</p>\r\n<p id=21bda4f0-bfdf-012c-011c-12313b030466>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-11-30T05:38:06.327-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "262131",
+    "ThreadId": "76541",
+    "Html": "<p>Damian,</p>\r\n<p>Thank you very much. I opted for the second option:</p>\r\n<p>using the <a href=\"http://www.codeplex.com/CommonServiceLocator\">Service Locator</a> to get the instance of the Event Aggregator (you must reference the Microsoft.Practices.ServiceLocation assembly, located in the LIB folder)</p>\r\n<p>And it worked great.</p>\r\n<p>Thanks guys, it's always a pleasure to see we can get help from you anytime!</p>",
+    "PostedDate": "2009-11-30T19:58:23.507-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "438974",
+    "ThreadId": "76541",
+    "Html": "<p>Thanks Damien!</p>",
+    "PostedDate": "2010-05-04T13:04:52.32-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "The EventBase::PruneAndReturnStrategies method returns the subscriber list in reverse order of registration.  In my application, I intentionally register one component before all others, because some of its event handlers need to be invoked first.  In my opinion, it is sensible and desirable for the event subscribers to be invoked in the same order that they were registered.",
+    "LastUpdatedDate": "2013-02-21T18:38:50.827-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-02-02T07:03:05.483-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Event subscribers invoked in reverse order (Prism V2)",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 3,
+    "Id": 3738
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi, \r\nWe reproduced this scenario and confirmed that the event subscribers are invoked in the reverse order that they were registered. As the user mstrobel said this is caused by the logic defined in the PruneAndReturnStrategies method within the EventBase class. \r\n\r\nTherefore we tried a possible way to change this, by modifying the logic of this method in the prism library, and after that, the event subscribers were invoked in the order in which they were registered:\r\n\r\nprivate List> PruneAndReturnStrategies()\r\n        {\r\n            List> returnList = new List>();\r\n\r\n            lock (Subscriptions)\r\n            {\r\n                for (var i = 0; i = 0; i--)\r\n                {\r\n                    Action listItem =\r\n                        _subscriptions[i].GetExecutionStrategy();\r\n\r\n                    if (listItem == null)\r\n                    {\r\n                        // Prune from main list. Log?\r\n                        _subscriptions.RemoveAt(i);\r\n                    }\r\n                    else\r\n                    {\r\n                        returnList.Add(listItem);\r\n                    }\r\n                }\r\n               \r\n            }\r\n\r\n            return returnList;\r\n        }\r\n\r\nWe run all tests in the library after applying these modifications, and they passed.\r\n\r\nI hope you find this useful\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2011-09-30T07:08:58.83-07:00",
+      "Id": 156102
+    },
+    {
+      "Message": "For those concerned by this issue, it would be helpful to know that we reproduced the original isuse, tried the workaround and ran the PrismLibrary tests in Prism v4.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-09-30T07:13:41.82-07:00",
+      "Id": 156103
+    }
+  ]
+}

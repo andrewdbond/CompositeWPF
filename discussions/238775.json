@@ -1,0 +1,114 @@
+[
+  {
+    "Id": "537482",
+    "ThreadId": "238775",
+    "Html": "\r\n<p>We are subscribing for events with the ThreadOption set to ThreadOptions.BackgroundThread. The delegate that is being called is throwing an exception and it is not being caught anywhere. I don't get any of my error dialogs, the app doesn't crash, etc....\r\n When I switch the thread option to ThreadOptions.UIThread, the exception gets picked up in my applications DispatcherUnhandledException event handler. Can anyone provide any insight into what I am missing here? Why is the application not in some way catching\r\n the exception and if it is not being caught, why is the application not exiting?</p>\r\n<p>Thanks</p>\r\n",
+    "PostedDate": "2010-12-17T12:00:42.73-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "537486",
+    "ThreadId": "238775",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>You might find the following <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.application.dispatcherunhandledexception%28VS.90%29.aspx\">\r\narticle</a> from MSDN useful.</p>\r\n<p>From the article:</p>\r\n<p>&quot;<em>If an exception is not handled on either a background user interface (UI) thread (a thread with its own\r\n<a id=\"x_x_ctl00_MTCS_main_ctl38_ctl00_ctl01\" href=\"http://msdn.microsoft.com/en-us/library/system.windows.threading.dispatcher%28VS.90%29.aspx\">\r\nDispatcher</a>) or a background worker thread (a thread without a <a id=\"x_x_ctl00_MTCS_main_ctl38_ctl00_ctl02\" href=\"http://msdn.microsoft.com/en-us/library/system.windows.threading.dispatcher%28VS.90%29.aspx\">\r\nDispatcher</a>), the exception is not forwarded to the main UI thread. Consequently,\r\n<span>DispatcherUnhandledException</span>&nbsp;is not raised. In these circumstances, you will need to write code to do the following:</em></p>\r\n<p><span>&nbsp;</span></p>\r\n<ol>\r\n<li>\r\n<p><em>Handle exceptions on the background thread.</em></p>\r\n</li><li>\r\n<p><em>Dispatch those exceptions to the main UI thread.</em></p>\r\n</li><li>\r\n<p><em>Rethrow them on the main UI thread without handling them to allow <span>DispatcherUnhandledException</span> to be raised.</em></p>\r\n</li></ol>\r\n<p><em>For more information, see the <a id=\"x_x_ctl00_MTCS_main_ctl38_ctl00_ctl03\" href=\"http://msdn.microsoft.com/en-us/library/ms741870%28VS.90%29.aspx\">\r\nThreading Model</a> overview.</em>&quot;</p>\r\n<p>As this is not strictly related to Prism, you might find better support in the\r\n<a href=\"http://social.msdn.microsoft.com/forums/en/wpf/threads/\">WPF Forum</a>.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-17T12:12:14.463-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "537497",
+    "ThreadId": "238775",
+    "Html": "\r\n<p>The reason I posted this here is because I created a sample app that does what prism does and queues a work item to the thread pool. Within the action I throw an exception. I do not try and catch this exception anywhere and the AppDomain's UnhandledException\r\n ends up picking up the exception and displaying some dialog (I coded this handler). In the prism case this does not happen so I was wondering if there was something within Prism that is preventing the AppDomain from catching this exception and instead just\r\n ignoring it somewhere. Or some other subtlety that I am not aware of.</p>\r\n<p>Thanks</p>\r\n",
+    "PostedDate": "2010-12-17T12:37:14.857-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538397",
+    "ThreadId": "238775",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>We haven't been able to reproduce your scenario. It could be helpful if you could provide a repro sample so that we can help you troubleshoot your issue.</p>\r\n<p>Thanks.</p>\r\n<p>Guido Leandro Maliandi <br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-20T10:40:16.143-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538850",
+    "ThreadId": "238775",
+    "Html": "\r\n<p>Thanks, I will see if I can abstract the logic out of our application into a sample application.</p>\r\n",
+    "PostedDate": "2010-12-21T10:19:15.787-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538863",
+    "ThreadId": "238775",
+    "Html": "\r\n<p>In addition I found this on stackoverflow.com which seems to be the same problem. It was not resolved. My handler is being run in the background (I subscribe with ThreadOption.BackgroundThread). Subscribing on the UI or Publisher thread is not an option.</p>\r\n<p>http://stackoverflow.com/questions/2314228</p>\r\n<p>&nbsp;</p>\r\n<p>The exception is showing up in the output window so something, somewhere is picking it up and outputting it. I see this in the console: A first chance exception of type 'System.Exception' occurred in Wmc.Gtseq.TradingPad.Block.OrderDetail.dll</p>\r\n",
+    "PostedDate": "2010-12-21T10:44:38.853-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "539326",
+    "ThreadId": "238775",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I have a sample application that shows this problem. It does appear to be a problem within Prism. How do I attach it to this thread?</p>\r\n<p>Thanks</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-22T05:13:03.193-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "539410",
+    "ThreadId": "238775",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>You could upload this to SkyDrive, or any other storage site you'd like to, and post the link here.</p>\r\n<p>Thanks.</p>\r\n<p>Guido Leandro Maliandi <br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-22T08:40:50.063-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "539451",
+    "ThreadId": "238775",
+    "Html": "\r\n<p>Here is the link to the solution:</p>\r\n<p>http://cid-b95fbb6b930c995f.office.live.com/browse.aspx/PrismExceptionIssue?uc=1</p>\r\n",
+    "PostedDate": "2010-12-22T09:59:21.74-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "539482",
+    "ThreadId": "238775",
+    "Html": "\r\n<p>Hi Ben,</p>\r\n<p>You could try configuring Visual Studio to break on the exceptions of the type you're throwing (in this case, System.Exception).</p>\r\n<p>You might find <a href=\"http://msdn.microsoft.com/en-us/library/038tzxdw.aspx\">\r\nthis article</a> useful to achieve that configuration.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-22T11:12:52.933-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "539489",
+    "ThreadId": "238775",
+    "Html": "\r\n<p>Thanks for your help but I don't think this helps me as I am already configured this way. I run with exceptions turned on all the time so I can break right at the point of any exception. My code does stop here but that isn't the problem. The problem is that\r\n the resulting exception seems to vanish after this point. There is no code in my sample app, aside from the unhandled exception handler at the app level, that is handling this exception I am throwing. If I am not handling and suppressing it then who is? Since\r\n I don't have a try/catch in the event handler I would expect the unhandled exception handler at the app level to catch it or even have the app vaporize on me. Neither of which happen. When I publish an event to the background and an exception is thrown from\r\n the handler, it never materializes anywhere. I expect it to . When I switch the publish call to run on the UI thread I see that the dispatcher unhandled exception picks it up. So in the background case it is the unhandled exception handler at the app level\r\n that should be getting it based on this.&nbsp; If you turn off exceptions completely or run in release mode and press the center button in the sample application nothing happens. The exception we are throwing doesn't go anywhere. Where did the exception go?</p>\r\n<p>Thanks,</p>\r\n<p>Ben</p>\r\n",
+    "PostedDate": "2010-12-22T11:24:00.927-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "539989",
+    "ThreadId": "238775",
+    "Html": "\r\n<p>I think I figured out what is broken with the prism code in v2.2. In the BackgroundEventSubscription class InvokeAction method it creates a BackgroundWorker and invokes async. The subscription allows us to provide the worker delegate but does not provide\r\n for a worker completed delegate where we could pick up the error/exception and react accordingly. Does this make sense?</p>\r\n",
+    "PostedDate": "2010-12-23T10:40:03.093-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "539993",
+    "ThreadId": "238775",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>We've been spiking with your sample solution and reached the same conclusion. You could extend the\r\n<strong>CompositePresentationEvent </strong>to allow a subscription that can notify exceptions that could happen on the background thread, by providing an event handler for the\r\n<strong>RunWorkerCompleted</strong> event.</p>\r\n<p>The code for the aforementioned event handler could look like this:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>        <span style=\"color:blue\">void</span> worker_RunWorkerCompleted(<span style=\"color:blue\">object</span> sender, RunWorkerCompletedEventArgs e)\r\n        {\r\n            <span style=\"color:blue\">if</span>(e.Error!=<span style=\"color:blue\">null</span>)\r\n            {\r\n                <span style=\"color:blue\">throw</span> e.Error;\r\n            }\r\n        }\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>Additionally, it could be helpful to remark that in Prism v4, the behavior for the\r\n<strong>InvokeAction </strong>method of the <strong>BackgroundEventSubscription</strong> class has been modified. The current\r\n<strong>InvokeAction </strong>method queues the delegate you're pointing to to the thread pool. To illustrate what I'm saying, here's the code for the method:</p>\r\n<pre>        <span style=\"color:blue\">public</span> <span style=\"color:blue\">override</span> <span style=\"color:blue\">void</span> InvokeAction(Action&lt;TPayload&gt; action, TPayload argument)<br>        {<br>            ThreadPool.QueueUserWorkItem( (o) =&gt; action(argument) );<br>        }<br></pre>\r\n<p>Using this mechanism, we've found that exceptions thrown on the delegate provided to a background event subscription are forwarded accordingly.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-23T10:53:09.637-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "539994",
+    "ThreadId": "238775",
+    "Html": "\r\n<p>Yes thank you very much for confirming. I was going to do something similar to what you describe until we get some time to upgrade to the newer version. Thanks for your help with this matter.</p>\r\n",
+    "PostedDate": "2010-12-23T10:57:05.88-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

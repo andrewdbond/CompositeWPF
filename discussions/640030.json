@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1430692",
+    "ThreadId": "640030",
+    "Html": "Hi All,\r<br />\n<br />\nI am building a wpf app with prism 4.0 as well as MEF.\r<br />\n<br />\nSample code like below:\r<br />\n<br />\nView:\r<br />\n<br />\n[Export(ViewNames.ModuleBuildingApprovalView,typeof(UserControl))]<br />\n<pre><code>[PartCreationPolicy(CreationPolicy.NonShared)]\npublic partial class ModuleBuildingApprovalView : UserControl, IView, INavigationAware\n</code></pre>\n\nViewModel:<br />\n<pre><code>[Export(typeof(ModuleBuildingApprovalViewModel))]\n[PartCreationPolicy(CreationPolicy.NonShared)]\npublic class ModuleBuildingApprovalViewModel : BaseViewModel\n</code></pre>\n\nThe problem is each time the view is opened, it's not disposed by GC after it's closed, that may cause big memory leak. Any good way to dispose the view and viewmodel manaully in code? <br />\n",
+    "PostedDate": "2015-06-17T06:35:32.043-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1430693",
+    "ThreadId": "640030",
+    "Html": "By the way, i searched on website and found a couple of discussion related, like below two:\r<br />\n<br />\n<a href=\"http://mansoormehmood.blogspot.com/2010/06/memory-leak-removing-view-with-child.html\" rel=\"nofollow\">http://mansoormehmood.blogspot.com/2010/06/memory-leak-removing-view-with-child.html</a>\r<br />\n<a href=\"http://toreaurstad.blogspot.no/2013/07/mef-and-memory-in-mef-2.html\" rel=\"nofollow\">http://toreaurstad.blogspot.no/2013/07/mef-and-memory-in-mef-2.html</a>\r<br />\n<br />\nHowever, my view and viewmodel are not disposed anyway even i use above two solutions, my view and viewmode is opened as child region of main app container, meanwhile they contains a series of child view/viewmodels.  could anyone help me out? thanks in advance.<br />\n",
+    "PostedDate": "2015-06-17T06:41:41.863-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

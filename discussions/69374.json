@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "236017",
+    "ThreadId": "69374",
+    "Html": "<p>In reviewing the View Injection quickstart, the projectlist view is injected into the employee details region. &nbsp;The coordination between the employee module and the projectlist module is handled in the EmployeeController class.&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>here's the snippet</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre> <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">virtual</span> <span style=\"color:Blue\">void</span> OnEmployeeSelected(BusinessEntities.Employee employee)\r\n        {\r\n            IRegion detailsRegion = regionManager.Regions[RegionNames.DetailsRegion];\r\n            <span style=\"color:Blue\">object</span> existingView = detailsRegion.GetView(employee.EmployeeId.ToString(CultureInfo.InvariantCulture));\r\n\r\n            <span style=\"color:Blue\">if</span> (existingView == <span style=\"color:Blue\">null</span>)\r\n            {\r\n                IProjectsListPresenter projectsListPresenter = <span style=\"color:Blue\">this</span>.container.Resolve&lt;IProjectsListPresenter&gt;();\r\n                projectsListPresenter.SetProjects(employee.EmployeeId);\r\n\r\n                IEmployeesDetailsPresenter detailsPresenter = <span style=\"color:Blue\">this</span>.container.Resolve&lt;IEmployeesDetailsPresenter&gt;();\r\n                detailsPresenter.SetSelectedEmployee(employee);\r\n\r\n                IRegionManager detailsRegionManager = detailsRegion.Add(detailsPresenter.View, employee.EmployeeId.ToString(CultureInfo.InvariantCulture), <span style=\"color:Blue\">true</span>);\r\n                IRegion region = detailsRegionManager.Regions[RegionNames.TabRegion];\r\n                region.Add(projectsListPresenter.View, <span style=\"color:#A31515\">&quot;CurrentProjectsView&quot;</span>);\r\n                detailsRegion.Activate(detailsPresenter.View);\r\n            }\r\n            <span style=\"color:Blue\">else</span>\r\n            {\r\n                detailsRegion.Activate(existingView);\r\n            }\r\n        }\r\n</pre>\r\n</div>\r\n<p>The fact the Employee Controller is referencing the IProjectsListPresenter interface represents tighter coupling between the modules. &nbsp;Should there be a controller that sides outside the employee and projectlist modules, that can respond to a public event from the employeeList presenter when an employee is selected?</p>\r\n<p>&nbsp;</p>\r\n<p>Sorry if this is off-base, I'm trying to wrap my brain around the scoping and levels of control.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-18T06:16:20.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "236037",
+    "ThreadId": "69374",
+    "Html": "<p>You bring up a good point - the team discussion around this one would be coupling versus complexity.&nbsp;&nbsp; If the team doesn't have, or develop,&nbsp;good commenting/logging habits an application decoupled in the manner your suggesting could be harder to read/debug/maintain.&nbsp; On the other hand the tight coupling could hinder reusability particularly in an enterprise environment.&nbsp;</p>\r\n<p>Where I am a proponent for separation of concerns and the separated presentation pattern I, like most, don't look forward&nbsp;to having to sift through numerous projects and classes to&nbsp;figure out how&nbsp;everything is wired up; particularly if I am new to the project or havn't touched it for a year.&nbsp; Sometimes we (the team) choose to sacrifice coupling for this reason, particularly for a small project.&nbsp;&nbsp; The key is finding balance with the team which revolves around many factors - at a high level I like the above because of the KISS principal but at a higher level I would prefer your method because I would want to be able to reuse the employee view in other applications without&nbsp;being forced to pull in the project list.</p>\r\n<p>The important part would be that the team understand the domain and long range goals so that they could debate and come up with the best plan for the project at hand.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-18T07:07:37.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "236105",
+    "ThreadId": "69374",
+    "Html": "<p>I think I'm starting to understand the argument for the way the controller is written in the Quickstart.&nbsp; The Project module is a constituent module to the Employee.&nbsp; The Project module, on its face, would not subsist on its own.&nbsp; Therefore the reference to the Project module from within the Employee module makes sense.&nbsp; Where I see modules living on their own is when they can be used entirely on their own.&nbsp; Now, here's a question.&nbsp; Taking the Modularity Quickstart as an example, if you wanted each module the ability to inject a view into a region on the right from a click on the left, would you manage that in a module above the modules loaded into the left?&nbsp; I'm looking the develop an app that has a tree on the left, and opens view on the right.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-18T09:09:03.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "236119",
+    "ThreadId": "69374",
+    "Html": "<p>I really liked Guillermo's approach to the toolbar in this&nbsp;thread <a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=69257\">http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=69257</a>.&nbsp;&nbsp; I'm not familiar with the Modularity Quickstart, however If I were using a treeview for navigation in the manner you are suggesting I would probably want to apply the same reusability concepts that&nbsp;he did for the Toolbar; designing it a manner where it could be in&nbsp;a standalone module and reused for multiple applications.</p>",
+    "PostedDate": "2009-09-18T09:32:46.95-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "236153",
+    "ThreadId": "69374",
+    "Html": "<p>That is how I do it in my SCSF/CAB app.&nbsp; I have an all encompassing service that manages the treeview on the left.&nbsp; Thanks,.</p>",
+    "PostedDate": "2009-09-18T11:07:45.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

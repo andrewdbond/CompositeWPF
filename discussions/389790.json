@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "893893",
+    "ThreadId": "389790",
+    "Html": "\r\n<p>I've so far not found anything useful to debug composition errors. &nbsp;Is there anything available or recommended yet?</p>\r\n<p>We deal with this occasionally where something deep in the composition chain fails on app startup. &nbsp;The error messages we get are usually useless as they only report something at the top level of the chain (ie. Unable to compose Shell) when we know\r\n the problem is some other module.</p>\r\n<p>Ideally I'd like to have the ability to see/log what happens with each module during all of the bootstrapper steps: &nbsp;create/configure catalog, initialize modules, compose shell etc.</p>\r\n<p>Any suggestions or tools out there?</p>\r\n<p>Regards.</p>\r\n",
+    "PostedDate": "2012-07-31T14:19:38.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "894150",
+    "ThreadId": "389790",
+    "Html": "<p>Hi,</p>\r\n<p>I believe, you could benefit from the use of the <strong>ILoggerFacade </strong>interface provided by <strong>Prism</strong>, which is used by some components of the <strong>Prism </strong>library to log information, warning messages, or error messages. This way, for example you should be able to track the logged stages of the bootstrapping sequence as each stage is logged using this interface.</p>\r\n<p>The default implementation of this interface provided by <strong>Prism </strong>(<strong>TextLogger</strong>) writes each log entry to the console output, but you could provide you custom logger implementation by overriding the <strong>CreateLogger </strong>method of your <strong>bootstrapper</strong>.</p>\r\n<p>For more information about changing the logging implementation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430866%28v=pandp.40%29#sec18\">Appendix E: Extending Prism, Logging</a></li>\r\n</ul>\r\n<p>Also, if you need to track when a module loads or fails to load you could use the <strong>LoadModuleCompleted</strong> event provided by the <strong>ModuleManager </strong>service. More information about this, can be found in the following section of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28v=pandp.40%29#sec37\">Chapter 4: Modular Application Development, Detecting When a Module Has Been Loaded</a></li>\r\n</ul>\r\n<p>Additionally, for an example that uses both of this approaches you could check the <a href=\" http://msdn.microsoft.com/en-us/library/ff921068%28v=pandp.40%29\">Modularity QuickStarts</a>, which displays the log entries from the bootstrapping sequence and module-loading details.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-08-01T06:46:03.687-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "894751",
+    "ThreadId": "389790",
+    "Html": "<p>Hi,</p>\r\n<p>We use the ILoggerFacade pattern extensively. &nbsp;There are no opportunities to log when composing a part that I've seen. &nbsp;Composition either succeeds or fails.</p>\r\n<p>We currently don't use the IModuleManager since we don't load any modules on demand.</p>\r\n<p>I'm trying to find ways to more efficiently debug problems when CreateShell fails due to composition. &nbsp;In this case, the Export of the Shell fails due to a composition error deep in the chain, for example:</p>\r\n<p>ShellView-&gt;ShellViewModel-&gt;SomeOtherExport-&gt;SomeOtherExport-&gt;SomeOtherExport-&gt;FailedExport &nbsp; &lt;--- The error message does not identify which export failed, it will always say the Shell composition failed.</p>\r\n<p>Are there any other inspection or diagnostic tools?</p>",
+    "PostedDate": "2012-08-02T08:59:01.923-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "894799",
+    "ThreadId": "389790",
+    "Html": "<p>Hi,</p>\r\n<p>As far as I know, <strong>Prism </strong>does not provide any specific method or tools for debugging composition errors when composing parts in a container. Based on my understanding, this is because <strong>Prism </strong>follows the approach of being agnostic to the container used in the application. What is more, different containers can work in different ways and might need to be \"debugged\" with different methods.</p>\r\n<p>Based on your comments, it seems you are using <strong>MEF</strong>. If that is the case, there are several available methods and tools to debug composition errors. As a starting point, you could check the following articles, which I believe could be useful to find the cause behind the errors you are experiencing:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.msdn.com/b/dsplaisted/archive/2010/07/13/how-to-debug-and-diagnose-mef-failures.aspx\">How to Debug and Diagnose MEF Failures</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff603380.aspx\">Debugging MEF</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-08-02T10:56:36.873-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "894850",
+    "ThreadId": "389790",
+    "Html": "<p>Ah of course. &nbsp;I keep forgetting where the boundaries are between Prism and MEF.</p>\r\n<p>Thanks for pointing me in the right direction.</p>",
+    "PostedDate": "2012-08-02T12:51:53.387-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

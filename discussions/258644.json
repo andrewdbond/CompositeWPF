@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "616765",
+    "ThreadId": "258644",
+    "Html": "<p>I would like to implement a dynamic splashscreen for a prism application. There are some&nbsp;<a rel=\"nofollow\" href=\"http://www.thejoyofcode.com/Showing_a_Splash_Screen_whilst_initializing_a_WPF_Prism_application.aspx\">ressources</a>&nbsp;that address this kind of  requirement, but I'm not using MEF as the bootstrapper.</p>\n<p>There is also an interesting screencast on channel 9 about&nbsp;<a rel=\"nofollow\" href=\"http://channel9.msdn.com/Blogs/keydet/Improving-perceived-WPF-app-startup-performance-with-MEF-and-a-Splash-Screen\">Improving perceived WPF app startup performance with MEF  and a Splash Screen</a>&nbsp;which I believe could be a good starting point.</p>\n<p>How would you handle such a requirement ?</p>\n<p>Thanks</p>",
+    "PostedDate": "2011-05-23T07:18:25.493-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "616934",
+    "ThreadId": "258644",
+    "Html": "<p>Hi,</p>\r\n<p>One possible way to fulfill your goal could be to load your necessary modules on demand and perform the necessary operations in your service in the background while you display the splash screen in your application. You can read more about modularity in <a href=\"http://msdn.microsoft.com/en-us/library/gg405479(PandP.40).aspx\">Chapter 4: Modular Application Development</a>.</p>\r\n<p>On the other hand, you could defer the initialization of the Shell by overriding the <strong>Run</strong> method in your <strong>Bootstrapper</strong> to alter the application's initialization sequence so as to avoid calling the <strong>CreateShell</strong> and <strong>InitializeShell</strong>, and make your <strong>bootstrapper</strong> subscribe to the <strong>OnCompleted</strong> <em>event</em> in a service of yours that needs to perform an operation, so that when all the operations are complete these methods are called to close the splash screen and load the shell in the application window.</p>\r\n<p>You might find the following <a href=\"http://compositewpf.codeplex.com/discussions/258211\">thread</a> handy where deferring the shell is covered.</p>\r\n<p>Take into account Prism is Dependency Injection Container agnostic. This means you could achieve the same functionality as an application developed using MEF.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-23T12:16:06.483-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "616980",
+    "ThreadId": "258644",
+    "Html": "<p>Hi Miguel,</p>\r\n<p>I being looking for an splash screen sample using prism v4. &nbsp;Can you create a small repo sample describing your steps above using UnityBootstrapper? &nbsp;I am new to prism and I need this type of functionality for a demo that I am working on. &nbsp;Thanks in advance. &nbsp;</p>\r\n<p>Regards,</p>\r\n<p>John Montoya</p>",
+    "PostedDate": "2011-05-23T13:51:35.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "616996",
+    "ThreadId": "258644",
+    "Html": "<p>Hi John,</p>\r\n<p>We've created a sample, which you can find <a href=\"http://cid-12a8b70137345033.office.live.com/self.aspx/p^0p%20Samples/SplashScreenSample.zip\">here</a>.</p>\r\n<p>In the sample, we've overriden the <strong>Bootstrapper.Run</strong> method, so as to perform a lenghty operation in a service, and show a splash screen whilst that operation is performing; when the operation is completed, the splash screen is closed and the shell is shown.</p>\r\n<p>Note that, while regularily the shell is loaded before all your modules, this would imply that your modules can be loaded after the shell. In case you don't wish for that to happen, you could set your modules to be loaded on demand, and call the <strong>ModuleManager.LoadModule </strong>method for each of your modules in the handler of the <strong>LenghtyOperationCompleted </strong>event.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-05-23T14:34:25.47-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "617169",
+    "ThreadId": "258644",
+    "Html": "<p>Thanks, that's very helpful.&nbsp;</p>\r\n<p>Fabien</p>",
+    "PostedDate": "2011-05-24T00:47:23.597-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "617347",
+    "ThreadId": "258644",
+    "Html": "<p>Thanks Guido,</p>\r\n<p>Nice example.</p>\r\n<p>John</p>",
+    "PostedDate": "2011-05-24T06:24:05.6-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

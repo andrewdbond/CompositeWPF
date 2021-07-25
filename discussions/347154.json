@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "804899",
+    "ThreadId": "347154",
+    "Html": "\r\n<p>I have a shell with a tab region that injects multiple tabs as workspaces. &nbsp;Each workspace can be from a different module and usually has many injected/nested/child views.</p>\r\n<p>When a view is removed from a region it is not destroyed/garbage collected.</p>\r\n<p>Is there a supported method to removing and destroying a parent view which in turn cleans up all nested/child regions and views?</p>\r\n<p>Or, do we have to come up with a manual approach by triggering some method when the view is removed, to then also destroy the view and any child components?</p>\r\n<p>We're currently in WPF but may be switching to Silverlight if that has any bearing on things.</p>\r\n<p>Thanks in advance.</p>\r\n<p>Cheers</p>\r\n",
+    "PostedDate": "2012-03-03T07:43:51.68-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "805472",
+    "ThreadId": "347154",
+    "Html": "<p>Hi,</p>\r\n<p>I believe you might find the optional <strong>ClearChildViewsRegionBehavior </strong>behavior that was added since <a href=\"http://compositewpf.codeplex.com/SourceControl/changeset/changes/65392\">Prism 4.1</a> useful to support scenarios where nested regions may need to be removed from the region manager when the parent view is removed from a region.</p>\r\n<p>As mentioned in the Documentation Addendums for Prism 4.1 (inside Prism 4.1 <strong>readme.mht</strong> file):</p>\r\n<p>While the behavior is registered and available for all regions, it is optionally enabled for a view containing nested regions by using the <strong>ClearChildViews</strong> attached property:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>&lt;UserControl x:Class=<span style=\"color: #a31515;\">\"SomeModule.Views.RightView\"</span>\r\n    ...\r\n    xmlns:Regions=<span style=\"color: #a31515;\">\"http://www.codeplex.com/prism\"</span>  RegionBehaviors:ClearChildViewsRegionBehavior.ClearChildViews=<span style=\"color: #a31515;\">\"True\"</span>&gt;\r\n    ...\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Also you could find more information in the following related work item:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/workitem/5657 \">Remove view does not remove all sub-views</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-03-05T04:51:28.93-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

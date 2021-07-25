@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "203874",
+    "ThreadId": "60215",
+    "Html": "<p><span style=\"font-family:'Segoe UI','sans-serif';color:black;font-size:10pt\">Hi,</span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif';color:black;font-size:10pt\">I'm having a problem with adding a region to a telerik docking control.&nbsp; I have left a post on their forums but I suspect it might be a prism thing.&nbsp; The telerik post can be found at:</span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif';color:black;font-size:10pt\"><a href=\"http://www.telerik.com/community/forums/silverlight/docking/documenthost-prism-region.aspx\">http://www.telerik.com/community/forums/silverlight/docking/documenthost-prism-region.aspx</a></span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif';color:black;font-size:10pt\">Basically, I'm adding a region to a docking control using the following xaml:</span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif';color:black;font-size:10pt\"><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;tcd:RadDocking.DocumentHost&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;tcn:RadTabControl regions:RegionManager.RegionName=&quot;MainRegion&quot;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;infRegions:RadTabControlRegionAdapter.ItemContainerStyle=&quot;{StaticResource MainRegionTabControlItemStyle}&quot;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AllowDragReorder=&quot;True&quot;/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/tcd:RadDocking.DocumentHost&gt;</span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif';color:black;font-size:10pt\">Unfortunately the region is never added to the regionmanager and I'm unable to add a view.&nbsp; As described in the above post, I don't think the problem is with the tabcontrol and associated region adapter as I've used this elsewhere in my app with success.&nbsp; I have also tried the following with the same result:</span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif';color:black;font-size:10pt\">&lt;tcd:RadDocking.DocumentHost&gt;<br>&nbsp;&nbsp; &lt;ContentControl regions:RegionManager.RegionName=&quot;MainRegion&quot;/&gt;&nbsp;&nbsp; <br>&lt;/tcd:RadDocking.DocumentHost&gt; </span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif';color:black;font-size:10pt\">So why doesn't the region get added to the region manager?&nbsp; I have tried calling the RegionManager.SetRegionName() method in the code behind by referencing the framework element but again with the same result.&nbsp; For some reason prism doesn't like the raddocking.documenthost.&nbsp; Note that I can add a&nbsp;radtabcontrol without the region and it works fine so there isn't something foundamental with adding content to documenthost.&nbsp; My first thought was that I had&nbsp;to write a custom region adapter for the docking control however I'm not loading content into the actual docking control but rather the child control i.e.&nbsp;the region I want will be hosted in either a content or items control (or slight derivatives).</span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif';color:black;font-size:10pt\">Can anyone please advise why the MainRegion isn't being added&nbsp;to the RegionManager.&nbsp; Also, I would appreciate if anyone could let me know if there is a work around.</span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif';color:black;font-size:10pt\">Thanks in advance.</span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif';color:black;font-size:10pt\">Ian</span></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-06-21T14:22:26.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "204232",
+    "ThreadId": "60215",
+    "Html": "<p>I think the problem is that the mainregion is deactivated shortly after creation.&nbsp; See updated post on the telerik forums.&nbsp; Anyone know what causes a region to deactivate or what causes it to be removed from the regionmanager.regions collection (SingleActiveRegion)?&nbsp; The only work around for the telerik docking control is to somehow force and keep the region active.</p>\r\n<p>Thanks in advance</p>\r\n<p>Ian</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-06-22T14:04:30.143-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "223509",
+    "ThreadId": "60215",
+    "Html": "<p>Ian,</p>\r\n<p>Did you find a solution to your problem? I am facing the same issue. The working solutions posted by Telerik are made on ViewDiscovery whereas we are using ViewInjection.</p>\r\n<p>I have four regions in my solution. Three of them work fine, because they are bound to the region at compile time. Our main ContentRegion finds the views at runtime depending on the user actions in menu.</p>\r\n<p>Will highly appreciate if you could share your thoughts.</p>\r\n<p>Thanks,</p>\r\n<p>Tushar</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-14T07:16:34.25-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

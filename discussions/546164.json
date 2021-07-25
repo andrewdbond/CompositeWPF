@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1248144",
+    "ThreadId": "546164",
+    "Html": "Code that was working with Prism 4.1 now throws an InvalidOperationException saying that the object (an instance of DelegateCommand) does not belong to the UI thread.<br />\n<br />\nThe following remark is found in the &quot;What's New in Prism Library 5.0 for WPF&quot; text :<br />\n<br />\nDelegateCommand includes support for async handlers and has been moved to the Prism.Mvvm portable class library. DelegateCommand and CompositeCommand both use the WeakEventHandlerManager to raise the CanExecuteChanged event. The WeakEventHandlerManager must be first constructed on the UI thread to properly acquire a reference to the UI thread’s SynchronizationContext.<br />\n<br />\nIs seems clear that DelegateCommandBase has changed the way it handled the RaiseCanExecuteChanged calls, but it isn't clear to me what to do about it (events frequently reach our UI application on a different thread and should be able to trigger updates like updating the CanExecute status of a Command).<br />\n<br />\nThe text above seems to be trying to hint at what I should do, but I need a  bigger hint.  WeakEventHandlerManager is a static class so 'constructing' it 'on the UI thread' isn't going to work.<br />\n",
+    "PostedDate": "2014-05-21T13:15:59.283-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1249009",
+    "ThreadId": "546164",
+    "Html": "Hello, \r<br />\nI am afraid I don't completely understand the scenario where you are having problems. You mentioned that <strong><em>Events</em></strong> are being published on a background thread, causing an exception when trying to update the <strong><em>Command's CanExecute</em></strong> property. Is this correct?\r<br />\n<br />\nIt would be helpful if you could provide a small sample showing the issue you are describing, so we could have better understanding of the situation and give you better support by troubleshooting the solution.\r<br />\n<br />\nRegards.\r<br />\nGabriel Ostrowsky.\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-05-23T11:35:10.95-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1302644",
+    "ThreadId": "546164",
+    "Html": "I've got the exact same issue. Here's a stack trace:\r<br />\n<br />\nSystem.InvalidOperationException: The calling thread cannot access this object because a different thread owns it.\r<br />\n   at System.Windows.Threading.Dispatcher.VerifyAccess()\r<br />\n   at System.Windows.DependencyObject.GetValue(DependencyProperty dp)\r<br />\n   at System.Windows.Controls.Primitives.ButtonBase.get_Command()\r<br />\n   at System.Windows.Controls.Primitives.ButtonBase.UpdateCanExecute()\r<br />\n   at System.Windows.Controls.Primitives.ButtonBase.OnCanExecuteChanged(Object sender, EventArgs e)\r<br />\n   at System.Windows.Input.CanExecuteChangedEventManager.HandlerSink.OnCanExecuteChanged(Object sender, EventArgs e)\r<br />\n   at Microsoft.Practices.Prism.Commands.WeakEventHandlerManager.CallHandler(Object sender, EventHandler eventHandler)\r<br />\n   at Microsoft.Practices.Prism.Commands.WeakEventHandlerManager.CallWeakReferenceHandlers(Object sender, List`1 handlers)\r<br />\n   at Microsoft.Practices.Prism.Commands.DelegateCommandBase.OnCanExecuteChanged()\r<br />\n<br />\nI'm calling DelegateCommand.RaiseCanExecuteChanged() from non-UI threads. I expect this is a relatively common occurrence and shouldn't need further explanation. This used to work just fine in Prism 4.1. Now that the commands are async, there is some additional marshalling happening and it's not happening correctly. The new DelegateCommandBase is not marshalling to the UI thread, I suspect because the WeakEventHandlerManager which is supposed to do the marshalling is not being constructed on the UI thread. And as toolcontrol said, WeakEventHandlerManager is a static class so 'constructing' it 'on the UI thread' isn't going to work.\r<br />\n<br />\nAny ideas?\r<br />\n<br />\ntoolcontrol: Have you been able to resolve this in the meantime?<br />\n",
+    "PostedDate": "2014-09-08T16:20:01.793-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

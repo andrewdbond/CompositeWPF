@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "176056",
+    "ThreadId": "52394",
+    "Html": "Has anyone attempted to resolve the dependency on region string names to seat views?  I created a config-driven LayoutManager which allowed you to define a layout control (with its own regions) and specify views and their target regions.  This removed the need for region name constants in my infrastructure assembly and allowed me to dynamically load any number of pre-defined layouts.  Programmatic manipulation of regions and views would still need to resort to string names.  This worked well in Prism v1, but not v2.  Prism v2 has made me reconsider this approach.<br>\r\n<br>\r\nI never felt comfortable injecting views into named regions from within the module, and have always sought to do this outside the module using a specialised layout module (or the LayoutManager).  The StockTraderRI project seems to have the views driving the UI.  Maybe I'm missing the underlying concept, but this somehow feels wrong.  It seems the responsibility should not lie with the view or with the region, for that matter; but with another layer whose responsibility is to pull all the components together and assemble the resultant application.  I'm not sure what pattern this would be, but it is something on the order of UI Orchestration.<br>\r\n<br>\r\nWith regards to code reuse, has anyone successfully taken bits of the StockTrader and dropped them into another Prism application?<br>\r\n<br>\r\nI'm quite interested in working out a solution for this if anyone is interested in collaborating.  I'm still reviewing the changes in v2, which may shed some light on this.<br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2009-04-06T03:56:40.617-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "176185",
+    "ThreadId": "52394",
+    "Html": "hi rgramann,<br>\r\n<br>\r\nCreating a seperate layoutmanager is a scenario which you can use if you need a LOT of flexibilty. We felt that most applications typically didn't need that level of flexibility and requiring it for each prism app would increase the complexity. <br>\r\n<br>\r\nHowever, if you find that you do need that kind of flexibilty, you are correct, it's a great way to solve that. <br>\r\n<br>\r\nIf your app's layout is static at runtime (and only dynamic at config time), i've found the view discovery approach to be very useful in creating a seperate layout manager. <br>\r\n<br>\r\nHope this helps,<br>\r\nErwin  \r\n",
+    "PostedDate": "2009-04-06T09:16:03.113-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "176339",
+    "ThreadId": "52394",
+    "Html": "Hi Erwin,<br>\r\n<br>\r\nThanks for the response.  Unfortunately, my current project does require a lot of flexibility.  I'll continue with the LayoutManager approach, as this is a workable solution.  I suspect view injection via the LayoutManager is probably the way to go.<br>\r\n<br>\r\nThanks for your help.<br>\r\n<br>\r\nCheers,<br>\r\n<br>\r\nRon<br>\r\n  \r\n",
+    "PostedDate": "2009-04-06T15:00:35.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "176782",
+    "ThreadId": "52394",
+    "Html": "Hi Ron,<br>\r\n<br>\r\nI believe that I'm trying to achieve a similar view construction, storage and discovery mechanism similar to the functions you've mentioned.  As you mentioned, this gives the application and the user more flexibility.  <br>\r\n<br>\r\nI'm interested in possibly collaborating with you.  Let's start a conversation and see if we're trying to achieve the same goals.<br>\r\n<br>\r\nCheers,<br>\r\nJeff\r\n",
+    "PostedDate": "2009-04-07T12:44:16.733-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "177019",
+    "ThreadId": "52394",
+    "Html": "Hi Jeff,<br>\r\n<br>\r\nSend me an email - ron at gramann dot co dot uk<br>\r\n<br>\r\nrg<br>\r\n",
+    "PostedDate": "2009-04-08T00:43:22.327-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "178234",
+    "ThreadId": "52394",
+    "Html": "Hi All,<br>\r\n<br>\r\nI have recently completed work on a LayoutManager for Prism v2.  The LayoutManager allows you to define layout controls, views and their target regions in your app.config.  Layouts can exist as loose Xaml or within an assembly.  Supports both Views and ViewModels.  If anyone is interested I can send you the zipped solution (VS 2008 SP1).  Would like some peer review and feedback, and once stabilized I'll post on CodeProject.<br>\r\n<br>\r\n  &lt;layoutManager shellName=&quot;Shell&quot; &gt;<br>\r\n  &lt;layouts&gt;<br>\r\n    &lt;layout name=&quot;FirstLayout&quot; filename=&quot;Layout\\FirstLayout.xaml&quot; &gt;<br>\r\n      &lt;views&gt;<br>\r\n        &lt;view typeName=&quot;LayoutManager.Infrastructure.IViewA, LayoutManager.Infrastructure&quot; regionName=&quot;TopLeft&quot; visibility=&quot;Visible&quot; /&gt;<br>\r\n        &lt;view typeName=&quot;LayoutManager.Infrastructure.IViewB, LayoutManager.Infrastructure&quot; regionName=&quot;BottomLeft&quot; visibility=&quot;Visible&quot;/&gt;<br>\r\n        &lt;viewModel typeName=&quot;LayoutManager.Infrastructure.IViewModelC, LayoutManager.Infrastructure&quot; regionName=&quot;Right&quot; visibility=&quot;Visible&quot; viewProperty=&quot;View&quot;/&gt;<br>\r\n        &lt;viewModel typeName=&quot;LayoutManager.Infrastructure.IMenuViewModel, LayoutManager.Infrastructure&quot; regionName=&quot;Menu&quot; visibility=&quot;Visible&quot; viewProperty=&quot;View&quot;/&gt;<br>\r\n      &lt;/views&gt;<br>\r\n    &lt;/layout&gt;<br>\r\n    &lt;layout name=&quot;SecondLayout&quot; filename=&quot;Layout\\SecondLayout.xaml&quot; &gt;<br>\r\n      &lt;views&gt;<br>\r\n        ...<br>\r\n      &lt;/views&gt;<br>\r\n    &lt;/layout&gt;<br>\r\n    &lt;layout name=&quot;ThirdLayout&quot; typeName=&quot;LayoutManager.Infrastructure.IThirdLayout, LayoutManager.Infrastructure&quot; isDefault=&quot;true&quot;&gt;<br>\r\n      &lt;views&gt;<br>\r\n        ...<br>\r\n      &lt;/views&gt;<br>\r\n    &lt;/layout&gt;<br>\r\n  &lt;/layouts&gt;<br>\r\n  &lt;/layoutManager&gt;<br>\r\n<br>\r\nJust send an email to:  ron at gramann dot co dot uk<br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2009-04-11T12:56:58.387-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "178570",
+    "ThreadId": "52394",
+    "Html": "Just posted an article on CodeProject - Layout Manager for Prism v2 - <a href=\"http://www.codeproject.com/KB/WPF/PrismLayoutManager.aspx\">http://www.codeproject.com/KB/WPF/PrismLayoutManager.aspx</a><br>\r\n<br>\r\nAny feedback or comments (or votes) are welcome.<br>\r\n<br>\r\nCheers<br>\r\n<br>\r\nRon\r\n",
+    "PostedDate": "2009-04-13T08:31:23.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "184729",
+    "ThreadId": "52394",
+    "Html": "<p>For those interested...I posted an update to the LayoutManager on CodeProject.</p>\r\n<p><a href=\"http://www.codeproject.com/KB/WPF/PrismLayoutManager.aspx\">http://www.codeproject.com/KB/WPF/PrismLayoutManager.aspx</a><br>\r\n<br>\r\nChanges include: decoupled configuration from app.config, added ConfigLayoutProvider and XamlLayoutProvider.  LayoutManager, Layouts, Views and ViewModels are now DependencyObjects, allowing you do define your layout in Xaml.  Code clean-up and namespace change.<br>\r\n<br>\r\nRon</p>\r\n",
+    "PostedDate": "2009-04-28T14:50:41.9-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

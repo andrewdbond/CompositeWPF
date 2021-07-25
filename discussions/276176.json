@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "685293",
+    "ThreadId": "276176",
+    "Html": "\r\n<p>Hi,</p>\r\n<p><br>\r\nI am creating an application which looks like access</p>\r\n<p><br>\r\nWhich is based on David Veeneman Sample</p>\r\n<p><br>\r\n<a href=\"http://www.codeproject.com/KB/WPF/Prism4AppChecklist.aspx\">http://www.codeproject.com/KB/WPF/Prism4AppChecklist.aspx</a></p>\r\n<p><br>\r\nOn the left side there is a list with queries, reports forms etc..</p>\r\n<p><br>\r\nAnd on the right a view (different one for each type of object) to manage them</p>\r\n<p>Every Tab in the ribbon is also a view</p>\r\n<p>1. I am not sure what is the correct way for managing view models with the ribbon</p>\r\n<p>2. In some scenario a group in the a single Ribbon tab can be bound to two View Model (the left side View Model and the Main View Model)</p>\r\n<p>3. I am not sure how do I connect the Ribbon to the active View Model</p>\r\n<p>Currently I am registering the module with unity as a singleton In order to share it between the Ribbon and the Main View</p>\r\n<p><span style=\"font-size:12pt\">&nbsp;Thanks in advance</span></p>\r\n",
+    "PostedDate": "2011-10-17T10:35:05.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "685892",
+    "ThreadId": "276176",
+    "Html": "<p>Hi,</p>\n<p>Since your views usually inherit from the <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.frameworkelement.aspx\"> <strong>FrameworkElement </strong></a>class, which contains a <strong>DataContext </strong>property, that allows you to match a view to it's corresponding view model. It's possible to bind to the properties and commands exposed by the view model from inside the view.</p>\n<p>An example of this can be seen in the <strong>ModuleATaskButton </strong>define in David Veeneman Sample:<br /> &nbsp;<br /></p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> ModuleATaskButton : UserControl\n    {\n        <span style=\"color: blue;\">public</span> ModuleATaskButton(ModuleATaskButtonViewModel viewModel)\n        {\n            InitializeComponent();\n            <span style=\"color: blue;\">this</span>.DataContext = viewModel;\n        }\n    }\n</pre>\n</div>\n<p><br /> You might find more information regarding that in the following links:</p>\n<p>&nbsp;</p>\n<ul>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405484%28v=PandP.40%29.aspx\">Implementing the MVVM Pattern </a></li>\n<li><a href=\"http://karlshifflett.wordpress.com/2010/11/07/in-the-box-ndash-mvvm-training/%20\">In the Box &ndash; MVVM Training</a> </li>\n</ul>\n<p>Also note that the application Ribbon is defined as a Prism region, so that modules can load their own tabs (views) into the Ribbon (this is possible because there is a <strong>RibbonRegionAdapter</strong>).</p>\n<p>You can read more about Prism regions (which are the main element of Prism's UI Composition mechanisms) in the following chapter from the Prism MSDN documentation:</p>\n<ul>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28v=PandP.40%29.aspx#sec10\">Composing the User Interface: Region</a> </li>\n</ul>\n<p>I hope you find this useful.</p>\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-10-18T10:17:50.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

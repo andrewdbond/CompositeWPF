@@ -1,0 +1,51 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nIt could be helpful to know that, as of Prism v4 this behavior has been fixed. We've tried the code you've posted here, and found that the DataTemplate is applied to the Items inside the ItemsControl that hosts the MainRegion.\r\n\r\nThank you for your feedback.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-03-15T10:44:25.883-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "The attached application is modified based on the QuickStart HelloWorld application of Prism 2.0.  In the file 'Shell.xaml' an ItemsControl is used as a place holder for the region named as \"MainRegion\". This ItemsControl has its ItemTemplate assigned with a DataTemplate called 'BugItemTemplate' defined in the resources of the window. In addition, in the HelloWorldModule 3 views are defined, which all associate with the 'MainRegion'. \n \nWhen running the application, you will see the three views are shown as expected but the DataTemplate is not applied. Can you tell what the problem is here?\n \nThe offending code in Shell.xaml looks as follows. The code is modified based on the HelloWorld.Desktop application of QuickStart.\n \n<Window x:Class=\"HelloWorld.Shell\"\n    xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"\n    xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"\n    xmlns:cal=\"http://www.codeplex.com/CompositeWPF\"   \n    Title=\"Hello World\" SizeToContent=\"WidthAndHeight\">\n    <Window.Resources>\n        <!--The 'BugITemTemplate' is not applied on the views-->\n        <DataTemplate x:Key=\"BugItemTemplate\">\n            <Border BorderThickness=\"6\" BorderBrush=\"Aqua\" >\n                <StackPanel>\n                    <TextBlock>data template textblock</TextBlock>                    \n                </StackPanel>\n            </Border>\n        </DataTemplate>\n    </Window.Resources>\n    <StackPanel>\n        <ItemsControl Name=\"MainRegion\" cal:RegionManager.RegionName=\"MainRegion\" \n                  ItemTemplate=\"{StaticResource BugItemTemplate}\" />        \n    </StackPanel>\n</Window>",
+    "LastUpdatedDate": "2013-05-16T05:28:59.277-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-03-19T08:21:30.367-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "When an ItemsControl with a ItemTemplate is used as a region place holder, the ItemTemplate is not applied.",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 3,
+    "Id": 3935
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897961,
+      "FileName": "HelloWorld.Desktop.zip",
+      "DownloadUrl": ".\\897961"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "I'm having similar issues with an itemtemplate inside a tab control. The only difference is I'm using Silverlight 2.0.\r\n\r\nI 've posted my thread under the Discussions section at \r\nhttp://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=52827.",
+      "PostedDate": "2009-04-12T23:54:00.08-07:00",
+      "Id": 156117
+    }
+  ]
+}

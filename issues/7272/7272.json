@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Given the support for Nullable<T>, we're not currently planning to fix this.  If this is not satisfactory, please start another issue and we'll consider it for a future release.\r\n\r\n",
+    "ClosedDate": "2010-10-08T14:33:02.723-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Can you tell me if any thought has been given to allowing the creation of delegate commands where the command's parameter type is a non-reference type. I'm thinking of the case of where maybe you have a Map object and you want to zoom to a particular scale but the scale is a double. You could create an class to hold the scale parameter and pass that to the command but it would be more convenient to declare a delegate command with the parameter of type double. This currently does not appear to be possible because the T parameter has a class constraint.\n \nDoes that make sense or am I missing something?\n \nKevin RintoulLatitude Geographics",
+    "LastUpdatedDate": "2013-05-16T05:28:48.587-07:00",
+    "PlannedForRelease": "Prism v4 - Drop 8",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Medium",
+      "Severity": 100,
+      "Id": 2
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-09-22T06:07:05.6-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "var cmd = new DelegateCommand<double>(...)?",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 1,
+    "Id": 7272
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "We've actually removed the class constraint, but do have a check during construction in DelegateCommand that ensrues the type is a reference type or is Nullable.  Since the ICommand interface can be passed a null value for the parameters to the CanExecute or the Execute methods, we wanted to make sure the mapping from the ICommand interface to the DelegateCommand values made sense.\r\n\r\nIf you wanted to provide an alterantive implementation for value types, much of the DelegateCommand logic is wrapped in DelegateCommandBase, so you could derive from that and pick an reasonable value for value types in the presence of null parameters to the ICommand methods, such as default(T).  We chose not to automatically assume that a null value should be mapped to a valid value, hence the constraint on requiring Nullable or a reference type in DelegateCommand.\r\n\r\nHTH,\r\n\r\n-b\r\n\r\n",
+      "PostedDate": "2010-10-08T14:30:53.14-07:00",
+      "Id": 156315
+    }
+  ]
+}

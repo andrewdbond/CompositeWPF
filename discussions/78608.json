@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "269150",
+    "ThreadId": "78608",
+    "Html": "<p>Hi there,</p>\r\n<p>I'm using VS2008 Team System to perform unit tests. I want to test some units in&nbsp;MyService module, which provides services&nbsp;via an interface IMyService (the Separated Interface Pattern is used).&nbsp;&nbsp;In my unit test code, I need to have the unity container to retrieve the service from MyService:</p>\r\n<p>container.Resolve&lt;IMyService&gt;();</p>\r\n<p>How can I&nbsp;obtain this unity container in the unit&nbsp;test code?</p>\r\n<p>Thanks,</p>\r\n<p>Jie</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-18T17:53:04.307-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "270029",
+    "ThreadId": "78608",
+    "Html": "<p id=d24bb920-d15d-012c-c04a-12313b03013e>Hi Jie,</p>\r\n<p id=d24bc620-d15d-012c-c04b-12313b03013e>As you are not testing the container, the approach that is usually followed is mocking the Unity Container and the functionality it provides. The following thread deals with a similar issue:</p>\r\n<ul>\r\n<li><a href=\"View.aspx?ThreadId=63626\">Unity Container access in NUnit test case</a> </li>\r\n</ul>\r\n<p id=d24bd4b0-d15d-012c-c04c-12313b03013e>Please let me know if this helps.</p>\r\n<p id=d24be3f0-d15d-012c-c04d-12313b03013e>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-12-22T12:44:08.987-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "273455",
+    "ThreadId": "78608",
+    "Html": "<p>Hi Damian,</p>\r\n<p>Thanks for your reply!</p>\r\n<p>Here is what I did based on your suggestions and StockTraderRI:</p>\r\n<ul>\r\n<li>Added Composite.UnityExtensions.Tests, which has a&nbsp;MockUnityContainer class.</li>\r\n<li>In my code, I use &quot;RegisterType&lt;TFrom, TTo&gt;() where TTo : TFrom&quot; and &quot;Resolver&lt;T&gt;()&quot;. I checked the MockUnityContainer class, and found that &quot;Resolve&lt;T&gt;()&quot; has been implemented, while the &quot;RegisterType&lt;&gt;()&quot; has not:</li>\r\n</ul>\r\n<p style=\"padding-left:60px\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public T Resolve&lt;T&gt;()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (ResolveBag.ContainsKey(typeof(T)))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (T)ResolveBag[typeof(T)];</p>\r\n<p style=\"padding-left:60px\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new Exception();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<ul>\r\n<li>\r\n<div>I tried to find the implementation for &quot;RegiesterType&lt;&gt;()&quot; in Composite.UnityExtensions, but the CAL does provide the source code for that.</div>\r\n</li>\r\n</ul>\r\n<p>So, here is my questions:</p>\r\n<ol>\r\n<li>\r\n<div>My understanding is that&nbsp;as soon as I implement the &quot;RegisterType&lt;&gt;()&quot; method, I shoud be able to use the MockUnityContainer class for my unit tests (since the&nbsp;&quot;Resolve&quot; and &quot;RegisterType&quot; methods are the only ones I need for now). Am I right?</div>\r\n</li>\r\n<li>\r\n<div>How to implement &quot;RegisterType&lt;&gt;()&quot; method?</div>\r\n</li>\r\n<li>\r\n<div>Does Composite WPF provide all source code? If so, where can I find it (from what&nbsp;we got and use, the CAL only contains some of the code)?</div>\r\n</li>\r\n</ol>\r\n<p>Thanks,</p>\r\n<p>Jie</p>",
+    "PostedDate": "2010-01-05T12:29:57.76-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "273881",
+    "ThreadId": "78608",
+    "Html": "<p id=b7cea930-dd13-012c-a273-12313d018871>Hi Jie,</p>\r\n<p id=b7ceddc0-dd13-012c-a274-12313d018871>I will try to answer your questions separately.</p>\r\n<ol>\r\n<li>Mocks usually only implement the basic functionality that is required for them to work. If those methods are the only ones you need you should be good to go. </li>\r\n<li>The register type method is implemented with its non-generic signature in the <strong>MockUnityContainer</strong> class, so you can take the implementation from there. Instead of:       <br>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>IUnityContainer RegisterType&lt;TFrom, TTo&gt;(LifetimeManager lifetimeManager) <span style=\"color:Blue\">where</span> TTo : TFrom; \r\n</pre>\r\n</div>\r\nthe one that is implemented is the following:       <br><span style=\"font-family:Courier New\">\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span>IUnityContainer RegisterType(Type from, Type to, LifetimeManager lifetimeManager);\r\n</span></pre>\r\n</div>\r\n</span> </li>\r\n<li>The Composite Application Library comes with the CAL, Quickstarts and RI source code. You can find it in the Source folder where you extracted Prism. The specific library code that is provided by Prism is contained entirely in the CAL&rsquo;s three projects: <br> \r\n<ul>\r\n<li>Composite </li>\r\n<li>Composite.Wpf </li>\r\n<li>Composite.UnityExtensions </li>\r\n</ul>\r\n</li>\r\n</ol>\r\n<p id=b7cf1490-dd13-012c-a275-12313d018871>Please let me know if this helps.</p>\r\n<p id=b7cf8820-dd13-012c-a276-12313d018871>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-01-06T09:35:14.257-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "274025",
+    "ThreadId": "78608",
+    "Html": "<p>Hi Damian,</p>\r\n<p>I did the following, as you suggested in 2:</p>\r\n<p>public IUnityContainer RegisterType&lt;TFrom, TTo&gt;() where TTo : TFrom<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return this.RegisterType(typeof(TFrom), typeof(TTo), (LifetimeManager) null);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>But it didn't work (got an&nbsp;exception when trying to call the Resolve method). By looking at the MockUnityContainer code, I found that RegisterType adds an item to Types, while Resolve tries to get it from ResolveBag, which is a different field in the MockUnityContainer class. Debugging results showed that the ResovleBag field was null (since nothing has been added to it), which caused the exception.</p>\r\n<p>The CAL we got only has some of the source code. For example, it gives the IUnityContainer interface, but detailed implementation for RegisterType is not included. The three libraries you mentioned do provide source code, but the&nbsp;Unity library only has its dll without source code.</p>\r\n<p>Meanwhile, I downloaded Unity 1.0 and 1.2 source code&nbsp;from codeplex. However, their implementation looks different from the CAL for the UnityContainer class, which I thought was used for Composite WPF.</p>\r\n<p>Any further suggestions?</p>\r\n<p>Thanks,</p>\r\n<p>Jie</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-06T14:40:23.15-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "276491",
+    "ThreadId": "78608",
+    "Html": "<p>Hi Damian,</p>\r\n<p>Please disregard my questions. I got the issue resolved.</p>\r\n<p>Thanks,</p>\r\n<p>Jie</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-12T18:07:59.567-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

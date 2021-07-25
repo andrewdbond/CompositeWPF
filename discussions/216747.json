@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "458043",
+    "ThreadId": "216747",
+    "Html": "<p>&nbsp;</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:#008000\">// Because the XAPs loaded will contain assemblies that have references to this assembly, </span><br></pre>\r\n<pre><span style=\"color:green\">// and because this assembly exports singletons, I must filter to only modules to prevent DuplicateAssemblyExceptions.</span>\r\nFilteredCatalog filteredCatalog = <span style=\"color:blue\">new</span> FilteredCatalog(deploymentCatalog,\r\n\t   x =&gt; x.ExportDefinitions.Where(def =&gt; def.ContractName == AttributedModelServices.GetContractName(<span style=\"color:blue\">typeof</span>(IModule))).SingleOrDefault() != <span style=\"color:blue\">null</span>);\r\n<span style=\"color:blue\">this</span>.aggregateCatalog.Catalogs.Add(filteredCatalog);\r\n\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>Filtering prevents all none IModule exports<span style=\"font-family:Consolas, 'Courier New', Courier, monospace;white-space:pre\">. So i must inintialize all my exports manually. Something like this:</span></p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><div style=\"color:black;background-color:white\"><pre>[ModuleExport(<span style=\"color:blue\">typeof</span>(TaskModule))]\r\n<span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> TaskModule : IModule\r\n{\r\n\t[Import]\r\n\t<span style=\"color:blue\">public</span> CompositionContainer Container { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">set</span>; }\r\n\r\n\t<span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> Initialize()\r\n\t{\r\n\t\t<span style=\"color:blue\">var</span> cb = <span style=\"color:blue\">new</span> CompositionBatch();\r\n\t\tcb.AddPart(AttributedModelServices.CreatePartDefinition(<span style=\"color:blue\">typeof</span>(RegionControl), <span style=\"color:blue\">null</span>).CreatePart());\r\n\t\tcb.AddPart(AttributedModelServices.CreatePartDefinition(<span style=\"color:blue\">typeof</span>(TasksMenuItem), <span style=\"color:blue\">null</span>).CreatePart());\r\n\t\tContainer.Compose(cb);\r\n\t}\r\n}</pre>\r\n</div>\r\n</pre>\r\n</div>\r\n</p>\r\n<p><span style=\"font-family:Consolas, 'Courier New', Courier, monospace;white-space:pre\">Is it bug or by design?</span></p>",
+    "PostedDate": "2010-06-21T07:10:36.93-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "471248",
+    "ThreadId": "216747",
+    "Html": "<p>Hi,</p>\r\n<p>Thanks for reporting that. I checked this and found that it seems to be an issue. I will notify to the product team about this and will keep you posted. At the same time, you could create an entry into the <a href=\"http://compositewpf.codeplex.com/workitem/list/basic\">issue tracker</a>.</p>\r\n<p>In this Quickstart in particular some modules are loaded on demand and others don&rsquo;t. The former ones filter those definitions exported that have no IModule in the contract name as you shown, while the others don&rsquo;t.</p>\r\n<p>As a workaround, you could load your module setting the <strong>InitializationMode</strong> to <strong>WhenAvailable</strong>,&nbsp;&nbsp;although this is not the ideal scenario. For example:</p>\r\n<pre>[ModuleExport(typeof(ModuleB),&nbsp;<strong>InitializationMode&nbsp;=&nbsp;InitializationMode.WhenAvailable</strong>)]<br></pre>\r\n<p>Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-07-22T15:42:16.667-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "471261",
+    "ThreadId": "216747",
+    "Html": "<p>This looks like the same problem mentioned here : <a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=220171\">http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=220171</a>&nbsp;and <a href=\"http://compositewpf.codeplex.com/workitem/7005\">http://compositewpf.codeplex.com/workitem/7005</a></p>\r\n<p>Due to the way MEF's DeploymentCatalog appears to work&nbsp;(re-importing types in dependent assemblies, even when they are marked as Shared) we had to do some filtering around this.&nbsp; We have made some changes in this area that will be in the next drop and filter out only the types that are explicitly in the default exports provider.&nbsp; We are also working on other approaches that are less intrusive and will hopefully get rid of the need to filter at all.</p>\r\n<p>Thanks again for the feedback,</p>\r\n<p>Michael Puleio</p>",
+    "PostedDate": "2010-07-22T16:18:33.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

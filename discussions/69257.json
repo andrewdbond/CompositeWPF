@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "235624",
+    "ThreadId": "69257",
+    "Html": "<p>Hi, I am developing a composite application using Prism. &nbsp;A requirement is to have a series of tabs each one editing a different business object. &nbsp;For example, tab 1 will insert/modify/delete Customers, tab 2 will insert/modify/delete Providers, tab 3 ... Orders... and so on. &nbsp;So basically the toolbar will have a New, Refresh, Edit, Save, Delete, Close commands. &nbsp;Several Modules will also use this toolbar. &nbsp;</p>\r\n<p>&nbsp; My question is: &nbsp;how do I implement this toolbar? &nbsp;In the shell? In a separate module? &nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>Regards,</p>\r\n<p>&nbsp;</p>\r\n<p>Guillermo.</p>",
+    "PostedDate": "2009-09-17T08:13:37.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "235670",
+    "ThreadId": "69257",
+    "Html": "<p>Hi Guillermo,</p>\r\n<p>My vote would be to place them in a separate module.&nbsp; If you have questions on how this can be done the following blog has a loosely related example (separate module for control):</p>\r\n<p><a href=\"http://www.global-webnet.net/blogengine/post/2009/07/31/Does-PRISM-have-a-performance-issue.aspx\">http://www.global-webnet.net/blogengine/post/2009/07/31/Does-PRISM-have-a-performance-issue.aspx</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-17T09:58:17.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "235925",
+    "ThreadId": "69257",
+    "Html": "<p>Hi, Billkrat.</p>\r\n<p>Thanks for your answer.</p>\r\n<p>This is what I have done. &nbsp;I don't know if it is a right approach.&nbsp;</p>\r\n<p>I have a Module.Common library project that contains common classes for all modules. &nbsp;I have declared a IToolbarService, ToolbarService, ToolbarView, and a ToolbarItem. &nbsp;The ToolbarView is a usercontrol that contains basically:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre> <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">ToolBar</span>  <span style=\"color:Red\">HorizontalAlignment</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">Stretch</span><span style=\"color:Black\">&quot;</span>\r\n                                  <span style=\"color:Red\">ItemsSource</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">{Binding}</span><span style=\"color:Black\">&quot;</span>\r\n                                  <span style=\"color:Red\">ItemTemplate</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">{DynamicResource toolbarItemTemplate}</span><span style=\"color:Black\">&quot;</span>\r\n                                  <span style=\"color:Red\">Grid.Row</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">1</span><span style=\"color:Black\">&quot;</span>\r\n                                  <span style=\"color:Red\">x:Name</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">it</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">&gt;</span>\r\n\r\n        <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">ToolBar</span><span style=\"color:Blue\">&gt;</span>\r\n</pre>\r\n</div>\r\n<p>and its ItemTemplate:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">DataTemplate</span> <span style=\"color:Red\">x:Key</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">toolbarItemTemplate</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">&gt;</span>\r\n  <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">Button</span>   <span style=\"color:Red\">Command</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">{Binding Command}</span><span style=\"color:Black\">&quot;</span>\r\n               <span style=\"color:Red\">Content</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">{Binding Header}</span><span style=\"color:Black\">&quot;</span> <span style=\"color:Blue\">/&gt;</span>\r\n<span style=\"color:Blue\">&lt;/</span><span style=\"color:#A31515\">DataTemplate</span><span style=\"color:Blue\">&gt;</span>\r\n</pre>\r\n</div>\r\n<p>ToolbarItem is the object that will hold the Header and Command (of type DelegateCommand&lt;string&gt;) &nbsp;properties, and implements INotifyPropertyChanged.&nbsp;</p>\r\n<p>IToolbarService:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre> <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">interface</span><span style=\"color:MediumTurquoise\"> IToolbarService : System.ComponentModel.INotifyPropertyChanged\r\n    </span>{\r\n\r\n        ObservableCollection&lt;ToolbarItem&gt; ItemsList\r\n        {\r\n            <span style=\"color:Blue\">get</span>;<span style=\"color:Blue\">set</span>;    \r\n        }\r\n        <span style=\"color:Blue\">void</span> AddItem(string header, Action&lt;<span style=\"color:Blue\">string</span>&gt; executeMethod, Func&lt;<span style=\"color:Blue\">string</span>, <span style=\"color:Blue\">bool</span>&gt; canExecuteMethod);\r\n        \r\n\r\n    }\r\n</pre>\r\n</div>\r\n<p>ToolbarService implements IToolbarService. &nbsp;The AddItem implementation:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>     DelegateCommand&lt;<span style=\"color:Blue\">string</span>&gt; command = <span style=\"color:Blue\">new</span> DelegateCommand&lt;<span style=\"color:Blue\">string</span>&gt;(executeMethod, canExecuteMethod);\r\n     ItemsList.Add(<span style=\"color:Blue\">new</span> ToolbarItem(header, command));\r\n</pre>\r\n</div>\r\n<p>I have referenced the Module.Common project in every other module.  In every ModuleInit,  I call    _container.RegisterType&lt;IToolbarService, ToolbarService&gt;() in the Initialize method (I am not sure if every module needs to register the service or just the shell).   In the views that show the toolbar I  add a ToolbarView usercontrol like this:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>   <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">common</span><span style=\"color:Blue\">:</span><span style=\"color:#A31515\">ToolbarView</span>  <span style=\"color:Red\">DataContext</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">{Binding ToolbarItems}</span><span style=\"color:Black\">&quot;</span> <span style=\"color:Blue\">/&gt;</span>\r\n               &nbsp;</pre>\r\n<p>In the ViewModel of each View (or in a ViewModelBase) I declare a ToolbarItems property of the same type as in IToolbarService.  In the constructor of the viewmodel, I receive the IToolbarService by injection. So,  I can call :</p>\r\n<pre><div style=\"color:Black;background-color:White\"><pre>       toolbarService.AddItem(&quot;Refresh&quot;, ExecuteRefresh, CanExecuteRefresh);\r\n       ToolbarItems = toolbarService.Items;\r\n</pre>\r\n</div>\r\n</pre>\r\n<p>Voila! The toolbaritems are shown in the view.</p>\r\n<p>So, that is what I got.  Please, let me know if it is ok.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p>Guillermo.</p>\r\n</div>",
+    "PostedDate": "2009-09-18T00:53:42.637-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "235987",
+    "ThreadId": "69257",
+    "Html": "<p>Very nice Guillermo, looks like a great blog entry - short, simple and&nbsp;reusable.&nbsp;&nbsp; If you don't have a blog I might recommend getting one; I learned it simplifies life when later you find someone looking to do something you previously blogged about.&nbsp;&nbsp; Thank you for sharing your code!</p>",
+    "PostedDate": "2009-09-18T04:30:20.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "236167",
+    "ThreadId": "69257",
+    "Html": "<p>Guillermo,</p>\r\n<p>&nbsp; It we be awesome if you could throw together a simple example app.&nbsp; Thanks!</p>",
+    "PostedDate": "2009-09-18T11:47:46.397-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

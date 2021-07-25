@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "169388",
+    "ThreadId": "50521",
+    "Html": "<p><em>I need to be able to create an define regions on the fly:<br>\r\n<br>\r\nThis is the code that returns me a new view from my user control loaded from a dll. (so I can use the same control multiple times)<br>\r\n<br>\r\n<span style=\"font-size:13px;color:#2b91af\">KeyValuePair</span><span style=\"font-size:13px\">&lt;</span><span style=\"font-size:13px;color:#0000ff\">string</span><span style=\"font-size:13px\">, </span><span style=\"font-size:13px;color:#0000ff\">string</span><span style=\"font-size:13px\">&gt; selPortletView = (</span><span style=\"font-size:13px;color:#2b91af\">KeyValuePair</span><span style=\"font-size:13px\">&lt;</span><span style=\"font-size:13px;color:#0000ff\">string</span><span style=\"font-size:13px\">, </span><span style=\"font-size:13px;color:#0000ff\">string</span></em><span style=\"font-size:13px\"><em>&gt;)listBox1.SelectedValue; </em>\r\n<p>&nbsp;</p>\r\n</span></p>\r\n<p><span style=\"font-size:13px;color:#2b91af\"><em>IPortletView</em></span><span style=\"font-size:13px\"><em> portletView = m_ShellService.GetPortletViewInstance(selPortletView.Key);<br>\r\n<br>\r\nI then create a new control on my main form, say a new Frame , and want to load this user control into the newly created frame..<br>\r\n<br>\r\nI need to somehow add a new region to the region manager, associate the region with my Frame,  then assign the portletView to that region, I know how to add the usercontrol (below) but how to I add a new Region to my RegionManager?<br>\r\n<br>\r\n</em><span style=\"font-size:13px;color:#008000\"><em>m_MainRegionManager.Regions[&quot;new Region Name&quot;].Add(portletView);<br>\r\n</em>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n</span></span></p>\r\n<p><br>\r\n<br>\r\n<br>\r\nI worked this out now, no need to reply thanks.......<br>\r\n</p>\r\n",
+    "PostedDate": "2009-03-18T05:13:22.3-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "171380",
+    "ThreadId": "50521",
+    "Html": "Can you share your solution please?&nbsp; I'm trying to do the same thing.<br>\r\n",
+    "PostedDate": "2009-03-24T09:12:57.047-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "171917",
+    "ThreadId": "50521",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:calibri\">Hi </span><a href=\"http://www.codeplex.com/site/users/view/larserik\"><span style=\"color:windowtext;font-family:calibri;text-decoration:none;text-underline:none\">joshb</span></a><span style=\"font-family:calibri\">, </span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><a href=\"http://www.codeplex.com/site/users/view/larserik\"><span style=\"color:windowtext;font-family:calibri;text-decoration:none;text-underline:none\">If you</span></a><span style=\"font-family:calibri\"> have a reference to the <b>FrameworkElement</b> that you want to be associated with the new region (the Frame in previous case), you can use the <b>RegionManager</b>'s <b>SetRegionName</b> static method to dynamically define a new region:</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">RegionManager.SetRegionName(myFrame, &quot;newRegionName&quot;);</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"color:#1f497d;font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Have in mind that the RegionManager is a singleton instance, so if your Frame’s lifetime will be short, make sure to remove the region from it to prevent memory leaks.                </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-size:10pt;font-family:'courier new'\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hope it helps!</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Matias Bonaventura</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><a href=\"http://blogs.southworks.net/\"><span style=\"font-family:calibri\">http://blogs.southworks.net/matiasb</span></a></p>\r\n",
+    "PostedDate": "2009-03-25T09:29:01.287-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

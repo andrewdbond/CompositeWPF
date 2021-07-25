@@ -1,0 +1,27 @@
+<div class="wikidoc"><h1>Adding same view instance from one region to another region works because WPF allows it</h1><ul><li><a href="#Description">Description</a></li>
+<li><a href="#Scenarios">Scenarios</a></li></ul>
+<h2>Description <a name="Description"></a></h2>Adding the same view to another than one region will work. This is due to WPF not Composite Application Library. This casues unexpected behaviors.
+<h2>Scenarios <a name="Scenarios"></a></h2><ul><li><b>Adding a view to a region twice results in an error - as per definition</b></li></ul>
+<pre>
+object view = new object();
+IRegion region = new SimpleRegion();
+
+region.Add(view);
+region.Add(view); // This will cause an exception
+
+MessageBox.Show(&quot;shouldn&#39;t get to here&quot;); </pre>
+<ul><li><b>Adding a view that exist in one region to another will work, but adding it back to the region it was previously added to will cause an exception</b>: What happens is when you add the view from one region to another it will not draw in the previous region and draw in the region it was just added. But the region still has it in it&#39;s container.</li></ul>
+<pre>
+IRegion mainRegion = this.regionManager.GetRegion(&quot;MainRegion&quot;);
+IRegion leftRegion = this.regionManager.GetRegion(&quot;LeftRegion&quot;);
+
+LeftTestView leftView = new LeftTestView();
+leftRegion.Add(leftView);
+MessageBox.Show(&quot;You can see the leftView in the Left Region&quot;);
+
+// Now add the &#39;leftView&#39; to the mainRegion
+mainRegion.Add(leftView);
+MessageBox.Show(&quot;leftView now is showing in the MainRegion and disappear from the leftRegion&quot;);
+
+// Now add it back to the leftRegion
+leftRegion.Add(leftView); // An exception will occuring indicating the view already exist. </pre></div><div class="ClearBoth"></div>

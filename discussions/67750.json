@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "230225",
+    "ThreadId": "67750",
+    "Html": "<p>Hi all,</p>\r\n<p>IMO, it seems&nbsp;like a lot of the quickstarts and examples are composite applications where each module exists in complete isolation.</p>\r\n<p>These examples are a great way to learn about EventAggregators, Composite/Delegate&nbsp;Commands, View Injection/Discovery etc etc, but....<br>I'm still pretty confused about the 'best practice' for implementing a cross cutting concern type module.</p>\r\n<p>I think I've worked out how to provide a custom logger, by overriding the LoggerFacade on the bootstrapper.<br>You can then use the container to resolve the iloggerfacade from other modules in order that everything logs to the same place.<br>First question, have I got this right - or have I just hacked some code together that works right now, but might blow up in the future?</p>\r\n<p>My next question,&nbsp;what about other cross cutting functionality? Caching for example.<br>If I wanted my application to have 1 component that provides access to a common cache&nbsp;used by all the components in the application, is that just a module?<br>That module would presumably have no view? So what does it look like?</p>\r\n<p>Sorry if I'm being dumb here, but I just haven't figured it out yet!<br>I think I maybe adding to my own confusion by trying to learn CAL and MVVM at the same time, I'm thinking maybe the caching module doesn't adhere to MVVM?</p>\r\n<p>Are there any examples of this kind of thing?</p>\r\n<p>Thanks,</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-02T07:49:55.22-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230368",
+    "ThreadId": "67750",
+    "Html": "<p>Hi</p>\r\n<p>The way you are providing a custom logger for your application is correct. As a matter of fact, this is the recommended way in the Prism documentation. You can check that out <a href=\"http://msdn.microsoft.com/en-us/library/dd490833.aspx\">here</a>.</p>\r\n<p>As for caching, I believe the best approach would be having a service registered in the container which exposes the required data or functionality. As in logging, you can make use of the service anywhere in your application by getting it from the container.</p>\r\n<p>Now, you can either directly register this service in the container (through the <strong>Bootstrapper</strong>) or have a separate module which is related to caching do it. This module sole responsibility might be registering the service, but in a growing application some other functionality might be added in the future. Another benefit is that you would not have to modify your application to provide the caching, you can decide whether to load the module or not, based on the way you are configuring modules to be loaded.</p>\r\n<p>Take into account, that this module would need to be loaded before any module tries to use this functionality.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman   <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-02T12:25:36.83-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

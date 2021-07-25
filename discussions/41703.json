@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "138431",
+    "ThreadId": "41703",
+    "Html": "Hello,<br>\r\n<br>\r\n1.<br>\r\n<br>\r\nI've learnt that there are four ways of loading modules in Prism. Those are ~<br>\r\n<br>\r\n- statically load modules<br>\r\n- remote downloading<br>\r\n- configuration <br>\r\n- directory lookup<br>\r\n<br>\r\nI would like to create a module for both WPF and Silverlight without having strong-reference. (so, static module loading is out of picture). I'm thinking to use remote downloading or configuration or directory lookup but AFAIK, remoting downloading is only for Silverlight and config/dir lookup are for WPF.. So, I'm not sure what would be the best way to create a module that can work for both Silverlight and WPF. <br>\r\n<br>\r\n2.&nbsp; In doc of Prism v3 drop7, I found the line below in &quot;<span id=nsrTitle>How to Prepare a Module for Remote Downloading</span> &quot; section.<br>\r\n<br>\r\n&gt;&gt;You have to add an <strong>AssemblyPart</strong> element tag for every dynamic link\r\nlibrary file that <strong>your solution</strong> contains or references.<br>\r\n<br>\r\n2.1. Do I really need to add each and every dlls that I referenced in my project? OR my solution (OMG)? <br>\r\n<br>\r\n<pre>&lt;Modularity:ModuleDeployment<br>xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;<br>xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;<br>xmlns:Modularity=&quot;clr-namespace:Microsoft.Practices.Composite.Modularity;assembly=Microsoft.Practices.Composite.Silverlight&quot;&gt;<br>&nbsp;&nbsp;&nbsp; &lt;Modularity:ModuleDeployment.Parts&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;AssemblyPart Source=&quot;Microsoft.Practices.Composite.Presentation.Silverlight.dll&quot;/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;AssemblyPart Source=&quot;Microsoft.Practices.Composite.Silverlight.dll&quot;/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;AssemblyPart Source=&quot;Microsoft.Practices.Composite.UnityExtensions.Silverlight.dll&quot;/&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;AssemblyPart Source=&quot;blah blah blah&quot;/&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;</pre>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; &lt;/Modularity:ModuleDeployment.Parts&gt;<br>\r\n&lt;/Modularity:ModuleDeployment&gt;\r\n<pre>2.2. Do I need to add System Assembly (e.g. mscorlib or System.Xml or etc) ?? </pre>\r\n</pre>\r\n3. Do I have to use Silverlight Application Project Template to create a module? Can I use Silverlight Class Template to create the module so that I don't need to delete the App.xaml, Page.xaml, Properties\\AppManifest.xml manually? <br>\r\n<br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2008-12-07T12:27:32.903-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138793",
+    "ThreadId": "41703",
+    "Html": "I will answer my own question. :) <br>\r\n1. <br>\r\n<br>\r\nI'm using remote downloading for SL and config for WPF for now. <br>\r\n<br>\r\n2. No. The doc is not correct or clear. <br>\r\n<br>\r\n2.2. No. It's because you still need to generate xap in webproject. <br>\r\n",
+    "PostedDate": "2008-12-08T16:27:28.623-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

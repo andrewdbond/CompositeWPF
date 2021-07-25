@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "478200",
+    "ThreadId": "222955",
+    "Html": "Hi!\r\nI'm trying to kick off with Prism4. (disclaimer: I have no experience with previous versions of Prism) \r\nI've choosen to use MEF as container. So I'm using MefBootstapper as the base for my bootstrapper.\r\nThere's ConfigureContainer method in MefBootstrapper with such code:\r\n[code]\r\n    this.Container.ComposeExportedValue&lt;ILoggerFacade&gt;(this.Logger);\r\n    this.Container.ComposeExportedValue&lt;IModuleCatalog&gt;(this.ModuleCatalog);\r\n    this.Container.ComposeExportedValue&lt;IServiceLocator&gt;(new MefServiceLocatorAdapter(this.Container));\r\n[/code]\r\n\r\nHere we (you) register a wrapper for well-known IServiceLocator implementation. \r\n\r\nThen in another method, ConfigureServiceLocator, we set up a IServiceLocator-implementation from the Container as &quot;global&quot; Service Locator :\r\n[code]\r\n        protected override void ConfigureServiceLocator()\r\n        {\r\n            IServiceLocator serviceLocator = this.Container.GetExportedValue&lt;IServiceLocator&gt;();\r\n            ServiceLocator.SetLocatorProvider(() =&gt; serviceLocator);\r\n        }\r\n[/code]\r\nMefBootstapper.Run's logic sequence is : ConfigureContainer -&gt; ConfigureServiceLocator\r\n\r\n\r\nThen in some module I call:\r\nvar f = ServiceLocator.Current.GetInstance&lt;ILoggerFacade&gt;();\r\nand got this exception:\r\nActivationException: Activation error occured while trying to get instance of type ILoggerFacade, key &quot;&quot;/\r\n\r\n\r\nActually I ask not for ILoggerFacade, it's just for an example. The key point here is that I ask for an interface which implementation I registered in ConfigureContainer as &quot;Container.ComposeExportedValue&quot;.\r\n\r\n\r\nI understand that I can get all required references in my module's constructor (via ImportingConstructor), but :\r\n1) ServiceLocator-approach should work too, doesn't?\r\n2) I have a base class for all my modules and don't want to burden all their constructors with additional parameters (which should be just transfered to base ctor)\r\n\r\n\r\nI'm using Prism v4 CTP (August).",
+    "PostedDate": "2010-08-09T09:46:54.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "478202",
+    "ThreadId": "222955",
+    "Html": "Sorry for the formatting, but I can't understand why is that, editor just ignores all whitespaces.\r\n",
+    "PostedDate": "2010-08-09T09:52:01.49-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "478242",
+    "ThreadId": "222955",
+    "Html": "solved. \r\nServiceLocator works as expected.\r\nThe issue was cause by mismatch of contracts specified for ComposeExportedValue and ServiceLocator.GetInstance:\r\n\r\n\r\nclass Service: IService {}\r\n\r\n\r\nwas \r\nthis.Container.ComposeExportedValue(service)\r\ninstead of\r\nthis.Container.ComposeExportedValue&lt;IService&gt;(service)\r\n\r\n\r\nSo here ServiceLocator could't find &quot;IService&quot; as only Service was registred:\r\nvar service = Current.GetInstance&lt;IService&gt;();",
+    "PostedDate": "2010-08-09T11:55:58.543-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

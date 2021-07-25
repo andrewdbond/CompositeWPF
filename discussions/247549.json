@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "572065",
+    "ThreadId": "247549",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I have placed multiple instances of the same view (search results with different filter settings) to a region. The view contains a ListView control, which allows to select items.&nbsp;</p>\r\n<p>If an item is selected in view instance 1, another item can be selected in view instance 2, since they are independant. I would like to avoid that, so that only one item can be selected at the same time. How to accomplish that in PRISM manner?</p>\r\n<p>&nbsp;</p>\r\n<p>Regards,</p>\r\n<p>Andreas</p>\r\n",
+    "PostedDate": "2011-02-25T03:53:30.377-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "572145",
+    "ThreadId": "247549",
+    "Html": "<p>Hi Andreas,</p>\r\n<p>In order to achieve that, you should call the <a href=\"http://msdn.microsoft.com/es-es/library/system.windows.controls.listbox.unselectall.aspx\">UnselectAll</a> method on your ListView control when the <a href=\"http://msdn.microsoft.com/es-es/library/system.windows.controls.primitives.selector.selectionchanged.aspx\">SelectionChanged</a> event is fired in the other ListView control.</p>\r\n<p>If your views are on different modules, you could use one of the approaches for <a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28PandP.40%29.aspx\">communicating between loosely coupled components</a>, such as the event aggregator, to facilitate this interaction.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-02-25T07:21:26.953-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "572187",
+    "ThreadId": "247549",
+    "Html": "<p>Hi Guido,</p>\r\n<p>thanks for your reply.</p>\r\n<p>Since its all the SAME view (just created several instances), I cannot simply call UnselectAll() on the view, because then NO item could be selected effectively (the item which really IS selected and should be shown as selected would also be unselected). So my problem is that I don't know how to identify the one view _instance_ on which the selection occured, and the other view _instances_ which should be unselected. Another thing to say is that I have injected the view instances programmatically (using a controller class and service locator). So I also don't know how much view instances are placed to the region at compile time.. &nbsp;</p>\r\n<p>Any guess?</p>\r\n<p><br />Regards,</p>\r\n<p>Andreas</p>",
+    "PostedDate": "2011-02-25T08:13:24.54-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "572213",
+    "ThreadId": "247549",
+    "Html": "<p>Hi Andreas,</p>\r\n<p>In that case, you could store an identifier in the <a href=\"http://compositewpf.codeplex.com/discussions/247539\">ListView.Tag</a> property, and check if it matches before calling the <a href=\"http://msdn.microsoft.com/es-es/library/system.windows.controls.listbox.unselectall.aspx\">UnselectAll</a> method.</p>\r\n<p>Another possibility would be to use the Event Aggregator's filter functionality to check for the <strong>Tag </strong>property or a property in the controller (you can read more about the event aggregator in <a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28PandP.40%29.aspx\">this chapter</a> from the Prism msdn documentation, as well as check the <a href=\"http://msdn.microsoft.com/en-us/library/ff921173%28PandP.40%29.aspx\">Event Aggregation QuickStart</a>). If you use the MVVM pattern, you could store a property in your ViewModel and bind the <a href=\"http://msdn.microsoft.com/es-es/library/system.windows.controls.primitives.selector.selecteditem.aspx\">ListView.SelectedItem</a> property to it. That way, you could subscribe to the aforementioned event in your ViewModel and perform this interaction there.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-02-25T08:57:21.553-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

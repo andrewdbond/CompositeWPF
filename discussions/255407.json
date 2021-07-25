@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "603457",
+    "ThreadId": "255407",
+    "Html": "<p>Hi!</p>\n<p>I'm new to Prism and I'm building a sample application using Silverlight4, Prism 4 with MEF.</p>\n<p>In the Shell have a TabControl defined as a region where I load my Main Content. Since it's a Tab control I want to load multiple views in it and be able to navigate between them.&nbsp;</p>\n<p>I have a View that Lists the \"Customers\" from my database. By selecting one Customer and click the Details button, I navigate to the \"Edit Customer Details\" View that opens in a new tab.</p>\n<p>So far, so good.</p>\n<p>The problem is when I try to Edit 2 Customers: I choose the customer, Edit, and a new tab is created. I choose another Customer, Edit and nothing happens.&nbsp;</p>\n<p>In the CustomersList ViewModel I have the following code:</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre>UriQuery uriQuery = <span style=\"color: blue;\">new</span> UriQuery();\n      \n<span style=\"color: blue;\">var</span> _customer = customersList.CurrentItem <span style=\"color: blue;\">as</span> Customer;\n\n<span style=\"color: blue;\">if</span> (_customer != <span style=\"color: blue;\">null</span>)\n   uriQuery.Add(EditCustomerViewName, _customer.ID);\n\nUri EditCustomerViewUri = <span style=\"color: blue;\">new</span> Uri(EditCustomerViewName + uriQuery.ToString(), UriKind.Relative);\n            \n<span style=\"color: blue;\">this</span>.regionManager.RequestNavigate(RegionNames.MainContentRegion, EditCustomerViewUri);\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>I saw some solutions but it involved that the ViewModel inserted directly the View into the region, but I saw somewhere that the ViewModel should be \"View Independent\".</p>\n<p>Anyone knows how can I load multiple instances of the same View from the ViewModel?</p>\n<p>&nbsp;</p>\n<p>Thanks in advance.</p>\n<p>Best regards,</p>\n<p>Ricardo Bentes</p>",
+    "PostedDate": "2011-04-27T02:55:29.05-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "603571",
+    "ThreadId": "255407",
+    "Html": "<p>Hi Ricardo,</p>\r\n<p>Based on my understanding of your scenario, the problem you&rsquo;re experiencing might be happening by the fact that <strong>IsNavigationTarget</strong> implementation of the <strong>INavigationAware</strong> interface is returning <strong>True</strong>, which means that your target view (<em>EditCustomerView</em>) will be re used and will ensure that only one view will be displayed in the region, in your case the tab control.</p>\r\n<p>On the other hand, you should make sure that your <em>EditCustomerView</em> view is decorated with the <strong>PartCreationPolicy</strong> attribute as <strong>NonShared</strong>. By doing this, a new instance of the exported view model will be created each time it is resolved.</p>\r\n<p>Also take into account that Prism provides the <strong>IRegionMemberLifetime</strong> interface, which allows you to control the lifetime of views within regions by allowing you to specify whether deactivated views are to be removed from the region or simply marked as deactivated.&nbsp;</p>\r\n<p>Additionally, you can read the following links about Navigation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861(PandP.40).aspx\">Chapter 8: Navigation</a></li>\r\n<li><a href=\"http://blogs.msdn.com/b/kashiffl/archive/2010/10/04/prism-v4-region-navigation-pipeline.aspx\">Prism v4 Region Navigation Pipeline</a> from <a href=\"http://blogs.msdn.com/b/kashiffl/\">Karl Shifflett</a>&acute;s blog</li>\r\n</ul>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>",
+    "PostedDate": "2011-04-27T06:41:58.73-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "603601",
+    "ThreadId": "255407",
+    "Html": "<p>Hi Miguel,</p>\r\n<p>&nbsp;</p>\r\n<p>Thank you for your answer, it was very helpful, indeed what was missing was just the PartCreationPolicy attribute.</p>\r\n<p>Actually &nbsp;I had to add the <strong>PartCreationPolicy</strong>&nbsp;attribute not only to the view, but also to the ViewModel because all Edit Views were sharing the same instance of View Model and consequently showing the same information.</p>\r\n<p>&nbsp;</p>\r\n<p>Once again,</p>\r\n<p>Thank you!</p>",
+    "PostedDate": "2011-04-27T07:38:54.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

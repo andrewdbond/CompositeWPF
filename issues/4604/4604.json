@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "ClickOnce with Prism can now be achieved. More information in the \"Deploying WPF Prism Application with ClickOnce\" section of this chapter:\r\n\r\nhttp://msdn.microsoft.com/en-us/library/gg430856%28PandP.40%29.aspx",
+    "ClosedDate": "2010-12-28T07:35:37.05-08:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "I've been using the Composite Application Library guidance for long time.\n \nOne things that I think is not well covered there or in the sample application themselves is how to build and deploy the application.\n \n \n1. Because of the dynamic nature of the application there is no static references between the application host (exe) and the modules (dlls). This create the first problem: How to get the module build products (dll, resources, etc) to the shell application's build directory?\n \nThe solution you have in your sample application (also my current solution) is to have a Post-build event (go into each module's project properties page and select Build Events tab) of xcopy from the bin directory of the module to the bin directory of the shell.\n \nThis works, but don't you think have MSBuild task will be much better. For start, since this done \"out-of-band\" when we run CleanSolution task, it does not clean the copied module files from the shell project directory since it doesn't know about them.\n \n \n \n2. ClickOnce deployment: due to the first things we talked about, the current ClickOnce generation script of MSBuild relay only on static references, and so when we create ClickOnce installation for our shell application we only get the shell applicaiton, without the modules.\n \nI think it's time to create some kind of deployment project in which we will be able to specify which shell project as well as module project we want to package to create our deployment project.\n \nIn the same deployment project we will be able to specify the ClickOnce parameters such as name, urls, version etc.\n \nThis will give us the ability to have several different deployment project, for each combination of modules.",
+    "LastUpdatedDate": "2013-05-16T05:28:56.67-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-07-17T13:31:28.833-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Composite Application ClickOnce Deployment Project",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 8,
+    "Id": 4604
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Thank you for your suggestion.\r\n\r\nThis is currently under development and will be available in the next Prism v4 drop.\r\n\r\nHave a great day,\r\n\r\nKarl Shifflett",
+      "PostedDate": "2010-09-15T15:21:13.363-07:00",
+      "Id": 156165
+    },
+    {
+      "Message": "Hi,\r\n\r\nIt could be useful to know that, as of today, ClickOnce deployment can be achieved with Prism. You can read more about this in the \"Deploying WPF Prism Application with ClickOnce\" section of this chapter from the Prism MSDN documentation:\r\n\r\nhttp://msdn.microsoft.com/en-us/library/gg430856%28PandP.40%29.aspx\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2010-12-28T07:34:17.29-08:00",
+      "Id": 156166
+    }
+  ]
+}

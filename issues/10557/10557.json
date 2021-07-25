@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "We have migrated to prism 4 from CAL\n\nHowever after the migration, the views are not injected to regions when we run the application on a machine with .Net 4.0\n\n__The same code however works well on a machine with .Net 4.5 installed.__ Could this be possibly due to PRISM or any other component we may be using.\n\nThis is how our module catalog looks like \n\n```\n<module assemblyFile=\"MyApp.Modules.MyApp.dll\" moduleType=\"SomeNamespace.CustomerSoftware.SRP.Modules.MyApp.SE_WPF_ModuleSchematic\" moduleName=\"Schematic\"/>\n<module assemblyFile=\"MyApp.Modules.MyApp.dll\" moduleType=\"SomeNamespace.CustomerSoftware.SRP.Modules.MyApp.SE_WPF_ModuleFBGrid\" moduleName=\"DataGrid\"/>\n<module assemblyFile=\"MyApp.Modules.MyApp.dll\" moduleType=\"SomeNamespace.CustomerSoftware.SRP.Modules.MyApp.SE_WPF_ModuleNetwork\" moduleName=\"Network\">\n  <dependencies>\n\t<dependency moduleName=\"Schematic\"/>\n\t<dependency moduleName=\"DataTree\"/>\n\t<dependency moduleName=\"DataGrid\"/>\n  </dependencies>\n</module>\n<module assemblyFile=\"MyApp.Modules.MyApp.dll\" moduleType=\"SomeNamespace.CustomerSoftware.SRP.Modules.MyApp.SE_WPF_ModuleFBtree\" moduleName=\"DataTree\"/>\n<module assemblyFile=\"MyApp.Modules.MyApp.dll\" moduleType=\"SomeNamespace.CustomerSoftware.SRP.Modules.MyApp.SE_WPF_ModuleSolution\" moduleName=\"DataSolution\"/>\n<module assemblyFile=\"MyApp.Modules.MyApp.dll\" moduleType=\"SomeNamespace.CustomerSoftware.SRP.Modules.MyApp.SE_WPF_ModuleProtectionCurve\" moduleName=\"Plot\"/>\n\n```\nUnder module Network view constructor the regions are associated to the control\n\t\t\tRegionManager.SetRegionName(this.SchematicContent, RegionNames.SchematicRegion);\n            RegionManager.SetRegionManager(this.SchematicContent, this.regionManager);\n\t\t\t\n\t\t\tRegionManager.SetRegionName(this.TreeContent, RegionNames.TreeRegion);\n            RegionManager.SetRegionManager(this.TreeContent, this.regionManager);\n\t\t\t\n\t\t\tRegionManager.SetRegionName(this.GridContent, RegionNames.GridRegion);\n            RegionManager.SetRegionManager(this.GridContent, this.regionManager);\n\t\t\t\nThe constructor for the presenter of this module then assigns the views to these regions\n\n\t\t\tthis.schematicRegion = this.regionManager.Regions[RegionNames.SchematicRegion];\n            this.schematicView = AddCompositeView(typeof(ISE_WPF_ModuleSchematicView), typeof(ISE_WPF_ModuleSchematicPresenter), schematicRegion);\n            this.schematicRegion.Activate(schematicView);\n          \n            this.propertiesRegion = this.regionManager.Regions[RegionNames.TreeRegion];\n            this.treeView = AddCompositeView(typeof(ISE_WPF_ModuleFBtreeView), typeof(ISE_WPF_ModuleFBtreePresenter), propertiesRegion);\n            this.solutionView = AddCompositeView(typeof(ISE_WPF_ModuleSolutionView), typeof(ISE_WPF_ModuleSolutionPresenter), propertiesRegion);\n            this.PlotView = AddCompositeView(typeof(ISE_WPF_ModulePlotView), typeof(ISE_WPF_ModulePlotPresenter), propertiesRegion);\n            this.propertiesRegion.Activate(this.treeView);\n\n            \n            this.gridRegion = this.regionManager.Regions[RegionNames.GridRegion];\n            this.gridView = AddCompositeView(typeof(ISE_WPF_ModuleFBGridView), typeof(ISE_WPF_ModuleFBGridPresenter), gridRegion);\n            this.gridRegion.Activate(this.gridView);",
+    "LastUpdatedDate": "2014-03-18T08:27:48.867-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2014-03-14T02:05:30.24-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Problem with PRISM 4 migration in .Net 4.0",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 10557
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "A discussion thread for this topic is available at the following CodePlex site:#* [Problem with PRISM migration and Framework version](https://compositewpf.codeplex.com/discussions/538984)\r\n\r\nWe would continue troubleshooting this issue in the thread mentioned above.Regards. \r\n\r\nGabriel Ostrowskyhttps://blogs.soutworks.net/gostrowsky",
+      "PostedDate": "2014-03-18T08:27:48.867-07:00",
+      "Id": 156691
+    }
+  ]
+}

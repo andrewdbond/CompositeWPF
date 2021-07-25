@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "1202474",
+    "ThreadId": "528876",
+    "Html": "Hi,\r<br />\n<br />\nPlease find the link below\r<br />\n<a href=\"https://mef.codeplex.com/discussions/528870\" rel=\"nofollow\">https://mef.codeplex.com/discussions/528870</a>\r<br />\n and can any pls help me regarding this issue ?\r<br />\n<br />\nThanks and regards,\r<br />\nSivalingam.<br />\n",
+    "PostedDate": "2014-02-04T05:42:24.507-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1202572",
+    "ThreadId": "528876",
+    "Html": "Hi Sivalingam,\r<br />\n<br />\nBased on the description in the thread you linked to, this problem only appeared once and you had not been able to reproduce it again. Is that correct?\r<br />\nBasically it seem that MEF encountered an error while trying to access its own <strong>CompositionContainer</strong>. I'm not aware of what can throw this kind of exception but in the mean time (until you are able to reproduce the error again) please check if there is any <strong>using</strong> block where you are using MEF's CompositionContainer or any part where you are invoking its <strong>Dispose</strong> method. MEF' CompositionContainer class implements <strong>IDisposable</strong>, so doing any of the above will dispose the container and possibly throw this exception.\r<br />\n<br />\nThanks,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2014-02-04T09:13:26.563-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1202782",
+    "ThreadId": "528876",
+    "Html": "Hi DCherubini,\r<br />\n<br />\nI have used <strong>IDisposable</strong> in some of the parts of container in my application, but I <strong>dont</strong> know when the <strong>CompositionContainer</strong> gets disposed.\r<br />\n<br />\nHow can I prevent this Exception, can you pls help me ?<br />\n",
+    "PostedDate": "2014-02-04T22:58:09.63-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1203643",
+    "ThreadId": "528876",
+    "Html": "Hi,\r<br />\n<br />\nI think the only way to efectively prevent this exception from apearing is to understand why the <strong>MEF's CompositionContainer</strong> is being disposed. Note that it should not matter if the parts you are exporting implement <strong>IDisposable</strong> or not as the problem is that the container itself is the one being disposed.\r<br />\nAs far as I know, the container could be disposed in the following situations:<br />\n<ul>\n<li>You are invoking the <strong>Dispose</strong> method of the CompositionContainer manually.</li>\n<li>You are using the CompositionContainer as par of the scope of a <strong><em>using block</em></strong>, which disposes the container at the end.</li>\n<li>\nThe container could also be disposed if it's being garbage collected, but this would also mean that the container wouldn't be accesible at all.<br />\n</li>\n</ul>\nAlso, it would be helpful if you could provide more information about when this exception is appearing. Based on the error it seems the application failed when trying to create a region. Again, in your initial description you said that the error only appeared once. Have you been able to reproduce it again?\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2014-02-06T10:03:00.08-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1204243",
+    "ThreadId": "528876",
+    "Html": "HI DCherubini, \r<br />\n<br />\nActually we are using the tab based application and passing the main container of the application to the tab viewmodel and set as parentcontainer of the tab viewmodel,  so once the particular tab was closed, it is disposing the  particular tab viewmodel  container, since it is referring the same object of main container so it is also gets disposed and then when we try to load a view with content control in another tab. It is throwing the exception mentioned above and it reproducible all the times(10/10) when it is trying to access the regionmanager.regionname in the content control of the view.\r<br />\n<br />\nNote:\r<br />\n<br />\nIn main container we are loading the common dlls of the application, whereas in the tabviewmodel we are loading the tab based dlls, so we are passing the main container and assign the same container as parent container to the tabviewmodel and creating a child contrainer from it using <strong>CreateChildContainer()</strong> in unity container, now we have changed to mef and in that <strong>CreateChildContainer()</strong> is not available, prob that may be the reason.\r<br />\n<br />\nkindly suggest me the possible solution to handle this situation.\r<br />\n<br />\nThanks.<br />\n",
+    "PostedDate": "2014-02-07T05:12:01.12-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1206440",
+    "ThreadId": "528876",
+    "Html": "Hi sivalingam,\r<br />\n<br />\nBased on my understanding, you were working with Unity container without any issues, but now you are trying to migrate to <strong>MEF</strong> and the issue you described appears.\r<br />\nAs you mentioned above, <strong><em>CreateChildContainer()</em></strong> method is not available on <strong>MEF Container</strong>. However, I am afraid I don't completely understand how are you creating the child container with MEF. It would be helpful if you could tell us how are you creating the container hierarchy. Or if you could provide a small sample that reproduces this issue, we could debug it and give you better support.\r<br />\n<br />\nNevertheless, I think the following sites may help you configure the nested containers properly:<br />\n<h1></h1>\n<ul>\n<li><a href=\"https://mef.codeplex.com/wikipage?title=FAQ\" rel=\"nofollow\">MEF FAQ in CodePlex: How do I use Nested Containers?</a></li>\n<li>\n<a href=\"http://blogs.msdn.com/b/hammett/archive/2010/09/09/container-hierarchies-in-mef-shaping-it-for-the-future-maybe.aspx?Redirected=true\" rel=\"nofollow\">Container hierarchies in MEF</a><br />\n</li>\n</ul>\nI hope this helps,\r<br />\n<br />\nRegards.\r<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-02-10T10:00:05.22-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1250899",
+    "ThreadId": "528876",
+    "Html": "Hi,<br />\n<pre><code>      We have used MEF framework in our WPF application. Application is an MDI application built using tab controls. We have a parent container that hosts the base tab control and we have created child containers for each tab. We dispose child container of individual tab when deleting tabs. But, when we dispose child container that is generated at last, it is affecting all other child containers.  It throws the below exception when other child containers tries to export components. But, it is not throwing this exception when disposing containers that are generated before the last container.\n</code></pre>\n\nType : System.ComponentModel.Composition.CompositionException, System.ComponentModel.Composition, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 \r<br />\n Message : The composition produced a single composition error. The root cause is provided below. Review the CompositionException.Errors property for more detailed information. \r<br />\n<br />\n 1) Cannot access a disposed object. \r<br />\n Object name: 'System.ComponentModel.Composition.Hosting.CompositionContainer'. \r<br />\n<br />\n Resulting in: Activation error occured while trying to get instance of type DelayedRegionCreationBehavior, key &quot;&quot; \r<br />\n<br />\n Resulting in: Set property 'Microsoft.Practices.Prism.Regions.RegionManager.RegionName' threw an exception. \r<br />\n<br />\n Resulting in: An exception occurred while trying to create an instance of type 'VCA.Sparky.Modules.EMR.Views.ExamFindingsView'. \r<br />\n<br />\n Resulting in: Cannot activate part 'VCA.Sparky.Modules.EMR.Views.ExamFindingsView'. \r<br />\n Element: VCA.Sparky.Modules.EMR.Views.ExamFindingsView --&gt; VCA.Sparky.Modules.EMR.Views.ExamFindingsView --&gt; AssemblyCatalog (Assembly=&quot;VCA.Sparky.Modules.EMR, Version=2.27.14034.13, Culture=neutral, PublicKeyToken=null&quot;) \r<br />\n<br />\n<br />\n<strong>Below is the code part we have in parent level bootstrapper:</strong>\r<br />\n<br />\npublic class Bootstrapper : MefBootstrapper<br />\n<pre><code>{\n    private readonly EnterpriseLibraryLogger logger = new EnterpriseLibraryLogger();\n\n    protected override void ConfigureAggregateCatalog()\n    {\n        base.ConfigureAggregateCatalog();\n\n        AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(Bootstrapper).Assembly));\n        AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(Modules.Iconbar.IconbarModule).Assembly));\n\n\n    }\n\n    protected ILoggerFacade LoggerFacade\n    {\n        get { return logger; }\n    }\n\n    ShellView view;\n    protected override DependencyObject CreateShell()\n    {\n        Container.ComposeExportedValue(Container);\n\n        // Use the container to create an instance of the shell.\n        return Container.GetExportedValue&lt;ShellView&gt;();\n\n        }</code></pre>\n\n}\r<br />\n<br />\n<br />\n<strong>And, below is the code part we have in child level bootstrapper:</strong>\r<br />\n<br />\n public class TabBootstrapper : MefBootstrapper<br />\n<pre><code>{\n    public virtual CompositionContainer ParentContainer { get; set; }\n\n    public int TabIndex { get; set; }\n\n    protected override void ConfigureAggregateCatalog()\n    {\n        base.ConfigureAggregateCatalog();\n        AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(TabBootstrapper).Assembly));\n        AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(Modules.Appointment.AppointmentModule).Assembly));\n        AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(Modules.Client.ClientModule).Assembly));\n        Container = new CompositionContainer(AggregateCatalog);\n    }\n\n    public TabViewModel ViewModel { get; set; }\n    protected override DependencyObject CreateShell()\n    {            \n        Container.ComposeExportedValue(Container);\n\n        return Container.GetExportedValue&lt;TabContentView&gt;();\n     }</code></pre>\n\n}<br />\n<pre><code>   Any help/suggestion on handling this would be greatly appreciated.\n</code></pre>\n\nThanks in advance,\r<br />\nKalai.<br />\n",
+    "PostedDate": "2014-05-29T08:57:32.017-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1251383",
+    "ThreadId": "528876",
+    "Html": "Hi Kalai,\r<br />\nIt will be helpful if you could provide us with a full repro sample of your solution, so that we can help you to identify the cause of this behavior you are mentioning.\r<br />\n<br />\nYou could upload your solution to <strong>OneDrive</strong> for example and post the link here.\r<br />\n<br />\nRegards.\r<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-05-30T11:52:23.723-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "544281",
+    "ThreadId": "240560",
+    "Html": "\r\n<p>I'm new to Prism and the regions, so maybe I'm not understanding the use of regions properly.</p>\r\n<p>I created a region in my shell that I want to load content in and out of.</p>\r\n<p>When I call RegisterViewWithRegion, the view object is created and placed into the region automatically. &nbsp;I do not want this behavior. &nbsp;I would like the view object to be created when I navigate to the view with &quot;RequestNavigate&quot;. &nbsp;Otherwise,\r\n I could have a bunch of views created in memory that are never used.</p>\r\n<p>Am I mis-understanding the use of regions in this case?</p>\r\n<p>Thanks for your help.</p>\r\n",
+    "PostedDate": "2011-01-05T05:46:24.49-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "544319",
+    "ThreadId": "240560",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>In order to achieve your scenario, you should only call <strong>RequestNavigate</strong>, and not\r\n<strong>RegisterViewWithRegion</strong>.</p>\r\n<p>The <strong>RegisterViewWithRegion</strong> method is useful to fulfill the View Discovery approach, which means that a view will be automatically created inside a region when the control that hosts that region is added to the visual tree. You can read more\r\n about this in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28PandP.40%29.aspx\">\r\nUI Composition chapter</a> from the Prism MSDN documentation.</p>\r\n<p>Alternatively, <a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28PandP.40%29.aspx\">\r\nNavigation</a> provides a means to <em>&quot;coordinate changes to the UI as a result of the user's interaction with the application or internal application state changes&quot;</em>. If you don't register the view with that region, and don't have that view created, the\r\n<strong>RequestNavigate </strong>method will internally resolve that view through the dependency injection container that you're using, and then add it to that region, without the need to have it constructed beforehand.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-05T06:47:23.693-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "544341",
+    "ThreadId": "240560",
+    "Html": "\r\n<p>This was helpful. &nbsp;Thank you for the reply.</p>\r\n",
+    "PostedDate": "2011-01-05T07:12:57.843-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

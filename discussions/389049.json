@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "891365",
+    "ThreadId": "389049",
+    "Html": "\r\n<p>I have a WPF application in PRISM architecture.</p>\r\n<p>I have a user-control (view) that has 2 user-controls inside it.</p>\r\n<p><a rel=\"nofollow\" href=\"http://s18.postimage.org/5i0vik8vr/SO_Question_6.png\">Here is the idea :</a>&nbsp;</p>\r\n<p><img src=\"http://s18.postimage.org/5i0vik8vr/SO_Question_6.png\" alt=\"Here is an idea :\"></p>\r\n<p>The reason why the 'Search user-control' is in its own user-control, is because I plan on reusing it in my application.</p>\r\n<p>The main user-control (<strong>black</strong>) is called 'MainView' and has 2 user-controls in it: - A user-control that has several textbox control I can filter by, and a 'Search' button - A user-control that has a grid where I display the results</p>\r\n<p>Each of these user-controls (and the parent, &quot;Main View&quot;) are 'Views' and have 'View-Models'.</p>\r\n<p>Everything is shown fine, except for the fact that the 'child' user-controls do not create their own 'View-Models' automatically.</p>\r\n<p>In the view-model's classes I have the&nbsp;<strong>'Export'</strong>&nbsp;attribute, and in the View's code-behind I have this snippet:</p>\r\n<pre><code><span>[</span><span>Import</span><span>]</span><span><br></span><span>FilterFieldsViewModel</span><span> </span><span>ViewModel</span><span><br></span><span>{</span><span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <br>&nbsp; &nbsp; </span><span>set</span><span><br>&nbsp; &nbsp; </span><span>{</span><span><br>&nbsp; &nbsp; &nbsp; &nbsp;</span><span>this</span><span>.</span><span>DataContext</span><span> </span><span>=</span><span> value</span><span>;</span><span><br>&nbsp; &nbsp; </span><span>}</span><span><br></span><span>}</span><span><br></span></code></pre>\r\n<p>Setting the 'View-Model'&nbsp;<strong>does</strong>&nbsp;happen for the 'Main View', but not for the child views...</p>\r\n<p>I have a command binded to the 'Search' button of the 'Search User-control', and when the application loads - I get an error in the output window, saying :</p>\r\n<blockquote>\r\n<p>BindingExpression path error: 'SearchCommand' property not found on 'object' ''MainWindowViewModel' (HashCode=22047425)'. BindingExpression:Path=SearchCommand; DataItem='MainWindowViewModel' (HashCode=22047425); target element is 'Button' (Name='Search');\r\n target property is 'Command' (type 'ICommand')</p>\r\n</blockquote>\r\n<p>For some reason the command from the 'child' user-control tries to bind to the view-model in the main window's view model, because for some reason - the child user-control's view model is not instantiated.</p>\r\n<p>Why is this ?</p>\r\n",
+    "PostedDate": "2012-07-25T15:19:10.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "891643",
+    "ThreadId": "389049",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding of your scenario, the reason of these error is that child elements automatically inherit the\r\n<strong>DataContext </strong>of their parent element. The data flows down the visual tree, unless you set their own\r\n<strong>DataContext </strong>which in your case seems to be failing. This is why the\r\n<strong>Binding </strong>searches in the &quot;<strong>MainWindowViewModel</strong>&quot;.<br>\r\n<br>\r\nRegarding why your 'child' user-controls' view model is not being set, so far, I couldn't find the cause within the code snippets you provided.&nbsp; It would be helpful to know how your child user-controls are being instantiated, note that in order to have\r\n their dependencies resolved you will have to resolve them through the container.</p>\r\n<p>Also, you could try adding the <strong>Public </strong>modifier to your <strong>\r\nViewModel </strong>property.<br>\r\n<br>\r\nRegards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-07-26T05:56:39.62-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "894507",
+    "ThreadId": "389049",
+    "Html": "<p>Thanks for your help !</p>",
+    "PostedDate": "2012-08-02T01:20:19.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

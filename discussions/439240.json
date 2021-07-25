@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1026055",
+    "ThreadId": "439240",
+    "Html": "Hi, I've inherited an application which uses the view-first MVVMC patern\r<br />\n<br />\nIn the application I've created 2 step process which creates a person and assigns them to a group. To do this I've created a view and corresponding view model (all views have a 1-2-1 relationship with a view model, view models are injected into the View constructor and are registered with the container using the TransientLifetimeManager) called CreatePersonMaster, the view simply contains a region (shown by the dashed line) which sub-views can be loaded into and the view model subscribes to two loosely coupled events, &quot;PersonCreated&quot; and &quot;GroupSelected&quot;. The &quot;PersonCreated&quot; event saves a Person entity in a field and the &quot;GroupSelected&quot; event takes the saved Person, creates a Group association and saves them to a database.\r<br />\n<br />\nObviously this view/view model doesn't do anything until the events get raised so I load the following sub views into my the region.\r<br />\n<br />\n<img src=\"http://dl.dropbox.com/u/8933320/CreatePersonViews.png\" alt=\"Image\" />\r<br />\n<br />\nThese views/view models fire the events which get handled by the master view.\r<br />\n<br />\nI also have an edit view where I want to re-use the select group view. \r<br />\n<br />\n<img src=\"http://dl.dropbox.com/u/8933320/EditPersonViews.png\" alt=\"Image\" />\r<br />\n<br />\nI can do this by subscribing to the appropriate events in the EditPersonMaster view model.\r<br />\n<br />\nMy question really is, is this the appropriate way to do this? \r<br />\n<br />\nBecause I'm using events I don't get any feedback into the View/ViewModels if there's an error when creating/reassigning? I could probably fire another &quot;ErrorBlah&quot; event for the inner view/model to handle and update the view.<br />\n",
+    "PostedDate": "2013-04-05T05:57:38.38-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026284",
+    "ThreadId": "439240",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding, the &quot;proper&quot; architecture to be used in an application depends of the requirements, design decision and preferences of each project and team. In this case, I believe the architecture you are describing is a valid approach to implement the requirements of your scenario. However, there are also other approaches you might find interesting too.\r<br />\n<br />\nFor example, you could avoid using events by sharing the view models between the &quot;master views&quot; and its inner views: if the <strong>CreatePersonMasterView</strong> has its view model set in the <strong>DataContext</strong> property, the <strong>CreatePersonView</strong> and <strong>AssingToGroupView</strong> could &quot;inherit&quot; the <strong>DataContext</strong> resulting in the three views using the same <strong>CreatePersonMaster</strong> view model. Then, you would only need to define the corresponding properties for each view. Take into account that this might not work if you have a <strong>DataTemplate</strong> in between the master and children view.\r<br />\n<br />\nAlso, in order to easily reuse the <strong>AssignToGroupView</strong> you could define two regions instead of one in the master views, then inject the people view in one region and the group view in the other.\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-04-05T12:20:46.417-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027107",
+    "ThreadId": "439240",
+    "Html": "Thanks Damian\r<br />\n<br />\nI am setting the DataContext and I forgot that, of course, it is cascaded down the UI control stack. Doh\r<br />\n<br />\nI've stopped setting the DataContext on the sub-views and inject the ViewModels into the Master view models. That way I can perform any context based action in the master and also set any feedback properties on the sub view ViewModels.\r<br />\n<br />\nThanks for your help. I knew there must have been something I was missing.\r<br />\n<br />\nBen<br />\n",
+    "PostedDate": "2013-04-08T03:16:28.177-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027234",
+    "ThreadId": "439240",
+    "Html": "I've just realised what you mean about adding another region, I tried to inject AssignToGroups into my second master view and it bombed because the region names are different.\r<br />\n<br />\nOne question on this then, I don't want to display the content side by side, I only drew it like that above to illustrate they're in the same region. Do you recommend binding the visibility of a region to only show one at a time or disabling the views within a region so that only one control is shown (if I don't remove/hide then one lot of controls will sit on top of another)?\r<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2013-04-08T07:43:51.22-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027353",
+    "ThreadId": "439240",
+    "Html": "It also seems like I should have had a look at the Navigation API including the NavigationJournal<br />\n",
+    "PostedDate": "2013-04-08T10:02:49.607-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027400",
+    "ThreadId": "439240",
+    "Html": "Hi Ben,\r<br />\n<br />\nI'm glad I could be of help.\r<br />\n<br />\nRegarding the regions, I thought that you wanted to two show both views at the same time, hence my recommendation of using two regions. If you only need to show one of the two views at a time and navigate back and forth between them, you will only need one region where you could switch the views as needed. As you mentioned, Prism's navigation API can be useful to implement this, as it allows you to navigate back and forth between views, pass parameters as strings (for example the Person id,) etc.\r<br />\n<br />\nYou can find more information about the Prism's navigation API in the following section of the documentation:<br />\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28v=pandp.40%29.aspx#sec6\" rel=\"nofollow\">Chapter 8 - Navigation - View-Based Navigation</a><br />\n</li>\n</ul>\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-04-08T11:30:36.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027515",
+    "ThreadId": "439240",
+    "Html": "I'd just read that chapter, thanks for the link though.\r<br />\n<br />\nDue to not directly setting the DataContext on the child UserControls, their ViewModels don't participate in the INavigationAware pattern so still need to manually implement &quot;back&quot; functionality.\r<br />\n<br />\nWhat a tangled web I'm getting myself caught up in with this application.<br />\n",
+    "PostedDate": "2013-04-08T14:15:57.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

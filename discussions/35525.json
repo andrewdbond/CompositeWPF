@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "118075",
+    "ThreadId": "35525",
+    "Html": "Hi there,<br>\r\n<br>\r\nHere I am one again to ask for help. :p<br>\r\n<br>\r\nThe problem now is that I'm using the EventAggregator to publish and subscribe some events to send information between some of my modules. <br>\r\n<br>\r\nThe problem is that, for some reason, the events stop working after some period without any exception or problem... They simply stop working, by this I mean that my subscribers after some time don't capture the events fired, the number of events captured are not always equal, in a execution in can only capture 1 event and in the next it can be caught several events. I've tried everything I recall but without success.<br>\r\n<br>\r\nThe code I use to publish an event is:<br>\r\n<br>\r\n<em>MenuClickParams Eparams = new MenuClickParams();<br>\r\nEparams.ClickButtonDescription = &quot;CreateEvent&quot;;<br>\r\nConfiguratorContainer.EAggregator.GetEvent&lt;MenuClickEvent&gt;().Publish(Eparams);</em><br>\r\n<br>\r\nThe code I use to subscribe to a event is:<br>\r\n<br>\r\n<em>MenuClickEvent CreateEventEvent = ConfiguratorContainer.EAggregator.GetEvent&lt;MenuClickEvent&gt;();<br>\r\nCreateEventEvent.Subscribe(CreateEventEventHandler, ThreadOption.PublisherThread, false, e =&gt; e.ClickButtonDescription == &quot;CreateEvent&quot;);</em><br>\r\n<br>\r\n<br>\r\nThe MenuClickEvent Class is defined by:<br>\r\n<br>\r\n<em>public class MenuClickEvent : CompositeWpfEvent&lt;MenuClickParams&gt;{}</em><br>\r\n<br>\r\n<br>\r\nAnd the MenuClickParams is defined by:<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;<em> public class MenuClickParams<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private string clickButtonDescription;<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string ClickButtonDescription<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return clickButtonDescription; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { clickButtonDescription = value; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp; }</em><br>\r\n<br>\r\nAny ideas of what I'm doing wrong? Or how can I solve this?<br>\r\n<br>\r\nThanks in advance,<br>\r\nRegards,<br>\r\nDaniel Alves<br>\r\n<br>\r\n",
+    "PostedDate": "2008-09-12T03:35:15.943-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "118097",
+    "ThreadId": "35525",
+    "Html": "Daniel,<br>\r\n<br>\r\nIt sounds to me as though your subscribers are being garbage collected. To verify, try changing the false in your Subscribe call to true. If the problem goes away, it's a GC issue and you'll want to consider what should be holding a reference to your subscriber (or whether you'd prefer to manually unsubscribe rather than having a weak reference between the event aggregator and your subscriber).<br>\r\n<br>\r\nHTH,<br>\r\nKent<br>\r\n",
+    "PostedDate": "2008-09-12T05:52:10.673-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "118108",
+    "ThreadId": "35525",
+    "Html": "Hi there Kent... <br>\r\n<br>\r\nThanks for your answer... That solved my problem... I am unsubscribing the events manually... now...<br>\r\n<br>\r\nThanks again,<br>\r\nDaniel Alves<br>\r\n",
+    "PostedDate": "2008-09-12T06:32:20.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

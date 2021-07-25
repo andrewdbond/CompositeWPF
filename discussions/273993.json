@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "677205",
+    "ThreadId": "273993",
+    "Html": "\r\n<p>Issue 4065 describes a memory leak in the DelegateCommand whereby a DelegateCommand would retain a strong reference to CanExecuteHandled handler of the control that was binding to it.&nbsp; This was resolved in Prism v2.1 with the introduction of the WeakEventReference\r\n class.&nbsp;</p>\r\n<p>However in Prism v4 the original behavior has been restored for&nbsp;Silverlight applications.&nbsp; If Silverlight the WeakEventReference class is not used.&nbsp; I was wondering why this older leaky functionality has been returned?</p>\r\n<p>Regards Kaneda</p>\r\n",
+    "PostedDate": "2011-09-27T08:22:07.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "677366",
+    "ThreadId": "273993",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, the handling of week references inside the <strong>DelegateCommand</strong> &nbsp;was changed to work correctly based on the way <span class=\"searchword\">Silverlight</span> 4 implements command hookup.</p>\r\n<p>You can find this explained in more detail in Brian Noyes&rsquo; blog post, <a href=\"http://www.softinsight.com/bnoyes/2010/11/26/CommandChangesInPrism4.aspx\">Command Changes in Prism 4</a>:</p>\r\n<p><em>&ldquo;Until Silverlight 4, there were no built in command handlers, so this was really only relevant to WPF anyway. And WPF does things a little differently under the covers than the implementation that ended up in Silverlight 4. In WPF, in addition to holding a reference to the command object itself ( so that <strong>Execute</strong> and <strong>CanExecute</strong> can be called), the command source (i.e. <strong>Button</strong>) holds a reference to the delegate instance that exposed the <strong>CanExecuteChanged</strong> event (which would be something like your view model, as opposed to the command object itself). Silverlight 4 does not hold that additional reference.</em><br /> <em>So that required a small change that you might run across if you are looking at the code, where the <strong>DelegateCommand</strong> uses a weak reference wrapper to command source when you are in WPF and not in Silverlight. This is to accommodate this difference in the platforms. &ldquo;</em></p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-09-27T13:33:22.52-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "677613",
+    "ThreadId": "273993",
+    "Html": "<p>Hi Agustin</p>\n<p>Thanks for the reply.&nbsp; I understand from you response why it has been changed but this does mean that Silverlight is now prone to the same memory leak that WPF had and was fixed with 4065.&nbsp;</p>\n<p>When the Button is bound to the DelegateCommand it subscribes to the CanExecuteChanged event and it never unsubscribes.&nbsp; This means that the DelegateCommand retains a reference to the Button thereby rooting it and preventing it from being GC'ed, causing a memory leak.&nbsp; Issue 4065 fixed this for WPF by making the DelegateCommand hold a weak reference to the Button's CanExecuteChanged callback delegate.&nbsp; However as Brian Noyes mentioned this won't work for Silverlight since unlike WPF a Silverlight button does not retain its own reference to the CanExecuteChanged callback delegate&nbsp;it provides.&nbsp;&nbsp;Thus if&nbsp;WeakEventReferences&nbsp;were used in Silverlight&nbsp;it would&nbsp;result in nothing holding a reference to the callback delegate leaving it prone to&nbsp;being GC'ed at any time.&nbsp; This is why Silverlight can't use WeakEventReferences however not using WeakEventReferences means we go back to having&nbsp;the same memory leak we had in the first place.</p>\n<p>Anybody got any thoughts on this?</p>\n<p>Regards</p>\n<p>Kaneda</p>\n<p>&nbsp;</p>",
+    "PostedDate": "2011-09-28T03:10:00.03-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

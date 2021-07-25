@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1200612",
+    "ThreadId": "528346",
+    "Html": "A UserControl may have a d:DataContext=&quot;{d:DesignInstance... combinations which of course works great when designing the UserControl.\r<br />\nHowever, when another View is composed by RequestNavigate(string regionName, string source) (where source refer to the UserControl) the designtime DataContext on the UserControl is lost.\r<br />\nIt works perfectly in runtime.\r<br />\nSomeone knows how to make this working in designtime ?\r<br />\nPrism version is 4.1.\r<br />\n.NET framework version is 4.0.\r<br />\n<br />\nSomething better coming in Prism 4.2 ?\r<br />\n<br />\nB.t.w. I am using MEF as container.<br />\n",
+    "PostedDate": "2014-01-29T11:36:34.827-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1202221",
+    "ThreadId": "528346",
+    "Html": "Hi,\r<br />\n<br />\nSomething interesting here is that, as far as I know, Prism's regions were never designed to be used during design time. For that reason when creating a region the <strong>RegionManager</strong> checks if the application is running inside a designed and if so, the region is not created:<br />\n<pre><code>private static void OnSetRegionNameCallback(DependencyObject element, DependencyPropertyChangedEventArgs args)\n{\n    if (!IsInDesignMode(element))\n    {\n        CreateRegion(element);\n     }\n}</code></pre>\n\nTherefore, it would be helpful if you could provide more information about how you are using regions in design time, since they should not have been created in the first place.\r<br />\n<br />\nThanks,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2014-02-03T13:05:37.417-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1202253",
+    "ThreadId": "528346",
+    "Html": "Thanks, looks like I expressed myself badly. What I meant was something like: another View is configured to be composed by RequestNavigate...\r<br />\nI did not mean that the regions were actually created in designtime (VS or Blend).\r<br />\n<br />\nI am quite new to Prism and I thought that there was some mechanism so that the Shell (in this case) could show the views (associated with the regions ) by using d:DataContext given for the view.\r<br />\n<br />\nIn my (learning)App the region(s) are defined in the Shell.xaml (&lt;ContentControl  prism:RegionManager.RegionName=&quot;TheRegion&quot;/&gt;) and the RegionManager.RequestNavigate (Extension) method is executed within the IModule's Initialize() method.\r<br />\n<br />\nAnyway, it would have been a nice feature if possible though, but perhaps I do not know enough about the dynamics of regions/view associations and have silly wishes.<br />\n",
+    "PostedDate": "2014-02-03T14:20:10.613-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1206460",
+    "ThreadId": "528346",
+    "Html": "Hi Eager,\r<br />\n<br />\nBased on my understanding, the region content is unfortunately resolved dinamically at runtime. So the designer would not know which registered <strong>View</strong> you would want to see in Design time. \r<br />\n<br />\nIn addition to Damian's response, the following disscusion link talks about this same issue which I think you would find helpful:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"https://compositewpf.codeplex.com/discussions/221972\" rel=\"nofollow\">Views in Design view/Design time (controls not showing up)</a><br />\n</li>\n</ul>\nRegarding <strong>Prism 4.2</strong> you may find the latest changes available in the last release on the following <strong>CodePlex Download</strong> section:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"https://compositewpf.codeplex.com/releases/view/117297\" rel=\"nofollow\">Prism 4.2 for .NET 4.5.1</a><br />\n</li>\n</ul>\nRegards,\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-02-10T10:47:31.45-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

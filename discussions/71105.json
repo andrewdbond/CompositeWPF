@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "242501",
+    "ThreadId": "71105",
+    "Html": "<p>I am relatively new to Composite WPF.&nbsp; I have an app that can use &quot;plugins&quot;.&nbsp; I am researching the feasibility on using the Modularity component, but I am wondering if it work properly.&nbsp; My app actually has a WPF front-end, a WinForm front-end, and a Console App front-end.&nbsp; So I need to be able to load the modules in all 3 front-ends.&nbsp; I did a quick search of the &quot;using&quot; statements for Modularity and found 1 place where it seems dependent on WPF.&nbsp; This is ModuleCatalog.cs.&nbsp; Will I still be able to use Modularity in my WinForm and Console App front-end or is this design pattern implementation just for WPF/Silverlight?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-06T04:26:33.477-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "245186",
+    "ThreadId": "71105",
+    "Html": "<p id=41582130-94d1-012c-09f5-12313b00c5d1>Hi</p>\r\n<p>You can use the modularity features in Prism in an application that is not related to WPF/Silverlight. In fact the Modularity namespace is in the Composite dll, and not the Composite.Presentation dll. This distinction was done because ideally you could reuse this feature in other platforms that are not specific to a particular Presentation framework (like WPF or Silverlight). Brian Noyes ported some of Prism's (V1) functionality to Winforms <a href=\"http://www.softinsight.com/bnoyes/2008/10/13/CompositeExtensionsForWindowsForms.aspx\">here</a> (modularity is not one of the ported features).</p>\r\n<p>If you feel comfortable with the approach taken by Prism for modularity you should go ahead an use it (take into account there is no support). If you end up with a working implementation it might also be useful for the community.</p>\r\n<p id=41584e30-94d1-012c-09f8-12313b00c5d1>Please let me know if this helps.</p>\r\n<p id=41586030-94d1-012c-09f9-12313b00c5d1>Damian Schenkelman <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-13T11:26:26.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "245485",
+    "ThreadId": "71105",
+    "Html": "<p>Thanks for the reply.&nbsp; I will definitely give it a try.&nbsp; I was only concerned because ModuleCatalog.cs, even though it is just in Composite.dll, uses &quot;using System.Windows.Markup&quot;.&nbsp; And from my understanding the System.Windows namespace is for WPF.&nbsp;&nbsp; As I work more with WPF, I am finding it harder to keep a separation of WPF and what I would think should be non-WPF components.&nbsp; Beside this Modularity component I see this also in defining a View Model component.&nbsp; From my understanding, a well written View Model does not need to know about the View.&nbsp; But View Models have to make use of things like ICommand and INotifyPropertyChange which are WPF concepts.</p>\r\n<p>Again, I will give it try with writing a quick Command Prompt app.&nbsp; It may just be that I still need to reference the appropriate WPF assembly.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-14T03:09:46.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

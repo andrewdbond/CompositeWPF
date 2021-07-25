@@ -1,0 +1,114 @@
+[
+  {
+    "Id": "499651",
+    "ThreadId": "228924",
+    "Html": "<p>I realize this is similar (but not exactly the same) as <a title=\"Related post on similar topic\" href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=228031\">this existing post</a>, which <br>resulted in a documentation work item.&nbsp; For one thing, this post has a more <br>explicit title.</p>\r\n<p>Q1: Apparently in Prism v4 you need to make an up-front binary choice of <br>either MEF or Unity as your &quot;DI container&quot;?&nbsp; (I guess you could choose another <br>DI-container too, but the in-the-box options will be MEF or Unity).&nbsp; True?</p>\r\n<p>Q2: I assume Prism requires some kind of &quot;DI container&quot; under the covers in order<br>to work?&nbsp; True?&nbsp; I can see that being true for the modularization features, but <br>what about the eventing and commanding features.&nbsp; Could those be used without<br>&quot;DI&quot; underneath?<br><br>Q3: Can someone summarize the high-level reasons to go with one or the other <br>(MEF versus Unity)?&nbsp; Or are they both pretty much the same?&nbsp; If I choose one today,<br>what am I going to lose?&nbsp; If I decide 6 months from now that I want to switch to <br>the other how hard will be?&nbsp; I definitely want to sound cool and up-to-date <br>when I talk with my peers, which is pushing me toward MEF ;).</p>\r\n<p>One observation:<br>Offering two ways of doing things that are almost the same can be frustrating <br>when you're looking for &quot;guidance&quot;.</p>\r\n<p>Thanks&nbsp;</p>",
+    "PostedDate": "2010-09-28T14:15:45.763-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "499679",
+    "ThreadId": "228924",
+    "Html": "<p><em>Q1: Apparently in Prism v4 you need to make an up-front binary choice of </em><br><em>either MEF or Unity as your &quot;DI container&quot;?&nbsp; (I guess you could choose another </em><br><em>DI-container too, but the in-the-box options will be MEF or Unity).&nbsp; True?</em></p>\r\n<p style=\"padding-left:30px\">Yes, the choice of DI containers is a key decisison for your app.&nbsp; You should be able to integrate any container,, but only Unity and MEF are supported out of the box.</p>\r\n<p><em>Q2: I assume Prism requires some kind of &quot;DI container&quot; under the covers in order</em><br><em>to work?&nbsp; True?&nbsp; I can see that being true for the modularization features, but </em><br><em>what about the eventing and commanding features.&nbsp; Could those be used with &quot;DI&quot; </em><br><em>underneath?</em></p>\r\n<p style=\"padding-left:30px\">There are parts of Prism that require a DI container (modularity for example), but both the event aggreagator and the commanding features shoudl work without a container.</p>\r\n<p><br><em>Q3: Can someone summarize the high-level reasons to go with one or the other </em><br><em>(MEF versus Unity)?&nbsp; Or are they both pretty much the same?&nbsp; If I choose one today, what am I going to lose?&nbsp; </em></p>\r\n<p style=\"padding-left:30px\">The short answer is that they are fairly close in functionality, but very different in styles.&nbsp;</p>\r\n<p style=\"padding-left:30px\">The full answer is:</p>\r\n<p style=\"padding-left:30px\">In Chapter 3: Managing Dependencies Between Components, we outline some of the differences between the containers and leave the choice to the developer based on the needs of the project.&nbsp; With Prism being container agnostic, developers can write a few simple classes for any container and plug it into Prism.&nbsp; In the box, we have support of Unity and MEF, but the extension point is there and documented.</p>\r\n<p style=\"padding-left:30px\">Here are some of the big differences between MEF and Unity:</p>\r\n<ul style=\"padding-left:30px\">\r\n<li>MEF is not a DI container (it&rsquo;s a dynamic add-in framework that uses DI techniques), but can be made to act like a DI container for simple scenarios. It has the advantage of being in the .NET 4.0 framework.</li>\r\n<li>Unity is a full DI container. It supports .NET 3.5 and 4.0. It also supports more complex DI things like open generics, policy injection (AOP), etc.</li>\r\n</ul>\r\n<p style=\"padding-left:30px\">The development styles differ quite a bit due to the different approaches in design an scenarios for usage.&nbsp; With MEF, it is recommended to do declarative programming (attributes for registration/exporting and importing).&nbsp; With Unity, the more common approach is a lot more imperative (registration via code rather than attributes).&nbsp;Constructor injection is preferred in Unity (even though it can do property injection)&nbsp;vs property injection is preferred in MEF (even though it can do constructor injection).</p>\r\n<p><em>Q3.x: If I decide 6 months from now that I want to switch to the other how hard will be?&nbsp; </em></p>\r\n<p style=\"padding-left:30px\">We (the Prism v4&nbsp;team) ported most of the quickstarts that Prism v2 shipped with from Unity to MEF to prove out that we could get feature parity with the two containers, even if not all of them made it &quot;in the box&quot;.&nbsp; We also ported the Stock Trader RI from Unity to MEF (and integrated our MVVM guidance and some navigation as well). Neither of these efforts was very big, and I think the stock trader took less than a day to get the Unity to MEF conversion done.&nbsp; The biggest challenge you will run into is the different styles, which I highlighted above.&nbsp; Once you get past the style differences, it is a matter of ensuring all the types, services, etc get registered properly in the container, which requires deciphering a lot of very verbose error messages in exceptions.</p>\r\n<p>I'd recommend skimming chapter 3 in the CHM for more info.</p>\r\n<p>Let me know if you have more questions.</p>",
+    "PostedDate": "2010-09-28T15:47:55.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "500159",
+    "ThreadId": "228924",
+    "Html": "<p>Hi Michael,</p>\r\n<p>Thanks for your quick and detailed response.&nbsp; After I read Chapters 3 and 4 of the Prism v4 CHM<br>I may have some follow up questions about the technical details.</p>\r\n<p><br><em>Below is a bit more grumbling regarding the problems of including both MEF and Unity as DI options in the &quot;guidance&quot;:</em></p>\r\n<p>Part of the reason &quot;average&quot; programmers like me come to a framework like Prism is because we don't have time to learn all the details necessary to make an informed&nbsp;choice on every technical detail.&nbsp; We just want to be told and shown what the current best practice is, and then be able to go use it.</p>\r\n<p>Long term it seems undesirable to include two options that are so similar.&nbsp; This reminds me of the choice&nbsp; between Linq-2-SQL and Entity-Framework.&nbsp; Eventually MS had to make it clear that EF was &quot;the chosen one&quot;, even though folks who were using L2S were unhappy.</p>\r\n<p>One irritation of supporting both Unity and MEF is that now you need to support both in your samples and&nbsp; documentation.&nbsp; As I was reading Ch3 and Ch4 in the CHM I was constantly having to think: &quot;Is this referring to&nbsp; the Unity-way or the MEF-way?&nbsp; Did they update this part of the documentation yet to cover the MEF-way?&quot;.</p>\r\n<p>The Prism source-tree is complex enough as it is with having to support both WPF and Silverlight, but that&nbsp;is more justifiable, because there are _lots_ of things&nbsp; you only can do in either WPF or SL.</p>\r\n<p>Thanks,<br>SLEverywhere</p>",
+    "PostedDate": "2010-09-29T12:20:19.57-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "500178",
+    "ThreadId": "228924",
+    "Html": "<p>I understand your frustration.&nbsp; As far as the docs go, I will have someone make another pass through to make the Unity/MEF difference more obvious where possible and see if we can split things out a bit more.</p>\r\n<p>Prism was architected with a container agnostic design, and we wanted to keep that principle going forward.&nbsp; Originally, Unity was just a means to an end in&nbsp;showing&nbsp;<em>a</em> DI container plugged into Prism.&nbsp; For v4, there were enough requests for MEF support that we decided to add it and show not just the one option for DI in the guidance, but two.&nbsp;</p>\r\n<p>Again, thanks for your feedback. I'll be passing it on to the rest of the team.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-29T12:59:06.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "500210",
+    "ThreadId": "228924",
+    "Html": "<p>I just ported from v2 Unity to v4 Drop 8 MEF. &nbsp;Yes, a PIA, however, seems like it requires less coding. &nbsp;That's always a plus. YMMV.</p>",
+    "PostedDate": "2010-09-29T13:51:45.54-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "500249",
+    "ThreadId": "228924",
+    "Html": "<p>Another opinion:<br>I asked <a title=\"Jeremy's blog\" href=\"http://csharperimage.jeremylikness.com/2010/09/mef-in-wild-retrospective.html\">Jeremy Likeness on his blog</a> for his opinion on the &quot;Prism with MEF or Unity?&quot; question.&nbsp; Somewhat surprisingly, although Jeremy is a big fan of MEF, he actually recommended going with Unity when using Prism:</p>\r\n<p>Partial quote from Jeremy:<br><em>While it is interesting to see PRISM work with MEF, that implementation hasn't sold me yet. Why? Because there is a lot of overhead and set up to get, for example, a module to load even with MEF, when MEF by itself simply provides a nice DeploymentCatalog.</em></p>\r\n<p>You can see Jeremy's full post in <a title=\"Jeremy's blog\" href=\"http://csharperimage.jeremylikness.com/2010/09/mef-in-wild-retrospective.html\">his blog comments here</a>.</p>\r\n<p>SLEverywhere</p>",
+    "PostedDate": "2010-09-29T15:19:34.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "500569",
+    "ThreadId": "228924",
+    "Html": "<p>But yet Jeremy wrote a 3 part article on using MEF with Prism. Go figure.</p>",
+    "PostedDate": "2010-09-30T08:43:51.997-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "500597",
+    "ThreadId": "228924",
+    "Html": "<p>This reminds me of choosing a camera to buy.&nbsp; It's easy for me to get so freaked out by all the choices that I put off buying <em>anything</em>.&nbsp; It's better to just buy <em>something</em> and get started.&nbsp; Once you have camera #1&nbsp;you can learn about it.&nbsp; Later you can buy special-purpose camera #2 or lens #1B, but you've got to start somewhere.</p>\r\n<p>SLEverywhere</p>",
+    "PostedDate": "2010-09-30T09:47:54.883-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "500615",
+    "ThreadId": "228924",
+    "Html": "<p>Here, because you can decide. Use MEF.</p>",
+    "PostedDate": "2010-09-30T10:28:36.017-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "501201",
+    "ThreadId": "228924",
+    "Html": "<p>Thanks for the&nbsp;suggestion.&nbsp; In my case I actually don't need to make a choice <em>just yet</em>, and since I'll be asked to justify any choice, I'm going to learn a bit more about both.</p>\r\n<p>SLEverywhere</p>",
+    "PostedDate": "2010-10-01T11:11:04.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "501838",
+    "ThreadId": "228924",
+    "Html": "<p>This was a a great thread to read.&nbsp; It answered some questions of mine.&nbsp; What would be neat is to have a guide based on application type.&nbsp;</p>\r\n<p>A website could have a list of categories of types of applications people build, then sub categories to be more specific with options for even greater specificity, run the search and the results show programmers recommended approached with some details on why they chose that approach rather than another.&nbsp; The site can have input forms for developers to enter their projetc decision information so that&nbsp;a consistent layout of information exists for all posts.&nbsp;The site&nbsp;could have some standards like rating and review notes on portability, scalability etc.</p>\r\n<p>A site like this would be very useful to so many people.&nbsp; The contributors ratings, skill set ,ect. should be viewable.&nbsp; This would help programmers find information they seek sooner and not get lost in the blogasphere, etc.</p>\r\n<p>If anyone know of such a such, please share the links.</p>",
+    "PostedDate": "2010-10-03T22:24:12.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "501875",
+    "ThreadId": "228924",
+    "Html": "<p>Another question on Prism/Unity/MEF:</p>\r\n<p>Apparently the choice is more complex!&nbsp; It's not just 1) Unity or 2) MEF.&nbsp; It is really:<br>&nbsp; 1)&nbsp;Prismized-Unity (pre-v4 &quot;StockTrader RI&quot; sample and &quot;v4 ModularityWithUnity Quickstart&quot;)<br>&nbsp; 2) Prismized-MEF&nbsp;(v4 &quot;StockTrader RI&quot; sample and &quot;v4 ModularityWithMef Quickstart&quot;)<br>&nbsp; 3) Direct-MEF&nbsp; (v4-only &quot;MVVM RI&quot; sample).</p>\r\n<p>I noticed that the &quot;MVVM RI&quot; sample (#3 above) doesn't use UnityBootstrapper, MefBootstrapper, or apparently anything from the Prism.Modularity namespace (ModuleCatalog, ModuleManager, etc.).&nbsp; Instead it gets some of the equivalent goodness by using MEF directly. (Apparently Jeremy Likeness favored this Direct-MEF approach.)</p>\r\n<p>This makes me wonder if the additional complexity of Prism.Modularity and MefBootstrapper are worth it in my own app.</p>\r\n<p>If I'm willing to take a direct dependency on MEF (which Prism4.chm says Prism deliberately did NOT want to do, in order to be&nbsp;container-independent) how much work would it take to equal all the goodness of Prism.Modularity?&nbsp; Or perhaps I'd end up with wrapper classes on top of MEF that were more or less the&nbsp;same thing as Prism.Modularity ;) ?</p>\r\n<p>SLEverywhere</p>",
+    "PostedDate": "2010-10-04T00:23:10.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "502031",
+    "ThreadId": "228924",
+    "Html": "<p>You need to read past that till it gets to the part about MefExtensions.</p>",
+    "PostedDate": "2010-10-04T07:07:33.177-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "502059",
+    "ThreadId": "228924",
+    "Html": "<p>Hi,</p>\r\n<p>In the Prism documentation there is a document that you can find interesting,  which is <a href=\"http://msdn.microsoft.com/en-us/library/ff921079(PandP.20).aspx\">for  evaluating the Composite Application Guidance</a>. So far this has not been  updated for Prism 4 on MSDN, but most of the concepts are still the same or  similar. If you downloaded Prism v4, you could take a look at the <em><strong>Evaluating Prism </strong></em>section in the <em><strong>Chapter 1: Introduction  (updated)</strong></em> of the Prism4.chm.</p>\r\n<p>Additionally, the product team is working on the &quot;Stock Trader RI&quot;. So in my opinion, this will help to see how Prism-MEF work in a more complex scenario.</p>\r\n<p>Based on the <a href=\"View.aspx?ThreadId=229492\">this  forum thread</a> this update is being released on the next drop (9).</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\"><span style=\"color:#0066cc\">http://blogs.southworks.net/fantivero</span></a></p>",
+    "PostedDate": "2010-10-04T07:51:58.97-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

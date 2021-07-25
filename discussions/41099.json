@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "136286",
+    "ThreadId": "41099",
+    "Html": "I wanted to see if things like menus, toolbars etc should be added directly to the shell, or if these should be part of a &quot;main view&quot;. In that main view would be regions for other views to plug into.<br>\r\n<br>\r\n In other words, the only thing that would be in the shell would be resouces, and one Grid with one ContentControl (with a region mapping). The ContentControl would serve as the placeholder that the &quot;main view&quot; would plug into.<br>\r\n<br>\r\nPerhaps there's no reason to do this as I guess that the menu items and toolbar items would probably just be tied to commands via CompositeCommand references, but I just wanted to put the thought out there to see if other people have been doing this, or if the standard technique is just to put these directly into the shell.<br>\r\n",
+    "PostedDate": "2008-11-29T14:51:42.71-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "136378",
+    "ThreadId": "41099",
+    "Html": "<span style=\"font-family:calibri\">\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:'calibri','sans-serif'\">Kona,<br>\r\n<br>\r\nThis is dependent of your requirements or where you want to implement it. If I understood correctly you are questioning if Menu or Toolbar should be implemented in the shell or in single “Main View”, in this context I don’t see any difference as I would implement it as a module, and placeholder would determine where it would live.<br>\r\n</span><span style=\"font-family:'calibri','sans-serif'\"><br>\r\nTo expand this a bit and consider the following:<br>\r\n</span><span style=\"font-family:'calibri','sans-serif'\"><br>\r\nIf I can unify the menus and toolbars of all views. I would implement these as a module and place it either to Shell or Main View.  </span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:'calibri','sans-serif'\">If I would end up on above, I would create a standardized New Menu action(s). Once the view would be loaded and be activated, it would fire-up an event from view/presenter which would enable and show the menu action(s) that are valid. I could also fire up an event to change the menu action text or toolbar icon for more specific based on the active view. For example “New Customer Address” when customer details view is active and is possible action in the context of view. </span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:'calibri','sans-serif'\">This above approach is not always feasible in RIA type of application, as one menu structure or graphical design of it can be a very different from one view to another. Also consider if you have a placeholder that can be presented in multiple locations, like Disclaimer action on web page implementations. I would not create two different implementations of this Disclaimer or menu action but rather one View/module that would activate the menu on shell or main view if the placeholder is in place or configured. </span></p>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:'calibri','sans-serif'\">Hope above helps you… <br>\r\n<br>\r\nRegards,<br>\r\nAlexander</span></p>\r\n</span>\r\n",
+    "PostedDate": "2008-11-30T10:03:48.697-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138392",
+    "ThreadId": "41099",
+    "Html": "<span style=\"color:#3e62a6\">alexanderqx, <br>\r\n   thanks for the reply. This definitely does help. I'm familiar with concept of extending the menu for specific modules from CAB via UIExtensionSites, but know that Prism doesn't really have this concept. Is this something that is going to be coming down the road, or does it not really fit into the Prism architecture?<br>\r\n   I was wondering if anyone knows of any samples that have menus / toolbars in them.<br>\r\n   I think it would help me solidify it in my mind if I was able to go through a sample.<br>\r\n<br>\r\nThanks again,<br>\r\n<br>\r\nJeff</span>\r\n",
+    "PostedDate": "2008-12-07T07:25:51.98-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138407",
+    "ThreadId": "41099",
+    "Html": "Jeff,<br>\r\n<br>\r\n<p style=\"margin:0in 0in 10pt\"><span style=\"font-family:calibri\">Take a look of CodeDrop 7 sample for commanding (OrdersToolbar), which is located at \\Quickstarts\\Commanding folder. This sample is not fully completed yet according to release notes but will probably give you a good start.<br>\r\n<br>\r\nRegards,<br>\r\nAlexander</span></p>\r\n",
+    "PostedDate": "2008-12-07T10:17:51.3-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "146075",
+    "ThreadId": "41099",
+    "Html": "Hi there,<br>\r\n<br>\r\nI actually had a look at commanding quick start sample and figured out that currently it does the simple thing: having named region on a shell (GlobalCommandsRegion) it adds there a toolbar (OrdersToolbar) defined within OrderModule. There is no way to extend the toolbar itself adding new buttons in.<br>\r\n<br>\r\nThanks,<br>\r\nLeonid\r\n",
+    "PostedDate": "2009-01-11T09:41:38.38-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "146298",
+    "ThreadId": "41099",
+    "Html": "<br>\r\nIn case it's of interest, the composite wpf contrib project has a toolbar panel region adaptor that allows dynamic additions of controls to a toolbar, not sure how well it works in a dynamic setting but we have used it with a set number of controls on, it seems to have an issue with styling but there is a workaround..<br>\r\n<br>\r\nregards<br>\r\n<br>\r\nTrev<br>\r\n<br>\r\n",
+    "PostedDate": "2009-01-12T06:18:12.047-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

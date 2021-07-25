@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "162923",
+    "ThreadId": "48789",
+    "Html": "I noticed that the EventBase class has a private readonly member (_subscriptions) of type List&lt;IEventSubscriptions&gt;.  I then noticed that there is a protected member (Subscriptions) of type ICollection&lt;IEventSubscription&gt; that returns _subscriptions.  For the most part it looks like Subscriptions is used pretty much everywhere.  The only place that I can see _subscriptions being used is in PruneAndReturnStrategies.  After looking at it I realized that I wasn't sure why it was done this way.  Could anyone shed some light on this design?  When does it make sense to take this approach and when does it not?  Is it good when you are multi-threading or have the potential to multi-thread?  Or is it just good practice in general?  Thanks in advance for any insight.\r\n",
+    "PostedDate": "2009-02-27T14:10:57.57-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "164393",
+    "ThreadId": "48789",
+    "Html": "Hi Emj,<br>\r\n<br>\r\nI wasn't on the team when this piece of code was created, so I can't be 100% sure but, I don't think this was done with any specific reason. <br>\r\n<br>\r\nIn my opinion, the same could have been achieved with <br>\r\n<br>\r\n<span style=\"color:#0000ff;font-size:13px\"><span style=\"color:#0000ff;font-size:13px\">\r\n<p>protected</p>\r\n</span>\r\n<p>&nbsp;</p>\r\n</span>\r\n<p><span style=\"font-size:13px\"> </span><span style=\"color:#2b91af;font-size:13px\">ICollection</span><span style=\"font-size:13px\">&lt;</span><span style=\"color:#2b91af;font-size:13px\">IEventSubscription</span><span style=\"font-size:13px\">&gt; Subscriptions\r\n<p>&nbsp;</p>\r\n</span></p>\r\n{get; private set;}<br>\r\n<br>\r\nAnd just use the Subscriptions member everywhere. <br>\r\n<br>\r\n_Erwin\r\n",
+    "PostedDate": "2009-03-04T09:15:55.253-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

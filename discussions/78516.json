@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "268752",
+    "ThreadId": "78516",
+    "Html": "<p>I am creating a Prism 2.1 app in which I have implemented logging, using Log4Net in a custom logger derived from ILoggerFacade. Logging works great; I simply resolve ILoggerFacade against the IOC Container, and it returns my logger, to which I send a message in the usual manner.</p>\r\n<p>Here is my problem: I want to log the application exit, and the logical way to do this seems to be to override OnExit() in App.xaml.cs. But I can't figure out how to get a reference to the Container from App.xaml.cs, so that I can resolve my logger.</p>\r\n<p>Can I reference the Prism IOC Container from App.xaml.cs? If so, how? Thanks.</p>",
+    "PostedDate": "2009-12-17T19:24:04.25-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "269365",
+    "ThreadId": "78516",
+    "Html": "<p>Your bootstrapper has access to the Container. &nbsp;You could create a method on the bootstrapper, like LogMessage(string message).</p>\r\n<p>We do a&nbsp;similar&nbsp;thing in the bootstrapper with the AppDomain.CurrentDomain.UnhandledException event to log any exceptions.</p>\r\n<p>Ron</p>",
+    "PostedDate": "2009-12-20T02:16:20.233-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

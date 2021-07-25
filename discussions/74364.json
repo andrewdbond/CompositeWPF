@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "254371",
+    "ThreadId": "74364",
+    "Html": "<p>Hi,</p>\r\n<p>I'm not sure how the DelegateCommand&lt;T&gt; works but my CanExecute delegate only fires once, which is when my command gets databound at initialization.</p>\r\n<p>I'd like it to track the System.Windows.Input.CommandManager's RequerySuggested, so that my buttons that are bound to my commands continually gets Enabled/Disabled via calling the CanExecute delegate. However the CommandManager's RequerySuggested doesn't even fire when I'm only using DelegateCommand&lt;T&gt;s. But If I somewhere bind a good old&nbsp;RoutedUICommand, CommandManager starts firing RequerySuggested events. Why could that be? In fact CommandManager doesn't even fire RequerySuggested events when I try to force it by calling &quot;InvalidateRequerySuggested()&quot; on it. Really odd. I'm probably doing something wrong... But back to my question, is the CanExecute delegate even supposed to influence the &quot;IsEnabled&quot; state of the control it's bound to? And how am I supposed to use it? Any hints? Thanks!</p>\r\n<p>Cheers!</p>\r\n<p>Update:<br>I tried hooking up the CommandManager's event like this:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>System.Windows.Input.CommandManager.RequerySuggested += (sender, args) =&gt; {\r\n\tApplyCommand.RaiseCanExecuteChanged();\r\n};\r\n</pre>\r\n<pre>but to no avail... modifying the source of Prism's DelegateCommand&lt;T&gt; to what I would belive would accomplish the same thing, from:</pre>\r\n<pre><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">event</span> EventHandler CanExecuteChanged\r\n{\r\n    add\r\n    {\r\n        WeakEventHandlerManager.AddWeakReferenceHandler(<span style=\"color:Blue\">ref</span> _canExecuteChangedHandlers, value, 2);\r\n    }\r\n    remove\r\n    {\r\n        WeakEventHandlerManager.RemoveWeakReferenceHandler(_canExecuteChangedHandlers, value);\r\n    }</pre>\r\n<pre>}\r\n\r\nto:</pre>\r\n<pre>public event EventHandler CanExecuteChanged</pre>\r\n<pre>{</pre>\r\n<pre>    add</pre>\r\n<pre>    {</pre>\r\n<pre>        CommandManager.RequerySuggested += value;</pre>\r\n<pre>    }</pre>\r\n<pre>    remove</pre>\r\n<pre>    {</pre>\r\n<pre>        CommandManager.RequerySuggested -= value;</pre>\r\n<pre>    }</pre>\r\n<pre>}</pre>\r\n<pre>And THEN everything works as I was expecting... I must be missing something...</pre>\r\n</div>",
+    "PostedDate": "2009-11-06T13:37:34.473-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "255131",
+    "ThreadId": "74364",
+    "Html": "<p id=9c3afef0-af7b-012c-fbe4-12313b018621>Hi</p>\r\n<p><a href=\"http://blogs.southworks.net/jdominguez/\">Julian Dominguez</a>, Prism developer, talks about why DelegateCommands are implemented like this in Prism <a href=\"http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=44750\">in this thread</a> and explains a possible workaround. You might find it useful.</p>\r\n<p id=9c3b2170-af7b-012c-fbe6-12313b018621>Please let me know if this helps.</p>\r\n<p id=9c3b3210-af7b-012c-fbe7-12313b018621>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-11-09T09:27:11.567-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "255370",
+    "ThreadId": "74364",
+    "Html": "<p>Hi Damian,</p>\r\n<p>Thanks for your reply. I read the thread your pointed to, but and I can totally understand why you did choose to implement it like this, the problem is that I have already tried doing what was suggested in that thread, but the problem is that the CommandManager never fires any RequerySuggested events when hooked up like this (see the beginning of my previous message that I already mentioned that I had tried this venue. I guess maybe I should take this question to a WPF forum, as the real question is why the CommandManager never fires any events when connected like this. Thanks Damian!</p>\r\n<p>Cheers,<br>Ted</p>",
+    "PostedDate": "2009-11-09T23:42:26.94-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "258650",
+    "ThreadId": "74364",
+    "Html": "<p>Neo,</p>\r\n<p>I had the same problem as you with using the DelegateCommand&lt;&gt; provided with c/WPF. My CanExecute delegates were only being called the first time and any usage of CommandManager.RequerySuggested() was making no difference whatsoever.</p>\r\n<p>There is a DelegateCommand class with a different implementation that is provided as part of VS project template from the <a href=\"http://wpf.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=14962#DownloadId=67235\">WPF Model-View-ViewModel Toolkit 0.1</a> (part of the <a href=\"http://wpf.codeplex.com/Release/ProjectReleases.aspx?ReleaseId=14962\">WPF Futures</a> project).</p>\r\n<p>After running some tests using that version as opposed to the PRISM v2 one, I noticed that my CanExecute delegates were being called (as expected).</p>\r\n<p>Hope that helps.</p>\r\n<p>&nbsp;</p>\r\n<p>Regards,</p>\r\n<p>Richard</p>",
+    "PostedDate": "2009-11-19T05:53:15.903-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "589555",
+    "ThreadId": "74364",
+    "Html": "<p>This is my solution. This code write my ViewModelBase class.</p>\r\n<p>\r\n<pre>       // EventHandler reference list\r\n       private ICollection&lt;EventHandler&gt; eventHandlers = new List&lt;EventHandler&gt;();\r\n\r\n        private void InitializeCommandProperties()\r\n        {\r\n            var commands = this.GetType().GetProperties()\r\n                .Where(p =&gt; typeof(DelegateCommandBase).IsAssignableFrom(p.PropertyType))\r\n                .Select(p =&gt; p.GetValue(this, null) as DelegateCommandBase);\r\n\r\n            foreach (var command in commands)\r\n            {\r\n                EventHandler eventHandler = this.MakeEventHandler(command);\r\n                CommandManager.RequerySuggested += eventHandler;\r\n                this.eventHandlers.Add(eventHandler);\r\n            }\r\n        }\r\n\r\n        private EventHandler MakeEventHandler(DelegateCommandBase command)\r\n        {\r\n            return (sender, e) =&gt; command.RaiseCanExecuteChanged();\r\n        }\r\n</pre>\r\n</p>",
+    "PostedDate": "2011-03-31T07:55:43.817-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

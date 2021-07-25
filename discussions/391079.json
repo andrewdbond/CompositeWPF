@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "898236",
+    "ThreadId": "391079",
+    "Html": "\r\n<p>My requirement is that each module can define its own RibbonTab, or can also define just a RibbonGroup to be added to an existing tab or just RibbonButtons to be added in existing tab&gt;group.</p>\r\n<p>What I did so far is each module will define its own RibbonTab in xaml file, so the tab is added if a tab with same header doesn't exist but if tab already exists its group would be detached and added to the existing tab. Similarly if group exists it child\r\n controls are detached and added to the group that already exists.</p>\r\n<p>But the problem I am getting with this approach is all the binding of buttons to their ICommands also breaks down.</p>\r\n<p>My question is how can I best achieve my requirement. Otherwise if the approach I am using is fine, how can I keep binding intact.</p>\r\n<p>I am using WPF, PRISM 4.1, MEF without MVVM pattern currently since I am porting some existing code. But willing to adopt MVVM eventually.</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2012-08-10T13:27:17.937-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "898802",
+    "ThreadId": "391079",
+    "Html": "<p>Im still looking for solution. Will appreciate any help. Thanks.</p>",
+    "PostedDate": "2012-08-13T08:06:13.17-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "898831",
+    "ThreadId": "391079",
+    "Html": "\r\n<p>You're not alone (updated: ...looking for .../) waiting for an elegant solution.</p>\r\n",
+    "PostedDate": "2012-08-13T09:41:11.993-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "898868",
+    "ThreadId": "391079",
+    "Html": "<p>Hi,</p>\r\n<p>In my opinion, I believe the approach you described seems to be valid to achieve the requirements of your scenario.</p>\r\n<p>As far as I know, there could be several causes behind why your bindings are breaking. However, with the information you provided so far, I don't understand against \"what\" your buttons are binding to and why those binding are breaking.</p>\r\n<p>Therefore, it would be helpful if you could provide us with more information about how the binding between the buttons and commands are done and where those commands are defined.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-08-13T10:52:12.28-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "899110",
+    "ThreadId": "391079",
+    "Html": "\r\n<p>I was binding buttons to ICommands which are defined in code behind of xaml. (I was setting datacontext in xaml like this:&nbsp;DataContext=&quot;{Binding RelativeSource={RelativeSource Self}}&quot;)</p>\r\n<p>This binding breaks for the buttons that are moved to another tab in Ribbon bar. (As I mentioned I am not using MVVM pattern right now but would do that as I progress). Since each Module will have its own calss for defining its RibbonTab (in case if it already\r\n exists with same header, its contents would be detached from it and added to the tab already existing), to solve this I was thinking to have ModelView class for each module's RibbonTab and when Ribbon elements of modules are merged into Ribbon bar (which would\r\n have its own ModelView class) all modelView classes of modules should also merge into main Ribbon bar's modelview class. This is just an idea without having much knowledge of bringing it to life.</p>\r\n<p>Will appreciate any comments and help.</p>\r\n<p>Thanks,</p>\r\n<p>Imad.</p>\r\n",
+    "PostedDate": "2012-08-14T06:39:17.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "899239",
+    "ThreadId": "391079",
+    "Html": "<p>Hi,</p>\r\n<p>If I understood correctly, each module defines its own <strong>RibbonTab </strong>with an architecture similar to this:</p>\r\n<ul>\r\n<li><strong>RibbonTab1 </strong>- <em>DataContext=\"{Binding RelativeSource={RelativeSource Self}}\"</em>. The <strong>RibbonTab </strong>defines the <strong>ICommands </strong>in code-behind.  \r\n<ul>\r\n<li><strong>RibbonButton1 </strong>- <em>Command=\"{Binding Command1}\"</em>. Binds to the <strong>Command1 </strong>defined in <strong>RibbonTab1</strong>'s code-behind.</li>\r\n<li><strong>RibbonButton2 </strong>- <em>Command=\"{Binding Command1}\"</em>. Binds to the <strong>Command2 </strong>defined in <strong>RibbonTab1</strong>'s code-behind.</li>\r\n</ul>\r\n</li>\r\n</ul>\r\n<p>Based on my understanding, the problem with this architecture is that the buttons don't know the <strong>DataContext</strong><strong></strong>, the binding just escalates the visual tree searching for a <strong>DataContext </strong>(in this case, the binding would find the <strong>DataContext </strong>of the <strong>RibbonTab1</strong>). Therefore, when the buttons are detached and attached to a different tab, the binding escalate and use the <strong>DataContext </strong>of that tab. As this tab doesn't have commands defined for those buttons, the bindings don't work.</p>\r\n<p>A possible approach to solve this could be to define the <strong>DataContext </strong>of each <strong>RibbonButton</strong>, so that when they are attached or detached they will take their <strong>DataContext </strong>with them. There are several approaches to do this; for example, in the constructor of the <strong>RibbonTab </strong>in code-behind you could manually set the <strong>DataContext </strong>of each button to a \"kind of\" <strong>view model</strong>, where the commands are defined.</p>\r\n<p>Also, you can directly set the command corresponding to each button as the <strong>DataContext </strong>in code-behind. An example of this scenario would be something like this:</p>\r\n<ul>\r\n<li><strong>RibbonTab1</strong><em>&nbsp;</em>. The <strong>ICommands</strong> are defined in code-behind or in a view model.  \r\n<ul>\r\n<li><strong>RibbonButton1 </strong>- <em>Command=\"{Binding}\"</em>. Binds to the <strong>Command1 </strong>defined as its <strong>DataContext </strong>in the <strong>RibbonTab1</strong>'s code-behind.</li>\r\n<li><strong>RibbonButton2 </strong>- <em>Command=\"{Binding}\"</em>. Binds to the <strong>Command2 </strong>defined as its <strong>DataContext </strong>in the <strong>RibbonTab1</strong>'s code-behind. </li>\r\n</ul>\r\n</li>\r\n</ul>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> RibbonTab1 () {\r\n    <span style=\"color: blue;\">this</span>.InitializeComponents();\r\n    <span style=\"color: blue;\">this</span>.RibbonButton1.DataContext = <span style=\"color: blue;\">this</span>.Command1;\r\n    <span style=\"color: blue;\">this</span>.RibbonButton2.DataContext = <span style=\"color: blue;\">this</span>.Command2;\r\n}</pre>\r\n</div>\r\n<p>Then, when the buttons are moved to another place, they should be able to execute the commands correctly.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-08-14T10:53:42.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "899285",
+    "ThreadId": "391079",
+    "Html": "<p>Hi Damian,&nbsp;</p>\r\n<p>Thanks for your reply. It worked and its an excellent idea.&nbsp;</p>\r\n<p>Regards,</p>\r\n<p>Imad.</p>",
+    "PostedDate": "2012-08-14T12:53:44.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

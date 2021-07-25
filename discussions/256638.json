@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "608399",
+    "ThreadId": "256638",
+    "Html": "\r\n<p>I have a TabControl (with 2 TabItems) and 2 Prism modules.</p>\r\n<p>Every module has the views displayed in different regions of my shell window, including one region which belongs to the respective TabItem(one tabitem is for one view of the first module, and one is for one view of the second module)</p>\r\n<p>I am trying to activate/deactivate all the module views based on the selected tab item.</p>\r\n<p>Example: selecting the first TabItem will display on the Shell only the views from the first module, therefore hiding the views of the second module.</p>\r\n<p>How can I solve this without breaking the rules of MVVM?</p>\r\n",
+    "PostedDate": "2011-05-06T05:01:43.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "608486",
+    "ThreadId": "256638",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding on your scenario, one possibility to achieve your requirement would be to subscribe to the TabControl region's ActiveViews CollectionChanged event and publish an event in the EventAggregator (depending on the view selected). You should have the components in your modules subscribe to that event, to add or remove your view depending on the payload specified.</p>\r\n<p>Another possibility would be to use Navigatino instead of the Event Aggregator; for example, you could navigate to your first module's views in case its tab is selected, and then navigate to the second one's views in the other case.</p>\r\n<p>You might find the following chapters useful to learn more about the concepts described:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28PandP.40%29.aspx\">Chapter 9: Communicating Between Loosely Coupled Components</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28PandP.40%29.aspx\">Chapter 8: Navigation</a></li>\r\n</ul>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-05-06T07:22:52.16-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "609381",
+    "ThreadId": "256638",
+    "Html": "<p>Hi</p>\r\n<p>&nbsp;</p>\r\n<p>Thank you for your answer. It works good.</p>\r\n<p>Now I am adding tabs using 3 buttons on my UI. How can I set the active tab item based on the active view?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2011-05-09T00:32:52.697-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "609433",
+    "ThreadId": "256638",
+    "Html": "<p>Have a look at IActiveAware which can be attached to a view or view model</p>\r\n<ul>\r\n<li>IActiveAware.IsActive tells you the active view in a region</li>\r\n<li>IActiveAware.IsActiveChanged tells you when the active status changes</li>\r\n</ul>\r\n<p>Liam&nbsp;</p>",
+    "PostedDate": "2011-05-09T02:56:14.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

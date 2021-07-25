@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "992584",
+    "ThreadId": "430987",
+    "Html": "\r\n<p>i'm using Prism-MEF-WPF and Sometimes i need view model gets constructed from the XAML\r\n<br>\r\nof the view, so the container is not involved and can’t do the dependency injection\r\n<br>\r\nautomatically (as there is no Export attribute used with VM).So there should be some\r\n<br>\r\nclass in Prism-WPF like CompositionInitializer&nbsp;&nbsp; to enable me to ask the container to\r\n<br>\r\ndo the injection.In case there is equivalent&nbsp; class how to use it, and in case there is\r\n<br>\r\nno equivalent how to construct view model from xaml of the view.</p>\r\n",
+    "PostedDate": "2013-01-27T00:30:00.26-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "993059",
+    "ThreadId": "430987",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding the view model can be instantiated in <strong>XAML </strong>\r\nas the view’s <strong>DataContext </strong>only if a view model does not have any constructor arguments. And as far as I know creating objects defined in\r\n<strong>XAML </strong>by partnering with an<strong> Inverse of Control Container</strong> is currently not supported.</p>\r\n<p>Regarding the <strong>CompositionInitializer </strong>class, as far as I know there is no equivalent class for\r\n<strong>WPF</strong>, on the other hand regarding this topic, I believe you could find the following blog post interesting:</p>\r\n<ul>\r\n<li><a href=\"http://reedcopsey.com/2010/03/26/mef-compositioninitializer-for-wpf/\">MEF CompositionInitializer for WPF</a>\r\n</li></ul>\r\n<p>Also, I believe an alternative for this could be registering the <strong>CompositionContainer\r\n</strong>class like mentioned in this thread:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/311933\">Registering new types with MEF container from ViewModel</a>\r\n</li></ul>\r\n<p>As this could let you retrieve this class for example in your view model's constructor, in order to call the\r\n<strong>SatisfyImportsOnce </strong>method to satisfy the <strong>Imports</strong> defined in the passed class:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">this</span>.compositionContainer =ServiceLocator.Current.GetInstance&lt;CompositionContainer&gt;();\r\n<span style=\"color:blue\">this</span>.compositionContainer.SatisfyImportsOnce(<span style=\"color:blue\">this</span>);\r\n</pre>\r\n</div>\r\nI hope you find this handy,\r\n<p></p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2013-01-28T06:33:03.027-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "993171",
+    "ThreadId": "430987",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>That was very handy, i tested it and it worked. As i know about you your shot always in the goal.</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2013-01-28T09:59:47.297-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

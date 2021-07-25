@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "533912",
+    "ThreadId": "237880",
+    "Html": "\r\n<p>Playing with the modularity sample.</p>\r\n<p>I modified the ModuleControl to have an import of IModuleCatalog (exactly as in the Shell).</p>\r\n<p>But it does not get satisfied, why does it get satisfied in the shell and not in the ModuleControl. Tried several things at the end I had something like this,</p>\r\n<p>and if&nbsp;I uncomment the SatisfyImports I get an error that it cannot find the ImoduleCatalog.</p>\r\n<pre style=\"font-family:consolas\">&nbsp;&nbsp;&nbsp;[<span style=\"color:#2b91af\">Export</span>]<br>&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">public</span>&nbsp;<span style=\"color:blue\">partial</span>&nbsp;<span style=\"color:blue\">class</span>&nbsp;<span style=\"color:#2b91af\">ModuleControl</span>&nbsp;:&nbsp;<span style=\"color:#2b91af\">ContentControl</span>,&nbsp;<span style=\"color:#2b91af\">IPartImportsSatisfiedNotification</span><br>&nbsp;&nbsp;&nbsp;&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:gray\">///</span><span style=\"color:green\">&nbsp;</span><span style=\"color:gray\">&lt;summary&gt;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:gray\">///</span><span style=\"color:green\">&nbsp;Initializes&nbsp;a&nbsp;new&nbsp;instance&nbsp;of&nbsp;the&nbsp;</span><span style=\"color:gray\">&lt;see&nbsp;cref=</span><span style=\"color:gray\">&quot;ModuleControl&quot;</span><span style=\"color:gray\">/&gt;</span><span style=\"color:green\">&nbsp;class.</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:gray\">///</span><span style=\"color:green\">&nbsp;</span><span style=\"color:gray\">&lt;/summary&gt;</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">public</span>&nbsp;ModuleControl()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">this</span>.InitializeComponent();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">this</span>.Loaded&nbsp;&#43;=&nbsp;<span style=\"color:blue\">new</span>&nbsp;<span style=\"color:#2b91af\">RoutedEventHandler</span>(ModuleControl_Loaded);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">void</span>&nbsp;ModuleControl_Loaded(<span style=\"color:blue\">object</span>&nbsp;sender,&nbsp;<span style=\"color:#2b91af\">RoutedEventArgs</span>&nbsp;e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:green\">//CompositionInitializer.SatisfyImports(this);</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br> <br> <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span style=\"color:#2b91af\">Import</span>(AllowRecomposition&nbsp;=&nbsp;<span style=\"color:blue\">false</span>)]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">public</span>&nbsp;<span style=\"color:#2b91af\">IModuleCatalog</span>&nbsp;moduleCatalog;<br></pre>\r\n",
+    "PostedDate": "2010-12-10T07:13:06.63-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "534076",
+    "ThreadId": "237880",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>The issue you are experiencing might be because of the CompositionInitializer class. You could try accessing your\r\n<strong>ModuleCatalog</strong> through the Service Locator, as shown in the following\r\n<em>snippet</em>:</p>\r\n<p style=\"padding-left:30px\"><span lang=\"EN-US\" style=\"color:blue; font-size:9.5pt\">public</span><span lang=\"EN-US\" style=\"color:#30332d; font-size:9.5pt\">&nbsp;ModuleControl()<br>\r\n{<br>\r\n</span><span lang=\"EN-US\" style=\"color:blue; font-size:9.5pt\">&nbsp;&nbsp;&nbsp;&nbsp; this</span><span lang=\"EN-US\" style=\"color:#30332d; font-size:9.5pt\">.InitializeComponent();</span></p>\r\n<p style=\"padding-left:30px\"><span lang=\"EN-US\" style=\"color:#30332d; font-size:9.5pt\">&nbsp;&nbsp;&nbsp;&nbsp;\r\n</span><span lang=\"EN-US\" style=\"color:blue; font-size:9.5pt\">this</span><span lang=\"EN-US\" style=\"color:#30332d; font-size:9.5pt\">._moduleCatalog =\r\n</span><span lang=\"EN-US\" style=\"color:#4bacc6; font-size:9.5pt\">ServiceLocator</span><span lang=\"EN-US\" style=\"color:#30332d; font-size:9.5pt\">.Current.GetInstance&lt;</span><span lang=\"EN-US\" style=\"color:#4bacc6; font-size:9.5pt\">IModuleCatalog</span><span lang=\"EN-US\" style=\"color:#30332d; font-size:9.5pt\">&gt;();<br>\r\n}<br>\r\n<br>\r\n</span><span lang=\"EN-US\" style=\"color:blue; font-size:9.5pt\">private</span><span lang=\"EN-US\" style=\"color:#4bacc6; font-size:9.5pt\"> IModuleCatalog</span><span lang=\"EN-US\" style=\"font-size:9.5pt\"> _moduleCatalog;</span></p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n",
+    "PostedDate": "2010-12-10T11:45:56.417-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "534331",
+    "ThreadId": "237880",
+    "Html": "\r\n<p>Yes, thanks, &nbsp;that works, but still does not really answer my question. Why the difference.</p>\r\n<p>Actually same thing , when in the importssatisfied in the shell , I add a module to&nbsp;modulecatalog... and it automatically gets downloaded</p>\r\n<p>But if I do exactly the same in the ModuleControl 'loaded' event, nothing happens.</p>\r\n<p>There is too much mystic stuff here....</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-11T04:21:39.577-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "535148",
+    "ThreadId": "237880",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>The behavior you're describing could be caused by a timing issue, since the loading sequence started by the\r\n<strong>MefBootstrapper.Run </strong>method calls the <strong>CreateShell </strong>\r\nand <strong>InitializeShell </strong>methods before the <strong>InitializeModules\r\n</strong>method. There should be no difference between the import you get when resolving it from the shell or the ModuleControl, since the catalog from which you're retrieving the imports is the same.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-13T11:45:15.107-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

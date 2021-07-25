@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "433953",
+    "ThreadId": "210131",
+    "Html": "<p>Hello,</p>\r\n<p>In the documentation it indiactes that a module is defined in one of four ways:</p>\r\n<p>- Defined in code &lt;-- I would expect to see an override of GetModuleCatalog</p>\r\n<p>- Defined in xaml &lt;-- I would expect to see a ModuleCatalog.xaml</p>\r\n<p>- Read from configuration file &lt;--&nbsp; I would expect to see an App.Config</p>\r\n<p>- Discovering all modules in a directory &lt;-- I would expect to see attributes on the modules defining the dependencies</p>\r\n<p>I don't see any of these being done; can someone enlighten me?&nbsp; I don't understand how the container knows how to inject the dependencies into the constructor of the modules when it does:</p>\r\n<p>IModule employeeModule = this.Container.Resolve&lt;EmployeeModule&gt;();&nbsp;</p>\r\n<p>I looked at the StockTraderRI and it appears that the modules are defined in code, but i'm still not sure I understand how the UnityContainer knows how to inject dependencies here.</p>\r\n<p>Thanks,</p>\r\n<p>Steve</p>\r\n<div id=\"_mcePaste\" style=\"width:1px;height:1px;overflow:hidden;top:0px;left:-10000px\">﻿</div>",
+    "PostedDate": "2010-04-21T19:54:28.207-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "434382",
+    "ThreadId": "210131",
+    "Html": "<p id=cb9cf100-3046-012d-3f92-12313d019651>Hi Steve,</p>\r\n<p id=cb9d06e0-3046-012d-3f93-12313d019651>To check how each of the Module Loading approaches work, you can take a look at the&nbsp;<a href=\"http://msdn.microsoft.com/en-us/library/dd458909.aspx\">Modularity Quickstarts</a>&nbsp;that come with Prism. For WPF there is one for each of the approaches you mentioned (except for XAML) and you will be able to get a good idea of how they work. The reference implementation is populating the module catalog in the&nbsp;<strong>GetModuleCatalog</strong>&nbsp;method from the&nbsp;<strong>StockTraderRIBootstrapper</strong>&nbsp;class (<a href=\"http://msdn.microsoft.com/en-us/library/dd490820.aspx\">the application&rsquo;s launching point</a>) inside the&nbsp;<strong>StockTraderRI</strong>&nbsp;project.</p>\r\n<p id=cb9d45e0-3046-012d-3f94-12313d019651>Regarding the injection of dependencies, the Unity container uses reflection to recognize the different dependencies of a particular class and searches its registered type mappings to satisfy those dependencies. There are different ways to mark dependencies in a class, which you can read about in the&nbsp;<a href=\"http://msdn.microsoft.com/en-us/library/dd203191.aspx\">Unity documentation</a>. If you have a Unity specific question, you can ask it in the&nbsp;<a href=\"http://unity.codeplex.com/\">Unity forums</a>.</p>\r\n<p id=cb9da700-3046-012d-3f95-12313d019651>For some more information about getting started with Prism and the different concepts it brings to the table you can check out this&nbsp;<a href=\"http://blogs.southworks.net/dschenkelman/2009/10/22/learning-prism-composite-application-guidance-for-wpf-silverlight-how-do-i-start/\">blog post</a>.</p>\r\n<p id=cb9e17b0-3046-012d-3f96-12313d019651>Please let me know if this helps.</p>\r\n<p id=cb9e85c0-3046-012d-3f97-12313d019651>Damian Schenkelman&nbsp;<br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-22T15:50:01.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "449604",
+    "ThreadId": "214465",
+    "Html": "<p>Hi @all,</p>\r\n<p>I tried to upgrade my Silverlight App. from Prism Version 2.1. to 2.2.</p>\r\n<p>Unfortunately I have some problems with Unity.</p>\r\n<p>I replaced the old file Microsoft.Practices.Unity.dll with Microsoft.Practices.Unity.Silverlight.dll and checked the references / namespaces in my App.</p>\r\n<p>When I try to compile the App. I receive this&nbsp; error:</p>\r\n<p>Error&nbsp;&nbsp; &nbsp;1&nbsp;&nbsp; &nbsp;The type 'Microsoft.Practices.Unity.IUnityContainer' is defined in an assembly that is not referenced. You must add a reference to assembly 'Microsoft.Practices.Unity, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35'.</p>\r\n<p>But i cannot refer to Microsoft.Practices.Unity.dll this is not a Silverlight Library. And I think the the Microsoft.Practices.Unity.Silverlight.dll should be used. Or am I wrong?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks for your help.</p>\r\n<p>Manullino</p>",
+    "PostedDate": "2010-05-31T07:05:07.8-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "453073",
+    "ThreadId": "214465",
+    "Html": "<p id=a6c5bd00-5549-012d-08af-12313d00b9f1>Hi Manullino,</p>\r\n<p>You  are right, you should use the <strong>Microsoft.Practices.Unity.Silverlight.dll</strong> assembly, which is the Silverlight version of Unity 2.0 (remember that  Prism 2.2 uses Unity 2.0, as mentioned in <a href=\"View.aspx?ThreadId=214665\">this  thread</a>).</p>\r\n<p id=a6c5f2d0-5549-012d-08b1-12313d00b9f1>Your  problem is probably caused by the fact that you have replaced the <strong>Unity</strong> assembly, but not the <strong>UnityExtensions</strong> assembly. You  should replace the reference to <strong>Microsoft.Practices.Composite.UnityExtensions</strong> version 1.2 with version 2.0 of the same assembly, which you can find  inside the <a href=\"../releases/view/46046\">Prism 2.2  release</a>.</p>\r\n<p>Please note that, due to the fact that you are  upgrading to Unity 2.0, the generic methods such as <strong>Resolve&lt;T&gt;</strong> are now located in extension methods, so you should change the using  statements in your classes. You can find more information about this in <a href=\"View.aspx?ThreadId=210756\">this  thread</a>.</p>\r\n<p id=a6c64600-5549-012d-08b3-12313d00b9f1>I hope  you find this helpful.</p>\r\n<p id=a6c67240-5549-012d-08b4-12313d00b9f1>Guido  Leandro Maliandi    <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-06-08T09:42:19.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

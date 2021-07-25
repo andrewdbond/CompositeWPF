@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": null,
+    "Description": "I am trying to use PRISM 5/MEF to register modules and configure them via app.config file. But a module cannot be found whenever I am using a command line parameter to start the application, eg:\r\n\r\nI am in \"C:\\TEMP\" and have 'Readme.txt' there and execute something like this: \r\n\"C:\\Program Files\\Edi\\Edi.exe\" Readme.txt\r\n\r\nIn this case (and only in this case) I am receiving the exception below - everything works fine though if I start the application first and use File>Open to view the contents of a file. So loading and discovering of modules seems to be dependent of my currently active directory(?).\r\n\r\nThe complete project is here:\r\nhttps://edi.codeplex.com/SourceControl/latest\r\n\r\nThe module that is causing the problem is configured in\r\nhttps://edi.codeplex.com/SourceControl/latest#Edi/app.config\r\n\r\nwith the line:\r\n```\r\n<module assemblyFile=\"Plugins/Log4NetTools.dll\" moduleType=\"Log4NetTools.Module\" moduleName=\"MEFLoadLog4NetTools\" startupLoaded=\"true\" />\r\n```\r\n\r\nWhat am I doing wrong?\r\nIs there a way to tell PRISM to search app.config entries in the directory of the executing assembly?\r\n\r\nException:\r\n```\r\nMicrosoft.Practices.Prism.Modularity.ModuleTypeLoadingException: Failed to load type for module MEFLoadLog4NetTools. \r\nError was: Could not load file or assembly 'Log4NetTools.dll' or one of its dependencies. Das System kann den angegebenen Pfad nicht finden.. ---> System.IO.FileNotFoundException: Could not load file or assembly 'Log4NetTools.dll' or one of its dependencies. Das System kann den angegebenen Pfad nicht finden. ---> System.IO.DirectoryNotFoundException: Das System kann den angegebenen Pfad nicht finden. (Exception from HRESULT: 0x80070003)\r\n   --- End of inner exception stack trace ---\r\n   at System.Reflection.AssemblyName.nGetFileInformation(String s)\r\n   at System.Reflection.AssemblyName.GetAssemblyName(String assemblyFile)\r\n   at System.ComponentModel.Composition.Hosting.AssemblyCatalog.LoadAssembly(String codeBase)\r\n   at System.ComponentModel.Composition.Hosting.AssemblyCatalog..ctor(String codeBase)\r\n   at Microsoft.Practices.Prism.MefExtensions.Modularity.MefFileModuleTypeLoader.LoadModuleType(ModuleInfo moduleInfo)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Practices.Prism.Modularity.ModuleManager.HandleModuleTypeLoadingError(ModuleInfo moduleInfo, Exception exception)\r\n   at Microsoft.Practices.Prism.MefExtensions.Modularity.MefFileModuleTypeLoader.LoadModuleType(ModuleInfo moduleInfo)\r\n   at Microsoft.Practices.Prism.Modularity.ModuleManager.LoadModuleTypes(IEnumerable`1 moduleInfos)\r\n   at Microsoft.Practices.Prism.MefExtensions.MefBootstrapper.Run(Boolean runWithDefaultConfiguration)\r\n   at Edi.Bootstapper.Run(Boolean runWithDefaultConfiguration)\r\n   at Edi.App.Application_Startup(Object sender, StartupEventArgs e)```\r\n",
+    "LastUpdatedDate": "2014-10-17T09:40:50.973-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2014-10-13T22:42:58.503-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Finding modules in App.config depends on currently active directory",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 2,
+    "Id": 10713
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "I can verify the same problem when use a PRISM sample in a similar fashion. I build the ModularityWithMef.Desktop sample and start a CMD.exe do a \"CD C:\\TEMP\\\" and try\nto start the sample from a different directory than the directory in which the executable is:\n\n\"C:\\Test\\PrismV5 Samples\\Quickstarts\\Modularity\\Desktop\\ModularityWithMef\\ModularityWithMef.Desktop\\bin\\Debug\\ModularityWithMef.Desktop.exe\"\n\nI am receiving a program crash when I try to click on ModuleE or ModuleF (the modules that are configured in the app.config file). Does this mean that an app.config file cannot be used with an executable that could be started from another directory via command line?",
+      "PostedDate": "2014-10-13T23:09:08.027-07:00",
+      "Id": 162224
+    }
+  ]
+}

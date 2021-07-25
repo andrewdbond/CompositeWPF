@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "213214",
+    "ThreadId": "62814",
+    "Html": "<p>So I've got a WPF app all setup. I have the shell and it loads the module.</p>\r\n<p>I'd like to have the module animate a region inside the shell.xaml so I created an IShell interface in a seperate assembly. <br>shell.cs implements IShell&nbsp;and i inject the unity container into the modules view constructor like so</p>\r\n<p>public Module1View(IUnityContainer container)<br>{<br><span style=\"white-space:pre\"> </span>_container = container;&nbsp;<br>}&nbsp;<br><br>then in some method in module1 i do this bit of code to get a reference to the shell and call one of the IShell methods.</p>\r\n<p>&nbsp;</p>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">var shell = _container.Resolve&lt;IExtendableShell&gt;();</div>\r\n<div id=\"_mcePaste\" style=\"left:-10000px;top:0px;width:1px;height:1px;overflow-x:hidden;overflow-y:hidden\">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;shell.showOverlay();</div>\r\n<p>var shell = _container.Resolve&lt;IShell&gt;();<br>shell.showOverlay();</p>\r\n<p>the showOverlay method is implemented in shell.cs and runs an animation BUT the animation never runs.</p>\r\n<p>I've tried a number of different things UI wise such as changing a label or setting the visibility of an object but nothing updates the UI. <br>Intially I thought it must be a UI thread issue. So I added a dispatcher.BeginInvoke to update the UI but still nothing.</p>\r\n<p>Does anyone have ANY idea whats going on here please?</p>\r\n<p>Thanks<br>DML&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-17T15:00:10.923-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213939",
+    "ThreadId": "62814",
+    "Html": "<p>Hi DML,</p>\r\n<p>Assuming everything else is in place, it is possible that the particular animation <span style=\"color:#1f497d\">you </span>want to perform is not visible with a region (which are invisible by default). If this is not the scenario, you might check the following threads which deals with animation situations:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=60305\">Dim Windows and Show Waiting Animation</a></li>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=54579\">Should I create a new Region behavior?</a></li>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=58885\">view injection and storyboard</a></li>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=53546\">Composite View Architecture Advice</a></li>\r\n</ul>\r\n<p><span style=\"color:#1f497d\" lang=EN-US>&nbsp;</span></p>\r\n<p>Another thing that might be causing the behavior you describe is if you are not registering the IShell as a singleton in the unity container (that would cause unity to create another instance of the shell which will never be shown).</p>\r\n<p>Nevertheless, it's not a recommended practice to have the shell registered in the container. This tights your modules to the shell implementation (or interface) which is one of the problems prism tries to resolve. In your scenario, you could use the <a href=\"http://msdn.microsoft.com/en-us/library/dd458915.aspx\">EventAggregator</a> to let the Shell know how to manage the animation (start/stop), thus keeping thing<span style=\"color:#1f497d\">s</span> decoupled.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-07-20T11:52:22.843-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

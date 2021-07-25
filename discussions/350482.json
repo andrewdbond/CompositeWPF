@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "817161",
+    "ThreadId": "350482",
+    "Html": "\r\n<p><span style=\"color:#000000\">Hello,</span></p>\r\n<p><span style=\"color:#000000\">I have two dependent modules, e.g. BLModule is using AuditTrailModule.&nbsp;To run my application, both modules have to be loaded, but for me it's irrelevant in what order they are initialized.&nbsp;Now I have two possibilities:</span></p>\r\n<p><span style=\"color:#000000\">Solution&nbsp;1:&nbsp;I can either set the dependency:</span></p>\r\n<p>[<span style=\"color:darkblue\">ModuleDependency</span>(<span style=\"color:blue\">typeof</span>(AuditTrailModule))]<br>\r\n<span style=\"color:blue\">public</span>&nbsp;<span style=\"color:blue\">class</span>&nbsp;BLModule&nbsp;:&nbsp;<span style=\"color:darkblue\">IModule</span></p>\r\n<p><span style=\"color:#000000\">Now, in my bootstrapper, I can add the BLModule to my module catalog and both modules are loaded due to the dependency.</span></p>\r\n<p><span style=\"color:#000000\"><span style=\"color:#000000\"><span style=\"color:#000000\">Solution</span> 2</span>: Alternatively, I can remove the module dependency attribute and instead in my application add the BLModule and the AuditTrailModule to the module\r\n catalog.</span></p>\r\n<p><span style=\"color:#000000\"><span lang=\"EN-US\" style=\"font-size:9.5pt\">The MSDN documentation says: &quot;Modules may depend on other modules. If Module A depends on Module B, Module B must be initialized before Module A.&quot; As said, in our case it's only necessary\r\n that both modules are loaded, but the order of initialization is irrelevant.</span></span></p>\r\n<p>Solution 1 has the advantage that our customer doesn't need to care about the AuditTrailModule, it get's automatically loaded when the BLModule is loaded. On the other hand, Solution 2 has the advantage that if our customer would want to implement its own\r\n AuditTrailModule, he could just do so an load it to the module catalog (the Solution 1 would unnecessarily still load the &quot;old&quot; AuditTrailModule).</p>\r\n<p>Is there a guidance / best practice when to use dependencies? Should it be used to get the&nbsp;&quot;dependent&quot; modules automatically loaded, or should it only be used when the order of initialization matters?</p>\r\n<p>Thanks for any help</p>\r\n<p>Dani</p>\r\n",
+    "PostedDate": "2012-03-29T06:45:41.46-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "817300",
+    "ThreadId": "350482",
+    "Html": "<p>Hi Dani,</p>\r\n<p>If I understood your scenario correctly, I believe that registering your modules in a <a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28v=pandp.40%29.aspx#sec21\">configuration file</a> or in a <a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28v=pandp.40%29.aspx#sec20\">XAML module catalog</a> would be an useful approach.</p>\r\n<p>When using a configuration file or XAML module catalog you can define modules and their dependencies in a loosely coupled pattern (in fact, the Shell project wouldn't even need to have a reference to the modules.) This would allow you to add / remove modules and change their dependencies by simply modifying a couple of XML lines and without even needing to change the bootstrapper.</p>\r\n<p>Prism provides different approaches to register modules and dependencies; which approach you should follow will depend mostly of your personal preferences and the requirements of your scenario.&nbsp; You can find more information about this in the following chapter of the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28v=pandp.40%29.aspx\">Chapter 4: Modular Application Development</a></li>\r\n</ul>\r\n<p>Also, regarding the first option, it seems that you are not exactly using modules dependencies: based on my understanding, if you know the <strong>AuditTrailModule </strong>type inside the <strong>BLModule </strong>module, that means that the <strong>BLModule </strong>has a reference to the <strong>AuditTrailModule</strong>; therefore, it seems that the <strong>AuditTrailModule </strong>is not being automatically loaded because it was defined as a dependency, but because of a strong reference in the <strong>BLModule</strong>. This would also explain why the loading order of the modules seems to be irrelevant to your application.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-03-29T10:52:57.937-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "819186",
+    "ThreadId": "350482",
+    "Html": "<p>Hello Damian,</p>\r\n<p>You're right, the BLModule has a reference to the AuditTrailModule. But we still need the AuditTrailModule to be loaded that it will be \"initialized\". So it can be loaded either by adding it to the config or by setting it as dependent module. And as you write, since we already have a reference to the AuditTrailModule, setting the module dependency attribute is probably the better solution.</p>\r\n<p>Thanks for your answer.</p>\r\n<p>Dani</p>",
+    "PostedDate": "2012-04-03T04:47:52.9-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

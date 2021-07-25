@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "153049",
+    "ThreadId": "45847",
+    "Html": "We had working code with CAL 1.0 and now I'm trying to remediate for CAL 2.0 Drop 10.  <br>\r\n<br>\r\nIt seems that one of the Region creation methods that we are using, RegionManager.AttachNewRegion(), has been removed.  This was a pretty powerful little method and now there's no guidance in the documentation for a new way to manually assign regions onto existing controls.<br>\r\n<br>\r\nI'm trying to figure out a workaround, but so far I haven't got it.  I'd appreciate any advice if someone else has figured this out.<br>\r\n<br>\r\nThanks...\r\n",
+    "PostedDate": "2009-02-01T07:57:10.82-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "153394",
+    "ThreadId": "45847",
+    "Html": "What is the scenario that you are trying to accomplish with this?<div>After performing lots of refactoring on the Regions namespace and removed this from the interface, we discussed about backward compatibility, but we couldn't find a scenario where this method would be absolutely necessary, althought we might have missed many.</div><div><br></div><div>Would the following code suffice your needs?</div><div><br></div><div><p><span style=\"font-size:10pt;font-family:'courier new';color:rgb(43, 145, 175)\">RegionManager</span><span style=\"font-size:10pt;font-family:'courier new'\">.SetRegionManager(someControl,regionManager);<span style=\"font-size:10pt;font-family:'courier new';color:rgb(43, 145, 175)\"></span></span></p><p><span style=\"font-family:'times new roman';font-size:16px\"><span style=\"font-size:10pt;font-family:'courier new';color:rgb(43, 145, 175)\">RegionManager</span><span style=\"font-size:10pt;font-family:'courier new'\">.SetRegionName(someControl, regionName);</span></span></p></div><div><br></div><div>You could also do this from XAML if you needed.</div><div><br></div><div>Your feedback will be appreciated,</div><div>Julian</div><div><span><a href=\"http://blogs.southworks.net/jdominguez\">http://blogs.southworks.net/jdominguez</a></span></div><div><br><div><br></div></div>",
+    "PostedDate": "2009-02-02T09:49:08.973-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "160640",
+    "ThreadId": "45847",
+    "Html": "Hi Julian!<br>\r\n<br>\r\nI have a scenario when the method RegionManager.AttachNewRegion is necessary. If you like to register a context menu as region then you are not able to use the attached property of the RegionManager. AndreasOlivares shows an example how this can be accomplished: <a href=\"http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=34664\">http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=34664</a>.<br>\r\n<br>\r\nI’m using the same approach in my project <a href=\"http://www.codeplex.com/CompositeExtensions\">www.codeplex.com/CompositeExtensions</a>. I tried to migrate my project to Composite WPF2 but I’m stuck because of this issue. The methods you mentioned doesn’t help to solve this scenario.<br>\r\n<br>\r\njbe<br>\r\n",
+    "PostedDate": "2009-02-22T09:56:57.19-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "160929",
+    "ThreadId": "45847",
+    "Html": "Hi jbe, I answered in the other thread: <a href=\"http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=34664#Post160926\">http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=34664#Post160926</a><br>\r\n<br>\r\nI hope this helps workaround the issue with the ContextMenu. I tried it with the example provided in the other post, and it worked for me.<br>\r\nLet me know how it goes.<br>\r\n<br>\r\nJulian Dominguez<br>\r\n<a href=\"http://blogs.southworks.net/jdominguez\"><span style=\"color:#3e62a6\">http://blogs.southworks.net/jdominguez</span></a>\r\n",
+    "PostedDate": "2009-02-23T05:47:42.25-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

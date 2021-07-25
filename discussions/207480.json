@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "424319",
+    "ThreadId": "207480",
+    "Html": "<p>Hi,</p>\r\n<p>What I'm trying to do is pass a variable from one module to another module.&nbsp; I know I could use the EventAggregator, but it seems a bit messy for this situation:</p>\r\n<p>I have a tree in one module (moduleTree) and a RibbonBar in another module (moduleRibbonBar).&nbsp; When I click on the node of a tree it gets the ID of that node.&nbsp;In the RibbonBarModule When I click on a button &quot;LoadMappings&quot;, it should get the Mappings for that ID and load them.</p>\r\n<p>So here are the steps that I want to happen:</p>\r\n<p>1) Click on Node in moduleTree to get ID</p>\r\n<p>2) Click on button in moduleRibbonBar to load the mappings</p>\r\n<p>3) Get the ID of the selected node from moduleTree from moduleRibbonBar</p>\r\n<p>4) Load up the settings.</p>\r\n<p>The problem with using the Event Aggregator is that I would need 2 event calls:</p>\r\n<ul>\r\n<li>&quot;LoadMappings&quot; Button is clicked in moduleRibbonBar, throws&nbsp;an event</li>\r\n<li>ModuleTree catches the event and gets the ID of the selected node, throws&nbsp;an event</li>\r\n<li>Module RibbonBar catches the event that Module Tree throws, and now it can do its thing.</li>\r\n</ul>\r\n<p>So is this the way I'm supposed to do it?&nbsp; I've tried to mess around with registering Types:</p>\r\n<p><span style=\"font-size:x-small\">&lt;font size=&quot;2&quot;&gt;\r\n<p>_container.RegisterType&lt;</p>\r\n&lt;/font&gt;</span>\r\n<p><span style=\"color:#2b91af;font-size:x-small\"><span style=\"color:#2b91af;font-size:x-small\">ISelectedTest</span></span><span style=\"font-size:x-small\">, Services.</span><span style=\"color:#2b91af;font-size:x-small\"><span style=\"color:#2b91af;font-size:x-small\">SelectedTest</span></span><span style=\"font-size:x-small\">&gt;(</span><span style=\"color:#0000ff;font-size:x-small\"><span style=\"color:#0000ff;font-size:x-small\">new</span></span><span style=\"font-size:x-small\"> </span><span style=\"color:#2b91af;font-size:x-small\"><span style=\"color:#2b91af;font-size:x-small\">ContainerControlledLifetimeManager</span></span><span style=\"font-size:x-small\">()); </span></p>\r\n<p>But I doubt that is the way to go.&nbsp; Can anyone help me out on this one?</p>\r\n<p>Thanks,</p>\r\n<p>Chad</p>\r\n</p>",
+    "PostedDate": "2010-03-26T18:00:46.493-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "424736",
+    "ThreadId": "207480",
+    "Html": "<p>I don't think you need 2 events. What about if the moduleTree fires an event when it is selected and moduleRibbonBar stores the id of the selected node? then, if button on the modlrRibbonbar is clicked it can load the mappings from the stored id.</p>\r\n<p>Anothee possibility is to have the ribbonbar raise an event (and keep a reference to the event parameter)&nbsp;and have the moduleTree set an id property&nbsp;on the parameter. Not done this and it could get a bit messy finding when the property was set.</p>\r\n<p>hth</p>\r\n<p>mark</p>",
+    "PostedDate": "2010-03-28T17:24:38.033-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "424772",
+    "ThreadId": "207480",
+    "Html": "<p>geez I feel pretty stupid...</p>\r\n<p>Yeah making an event fire when the tree node gets clicked, and having the ribbon bar listen for that event will work just fine.</p>\r\n<p>Thanks Mark.</p>",
+    "PostedDate": "2010-03-28T20:53:08.123-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

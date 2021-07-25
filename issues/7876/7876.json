@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nI'm closing this work item, as it seems that this is not caused by an issue in Prism. In case you need further support about this, you could create a thread in the discussions section (http://compositewpf.codeplex.com/discussions).\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-10-18T07:43:28.09-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "We are building a LOB application using SL4,PRISM and MVVM. I noticed very lately that my App is not releasing any memory. It Starts around 150MB and grows to 1 GB+ very fast if i switch b/w pages. Our design involves 3 modules each having a Controller class(Unity singleton) which listens for events and injects views into the appropriate region. So this is whats happening in those controllers when an event is fired to inject a view.\n \nvar v = Container.resolve<view>() \nvar vm = Container.resolve<viewmodel>() \nv.datacontext = vm; myregion.addtoregion(v); \n \nso 100 calls for this view will exceute this 100 times. And in addviewregion method, i'm removing all existing views before adding the new one. And after seeing the memory problem, i set both view & viewmodel to null in addviewtoregion method for all the views nedd to be removed. still memry consumption is same. Is Unity ContainerControllled... objects(my controllers) holding referrences to these objects?\n \n \n \nUpdate:\n \nThe following behavior illustrates the title of this discussion:\n \nWeakReference ref1 = new WeakReference(Container.Resolve<Footer>());\nWeakReference ref2 = new WeakReference(new Footer());\nGC.Collect();\nGC.WaitForPendingFinalizers();\nbool isRef1Alive = ref1.IsAlive;\nbool isRef2Alive = ref2.IsAlive;\n \nFooter is a UserControl and here first one returns true whereas the second one returns false. Why is this behavior different? Does Container holds any reference to the item it resolves? BTW, i dont have any interfaces for this view. I added\n \nContainer.RegisterType<Footer, Footer>();\n \nin the Bootstrapper(ConfigureContainer method). still same result.",
+    "LastUpdatedDate": "2013-05-16T05:28:44.563-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-02-06T21:39:35.553-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Objects are not getting garbage collected",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 4,
+    "Id": 7876
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nIf you have registered your instances using the RegisterInstance method, or if you have specified a ContainerControlledLifetimeManager in the RegisterType method, the Unity container will hold a reference to your object.\r\n\r\nFor more information, you could check the following resources about Unity:\r\n\r\n-RegisterInstance Method (http://msdn.microsoft.com/en-us/library/ee649971.aspx)\r\n-RegisterType Method (http://msdn.microsoft.com/en-us/library/ee650781%28PandP.20%29.aspx)\r\n-Unity resolved objects not getting garbage collected (http://unity.codeplex.com/discussions/244481)\r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-04-05T11:32:47.217-07:00",
+      "Id": 156407
+    }
+  ]
+}

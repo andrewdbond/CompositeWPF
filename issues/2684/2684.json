@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nIt could be useful to know that, as of Prism v4, this behavior has been fixed. To illustrate this, here's a fragment from the CompositePresentationEvent class:\r\n\r\nprivate IDispatcherFacade UIDispatcher\r\n{\r\nget\r\n{\r\nif (uiDispatcher == null)\r\n{\r\nthis.uiDispatcher = new DefaultDispatcher();\r\n}\r\n\r\nreturn uiDispatcher;\r\n}\r\n}\r\n\r\nThank you for your feedback.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-02-25T09:16:23.737-08:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Currently, CompositeWPFEvent<T> is accessing Application.Current without check for null. \n \nprotected virtual Dispatcher UIDispatcher { get { return Application.Current.Dispatcher; } }\n \nThis will crash if the view (module) is launched from a winform app. (Since it is virtual, consumer can easy override this from sub-classes but I think check for null in the base class makes more sense)",
+    "LastUpdatedDate": "2013-05-16T05:29:05.303-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-07-07T11:40:14.58-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Interop issue with CompositeWpfEvent<T>",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 5,
+    "Id": 2684
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "We too are using the GREAT CAG alongside a legacy app (winforms) and ran into the issue of the DelegateComman not being able to dispatch on any other thread but the Application.Current.Thread. An alternate solution to virtualizing the Dispatcher member would be to actually grab the current Dispatcher (from Dispatcher.CurrentDispatcher in the constructor. Since DelegateCommand is closely tied to the UI, it makes sense that those be created on the UI thread, like most other object interacting with the UI.\r\nJust a suggestion, but we love CAG!",
+      "PostedDate": "2009-06-01T11:42:37.32-07:00",
+      "Id": 156009
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "609574",
+    "ThreadId": "256908",
+    "Html": "\r\n<p>I found if&nbsp;views or viewmodels implement IRegionMemberLifetime, always return KeepAlive to false, will cause RegionContext lost when navigate between views or viewmodels.</p>\r\n",
+    "PostedDate": "2011-05-09T07:41:55.297-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "609739",
+    "ThreadId": "256908",
+    "Html": "<p>Hi,</p>\r\n<p>We checked Prism&rsquo;s code and found that this is a bug in the Prism Library. The problem you are describing happens because the Region&rsquo;s region context is being removed from the region itself after a view is removed in it, in response of the <strong>KeepAlive</strong> property set to false and the view being deactivated.</p>\r\n<p>This happens because, in the <strong>BindRegionContextToDependencyObjectBehavior</strong>, when a view is removed from a region, the <strong>DetachNotifyChangeEvent</strong> method is should be called before setting the view&rsquo;s RegionContext attached property to null, but it&rsquo;s called after that. Therefore, when setting the view&rsquo;s RegionContext to null (since it has been removed from the region), the Region Context in the region itself is also set to null, thus causing this unexpected behavior.</p>\r\n<p>We have created a <a href=\"http://compositewpf.codeplex.com/discussions/(http:/compositewpf.codeplex.com/workitem/8225\">work item</a> in the Issue Tracker to notify the team about this behavior.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-09T13:06:57.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "609856",
+    "ThreadId": "256908",
+    "Html": "<p>Thank you.</p>\r\n<p>I modify and rebuild&nbsp;the source code, it's ok.</p>",
+    "PostedDate": "2011-05-09T17:31:21.42-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "675303",
+    "ThreadId": "256908",
+    "Html": "<p>Hi,</p>\r\n<p>We created a blog post explaining a possible workaround for this issue, without having to recompile the Prism Library:</p>\r\n<p><a href=\"http://blogs.southworks.net/aadami/2011/09/22/prism-v4-regioncontext-lost-when-removing-a-view-from-a-region/\">Prism v4: RegionContext lost when removing a view from a region</a></p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-09-22T07:17:56.457-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

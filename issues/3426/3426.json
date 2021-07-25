@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "In the current implementation, there doesn't seem to be anyway to insert a View into a Region's underlying ItemMetadataCollection at an arbitrary location. IRegion.Add is good for inserting at the end of the Collection, but it is not possible to insert anywhere else. IRegion.Insert(int index, object view), IRegion.Insert(int index, object view, string viewName) seem like an appropriate solution that I have implemented locally in Prism with no issues thus far.",
+    "LastUpdatedDate": "2014-10-01T10:45:54.713-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-12-01T12:48:08.687-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Unable to Insert view into IRegion",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 5,
+    "Id": 3426
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nYou might find the ViewSortHint attribute useful for your scenario, in case you don't need to insert the views on a specific position based on runtime calculations. You can find more information about this in the following section from the Prism MSDN documentation:\r\nhttp://msdn.microsoft.com/en-us/library/ff921098(PandP.40).aspx#sec40\r\n\r\nI'm leaving this work item as an open suggestion, so that the Prism team considers adding this feature on a future release.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-10-28T10:31:56.733-07:00",
+      "Id": 156056
+    },
+    {
+      "Message": "Hi,\r\n\r\nWe agree as Guido mentioned that currently using the ViewSortHint attribute might be useful to achieve a similar functionality, which might be useful in many scenarios.\r\n\r\nOn the other hand, so far we couldn't find another way to directly insert a view in a specific position without modifying the Prism library. We could also achieve this scenario, by modifying the Region.cs class and the IRegion interface in consequence as mentioned in this work item by adding a Insert method using a similar logic in the Region.Add method but which finally inserts the view in the ItemMetadataCollection (this.ItemMetadataCollection.Insert(index,itemMetadata)).\r\n\r\nSo far we neither experience issues with these modifications.\r\n\r\nWe are leaving this work item open so that the Prism team analyzes adding this functionality for future releases.\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2012-04-19T10:47:37.833-07:00",
+      "Id": 156057
+    },
+    {
+      "Message": "This would be a fantastic feature to add and looks to be a relatively small addition to Region.cs.\r\n\r\nI have the need to customize the sort order of multiple instances of the same view injected into a TabControl at runtime.  As a workaround I am setting the UserControl.Tag to hold a comparison value and using the IRegion.SortComparison property to compare tags.\r\n\r\nex:\r\n\r\nregion.SortComparison =    new Comparison((a, b) => ((int)((UserControl)a).Tag).CompareTo(((UserControl)b).Tag));\r\n\r\nI keep track of the total views added to the region and ensure that newly added views have a smaller value (forcing newly added views to be displayed first):\r\n\r\n_totalViewCount++view.Tag = _totalViewCount * -1;region.Add(view);",
+      "PostedDate": "2013-01-03T16:09:17.017-08:00",
+      "Id": 156058
+    }
+  ]
+}

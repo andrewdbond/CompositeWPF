@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "590825",
+    "ThreadId": "252293",
+    "Html": "\r\n<div>\r\n<p>I have two interfaces both implemented by class Apple</p>\r\n<pre><code><span>interface</span><span> a </span><span>{</span><span> </span><span>}</span><span><br><br></span><span>interface</span><span> b </span><span>{</span><span> </span><span>}</span><span><br><br></span><span>class</span><span> </span><span>Apple</span><span>:</span><span> a</span><span>,</span><span>b<br></span><span>{</span><span><br></span><span>}</span><span><br></span></code></pre>\r\n<p>Now if I register Apple against both the interfaces but only one is with ContainerControlledLifeTimeManager then resolving the other interface also returns the same instance. Why is this the way it is?</p>\r\n<pre><code><span>IUnityContainer</span><span> container </span><span>=</span><span> </span><span>new</span><span> </span><span>UnityContainer</span><span>();</span><span><br>container</span><span>.</span><span>RegisterType</span><span>&lt;</span><span>a</span><span>,</span><span> </span><span>Apple</span><span>&gt;(</span><span>new</span><span> </span><span>ContainerControlledLifetimeManager</span><span>());</span><span><br>container</span><span>.</span><span>RegisterType</span><span>&lt;</span><span>b</span><span>,</span><span> </span><span>Apple</span><span>&gt;();</span><span><br></span><span>var</span><span> a </span><span>=</span><span> container</span><span>.</span><span>Resolve</span><span class=\"str\">&lt;a&gt;</span><span>();</span><span><br></span><span>Console</span><span>.</span><span>WriteLine</span><span>(</span><span>container</span><span>.</span><span>Resolve</span><span class=\"str\">&lt;b&gt;</span><span>().</span><span>Equals</span><span>(</span><span>a</span><span>).</span><span>ToString</span><span>());<br><br>If I explicitly specify TransientLifeTimeManager for the b interface then I get two different instances. <br>Isn't TransientLifetimeManager the default when you don' specify it?<br>Whats the reason of this behavior?<br></span></code></pre>\r\n</div>\r\n",
+    "PostedDate": "2011-04-02T21:25:26.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "591405",
+    "ThreadId": "252293",
+    "Html": "<p>Hi,</p>\r\n<p>We've created a sample solution with the scenario described, and we've been able to reproduce the behavior you've mentioned. We've also found that if you use the <strong>RegisterInstance&lt;T&gt;</strong> method instead of registering the type with a <strong>ContainerControlledLifetimeManager</strong> for the <strong>a</strong> interface, the problem you're mentioning isn't experienced.</p>\r\n<p>For more information on the internal workings of the Unity Container, you could post in the <a href=\"http://unity.codeplex.com/discussions?ProjectName=unity\">Unity Forums</a>.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-04-04T09:41:29.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "591575",
+    "ThreadId": "252293",
+    "Html": "<p>Ok found the reason. Apparently Unity associates the life time manager with the To type (the class) in the RegisterType method and not the From type (the interface).<br />So what ever life time manager is specified the latest against any interface of the same class, that life time manager is associated with the class and used for all the registerations.</p>\r\n<p>Its a bit stupid but thats the way it is.</p>",
+    "PostedDate": "2011-04-04T13:20:21.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "591589",
+    "ThreadId": "252293",
+    "Html": "<p>I'm glad that you've found the cause of this behavior, and thank you for sharing it with the rest of the community.</p>\r\n<p>Thanks,</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-04-04T13:35:35.483-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

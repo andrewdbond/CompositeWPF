@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "634082",
+    "ThreadId": "263077",
+    "Html": "<p>Hi,</p>\n<p>I have been trying to understand the Module aspect of prism. I was having couple of doubts regarding the same.&nbsp;</p>\n<p>Firstly, I believe that AssemblyCatalog can be used to discover Modules (which implement IModule) and other parts of that module (namely Views and ViewModels) in the concerned Assembly. If using MEF Container, attributes [Export] and [ModuleExport] on classes  should be enough to help the container discover the Modules (and Views and ViewModels) and load it, if marked as \"WhenAvailable\" on the Module.cs. If this is true, then when the bootstrapper runs, I should see the Module being loaded and initialized. This  is not happening in my solution and I have already created a discussion <a href=\"http://compositewpf.codeplex.com/discussions/263008\" target=\"_blank\"> here</a>.&nbsp;</p>\n<p>Secondly, what type of <strong>ModuleCatalog</strong> should be used for adding <strong>AssemblyCatalogs</strong>. In the \"<strong>Modularity QuickStart Example, Mef</strong>\", I see \"<strong>ConfigurationModuleCatalog</strong>\" being created, but the comment clearly says that it is required for configuring Modules through Configuration  files. Also, we add <strong>AssemblyCatalogs </strong>&nbsp;to <strong>AggregateCatalog</strong>&nbsp;, how does the <strong>ConfigurationModuleCatalog</strong> figure up.</p>\n<p>There is another doubt regarding resolving dependencies. I am not able to use Container.GetExport&lt;Shell&gt;() in the <strong>CreateShell() </strong>method, whereas the ServiceLocator is able to do that. There are other things that work with <strong>ServiceLocator</strong>&nbsp;but not with <strong>Container.GetExport&lt;&gt;(). </strong> So should the ServiceLocator be extensively used in place of Container.GetExport&lt;&gt;() (or [Import] for injection).</p>\n<p>Lastly this is loosely related (not talking about the Framework here) to this <a href=\"http://compositewpf.codeplex.com/discussions/263008\" target=\"_blank\"> post</a>.&nbsp;</p>\n<p>thanks,</p>\n<p>Nirvan.</p>",
+    "PostedDate": "2011-06-28T04:59:41.89-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "634159",
+    "ThreadId": "263077",
+    "Html": "<p>Hi Nirvan,</p>\r\n<p>Regarding you first concern, we have provided an answer in the <a href=\"http://compositewpf.codeplex.com/discussions/263008\">thread </a>you've created.</p>\r\n<p>As for your second concern, you don't need to create an instance of a specific module catalog to add <strong>AssemblyCatalogs</strong>; just adding them to the <strong>AggregateCatalog </strong>is enough for Prism to load your modules into the corresponding module catalog.</p>\r\n<p>Finally, about your last question, you could try using the <strong>GetExportedValue </strong>method instead of the <strong>GetExport </strong>method.</p>\r\n<p>You might find the <a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28PandP.40%29.aspx\">Modularity Chapter</a> in the Prism MSDN documentation, as well as the <a href=\"http://msdn.microsoft.com/en-us/library/ff921068%28PandP.40%29.aspx\">Modularity QuickStarts</a> useful to dig deeper into this.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-06-28T07:44:03.587-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "634188",
+    "ThreadId": "263077",
+    "Html": "<p>Guido,</p>\r\n<p>AssemblyCatalog works the way I was understanding as is clear from your response.</p>\r\n<p>I used GetExportedValue&lt;Shell&gt; to obtain a reference to the Shell and it works.</p>\r\n<p>So I will close this discussion. Thanks for the reply.</p>\r\n<p>regards,</p>\r\n<p>Nirvan</p>",
+    "PostedDate": "2011-06-28T08:33:30.123-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

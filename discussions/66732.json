@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "226823",
+    "ThreadId": "66732",
+    "Html": "<p>Could someone confirm that I'm going about this the right way, please.</p>\r\n<p>I have a Shell with several regions including a MainRegion.&nbsp; One View that is added to the MainRegion has a a ViewModel as its DataContext and hosts five more regions.&nbsp; Three of these regions are used for TreeViewViews, ListViewViews and DetailsViews.&nbsp; Each of these has its own ViewModel as its DataContext.&nbsp; All of the Views come from the same Module.</p>\r\n<p>I'd like classic behaviour: I select a folder&nbsp;in the TreeViewView and get its contents in the ListViewView.&nbsp; I select an item in the ListViewView and get its properties in the DetailsView.</p>\r\n<p>I've created an attached behaviour (using <a href=\"http://blogs.southworks.net/dschenkelman/2009/08/13/c-code-snippet-to-create-commands-with-attached-behaviors-using-prism/\">Damian Schenkelman&rsquo;s Snippet</a>) for the TreeViewItems so that I can run a DelegateCommand when the TVI is selected.&nbsp; The plan is to use this to send an event via the EventAggregator and allow the ListViewViewModel to pick it up.&nbsp; (And then do the same again to link ListViewItems to the DetailsView.&nbsp; Is this the right way to do things?</p>",
+    "PostedDate": "2009-08-23T08:44:47.663-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "227618",
+    "ThreadId": "66732",
+    "Html": "<p>Hi ssg31415926,&nbsp;</p>\r\n<p>Though I don't know the whole application, the scenario you describe seems to be the ok.<br>Using the event aggregator to communicate between different views is fine, but &nbsp;if all view are in the same module and the events that you are going to publish are not going to be used by other modules, you might also use .net events (maybe using a controller at module level to coordinate interaction).<span style=\"font-size:10pt\" lang=EN-US>&nbsp;</span></p>\r\n<p>Hope it helps!&nbsp;</p>\r\n<p>Matias Bonaventura<br><a href=\"http://blogs.southworks.net/matiasb\">http://blogs.southworks.net/matiasb</a></p>",
+    "PostedDate": "2009-08-25T12:54:56.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "228221",
+    "ThreadId": "66732",
+    "Html": "<p>I have a similar set up *kind of*.&nbsp; To simplify the point lets just say I have a shell with two regions. Ther first hosts what I call the 'navigator' essentailly my tree veiw for navigation. The navigator lives in its own module. I also have a main region that displays view related to the navigator selection. When a tree view item is clicked I raise an event using the event aggregator. I have a ViewManager class that subscribes to the event and acts as a controllor of sorts. It inspects the event payload, and decides what screen should be injected into the main region. So conceptually I am using a similar pattern to what you are describing here. I can tell you that it works well.</p>\r\n<p>However if you are doing this all in one module there is no real reason to not used a simple command the event aggregator could be overkill as you are not doing module to module communication.</p>\r\n<p>Good luck,</p>\r\n<p>Brette</p>",
+    "PostedDate": "2009-08-26T20:26:52.403-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "228665",
+    "ThreadId": "66732",
+    "Html": "<p>Thanks for your replies.&nbsp; I think I was suffering a bit from region-itis.&nbsp; It was the classic case that I had a hammer (Regions) and so everything I looked at looked like a&nbsp;nail:&nbsp;I had more regions than I needed, so I'm taking another look at it.&nbsp; I've also had a play with EventAggregator and it does work quite well.</p>",
+    "PostedDate": "2009-08-28T03:56:41.617-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "242894",
+    "ThreadId": "66732",
+    "Html": "<p>Hi Brette</p>\r\n<p>The setup you have explained is exactly what i'm looking to do in my app, can you point me to an example or blog that would explain this in more detail as i'm really new to this.</p>\r\n<p>Thanks</p>\r\n<p>Paul</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-07T03:33:23.387-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

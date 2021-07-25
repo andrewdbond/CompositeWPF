@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "645665",
+    "ThreadId": "266081",
+    "Html": "\r\n<p>Hi guys. Pardon this silly question; I'm a newbie in prism. I'm wondering, what's the easiest way to set the Windows propery thru the Behaviors?</p>\r\n",
+    "PostedDate": "2011-07-21T09:57:37.363-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "646102",
+    "ThreadId": "266081",
+    "Html": "<p>Hi,</p>\r\n<p>If you're referring to the properties of the Shell (which is the main window in your application), you could have a <strong>ShellViewModel</strong>, which would be set as the <strong>DataContext</strong> of your Shell view. Then, you could bind properties in your view (such as <strong>MinWidth</strong>, <strong>MinHeight</strong>, etc) to properties in your view model, and modify them from the view model.</p>\r\n<p>For example, you could have a service that determines such properties based on some custom logic, and make your view model consume that service and update its properties based on the interaction with it.</p>\r\n<p>You can read more about the MVVM pattern in this chapter from the Prism MSDN documentation:</p>\r\n<p><a href=\"http://msdn.microsoft.com/en-us/library/gg405484%28PandP.40%29.aspx\" target=\"_top\">Chapter 5: Implementing the MVVM Pattern</a></p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-22T06:15:05.307-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "647383",
+    "ThreadId": "266081",
+    "Html": "<p>Guido, I'm referring to dialogs. I notice that Prism is implementing dialogs/pop-ups/messageboxes thru the Behavior construct. I'm hoping I could intercept this host Window and set the properties accodingly. Thanks for the resource and for the reply.</p>",
+    "PostedDate": "2011-07-25T14:55:11.54-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "647696",
+    "ThreadId": "266081",
+    "Html": "<p>Hi,</p>\r\n<p>In that case, you can modify the <strong>Widht </strong>and <strong>Height </strong>properties of the <strong>Window </strong>that is generated inside the <strong>WindowWrapper </strong>class. For example, in the StockTrader Reference Implementation, the <strong>WindowWrapper</strong> class is located in the <strong>WindowWrapper.Desktop.cs</strong> file inside the <strong>Behaviors </strong>folder of the <strong>StockTraderRI.Infrastructure</strong> project.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-26T05:56:46.177-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "647800",
+    "ThreadId": "266081",
+    "Html": "<p>Exactly what I did and I'm glad you being the more experience dev confirms it. Thanks so much.</p>",
+    "PostedDate": "2011-07-26T08:44:56.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1022551",
+    "ThreadId": "266081",
+    "Html": "Ok, but how about different sizes of Windows?\r<br />\nHow to set different sizes?<br />\n",
+    "PostedDate": "2013-03-28T10:35:19.56-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1025007",
+    "ThreadId": "266081",
+    "Html": "Hi,\r<br />\n<br />\nThe <strong>RegionPopupBehaviors</strong> defines a <strong>ContainerWindowStyle</strong> attached property, which you can use to set a <strong>Style</strong> to be used by the popup <strong>Window</strong> control. Therefore, you should be able to set the <strong>Width / Height</strong> properties of the <strong>Window</strong> using a <strong>Style</strong>.\r<br />\n<br />\nAn example of this can be seen in the <strong>Stock Trader RI</strong> (desktop version) in the <strong>Shell</strong> window, where a popup region is defined:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">&lt;</span><span style=\"color:#A31515;\">Window</span> <span style=\"color:Red;\">x:Class</span><span style=\"color:Blue;\">=</span><span style=\"color:Black;\">&quot;</span><span style=\"color:Blue;\">StockTraderRI.Shell</span><span style=\"color:Black;\">&quot;</span>\n    <span style=\"color:Red;\">...</span>\n    <span style=\"color:Red;\">infBehaviors:RegionPopupBehaviors.CreatePopupRegionWithName</span><span style=\"color:Blue;\">=</span><span style=\"color:Black;\">&quot;</span><span style=\"color:Blue;\">{x:Static inf:RegionNames.SecondaryRegion}</span><span style=\"color:Black;\">&quot;</span>\n    <span style=\"color:Red;\">infBehaviors:RegionPopupBehaviors.ContainerWindowStyle</span><span style=\"color:Blue;\">=</span><span style=\"color:Black;\">&quot;</span><span style=\"color:Blue;\">{StaticResource WindowRegionStyle}</span><span style=\"color:Black;\">&quot;</span>\n    <span style=\"color:Red;\">...</span> <span style=\"color:Blue;\">&gt;</span>\r\n</pre></div>I hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-04-03T10:53:08.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1025033",
+    "ThreadId": "266081",
+    "Html": "I still don't understand how to set different windows sizes for differents ViewModels.\r<br />\nI saw the example and it simple defines a static value for Width and Height. There's no dynamic size.\r<br />\n<br />\nPlease, ellaborate more about it.<br />\n",
+    "PostedDate": "2013-04-03T11:47:35.983-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026265",
+    "ThreadId": "266081",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding, a good way to set <strong>dinamyc sizes</strong> for different <strong>ViewModels</strong> could be to create a <strong>Style</strong> with <strong>Width</strong> and <strong>Height</strong> properties binded to the properties defined inside the <strong>ViewModels</strong>. Therefore, properties that are being binded from the <strong>Style</strong> should share the same name across all your <strong>ViewModels</strong> in order for the binds to work properly.\r<br />\nIn this case, you can apply a <strong>Style</strong> to the window through the <strong>RegionPopupBehaviors.ContainerWindowStyle</strong> property which could have a binding to properties in the <strong>ViewModels</strong>. \r<br />\n<br />\nRegards,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-04-05T11:33:19.15-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027585",
+    "ThreadId": "266081",
+    "Html": "Thanks for your help. However, I still couldn't make it work:<br />\n<pre><code>&lt;Window x:Class=&quot;WMB.Full.Shell&quot;\n        xmlns:Names=&quot;clr-namespace:WMB.Infrastructure.Names;assembly=WMB.Infrastructure&quot;\n        xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;\n        xmlns:x=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;\n        xmlns:prism=&quot;http://www.codeplex.com/prism&quot;\n        xmlns:vm=&quot;clr-namespace:WMB.Full&quot;\n        xmlns:popup=&quot;clr-namespace:WMB.Infrastructure.Popup;assembly=WMB.Infrastructure&quot;\n        xmlns:inf=&quot;clr-namespace:WMB.Infrastructure.Names;assembly=WMB.Infrastructure&quot;\n        Title=&quot;WMB&quot; WindowStartupLocation=&quot;CenterScreen&quot;\n        WindowStyle=&quot;None&quot; AllowsTransparency=&quot;True&quot; Background=&quot;Transparent&quot;\n        popup:RegionPopupBehaviors.CreatePopupRegionWithName=&quot;{x:Static inf:RegionNames.PopupRegion}&quot;\n        popup:RegionPopupBehaviors.ContainerWindowStyle=&quot;{DynamicResource WindowRegionStyle}&quot;\n        Style=&quot;{DynamicResource ControlStyle}&quot; BorderThickness=&quot;4&quot;&gt;\n    &lt;Window.Resources&gt;\n        &lt;Style x:Key=&quot;WindowRegionStyle&quot; TargetType=&quot;Window&quot;&gt;\n            &lt;!--&lt;Setter Property=&quot;Background&quot; Value=&quot;Transparent&quot; /&gt;\n            &lt;Setter Property=&quot;Margin&quot; Value=&quot;0&quot; /&gt;\n            &lt;Setter Property=&quot;Padding&quot; Value=&quot;0&quot; /&gt;--&gt;\n            &lt;Setter Property=&quot;Width&quot; Value=&quot;{Binding Width}&quot; /&gt;\n            &lt;Setter Property=&quot;Height&quot; Value=&quot;{Binding Height}&quot; /&gt;\n            &lt;!--&lt;Setter Property=&quot;Title&quot; Value=&quot;{Binding Path=Content.Title, RelativeSource={RelativeSource Self}}&quot; /&gt;--&gt;\n        &lt;/Style&gt;\n    &lt;/Window.Resources&gt;</code></pre>\n\nI've created a base view model that all my view models inherits from:<br />\n<pre><code>public class ViewModelBase : NotificationObject\n    {\n        private bool isBusy;\n        private string busyMessage;\n        private int asyncCalls = 0;\n        private double height = 768;\n        private double width = 1280;\n\n        protected const string DefaultMessage = &quot;Aguarde, carregando...&quot;;\n\n        public double Height\n        {\n            get { return height; }\n            set { height = value; RaisePropertyChanged(() =&gt; this.Height); }\n        }\n\n        public double Width\n        {\n            get { return width; }\n            set { width = value; RaisePropertyChanged(() =&gt; this.Width); }\n        }</code></pre>\n\n",
+    "PostedDate": "2013-04-08T17:37:38.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027980",
+    "ThreadId": "266081",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding of your code snippet, it seems that you are trying to set the <strong>Style</strong> for the views by setting it as a <strong>Window Resource</strong>. Nevertheless, this won't work because the <strong>Width</strong> and <strong>Height</strong> properties are binding to the <strong>Window DataContext</strong>, and not to the one of the <strong>View</strong> inside it. Therefore, in order to follow this approach you need to target the binding against the content of the <strong>Window</strong> using a relative path.\r<br />\n<br />\nOn the other hand, another simpler approach you could try is to set the <strong>Window</strong> to adapt itself to its content's size and then set the <strong>Height</strong> and <strong>Width</strong> of the view only, instead of the <strong>Window</strong>. To do this, you can:<br />\n<h1></h1>\n<ul>\n<li>\nReplace the properties width and height from your <strong>Window</strong> style for this setter property:<br />\n</li>\n</ul>\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">&lt;</span><span style=\"color:#A31515;\">Setter</span> <span style=\"color:Red;\">Property</span><span style=\"color:Blue;\">=</span><span style=\"color:Black;\">&quot;</span><span style=\"color:Blue;\">SizeToContent</span><span style=\"color:Black;\">&quot;</span> <span style=\"color:Red;\">Value</span><span style=\"color:Blue;\">=</span><span style=\"color:Black;\">&quot;</span><span style=\"color:Blue;\">WidthAndHeight</span><span style=\"color:Black;\">&quot;</span> <span style=\"color:Blue;\">/&gt;</span>\r\n</pre></div><ul>\n<li>\nSet the <strong>Height</strong> and <strong>Width</strong> of the view<br />\n</li>\n</ul>\nThis way, the Window should resize automatically to wrap the view.\r<br />\n<br />\nHope this helps,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-04-09T10:10:19.863-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

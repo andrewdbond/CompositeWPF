@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1427921",
+    "ThreadId": "638895",
+    "Html": "Hey all!\r<br />\n<br />\nI am working on a WPF app that has a self hosted WCF service in it. This all works just fine. What I would like to do is trigger some interactivity code that lives in a function on my MainWindow class when I get a specific WCF service call.\r<br />\n<br />\nNow, all the WCF stuff is done. I only mention it because the WCF service is not (I believe) running in the UI thread and so I will need to take into account passing events across the UI thread boundary.\r<br />\n<br />\nMy problem is that all of the relevant code samples I can find fall into 2 categories...<br />\n<ol>\n<li>For previous versions of Prism than 5.0 and not very detailed at that</li>\n<li>\nAbsolutely dependent on a whole mess of other Prism 5 goodness (modules, MVVM and so on) that I am not in a position to graft into my project right now.<br />\n</li>\n</ol>\nWhat I would love, if anyone had it was a pointer to a sample (or some code snippets) that showed the following...<br />\n<ul>\n<li>\nHow to declare and initialize the Microsoft.Practices.Prism.PubSubEvents.EventAggregator object when I am not using an dependency injection tool. I assume I need to initialize it in the App.xaml.cs class on on of the App events... but there are no samples I can find.<br />\n</li>\n<li>\nOnce it is initialized, how to I reference it from MainWindow.cs so that I am getting the correct instance?<br />\n</li>\n<li>\nSimple pub / sub / unsub code would be nice - but if I can get the two points above squared away I can figure that out from the examples.<br />\n</li>\n</ul>\nAnyway, thanks for any help you might offer!\r<br />\n<br />\nKen<br />\n",
+    "PostedDate": "2015-05-28T05:41:14.16-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1428012",
+    "ThreadId": "638895",
+    "Html": "I'm new to this but hope I can help anyway. I have the following example:\r<br />\n<br />\nCreate a PubSubEvent class:  public class UserUpdatedEvent : PubSubEvent&lt;Employee&gt; {    }\r<br />\n<br />\nEmployee is the type which should be published when changes occur:\r<br />\n<br />\nPublish the event where CurrUser (of type Employee) is updated: eventAggregator.GetEvent&lt;UserUpdatedEvent&gt;().Publish(CurrUser);\r<br />\n<br />\nCurrUser is the property of type Employee: Public Employee CurrUser { get { return _currUser; } set { SetProperty(ref _currUser, value); } }\r<br />\n<br />\nSubscribe to the event where you want to update the values: eventAggregator.GetEvent&lt;UserUpdatedEvent&gt;().Subscribe(UserUpdated);\r<br />\n<br />\nUserUpdated is the method which support the updated CurrUser as parameter: private void UserUpdated(UserDbDomains.Employee currUser) {CurrUser = currUser;}\r<br />\n<br />\nWhere appropriate, use the: using Microsoft.Practices.Prism.PubSubEvents;\r<br />\n<br />\nI get the eventAggregator from the parameter of the constructor: public CompanyViewViewModel(EventAggregator eventAggregator) { }\r<br />\n<br />\nMy case is part of a more complex Prism-application, but I believe the EventAggregator will work as a &quot;stand-alone&quot; as well. It would anyway be interesting to know if it does in order to better understand the requirements for using the EventAggregator in other Applications.\r<br />\n<br />\nRgds\r<br />\nHans Kr.<br />\n",
+    "PostedDate": "2015-05-29T06:08:55.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

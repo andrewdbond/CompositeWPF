@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "am trying to deploy a WPF Prism application using ClickOnce Deployment. I have followed the following steps (http://msdn.microsoft.com/en-us/library/gg405497(v=pandp.40).aspx)\n \nPublishing an Initial Version of the Shell Application \nUpdating the Manifests to Include Dynamically Loaded Module Assemblies - I have used Mage to include the dynamically loaded modules. \nand then tried to launch and install the application but it runs in to a generic error.\n \n\"Application cannot be started. Contact the applicaiton vendor\"\n \nDetails from the log:\nException reading manifest from http://f5f3zq1/PMTools/Application%20Files/PMechTools.Shell_1_0_0_4/PMechTools.Shell.exe.manifest: the manifest may not be valid or the file could not be opened.\n+ The element 'dependentAssembly' in namespace 'urn:schemas-microsoft-com:asm.v2' has incomplete content. List of possible elements expected: 'assemblyIdentity' in namespace 'urn:schemas-microsoft-com:asm.v2'.\n \nI do not understand why the content is incomplete and what is incomplete. Could anyone please help me with this?",
+    "LastUpdatedDate": "2013-02-21T18:38:08.503-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-09-20T12:28:49.43-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Running in to Invalid Manifest errors when deploying WPF prism application using ClickOnce",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 8701
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "I am running into the same problem. After adding 5 Module dll's (into the map VOISWpf_1_0_0_11\\DirectoryModules) and signing and saving the manifest, I got the following error:\r\nmanifest: the manifest may not be valid or the file could not be opened.\r\n\t\t+ Parsing and DOM creation of the manifest resulted in error. Following parsing errors were noticed: \r\n\t\t\t-HRESULT: \t0x80070c81\r\n\t\t\t Start line: \t0\r\n\t\t\t Start column: \t0\r\n\t\t\t Host file: \t\r\n\t\t+ Exception from HRESULT: 0x80070C81",
+      "PostedDate": "2011-09-27T02:35:39.107-07:00",
+      "Id": 156507
+    },
+    {
+      "Message": "Hi,\r\nWe tried to reproduce your scenario by following the steps described in WPF Prism Deployment Hands-On Lab: Publishing and Updating with ClickOnce, but we were unable to reproduce the error you're mentioning.\r\nWhen reaching the step to update the manifests to Include dynamically loaded module assemblies, we used the Manifest Manager Utility, as suggested by the lab, which manages deployment and application manifests in a simpler way than Mage (since Mage seems to require many detailed steps to be performed in the correct order, which could be more error prone).\r\nSo, in case it's appropriate for your scenario, you could try using the aforementioned tool to fulfill your requirement.\r\n\r\nRegards,\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2011-09-29T10:09:33.197-07:00",
+      "Id": 156508
+    }
+  ]
+}

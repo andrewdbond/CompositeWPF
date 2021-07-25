@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1096848",
+    "ThreadId": "458518",
+    "Html": "Hi ,\r<br />\n<br />\nCan anyone know about whether any event raised when the view is getting deactivated  ?\r<br />\n<br />\nOtherwise Is there any way to find the notification when the view is getting deactivated ?\r<br />\n<br />\n<br />\n<br />\nThanks and regards,\r<br />\nSivalingam<br />\n",
+    "PostedDate": "2013-09-20T02:49:44.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1096982",
+    "ThreadId": "458518",
+    "Html": "Hi sivalingam,\r<br />\n<br />\nEach region has a collection of <strong>ActiveViews</strong> which raises a <strong><em>collectionChanged</em></strong> event when an active <strong>View</strong> changes (the view is deactivated or removed), or a new <strong>View</strong> becomes <strong><em>Active</em></strong>. You can subscribe to this event as follows: <br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">this</span>.regionManager.Regions[<span style=\"color:#A31515;\">&quot;RegionName&quot;</span>].ActiveViews.CollectionChanged += ActiveViews_OnCollectionChanged;\r\n</pre></div>Therefore, you can implement an <strong>EventHandler</strong> by verifying if the corresponding View is contained in the collection or not. Please note that the collection has the current active views, so you would want that the concerned <strong>View</strong> is not contained on it. For example, you can do as follows:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">void</span> ActiveViews_OnCollectionChanged(<span style=\"color:Blue;\">object</span> sender, NotifyCollectionChangedEventArgs e)\n{\n    <span style=\"color:Blue;\">if</span> ( sender.Contains(Container.Resolve&lt;View&gt;()) )\n    {\n          <span style=\"color:Green;\">// View is active</span>\n     }\n}\r\n</pre></div>It´s important to notice that this implementation would also work when the <strong>View</strong> being evaluated was not <strong><em>Active</em></strong> and the event was raised by any other view.\r<br />\n<br />\nAn alternative to this approach would be to make the specified <strong>View</strong> or <strong>ViewModel</strong> implements the <strong>IActiveAware</strong> interface, and raise the <strong>IsActiveChanged</strong> event from the setter method of the <strong>IsActive</strong> property. \r<br />\n<br />\nI hope this helps,\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"http://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">http://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2013-09-20T08:08:27.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

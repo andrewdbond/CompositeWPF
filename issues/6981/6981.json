@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nI'm closing this work item, as it seems that this is not related to an issue in Prism. In case you need further support about this, you could create a thread in the discussions section (http://compositewpf.codeplex.com/discussions).\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-10-18T07:45:39.67-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "I'm trying to set up a weak event subscription in my XBAP app under partial trust.\n \nI'm doing it through Subscribe, like this \n \nbool keepAlive = false;\nvar bus = GetEventBus<PaneSizeChange>();\nbus.Subscribe(c => this.OnPaneSizeChanged(c.NewSize), keepAlive)\n \nbut I get the following exception in runtime...\nSo, it seems, that currently I'm limited to strong-link subscription only under partial trust...\nAll methods and classes in my example are public.\n \n \n \nSystem.MethodAccessException was unhandled by user code\nMessage=Browser.Modules.LayoutsPane.ViewModels.LayoutsPaneViewModel.<.ctor>b__0(Browser.Modules.Infrastructure.Events.PaneSizeChange)\nSource=mscorlib\nStackTrace:\nat System.Delegate.BindToMethodInfo(Object target, RuntimeMethodHandle method, RuntimeTypeHandle methodType, DelegateBindingFlags flags)\nat System.Delegate.CreateDelegate(Type type, Object firstArgument, MethodInfo method, Boolean throwOnBindFailure)\nat System.Delegate.CreateDelegate(Type type, Object firstArgument, MethodInfo method)\nat Microsoft.Practices.Composite.Events.DelegateReference.TryGetDelegate()\nat Microsoft.Practices.Composite.Events.DelegateReference.get_Target()\nat Microsoft.Practices.Composite.Events.EventSubscription`1..ctor(IDelegateReference actionReference, IDelegateReference filterReference)\nat Microsoft.Practices.Composite.Presentation.Events.CompositePresentationEvent`1.Subscribe(Action`1 action, ThreadOption threadOption, Boolean keepSubscriberReferenceAlive, Predicate`1 filter)\nat Microsoft.Practices.Composite.Presentation.Events.CompositePresentationEvent`1.Subscribe(Action`1 action, ThreadOption threadOption, Boolean keepSubscriberReferenceAlive)\nat Microsoft.Practices.Composite.Presentation.Events.CompositePresentationEvent`1.Subscribe(Action`1 action, Boolean keepSubscriberReferenceAlive)\nat Paladyne.ApplicationManager.Browser.Utilities.Mvvm.SuckLessEventAggregator.Subscribe[T](Action`1 action, Boolean keepSubscriberReferenceAlive)\nat Paladyne.ApplicationManager.Browser.Modules.LayoutsPane.ViewModels.LayoutsPaneViewModel..ctor(ISuckLessEventAggregator eventAggregator, IUnityContainer container, Func`1 layoutSources)\nat BuildUp_Paladyne.ApplicationManager.Browser.Modules.LayoutsPane.ViewModels.LayoutsPaneViewModel(IBuilderContext )\nat Microsoft.Practices.ObjectBuilder2.DynamicMethodBuildPlan.BuildUp(IBuilderContext context)\nat Microsoft.Practices.ObjectBuilder2.BuildPlanStrategy.PreBuildUp(IBuilderContext context)\nat Microsoft.Practices.ObjectBuilder2.StrategyChain.ExecuteBuildUp(IBuilderContext context)\nInnerException: System.Security.SecurityException\nMessage=Request for the permission of type 'System.Security.Permissions.ReflectionPermission, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089' failed.\nSource=mscorlib\nStackTrace:\nat System.Security.CodeAccessSecurityEngine.ThrowSecurityException(Assembly asm, PermissionSet granted, PermissionSet refused, RuntimeMethodHandle rmh, SecurityAction action, Object demand, IPermission permThatFailed)\nat System.Security.CodeAccessSecurityEngine.ThrowSecurityException(Object assemblyOrString, PermissionSet granted, PermissionSet refused, RuntimeMethodHandle rmh, SecurityAction action, Object demand, IPermission permThatFailed)\nat System.Security.CodeAccessSecurityEngine.CheckSetHelper(PermissionSet grants, PermissionSet refused, PermissionSet demands, RuntimeMethodHandle rmh, Object assemblyOrString, SecurityAction action, Boolean throwException)\nat System.Security.PermissionSetTriple.CheckSetDemand(PermissionSet demandSet, PermissionSet& alteredDemandset, RuntimeMethodHandle rmh)\nat System.Security.PermissionListSet.CheckSetDemand(PermissionSet pset, RuntimeMethodHandle rmh)\nat System.Security.PermissionListSet.DemandFlagsOrGrantSet(Int32 flags, PermissionSet grantSet)\nat System.Threading.CompressedStack.DemandFlagsOrGrantSet(Int32 flags, PermissionSet grantSet)\nat System.Security.CodeAccessSecurityEngine.ReflectionTargetDemandHelper(Int32 permission, PermissionSet targetGrant, CompressedStack securityContext)\nat System.Security.CodeAccessSecurityEngine.ReflectionTargetDemandHelper(Int32 permission, PermissionSet targetGrant)",
+    "LastUpdatedDate": "2013-05-16T05:28:51.623-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-07-13T01:48:12.397-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Can't use weak subscriptions under partial trust XBAP",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 6981
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nYou might find the following blog post useful to fulfill your requirement, as it deals with a similar scenario:\r\n\r\nhttp://squishtronics.com/2010/08/17/weak-events-in-partial-trust/\r\n\r\nThank you for your feedback.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-03-03T09:51:07.193-08:00",
+      "Id": 156258
+    }
+  ]
+}

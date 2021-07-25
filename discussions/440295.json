@@ -1,0 +1,154 @@
+[
+  {
+    "Id": "1030452",
+    "ThreadId": "440295",
+    "Html": "Hello,\r<br />\n<br />\nHow best way to share Modules ViewModels property for property values save setting to xml format.\r<br />\n<br />\nThanks so much.<br />\n",
+    "PostedDate": "2013-04-15T01:34:43.547-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1030708",
+    "ThreadId": "440295",
+    "Html": "Hi,\r<br />\n<br />\nIt would be helpful is you could explain in more detail what you are trying to achieve so we can provide guidance to you.\r<br />\n<br />\nRegards,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a> <br />\n",
+    "PostedDate": "2013-04-15T09:27:23.563-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1030929",
+    "ThreadId": "440295",
+    "Html": "Hello, Thanks for reply,<br />\n<br />\nFor example, we have two modules and each module a viewmodel we now how to share viewmodels if clicked save button all property save to xml format.<br />\n<br />\nModules1<br />\n<pre><code>namespace Modules.VM1.ViewModels\n{\n    [Export]\n    [PartCreationPolicy(CreationPolicy.Shared)]\n    public class VM1ViewModel : Infrastructure.ViewModels.NavigationAwareDataViewModel\n    {\n        [ImportingConstructor]\n        public VM1ViewModel()\n        {\n\n        }\n\n        private bool _isCheckBox;\n        public bool IsCheckBox\n        {\n            get { return _isCheckBox; }\n            set\n            {\n                _isCheckBox= value;\n                this.RaisePropertyChanged(() =&gt; IsCheckBox);\n            }\n        }\n}</code></pre>\n\nModules2<br />\n<pre><code>namespace Modules.VM2.ViewModels\n{\n    [Export]\n    [PartCreationPolicy(CreationPolicy.Shared)]\n    public class VM2ViewModel : Infrastructure.ViewModels.NavigationAwareDataViewModel\n    {\n        [ImportingConstructor]\n        public VM2ViewModel()\n        {\n\n        }\n\n        private bool _isRadioButton;\n        public bool IsRadioButton\n        {\n            get { return _isRadioButton; }\n            set\n            {\n                _isRadioButton= value;\n                this.RaisePropertyChanged(() =&gt; IsRadioButton);\n            }\n        }\n}</code></pre>\n\n",
+    "PostedDate": "2013-04-15T22:39:13.753-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1031299",
+    "ThreadId": "440295",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding, you are trying to save the data of each <strong>view model</strong> into a <strong>XML</strong> file. If this is your scenario, I think that a possible solution could be to use a <strong>shared service</strong>, which will be in charge of managing the process of saving this data. You should inject the service into each <strong>view model</strong> so that when you want to save the data, the <strong>view model</strong> will pass the information you want to save to the service and this one will then manage the saving. This way, the process of saving data to a <strong>XML</strong> file is decoupled from the <strong>view model</strong>.\r<br />\n<br />\nA possible way to implement your shared service could be to use a <strong>queue</strong> to save the information of each of your <strong>view models</strong> in order so you can access and write the <strong>XML</strong> file one view model at a time. Therefore, you will avoid multiple simultaneous writings on the <strong>XML</strong> file that could cause to save wrong information.\r<br />\n<br />\nPlease let us know if we have misunderstood your scenario, \r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-04-16T10:52:37.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1032411",
+    "ThreadId": "440295",
+    "Html": "Hello, Thanks for reply,\r<br />\n<br />\nI'm implemented interface in class for share interface Module2 not load, Please see my code how to solved this problem.<br />\n<pre><code>namespace Modules.VM1.ViewModels\n{\n    [Export]\n    [PartCreationPolicy(CreationPolicy.Shared)]\n    public class VM1ViewModel : Infrastructure.ViewModels.NavigationAwareDataViewModel, IVM1ViewModel \n    {\n        [ImportingConstructor]\n        public VM1ViewModel()\n        {\n\n        }\n\n        private bool _isCheckBox;\n        public bool IsCheckBox\n        {\n            get { return _isCheckBox; }\n            set\n            {\n                _isCheckBox= value;\n                this.RaisePropertyChanged(() =&gt; IsCheckBox);\n            }\n        }\n\npublic interface IVM1ViewModel \n{\nbool IsCheckBox { get; set; }\n}\n\n}</code></pre>\n\n<pre><code>namespace Modules.VM2.ViewModels\n{\n    [Export]\n    [PartCreationPolicy(CreationPolicy.Shared)]\n    public class VM2ViewModel : Infrastructure.ViewModels.NavigationAwareDataViewModel, IVM2ViewModel \n    {\n        [ImportingConstructor]\n        public VM2ViewModel()\n        {\n\n        }\n\n        [Import]\n        public IVM1ViewModel VM1ViewModel{ get; set; }\n\n        private bool _isRadioButton;\n        public bool IsRadioButton\n        {\n            get { return _isRadioButton; }\n            set\n            {\n                _isRadioButton= value;\n                this.RaisePropertyChanged(() =&gt; IsRadioButton);\n            }\n        }\n\npublic interface IVM2ViewModel \n{\n\n}\n}</code></pre>\n\n",
+    "PostedDate": "2013-04-18T05:43:53.25-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1032505",
+    "ThreadId": "440295",
+    "Html": "Hi,\r<br />\n<br />\nAfter checking your code I believe the problem might be related to how the classes are being exported in <strong>MEF</strong>.\r<br />\nPlease try exporting the <strong>VM1ViewModel</strong> by changing the <strong>Export</strong> attribute like this:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n[Export(<span style=\"color:Blue;\">typeof</span>(IVM1ViewModel))]\n[PartCreationPolicy(CreationPolicy.Shared)]\n<span style=\"color:Blue;\">public</span> <span style=\"color:Blue;\">class</span> VM1ViewModel : Infrastructure.ViewModels.NavigationAwareDataViewModel, IVM1ViewModel\n{\n   ...\n}\r\n</pre></div>Regards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-04-18T08:07:26.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1032827",
+    "ThreadId": "440295",
+    "Html": "Hello Cherubini, Thanks for reply,\r<br />\n<br />\nI've got to try this method but had failed to solve my problem, I've got to upload the source if possible to see where is the problem.\r<br />\nThanks.\r<br />\n<br />\n<a href=\"http://bayfiles.com/file/OMGj/t4lQv5/Navigation.zip\" rel=\"nofollow\">http://bayfiles.com/file/OMGj/t4lQv5/Navigation.zip</a><br />\n",
+    "PostedDate": "2013-04-18T23:33:43.387-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1033188",
+    "ThreadId": "440295",
+    "Html": "Hi,\r<br />\n<br />\nFirst of all, I wasn't able to run your sample as out of the box, as the <strong>AtomicModuleLoader</strong> you were using was throwing exceptions. Instead I switched to the default <strong>ModuleLoader</strong> to test the sample. About this subject, I am not sure what you are trying to do with this custom loader, as it seems to try to download <strong>.xap</strong> files from a web server and your sample is a desktop application.\r<br />\n<br />\nRegarding you problem with composition, I found that the <strong>Page1View</strong> could no be composed correctly by <strong>MEF</strong>. The reason behind this is an import in the view defined as this:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n[Import]\n<span style=\"color:Blue;\">public</span> Page1ViewModel ViewModel { ... }\r\n</pre></div>However, the <strong>Page1ViewModel</strong> type is being exported in the container throw the <strong>IPage1ViewModel</strong> interface. So in order to import it, you need to change the property to use the interface:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n[Import]\n<span style=\"color:Blue;\">public</span> IPage1ViewModel ViewModel { ... }\r\n</pre></div>After changing this the <strong>Page1View</strong> was composed correctly, along with the <strong>Page1ViewModel</strong> and the <strong>Page3ViewModel</strong>.\r<br />\n<br />\nAlso, take into account that as you are importing a type from a different module, it is advised to mark that module as a dependency in the module catalog:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">&lt;</span><span style=\"color:#A31515;\">modularity</span><span style=\"color:Blue;\">:</span><span style=\"color:#A31515;\">ModuleInfo</span> <span style=\"color:Red;\">Ref</span><span style=\"color:Blue;\">=</span><span style=\"color:Black;\">&quot;</span><span style=\"color:Blue;\">file:///Navigation.Modules.Page1.dll</span><span style=\"color:Black;\">&quot;</span> <span style=\"color:Red;\">InitializationMode</span><span style=\"color:Blue;\">=</span><span style=\"color:Black;\">&quot;</span><span style=\"color:Blue;\">OnDemand</span><span style=\"color:Black;\">&quot;</span> <span style=\"color:Red;\">ModuleName</span><span style=\"color:Blue;\">=</span><span style=\"color:Black;\">&quot;</span><span style=\"color:Blue;\">Page1Module&quot; ModuleType=&quot;</span><span style=\"color:Black;\">&quot;</span> <span style=\"color:Blue;\">&gt;</span>\n    <span style=\"color:Blue;\">&lt;</span><span style=\"color:#A31515;\">modularity</span><span style=\"color:Blue;\">:</span><span style=\"color:#A31515;\">ModuleInfo.DependsOn</span><span style=\"color:Blue;\">&gt;</span>\n        <span style=\"color:Blue;\">&lt;</span><span style=\"color:#A31515;\">sys</span><span style=\"color:Blue;\">:</span><span style=\"color:#A31515;\">String</span><span style=\"color:Blue;\">&gt;</span>Page3Module<span style=\"color:Blue;\">&lt;/</span><span style=\"color:#A31515;\">sys</span><span style=\"color:Blue;\">:</span><span style=\"color:#A31515;\">String</span><span style=\"color:Blue;\">&gt;</span>\n    <span style=\"color:Blue;\">&lt;/</span><span style=\"color:#A31515;\">modularity</span><span style=\"color:Blue;\">:</span><span style=\"color:#A31515;\">ModuleInfo.DependsOn</span><span style=\"color:Blue;\">&gt;</span>\n<span style=\"color:Blue;\">&lt;/</span><span style=\"color:#A31515;\">modularity</span><span style=\"color:Blue;\">:</span><span style=\"color:#A31515;\">ModuleInfo</span><span style=\"color:Blue;\">&gt;</span>\r\n</pre></div>I hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-04-19T12:10:25.967-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1033545",
+    "ThreadId": "440295",
+    "Html": "Hello Cherubini, <br />\nThank a lot, My problem was solved.<br />\n",
+    "PostedDate": "2013-04-21T05:02:16.817-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1033825",
+    "ThreadId": "440295",
+    "Html": "+1<br />\n",
+    "PostedDate": "2013-04-22T01:59:27.04-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1035775",
+    "ThreadId": "440295",
+    "Html": "Hello Cherubini, <br />\n<br />\nIf possible upload project switched to the default ModuleLoader?<br />\n<br />\nThanks.<br />\n",
+    "PostedDate": "2013-04-25T11:24:03.45-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1036163",
+    "ThreadId": "440295",
+    "Html": "Hi,\r<br />\n<br />\nYou can find a version of your sample modified to use the default <strong>ModuleManager</strong> to load the modules in the following link:<br />\n<ul>\n<li>\n<a href=\"https://skydrive.live.com/redir?resid=99307B6105BC060D!130&amp;authkey=!ACgbDT5tLxt8pNk\" rel=\"nofollow\">AlexJustin - Navigation with IModuleManager</a><br />\n</li>\n</ul>\nI also added a <strong>ModuleTracker</strong> service to check if a module has been loaded or not.\r<br />\n<br />\nI hope you find it useful,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-04-26T09:25:01.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1036417",
+    "ThreadId": "440295",
+    "Html": "Hello Cherubini, \r<br />\n Thank a lot very useful for me.<br />\n",
+    "PostedDate": "2013-04-27T00:22:05.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1036462",
+    "ThreadId": "440295",
+    "Html": "Hello Cherubini, \r<br />\n<br />\nI'm change CreateModuleCatalog from CreateFromXaml to ConfigurationModuleCatalog this exception error, How to solved this problem, Thanks so much.\r<br />\n<br />\nThe composition produced a single composition error. The root cause is provided below. Review the CompositionException.Errors property for more detailed information.\r<br />\n<br />\n1) Module Page1Module was not found in the catalog.\r<br />\n<br />\nResulting in: An exception occurred while calling the 'OnImportsSatisfied' method on type 'Navigation.Shell'.\r<br />\n<br />\nResulting in: Cannot activate part 'Navigation.Shell'.\r<br />\nElement: Navigation.Shell --&gt;  Navigation.Shell --&gt;  AssemblyCatalog (Assembly=&quot;Navigation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot;)\r<br />\n<br />\nResulting in: Cannot get export 'Navigation.Shell (ContractName=&quot;Navigation.Shell&quot;)' from part 'Navigation.Shell'.\r<br />\nElement: Navigation.Shell (ContractName=&quot;Navigation.Shell&quot;) --&gt;  Navigation.Shell --&gt;  AssemblyCatalog (Assembly=&quot;Navigation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot;)<br />\n<pre><code>        protected override IModuleCatalog CreateModuleCatalog()\n        {\n            return new ConfigurationModuleCatalog();\n        }</code></pre>\n\n<pre><code>&lt;?xml version=&quot;1.0&quot;?&gt;\n&lt;configuration&gt;\n\n    &lt;configSections&gt;\n        &lt;section name=&quot;modules&quot; type=&quot;Microsoft.Practices.Prism.Modularity.ModulesConfigurationSection, Microsoft.Practices.Prism&quot;/&gt;\n    &lt;/configSections&gt;\n\n    &lt;modules&gt;\n        &lt;module assemblyFile=&quot;Navigation.Modules.Page1.dll&quot; moduleType=&quot;Navigation.Modules.Page1.Page1Module, Navigation.Modules.Page1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot; startupLoaded=&quot;true&quot; moduleName=&quot;Page1Module&quot;&gt;\n        &lt;/module&gt;\n        &lt;module assemblyFile=&quot;Navigation.Modules.Page2.dll&quot; moduleType=&quot;Navigation.Modules.Page2.Page2Module, Navigation.Modules.Page2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot; moduleName=&quot;Page2Module&quot;&gt;\n        &lt;/module&gt;\n        &lt;module assemblyFile=&quot;Navigation.Modules.Page3.dll&quot; moduleType=&quot;Navigation.Modules.Page3.Page3Module, Navigation.Modules.Page3, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot; moduleName=&quot;Page3Module&quot;&gt;\n        &lt;/module&gt;\n    &lt;/modules&gt;\n\n    &lt;startup&gt;\n        &lt;supportedRuntime version=&quot;v4.0&quot; sku=&quot;.NETFramework,Version=v4.0&quot;/&gt;\n    &lt;/startup&gt;\n&lt;/configuration&gt;\n</code></pre>\n\n",
+    "PostedDate": "2013-04-27T03:39:53.943-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1037307",
+    "ThreadId": "440295",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding the problem is that the <strong>ConfigurationModuleCatalog</strong> and the module catalog obtained through <strong>CreateFromXaml</strong> are populated at different times: the one obtained from <strong>CreateFromXaml</strong> is populated at the moment of its creation (hence, before creating the <strong>Shell</strong>,) while the <strong>ConfigurationModuleCatalog</strong> is not populated until its <strong>Load</strong> method is invoked (hence, after the <strong>Shell</strong> is created.)\r<br />\n<br />\nWhen you try to load the modules in the <strong>Shell</strong>, the <strong>ConfigurationModuleCatalog</strong> has not loaded the configuration yet and hence, it doesn't contain information about any module, throwing an exception.\r<br />\n<br />\nA quick workaround to change this is to force the <strong>ConfigurationModuleCatalog</strong> to be populated when it's created, by doing something like this:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">protected</span> <span style=\"color:Blue;\">override</span> IModuleCatalog CreateModuleCatalog()\n{\n    <span style=\"color:Blue;\">var</span> moduleCatalog = <span style=\"color:Blue;\">new</span> ConfigurationModuleCatalog();\n    moduleCatalog.Load();\n    <span style=\"color:Blue;\">return</span> moduleCatalog;\n}\r\n</pre></div>Regards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-04-29T11:59:02.533-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1037317",
+    "ThreadId": "440295",
+    "Html": "Thanks a lot, solved my problem.<br />\n",
+    "PostedDate": "2013-04-29T12:21:14.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1041304",
+    "ThreadId": "440295",
+    "Html": "Hello Cherubini, <br />\n<br />\nI have a issue with MEF in PRISM, After Import property in Page1ViewModel View module not load, please see project.<br />\n<br />\nThanks so much.<br />\n<br />\n<a href=\"http://www.solidfiles.com/d/6b6ed98266\" rel=\"nofollow\">http://www.solidfiles.com/d/6b6ed98266</a><br />\n",
+    "PostedDate": "2013-05-09T04:02:07.283-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1041493",
+    "ThreadId": "440295",
+    "Html": "Hi again,\r<br />\n<br />\nThe problem was that the <strong>RepositoryBase</strong> class was not being registered in <strong>MEF</strong>. Please remember that to export a type in <strong>MEF</strong> you need to:<br />\n<ul>\n<li>Add the <strong>Export</strong> attribute to the type you want to export,</li>\n<li>\nAnd register the assembly containing the type so that <strong>MEF</strong> inspects it for any classes that need to be exported.<br />\n</li>\n</ul>\nThe problem was in the second point. As the <strong>Navigation.Repository</strong> assembly was not added as a <strong>AssemblyCatalog</strong> or initialized as a module the <strong>RepositoryBase</strong> class was not being exported. You can solve this by adding a reference to the <strong>Navigation.Repository</strong> project in the <strong>Navigation</strong> main project and including the following line in the <strong>ConfigureAggregateCatalog</strong> method of the bootstrapper:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">this</span>.AggregateCatalog.Catalogs.Add(<span style=\"color:Blue;\">new</span> AssemblyCatalog(<span style=\"color:Blue;\">typeof</span>(Repository.RepositoryBase).Assembly));\r\n</pre></div>As a side note, this registration is not required when the project is loaded as a module by <strong>Prism</strong>, as it automatically registers the assembly to be inspected by <strong>MEF</strong>.\r<br />\n<br />\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-05-09T11:07:56.99-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1041721",
+    "ThreadId": "440295",
+    "Html": "Thanks a lot, solved my problem.<br />\n",
+    "PostedDate": "2013-05-09T23:45:58.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

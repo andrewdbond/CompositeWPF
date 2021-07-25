@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1020224",
+    "ThreadId": "437785",
+    "Html": "Hi,\r<br />\nI followed the demo in the follwing link to create Module for splash screen using MEF:\r<br />\n<br />\n<a href=\"https://skydrive.live.com/?cid=74ca25f347d34be2&amp;id=74CA25F347D34BE2%21341&amp;sc=documents\" rel=\"nofollow\">https://skydrive.live.com/?cid=74ca25f347d34be2&id=74CA25F347D34BE2%21341&sc=documents</a>\r<br />\n<br />\ni tried to customize it for MEF instead of Unity but couldn't do it esp. in the MEF Bootstrapper\r<br />\ncould you please show me how to customize the Splash Screen module and the Bootstrapper module for MEF.\r<br />\nThanks in advance.<br />\n",
+    "PostedDate": "2013-03-24T01:11:18.71-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1020798",
+    "ThreadId": "437785",
+    "Html": "Hi,<br />\n<br />\nWe took the sample you provided and made changes to it in order to be able to use <strong>MEF</strong>, some of which include the following:<br />\n<ul>\n<li>Migrated application from <strong>Prism 2.0</strong> to <strong>Prism 4.1</strong></li>\n<li>Changed <strong>Bootstrapper</strong> to aggregate modules using MEF</li>\n<li>Added <strong>ModuleExport</strong>, <strong>Export</strong> and <strong>ImportingConstructor</strong> attributes to the corresponding types</li>\n<li>Removed the manual module initialization from the <strong>Bootstrapper</strong> (the initialization should be done automatically by the <strong>ModuleCatalog</strong>)</li>\n<li>Made modules dependent of the <strong>Splash Module</strong>, to avoid having them being initialized before it</li>\n<li>\nEvents that were published on the <strong>Bootstrapper</strong> were moved to their corresponding Modules<br />\n</li>\n</ul>\nAlso we found the following issues that we changed to follow the best practices:<br />\n<ul>\n<li>Registering types against themselves like this: Container.RegisterType&lt;SplashViewModel, SplashViewModel&gt;();</li>\n<li>\nManual initialization of modules in <strong>Bootstrapper</strong>. Modules should have an Initialize method.<br />\n</li>\n</ul>\nYou can find the sample below:<br />\n<br />\n<a href=\"http://sdrv.ms/11DIEMz\" rel=\"nofollow\">Prism Splash sample (Prism 4.1)</a><br />\n<br />\nHope this helps,<br />\n<br />\nFederico Martinez <br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-03-25T11:32:46.663-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1020849",
+    "ThreadId": "437785",
+    "Html": "Hi Federico,\r<br />\nThanks for your effort but please load the MEF sample you modified into Skydrive because the sample there is the old one (Unity)******<br />\n",
+    "PostedDate": "2013-03-25T12:58:05.803-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1021047",
+    "ThreadId": "437785",
+    "Html": "Hi Federico,\r<br />\nPlease load the MEF sample you modified into Skydrive because the sample there is the old one (Unity)???????????????<br />\n",
+    "PostedDate": "2013-03-25T23:28:04.313-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1021211",
+    "ThreadId": "437785",
+    "Html": "Hi,\r<br />\n<br />\nSorry about that. I have re-uploaded the sample in my SkyDrive account. You can find it with the name of <strong>PrismSplash with MEF(4.1)</strong>:\r<br />\n<br />\n•\t<a href=\"https://skydrive.live.com/redir?resid=5A2B4B74A8FB9815!108&amp;authkey=!AIGB9RJJMt80E_0\" rel=\"nofollow\">PrismSplash with MEF(4.1)</a>\r<br />\n<br />\nI hope you find it useful,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-03-26T06:24:37.993-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

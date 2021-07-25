@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "986227",
+    "ThreadId": "429481",
+    "Html": "\r\n<p>Hi</p>\r\n<p>I'm implementing a module on demand using IModuleManager and Unity. Suppose there are multiple points where functionality from the module is required, am I right to call&nbsp;<code>\r\n</code></p>\r\n<p><code></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>moduleManager.LoadModule(<span style=\"color:#a31515\">&quot;MyModule&quot;</span>)\n</pre>\r\n</div>\r\n</code>&nbsp;at each of these points even if the module might have already loaded at a previous point? It's not going to reload is it?&nbsp;And is this best practice?\r\n<p></p>\r\n<p>&nbsp;</p>\r\n<p>Thankyou.</p>\r\n",
+    "PostedDate": "2013-01-13T17:16:11.477-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "986593",
+    "ThreadId": "429481",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding in <strong>Prism </strong>modules are not intended to be loaded more than once. And when calling the\r\n<strong>LoadModule </strong>method for the second time this won't call the <strong>\r\nInitialize </strong>method again. However, after you have loaded a module, all the components exposed in it will be available to the main application, allowing you to consume them from any point that requires them. Therefore you may have to define some logic\r\n to react accordingly in case your module has already been loaded, and perform the necessary functionality as required on each of the different points that may require this components.</p>\r\n<p>In order to achieve this I believe you could benefit of the <strong>IModuleCatalog\r\n</strong>(to obtain the loading process state of the registered modules) and <strong>\r\nIModuleManager </strong>implementations provided with <strong>Prism</strong>.</p>\r\n<p>For example, a possible approach to detect if a module has been loaded and to react accordingly could be like this:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>(...)\r\n\r\n <span style=\"color:blue\">var</span> module = <span style=\"color:blue\">this</span>.moduleCatalog.Modules.FirstOrDefault(m =&gt; m.ModuleName == <span style=\"color:#a31515\">&quot;MyModule&quot;</span>);\r\n            <span style=\"color:blue\">if</span> (module != <span style=\"color:blue\">null</span>)\r\n            {\r\n                <span style=\"color:blue\">if</span> (module.State != ModuleState.Initialized)\r\n                {\r\n                    moduleManager.LoadModuleCompleted += moduleManager_LoadModuleCompleted;\r\n                    moduleManager.LoadModule(<span style=\"color:#a31515\">&quot;MyModule&quot;</span>);\r\n                }\r\n                <span style=\"color:blue\">else</span>\r\n                {\r\n\r\n                    <span style=\"color:green\">//Initialization logic</span>\r\n\r\n                }\r\n            }\r\n        }\r\n\r\n        <span style=\"color:blue\">void</span> moduleManager_LoadModuleCompleted(<span style=\"color:blue\">object</span> sender, LoadModuleCompletedEventArgs e)\r\n        {\r\n            moduleManager.LoadModuleCompleted -= moduleManager_LoadModuleCompleted;\r\n\r\n            <span style=\"color:blue\">if</span> (e.ModuleInfo.ModuleName == <span style=\"color:#a31515\">&quot;MyModule&quot;</span>)\r\n            {\r\n                <span style=\"color:green\">//Initialization logic</span>\r\n            }\r\n        }\r\n\r\n(...)\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>Also, for more information regarding this topic, I believe you could check the\r\n<a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28v=pandp.40%29.aspx\">Modular Application Development Chapter</a> of the\r\n<strong>Prism </strong>documentation.</p>\r\n<p>I hope you find this helpful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2013-01-14T10:38:43.2-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "986736",
+    "ThreadId": "429481",
+    "Html": "\r\n<p>That is very helpful, I will use that. Thankyou Agustin.</p>\r\n",
+    "PostedDate": "2013-01-14T14:44:53.147-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

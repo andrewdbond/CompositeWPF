@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "223099",
+    "ThreadId": "65507",
+    "Html": "<p>Hello All,</p>\r\n<p>Please consider this snippet&nbsp;from App.config:</p>\r\n<p>&lt;module</p>\r\n<p>&nbsp;&nbsp; assemblyFile=&quot;MyModule.dll&quot;</p>\r\n<p>&nbsp;&nbsp; moduleType=&quot;MyModule.MyModule, <strong>MyModule</strong>&quot;</p>\r\n<p>&nbsp;&nbsp; moduleName=&quot;MyModule&quot;</p>\r\n<p>/&gt;</p>\r\n<p>I'd like to ask...</p>\r\n<p>1. What purpose does the highlighted <strong>MyModule</strong> serve? The relevant qualified type has already been spelled out by MyModule.MyModule (before the comma).</p>\r\n<p>2. Is the value assigned to &quot;moduleName&quot; just an arbitrary developer-assigned string?</p>\r\n<p>3. Is there any way I can access, in code,&nbsp;the value assigned to &quot;moduleName&quot;?</p>\r\n<p>Thanks,</p>\r\n<p>Dave</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-13T13:14:36.057-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "223604",
+    "ThreadId": "65507",
+    "Html": "<p>Hi Dave,</p>\r\n<p>The highlighted MyModule is the name of the assembly where the class that implements <strong>IModule</strong> is. The complete format is:</p>\r\n<ul>\r\n<li><span style=\"font-size:11pt\" lang=EN-US>assemblyFile: The assembly file where the class is.</span></li>\r\n<li><span style=\"font-size:11pt\" lang=EN-US><span style=\"font-size:11pt\" lang=EN-US>moduleType: Full class name of the class that implements IModule. Format: [namespace].[classname], [assemblyname]</span></span></li>\r\n<li><span style=\"font-size:11pt\" lang=EN-US><span style=\"font-size:11pt\" lang=EN-US><span style=\"font-size:11pt\" lang=EN-US>moduleName: The name of the module, unique Id. It is a string. You can later use this for example to <a href=\"http://msdn.microsoft.com/en-us/library/dd458932.aspx\">load modules on demand</a>.</span></span></span></li>\r\n</ul>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><span style=\"font-size:11pt\" lang=EN-US><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></span></p>",
+    "PostedDate": "2009-08-14T10:36:57.927-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "223611",
+    "ThreadId": "65507",
+    "Html": "<p>Damian,</p>\r\n<p>Thank you very much for the reply!</p>\r\n<p>Given that the highlighted <strong>MyModule</strong> is the assembly name, how does&nbsp;it provide any information that&nbsp;assemblyFile=&quot;MyModule.dll&quot; hasn't already provided? Are they redundant?</p>\r\n<p>With regard to &quot;moduleName&quot;, what I'm trying to do is sort of the opposite of loading modules on demand. I want to load multiple instances of&nbsp;the same&nbsp;module at startup by placing&nbsp;multiple &quot;module&quot; elements in App.config, each with a unique &quot;moduleName&quot;. I'd then like each module instance to be able to inspect its &quot;moduleName&quot; so it can use that to go out and get instance-specific configuration information. For example instance 1 of module AcmeABC123Module might talk to an AcmeABC123 device on channel 4 whereas instance 2 of module AcmeABC123 might talk to a different AcmeABC123 device on channel 5. There's more on this in my recent post &quot;Creating Multiple Instances of a Module&quot;.</p>\r\n<p>Thanks!</p>\r\n<p>Dave</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-14T10:52:54.213-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "283760",
+    "ThreadId": "82554",
+    "Html": "<p>Hi</p>\r\n<p>I'm new to Prism and composite Silverlight application development. But I want to upgrade or current web application frow Web Forms to Silverlight. In todays version of the web application we have one WCF Service which serves the Web Form client with everything that it needs. So my first step is to replace the default authentication with the one we have today using our WCF Service.</p>\r\n<p>I have created a new &quot;Silverlight Business Application&quot; in Visual Studio 2010 with Silverlight 4 beta. Where do I reference my WCF Service, in the Silverlight-project or in the Web-application project?</p>\r\n<p>How do I make the authentication to use my WCF service to authenticate the user instead of the in-built AuthenticationService? I cant find where this Service is either, the web.config is rather clean and contains not much that helps me.....</p>\r\n<p>Could someone please help me with some basics here?</p>\r\n<p>&nbsp;</p>\r\n<p>TIA</p>",
+    "PostedDate": "2010-01-30T14:21:23.993-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "284704",
+    "ThreadId": "82554",
+    "Html": "<p id=7f10e7b0-f225-012c-1287-1231390c3961>Hi,</p>\r\n<p id=7f10f4d0-f225-012c-1288-1231390c3961>Prism does not provide any out of the box authentication service, so you would need to implement your own service and register it in the container to use it. The WCF service should be referenced in the project that is going to make use of it, so it should be in any of your module projects or the Shell (all Silverlight projects). You should take <a href=\"http://blogs.southworks.net/matiasb/2009/06/20/how-to-consume-wcf-services-from-composite-application-guidance-for-wpf-and-silverlightprism-v2-modules/\">this</a> into account when configuring your service.</p>\r\n<p id=7f110c60-f225-012c-1289-1231390c3961>A common approach would be registering the authentication service in your application&rsquo;s <strong>Bootstrapper </strong>(ConfigureContainer method) and authenticating the user before the modules are loaded (so you can determine which modules should be loaded).</p>\r\n<p><a href=\"View.aspx?ThreadId=29915\">This thread</a> deals with a scenario that might be useful for you.</p>\r\n<p>Take into account that Prism-v2 was shipped before Visual Studio 2010 and Silverlight 4, so there is no specific guidance for them (<a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=80980\">yet</a>). The common way to create a Prism solution for Silverlight is explained <a href=\"http://msdn.microsoft.com/en-us/library/dd458947.aspx\">here</a>.</p>\r\n<p id=7f114110-f225-012c-128b-1231390c3961>Please let me know if this helps.</p>\r\n<p id=7f1159f0-f225-012c-128c-1231390c3961>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-02-02T05:08:25.93-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "285950",
+    "ThreadId": "82554",
+    "Html": "<p>Hi</p>\r\n<p>Thank you very much! Your links and thoughts was just what I needed. Thanks again.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-02-04T13:34:53.043-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

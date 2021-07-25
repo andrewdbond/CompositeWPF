@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "503881",
+    "ThreadId": "230051",
+    "Html": "<p>This is a Unity-Dependency-Injection question about the HelloWorld.Silverlight Quickstart.&nbsp; The sample's Bootstrapper class has a CreateShell() method that makes the following call:</p>\r\n<p><strong>&nbsp;&nbsp;&nbsp; return Container.Resolve&lt;Shell&gt;();</strong></p>\r\n<p>This is asking the Unity DI-container to somehow construct an instance of the type Shell.&nbsp; Since we never explicitly register the type Shell with Unity, how does it know how to build one?</p>\r\n<p>Apparently it uses reflection against the entire current assembly (or maybe AppDomain?) looking for a type by that name?&nbsp; Is that true?&nbsp; (The Shell type does live in the same main assembly as the Bootstrapper class which is making this Resolve call.)</p>\r\n<p>Putting a breakpoint in the constructor of Shell shows the following call-stack.&nbsp; The &quot;DynamicMethod&quot; part is presumably reflection.&nbsp; True?</p>\r\n<p><em>Microsoft.Practices.ObjectBuilder2.<strong>DynamicMethod</strong>BuildPlan.BuildUp(...)</em><br><em>Microsoft.Practices.ObjectBuilder2.BuildPlanStrategy.PreBuildUp(...)</em><br><em>Microsoft.Practices.ObjectBuilder2.StrategyChain.ExecuteBuildUp(...)</em><br><em>Microsoft.Practices.Unity.UnityContainer.DoBuildUp(...)</em><br><em>Microsoft.Practices.Unity.UnityContainer.DoBuildUp(...)</em><br><em>Microsoft.Practices.Unity.UnityContainer.Resolve(...)</em><br><em>Microsoft.Practices.Unity.UnityContainerExtensions.Resolve&lt;HelloWorld.Shell&gt;(...)</em><br><em>HelloWorld.Bootstrapper.CreateShell()</em></p>\r\n<p>Thanks,<br>SLEverywhere</p>",
+    "PostedDate": "2010-10-07T12:55:33.98-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "503895",
+    "ThreadId": "230051",
+    "Html": "<p>Unity has a great feature where even if they are not registered, you can request an instance of a concrete type and Unity will figure out how to create it and give you an instance. I believe Unity looks in the AppDomain for concrete types...but it has been a while since I looked at that.&nbsp; At a high level, this is what is happening :</p>\r\n<ul>\r\n<li>You request that Unity creates an instance of a type for you using Resolve.</li>\r\n<li>Unity finds the concrete type (in the AppDomain) and determines which constructor to use to create the type using reflection.</li>\r\n<li>Unity dynamically generates a factory method to create the concrete type, and uses emit to compile and create a runnable instance of the factory method.&nbsp; This may chain calls to other factory methods for other types if there are dependencies that need to be injected.</li>\r\n<li>Unity then calls the emitted factory method, returning the instance and caching the factory method for later use.</li>\r\n<li>Later calls to Resolve the same type use the cached and emitted factory method, with no further reflecion &quot;hit&quot;</li>\r\n</ul>\r\n<p>For types that are registered, the path is similar, but there are a few differences before the factory method is emitted. For more detailed information on how this works, I would recommend going to the Unity discussions (<a href=\"http://unity.codeplex.com/discussions\">http://unity.codeplex.com/discussions</a>). Or just trust that it does work. :-)</p>\r\n<p>For simple cases, in the CreateShell method, you can use &quot;new&quot; rather than resolving the instance.&nbsp; However, if you want to use DI on the shell and have either properties or constructor arguments automagically inserted for you, you should use Resolve. We used Resolve in the samples as a starting point that will not require changes later for&nbsp;people need DI on their shell types.</p>\r\n<p>Does that help clear up the confusion?</p>",
+    "PostedDate": "2010-10-07T13:30:46.107-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "503917",
+    "ThreadId": "230051",
+    "Html": "<p><em>&gt;Does that help clear up the confusion?</em></p>\r\n<p>Yes Michael, thanks for the detailed explanation.</p>\r\n<p>I am just learning Prism in detail and for me Dependency-Injection is the most unfamiliar and &quot;magical&quot; part.&nbsp; Looking behind the &quot;magic curtain&quot; a little helps inspire more confidence.</p>\r\n<p>Thanks,<br>SLEverywhere</p>",
+    "PostedDate": "2010-10-07T14:07:17.727-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

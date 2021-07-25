@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1228400",
+    "ThreadId": "540644",
+    "Html": "In WPF and Silverlight, if you provide a URI that includes a satellite assembly, the navigation subsystem will load that module and then navigate to it.  For example:<br />\n<pre><code>Navigate(&quot;pack://application:,,,/MyAssembly;/MyFrame?path=\\Root&quot;);\n</code></pre>\n\nWill find MyAssembly, load it, then find the type &quot;MyFrame&quot; in that assembly, create an instance of the type and load the instance as the content.<br />\n<br />\nI've found no such analog in Prism 4.1.  Navigation appears to work only with pre-loaded types.  In addition, if you try to supply the assembly name, then Prism can't seem to resolve the type reference without jumping through hoops when registering the view.  I've had to roll my own dynamic module loader (which was fairly easy to do with the Prism plumbing), but I'm left wondering: why isn't this baked into Prism?  Am I missing something fundamental?<br />\n",
+    "PostedDate": "2014-03-30T17:06:00.257-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1228698",
+    "ThreadId": "540644",
+    "Html": "Hello DRAirey1,\r<br />\n<br />\nBased on my understanding, Prism's <em>RequestNavigate()</em> method would not register or load type names. It actually works with <em>View</em> key names which would be registered before in the container.\r<br />\nTherefore, adding the capabillity you described it would be causing for this method to handle a new different behavior, without considering the <em>Single Responsibility Principle</em> and possibly generating confusion on its complete job.\r<br />\n<br />\nHowever, you could add this suggestion into the <em>Issues</em> section so the <strong><em>P&amp;P Team</em></strong> would consider this feature for implementing it on future releases.\r<br />\n<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky.\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-03-31T11:18:14.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1231053",
+    "ThreadId": "540644",
+    "Html": "Gabriel,\r<br />\n<br />\nA URI is a &quot;UNIVERSAL&quot; resource identifier, meaning it contains all the information needed to locate a resource in your application.  In the .NET world, that includes the assembly in which a type resides.  If I have loosely coupled modules, then I need to know which module contains a given type before I can navigate to it.\r<br />\n<br />\nWhat astounds me is that this is baked into WPF and Silverlight navigation.  Why would you make your framework less functional than the one it's supposed to be replacing?\r<br />\n<br />\nDon<br />\n",
+    "PostedDate": "2014-04-06T17:19:55.323-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1231465",
+    "ThreadId": "540644",
+    "Html": "Hi Don, \r<br />\n<br />\nPrism may differ on how some features are achieved, as it have a custom particular workflow.\r<br />\n<strong><em>View-Based Navigation</em></strong> is the type of Navigation on which you go from one <strong><em>View</em></strong> to another. But this <strong><em>Navigation</em></strong> feature would be performed limited into the list of registered Views inside a specific <strong><em>Region</em></strong>. This way you could Navigate independently on each defined <strong><em>Region</em></strong>.\r<br />\n<br />\nThe following <strong>MSDN Prism</strong> chapters may answer your question about <strong>Prism</strong> design architecture, specially the last two regarding <strong><em>Navigation</em></strong>:<br />\n<h1></h1>\n<ul>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921140(v=pandp.40).aspx\" rel=\"nofollow\">3: Managing Dependencies Between Components</a></li>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405479(v=pandp.40).aspx\" rel=\"nofollow\">4: Modular Application Development</a></li>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098(v=pandp.40).aspx\" rel=\"nofollow\">7: Composing the User Interface</a></li>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40).aspx\" rel=\"nofollow\">8: Navigation</a><br />\n</li>\n</ul>\nRegards,\r<br />\nGabriel Ostrowsky.\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-04-07T11:10:00.553-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

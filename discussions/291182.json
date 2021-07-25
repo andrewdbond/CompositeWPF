@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "737844",
+    "ThreadId": "291182",
+    "Html": "\r\n<p>Hi</p>\r\n<p>I am trying to create some behaviour similar to VS2010 solution window, Immediate, Output windows etc</p>\r\n<p>where when you click on the menu or toolbar button, the window is made visible if it's not already visible !</p>\r\n<p>&nbsp;</p>\r\n<p>Is there code already in prism to check if a certain view is visible ?</p>\r\n",
+    "PostedDate": "2012-02-03T07:26:58.897-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "738150",
+    "ThreadId": "291182",
+    "Html": "<p>From your explanation that's not exactly a prism thing but more a XAML thing. UI Elements have a Visibility property you can check</p>\r\n<p>My suggestion is to use MVVM design, have your ViewModel contain a property called MenuXYZ_Visiblity and bind the canvas, stackpanel, grid section's visibility to that property.<br />Then using either commands or Event aggregator, if another viewmodel is calling it, have the Visibility be set from \"Collapsed\" to \"Visible\".</p>\r\n<p>If what you want is things like a taskbar menu type of view to pop up what you want is a dock panel.</p>",
+    "PostedDate": "2012-02-03T10:47:02.29-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "738232",
+    "ThreadId": "291182",
+    "Html": "<p>That would work but require a change to all viewmodel and require tracking and maintaining state which is only referenced if/when the view_xyz cmd is exec</p>\r\n<p>I was hoping there is a way to query the list of views and find out if the matching view is currently visible</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-02-03T11:39:57.29-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "745866",
+    "ThreadId": "291182",
+    "Html": "<p>Well look more into the Event Aggregator, what it allows you todo is have say, every viewmodel Subscribe() to an Event, and when that Event is Published() a message will be sent to every subscribed viewmodel.<br /><br />So I'm going to assume on your button your using a command in BtnViewModel<br /><br />BtnViewModel contains a command that publishs the event BtnClicked<br />ShellViewModel &amp;&nbsp;Module1ViewModel both are subscribed to the BtnClicked<br /><br />When that command does its publish(), both viewmodels get a notification of it happened.</p>\r\n<p>&nbsp;</p>\r\n<p>SO for your case, have your menu button fire the event HelpMenuOpened(), and then have your HelpMenuViewModel catch that event and set the HelpView's Visilbity property to true.</p>",
+    "PostedDate": "2012-02-07T13:57:48.097-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "757211",
+    "ThreadId": "291182",
+    "Html": "<p>For this conversation we have to define a few assumptions: 1) You are using some MVVM variation so that the View itself is cleanly separated from the ViewModel implementation. 2) The work your user is doing in within a main View (that has its own ViewModel) that contains ContentControls as placeholders for the dynamic Views&nbsp;that your are describing. 3) The way you animate, show, hide and so forth are beyond the scope of this post.</p>\r\n<p>Take your Output Window for Example:</p>\r\n<p>The ViewModel that is providing the DataContext for the main View that your user is doing their work from has a public property defined as follows:</p>\r\n<p>public UIElement OutputPlaceHolder {get; private set;}&nbsp;</p>\r\n<p>The main View as we describe above that is holding the ContentControl that is to be your OutputView is defined in xaml as follows:</p>\r\n<p>&lt;ContentControl Content=\"{Binding OutputPlaceHolder}\" /&gt;</p>\r\n<p>When the user raises an ICommand from your main View where the user is doing their work, the ViewModel as referenced above contain code like this to set the UIElement to your View, since it is bound to the ContentControl your View will be shown instantly.</p>\r\n<p><strong>* Note regarding the following code: UC = IUnityContainer *</strong></p>\r\n<p>cmdShowOutPutView = new DelegateCommand(()=&gt;{</p>\r\n<p><span style=\"white-space: pre;\"> </span>OutputPlaceHolder = UC.Resolve&lt;OutputView&gt;(); <strong>** Setting the UIElement property to an instance of your View object **</strong></p>\r\n<p>});</p>\r\n<p>The OutputView has its DataContext set to {Binding} which rolls up to the main ViewModel that is providing the DataContext from your main View as described above. One technique is to record your Output messages on the main ViewModel in a data structure that you will need to define to represent your data, but the point is that it persists on the ViewModel that belongs to your main View where your user is doing work. The Output window View can then be added, removed or whatever.... It does not matter, because it just shows bound data from the main ViewModel of its parent View.&nbsp;</p>\r\n<p><strong>Note</strong>: There are other more sophisticated techniques that we could discuss, but this example illustrates the concepts required to take things further. So based on the complexity of these dynamically added/removed Views this is what I would suggest. As a next step/future effort look into registering other objects within unity in combination with Dependency Injection as this allows you to cleanly arrange just about anything.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-02-11T09:16:51.437-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "757276",
+    "ThreadId": "291182",
+    "Html": "<p>Quick follow up here... You could consider a more global approach where you define your View that is to be your OutputView, you then define its ViewModel that contains the appropriate data structures to represent your data. You then wire the Constructor of your View.cs code behind as follows (Dependency Injection):</p>\r\n<p>public OutputView &nbsp;(OutputViewModel VM){</p>\r\n<p><span style=\"white-space: pre;\"> </span>this.DataContext = VM;</p>\r\n<p>}</p>\r\n<p>Now your are setup for Unity to automatically provide your ViewModel when your View is constructed via Unity.Resolve&lt;...&gt;.</p>\r\n<p>Next, register your View as a singleton with Unity as follows (again, assume UC = IUnityContainer):</p>\r\n<p>UC.RegisterType&lt;OutputView&gt;(new ContainerControllerLifetime);</p>\r\n<p>UC.Resolve&lt;OutputView&gt;();</p>\r\n<p>Now Unity will persist a single View &amp; ViewModel via DI within you container.</p>\r\n<p>For the Output data messaging, define a Prism event that your OutputViewModel subscribes to as this event will contain a payload of whatever data you want to track/show in your OutputView, as it will persist within your OutputViewModel in a collection or other appropriate data structure that you define.</p>\r\n<p>Now, at anytime &amp; anywhere in your application you can publish your Prism event with the payload of our output message/data. It does not matter if your View is shown or not b/c it lives within Unity and is listening and recording this information at all times.... Now, at anytime you can set your View to any container as follows:</p>\r\n<p><strong>&nbsp;</strong>UC.Resolve&lt;OutputView&gt;() <strong>*This gives you your View Object to then insert into a Region or ContentControl*</strong></p>\r\n<p><strong>Note:</strong></p>\r\n<p>This View/ViewModel combination are always alive within Unity, subscribing and tracking your output messages. Showing it within any container, be it Regions or be it direct Binding as described in the above/previous post... does not matter, as that is completely your option... Now, this is a singleton approach, having it persist within Unity may or may not meet your needs. Of course you can scope the lifetime of this object using this technique, but this leads us into an endless combination of possible solutions due to the flexibility and versatility of Unity &amp; Prism... Have fun!</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-02-11T09:59:02.527-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

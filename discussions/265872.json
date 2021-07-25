@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "644940",
+    "ThreadId": "265872",
+    "Html": "\r\n<p>Hi!</p>\r\n<p>I'm running PRISM4 and I've been struggling to get my data binding to work. <br>\r\nI'm following the MVVM pattern and have a view model which initially loads <br>\r\ndata from a RDBMS and wraps it in an ICollectionView. After the initial load<br>\r\nthe view model listens for events which adds data to the ICollectionView.<br>\r\nThis works perfectly but, as I said, I'm struggling when trying to persist<br>\r\nchanges made to the data which is presented in a DataGrid declared below.</p>\r\n<p>The view model publishes the ICollectionView through a read/write property,<br>\r\nResults, which, as you can see has a binding mode of &quot;TwoWay&quot;. I thought <br>\r\nthis would be enough to persist the changes made to the state of the <br>\r\ncheckboxes but no:( I've experimented with a number of ways to accomplish<br>\r\nthis but the state of the checkbox is not propagated back to the view model.<br>\r\nThis is especially obvious when I click one of the column headers and the <br>\r\nview is sorted - the checked rows are unchecked. I'm using WPF4.</p>\r\n<p>What am I doing wrong here?</p>\r\n<p>Many thanks in advance - I'm really stuck here:(<br>\r\n/Peter</p>\r\n<p><br>\r\n&lt;DataGrid Grid.Row=&quot;0&quot; Name=&quot;gridResults&quot; ItemsSource=&quot;{Binding Results,Mode=TwoWay}&quot; AutoGenerateColumns=&quot;False&quot;&gt;<br>\r\n&nbsp;&lt;DataGrid.Columns&gt;<br>\r\n&nbsp;&nbsp;&lt;DataGridTemplateColumn Header=&quot;Plot&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&lt;DataGridTemplateColumn.CellTemplate&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&lt;DataTemplate&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;CheckBox IsChecked=&quot;{Binding Path=Plot}&quot;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HorizontalAlignment=&quot;Center&quot; <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Command=&quot;{Binding Path=DataContext.PlotClicked,Mode=OneWay, RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type DataGrid}}}&quot;\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CommandParameter=&quot;{Binding SelectedItem, RelativeSource={RelativeSource FindAncestor,AncestorType={x:Type DataGrid}}}&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&lt;/DataTemplate&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&lt;/DataGridTemplateColumn.CellTemplate&gt;<br>\r\n&nbsp;&nbsp;&lt;/DataGridTemplateColumn&gt;<br>\r\n&nbsp;&nbsp;...</p>\r\n",
+    "PostedDate": "2011-07-20T06:11:45.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "644946",
+    "ThreadId": "265872",
+    "Html": "<p>Hi,</p>\n<p>Based on my understanding of your scenario, your problem might be happening due to the fact that you're setting your Binding for the <strong>IsChecked </strong>property in your <strong>CheckBox </strong>as a <strong> OneWay </strong>binding (which is the default Mode that is set if you don't explicitly specify one). You could try setting the mode of that binding to <strong>TwoWay</strong>.</p>\n<p>If that doesn't solve your problem, you could upload a repro sample so that we help you detect what could be causing that undesired behavior, or you might ask for support in the <a href=\"http://social.msdn.microsoft.com/forums/en/wpf/threads/\">WPF forums</a>, where you might find a more precise answer, as this is not strictly related to Prism.</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-20T06:23:36.22-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "644953",
+    "ThreadId": "265872",
+    "Html": "<p>Hi Guido!</p>\r\n<p>Thanks for your suggestion but I've already tried to set ...,Mode=\"TwoWay\" but, no, it didn't solvew the problem:( I'll follow your suggestion and post in the WPF forum as well.</p>\r\n<p>Cheers!<br />/Peter</p>",
+    "PostedDate": "2011-07-20T06:27:04.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

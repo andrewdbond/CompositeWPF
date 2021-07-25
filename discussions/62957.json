@@ -1,0 +1,98 @@
+[
+  {
+    "Id": "213776",
+    "ThreadId": "62957",
+    "Html": "<p>Hi,</p>\r\n<p>I am new to Prism and I have a very basic question.</p>\r\n<p>Is there a way to add Multiple Views to a Region maintaining just one of them visible and, when<br>necessary, swap the contents of the region to another one.</p>\r\n<p>In the first time a view is selected it will created it, the WCF services called, the results <br>will be stored in the ViewModel and bound to the View Controls.</p>\r\n<p>What I want is to create the views as they area displayed for the first time and then be able to<br>swap the views. The created views must preserve their contents and visual aspects even when they <br>are not currently visible.</p>\r\n<p>Thank you in advance</p>",
+    "PostedDate": "2009-07-20T05:34:04.617-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213916",
+    "ThreadId": "62957",
+    "Html": "<p>you could just use a contentcontrol as region and only one of the views will be active at anytime. if you add the views with names then all you have to do is activate&nbsp;one of the view passing the name of the view</p>",
+    "PostedDate": "2009-07-20T11:06:30.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213925",
+    "ThreadId": "62957",
+    "Html": "<p>Hi,</p>\r\n<p>I presume you are talking about registering all the views in the Region, like this:</p>\r\n<p>&nbsp; regionManager.RegisterViewWithRegion(&quot;ClientAreaRegion&quot;, typeof(View1));<br>&nbsp; regionManager.RegisterViewWithRegion(&quot;ClientAreaRegion&quot;, typeof(View2));<br>&nbsp; .<br>&nbsp; .<br>&nbsp; .<br>&nbsp; regionManager.RegisterViewWithRegion(&quot;ClientAreaRegion&quot;, typeof(Viewn));</p>\r\n<p>And then activate a view like this:</p>\r\n<p>&nbsp; region.Activate(view);</p>\r\n<p>There is still a problem.&nbsp;I need to strech the region all over the screen, stretching it <br>horizontally and vertically. The ContentControl Region Adapter does not do this. I had<br>to create a ContentPresenterRegionAdapter. With a ContentPresenter I can make the <br>Region and consequentelly the views displayed stretch in both directions.<br>&nbsp;<br>I beleive that the registration and activation will work with my custom Region Adapter.</p>\r\n<p>I will check it out and as soon as I can I will let you know the result.</p>\r\n<p>Thank you very much</p>",
+    "PostedDate": "2009-07-20T11:22:02.453-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213930",
+    "ThreadId": "62957",
+    "Html": "<p>Hi,</p>\r\n<p>Maybe the association of views to the Region could be:</p>\r\n<p>&nbsp;IRegion mainRegion = regionManager.Regions[&quot;ClientAreaRegion&quot;];</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mainRegion.Add(View1);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mainRegion.Add(View2);<br>&nbsp;...<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mainRegion.Add(Viewn);</p>\r\n<p>and not the using RegisterViewWithRegion.</p>",
+    "PostedDate": "2009-07-20T11:32:39.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213936",
+    "ThreadId": "62957",
+    "Html": "<p>Hi</p>\r\n<p>This scenario is perfectly supported by Prism. You should use a <strong>ContentControl</strong> as a region, which allows you to only have one visible region at a time, and use the <strong>Activate</strong> method of the region. The following blog post provides more information about <span style=\"color:#1f497d\">the </span>different regions available out-of-the-box in prism and their behavior:</p>\r\n<ul>\r\n<li><span style=\"font:7pt 'Times New Roman'\"><span style=\"font-size:11pt\" lang=EN-US><a href=\"http://blogs.southworks.net/matiasb/2009/07/02/how-to-hide-views-inside-composite-application-guidance-aka-prism-v2-regions/\">How-to Hide Views inside Composite Application Guidance (aka Prism-v2) regions.</a></span></span></li>\r\n</ul>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-07-20T11:47:56.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213940",
+    "ThreadId": "62957",
+    "Html": "<p>Hi,</p>\r\n<p>I am outside office and I cannot test it right now. But in a few hours I will check it out.</p>\r\n<p>The only difference is that I am using a custom ContentPresenterRegionAdapter that I have created<br>that, like ContentControl, accepts only one View at a time but it can stretch the region correctly.</p>\r\n<p>I presume that I must use the SingleActiveRegion so that my views can be swapped.</p>\r\n<p>Thanks to all of you. I will let you know the result very soon.</p>",
+    "PostedDate": "2009-07-20T12:01:13.33-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213959",
+    "ThreadId": "62957",
+    "Html": "<p>Hi,</p>\r\n<p>A SingleActiveRegion inherits from Region. How can I make my regions created with my custom <br>ContentPresenterRegionAdapter a SingleActiveRegion, like the Regions created as a <br>ContentControl ???</p>\r\n<p>Thanks in advance</p>",
+    "PostedDate": "2009-07-20T12:54:29.13-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213961",
+    "ThreadId": "62957",
+    "Html": "<p>Hi,</p>\r\n<p>I found it. Just clone the code of the classe ContentControlRegionAdapter in <br>Microsoft.Practices.Composite.Presentation.Regions.</p>\r\n<p>The CreateRegion method returns a SingleActiveRegion.</p>",
+    "PostedDate": "2009-07-20T13:00:22.9-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229018",
+    "ThreadId": "62957",
+    "Html": "<p>I have decided to see if I can solve my similar problem using the techniques in Damian Schenkelman's post. In the example given, all the views are loaded and shown at startup.</p>\r\n<p>In my case, I really only want to see one view at starup (in the future, the control may need to contain &gt;1 visible views) - how do I switch off the display of, say, Views 2 and 3?</p>\r\n<p>Simple code like</p>\r\n<p>this.regionManager.Regions[&quot;TabRegion&quot;].Hide(&quot;View2&quot;);</p>\r\n<p>always fails with the exception saying that &quot;TabRegion&quot; is unknown. Clearly it is a question of where, in the event sequence, I put this code. I thought the Window Loaded event would do, but, same problem.</p>\r\n<p>Any suggestions?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-29T14:17:06.437-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229020",
+    "ThreadId": "62957",
+    "Html": "<p>Ok - &quot;reply to self&quot;</p>\r\n<p>After a bit of slog, I have got something working:</p>\r\n<p>protected override void InitializeModules()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.InitializeModules();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; shell.SetupViewVisibility();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>where SetupViewVisibility() does the required show/hide at app start.&nbsp; All to do with timing wrt when regions are known about&nbsp; - can anyone confirm that this is a good way t odo this, or point me to details on such timings matters.</p>\r\n<p>Hope of use to someone else!</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-29T14:45:23.153-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "363730",
+    "ThreadId": "62957",
+    "Html": "<p>Hi All,</p>\r\n<p>I am able to add couple of views to ContentControl using Dependency Injection. Based on certain Action (Button&nbsp;Click) I need to Activate Views in Region (Content Control).</p>\r\n<p>I am Bit confused here ?</p>\r\n<p>To perform Activation on Shell (Shell.Xaml.Cs) by&nbsp;subscribing&nbsp;Event (OR)</p>\r\n<p>Can I perform Activation in&nbsp;View Models&nbsp;itself.</p>\r\n<p>Any Suggestions?</p>",
+    "PostedDate": "2010-02-24T08:51:05.16-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "409584",
+    "ThreadId": "62957",
+    "Html": "<p id=37360d90-052f-012d-facc-123139096d81>Hi,</p>\r\n<p id=37361910-052f-012d-facd-123139096d81>The following threads deal  with this same scenario (specifically the parts that mention Erwin&rsquo;s  post) should be useful for you:</p>\r\n<ul>\r\n<li><a href=\"View.aspx?ThreadId=56604\">More  complex composition and dynamic content samples?</a></li>\r\n<li><a href=\"View.aspx?ThreadId=51442\">Composite  Application Guidance and MVVM (ViewModel)</a></li>\r\n<li><a href=\"View.aspx?ThreadId=49626\">How  to do animated view change</a></li>\r\n</ul>\r\n<p id=37362730-052f-012d-face-123139096d81>Please let me know if this  helps.</p>\r\n<p id=37363d90-052f-012d-facf-123139096d81>Damian  Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-02-26T10:07:33.423-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

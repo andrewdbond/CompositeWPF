@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "82877",
+    "ThreadId": "24720",
+    "Html": "\r\nI find a bit obsfuscated the side-effects that occur within the interfactions between IWatchListService and WatchListViewPresenter:<br /><br /><ul><li>WatchListModule gets initialized</li><li>WatchListPresenter gets resolved</li><ul><li>To satisfy the ctor, IWatchListService gets resolved by creating a WatchListService</li></ul></ul><br />And then WatchListService<br /><ul><li>Hooks up the AddWatchCommand</li><li>Creates the Model</li><li>Acts as a mediator to update the model when the command is executed.</li></ul><br />My definition of a service is rarely related to UI commands. Its responsability is to provide the model, not sure it is to keep it in sync as well.<br /><br />IMHO, the presenter should hook the command and update the model as appropriate or delegate mediation to a helper class.<br />",
+    "PostedDate": "2008-03-25T22:20:38.13-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

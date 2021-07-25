@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1230887",
+    "ThreadId": "541347",
+    "Html": "Hi;<br />\nI've been looking around forums but haven't found any satisfying help about using Treeview control within context of MVVM + Prism + MEF. <br />\nThe most close thing was Josh Smith Article where he implemented Treeview control using ViewModel pattern as per <a href=\"http://www.codeproject.com/Articles/26288/Simplifying-the-WPF-TreeView-by-Using-the-ViewMode\" rel=\"nofollow\">this</a>  article at CodeProject .<br />\nMy concern is to impose the Prism+MEF framework on this example :<br />\n1-How to create all the ViewModel Wrapper classes via MEF<br />\n2-How each ViewModel can Load &amp; Populate the Child ViewModel using MEF and w/o using [new] operator<br />\n<br />\nIn short how to build Hierarchical ViewModels using Prism+MEF?. It would be very generous if you could build the same example using Prism+MEF as it would be a standard way to using such very important and hierarchical control in our Prism based applications.<br />\nThanks for your valuable support.<br />\n",
+    "PostedDate": "2014-04-06T03:32:32.443-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1233202",
+    "ThreadId": "541347",
+    "Html": "If possible I need to implement the following two classes using MEF and I will follow up for rest of the sample. How to handle the Constructors and LoadChildren() method in terms of MEF. I asked the same question in many forums but no answer!!!<br />\n<pre><code>\npublic class CountryViewModel\n{\nreadonly ReadOnlyCollection&lt;RegionViewModel&gt; _regions;\npublic ReadOnlyCollection&lt;RegionViewModel&gt; Regions\n{\nget { return _regions; }\n}\n//---------------------------------------------------------\npublic CountryViewModel(Region[] regions)\n{\n_regions = new ReadOnlyCollection&lt;RegionViewModel&gt;(\n(from region in regions\nselect new RegionViewModel(region))\n.ToList());\n}\n}\n\n\npublic class RegionViewModel : TreeViewItemViewModel\n{\nreadonly Region _region;\npublic RegionViewModel(Region region)\n: base(null, true)\n{\n_region = region;\n}\npublic string RegionName\n{\nget { return _region.RegionName; }\n}\nprotected override void LoadChildren()\n{\nforeach (State state in Database.GetStates(_region))\nbase.Children.Add(new StateViewModel(state, this));\n}\n}\n</code></pre>\n\n",
+    "PostedDate": "2014-04-11T06:59:37.6-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1233978",
+    "ThreadId": "541347",
+    "Html": "Hi,\r<br />\n<br />\nI want to apologize for the late response to your question. I´ve been investigating how to accomplish the scenario you are asking about. \r<br />\n<br />\nAs commented in the <strong>StackOverflow</strong> discussion related to this same problem (<a href=\"http://stackoverflow.com/questions/22973203\" rel=\"nofollow\">Unable to build Hierarchical View Models using MEF</a>), you would need to register the <strong>ViewModel</strong> classes in the container, taking into account if the <strong>ViewModel</strong> needs to be registered as <strong>Singleton</strong> or not. In order to do this you would use <strong>Export</strong> attributes.\r<br />\n<br />\nIn addition, constructors would be imported from the container when instances are resolved. Therefore any argument of the constructors should be imported from the container as well. And this feature would need to perform some changes on the solution you provided. For example, the <strong>Region</strong> list parameter may need to be registered in the container, inside a <strong><em>RegionList</em></strong> class that contains te list. I will come back to you when I manage to resolve those dependencies.\r<br />\n<br />\nThe <strong>Prism Guide</strong> may be helpful for finding the way on configuring the <strong>MefBootstrapper</strong> and register the object types on it.\r<br />\n<br />\nRegards.\r<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-04-14T11:11:03.633-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1234009",
+    "ThreadId": "541347",
+    "Html": "Hi Gabriel,\r<br />\nI'm glad that you follow up my question, and I wish you could figure out an answer because it is very important to be able to build hierarchy like Treeview using the powerful DI IOC MEF.\r<br />\nBut the core problem that I am facing is that we can't pass parameters to constructor while composing parts using MEF which is the base to build a hierarchy.\r<br />\nI hope you can find out a way around this obstacle and I think this capability must be added to MEF\r<br />\nGood Luck.<br />\n",
+    "PostedDate": "2014-04-14T12:23:17.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

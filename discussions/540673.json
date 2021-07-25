@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1228513",
+    "ThreadId": "540673",
+    "Html": "Hi,\r<br />\n<br />\nIn our WPF app implemented using Prism and MEF, UI layer is MVVM based and EF has been used in DAL. \r<br />\n<br />\nWhen the data changes on one screen, we want to ensure that all open screens display the updated data. E.g. if we add a new customer in Add Customer screen, then the already open Search Customer should be refreshed with the newly added customer.\r<br />\n<br />\nCurrently we are using the EventAggregator and Publisher-Subscriber pattern for refreshing the data. The ViewModels (in UI layer) and the DbContext (in DAL) are disconnected. The ViewModels get the updated data by calling the methods in DAL. \r<br />\n<br />\nIs there another way of ensuring that data is up-to-date across the application? I heard we can have one DbContext for the whole application to ensure this. Is that the right way to go when the data can be huge? \r<br />\n<br />\nPlease advise. \r<br />\nThanks.<br />\n",
+    "PostedDate": "2014-03-31T02:37:49.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1228680",
+    "ThreadId": "540673",
+    "Html": "Hi,\r<br />\n<br />\nThe approach you mentioned of using <strong><em>EventAggregator</em></strong> would be correct. However, I don't completely understand what do you refer by having the <em>ViewModels</em> and <em>DbContext</em> disconnected when the <em>ViewModels</em> get the data by calling the <em>DbContext's</em> methods. \r<br />\n<br />\nAnyway, regarding data consistency, the use of one only <em>DbContext</em> with a big load of data would depend on the complexity for managing the DB and maintaining its consistency. You should try to keep coherence in DB's data and try to avoid extra filters on information requests.\r<br />\n<br />\nRegards.\r<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-03-31T10:16:18.51-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

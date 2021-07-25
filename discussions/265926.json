@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "645120",
+    "ThreadId": "265926",
+    "Html": "\r\n<p>I was trying to use the DirectoryModuleCatalog, and could not get it to load my module assemblies. I looked at the code, and noticed that the issue (at least on the surface), stems from the following code in the GetNotAllreadyLoadedModuleInfos function:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">private</span> <span style=\"color:blue\">static</span> IEnumerable&lt;ModuleInfo&gt; GetNotAllreadyLoadedModuleInfos(DirectoryInfo directory, Type IModuleType)\r\n{\r\n    ...\r\n\r\n    <span style=\"color:blue\">var</span> fileInfos = directory.GetFiles(<span style=\"color:#a31515\">&quot;*.dll&quot;</span>)\r\n        .Where(file =&gt; alreadyLoadedAssemblies\r\n                           .FirstOrDefault(\r\n                           assembly =&gt;\r\n                           String.Compare(Path.GetFileName(assembly.Location), file.Name,\r\n                                          StringComparison.OrdinalIgnoreCase) == 0) == <span style=\"color:blue\">null</span>);\r\n\r\n    ...\r\n}\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>Shouldn't the comparison for FirstOrDefault be != null, i.e. as follows:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>    <span style=\"color:blue\">var</span> fileInfos = directory.GetFiles(<span style=\"color:#a31515\">&quot;*.dll&quot;</span>)\r\n        .Where(file =&gt; alreadyLoadedAssemblies\r\n                           .FirstOrDefault(\r\n                           assembly =&gt;\r\n                           String.Compare(Path.GetFileName(assembly.Location), file.Name,\r\n                                          StringComparison.OrdinalIgnoreCase) == 0) != <span style=\"color:blue\">null</span>);\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>&nbsp;</p>\r\n<p>Once I change it to that, it works as expected. Am I doing something wrong, or is this a bug?</p>\r\n<p>Some input would be much appreciated.</p>\r\n",
+    "PostedDate": "2011-07-20T11:25:51.927-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645537",
+    "ThreadId": "265926",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding of the code in the <strong>GetNotAlreadyLoadedModuleInfos </strong>method of the <strong>DirectoryModuleCatalog</strong>, the aforementioned comparison checks that the <strong>fileInfos </strong>that are added to that field are those that DO NOT exist in the alreadyLoadedAssemblies (since it's trying to obtain the NOT already loaded module infos). That's why it equals to null.</p>\r\n<p>The undesired behavior you're experiencing might be happening due to the fact that you're already loading those modules from another module catalog. If that's not the case, and if this doesn't help you find the cause for your problem, it would be helpful if you could provide us with a repro sample portraying this situation (you could upload it to Skydrive, for example).</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-21T06:25:24.383-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "648422",
+    "ThreadId": "265926",
+    "Html": "<p>Hi,</p>\r\n<p>Thank you for your response. The bug indeed was on my end. What happened was the module DLL was inadvertently loaded before DirectoryModuleCatalog initialization, and was thus not being picked up properly by the function in question.</p>",
+    "PostedDate": "2011-07-27T10:45:50.093-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

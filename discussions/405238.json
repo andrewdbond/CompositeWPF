@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "949889",
+    "ThreadId": "405238",
+    "Html": "\r\n<p>Hi List,</p>\r\n<p>i just playing around with IPartImportsSatisfiedNotification</p>\r\n<p>What's about this usage:</p>\r\n<p><span style=\"color:#0000ff; font-weight:bold\">public</span>&nbsp;<span style=\"color:#a52a2a\">async</span>&nbsp;<span style=\"color:#ff0000\">void</span>&nbsp;<span style=\"color:#191970; font-weight:bold\">OnImportsSatisfied</span>()</p>\r\n<p>{</p>\r\n<p>Employees =&nbsp;&nbsp;<span style=\"color:#000080\">await</span>&nbsp;<span style=\"font-weight:bold\">this</span>.employeeService.<span style=\"color:#191970; font-weight:bold\">EmployeLookupListAsync</span>();</p>\r\n<p>}</p>\r\n<p>is there anything against?</p>\r\n<p>The same goes for INavigationAware and:</p>\r\n<p><span style=\"color:#0000ff; font-weight:bold\">public</span>&nbsp;&nbsp;<span style=\"color:#ff0000\">void</span>&nbsp;async\r\n<span style=\"color:#191970; font-weight:bold\">OnNavigatedTo</span>(NavigationContext navigationContext)</p>\r\n<p>{</p>\r\n<p>mylist = await DoDatabaseStuff;</p>\r\n<p>}</p>\r\n<p>Is this ok or is there any hidden traps inside?</p>\r\n<p>Thanks</p>\r\n<p>Peter</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-12-01T03:27:38.443-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "950698",
+    "ThreadId": "405238",
+    "Html": "\r\n<p>Hi Peter,</p>\r\n<p>I am not familiar with the new <strong>async / await</strong> capabilities provided by\r\n<strong>.NET 4.5</strong> but I believe there could be problems with the <strong>\r\nOnNavigatedTo </strong>method you are defining. Based on my understanding, when defining an\r\n<strong>async </strong>method with a returning type of <strong>void</strong>, that method can be used as an event handler that when invoked will execute asynchronously. However, the code that invokes the handler is not able to\r\n<strong>await </strong>for the event handler to finish nor it's able to catch any exceptions throw inside it. As far as I know,\r\n<strong>Prism's Navigation</strong> is not prepared to work with <strong>async </strong>\r\nmethods, hence this could case an unexpected behavior in your application. Also, based on this, it seems that\r\n<strong>Prism </strong>will not be able to catch an exception raised inside the <strong>\r\nOnNavigatedTo </strong>method and thus, it might not be able to inform when a navigation request fails.</p>\r\n<p>Based on my understanding, if the method is not declared as <strong>async</strong>, then it would be able to\r\n<strong>await </strong>for inner asynchronous operations (e.g invoking <strong>EmployeLookupListAsync</strong>) without returning the control to its invoking method. Hence, the asynchronous operations would be handled inside the methods and\r\n<strong>Prism </strong>could use them as simple synchronous methods, avoiding the problems mentioned before.</p>\r\n<p>You can find more information about this in the following MSDN article:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/vstudio/hh191443.aspx\">Asynchronous Programming with Async and Await (C# and Visual Basic)</a>\r\n</li></ul>\r\n<p>Regarding the <strong>OnImportsSatisfied </strong>method, take into account that, as described in\r\n<strong>MEF's CodePlex</strong> site, <em>&quot;OnImportsSatisfied is called when all imports that could be satisfied have been satisfied.&quot;</em> Hence, even if the\r\n<strong>OnImportsSatisfied </strong>method is invoked, it does not ensure that all corresponding properties were populated, so it might be a good idea to check if the property is set before acceding it (for example, checking if the\r\n<strong>employeeService </strong>member is <strong>null</strong>).</p>\r\n<p>You can find more information about this in <strong>MEF's CodePlex</strong> site:</p>\r\n<ul>\r\n<li><a href=\"http://mef.codeplex.com/wikipage?title=Declaring%20Imports\">MEF in CodePlex - Declaring Imports</a>\r\n</li></ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2012-12-03T11:15:53.907-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "950952",
+    "ThreadId": "405238",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>thanks a lot for the answer.</p>\r\n<p>So, what did you think is the best place to run the DB operations. Start them in the constructor seems to be a bad idea as well.</p>\r\n<p>Did you have any sample about this:</p>\r\n<p>&lt;Based on my understanding, if the method is not declared as <strong>async</strong>, then it would be able to\r\n<strong>await </strong>for inner &lt;asynchronous operations (e.g invoking <strong>\r\nEmployeLookupListAsync</strong>) without returning the control to its invoking &lt;method.</p>\r\n<p>Peter</p>\r\n",
+    "PostedDate": "2012-12-03T23:20:38.65-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "951301",
+    "ThreadId": "405238",
+    "Html": "\r\n<p>Hi Peter,</p>\r\n<p>Sorry, after further investigation I found that an <strong>await </strong>expression can only occur in the body of a method or lambda expression that is marked with an\r\n<strong>async </strong>modifier. Hence, what I said about using an await expression inside a synchronous method is wrong. My sincere apologies.</p>\r\n<p>Regarding the topic about where to run database operations, in my opinion it could be possible to run such operations in the\r\n<strong>OnNavigatedTo </strong>method. The problem is that <strong>Prism</strong>'s navigation as out of the box does not support asynchronous operations in the\r\n<strong>OnNavigatedTo </strong>and <strong>OnNavigatedFrom </strong>methods. Therefore, if you invoke an asynchronous method in the\r\n<strong>OnNavigatedTo </strong>method, the navigation sequence will continue executing without waiting for it to finish and, while in some scenarios this might not represent an issue, in others it could cause an unexpected behavior.</p>\r\n<p>If you want to be able to perform an asynchronous operation inside the <strong>\r\nOnNavigatedTo </strong>and being able to wait for that operation to complete before continuing with the navigation sequence, I believe you could find the approach proposed by a user of the community in the following thread interesting:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/390572\">IAsyncNavigationAware: Asynchronous region navigation with continuations&nbsp;</a>\r\n</li></ul>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2012-12-04T10:31:20.68-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "951319",
+    "ThreadId": "405238",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>nothing to apologies.</p>\r\n<p>The link is very usefull and i will try it out.</p>\r\n<p>Let me ask in another way.</p>\r\n<p>&nbsp;I'm not fixed to use the OnNavigatedTo method if there is&nbsp; any other recommendation&nbsp;&nbsp;to start async operations to initialize a viewmodel while using the INavigationAware interface.</p>\r\n<p>Peter</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-12-04T11:28:22.483-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "951901",
+    "ThreadId": "405238",
+    "Html": "\r\n<p>Hi Peter,</p>\r\n<p>In my opinion, as the problem here seems to be what issues might arise from invoking an\r\n<strong>async </strong>method in the middle of the navigation sequence, how about invoking the\r\n<strong>async </strong>operations <em><strong>after the navigation is completed</strong></em>?</p>\r\n<p>The <strong>RegionNavigationService </strong>provided by <strong>Prism </strong>\r\nto perform navigation request defines a <strong>Navigated </strong>event that is raised at the end of the navigation sequence. You could take advantage of this event to be notified when the navigation is finished, this means when your view / view model is already\r\n created, injected and activated in the region.</p>\r\n<p>For example, you could do something like this to:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:green\">// Common synchronous method.</span>\r\n<span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> OnNavigatedTo(NavigationContext context)\r\n{\r\n    <span style=\"color:green\">// We take any data we require from the navigation context and save it </span>\r\n\r\n    <span style=\"color:green\">// Then we subscribe to the Navigated event with an async method</span>\r\n    context.NavigationService.Navigated += OnNavigationCompleted;\r\n}\r\n</pre>\r\n</div>\r\nThen, when the navigation is finished, this method will be raised and the subscribed\r\n<strong>async </strong>method would be executed. As at this point the navigation is completed, I believe you should be able to perform any\r\n<strong>async </strong>operations you want without needing to worry about how them could impact in the navigation sequence:\r\n<p></p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> async <span style=\"color:blue\">void</span> OnNavigationCompleted(...)\r\n{\r\n    <span style=\"color:green\">// The same NavigationService as before (for example, stored in a private member.)</span>\r\n    navigationService.Navigated -= OnNavigationCompleted;\r\n    navigationService = <span style=\"color:blue\">null</span>;\r\n    \r\n    Task&lt;IList&lt;Employee&gt;&gt; task = <span style=\"color:blue\">this</span>.employeeService.EmployeLookupListAsync();\r\n\r\n    <span style=\"color:green\">// Perform some other logic</span>\r\n\r\n    Employees = await task;\r\n}\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>Also, for the opposite case (that is, when using <strong>async </strong>operations when a view is\r\n<em><strong>navigated from</strong></em>) you can wait for the asynchronous operations to finish using the\r\n<strong>ConfirmNavigationRequest </strong>method. You can find more information about this in the following section of the documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28v=pandp.40%29.aspx#sec12\">Chapter 8 - Navigation - Confirming or Cancelling Navigation</a>\r\n</li></ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2012-12-05T13:07:02.323-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "952092",
+    "ThreadId": "405238",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>that is exactly what i'm looking for.</p>\r\n<p>thanks a lot</p>\r\n<p>Peter</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-12-05T23:57:15.58-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

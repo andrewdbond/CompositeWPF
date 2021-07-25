@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "98968",
+    "ThreadId": "29680",
+    "Html": "I was playing around with the config file module enumerator and thought it would be nice to not have to specify the module name and possibly type. My idea would be that if they were supplied they would be used as is the current behaviour, though if not used then the following would occur<br>\r\n<ul>\r\n    <li>Use reflection to get the assembly file specified in config file.</li>\r\n    <li>If <em>moduleType</em> was specified in config file use that to get the type from the assembly other wise use reflection to find the first implementation of <em>IModule</em>.</li>\r\n    <li>Once the type has been found use <em>ModuleName</em> from <em>ModuleAttribute</em> if it was not specified in the config file.</li>\r\n    <li>If <em>startupLoaded</em> was also not specified look to see if <em>StartupLoaded</em> is true against <em>ModuleAttribute</em>.</li>\r\n</ul>\r\nThis way the App.config would serve as an override to the behaviour specified in the module and would only require the <em>assemblyFile</em> to be specified. I tried to give it a bit of a go looking at the code used in the <em>DirectoryLookupModuleEnumerator</em> but my lack of knowledge with <em>AppDomain</em> is limiting me.<br>\r\n<br>\r\nThis would be a nice to have feature with no great deal of importance. If I do manage to nail it in my spare time I'll post my results.<br>\r\n-Brett<br>\r\n<br>\r\n",
+    "PostedDate": "2008-06-15T11:01:58.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

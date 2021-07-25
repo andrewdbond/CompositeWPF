@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "560998",
+    "ThreadId": "244715",
+    "Html": "\r\n<p>Dear All,</p>\r\n<p>I created an&nbsp;Interface to define my service data handling, then I implemented this interface in a seperate class dataservice.cs.</p>\r\n<p>In my viewmodel I am importing both the eventAggregator &amp; the service interface with constructor import, but my viewmodel doesn't get any of them.</p>\r\n<p>My dataservice is marked with <span style=\"font-family:Consolas; font-size:x-small\">\r\n<span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\">[</span></span></span><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\">Export</span></span></span><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\">(</span></span><span style=\"font-family:Consolas; color:#0000ff; font-size:x-small\"><span style=\"font-family:Consolas; color:#0000ff; font-size:x-small\"><span style=\"font-family:Consolas; color:#0000ff; font-size:x-small\">typeof</span></span></span><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\">(</span></span><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\">ICurrencyDataService</span></span></span><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\">))]\r\n</span></span></p>\r\n<p>and my viewmodel constructor is defined as follows:</p>\r\n<p><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\"></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>[ImportingConstructor]\r\n<span style=\"color:blue\">public</span> CurrencyViewModel(ICurrencyDataService dataService, IEventAggregator eventAggregator)\r\n</pre>\r\n<pre>But it doesn't get it ... what am I doing wrong here ..!!</pre>\r\n</div>\r\n</span></span></span>\r\n<p></p>\r\n",
+    "PostedDate": "2011-02-04T13:26:13.893-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "561010",
+    "ThreadId": "244715",
+    "Html": "\r\n<p>Never mind I added the &#65279;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>[PartCreationPolicy(CreationPolicy.Shared)]\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>And it works,</p>\r\n<p>Thanks</p>\r\n",
+    "PostedDate": "2011-02-04T13:44:32.15-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "561020",
+    "ThreadId": "244715",
+    "Html": "\r\n<p>Now my page doesn't load ...</p>\r\n<p>Here is the full story: (I followed the QuickStart UIComposition approach)</p>\r\n<p>The DataService Class is populating data through a RIA service, whihc works fine and I can get the data into my viewmodel which defines as follows:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>\t[Export]\r\n\t<span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> CurrencyViewModel : NotificationObject\r\n\t{\r\n\t\t<span style=\"color:blue\">private</span> IEventAggregator EventAggregator { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">set</span>; }\r\n\t\t<span style=\"color:blue\">private</span> ICurrencyDataService DataService { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">set</span>; }\r\n\r\n\t\t<span style=\"color:blue\">public</span> ICollectionView CurrencyItems { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">set</span>; }\r\n\r\n\t\t[ImportingConstructor]\r\n\t\t<span style=\"color:blue\">public</span> CurrencyViewModel(ICurrencyDataService dataService, IEventAggregator eventAggregator)\r\n\t\t{\r\n\t\t\tEventAggregator = eventAggregator;\r\n\t\t\tDataService = dataService;\r\n\t\t\t\r\n\t\t\tDataService.GetCoins();\r\n\t\t\t<span style=\"color:green\">/*CurrencyItems = new PagedCollectionView(DataService.Coins);*/</span>\r\n\t\t\t<span style=\"color:green\">/*CurrencyItems.CollectionChanged &#43;= CurrencyItemsCollectionChanged;*/</span>\r\n\t\t}\r\n\r\n\t\t<span style=\"color:blue\">void</span> CurrencyItemsCollectionChanged(<span style=\"color:blue\">object</span> sender, NotifyCollectionChangedEventArgs e)\r\n\t\t{\r\n\t\t\tIGL_coin coin = <span style=\"color:blue\">this</span>.CurrencyItems.CurrentItem <span style=\"color:blue\">as</span> IGL_coin;\r\n\t\t\t<span style=\"color:blue\">if</span> (coin != <span style=\"color:blue\">null</span>)\r\n\t\t\t{\r\n\t\t\t\t<span style=\"color:green\">// Publish the CoinSelectedEvent event.</span>\r\n\t\t\t\tEventAggregator.GetEvent&lt;CoinSelectedEvent&gt;().Publish(coin.coin_id.ToString());\r\n\t\t\t}\r\n\t\t}\r\n\r\n\t\t<span style=\"color:blue\">public</span> <span style=\"color:blue\">string</span> Title\r\n\t\t{\r\n\t\t\t<span style=\"color:blue\">get</span> { <span style=\"color:blue\">return</span> AVTRes.PageCurrency; }\r\n\t\t}\r\n\t}\r\n</pre>\r\n</div>\r\n<p>The page can display the content UNLESS I remove the commented lines, which assign the CurrencyItems the PagedCollectionView value ... If I do so it doesn't show up ...</p>\r\n<p>Another thing, If I change the CurrencyItems to type of IEnumeruable&lt;tablename&gt; it works ... BUT I need the PagedCollectionView to track the selection changes as the example..</p>\r\n<p>Strange right !! what could be the reason for that ...</p>\r\n<p>Any help appreciated</p>\r\n<p>Waleed</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-02-04T14:22:01.37-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "561972",
+    "ThreadId": "244715",
+    "Html": "\r\n<p>Hi Waleed,</p>\r\n<p>Based on my understanding of your scenario, if you need to track the current item on the collection, you need to handle the\r\n<strong>CurrentChanged Event</strong> as the UIComposition QuickStart shows.</p>\r\n<p>If you still need to handle the collectionChanged Event because a specific requirement, you could try refresh the items. For example:</p>\r\n<p><span lang=\"EN-US\" style=\"color:black; font-size:9.5pt\"></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>[ImportingConstructor]\r\n<span style=\"color:blue\">public</span> CurrencyViewModel(ICurrencyDataService dataService, IEventAggregator eventAggregator)\r\n{\r\n      EventAggregator = eventAggregator;\r\n      \r\n      DataService = dataService;\r\n      \r\n      DataService.GetCoins();\r\n\r\n      CurrencyItems = <span style=\"color:blue\">new</span> PagedCollectionView(DataService.Coins);                    \r\n      CurrencyItems.CollectionChanged &#43;= CurrencyItemsCollectionChanged;\r\n      CurrencyItems.Refresh(); \r\n}\r\n</pre>\r\n</div>\r\n</span>\r\n<p></p>\r\n<p><span lang=\"EN-US\" style=\"color:black; font-size:9.5pt\">&nbsp;</span></p>\r\n<p>Please, let me know if this information helps you.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-02-07T07:36:53.367-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "562137",
+    "ThreadId": "244715",
+    "Html": "\r\n<p>I have used the Telerik <span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\">\r\n<span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\">VirtualQueryableCollectionVie\r\n</span></span></span>and it works fine.</p>\r\n<p>Best</p>\r\n",
+    "PostedDate": "2011-02-07T11:25:37.993-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "213522",
+    "ThreadId": "62881",
+    "Html": "<p>In the QuickStarts and Stocktrader Reference Implementation there is a total mix up of different approaches. Sometimes there is a Presenter, sometimes there is only a controller, sometimes the controller provides and handles commands, other times the Presentation Model (which seems to be the ViewModel) does this work... I try to figure out what is the &quot;way to do it!&quot; and came to the following conclusion.</p>\r\n<p>I would do it the following way:</p>\r\n<ul>\r\n<li>View: Showing UI elements and bound data, accepts input gestures from outside, Reacting to UI elements events that cannot bind to Commands (launches commands in code behind event handlers)</li>\r\n<li>ViewModel: Holds reference to model, Provides view data and change notification, provides commands, fire events for Presenter</li>\r\n<li>Model: The business objects (mostly pure data containers)</li>\r\n<li>Presenter: Here sits the business logic, reacts to Events from ViewModel, can create child views and presenters, Uses services to manage models (loading, saving)</li>\r\n</ul>\r\n<p>So I would rather use the term MVP+ pattern, which means MVP with Commanding and Binding enabled.</p>\r\n<p>Does anybody agree/disagree with this? Any comment is appreciated.</p>\r\n<p>Best regards, Yannik</p>",
+    "PostedDate": "2009-07-19T01:32:13.533-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213524",
+    "ThreadId": "62881",
+    "Html": "<p>Hi.</p>\r\n<p>I prefer the M-V-VM approach as described in this link: <a href=\"http://blogs.msdn.com/dphill/archive/2009/01/31/the-viewmodel-pattern.aspx\">http://blogs.msdn.com/dphill/archive/2009/01/31/the-viewmodel-pattern.aspx</a>&nbsp;</p>\r\n<p>Regarding your approach outlined above, if we use the VM pattern, the View's code-behind would not have any event handlers; Commands can be attached to any control - even those that do not expose the 'Command' property - by adding Attached Properties.</p>\r\n<p>Regards.</p>",
+    "PostedDate": "2009-07-19T01:53:07.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229297",
+    "ThreadId": "62881",
+    "Html": "<p>Hey Yannik,</p>\r\n<p>Your thought sounds interesting to me. Could you pelase explain your design with some code example.</p>\r\n<p>Regards</p>\r\n<p>Hitesh</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-31T05:30:02.737-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229307",
+    "ThreadId": "62881",
+    "Html": "<p>MVVM has limitations which were exposed by both Martin Fowler (back in 2006 when it was called the Presentation Model, aka Application Model) and John Gossman (father of MVVM)&nbsp;- I blog on the topic <a href=\"http://www.global-webnet.net/blogengine/post/2009/08/13/Does-MVVM-need-a-Presenter.aspx\">HERE</a>.&nbsp;&nbsp;&nbsp;</p>\r\n<p>If you are interested I have a codeplex project at <a href=\"http://multitargeting.codeplex.com\">http://multitargeting.codeplex.com</a> which demonstrates the MVP and Presentation Model being used by PRISM to support Silverlight 3 (SL3),&nbsp; SL3 w/RIA, WinForms and WPF - using a single codebase.</p>\r\n<p>This project utilizes Patterns and Practices learned from the Smart Client Software Factory (these folks will be comfortable with the infrastructure), Web Client Software factory and samples taken from the early drops - specifically the TopDown Composition example from PRISM V2 Drop 7.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-31T05:48:54.267-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "941696",
+    "ThreadId": "403203",
+    "Html": "\r\n<p>Hi,&nbsp;</p>\r\n<p>Problem: I open a new tab on some button click. It opens first time. but if I click that button again, I expect already open tab to be activated. but it doesn't happen.</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>  <span style=\"color:blue\">public</span> <span style=\"color:blue\">bool</span> IsNavigationTarget(NavigationContext navigationContext)\r\n        {\r\n            <span style=\"color:green\">// For now we always open a new tab.</span>\r\n            <span style=\"color:blue\">return</span> navigationContext.NavigationService.Journal.CurrentEntry.Uri.ToString().ToLowerInvariant() == navigationContext.Uri.ToString().ToLowerInvariant();\r\n        }\r\n\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>above code returns true. Not sure what am I missing. can someone please shed some light?</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-11-14T09:29:18.38-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "941745",
+    "ThreadId": "403203",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>So far, with the information provided, we are unable to find the reason behind the behavior you are describing.</p>\r\n<p>It could be useful if you could provide us with more information about your scenario, like how you are navigating to the view, etc, so that we can help you find the cause behind your problem.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2012-11-14T10:53:29.933-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "941809",
+    "ThreadId": "403203",
+    "Html": "\r\n<p>Sure Damian,</p>\r\n<p>This was working before. and I'm not sure what I changed. but anyway, here's little more detail.&nbsp;</p>\r\n<p>we are constructing Tab items using view injection. inside every tab item, there're multiple views added using requestNavigate(all internal regions)</p>\r\n<p>Tab A</p>\r\n<p>&nbsp;- left region</p>\r\n<p>- right region</p>\r\n<p>- tool bar region</p>\r\n<p>on click of a button in TabA's right region, I navigate to Tab B with similar internal regions (slight variation inside due to business logic)</p>\r\n<p>if Tab B is open, and I click on a TabA's button, it should just go to already existing View(Tab B). this does'nt happen anymore. when I click the button, the focus remains on Tab A. the focus does not change to Tab B at all. (If I close Tab B, click button\r\n again, Tab B opens with focus on it)</p>\r\n<p>Hopefully I'm making sense?</p>\r\n<p>&nbsp;</p>\r\n<p>Kavya</p>\r\n",
+    "PostedDate": "2012-11-14T12:49:26.657-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "942104",
+    "ThreadId": "403203",
+    "Html": "\r\n<p>Hi Kavya,</p>\r\n<p>As as starting point, I believe you could subscribe to the <strong>NavigationFailed\r\n</strong>event in the corresponding <strong>NavigationService </strong>instance of that region, too see if an exception is being thrown while performing the navigation. This information could be helpful to analyze the cause of this behavior. For more information\r\n about this, you could check the following related blog post:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/gmaliandi/2011/08/how-to-prevent-region-navigation-from-hiding-%20exceptions-in-prism/\">How to prevent Region Navigation from hiding exceptions in Prism</a>\r\n</li></ul>\r\n<p>On the other hand, so far the only scenario I could think of, that could cause a similar behavior to the one you mentioned, could be if both your view and the corresponding view model implements the\r\n<strong>INavigationAware</strong> interface, in which case the value of the <strong>\r\nIsNavigationTarget</strong>=true returned in your view could be ignored if your view model returns a different value. This behavior has been reported in the following work item:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/workitem/8832\">RegionNavigationContentLoader.LoadContent precedence ignores IsNavigationTarget=true for Views if ViewModel also implements INavigationAware</a>\r\n</li></ul>\r\n<p><br>\r\nI hope this helps to find the cause of the problem,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-11-15T05:29:47.733-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "944004",
+    "ThreadId": "403203",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>there seems to be an issue where IsNavigationTarget is not called if the name of the view navigated to is different from the type name of the view class.</p>\r\n<p>I.e., when your view is called &quot;CustomersList&quot;, but is exported as &quot;CustomersListView&quot;, the method won't be called when navigating to &quot;CustomersListView&quot;.</p>\r\n<p>I'm not sure if this is supposed to be that way, but we just had the same problem in a Prism training class.</p>\r\n<p>Best regards,</p>\r\n<p>Fabian</p>\r\n",
+    "PostedDate": "2012-11-19T07:38:54.58-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "947038",
+    "ThreadId": "403203",
+    "Html": "\r\n<p>thank you both. I was on vacation so couldn't respond.</p>\r\n<p>if you can look at this, would be really helpful.&nbsp;</p>\r\n<p>I have similar approach to the code attached in this link</p>\r\n<p>http://compositewpf.codeplex.com/discussions/394860</p>\r\n<p><a href=\"https://skydrive.live.com/redir?resid=99307B6105BC060D!107&authkey=!ACgbDT5tLxt8pNk\">Kavya_TabApproach1</a>&nbsp;</p>\r\n<p>Of course, I've later changed to view injection. but above problem still exists in this code. I have a tab item view in which i have multiple views.&nbsp;</p>\r\n<p>Click on &quot;Goto datapool&quot;. a tab opens.</p>\r\n<p>click on same row again, already opened tab doesn't get activated. &nbsp;I verified Fabian's suggestion. I'm exporting same as view name. Export[&quot;&quot;</p>\r\n<p>can you please help? I'll also try the NavigationFailed event raising</p>\r\n<p>Kavya</p>\r\n",
+    "PostedDate": "2012-11-26T07:04:02.07-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "947053",
+    "ThreadId": "403203",
+    "Html": "\r\n<p>I managed to grab the error. it says, &quot;RIghtRegion&quot; doesn't exist. (When I click second time on the same row in the first tab).&nbsp;</p>\r\n<p>on OnNavigatedFrom, regions are removed. however, aren't thy created later ?&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>        <span style=\"color:blue\">void</span> NavigationService_NavigationFailed(<span style=\"color:blue\">object</span> sender, RegionNavigationFailedEventArgs e)\r\n        {\r\n            \r\n        }\r\n\r\n      \r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">bool</span> IsNavigationTarget(NavigationContext navigationContext)\r\n        {\r\n          \r\n            <span style=\"color:blue\">return</span> navigationContext.NavigationService.Journal.CurrentEntry.Uri.ToString().ToLowerInvariant() == navigationContext.Uri.ToString().ToLowerInvariant();\r\n        }\r\n\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> OnNavigatedFrom(NavigationContext navigationContext)\r\n        {\r\n            regionManager.Regions.Remove(<span style=\"color:#a31515\">&quot;LeftRegion&quot;</span>);\r\n            regionManager.Regions.Remove(<span style=\"color:#a31515\">&quot;RightRegion&quot;</span>);\r\n            \r\n        }\r\n\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> OnNavigatedTo(NavigationContext navigationContext)\r\n        {\r\n            <span style=\"color:blue\">this</span>.innerNavigationContext = navigationContext;\r\n            navigationContext.NavigationService.Navigated += NavigationService_Navigated;\r\n            regionManager.Regions[<span style=\"color:#a31515\">&quot;MainRegion&quot;</span>].NavigationService.NavigationFailed += <span style=\"color:blue\">new</span> EventHandler&lt;RegionNavigationFailedEventArgs&gt;(NavigationService_NavigationFailed);\r\n        }\r\n\r\n        <span style=\"color:blue\">void</span> NavigationService_Navigated(<span style=\"color:blue\">object</span> sender, RegionNavigationEventArgs e)\r\n        {\r\n            <span style=\"color:blue\">this</span>.innerNavigationContext.NavigationService.Navigated -= NavigationService_Navigated;\r\n\r\n            <span style=\"color:blue\">if</span> (!navigatingInternally)\r\n            {\r\n                navigatingInternally = <span style=\"color:blue\">true</span>;\r\n\r\n                RegionManager.UpdateRegions();\r\n\r\n                <span style=\"color:blue\">this</span>.PerformInternalNavigation(<span style=\"color:blue\">this</span>.innerNavigationContext);\r\n                <span style=\"color:blue\">this</span>.innerNavigationContext = <span style=\"color:blue\">null</span>;\r\n\r\n                navigatingInternally = <span style=\"color:blue\">false</span>;\r\n            }\r\n        }\r\n\r\n        <span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> PerformInternalNavigation(NavigationContext navigationContext)\r\n        {\r\n            <span style=\"color:blue\">string</span> rightRegionViewName = navigationContext.Parameters[<span style=\"color:#a31515\">&quot;RightRegion&quot;</span>];\r\n            <span style=\"color:blue\">string</span> leftRegionViewName = navigationContext.Parameters[<span style=\"color:#a31515\">&quot;LeftRegion&quot;</span>];\r\n\r\n            regionManager.Regions[<span style=\"color:#a31515\">&quot;RightRegion&quot;</span>].RequestNavigate(<span style=\"color:blue\">new</span> Uri(rightRegionViewName + navigationContext.Parameters.ToString(), UriKind.Relative), CheckRightRegionHeader);\r\n           regionManager.Regions[<span style=\"color:#a31515\">&quot;LeftRegion&quot;</span>].RequestNavigate(<span style=\"color:blue\">new</span> Uri(leftRegionViewName + navigationContext.Parameters.ToString(), UriKind.Relative));\r\n          \r\n           \r\n        }\r\n</pre>\r\n<pre><br></pre>\r\n<pre>please help</pre>\r\n</div>\r\n",
+    "PostedDate": "2012-11-26T07:53:28.73-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "947055",
+    "ThreadId": "403203",
+    "Html": "\r\n<p>sorry. forgot to add the line</p>\r\n<p>&nbsp;regionManager.Regions[&quot;MainRegion&quot;].NavigationService.NavigationFailed += new EventHandler&lt;RegionNavigationFailedEventArgs&gt;(NavigationService_NavigationFailed);</p>\r\n<p>(I couldn't edit the above post for some browser issue) </p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> PerformInternalNavigation(NavigationContext navigationContext)\r\n        {\r\n            <span style=\"color:blue\">string</span> rightRegionViewName = navigationContext.Parameters[<span style=\"color:#a31515\">&quot;RightRegion&quot;</span>];\r\n            <span style=\"color:blue\">string</span> leftRegionViewName = navigationContext.Parameters[<span style=\"color:#a31515\">&quot;LeftRegion&quot;</span>];\r\n\r\n            regionManager.Regions[<span style=\"color:#a31515\">&quot;RightRegion&quot;</span>].RequestNavigate(<span style=\"color:blue\">new</span> Uri(rightRegionViewName + navigationContext.Parameters.ToString(), UriKind.Relative), CheckRightRegionHeader);\r\n           regionManager.Regions[<span style=\"color:#a31515\">&quot;LeftRegion&quot;</span>].RequestNavigate(<span style=\"color:blue\">new</span> Uri(leftRegionViewName + navigationContext.Parameters.ToString(), UriKind.Relative));\r\n          \r\n           regionManager.Regions[&quot;MainRegion&quot;].NavigationService.NavigationFailed += new EventHandler&lt;RegionNavigationFailedEventArgs&gt;(NavigationService_NavigationFailed);\r\n        }\r\n</pre>\r\n</div>\r\n<p></p>\r\n",
+    "PostedDate": "2012-11-26T07:55:33.937-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "947113",
+    "ThreadId": "403203",
+    "Html": "\r\n<p>Thank you for pointing to me the right direction. I resolved it by doing every view through view injection in scopedregion manager than through navigation.&nbsp;</p>\r\n<p>the problem was, in above code isNavigatedFrom, the regions were removed.&nbsp;</p>\r\n<p>so for strange reasons, when I navigated second time, it kept saying, &quot;Rigth region is not available&quot; in function</p>\r\n<pre>PerformInternalNavigation</pre>\r\n<p>. (i used navigationFailed event)</p>\r\n<p>&nbsp;</p>\r\n<p>Many thanks.</p>\r\n<p>Kavya</p>\r\n",
+    "PostedDate": "2012-11-26T09:30:28.057-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

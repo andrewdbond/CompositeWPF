@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "564367",
+    "ThreadId": "245561",
+    "Html": "\r\n<p>Hi,</p>\r\n<p><span style=\"color:#1f497d\">&lt;Silly question ahead/&gt;</span></p>\r\n<p><span style=\"color:#1f497d\">A basic conceptual doubt, I am registering a Custom facade object as part of my container (using MEF) in bootstrapper class. Now&nbsp;I can query this object from Container using another class (say Class Consumer) is by &quot;container.GetExport&lt;\r\n CustomFacade &gt;()&quot;. For using &quot;container&quot; object, I need to create a CompostionContainer object as part of my Consumer class and use it.</span></p>\r\n<p><span style=\"color:#1f497d\">Is it the right approach creating Container object everytime we need to query something from it? Or better approach is to&nbsp;create a static instance of Container and use it through out the app?</span></p>\r\n<p><span style=\"color:#1f497d\">Thanks!</span></p>\r\n<p><span style=\"color:#1f497d\">regards,</span></p>\r\n<p><span style=\"color:#1f497d\">Indro</span></p>\r\n",
+    "PostedDate": "2011-02-10T21:06:25-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "564395",
+    "ThreadId": "245561",
+    "Html": "<p>Niether, just run the BootStrapper and either use Imports or use the Service Locator.<br /> <br /> Reference the Microsoft.Practices.ServiceLocation dll then:</p>\n<pre style=\"font-family: consolas;\"><span style=\"color: blue;\"><span style=\"color: blue;\">using</span>&nbsp;Microsoft.Practices.ServiceLocation;<br /><br /><span style=\"color: #2b91af;\">ServiceLocator</span>.Current.GetInstance&lt;<span style=\"color: #1f497d;\">CustomFacade</span>&gt;();<br /></span></pre>\n<p>Took me a while to find ServiceLocator, when I started, so don't feel bad that you missed it, doesn't seem to be too clear in the docs.&nbsp; The container you created in the BootStrapper does persist, you don't need to create another one.&nbsp; In most of the samples, using Imports is more common, but ServiceLocator comes in handy.</p>",
+    "PostedDate": "2011-02-10T22:08:58.41-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "564400",
+    "ThreadId": "245561",
+    "Html": "<p>John,</p>\r\n<p>GetExport also does the same. It will get me a instance of the CustomFacade object.</p>\r\n<p>Is there a way out using GetExport and container (MEF way)?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p>Indro</p>",
+    "PostedDate": "2011-02-10T22:27:33.223-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "564401",
+    "ThreadId": "245561",
+    "Html": "<p>John,</p>\r\n<p>GetExport also does the same. It will get me a instance of the CustomFacade object.</p>\r\n<p>Is there a way out using GetExport and container (MEF way)?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p>Indro</p>",
+    "PostedDate": "2011-02-10T22:28:03.063-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "564639",
+    "ThreadId": "245561",
+    "Html": "<p>Hi Indro,</p>\r\n<p>As John told you in his post, it will be more simple if you simple decorate your dependencies with the <strong>Import</strong> attribute on your classes or also, you could obtain the instance using the service locator.</p>\r\n<p>Prism provides guidance on how to resolve instances using a Dependency Injection Container. In your particular scenario, it is using MEF. You will find this topic explained in <a href=\"http://msdn.microsoft.com/en-us/library/ff921140(v=PandP.40).aspx\">Chapter 3: Managing Dependencies Between Components</a>.</p>\r\n<p>Additionally, you read more about MEF and how it works <a href=\"http://msdn.microsoft.com/en-us/library/dd460648.aspx\">here</a>.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-02-11T07:02:50.077-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "564779",
+    "ThreadId": "245561",
+    "Html": "<blockquote style=\"border: 0.1em solid #cccccc; font-style: italic; margin: 0.25em 1em 0pt; padding: 0pt 0.25em;\"><strong>Indrasis wrote:</strong><br /> <br /> GetExport also does the same. It will get me a instance of the CustomFacade object.</blockquote>\n<p>Yes, that was kind of the point.&nbsp; <span style=\"color: #1f497d;\">But, you don't have direct access to the container that is created in the </span><span style=\"color: #1f497d;\">bootstrapper</span><span style=\"color: #1f497d;\">, once you leave the bootstrapper.&nbsp; You do have access to ServiceLocator.Current, which does have access to that </span><span style=\"color: #1f497d;\">container</span><span style=\"color: #1f497d;\">. </span></p>\n<p><span style=\"color: #1f497d;\"><br /> </span></p>",
+    "PostedDate": "2011-02-11T10:15:54.257-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "565731",
+    "ThreadId": "245561",
+    "Html": "<p>John and Miguel,</p>\r\n<p>Thanks for the clarification.</p>\r\n<p>John's solution is perfect. I decorate my ServiceClass with [Export] attribute and add the module to AggregateCatalog as MEF guidance says. Then I use,</p>\r\n<p>var x= ServiceLocator.Current.GetInstance&lt;ServiceClass&gt;(), which returns the instance! Perfect.</p>\r\n<p>Just to get a piece of your thought process,&nbsp; Is there a way to get a handle to the CompositionContainer&nbsp;of Bootstrapper class from any other module?</p>\r\n<p>Thanks,</p>\r\n<p>Indro</p>",
+    "PostedDate": "2011-02-14T01:29:26.013-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

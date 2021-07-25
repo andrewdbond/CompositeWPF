@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "636361",
+    "ThreadId": "263654",
+    "Html": "\r\n<p>Hi, I can't get &quot;Entity reference&quot; in common service class library.</p>\r\n<p>I use Prism4&#43;Silverlight&#43;WCF RIA Services. As we know, a Service can be implemented in one Prism module and be consumed by another module with the help of a common service interface class library. But my current problem is, it's not possible to get&nbsp;&nbsp;&quot;Entity\r\n reference&quot; in common service class library.</p>\r\n<p>&nbsp;</p>\r\n<p>For example, I created an interface IBookDataService in a common class library of &quot;MyApplication.Common&quot;, now I want to declare an method of</p>\r\n<pre><span> void</span> GetCategories(Action&lt;ObservableCollection&lt;<span style=\"color:#ff0000\"><strong>Category</strong></span>&gt;&gt; getCategoriesCallback);</pre>\r\n<pre><br></pre>\r\n<p>but it's not possible because the type &quot;<span style=\"color:#ff0000\">Category</span>&quot; in unknown in current common class library, only Prism modules have &quot;RIA Link&quot; to RIA Services and get access to server side business entities by local proxy.</p>\r\n<p>&nbsp;</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">interface</span> IBookdataService\r\n{\r\n     <span style=\"color:green\">//Category is unknown, because MyApplication.Common class library has no RIAService LINK to the web project.</span>\r\n     <span style=\"color:blue\">void</span> GetCategories(Action&lt;ObservableCollection&lt;Category&gt;&gt; getCategoriesCallback);\r\n}\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>Is there some way to solve my service problem? I really need the services to&nbsp;separate&nbsp;concerns of ViewModel in Prism modules. Thanks for your help.</p>\r\n",
+    "PostedDate": "2011-07-02T01:44:43.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "637151",
+    "ThreadId": "263654",
+    "Html": "<p>Hi,</p>\r\n<p>One possibility to fulfill your requirement would be to create a Services module, whose sole purpose would be to define the RIA link to RIA Servicse. Then, you could make your other modules depend on that module, and therefore access the proxy generated classes.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-04T12:54:59.083-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "637408",
+    "ThreadId": "263654",
+    "Html": "<p>The problem is solved by myself.&nbsp;Thanks for your reply anyway.</p>",
+    "PostedDate": "2011-07-05T04:09:45.79-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "644126",
+    "ThreadId": "263654",
+    "Html": "<p>What was the &nbsp;solution? &nbsp;Can you provide more information please?</p>",
+    "PostedDate": "2011-07-18T23:02:05.027-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

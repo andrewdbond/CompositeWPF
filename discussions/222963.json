@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "478226",
+    "ThreadId": "222963",
+    "Html": "How to create a disposable module?\r\nI need my module was disposed as it uses some unmanaged resources (COM).\r\nParticularly it creates and holds a reference to ManagementEventWatcher. Now I'm getting InvalidComObjectException on application termination: &quot;COM object that has been separated from its underlying RCW cannot be used&quot;. So I need to have some way to call ManagementEventWatcher.Stop before it'll GCed.\r\nI've tried to implement IDisposable in my module (naive), but it isn't called by Prism.\r\n\r\nHow to do this?\r\n",
+    "PostedDate": "2010-08-09T10:54:44.16-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "478292",
+    "ThreadId": "222963",
+    "Html": "<p>Hi,</p>\r\n<p>I do not know your exact scenario, but first of all if you use unmanaged resources in your application, you might prefer to separate this in a different component (e.g. a service)&nbsp;to have a complete control&nbsp;of&nbsp;its&nbsp;disposal. Otherwise, you&nbsp;depend on the garbage collection and it not possible to&nbsp;predict when it will&nbsp;occur.</p>\r\n<p>On the specific subject of resource management,&nbsp;you need to&nbsp;ensure that your unmanaged resources are released. The way to do this is by implementing <a href=\"http://msdn.microsoft.com/en-us/library/system.idisposable.aspx\">IDisposable</a>&nbsp;correctly, as it explained in the code sample from <a href=\"http://msdn.microsoft.com/en-us/library/system.idisposable.aspx\">this MSDN article</a>.</p>\r\n<p>This way, you&nbsp;would be able&nbsp;to&nbsp;handle&nbsp;the component&rsquo;s&nbsp;disposal manually, as it shown <a href=\"http://msdn.microsoft.com/en-us/library/system.idisposable.aspx\">here</a>. For example, if you opt to use a service, the call should look like the following:</p>\r\n<pre><span style=\"color:blue\">using </span>(<span style=\"color:blue\">var </span>myService = container.Resolve&lt;MyService&gt;())\r\n{ \r\n    ...\r\n}\r\n</pre>\r\n<p><a href=\"http://11011.net/software/vspaste\"></a></p>\r\n<p>For more information on&nbsp;how to implement the Dispose method,&nbsp;you could check the following documentation sections:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/fs2xkftw.aspx\">Implementing a Dispose Method</a></li>\r\n</ul>\r\n<p>Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-08-09T14:40:20.697-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "479762",
+    "ThreadId": "222963",
+    "Html": "Hi,\r\nthanks for your answer.\r\nI understand that I need IDisposable for my unmanaged resource wrapper. If I can just dispose my component/service then there's no any issue connected with Prism.\r\nMy unmanaged component's lifetime is equal my module's lifetime. So I can't use using. I don't know when module will die. The component must be disposed right before application shutdown. And the app can't do this, only module can do this as it only one who knows about the component.\r\nSo it'd be nice if Prism provides some mechanism to notify modules about shutdown.",
+    "PostedDate": "2010-08-12T08:42:37.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "513979",
+    "ThreadId": "222963",
+    "Html": "\r\n<p>This is how I'm doing it in my bootstrapper, it seems to work fine for my application. My modules and services are correctly being disposed (verified through logging).</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>        <span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> <span style=\"color:blue\">void</span> ConfigureContainer()\r\n        {\r\n            <span style=\"color:blue\">base</span>.ConfigureContainer();\r\n\r\n            <span style=\"color:green\">// Ensure we properly dispose of objects in the container at application exit</span>\r\n            Application.Current.Exit &#43;= (sender, e) =&gt; <span style=\"color:blue\">this</span>.Container.Dispose();\r\n        }\r\n\r\n</pre>\r\n</div>\r\n<p></p>\r\n",
+    "PostedDate": "2010-10-28T07:14:11.527-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

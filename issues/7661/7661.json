@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nI'm closing this work item, as the issues reported here are already described in the following work items:\r\nhttp://compositewpf.codeplex.com/workitem/7215\r\nhttp://compositewpf.codeplex.com/workitem/8029\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami﻿",
+    "ClosedDate": "2011-12-02T10:38:27.753-08:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "Prism cannot load modules from XAML when using MEF because the first char of the file name will be truncated and a file not found exception is raised.\n \nThe line in LoadModuleType() in MefFileModuleTypeLoader.Desktop.cs:\n \nstring path = moduleInfo.Ref.Substring(RefFilePrefix.Length + 1);\n \nshould be:\n \nstring path = moduleInfo.Ref.Substring(RefFilePrefix.Length);\n \nI.e. Ref = \"file://TestModule.dll\"\n \nAfter URI parsing:\n \nRefFilePrefix = \"file://\" (Length = 7)\n \nIn the current release the path ends up with:\n \nRef.Substring(8) =>\n \npath = \"estModule.dll\"\n \nWorkaround: Write Ref=\"file://_TestModule.dll\" (with an extra character at the beginning) in XAML module catalog.",
+    "LastUpdatedDate": "2013-05-16T05:28:45.153-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Medium",
+      "Severity": 100,
+      "Id": 2
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-12-08T02:38:56.857-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Bug in LoadModuleType() of MefFileModuleTypeLoader.Desktop.cs",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 7661
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nYou can check a similar issue here: http://compositewpf.codeplex.com/workitem/7215\r\n\r\nAs mentioned in the issue I've linked to, the product team is aware of this and might tackle the issue in future releases.\r\n\r\nThank you for your feedback.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2010-12-10T11:51:26.21-08:00",
+      "Id": 156397
+    },
+    {
+      "Message": "The code does not  handle files with #. Paths with # get escaped, with the result it now contains %23. Why not use string path = uri.LocalPath()?  This will also convert / characters from file:// format to correct windows format.",
+      "PostedDate": "2011-02-14T12:36:56.197-08:00",
+      "Id": 156398
+    }
+  ]
+}

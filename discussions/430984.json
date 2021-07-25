@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "992571",
+    "ThreadId": "430984",
+    "Html": "\r\n<p><br>\r\nIn a previous thread &quot;prism: problems with dynamically adding tabitems&quot; i was lucky to learn from Agustin Adami and Damian Cherubini in my way to solve the problem with their help.<br>\r\nDuring my trials to solve the problem i tried to use diffrent approach for dynamically adding<br>\r\nTabItems.One solution i found while searching was by&nbsp;using UriQuery class. The beauity of this approach is that it removes the coupling with the view to be displayed and its View Model and it was like this:</p>\r\n<p>private void ShowSubsystemDetails(PreCommissioning.Model.Subsystem Subsys)<br>\r\n&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var uriQuery = new UriQuery();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (Subsys != null)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; uriQuery.Add(&quot;SubsystemNo&quot;, Subsys.SubsystemNo);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var uri = new Uri(&quot;SubsystemDetailsView&quot; &#43; uriQuery.ToString(), UriKind.Relative);</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; regionManager.RequestNavigate(&quot;MainRegion&quot;, uri);<br>\r\n&nbsp;&nbsp; }<br>\r\nthis code included in controller class.<br>\r\nbut i had this exception when trying to open the tabitem:<br>\r\n&nbsp;&nbsp; &quot;Activation error occured while trying to get instance of type Object, key &quot;SubsystemDetailsView&quot;<br>\r\ni hope that there is solution to such exception becuase i think this approach is better than view injection.</p>\r\n",
+    "PostedDate": "2013-01-26T23:02:13.147-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "993021",
+    "ThreadId": "430984",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I'm glad you found the way to solve your previous problem.</p>\r\n<p>Regarding this exception, based on my understanding this error could be caused if you are not exporting your views with the corresponding contract name.</p>\r\n<p>Take into account that as mentioned in this <a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40).aspx#sec8\">\r\nsection </a>of the documentation when the region navigation service creates a view, it requests a type of\r\n<strong>Object </strong>from the container with a name that matches the one supplied in the navigation\r\n<strong>URI</strong>. In <strong>MEF</strong>, only the contract name is used. Therefore, as long as the view is exported with a contract name that matches the name in the URI request, the view can be successfully constructed.</p>\r\n<p>For example you could try exporting you views like this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>[Export(<span style=\"color:#a31515\">&quot;SubsystemDetailsView&quot;</span>)]<br>[PartCreationPolicy(CreationPolicy.NonShared)]<br><span style=\"color:blue\">public</span> <span style=\"color:blue\">partial</span> <span style=\"color:blue\">class</span> SubsystemDetailsView : UserControl\n</pre>\r\n</div>\r\n<p>I hope this helps,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2013-01-28T04:48:11.933-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "993100",
+    "ThreadId": "430984",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I'm happy when i see your name in a reply&nbsp;because i feel then that a new&nbsp;problem&nbsp;in its way to be solved.</p>\r\n<p>As per our current problem it is resolved as i expected but the&nbsp;next problem is that i&nbsp;pass the&nbsp;Subsystem property&nbsp;to&nbsp;\r\n<span style=\"font-family:Consolas; color:#008000; font-size:x-small\"><span style=\"font-family:Consolas; color:#008000; font-size:x-small\"><span style=\"font-family:Consolas; color:#008000; font-size:x-small\"><span style=\"color:#000000\">SubsystemDetailsViewModel</span></span></span></span>\r\n</p>\r\n<p>using this statement</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&quot;<span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\">subsysdetailsViewModel.Subsystem = Subsys;</span></span>&quot;&nbsp;</p>\r\n<p>how i can do this with UriQuery.</p>\r\n<p>and if it is not possible what is the alternative?</p>\r\n<p></p>\r\n",
+    "PostedDate": "2013-01-28T08:01:36.403-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "993144",
+    "ThreadId": "430984",
+    "Html": "\r\n<p>Hi there,</p>\r\n<p>When using navigation requests the parameters you can pass in the <strong>UriQuery\r\n</strong>are limited to <strong>strings </strong>only; hence, its not possible to pass an entire object (unless you can serialize it in a\r\n<strong>string </strong>and recreate it based on it, although this not always recommended)</p>\r\n<p>Based on my understanding, the usual approach in this kind of scenarios is to pass only an ID which you can use to identify the corresponding model (for example, the\r\n<strong>SubsystemNo </strong>parameter you are adding to the <strong>Uri</strong>) and then obtain that model in the\r\n<strong>OnNavigatedTo </strong>method by using that ID, which you can retrieve from the\r\n<strong>NavigationContext</strong>'s <strong>Parameters</strong>:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> OnNavigatedTo(NavigationContext navigationContext)\r\n{\r\n    <span style=\"color:blue\">string</span> id = navigationContext.Parameters[<span style=\"color:#a31515\">&quot;SubsystemNo&quot;</span>];\r\n    \r\n    ...\r\n}\r\n\r\n</pre>\r\n</div>\r\nHow you would obtain the model based on this ID will depend mostly of the architecture of your application. For example, you could obtain the model from a repository or shared service that could be in charge of managing the models. Another approach could be\r\n to simply store the model in a shared service before requesting the navigation and then retrieve the model from that service in the\r\n<strong>OnNavigatedTo </strong>method.\r\n<p></p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2013-01-28T09:10:16.54-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "993179",
+    "ThreadId": "430984",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Happy to see your replies again.</p>\r\n<p>I think i have to implement <span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\">\r\n<span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"color:#000000\">INavigationAware :\r\n</span></span></span></span><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\">OnNavigatedTo,\r\n<span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\">OnNavigatedFrom,\r\n</span></span><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\">IsNavigationTarget right?</span></span></span></span></p>\r\n<p><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\">also do i have to implement\r\n</span></span></span></span><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\">IConfirmNavigationRequest?</span></span></p>\r\n<p><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\">thanks in advance.</span></span></p>\r\n<p><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\">&nbsp;</span></span></p>\r\n<p><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\">&nbsp;</span></span>\r\n</p>\r\n<p><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\"></p>\r\n<p>&nbsp;</p>\r\n</span></span>\r\n<p></p>\r\n<p>&nbsp;</p>\r\n</span></span>\r\n<p></p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2013-01-28T10:17:03.717-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "993203",
+    "ThreadId": "430984",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>You are right. In order to follow the approach I mentioned above you will need to implement the\r\n<strong>INavigationAware </strong>interface in the view model of the corresponding\r\n<strong>SubsystemDetailsView</strong>. This will allow for the view model to &quot;participate&quot; in the navigation progress and receive the parameters passed in the navigation request.</p>\r\n<p>You can find more information about this in the following section of the documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28v=pandp.40%29.aspx#sec9\">Chapter 8 - Navigation - View and View Model Participation in Navigation</a>\r\n</li></ul>\r\n<p>Regarding the <strong>IConfirmNavigationRequest </strong>interface, I believe it's not required to implement it for this particular approach. This interface is used when you want to give a view model the ability to confirm or cancel a navigation request\r\n (for example, if there are unsaved changes in a view) when the view is &quot;navigated from.&quot; The use of this interface will depend mostly if you need to take advantage of those capabilities or not.</p>\r\n<p>You can find more information about the <strong>IConfirmNavigationRequest </strong>\r\nin the following section:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28v=pandp.40%29.aspx#sec12\">Chapter 8 - Navigation - Confirming or Canceling Navigation</a>\r\n</li></ul>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2013-01-28T10:57:56.777-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "993207",
+    "ThreadId": "430984",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Thanks Damian i will try to implement this approach and give feedback when i finish.</p>\r\n<p><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\"></p>\r\n<p>&nbsp;</p>\r\n</span></span>\r\n<p></p>\r\n",
+    "PostedDate": "2013-01-28T11:06:12.617-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "993221",
+    "ThreadId": "430984",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Thanks Damian, thanks Agustin</p>\r\n<p>I implemented <span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\">\r\n<span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"color:#000000\">INavigationAware.<span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\">OnNavigatedTo()\r\n and used Service to obtain the model.</span></span></span></span></span></span></p>\r\n<p><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"color:#000000\">Only one concern, with\r\n the old approach the View Model was not aware where the data comming from or where</span></span></span></span></p>\r\n<p><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"color:#000000\">it&nbsp;going to, which\r\n is a good characteristic of View Model, but now the View Model knows where the data is</span></span></span></span></p>\r\n<p><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"font-family:Consolas; color:#2b91af; font-size:x-small\"><span style=\"color:#000000\">comming from which\r\n is bad practice.&nbsp;Any suggestions?&nbsp;</span></span></span></span></p>\r\n",
+    "PostedDate": "2013-01-28T11:41:10.66-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "993259",
+    "ThreadId": "430984",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding consuming a service in your view model to retrieve the data that will be used in them, shouldn't be a bad practice. Take into account that you can make your view model be loosely coupled from the specific implementation of this\r\n service, for example by resolving the service through a common interface (these are commonly called\r\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921122(v=pandp.40).aspx#sec7\">\r\nshared services</a>, which are explained in this section of the documentation).</p>\r\n<p>Also, an example of this can be seen in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921074%28v=pandp.40%29.aspx\">\r\nStockTrader RI</a>, particularly in the <strong>MarketFeedService.cs</strong> , which exposes the data obtained from parsing two XML files. This services is registered as singletons in the container trough a common interface (<strong>IMarketFeedService</strong>)\r\n so it can be consumed in different parts of the application. For example this service is injected through this interface in the\r\n<strong>WatchListViewModel</strong>.</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2013-01-28T12:55:57.543-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

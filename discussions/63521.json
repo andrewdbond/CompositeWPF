@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "216020",
+    "ThreadId": "63521",
+    "Html": "<p>I have a dependecy issue in prism and I am not sure if there is a clean way to deal with this. In particular, my modules need to use some asynchronous events, but I don't see any &quot;Loaded&quot; events in Prism which would allow me to chain dependencies. Thus subsequent modules are loading and then running into uninitialized of null objects. Anyone have any experience with this?</p>\r\n<p>&nbsp;</p>\r\n<p>Best,</p>\r\n<p>RDL</p>",
+    "PostedDate": "2009-07-25T10:53:33.21-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "216448",
+    "ThreadId": "63521",
+    "Html": "<p>Hi RDL,</p>\r\n<p>If I understand correctly you want to set up dependencies between modules so they are loaded in a particular order. I do not know what method you are using to load your modules, but all methods have a way to set up dependencies between modules. You can take a look at the <a href=\"http://msdn.microsoft.com/en-us/library/dd458909.aspx\">Modularity Quickstart</a> solution that is related to your approach to see how this is done.</p>\r\n<p>The following are the how to topics of each module loading way, which explain how to set up dependencies between modules:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/dd490831.aspx\">How to: Populate the Module Catalog from Code</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/dd458873.aspx\">How to: Populate the Module Catalog from XAML</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/dd490822.aspx\">How to: Populate the Module Catalog from a Configuration File or a Directory in WPF</a></li>\r\n</ul>\r\n<p>There is also a good post from<span style=\"color:#1f497d\"> <a href=\"http://www.ctrl-shift-b.com/\">Derek Greer</a> </span>that show<span style=\"color:#1f497d\"> <a href=\"http://www.ctrl-shift-b.com/2009/05/enhancing-prism-module-initialization.html\">Enhancing the Prism Module Initialization Lifecycle</a> </span>that might be useful in your scenario.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><span style=\"font-size:11pt\" lang=EN-US><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></span></p>",
+    "PostedDate": "2009-07-27T10:01:53.17-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "235827",
+    "ThreadId": "63521",
+    "Html": "<p>Sorry, I didn't realize anyone responded to this and I deffered the problem to later.</p>\r\n<p>It's not so much a particular order, but rather, I am making a bunch of asynchronous method calls in order to load initial data, and I need to wait until the asynchonous methods are completed before I go ahead. One thought was to&nbsp;use the event aggregator and create some&nbsp;a&nbsp;LoadedEvent, where the payload consits of the type that will be accessed through an instance of IUnityContainer, however, if the the instances I am waiting on are loaded before I subscribe to the LoadedEvent, then I will be hung. Of course, I could come up with another work around to that, but it seems like this is a pretty common problem and that there should be a relatively straightforward solution build into the framework?</p>\r\n<p>Thanks</p>\r\n<p>RDL</p>",
+    "PostedDate": "2009-09-17T16:46:28.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "235984",
+    "ThreadId": "63521",
+    "Html": "<p>I used a semaphore for a similiar requirement.&nbsp; I had a spinner control that would spin whenever the semaphore was greater than 0, when it reached 0 it would stop.&nbsp;&nbsp;Each async service was responsible for acquring/releasing&nbsp;on the semaphore (IUnityContainer singleton).&nbsp; It raised events&nbsp;when it&nbsp;reached&nbsp;0 and became non-zero -&nbsp;which the spinner subscribed to.&nbsp;</p>",
+    "PostedDate": "2009-09-18T04:27:05.677-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "236012",
+    "ThreadId": "63521",
+    "Html": "<p>RDL - try something like this:</p>\r\n<p>In your class define a private member:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">private</span> AutoResetEvent _wait;\r\n</pre>\r\n</div>\r\n<p>Then in the method where you're initializing everything:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">new</span> Thread(<span style=\"color:Blue\">new</span> ThreadStart(<span style=\"color:Blue\">delegate</span>\r\n{\r\n\tclient.BeginWebServiceCall1(OnWebServiceCall1Complete);\r\n\t_wait.WaitOne();\r\n\r\n\tclient.BeginWebServiceCall2(OnWebServiceCall2Complete);\r\n\t_wait.WaitOne();\r\n\r\n\tclient.BeginWebServiceCall3(OnWebServiceCall3Complete);\r\n\t_wait.WaitOne();\r\n\r\n\tContinue();\r\n\r\n})).Start();\r\n</pre>\r\n</div>\r\n<p>And finally, make sure&nbsp;you have the&nbsp;callback methods to&nbsp;handle the completed&nbsp;web service calls as well as the method to continue processing:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> OnWebServiceCall1Complete(<span style=\"color:Blue\">object</span> e)\r\n{\r\n\tDeployment.Current.Dispatcher.BeginInvoke(<span style=\"color:Blue\">delegate</span>\r\n\t{\r\n\t\t<span style=\"color:Green\">// Do work here...</span>\r\n\t\t_wait.Set();\r\n\t});\r\n}\r\n\r\n<span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> OnWebServiceCall2Complete(<span style=\"color:Blue\">object</span> e)\r\n{\r\n\tDeployment.Current.Dispatcher.BeginInvoke(<span style=\"color:Blue\">delegate</span>\r\n\t{\r\n\t\t<span style=\"color:Green\">// Do work here...</span>\r\n\t\t_wait.Set();\r\n\t});\r\n}\r\n\r\n<span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> OnWebServiceCall3Complete(<span style=\"color:Blue\">object</span> e)\r\n{\r\n\tDeployment.Current.Dispatcher.BeginInvoke(<span style=\"color:Blue\">delegate</span>\r\n\t{\r\n\t\t<span style=\"color:Green\">// Do work here...</span>\r\n\t\t_wait.Set();\r\n\t});\r\n}\r\n\r\n<span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> Continue()\r\n{\r\n\t<span style=\"color:Green\">// Do whatever you would normally do now that everything is initialized.</span>\r\n}\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;HTH</p>\r\n<p>Ryan</p>",
+    "PostedDate": "2009-09-18T06:01:52.51-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

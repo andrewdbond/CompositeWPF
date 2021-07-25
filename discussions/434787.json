@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1007988",
+    "ThreadId": "434787",
+    "Html": "I have come across this issue while working with WPF application using prism. I got to know what the error was, but couldn't find out why was this error and when can the region be null for any object. Want to know how such issues can be handled in the application so that they do not occur again.\r<br />\n<br />\nDetails of the issue:\r<br />\n<br />\nThe cause of this issue was that some code in the application called Microsoft.Practices.Prism.Regions.Behaviors.DelayedRegionCreationBehavior.CreateRegion(System.Windows.DependencyObject, System.String), but supplied a null for the String argument, which appears to be the &quot;regionName&quot;.\r<br />\n<br />\n<strong>While creating region, the prism code is trying to get RegionName from the dependency object which is a null value and because of this the Initialize method is throwing ArgumentNull exception.</strong>\r<br />\n<br />\nException:\r<br />\n<br />\nThe most likely causing exception was: 'System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---&gt; Microsoft.Practices.Prism.Regions.Behaviors.RegionCreationException: An exception occurred while creating a region with name ''. The exception was: System.ArgumentNullException: Value cannot be null.\r<br />\nParameter name: regionName\r<br />\n   at Microsoft.Practices.Prism.Regions.RegionAdapterBase<code>1.Initialize(T regionTarget, String regionName)\r<br />   at Microsoft.Practices.Prism.Regions.RegionAdapterBase</code>1.Microsoft.Practices.Prism.Regions.IRegionAdapter.Initialize(Object regionTarget, String regionName)\r<br />\n   at Microsoft.Practices.Prism.Regions.Behaviors.DelayedRegionCreationBehavior.CreateRegion(DependencyObject targetElement, String regionName).  ---&gt; System.ArgumentNullException: Value cannot be null.<br />\n",
+    "PostedDate": "2013-02-27T21:20:55.73-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1008297",
+    "ThreadId": "434787",
+    "Html": "Hi, <br />\n<br />\nI manage to reproduce the exception by setting a region name to <strong>&quot;&quot;</strong> (empty), using the following code snippet in my view:<br />\n<pre><code>&lt;ContentControl cal:RegionManager.RegionName=&quot;&quot; /&gt;</code></pre>\n\nTherefore, I would recommend you to check that all the regions in your views are correctly named and that you don't have any empty region name. If that is not the case, it would be useful if you could provide us with more information on how you are defining regions in your views.<br />\n<br />\nI hope you find this useful, <br />\n<br />\nFederico Martinez <br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-02-28T08:46:57.517-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

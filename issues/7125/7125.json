@@ -1,0 +1,65 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 5,
+    "Custom": "",
+    "Description": "Hi\n \nFirst i need to say that may application is a MultiTargeting WPF, Silverlight application that using MefBootstrapper for loading application modules.\n \nIn my Application Scenario, some application modules should Export they global DelegateCommand to Application Shell,for this reason i did create this class\n \n    [MetadataAttribute]\n    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]\n    public class CommandExportAttribute : ExportAttribute, ICommandExport\n    {\n       public string Title { get; private set; }\n \n        [DefaultValue(new string[0])]\n        public string[] Keywords { get; set; }\n       .....\n    }\n \n    and each module  that need to export commands for application shell use this attribute for example \n   \n    [ModuleExport(typeof(ModuleEmployee), InitializationMode = InitializationMode.WhenAvailable)]\n    public partial class ModuleEmployee : IApplicationModule, IModule\n    {\n        ....\n        [CommandExport(\"New Employee\", typeof(DelegateCommand<object>), Keywords = new[] { \"New Employee\", \"Employee\", \"New\" })]\n         public DelegateCommand<object> NewEmployeeCommand { get; private set; }\n        ....\n     }\n \n    and in shell class i have this for importing Commands of loaded modules\n \n    [ImportMany(AllowRecomposition = true)]\n    public ObservableCollection<Lazy<ICommand, ICommandExport>> ImportedCommands {get; set;}\n \n   this application working good in WPF version but in silverlight version this line of Prism 4.0 CTP throw an exception \n \n  class MefXapModuleTypeLoader ---> method HandleDownloadCompleted line --->  this.AggregateCatalog.Catalogs.Add(filteredCatalog);\n \n  exception is :  \"Sequence contain more than one element\" \n \n  now, can any one say why this happen in silverlight version but in wpf version this work fine.\n \nThanks",
+    "LastUpdatedDate": "2013-02-21T18:38:33.2-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-08-18T05:47:30.287-07:00",
+    "Status": {
+      "Name": "Active",
+      "Id": 2
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Custom ExportAttribute Silverlight Modularity Exception",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 7125
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Could you include the entire exception message text?  Often the exceptions thrown by MEF have a lot of additional and helpful information in them for troubleshooting issues like this.\r\n",
+      "PostedDate": "2010-08-18T10:48:16.67-07:00",
+      "Id": 156283
+    },
+    {
+      "Message": "sure, this is entire exception :\r\n\r\n{Microsoft.Practices.Composite.Modularity.ModuleTypeLoadingException: Failed to load type for module Kart.Modules.Employee. Error was: Sequence contains more than one element. ---> System.InvalidOperationException: Sequence contains more than one element\r\n   at System.Linq.Enumerable.SingleOrDefault[TSource](IEnumerable`1 source)\r\n   at lambda_method(Closure , ComposablePartDefinition )\r\n   at System.Linq.Enumerable.WhereEnumerableIterator`1.MoveNext()\r\n   at System.Linq.Buffer`1..ctor(IEnumerable`1 source)\r\n   at System.Linq.Enumerable.ToArray[TSource](IEnumerable`1 source)\r\n   at System.ComponentModel.Composition.Hosting.ComposablePartCatalogCollection.c__DisplayClass1.b__0()\r\n   at System.Lazy`1.CreateValue()\r\n   at System.Lazy`1.LazyInitValue()\r\n   at System.Lazy`1.get_Value()\r\n   at System.ComponentModel.Composition.Hosting.ComposablePartCatalogCollection.RaiseChangingEvent(Lazy`1 addedDefinitions, Lazy`1 removedDefinitions, AtomicComposition atomicComposition)\r\n   at System.ComponentModel.Composition.Hosting.ComposablePartCatalogCollection.Add(ComposablePartCatalog item)\r\n   at Microsoft.Practices.Composite.MefExtensions.Modularity.MefXapModuleTypeLoader.HandleDownloadCompleted(DeploymentCatalog deploymentCatalog, AsyncCompletedEventArgs e)\r\n   --- End of inner exception stack trace ---\r\n   at Microsoft.Practices.Composite.Modularity.ModuleManager.HandleModuleTypeLoadingError(ModuleInfo moduleInfo, Exception exception)\r\n   at Microsoft.Practices.Composite.Modularity.ModuleManager.IModuleTypeLoader_LoadModuleCompleted(Object sender, LoadModuleCompletedEventArgs e)\r\n   at Microsoft.Practices.Composite.MefExtensions.Modularity.MefXapModuleTypeLoader.RaiseLoadModuleCompleted(LoadModuleCompletedEventArgs e)\r\n   at Microsoft.Practices.Composite.MefExtensions.Modularity.MefXapModuleTypeLoader.RaiseLoadModuleCompleted(ModuleInfo moduleInfo, Exception error)\r\n   at Microsoft.Practices.Composite.MefExtensions.Modularity.MefXapModuleTypeLoader.HandleDownloadCompleted(DeploymentCatalog deploymentCatalog, AsyncCompletedEventArgs e)\r\n   at Microsoft.Practices.Composite.MefExtensions.Modularity.MefXapModuleTypeLoader.DeploymentCatalog_DownloadCompleted(Object sender, AsyncCompletedEventArgs e)\r\n   at System.ComponentModel.Composition.Hosting.DeploymentCatalog.OnDownloadCompleted(AsyncCompletedEventArgs e)\r\n   at System.ComponentModel.Composition.Hosting.DeploymentCatalog.HandleOpenReadCompleted(Object sender, OpenReadCompletedEventArgs e)\r\n   at System.Net.WebClient.OnOpenReadCompleted(OpenReadCompletedEventArgs e)\r\n   at System.Net.WebClient.OpenReadOperationCompleted(Object arg)}\r\n\r\n\r\n\r\nThanks for attention",
+      "PostedDate": "2010-08-18T22:07:21.677-07:00",
+      "Id": 156284
+    },
+    {
+      "Message": "So MEF is trying to load the XAP, it is adding the discovered types to the CompositionContainer via an AggregateCatalog, and there is a type that is supposed to only have one registration that instead has at least two.  If you examine the exception object, the Message property usually has info on the types that MEF is having issues with, but I don't see that in the listing above, so you may want to either\r\n* Set a breakpoint in ModuleManager.HandleModuleTypeLoadingError and look at the exception that gets wrapped as a ModuleTypeLoadingException\r\n* Look at a few MEF debugging posts and tools like: http://msdn.microsoft.com/en-us/library/ff603380.aspx or http://visualstudiogallery.msdn.microsoft.com/en-us/7c860add-db03-48c0-af7f-202442ebd97c\r\n\r\nI do have a simple question to rule out one possible cause of this sort of error: Are any shared dependencies used by the modules (say the prism dlls or a shared DLL that exports types) have the Copy Local property set to true?  If so, with CopyLocal false, does the issue go away?\r\n\r\nAs for why this works works fine in WPF and not in Silverlight... it may be because of how MEF handles XAPs and the types discovered in them. With XAPs if a type is imported in one xap and then the same type from the same dll is included in another xap and imported, then MEF will import that type twice with different identifiers internally.  This can cause all sorts of fun with dependency management and can cause the type of error you are seeing.\r\n\r\nIf this does not help, let me know by adding another comment to this work item.",
+      "PostedDate": "2010-08-19T10:18:14.917-07:00",
+      "Id": 156285
+    },
+    {
+      "Message": "I have modified the code below \r\n\r\nprivate void HandleDownloadCompleted(DeploymentCatalog deploymentCatalog, AsyncCompletedEventArgs e)\r\n{\r\n...\r\nFilteredCatalog filteredCatalog = new FilteredCatalog(deploymentCatalog,\r\n                           x => x.ExportDefinitions.Where(def => this.IsTypeImportAllowed(def.ContractName)).FirstOrDefault() != null);     // SingleOrDefault() --> FirstOrDefault()\r\n...\r\n\r\nand then i found that \"part = {Kart.Modules.Employee.ModuleEmployee}\" has 2 ExportDefinitions  \"ExportDefinitions = {System.ComponentModel.Composition.Primitives.ExportDefinition[2]}\"\r\nBelow  :\r\n[0] = {Kart.Modules.Employee.ModuleEmployee (ContractName=\"Microsoft.Practices.Composite.Modularity.IModule\")}\r\n[1] = {Kart.Modules.Employee.ModuleEmployee.NewEmployeeCommand (ContractName=\"System.Windows.Input.ICommand\")}\r\n\r\nand this cause the error, because filteredCatalog look for SingleOrDefault() in his query.\r\n\r\nand now what is your idea ?\r\n\r\n\r\n\r\n\r\n\r\n",
+      "PostedDate": "2010-08-21T01:49:32.49-07:00",
+      "Id": 156286
+    },
+    {
+      "Message": "RE: As for why this works works fine in WPF and not in Silverlight... it may be because of how MEF handles XAPs and the types discovered in them. With XAPs if a type is imported in one xap and then the same type from the same dll is included in another xap and imported, then MEF will import that type twice with different identifiers internally. This can cause all sorts of fun with dependency management and can cause the type of error you are seeing.\r\n\r\nYou're right, it is a lot of fun… a quick question: Is this by design or is it something that will be changed in the future?\r\n",
+      "PostedDate": "2010-09-16T18:10:53.733-07:00",
+      "Id": 156287
+    }
+  ]
+}

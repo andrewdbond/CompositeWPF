@@ -1,0 +1,100 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "We are closing this work item, as the problem reported by the user is now solved.\n\nRegards,\n\nDamian Cherubini\nhttp://blogs.southworks.net/dcherubini",
+    "ClosedDate": "2013-09-25T11:08:45.57-07:00",
+    "CommentCount": 12,
+    "Custom": "",
+    "Description": "I added http://www.codeplex.com/prism namespace to my XAML.  It could not be found by intellisense but VS seemed to be happy with it manually added.  When I try to add a region, I get an error \"The name \"RegionManager\" does not exist in the namespace \"http://www.codeplex.com/prism\".  I have not run into any issues with basic c# code, just in XAML.\n\nI downloaded and am using Prism 4.1 against .NET 4.5 in VS 2012.\n\nIs this a bug or am I missing something?\n\nRelevant Code:\nxmlns:prism=\"http://www.codeplex.com/prism\"\n\nprism:RegionManager.RegionName=\"{x:Static infran:RegionNames.AlertRegion}\"",
+    "LastUpdatedDate": "2013-09-25T11:08:45.57-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2013-09-20T05:26:31.313-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Cannot resolve Regions in XAML",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 1,
+    "Id": 10343
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nWe tried to recreate your scenario but for us is working fine. Therefore, it would be useful if you can provide us with more detail about your application scenario, like your complete XAML code from the view, the exact Prism version you are using and what is the Framework that your application is targeting.\r\n\r\nRegards,\r\n\r\nFederico Martinez http://blogs.southworks.net/fmartinez ",
+      "PostedDate": "2013-09-20T10:09:01.89-07:00",
+      "Id": 156671
+    },
+    {
+      "Message": "Framework is .net 4.5I downloaded the latest 4.1 for .NET 4.5 here \"https://compositewpf.codeplex.com/releases/view/95815\" , but here are the dll versions.Prism DLL Versions are 4.5.0.0Microsoft.Practices.Prism.dllMicrosoft.Practices.Prism.Interactivity.dllMicrosoft.Practices.Prism.MefExtensions.dllMicrosoft.Practices.Prism.UnityExtensions.dll\r\n\r\nXAML        xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\"        xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"        xmlns:prism=\"http://www.codeplex.com/prism\"        xmlns:infran=\"clr-namespace:SCOPEEDGE.SECommon.SEToolKit.Names;assembly=SECommon.SEToolKit\"        xmlns:infraB=\"clr-namespace:SCOPEEDGE.SECommon.SEToolKit.Behaviors;assembly=SECommon.SEToolKit\"        infraB:WindowClosingBehavior.Closing=\"{Binding Path=ClosingCommand}\" Background=\"{DynamicResource FormBackgroundBrush}\"        WindowStartupLocation=\"CenterScreen\"  Height=\"768\" Width=\"1024\" Icon=\"{Binding Path=WindowIcon}\"         Title=\"SEToolkit\" FontWeight=\"Bold\">                                                                                                                                                                                                                                                                                                                                                                                                        \r\n\r\n            ",
+      "PostedDate": "2013-09-23T05:24:15.143-07:00",
+      "Id": 156672
+    },
+    {
+      "Message": "Hi,\r\n\r\nAs far as i know, after checking your scenario and your XAML, I didn't find anything that could be causing this issue. Therefore, it would be useful if you could provide us with a repro sample of your application which presents this issue so we can analyze it in more detail.\r\n\r\nRegards,\r\n\r\nFederico Martinez http://blogs.southworks.net/fmartinez ",
+      "PostedDate": "2013-09-23T10:20:48.21-07:00",
+      "Id": 156673
+    },
+    {
+      "Message": "Is there something else that I need to reference besides those four dlls?  I only downloaded those and service locator.  Everything else I reference are regular .NET assemblies.",
+      "PostedDate": "2013-09-23T20:34:14.23-07:00",
+      "Id": 156674
+    },
+    {
+      "Message": "Hi,\r\n\r\nFirst of all, it has been reported that adding __Microsoft.Practices.Prism.Interactivity.dll__ can cause problems with intellisense. In order to fix them you can try removing the aforementioned library (if you are not using it) or adding a reference to the __Microsoft.Expression.Interactions__ and __System.Windows.Interactivity__ libraries in your project, which are required by __Microsoft.Practices.Prism.Interactivity.__\r\n\r\nSecond, you don't need both __Microsoft.Practices.Prism.MefExtensions.dll__ and __Microsoft.Practices.Prism.UnityExtensions.dll__. Depending if you are using __Unity__ or __MEF__ as the dependency injection container of your application you might need to use only one of the two. Please try adding the one corresponding to your container and removing the other.\r\n\r\nFinally, please check if the references to the __Prism__ libraries have its __Copy Local__ property set as ___true___ in the main project.\r\n\r\nAlso you can check __Prism's Quick Starts__ and compare them with your solution to find any possible differences that could be lead to the cause of the problem. You can find them included in the __Prism 4.1 for Silverlight 5 and .NET 4.0__ release in the following download page:* https://compositewpf.codeplex.com/releases/view/55576\r\n\r\nIf none if this helps, then it could be useful if you could provide us with a sample that we could analyze to help you find the reason behind this.\r\n\r\nThanks,\r\n\r\nDamian Cherubinihttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2013-09-24T11:06:38.4-07:00",
+      "Id": 156675
+    },
+    {
+      "Message": "Tried removing the Interactivity dll already, but I may have had other issues at the time so will try that again.  \r\n\r\nSince I had used Unity in the past with MEF as a secondary for extensions, I figured I would try all mef with this release so I will drop Unity and see how that goes.\r\n\r\nAlready made sure everything was copy local.\r\n\r\nDid not know how useful the quick starts were because they all assume that the prism installation was done including the register binaries from what I could tell.  Had been looking through them already anyways to see if I missed something and had not found anything yet.\r\n\r\nIf I cannot get it to work out, will send a sample with the problem for analysis.\r\n\r\nThanks",
+      "PostedDate": "2013-09-24T11:33:30.57-07:00",
+      "Id": 156676
+    },
+    {
+      "Message": "Tried removing the Interactivity dll already, but I may have had other issues at the time so will try that again.  \r\n\r\nSince I had used Unity in the past with MEF as a secondary for extensions, I figured I would try all mef with this release so I will drop Unity and see how that goes.\r\n\r\nAlready made sure everything was copy local.\r\n\r\nDid not know how useful the quick starts were because they all assume that the prism installation was done including the register binaries from what I could tell.  Had been looking through them already anyways to see if I missed something and had not found anything yet.\r\n\r\nIf I cannot get it to work out, will send a sample with the problem for analysis.\r\n\r\nThanks",
+      "PostedDate": "2013-09-24T11:33:47.013-07:00",
+      "Id": 156677
+    },
+    {
+      "Message": "Still no joy.  Source attached",
+      "PostedDate": "2013-09-25T04:56:57.813-07:00",
+      "Id": 156678
+    },
+    {
+      "Message": "Hi\r\n\r\nUsing your solution we could reproduce the issue you are experiencing when the __Prism__ libraries are blocked.\r\n\r\nSometimes, when downloading files such as __zips__ or __dlls__, __Windows__ automatically blocks the file in order to prevent any possible threats from the downloaded files. It's possible that the __Prism__ dlls are blocked in your system.With __Visual Studio__ closed, check the properties of the __Prism__ dll files. If you find an \"___Unblock___\" button at the bottom of the properties window this means the assemblies are currently blocked. Please unblock them, reopen the solution and try cleaning and rebuilding it.\r\n\r\nLet us know if this helps,\r\n\r\nDamian Cherubinihttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2013-09-25T10:29:01.17-07:00",
+      "Id": 156679
+    },
+    {
+      "Message": "That was the issue apparently.  Thanks for the help.",
+      "PostedDate": "2013-09-25T10:48:38.373-07:00",
+      "Id": 156680
+    },
+    {
+      "Message": "Can you remove the attachment please.",
+      "PostedDate": "2013-09-25T10:50:03.067-07:00",
+      "Id": 156681
+    },
+    {
+      "Message": "Attachment deleted.\r\n\r\nI'm glad we could help you solve this problem.As the issue is now solved we will close this work item.\r\n\r\nIf you need any further support regarding this or other topics, you can create a new thread in the [discussion section](https://compositewpf.codeplex.com/discussions) where we will try to help with your concerns.\r\n\r\nThanks,\r\n\r\nDamian Cherubinihttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2013-09-25T11:07:20.467-07:00",
+      "Id": 156682
+    }
+  ]
+}

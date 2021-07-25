@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1238088",
+    "ThreadId": "543349",
+    "Html": "GridSplitter seems to be not working correctly with prism:PopUpWindowAction. To reproduce the behavior<br />\n<ul>\n<li>Open the &lt;Quickstarts&gt;\\Interactivity\\InteractivityQuickstart\\Views\\CustomPopupView.xaml </li>\n<li>Remove the Width=&quot;400&quot; from line 7</li>\n<li>Replace the entire Grid with the following code:</li>\n</ul>\n<pre><code>&lt;Grid Margin=&quot;5&quot;\n          ShowGridLines=&quot;False&quot;&gt;\n        &lt;Grid.ColumnDefinitions&gt;\n            &lt;ColumnDefinition Width=&quot;*&quot;\n                              MinWidth=&quot;50&quot; /&gt;\n            &lt;ColumnDefinition Width=&quot;Auto&quot; /&gt;\n            &lt;ColumnDefinition Width=&quot;*&quot;\n                              MinWidth=&quot;50&quot; /&gt;\n        &lt;/Grid.ColumnDefinitions&gt;\n        &lt;StackPanel Grid.Column=&quot;0&quot;\n                    Margin=&quot;5&quot;&gt;\n            &lt;Expander Header=&quot;Test1&quot;\n                      FlowDirection=&quot;LeftToRight&quot;\n                      ExpandDirection=&quot;Down&quot;\n                      IsExpanded=&quot;True&quot;\n                      BorderBrush=&quot;Gray&quot;\n                      BorderThickness=&quot;1&quot;\n                      Padding=&quot;5&quot;&gt;\n                &lt;StackPanel&gt;\n                    &lt;Button&gt;Text1&lt;/Button&gt;\n                &lt;/StackPanel&gt;\n            &lt;/Expander&gt;\n        &lt;/StackPanel&gt;\n        &lt;GridSplitter Grid.Column=&quot;1&quot;\n                      Margin=&quot;0 5&quot;\n                      ResizeDirection=&quot;Columns&quot;\n                      HorizontalAlignment=&quot;Stretch&quot;\n                      VerticalAlignment=&quot;Stretch&quot;\n                      Width=&quot;3&quot;\n                      Background=&quot;Gray&quot; /&gt;\n        &lt;StackPanel Grid.Column=&quot;2&quot;\n                    Margin=&quot;5&quot;&gt;\n            &lt;Expander Header=&quot;Test2&quot;\n                      FlowDirection=&quot;LeftToRight&quot;\n                      ExpandDirection=&quot;Down&quot;\n                      IsExpanded=&quot;True&quot;\n                      BorderBrush=&quot;Gray&quot;\n                      BorderThickness=&quot;1&quot;\n                      Padding=&quot;5&quot;&gt;\n                &lt;StackPanel&gt;\n                    &lt;Button&gt;Text2&lt;/Button&gt;\n                &lt;/StackPanel&gt;\n            &lt;/Expander&gt;\n        &lt;/StackPanel&gt;\n    &lt;/Grid&gt;</code></pre>\n\n<ul>\n<li>Build and Run the solution. Go to the Interaction Requests tab and select the Raise Custom Popup View Interaction button.</li>\n<li>\nDon't resize the window, but try to move the splitter. It won't work, until you resize the window.<br />\n</li>\n</ul>\nI know that the splitter requires an initial Width to work properly, but if you set it as a UserControl property then try to resize the window, the Grid won't stretch!<br />\n",
+    "PostedDate": "2014-04-25T09:32:31.423-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1238172",
+    "ThreadId": "543349",
+    "Html": "Hi,\r<br />\n<br />\nI was able to reproduce your issue successfully. However, I don't seem this behavior would be related to any <strong>Prism</strong> feature or configuration.\r<br />\nI would suggest you to ask on the <strong>WPF</strong> forum site as you may find more helpful support for the scenario you described:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"https://wpf.codeplex.com/\" rel=\"nofollow\">Codeplex: Windows Presentation Foundation (WPF)</a><br />\n</li>\n</ul>\nRegards.\r<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-04-25T13:13:54.083-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1238178",
+    "ThreadId": "543349",
+    "Html": "Hi,\r<br />\n<br />\nThanks for your quick response. Well, I created a non-Prism based simple application which shows a dialog and the dialog has a user control (with the code above) in it. That one works correctly!<br />\n",
+    "PostedDate": "2014-04-25T13:26:08.083-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1238208",
+    "ThreadId": "543349",
+    "Html": "I think the issue is that the PopupWindowAction sizes the popup window to the size of the content:<br />\n<pre><code>            Window wrapperWindow = this.GetWindow(args.Context);\n            wrapperWindow.SizeToContent = SizeToContent.WidthAndHeight;</code></pre>\n\nI noticed that once I resized the popup window, the GridSplitter starts working. If you set the SizeToContent property of your non-Prism popup window to SizeToContent.WidthAndHeight, I think you'll see the same behavior.<br />\n",
+    "PostedDate": "2014-04-25T15:16:43.663-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "423077",
+    "ThreadId": "207147",
+    "Html": "<p>I have a viewmodel which has a DelegateCommand for handling a button.&nbsp; When the button is clicked, I need to load a view from a different module and pass it some data.&nbsp; I can load the view via a module controller which will dynamically load a module into a region.&nbsp; I can pass the new view's viewmodel data via an event.&nbsp; The problem is that the module (and thus the view/viewmodel) is not yet loaded when the event to pass it&nbsp;data&nbsp;is published.&nbsp; So, what is the right way to do this?</p>\r\n<p>Here are some pseudo&nbsp;code snippets:</p>\r\n<p>ViewModel 1:<br>private void ShowSomething(object obj)<br>{<br>&nbsp;&nbsp; //load the module in the given view<br>&nbsp;&nbsp; _eventAggregator.GetEvent&lt;ModuleChangeEvent&gt;().Publish(new ModuleChangeInfo() { ModuleName = ModuleNames.Module1, Region = RegionNames.MainRegion });</p>\r\n<p>&nbsp;&nbsp; _eventAggregator.GetEvent&lt;ShowSomethingEvent&gt;().Publish(Id);<br>}</p>\r\n<p>&nbsp;<br>ViewModel 2:<br>public ViewModel2(IEventAggregator eventAggregator)<br>{<br>&nbsp;&nbsp; this._eventAggregator = eventAggregator;</p>\r\n<p>&nbsp;&nbsp; _eventAggregator.GetEvent&lt;ShowSomethingEvent&gt;().Subscribe(ShowView);<br>}</p>\r\n<p><br>Module Controller:<br>IRegion region = _regionManager.Regions[regionName];<br>object currentView = region.GetView(regionName);</p>\r\n<p>if (currentView != null)<br>&nbsp;&nbsp; region.Remove(currentView);</p>\r\n<p>currentView = module.View;<br>region.Add(currentView, regionName);<br>region.Activate(currentView);</p>\r\n<p>Perhaps this is entirely the wrong the approach.&nbsp; Any help is greatly appreciated.</p>",
+    "PostedDate": "2010-03-24T08:05:22.46-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "423181",
+    "ThreadId": "207147",
+    "Html": "<p>So I have now seen how I can do this via a Controller.&nbsp; However, this seems to force me to have a 'View' interface property in my ViewModel and a 'Model' property in my View.&nbsp; I don't particularly like this fact as I'd rather that the ViewModel knows nothing about the view itself.&nbsp;</p>\r\n<p>At this point, I'm just wondering if the scenario above is still OK and if someone has any other thoughts.</p>\r\n<p>Tks again.</p>",
+    "PostedDate": "2010-03-24T11:45:15.463-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "423323",
+    "ThreadId": "207147",
+    "Html": "<p><span style=\"font-size:10pt;color:#30332d\" lang=EN-US>Hi,</span></p>\r\n<p><span style=\"font-size:10pt;color:#30332d\" lang=EN-US>I noticed that in your module controller you are removing a view from a region and adding a new one. If your application&rsquo;s scenario requires only one of the views to be active in that region at the same time, you could use a <strong>SingleActiveRegion</strong> (use a control that inherits from <strong>ContentControl</strong>), and simply activate/deactivate the views you require. <a href=\"http://blogs.southworks.net/matiasb/2009/07/02/how-to-hide-views-inside-composite-application-guidance-aka-prism-v2-regions/\">Matias Bonaventura</a> explains some of the different view states in <a href=\"http://blogs.southworks.net/matiasb/2009/07/02/how-to-hide-views-inside-composite-application-guidance-aka-prism-v2-regions/\">this post</a>.</span></p>\r\n<p><span style=\"font-size:10pt;color:#30332d\" lang=EN-US>Related to the module not having been instantiated when the event is published issue, you could check out <a href=\"http://www.ademiller.com/blogs/tech/\">Ade Miller&rsquo;s</a> post about <a href=\"http://www.ademiller.com/blogs/tech/2008/11/adding-store-and-forward-support-to-the-prism-eventaggregator/\">Adding Store and Forward support to the Prism EventAggregator</a> for some ideas that might help with that.</span></p>\r\n<p><span style=\"font-size:10pt;color:#30332d\" lang=EN-US>Finally, </span><span style=\"font-size:10pt;color:#30332d\"><a href=\"http://blogs.msdn.com/erwinvandervalk/\">Erwin Van Der Valk</a></span><span style=\"font-size:10pt;color:#30332d\" lang=EN-US>, developer in the Prism-v2 project, has created</span><span style=\"font-size:10pt;color:#30332d\" lang=EN-US>&nbsp;</span><span style=\"font-size:10pt;color:#30332d\"><a href=\"http://blogs.msdn.com/erwinvandervalk/archive/2009/04/29/how-to-build-an-outlook-style-application-with-prism-v2-part-2.aspx\">an Outlook style sample application</a></span><span style=\"font-size:10pt;color:#30332d\" lang=EN-US>&nbsp;</span><span style=\"font-size:10pt;color:#30332d\" lang=EN-US>that also shows a different UI based on user input (sort of from a sidebar) which you might find useful. </span></p>\r\n<p><span style=\"font-size:10pt;color:#30332d\" lang=EN-US>Please let me know if this helps.</span></p>\r\n<p><span style=\"font-size:10pt;color:#30332d\" lang=EN-US>Damian Schenkelman<br> </span><span style=\"font-size:10pt;color:#30332d\"><a href=\"http://blogs.southworks.net/dschenkelman\"><span style=\"color:#3e62a6\" lang=EN-US>http://blogs.southworks.net/dschenkelman</span></a></span></p>",
+    "PostedDate": "2010-03-24T17:31:59.94-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "423777",
+    "ThreadId": "207147",
+    "Html": "<p>Thanks for the links!&nbsp; Very good stuff.</p>",
+    "PostedDate": "2010-03-25T14:25:02-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

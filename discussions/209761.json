@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "432659",
+    "ThreadId": "209761",
+    "Html": "<p>So how do we implement global copy/cut/paste functionality in a Composite WPF application?</p>",
+    "PostedDate": "2010-04-19T04:05:32.373-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432776",
+    "ThreadId": "209761",
+    "Html": "<p>.Hi,</p>\r\n<p>Well you can start of by using the specific editing commands found in&nbsp;<a href=\"http://msdn.microsoft.com/en-us/library/system.windows.documents.editingcommands.aspx\">msdn.microsoft.com/en-us/library/system.windows.documents.editingcommands.aspx</a>. Here is a simple cod snippet that demonstrates this:</p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">StackPanel</span><span style=\"color:blue\">&gt;</span>\r\n  <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">Menu</span><span style=\"color:blue\">&gt;</span>\r\n    <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">MenuItem</span> <span style=\"color:red\">Command</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">ApplicationCommands.Paste</span><span style=\"color:black\">&quot;</span> <span style=\"color:blue\">/&gt;</span>\r\n  <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">Menu</span><span style=\"color:blue\">&gt;</span>\r\n  <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">TextBox</span> <span style=\"color:blue\">/&gt;</span>\r\n<span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">StackPanel</span><span style=\"color:blue\">&gt;</span>\r\n</pre>\r\n</div>\r\n</p>\r\n<p>If you want something very complicated you can use a service to store and&nbsp;retrieve&nbsp;complicated objects that you copy and paste from&nbsp;different&nbsp;modules.</p>\r\n<p>&nbsp;</p>\r\n<p>Hope this helps,</p>\r\n<p>Calin</p>",
+    "PostedDate": "2010-04-19T09:49:53.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "458965",
+    "ThreadId": "209761",
+    "Html": "i have seen also the following thread: http://compositewpf.codeplex.com/Thread/List.aspx?SearchText=applicationcommands\r\n\r\n\r\nI am still confused about how to use ApplicaitonCommands (such as copy, paste, properties) using MVVM?\r\nDelegateCommand is not enough in this case since ApplicationCommands have bindings to specific CanExecute and Execute. \r\n\r\n\r\nso is there a &quot;best practice&quot; on how to use ApplicationCommands or should i disregard them and use only DelegateCommands\r\n\r\nThanks\r\n\r\n",
+    "PostedDate": "2010-06-23T07:18:20.267-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "460514",
+    "ThreadId": "209761",
+    "Html": "anyone? \r\ndo you have some special way to integrate application commands? or do you just use &quot;plain&quot; commands?",
+    "PostedDate": "2010-06-27T23:09:05.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "460520",
+    "ThreadId": "209761",
+    "Html": "Hi,\r\n\r\nThe most common method I use is the one in the stock trader reference.\r\n\r\nHere is a piece  of the StockTraderRICommands class:\r\n\r\n    public static class StockTraderRICommands\r\n    {\r\n        private static CompositeCommand submitOrderCommand = new CompositeCommand(true);\r\n\r\n       public static CompositeCommand SubmitOrderCommand\r\n        {\r\n            get { return submitOrderCommand; }\r\n            set { submitOrderCommand = value; }\r\n        }\r\n    }\r\n\r\n    public class StockTraderRICommandProxy\r\n    {\r\n        virtual public CompositeCommand SubmitOrderCommand\r\n        {\r\n            get { return StockTraderRICommands.SubmitOrderCommand; }\r\n        }\r\n    }\r\n\r\n And here is how to use it:\r\n\r\n  commandProxy.SubmitOrderCommand.RegisterCommand(orderCompositePresentationModel.SubmitCommand);\r\n\r\n\r\nFor a deeper understanding please refer to the StockTrader implementation,\r\n\r\n\r\nRegards,\r\n",
+    "PostedDate": "2010-06-27T23:31:52.407-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "460521",
+    "ThreadId": "209761",
+    "Html": "Hi Calin\r\nthank you.\r\n\r\nI'm aware of StockTraderRICommands but i don't see how this resolves application commands:\r\nI'm more interested in Input gestures. so if one clicks ctrl+N i want to bind it to delegate/composite PRISM command \r\nas i see it now, you can make your own &quot;New&quot; command and use it instead of the application command - am i right? or is there another way?\r\n\r\n\r\n\r\n\r\n\r\n",
+    "PostedDate": "2010-06-27T23:51:42.177-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "461609",
+    "ThreadId": "209761",
+    "Html": "<p>well, since no one has answers</p>\r\n<p>&nbsp;</p>\r\n<p>i can just say that its possible to register using the bootstrapper something like this (its not that good but can get you started)</p>\r\n<p>&nbsp;</p>\r\n<p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> System.Windows.DependencyObject CreateShell()\r\n        {\r\n            \r\n            <span style=\"color:blue\">var</span> main = <span style=\"color:blue\">new</span> MasterDetailDefaultShell();\r\n            \r\n            ICommand Action1 = <span style=\"color:blue\">new</span> DelegateCommand&lt;<span style=\"color:blue\">string</span>&gt;(OnExecuteAction1, CanExecuteAction1);\r\n            main.InputBindings.Add(<span style=\"color:blue\">new</span> KeyBinding(Action1, <span style=\"color:blue\">new</span> KeyGesture(Key.X, ModifierKeys.Control)));\r\n            \r\n            main.Show();\r\n\r\n            <span style=\"color:blue\">return</span> main;\r\n        }\r\n\r\n\r\n<span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> OnExecuteAction1(<span style=\"color:blue\">string</span> str)\r\n        {\r\n            <span style=\"color:blue\">var</span> r = Container.TryResolve&lt;IEventAggregator&gt;();\r\n           r.GetEvent&lt;SpecialXEventcs&gt;().Publish(<span style=\"color:#a31515\">&quot;kuku&quot;</span>);\r\n        }\r\n<br><br>and than consume it in lower level modules<br></pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2010-06-30T05:04:26.33-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "In regions whose target element inherits from FrameworkElement, a reference of the DelayedRegionCreationBehavior is kept in the control, since there is an event subscription to the Loaded event in the control, handled by a method in the aforementioned behavior.\n \nIn cases where the target element does not inherit from FrameworkElement, this event subscription isn’t done, and thus, there is no element holding a strong reference to the DelayedRegionCreationBehavior. Therefore, if the garbage collector attempts to remove unused objects before the UpdateRegions method in the RegionManager is called, the DelayedRegionCreationBehavior will be garbage collected before the actual region is created by it, thus causing the actual region not to be created by the behavior.\n \nA possible workaround could be to store a reference to the behaviors in the region manager, like this:\n \nRegionManger before:\nprivate static void CreateRegion(DependencyObject element)\n{\nIServiceLocator locator = ServiceLocator.Current;\nDelayedRegionCreationBehavior regionCreationBehavior = locator.GetInstance<DelayedRegionCreationBehavior>();\nregionCreationBehavior.TargetElement = element;\nregionCreationBehavior.Attach();\n}\n \nRegionManger after:\nprivate static void CreateRegion(DependencyObject element)\n{\nIServiceLocator locator = ServiceLocator.Current;\nDelayedRegionCreationBehavior regionCreationBehavior = locator.GetInstance<DelayedRegionCreationBehavior>();\nregionCreationBehavior.TargetElement = element;\nregionCreationBehavior.Attach();\n_delayedBehaviors.Add(regionCreationBehavior);\n}\nprivate static List<DelayedRegionCreationBehavior> _delayedBehaviors = new List<DelayedRegionCreationBehavior>();\"\n \nThanks,\n \nGuido Leandro Maliandi\nhttp://blogs.southworks.net/gmaliandi",
+    "LastUpdatedDate": "2013-07-23T14:30:43.06-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-07-26T11:41:53-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "DelayedRegionCreationBehavior garbage collected in non-FrameworkElement regions",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 7,
+    "Id": 8521
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nAs a possible workaround to avoid this issue, I believe you could modify the DelayedRegionCreationBehavior class so that, if the target element is not a FrameworkElement, the behavior could attach itself to the target element as an attached property. Like this, the DelayedRegionCreationBehavior should not be garbage collected before the region is created.\r\n\r\nTo do this, you would need to define an attached property in the DelayedRegionCreationBehavior class doing something like this:\r\n\r\nstatic public DependencyProperty DelayedRegionCreationBehaviorProperty = \r\n            DependencyProperty.RegisterAttached(\"DelayedRegionCreationBehaviorProperty\", \r\n            typeof(DelayedRegionCreationBehavior), \r\n            typeof(DelayedRegionCreationBehavior), \r\n            null);\r\n\r\npublic static DelayedRegionCreationBehavior GetDelayedRegionCreationBehavior(DependencyObject target)\r\n{\r\n    if (target == null) throw new ArgumentNullException(\"target\");\r\n    return (DelayedRegionCreationBehavior)target.GetValue(DelayedRegionCreationBehaviorProperty);\r\n}\r\n\r\npublic static void SetDelayedRegionCreationBehavior(DependencyObject target, DelayedRegionCreationBehavior value)\r\n{\r\n    if (target == null) throw new ArgumentNullException(\"target\");\r\n    target.SetValue(DelayedRegionCreationBehaviorProperty, value);\r\n}\r\n\r\n\r\nThen, you would need to modify the WireUpTargetElement and UnWireTargetElement methods to attach/remove the behavior if the target element is not a FrameworkElement:\r\n\r\nprivate void WireUpTargetElement()\r\n{\r\n    FrameworkElement element = this.TargetElement as FrameworkElement;\r\n    if (element != null)\r\n    {\r\n        element.Loaded += this.ElementLoaded;\r\n    }\r\n    else\r\n    {\r\n        DependencyObject nonFrameworkElement = this.TargetElement as DependencyObject;\r\n        if (nonFrameworkElement != null)\r\n        {\r\n            nonFrameworkElement.SetValue(DelayedRegionCreationBehaviorProperty, this);\r\n        }\r\n    }\r\n}\r\n\r\nprivate void UnWireTargetElement()\r\n{\r\n    FrameworkElement element = this.TargetElement as FrameworkElement;\r\n    if (element != null)\r\n    {\r\n        element.Loaded -= this.ElementLoaded;\r\n    }\r\n    else\r\n    {\r\n        DependencyObject nonFrameworkElement = this.TargetElement as DependencyObject;\r\n        if (nonFrameworkElement != null)\r\n        {\r\n            nonFrameworkElement.ClearValue(DelayedRegionCreationBehaviorProperty);\r\n        }\r\n    }\r\n}\r\n\r\n\r\nTake into account that the element containing your region should inherit for DependencyObject to implement this workaround.\r\n\r\nAlso, this workaround only prevents the DelayedRegionCreationBehavior to be garbage collected before the region is created. There might be other problems that might arise when using a non FrameworkElement as a region.\r\n\r\nI hope you find this useful,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-02-01T11:16:36.773-08:00",
+      "Id": 156488
+    },
+    {
+      "Message": "We have the same problem when we used a region for RibbonDefaultPageCategory from DevExpress components. RibbonDefaultPageCategory is based on FrameworkContentElement. Ultimately we used a solution with extending methods WireUpTargetElement, UnWireTargetElement to support FrameworkContentElement and subscribe and unsubcribe Loaded event handler. ",
+      "PostedDate": "2012-11-21T06:44:47.17-08:00",
+      "Id": 156489
+    },
+    {
+      "Message": "Can you show me a code snippet of what you did to resolve this issue with the RibbonDefaultPageCategory issue. I am also experiencing something similar. The regions are registered and the view gets created in debug mode when the framework version is 4.0 but it does not work when the application is run in release mode or with framework set to .net 4.5.",
+      "PostedDate": "2013-07-23T14:27:46.127-07:00",
+      "Id": 156490
+    }
+  ]
+}

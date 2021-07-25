@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nWe are closing this work item as the functionality described in it can already be achieved using the capabilities provided by Prism as commented below.\r\n\r\nFor additional support regarding this subject, you could create a thread in the discussions section, where we will help you with your concerns.\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+    "ClosedDate": "2012-05-10T13:26:52.957-07:00",
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "currently this method has following logic for finding hosting container:\n                if ((bool)tabItem.GetValue(IsGeneratedProperty))\n                {\n                    if (tabItem.Content == item)\n                    {\n                        return tabItem;\n                    }\n                }\nNow, I want to extend the behaviour and one of my goals is to host items (views) not directly in TabItem.Content but in wraping panels that will boast additional decoration functions based on presentation metadata provided by views. It means that the check above will fail as tabItem.Content != item in my case. I suggest to change this check to this:\n                if ((bool)tabItem.GetValue(IsGeneratedProperty))\n                {\n                    if (GetContainedItem(tabItem) == item)\n                    {\n                        return tabItem;\n                    }\n                }\n(Or even without outer \"if\" statement - not sure about that)\nThat way, I'll be able to implement proper retrieval of item from Container simply by overriding GetContainedItem (which I need to override anyways).",
+    "LastUpdatedDate": "2013-05-16T05:28:45.85-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-11-14T09:12:23.803-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "TabControlRegionSyncBehavior.GetContainerForItem change request",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 1,
+    "Id": 7529
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nThanks for your feedback, we really appreciate this. In my opinion, the extension that you proposed is a possible approach for achieving this scenario. Both GetContainerForItem and GetContainedItem methods are virtual, so it does not prevent you to extend them. \r\n\r\nIf you need more guidance on how to extend them, could you please provide more information how you are planning to apply these panels to your views? \r\n\r\nThanks again,\r\n\r\nFernando Antivero\r\nhttp://blogs.southworks.net/fantivero",
+      "PostedDate": "2010-11-18T11:08:34.483-08:00",
+      "Id": 156380
+    },
+    {
+      "Message": "oh, sorry, my bad. Got tunneled vision on this one as GetContainerForItem was non-virtual in v2 :$\r\nThanks for pointing it out!",
+      "PostedDate": "2010-11-18T19:40:01.347-08:00",
+      "Id": 156381
+    },
+    {
+      "Message": "Although I won't be able to fully override it as IsGeneratedProperty is private. I can (and will) introduce my own IsGeneratedProperty in behaviour descendant of course but it feels a bit dirty..",
+      "PostedDate": "2010-11-18T19:45:27.997-08:00",
+      "Id": 156382
+    },
+    {
+      "Message": "In general, what I'm trying to gain:\r\nI want my views to be re-usable and re-hostable. To gain the later I need to be sure that my view is shown properly in all possible region types. E.g. I've implemented window-based region adapter and when I open a view in window I want it to have fixed width and maybe height, while those should be flexible when view is hosted in content control or tab control regions. I've introduced IPresentationInfo and IProvidePresentationInfo and implemented later on my base view so that views can provide additional presentation information about themselves. IPresentationInfo includes properties BoxedWidth, BoxedHeight, etc. Then in certain region types I'd want my views to be decorated a bit differently if those are forms, and not if those are lists and I want to add it as a bool property to my IPresentationInfo. This different decoration means adding wrappers around views themselves and that's the point where I need to override Prepare/GetContainerForItem and GetContainedItem.\r\n\r\nPlease let me know if my approach has a better alternative, though I borrowed the idea from CAB I believe and it seemed fine there.",
+      "PostedDate": "2010-11-18T19:59:29.183-08:00",
+      "Id": 156383
+    }
+  ]
+}

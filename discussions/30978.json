@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "103004",
+    "ThreadId": "30978",
+    "Html": "Hi guys,<br>\r\n<br>\r\ncoming with background from CAB I miss the concept of WorkItems.Does PRISM realy have only modules?<br>\r\nWhat about the IContainerFacade? Is this intend to create custom &quot;WorkItems&quot;.<br>\r\n<br>\r\nGuidance needed!<br>\r\n<br>\r\nBenjamin\r\n",
+    "PostedDate": "2008-07-07T00:16:46.327-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "103142",
+    "ThreadId": "30978",
+    "Html": "I, as well, have my background in CAB.&nbsp; I'm just beginning to work with Composite WPF (CompWPF), but here's what I've found...<br>\r\n<br>\r\nThe WorkItem isn't gone, it has just been reorganized and improved to leverage WPF.&nbsp; First, for Dependency Injection, Comp WPF uses any DI container you want.&nbsp; The Stock Trader RI uses P&amp;P's Unity Container.<br>\r\n<br>\r\nNow let's break down the WorkItem collections:<br>\r\n<br>\r\nCommands - Replaced with WPF Commands.&nbsp; See the Commanding&nbsp;Quick Start.<br>\r\nEventTopics - See the IEventAggregator Service interface in the Events Quick Start.<br>\r\nItems - Again replace with DI Container of your choice.<br>\r\nServices - Service dependencies are resolved the DI Container similar to CAB.<br>\r\nSmart Parts - Lots of options here - Any WPF User control can be a smart part or you can simply display a model with an associated DataTemplate (an approach I favor).&nbsp; Separated presentation parts are again wired through the DI container.<br>\r\nState - Personally I never used this much in CAB, but you can resolve global state through the DI container if you wish.<br>\r\nUIExtensionSites - I personally haven't explored this much.&nbsp; But with WPF's flexiblity a module can just add new items to a menu/toolbar without extra functionality.&nbsp; It could just be a Comp WPF region.&nbsp;<br>\r\nWorkItems - You can create you own hierarcy of containers, but Comp WPF seems to favor simply one container.&nbsp; What's more important is to segment you business logic.&nbsp; See WorkItem controller below.<br>\r\nWorkspaces - Comp WPF uses regions and Region Manager service.&nbsp; You can name regions in your XAML with an attached property.<br>\r\n<br>\r\nWhen CAB was used in SCSF, the SCSF team began separate WorkItem level business logic into a separate controller (i.e. ControlledWorkItem&lt;T&gt;).&nbsp; You can still maintain use case business logic in a controller.&nbsp; The OrdersController in the StockTrader RI is an example of a controller.<br>\r\n<br>\r\nHope this helps.&nbsp; Suffice it&nbsp;to say, our organization is quite excited about Composite WPF.&nbsp; We're finding tasks that would take days with CAB are now taking just hours with Composite WPF.<br>\r\n<br>\r\nJim\r\n",
+    "PostedDate": "2008-07-07T12:36:13.637-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "103398",
+    "ThreadId": "30978",
+    "Html": "Jim is absolutely right. I would also like to add that we're currently working on a document that provides the conceptual mapping between the things in CAB and Composite WPF. When it's done, we'll put it up on codeplex. <br>\r\n<br>\r\nErwin\r\n",
+    "PostedDate": "2008-07-08T09:22:39.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

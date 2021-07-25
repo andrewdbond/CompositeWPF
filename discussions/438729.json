@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "1023997",
+    "ThreadId": "438729",
+    "Html": "I have a popup window based on Damian's example <a href=\"http://blogs.southworks.net/dcherubini/2012/05/24/popupwindowaction-using-custom-views-instead-of-windows-in-wpf-and-prism/\" rel=\"nofollow\">here</a>.  The view that is created within this receives a new scoped region manager. My issue is that within my popup view, further down the tree I need to display two instances of a single sub-view (CommonView) bound to different data.  Each instance needs to have its own scoped region manager.\r<br />\n<br />\n<img src=\"http://vinumvita.com/wp-content/uploads/image/2013/04/Prism_Region_Manager.jpg\" alt=\"Image\" />\r<br />\n<br />\nThe documentation suggests handling this through view injection but I am unable to get the scoped region manager at the level of AView.\r<br />\n<br />\nUsing IRegionManagerAware, I am able to get the region manager within PopupView.  I had hoped that AView would inherit its parent's region manager but the dependency property RegionManager.RegionManager is empty in AView.  Adding IRegionManagerAware to AView doesn't help either as the PopupWindowAction doesn't reach that deep.\r<br />\n<br />\nI also tried adding Damian's RegionManagerRegistrationBehavior (see <a href=\"http://blogs.southworks.net/dcherubini/2011/11/10/regions-inside-datatemplates-in-prism-v4-using-a-region-behavior/\" rel=\"nofollow\">here</a>) but it never even sees the addition of AView.\r<br />\n<br />\nAny ideas on how to best make this composition work?  I figure I could pass the region manager down through a ViewModel but I'd rather find a way to do this simply through infrastructure or binding.\r<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2013-04-01T18:01:57.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1025539",
+    "ThreadId": "438729",
+    "Html": "Hi,\r<br />\n<br />\nI am glad you found both blog post useful for your application. \r<br />\n<br />\nAs a quick test I took the <strong>PopupWindowActionSample</strong>, modified it to include the <strong>RegionManagerAwareBehavior</strong> and implemented the <strong>IRegionManagerAware</strong> interface in the <strong>ClientView</strong> view, which is part of a UI composition similar to your description. In my case, the <strong>IRegionManagerAware.RegionManager</strong> property was populated correctly in the <strong>ClientView</strong>.\r<br />\n<br />\nAs a starting point, please check if the <strong>RegionManagerAwareBehavior</strong> is correctly registered in the <strong>ConfigureDefaultRegionBehaviors</strong> method of the bootstrapper. Also, it would be helpful to know which method you are using to add the <strong>AView</strong> to the <strong>ARegion</strong> and when (at startup, when clicking a button, etc) to have a better understanding of how your scenario is works.\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-04-04T10:36:53.543-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1025671",
+    "ThreadId": "438729",
+    "Html": "Thanks for the response.\r<br />\n<br />\nI was able to duplicate your success with the <strong>PopupWindowActionSample</strong>.  Examining the details I see that <strong>ClientView</strong> is inserted into <strong>DetailsRegion</strong> via injection.  In my case I'm inserting <strong>AView</strong> into <strong>ARegion</strong> automatically through discovery.  This seems to make the critical difference.\r<br />\n<br />\nWhen modifying the sample by registering <strong>DetailsRegion</strong> with <strong>ClientView</strong>, <strong>ClientView</strong> no longer receives the region manager through <strong>IRegionManagerAware</strong>.\r<br />\n<br />\nIs this expected behavior?\r<br />\n<br />\nThank You...<br />\n",
+    "PostedDate": "2013-04-04T13:45:40.66-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1026261",
+    "ThreadId": "438729",
+    "Html": "Hi,\r<br />\n<br />\nYou are right, the <strong><em>view injection</em></strong> and <strong><em>view discovery</em></strong> approaches add views at very different times. Hence it seems that the problem you are experiencing is mainly caused by a timing issue between the <strong>AutoPopulateRegionBehavior</strong> (in charge of the view discovery mechanism), the <strong>RegionManagerRegistrationBehavior</strong> (in charge of adding a region in the corresponding region manager) and the <strong>RegionManagerAwareBehavior</strong>.\r<br />\n<br />\nBased on my understanding, the regions behaviors are attached to and executed in the regions in the order they were registered. By default in <strong>Prism</strong>, the <strong>AutoPopulateRegionBehavior</strong> is registered first, and hence, under some circumstances, it can add a view to a region before other behaviors are attached to it. For example, it can add a view before the <strong>RegionManagerAwareBehavior</strong> get to be attached to the region, and as a result the view's <strong>RegionManager</strong> property would not be set by it.\r<br />\n<br />\nAs a quick test, I tried changing the order in which the region behaviors are registered and as a result the <strong>RegionManager</strong> property could be set in a <strong>ClientView</strong> added through view discovery. To do this, you need to override the <strong>ConfigureDefaultRegionBehaviors</strong> method of the <strong>Bootstrapper</strong>, to do something like this:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">protected</span> <span style=\"color:Blue;\">override</span> IRegionBehaviorFactory ConfigureDefaultRegionBehaviors()\n{\n    <span style=\"color:Green;\">// We add the RegionManagerRegistrationBehavior and RegionManagerAwareBehavior before the other behaviors</span>\n    IRegionBehaviorFactory behaviors = <span style=\"color:Blue;\">this</span>.Container.Resolve&lt;IRegionBehaviorFactory&gt;();\n    behaviors.AddIfMissing(RegionManagerRegistrationBehavior.BehaviorKey, <span style=\"color:Blue;\">typeof</span>(RegionManagerRegistrationBehavior));\n    behaviors.AddIfMissing(RegionManagerAwareBehavior.BehaviorKey, <span style=\"color:Blue;\">typeof</span>(RegionManagerAwareBehavior));\n\n    <span style=\"color:Green;\">// The we invoke the base method to register the rest of the behaviors</span>\n    <span style=\"color:Blue;\">return</span> <span style=\"color:Blue;\">base</span>.ConfigureDefaultRegionBehaviors();\n}\r\n</pre></div>I also moved the registration of the <strong>RegionManagerRegistrationBehavior</strong> as we need it to execute first in order for the <strong>RegionManagerAwareBehavior</strong> to work correctly.\r<br />\n<br />\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-04-05T11:20:39.12-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1028597",
+    "ThreadId": "438729",
+    "Html": "Thank you once again for the quick response.  It has taken me a few days to get around to trying this out.\r<br />\n<br />\nWith this solution I am indeed able to make the <strong>PopupWindowActionSample</strong> work as expected.  However my real solution was still failing.  The difference between my solution and the sample is that the <strong>Shell</strong> of my solution actually contains the <strong>PopupWindowAction</strong> and associated buttons etc.  The sample initially directs all of this to a <strong>MainRegion</strong>.\r<br />\n<br />\nOnce again if I modify the sample in this way I am able to see the failing result.  I feel that I'm dwelling in the subtleties of Prism's region management and appreciate your guidance.\r<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2013-04-10T11:24:27.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1029155",
+    "ThreadId": "438729",
+    "Html": "Hi,\r<br />\n<br />\nIndeed, I have tried moving the <strong>HelloWorldView</strong> code to the <strong>Shell</strong> window, and the <strong>RegionManagerAwareBehavior</strong> was unable to set the <strong>RegionManager</strong> property in the <strong>ClientsView</strong>. It seems that again, this is a timing issue regarding the initialization of the components of Prism's region system.\r<br />\n<br />\nAlthough so far I am unable to point the exact cause of the timing problem this time, the good news is that we have several workarounds we can apply to this. Some have been already discussed in this thread before:<br />\n<h1></h1>\n<ul>\n<li>Add the <strong>ClientsView</strong> after &quot;initialization.&quot; (e.g. not by using view discovery)</li>\n<li>\nDefine the <strong>InteractionRequestTriggers</strong> in a view that will be injected in a region instead of defining them directly in the <strong>Shell</strong>.<br />\n</li>\n</ul>\nAlso, another approach can be to remove and re-add the views in the <strong>DetailsRegion</strong> (where the <strong>ClientsView</strong> is injected). This will trigger some behaviors, like the <strong>RegionManagerAwareBehavior</strong>, to execute again. A good place to do this is, for example, the setter of the <strong>RegionManager</strong> property in the <strong>SelectClientViewModel</strong>:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n        <span style=\"color:Green;\">// IRegionManagerAware implementation</span>\n        <span style=\"color:Blue;\">public</span> IRegionManager RegionManager {\n            <span style=\"color:Blue;\">get</span>\n            {\n                <span style=\"color:Blue;\">return</span> <span style=\"color:Blue;\">this</span>.regionManager;\n            }\n\n            <span style=\"color:Blue;\">set</span>\n            {\n                <span style=\"color:Blue;\">this</span>.regionManager = value;\n\n                <span style=\"color:Green;\">// We remove and re-add the views to trigger the behaviors again.</span>\n                <span style=\"color:Green;\">// This might break some views / view models that have logic that execute in response </span>\n                <span style=\"color:Green;\">// to them being add / removed / activated / deactivated in a region.</span>\n                List&lt;<span style=\"color:Blue;\">object</span>&gt; views = <span style=\"color:Blue;\">new</span> List&lt;<span style=\"color:Blue;\">object</span>&gt;();\n                <span style=\"color:Blue;\">foreach</span> (<span style=\"color:Blue;\">var</span> view <span style=\"color:Blue;\">in</span> <span style=\"color:Blue;\">this</span>.regionManager.Regions[<span style=\"color:#A31515;\">&quot;DetailsRegion&quot;</span>].Views)\n                {\n                    views.Add(view);\n                }\n\n                <span style=\"color:Blue;\">foreach</span> (<span style=\"color:Blue;\">var</span> view <span style=\"color:Blue;\">in</span> views)\n                {\n                    <span style=\"color:Blue;\">this</span>.regionManager.Regions[<span style=\"color:#A31515;\">&quot;DetailsRegion&quot;</span>].Remove(view);\n                }\n\n                <span style=\"color:Blue;\">foreach</span> (<span style=\"color:Blue;\">var</span> view <span style=\"color:Blue;\">in</span> views)\n                {\n                    <span style=\"color:Blue;\">this</span>.regionManager.Regions[<span style=\"color:#A31515;\">&quot;DetailsRegion&quot;</span>].Add(view);\n                }\n            }\n        }\r\n</pre></div>However, take into account that this approach might not be recommended for all scenarios.\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-04-11T11:38:34.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1031244",
+    "ThreadId": "438729",
+    "Html": "Thanks again for the reply.  I will work with these workarounds.<br />\n",
+    "PostedDate": "2013-04-16T09:03:36.47-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1037360",
+    "ThreadId": "438729",
+    "Html": "I've hit another snag while using the <strong>RegionManagerAwareBehavior</strong>.\r<br />\n<br />\nI'm using the above second workaround. i.e. <em>Define the InteractionRequestTriggers in a view that will be injected in a region instead of defining them directly in the Shell.</em>\r<br />\n<br />\nI find that if a <strong>ContentControl</strong> which declares a region is added to the Shell or in the view that contains the <strong>PopupWindowAction</strong> i.e <strong>HelloWorldView</strong>, <strong>ClientView</strong> once again doesn't receive an <strong>IRegionManager</strong> via the <strong>RegionManagerAwareBehavior</strong>.\r<br />\n<br />\nOriginally we noticed this from the Shell but the problem is generalized.    I'm concerned that the only solution is view injection which is not ideal in my case.  Any other ideas on this issue?  I wouldn't mind injecting the views into the regions associated with the <strong>PopupWindowAction</strong> but I don't see an obvious way to do that.  The <strong>RegionManager</strong> associated with the view containing the <strong>PopupWindowActions</strong> doesn't contain these regions.\r<br />\n<br />\nThanks again.<br />\n",
+    "PostedDate": "2013-04-29T14:02:03.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1037794",
+    "ThreadId": "438729",
+    "Html": "Hi,\r<br />\n<br />\nI was able to reproduce the scenario you described. Indeed, this doesn't seem to be appear only in the <strong>Shell</strong>, but in any part of the application containing the popup, depending on certain factors. It seems that this problem is a timing issue between the <strong>RegionManagerAwareBehavior</strong>, the <strong>PopupWindowAction</strong> and several of the default region behaviors provided by Prism for the particular scenario of using <strong><em>view discovery</em></strong> in an inner region inside a popup defined as the action on an <strong>InteractionRequestTrigger</strong>. Basically, in some cases, the inner region (e. g. the <strong>DetailsRegion</strong>) is created before the popup is shown, which causes the view registered to be injected in said region long before the <strong>RegionManager</strong> is set in the popup by the <strong>PopupWindowAction</strong>.\r<br />\n<br />\nIn my opinion, the convenient approach to work around this is to inject the views after the <strong>PopupWindowAction</strong> shows the popup. A possible approach to do this could be to inject the views in the setter of the <strong>SelectClientViewModel</strong>'s <strong>RegionManager</strong> property. There, we can be sure that the <strong>RegionManager</strong> is available. \r<br />\n<br />\nHow to do this will depend on your preferences. For example, instead of registering the view types using <strong>RegisterViewWithRegion</strong> in the modules, you could register the view types in a custom <strong>Shared Service</strong>. Then, in the setter of the aforementioned property, you could simply ask the service to inject the registered views (if any) of the <strong>DetailsRegion</strong>, which in turn could instantiate the views through the <strong>ServiceLocator</strong>. Like this, the views would be still registered by their corresponding modules and the <strong>SelectClientViewModel</strong> would not be responsible of injecting the views itself.\r<br />\n<br />\nI hope this helps.\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-04-30T12:59:05.74-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1038155",
+    "ThreadId": "438729",
+    "Html": "Indeed it does.  Thank You.<br />\n",
+    "PostedDate": "2013-05-01T09:00:25.4-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

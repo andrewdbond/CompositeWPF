@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1090322",
+    "ThreadId": "456271",
+    "Html": "Hi, I'm looking for a &quot;best practices&quot; pattern to use.\r<br />\n<br />\nScenario is:\r<br />\n<br />\nCustomer view is loaded, all bindings, saves and RaisePropertyChanged working correctly.\r<br />\n<br />\nUser changes a few fields, presses a cancel button.\r<br />\n<br />\nI want to abort the changes and revert to the current data in the database.\r<br />\n<br />\nWhen the user presses cancel I'm currently:<br />\n<ul>\n<li>Re-fetching the underlying object using a repository pattern.  The customer model is then refreshed correctly with the values from the database.</li>\n<li>There is a reference to the customer model in in the viewModel.</li>\n<li>\nSimply refreshing the customer model does not trigger RaisePropertyChanged on the individual properties (I don't expect it to at this point).<br />\n</li>\n</ul>\nDo I have to add a method something like <strong>RefreshAllData()</strong> which explicitly calls RaisePropertyChanged on all properties?\r<br />\n<br />\nI have other patterns where pressing cancel closes the view so this is not an issue as the data is refreshed the next time the view is opened.<br />\n",
+    "PostedDate": "2013-09-09T11:53:21.237-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1090338",
+    "ThreadId": "456271",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding of your scenario I believe you might need to raise the <strong>PropertyChanged</strong> event for all corresponding the properties. However, you don't need to invoke the <strong>RaisePropertyChanged</strong> method for each property; instead you could just invoke it with an empty string:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">this</span>.RaisePropertyChanged(<span style=\"color:#A31515;\">&quot;&quot;</span>);\r\n</pre></div>This should raise the <strong>PropertyChanged</strong> event for all the properties of your view model, forcing the view to refresh all of its bindings.\r<br />\n<br />\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-09-09T12:41:47.783-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1090359",
+    "ThreadId": "456271",
+    "Html": "Works as expected, thanks!<br />\n",
+    "PostedDate": "2013-09-09T14:02:40.07-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

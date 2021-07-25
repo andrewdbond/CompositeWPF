@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "574959",
+    "ThreadId": "248296",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I am creating WPF app (using Prims&#43;Mef). I have a single region in Shell (Say MainRegion). On Loading a Module A, I am attaching an View One (with toolbar etc.) into the MainRegion.</p>\r\n<p>Now I&nbsp; have a requirement, such that if I click a button on the View One, it will attach another View (say View Two) into the View One.&nbsp;I am putting some snippets of this,</p>\r\n<p><span style=\"text-decoration:underline\"><strong>Shell</strong></span><br>\r\n&lt;Grid&gt;</p>\r\n<p>&nbsp;&nbsp;&nbsp; &lt;ItemsControl Name=&quot;MainRegion&quot; cal:RegionManager.RegionName=&quot;MainRegion&quot; /&gt;<br>\r\n&lt;/Grid&gt;</p>\r\n<p>&nbsp;</p>\r\n<p><span style=\"text-decoration:underline\"><strong>View One</strong></span><br>\r\n&lt;UserControl&gt;<br>\r\n&nbsp;&nbsp;&nbsp; &lt;Grid&gt;</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&lt;Button&gt;Add&nbsp;New View&lt;/Button&gt;<br>\r\n&nbsp;&nbsp; &lt;ItemsControl Name=&quot;MainPageRegion&quot; cal:RegionManager.RegionName=&quot;MainPageRegion&quot; /&gt;<br>\r\n&nbsp; &lt;/Grid&gt;&nbsp;</p>\r\n<p>&lt;/UserControl&gt;</p>\r\n<p>&nbsp;</p>\r\n<p><strong>View Two:</strong></p>\r\n<p>&lt;UserControl&gt;<br>\r\n&nbsp;&nbsp;&nbsp; &lt;Grid&gt;</p>\r\n<p>&nbsp;&nbsp; &lt;TextBlock&gt;Hello world&lt;/Textblock&gt;<br>\r\n&nbsp; &lt;/Grid&gt;&nbsp;</p>\r\n<p>&lt;/UserControl&gt;</p>\r\n<p>Now&nbsp;I want to&nbsp;attach View Two Inside View One on click of a Button&nbsp;in View One. Is this possible.</p>\r\n<p>Any pointers/links/ideas are appreciated.</p>\r\n<p>Thanks,</p>\r\n<p>Indro<br>\r\n&nbsp;</p>\r\n",
+    "PostedDate": "2011-03-03T04:55:48.547-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "575002",
+    "ThreadId": "248296",
+    "Html": "<p>Hi Indro,</p>\r\n<p>Based on my understanding of your scenario, one possible way to achieve your requirement is to use the <strong>View Injection Approach</strong>. By getting an instance of the <strong>RegionManager</strong>, so you can add <em>View Two</em> in the same region where <em>View One</em> resides, programmatically. For example it could be something like this:</p>\r\n<p><span style=\"font-size: 9pt;\" lang=\"EN-US\">\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">private</span> <span style=\"color: blue;\">void</span> Button_Click(<span style=\"color: blue;\">object</span> sender, RoutedEventArgs e)\r\n{\r\n   IRegionManager _regionManager = ServiceLocator.Current.GetInstance&lt;IRegionManager&gt;();\r\n   <span style=\"color: blue;\">var</span> viewTwo = ServiceLocator.Current.GetInstance&lt;ViewTwo&gt;();\r\n\r\n   IRegion mainPageRegion = _regionManager.Regions[<span style=\"color: #a31515;\">\"MainPageRegion\"</span>];\r\n\r\n   mainPageRegion.Add(viewTwo);\r\n\r\n   mainPageRegion.Activate(viewTwo);\r\n}\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\nAdditionally, you can read <a href=\"http://msdn.microsoft.com/en-us/library/ff921098(v=PandP.40).aspx\">Chapter 7: Composing the User Interface</a> where this topic&nbsp;is covered.</span></p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-03-03T05:57:33.58-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "576458",
+    "ThreadId": "248296",
+    "Html": "<p>Hi Mig,</p>\r\n<p>Thanks for your reply. But I am not able use this code, somehow.</p>\r\n<p>&nbsp;IRegion mainPageRegion = _regionManager.Regions[\"MainPageRegion\"];</p>\r\n<p>This line is failing, saying unable to find the region.</p>\r\n<p>Is it possible to post the code snippets? Thanks in advance.</p>\r\n<p>&nbsp;</p>\r\n<p>regards,</p>\r\n<p>Indro</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-03-06T20:53:59.67-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "577769",
+    "ThreadId": "248296",
+    "Html": "<p>Hi Indro,</p>\n<p>Based on our understanding of the code you've posted, there seems to be a region named <strong>MainPageRegion</strong> defined inside your View One, so it should be possible to obtain a reference to it by accessing the <strong>RegionManager.Regions</strong> property.</p>\n<p>Since that's not working as expected, it could be helpful if you could provide us with a repro sample (for example uploading it to <a href=\"http://skydrive.live.com/\" target=\"_blank\">SkyDrive</a>), so that we can help you clarify the source of this behavior.</p>\n<p>Thanks,</p>\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-09T07:07:55.3-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "577814",
+    "ThreadId": "248296",
+    "Html": "<blockquote style=\"border: solid .1em #ccc; font-style: italic; margin: .25em 1em 0 1em; padding: 0 .25em 0 .25em;\"><strong>GuidoMaliandi wrote:</strong><br />\n<p>Hi Indro,</p>\n<p>Based on our understanding of the code you've posted, there seems to be a region named <strong>MainPageRegion</strong> defined inside your View One, so it should be possible to obtain a reference to it by accessing the <strong>RegionManager.Regions</strong> property.</p>\n<p>Since that's not working as expected, it could be helpful if you could provide us with a repro sample (for example uploading it to <a href=\"http://skydrive.live.com/\" target=\"_blank\">SkyDrive</a>), so that we can help you clarify the source of this behavior.</p>\n<p>Thanks,</p>\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\n</blockquote>\n<p>Am I right in thinking that he needs to use a Scoped RegionManager?</p>\n<p>E.g.</p>\n<pre>IRegionManager scopedRegionManager = <span>this</span>.regionManager.Regions[<span>\"MainRegion\"</span>].Add(ViewOne, <span>null</span>, <span>true</span>);\nscopedRegionManager.Regions[<span>\"MainPageRegion\"</span>].Add(ViewTwo);</pre>\n<p>So when you add ViewOne to the MainRegion you need to specify that you want a new region manager in the Add method. This region manager is aware of regions inside ViewOne. With this approach I am not sure which region manager will be injected inside ViewOne code however, the global one or the scoped one?</p>\n<p>&nbsp;</p>\n<p>\n<div style=\"color: black; background-color: white;\">\n<pre><br /></pre>\n</div>\n</p>\n<pre>\n</pre>",
+    "PostedDate": "2011-03-09T07:59:48.203-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "577862",
+    "ThreadId": "248296",
+    "Html": "<p>Hi,</p>\r\n<p>In case he has to add more than one instance of <strong>ViewOne</strong>, he should use a Scoped <strong>RegionManager</strong>, since there can't be more than one region with the same name within the same instance of the <strong>RegionManager</strong>. However, since the exception he's experiencing tells him that there is no region associated to that name, the problem he's having probably doesn't relate to the fact that he's not using a scoped <strong>RegionManager</strong>.</p>\r\n<p>In the example you've provided, the instance of <strong>ViewOne</strong> will be added to the region belonging to the main <strong>RegionManager</strong>, but any regions defined <em>inside </em><strong>ViewOne</strong> will be registered in the scoped <strong>RegionManager</strong>.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-09T09:00:12.127-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

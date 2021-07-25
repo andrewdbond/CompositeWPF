@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "649229",
+    "ThreadId": "266987",
+    "Html": "\r\n<p>Hello.</p>\r\n<p>In my program there are a few data adapters (modules) they have a common interface.</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>IDataAdapter\r\n{\r\n    <span style=\"white-space:pre\">\t</span><span style=\"color:blue\">int</span> GetData();\r\n}\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>But each also has individual settings.</p>\r\n<p></p>\r\n<pre><div style=\"color:black; background-color:white\"><pre>Public Class DataAdapter_1 : IDataAdapter\r\n{\r\n<span style=\"color:blue\"><span style=\"white-space:pre\"><span style=\"color:#000000\">\t</span></span>string</span> Name;\r\n<span style=\"color:blue\"><span style=\"white-space:pre\">\t</span>string</span> Password;\r\n}\r\n\r\nPublic Class DataAdapter_2 : IDataAdapter\r\n{\r\n<span style=\"color:blue\"><span style=\"white-space:pre\">\t</span>string</span> Name;\r\n<span style=\"color:blue\"><span style=\"white-space:pre\">\t</span>string</span> Password;\r\n<span style=\"color:blue\"><span style=\"white-space:pre\">\t</span>string</span> ConnectionSettings;\r\n}\r\n</pre>\r\n</div>\r\n</pre>\r\n<span style=\"font-family:Consolas,'Courier New',Courier,monospace\"><span style=\"white-space:pre\"><br>\r\n</span></span>\r\n<p></p>\r\n<p>I would like to make a full dialog box to configure them. Like this&nbsp;<a href=\"http://www.expression-web-tutorials.com/images/new-style-dialog-box.jpg\">http://www.expression-web-tutorials.com/images/new-style-dialog-box.jpg</a></p>\r\n<p>For example. The user launches the wizard of added of the new data adapter. Prism scans the directory with the modules and displays all found the date adapters, next the user selects the necessary data adapter and opens the window adapter settings for the\r\n selected data adapter. How is it possible to implement. Sorry for my bad English.</p>\r\n",
+    "PostedDate": "2011-07-28T14:54:32.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "649640",
+    "ThreadId": "266987",
+    "Html": "<p>Hi,</p>\r\n<p>Modules are pieces of functionality generally grouped into a project, which define certain views and services that are exported to the rest of the application. Therefore, your data adapters should be services that are consumed within the different components of your application, not modules itself. They should be placed inside modules, and probably the structure of each module should be based on the functionality you intend to expose through these data adapters.</p>\r\n<p>Additionally, modules contain one class that implements <strong>IModule</strong>, which contains an <strong>Initialize </strong>method that defines what needs to be done upon the module's initialization (for example, exporting services, registering views into regions, etc.). That class is usually responsible only for the aforementioned, and generally does not contain more logic than that; it rather exports the services and views that contain that specialized logic.</p>\r\n<p>You might find the <a href=\"http://msdn.microsoft.com/en-us/library/ff921074%28v=PandP.40%29.aspx\">StockTrader Reference Implementation</a> useful as an example to verify this.</p>\r\n<p>Then, modules can be loaded on demand, so you could mark all the modules you require as <strong>OnDemand </strong>modules, and browse them in your popup window; then, you could launch the pertinent components of the modules you've decided to load, by calling the <strong>ModuleManager</strong>'s <strong>LoadModule </strong>method. For the case of discovering modules in a directory, you might find the <a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28PandP.40%29.aspx#sec22\">Discovering Modules in a Directory</a> section of the Modularity Chapter in the Prism MSDN documentation useful.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-29T10:14:19.49-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "649725",
+    "ThreadId": "266987",
+    "Html": "<p>\r\n<p>You misunderstood me.</p>\r\n<p>For example. Consider the Stock Trader.</p>\r\n<p>How can I make a few (News modules) each of which is connected to its source (Blomberg, Moody's). Each module has its own settings.&nbsp;</p>\r\n<p>I would like to</p>\r\n<p>1) Select the module.</p>\r\n<p>2) Set it using the wizard.</p>\r\n<p>The Wizard should be in the form of a modal window.</p>\r\n<p>Or how else can I make the choice and configuration News module.</p>\r\n</p>",
+    "PostedDate": "2011-07-29T12:25:31.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "650543",
+    "ThreadId": "266987",
+    "Html": "<p>Hi,</p>\r\n<p>If you wish to launch multiple instances of a similar view loaded with different settings based on a configuration, you should take into account that modules are not intended to be instantiated more than once; instead, as I've mentioned in my previous answer, modules should export views and services that can be consumed throughout your application.</p>\r\n<p>Therefore, in order to fulfill your use case, you could have some views (with their respective view models), that probably consume a service you've defined wich exposes information from certain sources; then, you could have your wizard instantiate these views based on the configuration provided.</p>\r\n<p>As they're probably related to the same set of functionality, the aforementioned views could be placed in the same module.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-08-01T07:22:18.493-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

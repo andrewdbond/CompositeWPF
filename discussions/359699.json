@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "849297",
+    "ThreadId": "359699",
+    "Html": "\r\n<p>I'm trying to add a Modules Catalog as a file in VS and I don't know how.</p>\r\n<p>I want to use</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>ModuleCatalog.CreateFromXaml(new Uri(&quot;ModulesCatalog.xaml&quot;, UriKind.Relative));\r\n</pre>\r\n</div>\r\n<p>in my CreateModuleCatalog() method inside the Bootstrapper class.</p>\r\n<p>I'm using Prism v4 in a Silverlight 4 project.</p>\r\n<p>I don't know how to create this ModulesCatalog.xaml, I tried creating a UserControl and deleting its code behind, I also tried creating an xml file and changing it's extension to xaml.</p>\r\n<p>No matter what I do, I keep getting these error messages when compiling:</p>\r\n<p>&quot;The tag &quot;ModuleCatalog&quot; does not exist in ...&quot; and so on.</p>\r\n<p>&nbsp;What can I do to create this ModuleCatalog.xaml file in VS?</p>\r\n",
+    "PostedDate": "2012-06-14T17:40:23.073-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "849528",
+    "ThreadId": "359699",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Have you tried, adding a new file to your main project named <strong>ModulesCatalog.xaml</strong> using the\r\n<strong>XML </strong>file template as you mentioned but making sure its<strong> Build Action</strong> is set to &quot;<strong>Resource</strong>&quot;. I believe this could be related to your problem.</p>\r\n<p>Also, regarding how to achieve remote module loading, I believe you could find the &quot;<em>Modularity Hands on Lab, Exercise 3</em>&quot; from the<a href=\"http://prismtk.codeplex.com/\"> Prism Trainig Kit</a> useful, which includes a step-by-step guidance on how\r\n to configure modules in code and using a <strong>XAML ModulesCatalog</strong>. Also, in this same\r\n<strong>Trainig Kit</strong>, but in the <strong>MEF </strong>Lab you could find another similar example but using\r\n<strong>MEF</strong>.</p>\r\n<p>I hope you find this helpful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-06-15T06:36:36.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "849531",
+    "ThreadId": "359699",
+    "Html": "<p>Thank you.</p>\r\n<p>&nbsp;</p>\r\n<p>I'll try it.</p>",
+    "PostedDate": "2012-06-15T06:38:19.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "849568",
+    "ThreadId": "359699",
+    "Html": "\r\n<p>Hi Agustin,</p>\r\n<p>I don't know how to follow along with the hands on lab, execise 3. I open the project and see it all done in VS, but I don't know how they do things, I guess this is not the way a Hands On Lab works, I did one once (on VS) but I don't remember how I used\r\n it.</p>\r\n<p>I remember there were some guidance, and it was very pleasant to do...</p>\r\n<p>&nbsp;</p>\r\n<p>Nevertheless, I tried to add it as a xml template, then changed its build action to resource, and then added the ModuleCatalog definitions (this is an exercise)</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">Modularity</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">ModuleCatalog</span> \r\n    <span style=\"color:red\">xmlns</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">http://schemas.microsoft.com/winfx/2006/xaml/presentation</span><span style=\"color:black\">&quot;</span>\r\n    <span style=\"color:red\">xmlns:x</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">http://schemas.microsoft.com/winfx/2006/xaml</span><span style=\"color:black\">&quot;</span>\r\n    <span style=\"color:red\">xmlns:sys</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">clr-namespace:System;assembly=mscorlib</span><span style=\"color:black\">&quot;</span>\r\n    <span style=\"color:red\">xmlns:Modularity</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">clr-namespace:Microsoft.Practices.Composite.Modularity;assembly=Microsoft.Practices.Composite</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">&gt;</span>\r\n    <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">Modularity</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">ModuleInfo</span> \r\n        <span style=\"color:red\">Ref</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">Patients.Client.Modules.Patients.xap</span><span style=\"color:black\">&quot;</span> \r\n        <span style=\"color:red\">ModuleName</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">PatientsModules</span><span style=\"color:black\">&quot;</span> \r\n        <span style=\"color:red\">ModuleType</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">Patients.Client.Modules.Patients.PatientsModule, Patients.Client.Modules.Patients, Version=1.0.0.0</span><span style=\"color:black\">&quot;</span> <span style=\"color:blue\">/&gt;</span>\r\n    &lt;Modularity:ModuleInfo \r\n        Ref=&quot;Patients.Client.Modules.MedicalStaff.xap&quot; \r\n        ModuleName=&quot;MedicalStaffModules&quot; \r\n        ModuleType=&quot;Patients.Client.Modules.MedicalStaff.MedicalStaffModule, \r\n            Patients.Client.Modules.MedicalStaff, Version=1.0.0.0&quot; /&gt;\r\n<span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">Modularity</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">ModuleCatalog</span><span style=\"color:blue\">&gt;</span>\r\n</pre>\r\n</div>\r\n<p>But the IDE keeps showing the designer window, and trying to interpret those lines mistakenly, throwing some errors, saying that the type Modularity:ModuleCatalog was not found... etc.</p>\r\n<p><span style=\"font-family:Courier New; color:#a31515; font-size:small\"><span style=\"font-family:Courier New; color:#a31515; font-size:small\">&nbsp;</span></span></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-06-15T07:58:15.983-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "849611",
+    "ThreadId": "359699",
+    "Html": "<p>Hi,</p>\r\n<p>In the folder where you installed the <a href=\"http://prismtk.codeplex.com/releases/view/56048\">Prism Training Kit</a> mentioned by Agustin you will find a folder named \"<strong>1-Modularity</strong>\" which contains the <strong>Modularity Hands On Lab</strong>. Inside this folder is a Word document named \"<strong>Modularity-HOL.docx</strong>\" which contains the <em>step-by-step</em> description for each exercise. If you wish to follow an specific exercise in this lab (like the <em>Exercise 3</em> mentioned by Agustin) you will also find a folder containing a solution for each exercise. Inside those you should open the solution stored in the <strong>\"Begin\" </strong>folder and follow the instructions described in the \"<strong>Modularity-HOL.docx</strong>\" document for the corresponding exercise. As far as I know this is how most of <strong>Microsoft</strong>'s hands on lab are structured.</p>\r\n<p>Regarding the code snippet you posted of your module catalog, take into account that the <strong>Microsoft.Practices.Composite</strong> assembly is a <strong>Prism v2</strong> assembly. If you are using <strong>Prism v4</strong>, you should replace this line of your module catalog:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>xmlns:Modularity=\"clr-namespace:Microsoft.Practices.Composite.Modularity;assembly=Microsoft.Practices.Composite\"\r\n</pre>\r\n</div>\r\n<p>With the following one (which uses the <strong>Prism v4</strong> assembly:)</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>xmlns:Modularity=\"clr-namespace:Microsoft.Practices.Prism.Modularity;assembly=Microsoft.Practices.Prism\"\r\n</pre>\r\n</div>\r\n<p>You can find more information about declaring <strong>module catalogs</strong> in a <strong>XAML </strong>file in the following section of <strong>Prism</strong>'s documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28v=pandp.40%29#sec20\">Chapter 4: Modular Application Development - Registering Modules Using a XAML File</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-06-15T09:53:56.753-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "849647",
+    "ThreadId": "359699",
+    "Html": "<p>&nbsp;</p>\r\n<p>Thank you Damian.</p>",
+    "PostedDate": "2012-06-15T12:15:40.097-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1356076",
+    "ThreadId": "581940",
+    "Html": "<pre><code>public HelloWorldModule(IRegionViewRegistry registry)\n        {\n            this.regionViewRegistry = registry;   \n        }</code></pre>\n\n<pre><code>public OrderModule( IUnityContainer container, IRegionManager regionManager )\n        {\n            this.container     = container;\n            this.regionManager = regionManager;\n        }</code></pre>\n\nThese are two separate constructors of two different modules. Their signatures are different. These are taken from PRISM quickstart download. I searched the code but can't figure out who is calling these constructors as if Framework is calling them, then why two different signatures ? <br />\n",
+    "PostedDate": "2015-02-26T11:08:49.707-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1356616",
+    "ThreadId": "581940",
+    "Html": "This is inversion of control using Unity at work.  The framework automatically resolves those dependencies for you, and any other dependencies you ask for in a constructor as long as the container knows about them.  In Prism, you should never be manually newing up objects (var myObject = new CustomObject()), the container will be creating them for you.<br />\n",
+    "PostedDate": "2015-02-27T15:52:56.81-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1356881",
+    "ThreadId": "581940",
+    "Html": "I'll supplement what BrianL said with a little more information, because I find for people new to Prism with no Dependency Injection experience, this is one of the biggest learning barriers. You first need to get familiar with the patterns of Inversion of Control (IoC) and Dependency Injection (DI). A container does both of these patterns, and lets you be more declarative to create a type that depends on some other types (typically through an interface) by just requiring those through constructor parameters (or other annotations on properties or methods, depending on the container you use). The container will be responsible for constructing the object (the IoC part) and as part of that process, dependency injecting it dependent objects (the DI part).\r<br />\n<br />\nModules in Prism are created in the boostrapping process and Prism using the container to do the construction so that those modules can declare dependencies through their constructors and have them injected for them.\r<br />\n<br />\nI wouldn't go so far as to say that you should never be manually newing up objects, some things have no need to be constructed through the container and there is a minor performance cost to doing so. But for things that compose the layers of your application like modules, view models, and services, those should be constructed through the container so that their dependencies can be resolved by the container, allowing looser coupling between the components.<br />\n",
+    "PostedDate": "2015-02-28T06:55:41.62-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2015-02-28T08:36:13.787-08:00"
+  },
+  {
+    "Id": "1356935",
+    "ThreadId": "581940",
+    "Html": "<strong>brianlagunas wrote:</strong><br />\n<blockquote>\nThis is inversion of control using Unity at work.  The framework automatically resolves those dependencies for you, and any other dependencies you ask for in a constructor as long as the container knows about them.  In Prism, you should never be manually newing up objects (var myObject = new CustomObject()), the container will be creating them for you.<br />\n</blockquote>\nI like both the answers, but there is no upvote feature.<br />\n",
+    "PostedDate": "2015-02-28T08:36:41.23-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

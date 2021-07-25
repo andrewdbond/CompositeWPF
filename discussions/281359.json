@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "705502",
+    "ThreadId": "281359",
+    "Html": "\r\n<p>While reading through the PRISM 4.0 November 2010 guide on MSDN, in chapter 5, it is mentioned how one would associate a viewmodel with a view (i.e. make the viewmodel the datacontext of a specific view). &nbsp;The way I do it is through MEF property injection\r\n in the view's code-behind:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>[Export(<span style=\"color:blue\">typeof</span>(MainToolbarView))]\r\n<span style=\"color:blue\">public</span> <span style=\"color:blue\">partial</span> <span style=\"color:blue\">class</span> MainToolbarView : UserControl\r\n{\r\n    <span style=\"color:blue\">public</span> MainToolbarView()\r\n    {\r\n        InitializeComponent();\r\n    }\r\n\r\n    [Import]\r\n    <span style=\"color:blue\">public</span> MainToolbarViewModel ViewModel\r\n    {\r\n        <span style=\"color:blue\">set</span> { <span style=\"color:blue\">this</span>.DataContext = value; }\r\n    }\r\n}</pre>\r\n<pre><br></pre>\r\n</div>\r\nThe downside here is that I'm coupling my view with a specific viewmodel. &nbsp;How can I decouple this? &nbsp;What's the best approach for associating a view with a view model? &nbsp;Should I just suck it up and keep it in the code behind?\r\n<p></p>\r\n",
+    "PostedDate": "2011-11-30T13:04:54-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "705844",
+    "ThreadId": "281359",
+    "Html": "<p>Hi,<br /> <br /> You might find there are different techniques for wiring up a view to a View Model, importing the view model into a property of the view using <strong>MEF </strong>like you suggested is a common accepted pattern to achieve this goal.</p>\n<p>On the other hand if your scenario requires decoupling your view from its View Model, you could try exporting your View Model using a common Interface (e.g. <strong>IMainToolbarViewModel</strong>). If so, in your particular case, your code could result in something like this:<br /> <br /></p>\n<div style=\"color: black; background-color: white;\">\n<pre>[Export(<span style=\"color: blue;\">typeof</span>(MainToolbarView))]\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> MainToolbarView : UserControl\n{\n  (...)\n\n    [Import]\n    <span style=\"color: blue;\">public</span> IMainToolbarViewModel ViewModel\n    {\n        <span style=\"color: blue;\">set</span> { <span style=\"color: blue;\">this</span>.DataContext = value; }\n    }\n}\n</pre>\n</div>\n<p>&nbsp;</p>\n<p><br /> Also, if you are interested in more information about the MVVM pattern, you might find the <a href=\"http://karlshifflett.wordpress.com/2010/11/07/in-the-box-ndash-mvvm-training/\"> In The Box MVVM</a> Training by Karl Shifflett handy.</p>\n<p>I hope you find this useful</p>\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-12-01T06:22:06.943-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "706529",
+    "ThreadId": "281359",
+    "Html": "<p>Adding to what Adami says, it would be better to inject your view model interface in views constructor. That way you are double sure that your view fails straight away if it is unable to locate the view model. You would do</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>[Export(<span style=\"color: blue;\">typeof</span>(MainToolbarView))]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> MainToolbarView : UserControl\r\n{\r\n    [ImportingConstructor]\r\n    <span style=\"color: blue;\">public</span> MainToolbarView(IMainToolbarViewModel viewModel)\r\n    {\r\n        InitializeComponent();\r\n        DataContext = viewModel;\r\n    }\r\n\r\n    <span style=\"color: blue;\">public</span> IMainToolbarViewModel ViewModel\r\n    {\r\n        <span style=\"color: blue;\">get</span> { <span style=\"color: blue;\">return</span> (IMainToolbarViewModel)DataContext; }\r\n    }\r\n}\r\n</pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2011-12-02T08:47:30.57-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "706537",
+    "ThreadId": "281359",
+    "Html": "<p>@gan_s : That makes sense to me, but why use an interface? &nbsp;My views/viewmodels are in the same assembly anyway, so does it matter? &nbsp;Currently, my viewmodels all inherit an abstract viewmodel class \"ZNavigationViewModelBase\", which implements \"IRegionMemberLifetime\" and \"IConfirmNavigationRequest\" and inherits \"NotificationObject\". &nbsp;Should I be designing my viewmodels differently? Perhaps have an IZNavigationViewModelBase that implements the aforementioned interfaces and then have create a IMainToolbarViewModel that implements this base interface??</p>",
+    "PostedDate": "2011-12-02T08:55:12.327-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "706548",
+    "ThreadId": "281359",
+    "Html": "<p>To answer your question about interfaces and why to use them, here is a good article</p>\n<p><a href=\"http://fci-h.blogspot.com/2008/03/oop-design-concepts-interfaces_05.html\">http://fci-h.blogspot.com/2008/03/oop-design-concepts-interfaces_05.html</a></p>\n<p>I would create a interface for the view model to make it clear which of the properites of my view model would ideally be consumed by my view through binding.</p>\n<p>The purpose of creating a viewmodelbase (in this case NotificationObject) it to have common logic for all view models like</p>\n<ul>\n<li>property changed </li>\n<li>IsBusy (for busy indicators) </li>\n<li>Dirty tracking </li>\n</ul>\n<p>The IRegionMemberLifetime and IConfirmNavigatinRequest are used for defining the lifetime of the view in the region and to handle navigations to and from the view, respectively. An alternative for IRegionMemberLifetime is to use the [RegionMemberLifetime(KeepAlive  = false)] attribute on your view model.</p>\n<p>So ideally you would have</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">abstract</span> <span style=\"color: blue;\">class</span> ViewModelBase : NotificationObject\n{\n   ... other <span style=\"color: blue;\">base</span> properties you wish to have all view models\n}\n\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">interface</span> IMyViewModel\n{\n   ....\n}\n<br /></pre>\n<pre>[Export(typeof(IMyViewModel)]\n[RegionMemberLifetime(KeepAlive = <span style=\"color: blue;\">false</span>)]\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> MyViewModel : ViewModelBase, IMyViewModel\n{\n   ....\n}\n</pre>\n</div>\n<p>ANd you would inject IMyViewMOdel into your view</p>\n<p>Hope this makes sense :)</p>\n<p>Cheers!</p>",
+    "PostedDate": "2011-12-02T09:04:39.43-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

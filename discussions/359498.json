@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "848576",
+    "ThreadId": "359498",
+    "Html": "\r\n<p>I am using David Veenaman's &quot;Creating View-Switching Applications with Prism 4&quot; from The Code Project.&nbsp; I have added a third module, ModuleC.&nbsp; The solution builds and runs properly but the button for ModuleC does not show in the Task Button Region.&nbsp;\r\n During the build, ModuleC is copied to the Module directory so I assume that it is discovered during runtime.&nbsp; I added a breakpoint in the MoculeC class, but got the following message: &quot;The breakpoint will not currently be hit.&nbsp; No symbols have been\r\n loaded for this documnet&quot;.&nbsp; If I set a similar breakpoint in ModuleA, the breakpoint is hit.</p>\r\n<p>I have read about other projects on the internet that have gotten this same error message, and the solutions to the problem could include copying the C# solution to another folder and other onerous remedies.&nbsp; I am hoping that my particular circumstance\r\n might be more related to something I failed to do in regards to Prism4.</p>\r\n",
+    "PostedDate": "2012-06-13T11:53:00.04-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "848619",
+    "ThreadId": "359498",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, the problem you are describing seems to be related to solution / configuration in <strong>Visual Studio</strong> rather that to <strong>Prism</strong>.</p>\r\n<p>In my experience, every time I encounter this kind of error I could solve it by <strong>cleaning the solution</strong> and deleting all the <strong>bin </strong>and <strong>obj </strong>folders of the application and class libraries.</p>\r\n<p>Again, as this is doesn't seem to be related to <strong>Prism </strong>but to the solution / configuration in <strong>Visual Studio</strong>, I believe you could might find better support regarding this in the <strong>Visual Studio</strong> forums:</p>\r\n<ul>\r\n<li><a href=\"http://social.msdn.microsoft.com/Forums/en/category/visualstudio\">Visual Studio forums on MSDN</a></li>\r\n</ul>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-06-13T13:22:06.993-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "848639",
+    "ThreadId": "359498",
+    "Html": "<p>Thank you, Damian.</p>",
+    "PostedDate": "2012-06-13T13:52:16.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "848997",
+    "ThreadId": "359498",
+    "Html": "\r\n<p>So I cleaned the solution and deleted all the bin and obj folders of the application and class libraries, but the problem persists.&nbsp; This makes me believe that the problem lies in my implementation of a third module in the application.&nbsp; The build\r\n puts the dll into the Module folder, but apparently, the new module is not populated in the module catalog.&nbsp; Is there a way to list the contents of the catalog after it is populated?</p>\r\n",
+    "PostedDate": "2012-06-14T07:29:16.06-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "849000",
+    "ThreadId": "359498",
+    "Html": "<p>So I cleaned the solution and deleted all the bin and obj folders of the application and class libraries, but the problem persists. This makes me believe that the problem lies in my implementation of a third module in the application. The build puts the dll into the Module folder, but apparently, the new module is not populated in the module catalog. Is there a way to list the contents of the catalog after it is populated?</p>",
+    "PostedDate": "2012-06-14T07:30:41.98-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "849160",
+    "ThreadId": "359498",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding you could obtain this information from the <strong>ModuleCatalog\r\n</strong>instance which keep track of what modules are available to the application, which modules may need to be downloaded, and where the modules reside.</p>\r\n<p>For example you could retrieve this instance from the container, through its mapped interface, like this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>ServiceLocator.Current.GetInstance&lt;IModuleCatalog&gt;();\n</pre>\r\n</div>\r\n<p>Also, I believe you could benefit from the use of the <strong>LoadModuleCompleted\r\n</strong>event provided with the <strong>ModuleManager</strong>,which will allow you to track when a module loads or fails to load.</p>\r\n<p>You could find more information about this in the following section of the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28v=pandp.40%29.aspx#sec37\">Chapter 4: Modular Application Development, Detecting When a Module Has Been Loaded</a>\r\n</li></ul>\r\n<p>On the other hand, if you want to debug a module that is dynamically discovered, as far as I know you should have to use a\r\n<strong>post build events</strong> in your module's project to automatically store the modules' assemblies in the desired folder after a successful build. To see the\r\n<strong>post-build events</strong> configuration, right-click a module project, and then click\r\n<strong>Properties</strong>. In the <strong>Properties </strong>dialog box, click the\r\n<strong>Build Events</strong> tab.</p>\r\n<p>An example of this could be like the ones used for <strong>ModuleA </strong>and\r\n<strong>ModuleB </strong>in the aforementioned sample:</p>\r\n<p><em>xcopy /y &quot;$(TargetPath)&quot; &quot;$(SolutionDir)Prism4Demo\\$(OutDir)Modules\\&quot;</em><br>\r\n<em>xcopy /y &quot;$(TargetDir)FsTaskButton.dll&quot; &quot;$(SolutionDir)Prism4Demo\\$(OutDir)&quot;</em></p>\r\n<p>Another example can be seen in the ones used in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921068%28v=pandp.40%29\">\r\nModularity Quickstart</a> provided with <strong>Prism</strong>.<br>\r\n<br>\r\nI hope you find this helpful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a>&#65279;</p>\r\n",
+    "PostedDate": "2012-06-14T10:43:50.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

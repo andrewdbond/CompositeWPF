@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "926658",
+    "ThreadId": "399378",
+    "Html": "\r\n<p>Hi:</p>\r\n<p>Suppose I'm working with Prism but I'm not using regions.</p>\r\n<p>How can I just navigate between the modules without using Prism navigation, just the native Silverlight navigation?</p>\r\n<p>I'm using Silverlight 5, and I also have VS 2010 and 2012.</p>\r\n",
+    "PostedDate": "2012-10-15T05:13:23.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "926767",
+    "ThreadId": "399378",
+    "Html": "<p>Hi:</p>\r\n<p>Never mind the question, I know the answer already.</p>\r\n<p>Thanks anyway.</p>\r\n<p>Rafael</p>",
+    "PostedDate": "2012-10-15T08:14:20.77-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "926823",
+    "ThreadId": "399378",
+    "Html": "<p>Hi,</p>\r\n<p>I'm glad you found the answer for this, for those interested in this subject you might find useful to know that the <strong>Silverlight </strong>navigation framework does not directly support the use of the MVVM pattern or the use of a dependency injection container or <strong>MEF</strong>, which you may need if you have loosely coupled views defined in different modules.</p>\r\n<p>Based on my understanding, in order to achieve this, you can extend the <strong>Silverlight </strong>default navigation system by setting the <strong>ContentLoader </strong>property to a custom <strong>INavigationContentLoader </strong>implementation, which is used by the frame to load the content associated with a specific <strong>URI </strong>which can instantiate and initialize the view and its associated view model as appropriate and display it in the <strong>Frame</strong>.</p>\r\n<p>For more information about this you could check the following resources:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/cc838245(v=vs.95).aspx\">Navigation Overview (Extending the Navigation System)</a></li>\r\n</ul>\r\n<ul>\r\n<li><a href=\"http://blogs.msdn.com/b/silverlight_sdk/archive/2008/10/14/additional-navigation-resources.aspx\">Additional Navigation Resources</a></li>\r\n</ul>\r\n<p>Also, for examples that implement a custom content loader, but which takes advantage of <strong>Prism </strong>regions you could check the following blog post from Karl Shifflett:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.msdn.com/b/kashiffl/archive/2010/10/05/integrating-prism-v4-region-navigation-with-silverlight-frame-navigation.aspx\">Integrating Prism v4 Region Navigation with Silverlight Frame Navigation</a></li>\r\n<li><a href=\"http://blogs.msdn.com/b/kashiffl/archive/2011/03/10/prism-4-region-navigation-with-silverlight-frame-navigation-and-unity.aspx\">Prism 4 Region Navigation with Silverlight Frame Navigation and Unity</a></li>\r\n</ul>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-10-15T09:41:43.397-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927081",
+    "ThreadId": "399378",
+    "Html": "\r\n<p>Thank you Agustin.</p>\r\n<p>I thought I knew. I appreciate your answer.</p>\r\n<p>Before I study those links, I'd like to know:</p>\r\n<p>1) If that extension ultimately provides us with all the standard navigation, Forward, Backward, to a specific Uri wether it belongs to the same assembly or not, and to a different website...</p>\r\n<p>2) I'm interested in Unity, does the navigation extension with Unity have all the benefits of it's counterpart Mef?</p>\r\n<p>3) Is it the same navigation that allows us to navigate between regions?</p>\r\n<p>Rafael</p>\r\n",
+    "PostedDate": "2012-10-15T19:08:41.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "927591",
+    "ThreadId": "399378",
+    "Html": "\r\n<p>Hi Rafael,</p>\r\n<p>I will try to answer your different concerns:</p>\r\n<ol>\r\n<li>Based on my understanding the behavior you will obtain when using this extensions will depend on the custom\r\n<strong>ContentLoader </strong>you define. In the case of Karl Shifflett's implementation, as far as I know the standard forward and backward functionality is supported for specific\r\n<strong>Uris, </strong>that will be matched to the corresponding views registered in the container by benefiting of the\r\n<strong>IRegionNavigationContentLoader </strong>implementation provided with <strong>\r\nPrism </strong>(used to identify the view in a region that is the target of a navigation request). On the other hand, as far as I know the\r\n<strong>Frame </strong>control only supports navigation to <strong>Silverlight </strong>\r\npages and not to external web sites. </li><li>In my opinion there will be no difference other than the particular characteristics of each container (e.g. how to register the views, how to import them, etc).\r\n</li><li>As far as I know, this is not the same navigation used to navigate between regions, as you may find in Karl's Shifflett sample, in order to support this integration, a custom\r\n<strong>FrameRegionNavigationService </strong>was also implemented which differs from the default<strong> NavigationService\r\n</strong>implementation provided with <strong>Prism</strong>. </li></ol>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-10-16T11:28:16.833-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

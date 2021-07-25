@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "514556",
+    "ThreadId": "232787",
+    "Html": "\r\n<p>Hi.</p>\r\n<p>I'm new with Prism and MVVM, and I can't understand one conceptual thing.</p>\r\n<p>For example, there's an application for managing orders. It can create order, edit order header (date, customer, etc), delete order, edit order contents (add position, edit position, delete position). I want to edit an order position in separate modal window.\r\n That is, when user press the button &quot;edit&quot; in the order's view, application must open a new modal window, put into this window new instance of the position's view, and initialize data context of that view with selected order position.</p>\r\n<p>I'm using WPF 4, Prism 4 and MEF. So, as far as I understood, my application should consist of:</p>\r\n<ul>\r\n<li>bootstrapper; </li><li>shell (contains one region, which order view placed into); </li><li>order view (user control); </li><li>order view model; </li><li>order position view (user control); </li><li>order position view model. </li></ul>\r\n<p>The problem.</p>\r\n<p>I created a command in order view model and bound it to &quot;edit button&quot;. I know, which position is selected, so I have proper order position's view model.</p>\r\n<p>Now, I need to create an instance of order position view, place it into pop up region (this will create a new modal window), and assign existing position's view model to the data context of view. What is the best practice for this? Who should create view?\r\n Who should assign view model to data context?</p>\r\n<p>At this moment, I'm thinking about such scenario: order view model publish event, payload is view model of selected position. But who subscribes this event and how it creates view? If instance of view obtained via MEF, how to initialize data context with\r\n existing instance of view model? Just set &quot;DataContext&quot; property or somehow else?</p>\r\n<p>&nbsp;</p>\r\n<p>Thank you for response.</p>\r\n",
+    "PostedDate": "2010-10-29T07:24:15.297-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514662",
+    "ThreadId": "232787",
+    "Html": "\r\n<p>take a look here:&nbsp;<a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=231798\">http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=231798</a></p>\r\n",
+    "PostedDate": "2010-10-29T10:39:39.71-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "515378",
+    "ThreadId": "232787",
+    "Html": "\r\n<p>Unfortunately, it's a discussion about &quot;how to create a popup&quot;.</p>\r\n<p>Most important question for me - how to assign existing instance of order position's view model. Sample code from that thread:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>    [Export]\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">partial</span> <span style=\"color:blue\">class</span> DemoView : UserControl\r\n    {\r\n        <span style=\"color:green\">//assign the DataContext to the DemoViewModel</span>\r\n        [Import]\r\n        <span style=\"color:blue\">private</span> DemoViewModel ViewModal { <span style=\"color:blue\">set</span> { <span style=\"color:blue\">this</span>.DataContext = value; } }\r\n    }\r\n\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>That is, it creates DemoView instance and DemoViewModels using MEF. So, MEF will use either shared view model instance, or new view model instance. And what about\r\n<strong>existing</strong> instance? Something like this?</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre> <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> ShowModalWindow()\r\n        {\r\n           <span style=\"color:blue\"> var</span> view = ServiceLocator.Current.GetInstance&lt;IDemoView&gt;();\r\n            view.DataContext = OrderPostitions.Current;\r\n            regionManager.Regions[<span style=\"color:#a31515\">&quot;SecondaryRegion&quot;</span>].Add(view, <span style=\"color:#a31515\">&quot;DemoAppView&quot;</span>);\r\n            regionManager.RequestNavigate(<span style=\"color:#a31515\">&quot;SecondaryRegion&quot;</span>, <span style=\"color:blue\">new</span> Uri(<span style=\"color:#a31515\">&quot;/DemoView&quot;</span>, UriKind.Relative));\r\n        }\r\n</pre>\r\n</div>\r\n?\r\n<p></p>\r\n",
+    "PostedDate": "2010-11-01T05:27:46.97-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "515398",
+    "ThreadId": "232787",
+    "Html": "\r\n<p>basically the way I am doing it at present which may change cause I tend to see an some issue with initial modal edit view creation being blank..&nbsp; I create the viewmodel as you have with an import and assign the datacontext, followed by all the binding\r\n in the xaml markup.&nbsp; I actually have a property in my viewmodel that is assigned thru an IEventAggregator this isn't the best way since I am using something is more for intra-module communciation and I should probably just use a regular even for inter-module\r\n communication.&nbsp; Anyway I found some behavior example about how to double-click the datarow of the datagrid that allows me to display the modal dialog, this in-turn calls the behavior code for the modal dialog stuff that we are discussing in the thread\r\n mentioned</p>\r\n<p>It works but its not perfect yet, of course the question that begs is it correctly following the guidelines for mvvm, at this point I haven't cared, I am sure as I start writing test cases it will eventually matter.</p>\r\n",
+    "PostedDate": "2010-11-01T06:47:07.803-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

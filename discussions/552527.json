@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1275424",
+    "ThreadId": "552527",
+    "Html": "Hi,\r<br />\n<br />\nI'm using Prism 5.0.0 with MEFExtensions in a project which is targeted for the .NET-Framework 4.5.2.\r<br />\nWhen I create a ViewModel by inheriting from BindableBase or when I use the DelegateCommand, my project no longer compiler for it fails to resolve types.\r<br />\nWhen I use DelegateCommand for example, I get the following error:\r<br />\n<br />\nThe type 'System.ComponentModel.INotifyPropertyChanged' is defined in an assembly that is not referenced. You must add a reference to assembly 'System.ObjectModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.\r<br />\n<br />\nRegards,\r<br />\nMarkus Palcer<br />\n",
+    "PostedDate": "2014-07-23T03:32:06.817-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1280010",
+    "ThreadId": "552527",
+    "Html": "Hi Markus,\r<br />\n<br />\nI have the same problem. Did you find a solution for it already?\r<br />\n<br />\nRegards,\r<br />\nPatrick<br />\n",
+    "PostedDate": "2014-08-01T07:14:24.117-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1284404",
+    "ThreadId": "552527",
+    "Html": "Hi Patrick,\r<br />\n<br />\nI downloaded the PRISM source to check out the reason and found out that while most of the projects are Built for .NET 4.5.1 and can simply be switched, a few of them have been configured for multiple target platforms. \r<br />\nI can only assume that those are portable class libraries since I've never worked with those before\r<br />\nAlthough you can choose the version of the .NET-Framework, you can only choose a version up to 4.5.1.\r<br />\nAgain I assume this is because 4.5.2 is not available for PCL's yet (anyone correct me if I'm wrong).\r<br />\n<br />\nAnyway there are two ways to fix this, both not really satisfying.<br />\n<ol>\n<li>Of course you can simply switch over to .NET Framework 4.5.1 - it's what we did with gritting teeth. Thus you will still use the NuGet provided packages and benefit from the updating mechanism it provides.</li>\n<li>\nYou can download the source and set the Projects to compile for 4.5.2.<br />\n</li>\n</ol>\nI've tried the second approach too, since it didn't take much time. It does take some meddling with the .csproj-Files of the projects which are set to have multiple Targets in order to be able to select 4.5.2 as single target. Also you need to add some references to them, but you will see them alright if you try to compile.\r<br />\nMainly you'll want to remove the content of the TargetFrameworkProfile-Tag and the whole ProjectTypeGuids-Tag. Plus in order to get it to compile you want to change the import at the end from  &lt;Import Project=&quot;$(MSBuildExtensionsPath32)\\Microsoft\\Portable\\$(TargetFrameworkVersion)\\Microsoft.Portable.CSharp.targets&quot; /&gt; to &lt;Import Project=&quot;$(MSBuildToolsPath)\\Microsoft.CSharp.targets&quot; /&gt;\r<br />\n<br />\nBut on the other hand that means you either can't update PRISM or you need to apply these patches for each update (which you get by updating the sources manually) and recompile yourself until 4.5.2 is supported out of the box.\r<br />\n<br />\nRegards,\r<br />\nMarkus<br />\n",
+    "PostedDate": "2014-08-04T00:09:38.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1284418",
+    "ThreadId": "552527",
+    "Html": "HI Markus,\r<br />\n<br />\nThanks for the answer.\r<br />\n<br />\nStill I find it strange that we get this error because 4.5.2 should be backwards compatible with 4.5.1.\r<br />\nSo I like to know from the dev team why it's complaining about it. \r<br />\n<br />\nThe errors I'm getting are a little different. But I'm using the DelegateCommand&lt;T&gt; \r<br />\n<br />\nfirst error is - The type 'System.Windows.Input.ICommand' is defined in an assembly that is not referenced. You must add a reference to assembly 'System.ObjectModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.\r<br />\nsecond error is - The type 'System.Object' is defined in an assembly that is not referenced. You must add a reference to assembly 'System.Runtime, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'\r<br />\n<br />\nWe don't use Nuget to update the files so I can recompile the sources. That's an options for us.\r<br />\n<br />\nRegards,\r<br />\nPatrick<br />\n",
+    "PostedDate": "2014-08-04T01:01:01.133-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1284492",
+    "ThreadId": "552527",
+    "Html": "Hi Markus,\r<br />\n<br />\nThe problem was reported on connect for referencing a pcl.\r<br />\n<a href=\"http://connect.microsoft.com/VisualStudio/feedback/details/873446/project-targeting-4-5-2-fails-to-build-when-referencing-a-pcl\" rel=\"nofollow\">http://connect.microsoft.com/VisualStudio/feedback/details/873446/project-targeting-4-5-2-fails-to-build-when-referencing-a-pcl</a>\r<br />\n<br />\nThe fix can be downloaded here <a href=\"http://www.microsoft.com/en-us/download/details.aspx?id=42637\" rel=\"nofollow\">http://www.microsoft.com/en-us/download/details.aspx?id=42637</a>\r<br />\n<br />\nAfter installation of the developer pack the building works fine.\r<br />\n<br />\nRegards,\r<br />\nPatrick<br />\n",
+    "PostedDate": "2014-08-04T04:35:31.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1424051",
+    "ThreadId": "552527",
+    "Html": "Hello people, \r<br />\n<br />\nI got the same error, but only in the function &quot;Edit and Continue&quot; Visual Studio 2013. This occurs whenever I change the code and try to continue running. After much searching and downloading the source code Prism V5, I realized that libraries were created with the template portable project.\r<br />\n<br />\nI created a simple console application that one a portable library and got the same result, ie could not change the code and continue its execution because the project was using a portable library.\r<br />\n<br />\nWell, so far, got no choice but to rebuild the libraries without using Prism portable project.\r<br />\n<br />\nRegards,\r<br />\nGilberto W. Alexandre<br />\n",
+    "PostedDate": "2015-05-07T15:17:22.867-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1424169",
+    "ThreadId": "552527",
+    "Html": "Well, as Patrick said, the problem is caused when using PCL (Portable Class Library) or, as I mentioned, &quot;portable project&quot;. Once you reference the libs folder &quot;C: \\ Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework.NETFramework\\v4.XXX\\Facades\\&quot; as calls for the implementation, the problem was solved!\r<br />\n<br />\nThank you!<br />\n",
+    "PostedDate": "2015-05-08T06:32:32.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

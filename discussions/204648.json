@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "416986",
+    "ThreadId": "204648",
+    "Html": "<p>Hi there,</p>\r\n<p>Is it possible to publish a CompositePresentationEvent&nbsp;inside ILoggerFacade.Log() ?</p>\r\n<p>For example, I've created an event called MessageLoggedEvent and I want to raise it inside Log() so that another module can respond to it and display the collected messages in a window.</p>\r\n<p>I've tried overriding UnityBootstrapper.LoggerFacade { get; } property but it seems the Container is created after the getter is called inside UnityBootstrapper.Run(). Therefore I'm not able to get a reference to IEventAggregator.</p>\r\n<p>Is there a solution?</p>\r\n<p>Thanks,</p>\r\n<p>-A.</p>",
+    "PostedDate": "2010-03-11T07:10:15.76-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "419703",
+    "ThreadId": "204648",
+    "Html": "<p id=538fa170-141b-012d-1315-1231390cb251>Hi,</p>\r\n<p id=538fcdb0-141b-012d-1316-1231390cb251>I&rsquo;ve come to the following  workaround for your situation.</p>\r\n<ol>\r\n<li>You  could use <a href=\"http://msdn.microsoft.com/en-us/library/dd140084.aspx\">Property  Injection</a> to add the <strong>EventAggregator</strong> as a dependency to the logger  you are using:       <br>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>[Dependency]\r\n<span style=\"color:Blue\">public</span> IEventAggregator EventAgg {<span style=\"color:Blue\">get</span>; <span style=\"color:Blue\">set</span>;} \r\n</pre>\r\n</div>\r\n</li>\r\n<li>Update the <strong>Bootstrapper</strong> to have the container call the <a href=\"http://msdn.microsoft.com/en-us/library/dd140116.aspx\">BuildUp</a> method on the logger you are using, so that the dependencies (in this  case, the <strong>EventAggregator</strong>) are injected into it. This must be done after  all services are created, for example after the <strong>ConfigureContainer</strong> method is called:       <br>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">this</span>.Container.BuildUp(logger); \r\n</pre>\r\n</div>\r\n</li>\r\n<li>You  can use a conditional like this inside the <strong>Log</strong> method of your logger  to check whether the <strong>EventAggregator</strong> instance has already been added,  and publish the desired event:<br>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">if</span> (EventAgg != <span style=\"color:Blue\">null</span>)\r\n{\r\n    EventAgg.GetEvent&lt;MessageLoggedEvent&gt;().Publish(messageToLog);\r\n}\r\n</pre>\r\n</div>\r\n<p id=538ffcb0-141b-012d-1317-1231390cb251>&nbsp;</p>\r\n</li>\r\n</ol>\r\n<p id=53905680-141b-012d-1318-1231390cb251>Another approach for resolving the <strong>EventAggregator</strong> inside the logger would be to use the <a href=\"http://msdn.microsoft.com/en-us/library/dd458903.aspx\">ServiceLocator</a>,  but you must take into account that the <strong>EventAggregator</strong> must be already registered in the container at the time the <strong>ServiceLocator</strong> is used to resolve it. You can  find more information about how to use the <strong>ServiceLocator</strong> in <a href=\"View.aspx?ThreadId=155539\">this  thread</a>.</p>\r\n<p id=5bef2e00-1353-012d-71b5-123139061101>I hope  you find this helpful.</p>\r\n<p id=5bef4b60-1353-012d-71b6-123139061101>Guido  Leandro Maliandi    <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-03-18T05:33:44.047-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

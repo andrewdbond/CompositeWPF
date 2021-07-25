@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "718212",
+    "ThreadId": "284452",
+    "Html": "<p>Hi all,</p>\n<p>I have an application using Prism and Silverlight 4. For events management, I use ﻿EventAggregator class.</p>\n<p>In order to avoid memory leaks, I have seen that ﻿EventAggregator has a private property named ﻿\"_events\" that holds all event instances but I want to remove some of them when<em>&nbsp;</em>I perform logout.</p>\n<p>How can I do it?</p>\n<p>&nbsp;</p>\n<p>Thanks a lot.</p>\n<p>&nbsp;</p>",
+    "PostedDate": "2011-12-29T02:41:56.447-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "718363",
+    "ThreadId": "284452",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding Prism out of the box doesn't allow to directly remove items from this property, this seems to be by design. As you can find in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921122(v=PandP.40).aspx#sec8\">Communication Chapter</a> in Prism documentation at msdn the <strong>EventAggregator </strong>is responsible for locating or building events and for keeping a collection of the events in the system. And by using its <strong>GetEvent </strong>method allows you to construct the event on its first access if it has not already been constructed.</p>\r\n<p>Also I believe this shouldn't be the cause of a significantly memory leak, as the <strong>CompositePresentationEvent </strong>used by Prism maintains a weak delegate reference to the subscriber's handler. Unless you are using the <strong>keepSubscriberReferenceAlive </strong>parameter to specify a strong reference, the <strong>EventAggregator</strong> won't keep the subscribers alive.</p>\r\n<p>On the other hand if you believe this might be helpful regarding your scenario, you could create your custom <strong>EventAgreggator </strong>class which derives from <strong>IEventAggregator</strong>. And replace the default one by overriding the <strong>ConfigureContainer </strong>method in the bootstrapper like in the following link:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430866(v=PandP.40).aspx#sec12\">Replacing Default Prism Library Types</a></li>\r\n</ul>\r\n<p><em>Note: the property \"_events\" is used in Prism v2 <strong>EventAggregator, </strong>in Prism v4 is called \"events\". The classes are slightly different; however, they don't show a different behavior regarding this subject.</em></p>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-12-29T09:24:02.45-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

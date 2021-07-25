@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "505492",
+    "ThreadId": "230449",
+    "Html": "<p>When I try to import RibbonTab with MEF Module to the MenuRegion in the Shell, I get an exception like &quot;Index out of range exception&quot;, this is Prism v4 or Ribbon problem?</p>",
+    "PostedDate": "2010-10-11T09:31:29.563-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "505665",
+    "ThreadId": "230449",
+    "Html": "<p>did you write a region adapter for Prism?</p>",
+    "PostedDate": "2010-10-11T16:01:33.273-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "505881",
+    "ThreadId": "230449",
+    "Html": "<p>Yesterday night I&nbsp;have solved the problem of region adapter, and now I can add RibbonTab.</p>\r\n<p>But now I can't add a RibbonGroup to the Shell in xaml code defined RibbonTab &quot;Home&quot;, because the RegionManager don't contain the region &quot;HomeTabRegion&quot; associated to the RibbonTab &quot;Home&quot; ... before RegionAdapter,&nbsp;MEF/PRISM Importing&nbsp;RibbonGroup to the HomeTabRegion works well ... I'll try to do some debugging test, but if you have any idea is well accepted.</p>",
+    "PostedDate": "2010-10-12T01:58:18.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "506022",
+    "ThreadId": "230449",
+    "Html": "<p>can you show how you are declaring the region?</p>",
+    "PostedDate": "2010-10-12T07:02:02.393-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "506239",
+    "ThreadId": "230449",
+    "Html": "<p>Shell partial XAML<br>&lt;r:Ribbon x:Name=&quot;Ribbon&quot; prism:RegionManager.RegionName=&quot;{x:Static region:RegionNames.MenuRegion}&quot;&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;r:RibbonTab x:Name=&quot;HomeTab&quot; Header=&quot;Home&quot; prism:RegionManager.RegionName=&quot;{x:Static region:RegionNames.HomeRegion}&quot;/&gt; <br>&lt;/r:Ribbon&gt;</p>\r\n<p>Module with RibbonGroup</p>\r\n<p>public void Initialize() <br>{</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _regionManager.AddToRegion(RegionNames.HomeRegion, new ModuleMenuView ());</p>\r\n<p>}</p>\r\n<p>Exception:</p>\r\n<p>This RegionManager does not contain a Region with the name 'HomeRegion'.<br>Parameter name: regionName</p>",
+    "PostedDate": "2010-10-12T13:15:49.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "506297",
+    "ThreadId": "230449",
+    "Html": "<p>now that I can see what you are doing... Unless you coded into your regionadapter how to handle RibbonTabs then it will always throw an error for that, since the regionmanager doesn't know how to map a RibbonTab (yet).</p>\r\n<p>I would so say that there was a support ticket into P&amp;P for regionadapters for the ribbon control, patience or make your region adapter work with everything associated with the Ribbon.</p>\r\n<p>It's old but it might have some useful information for creating the adapter to work with everything.</p>\r\n<p>http://blogsprajeesh.blogspot.com/2009/09/prism-creating-custom-region-adapter.html</p>\r\n<p>&nbsp;</p>\r\n<p>hth,</p>\r\n<p>Morgan</p>",
+    "PostedDate": "2010-10-12T15:03:55.373-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "506658",
+    "ThreadId": "230449",
+    "Html": "<p>Sorry I forgot to write that I already have a regionAdapter, similar to that of the link, the difference lies in the use of Items instead of Tabs to the Ribbon, and there is no &quot;region.activeviews.tolist (). ForEach (x = &gt; ribbon.tabs.add (x as the RibbonTab));&quot;<br>I tried to use the copy of the one in the link, changing only Tabs into Items, but the problem persists</p>",
+    "PostedDate": "2010-10-13T07:49:57.243-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "165702",
+    "ThreadId": "49519",
+    "Html": "I am trying to create scoped controllers and have mostly succeeded at that. The one thing I am struggling with is that I would like the controller to register an instance of a State type in it's child controller, and for each view to be able to access that state type. The problem I am having is that if I resolve a view with the child container, and I have a IUnityContainer paramters on the constructor of that view, Unity ends up filling that parameter with the main container and not with the child one.<br>\r\n<br>\r\nTo clarify:<br>\r\n<br>\r\n1. I create a new container:&nbsp;&nbsp; IUnityContainer childContainer = parentContainer.CreateChildContainer();<br>\r\n<br>\r\n2. I resolve a view using childContainer: childContainer.Resolve&lt;ISomeView&gt;();<br>\r\n<br>\r\n2.5. The view has a constuctor like public SomeView(IUnityContainer container)<br>\r\n<br>\r\n3. The container that is injected into the view is not childContainer but parentContainer.<br>\r\n<br>\r\nTo me it seems that the childContainer should be returned. Am I wrong to expect that, or is this some sort of bug?<br>\r\n<br>\r\nPS: The reason why I mention the state object above is that it is only added to the childContainer, so in my view there is no registered instance in the container.<br>\r\n<br>\r\nThanks,<br>\r\nMladen<br>\r\n",
+    "PostedDate": "2009-03-07T11:15:57.807-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "165834",
+    "ThreadId": "49519",
+    "Html": "I updated the project to Prism 2 and the problem has resolved itself. I'm not sure where the actual problem was (Prism or Unity) but it's not there in Prism 2.<br>\r\n",
+    "PostedDate": "2009-03-08T11:47:33.823-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

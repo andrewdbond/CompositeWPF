@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "417692",
+    "ThreadId": "204835",
+    "Html": "<p>Hi All</p>\r\n<p>I have attached a click.command to a button and also have an IsEnabled converted that is bound to a ValidationSumary control so that when there are validation issues, the button is disabled. Here is the code:</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">Button</span> <span style=\"color:Red\">Grid.Row</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">6</span><span style=\"color:Black\">&quot;</span> <span style=\"color:Red\">Margin</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">6</span><span style=\"color:Black\">&quot;</span> <span style=\"color:Red\">Content</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">Update Filters</span><span style=\"color:Black\">&quot;</span> <span style=\"color:Red\">Commanding:Click.Command</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">{Binding FilterSubmitCommand}</span><span style=\"color:Black\">&quot;</span> <span style=\"color:Red\">Width</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">150</span><span style=\"color:Black\">&quot;</span> \r\n                    <span style=\"color:Red\">IsEnabled</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">{Binding Path=HasErrors, ElementName=ValidationSummary1, Converter={StaticResource HasErrorsToIsEnabledConverter}}</span><span style=\"color:Black\">&quot;</span> <span style=\"color:Blue\">/&gt;</span>\r\n</pre>\r\n</div>\r\n</p>\r\n<p>The issue is that even though I have not bound to the CanExcecute event, when the click.command was added, the button is never disabled. it is conflicting with the CanExecute. is there someway to ignor CanExecute?</p>\r\n<p>&nbsp;</p>\r\n<p>Nick</p>",
+    "PostedDate": "2010-03-12T18:42:37.28-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "418710",
+    "ThreadId": "204835",
+    "Html": "<p id=24b269c0-1334-012d-6fd9-123139061101>Hi Nick,</p>\r\n<p id=24b27290-1334-012d-6fda-123139061101>The usual  approach for enabling/disabling a button bound to a <a href=\"http://msdn.microsoft.com/en-us/library/dd458928.aspx\">command</a> is to  use the CanExecute event (which internally manages the button&rsquo;s IsEnabled  property). You should call the RaiseCanExecuteEvent whenever a property involved  in that validation changes, and put the validation logic for that button in the  CanExecute method of the command. You can find an example of this usage in the  Silverlight <a href=\"http://msdn.microsoft.com/en-us/library/dd458890.aspx\">Commanding  Quickstart</a>, as well as the Silverlight <a href=\"http://msdn.microsoft.com/en-us/library/dd458919.aspx\">Reference  Implementation</a>.</p>\r\n<p id=24b28180-1334-012d-6fdb-123139061101>I hope you  find this helpful.</p>\r\n<p>Guido  Leandro Maliandi<a href=\"http://blogs.southworks.net/gmaliandi\"><br>http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-03-16T08:07:06.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

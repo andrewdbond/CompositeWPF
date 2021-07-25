@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "574084",
+    "ThreadId": "248056",
+    "Html": "\r\n<p>Usually, I specify path to the XAP file for ModuleInfo's Ref attribute. But is it possible to specify DLL instead of XAP? The reason - I have some core modules that are located in Silverlight Class Library project and statically linked to the main Silverlight\r\n application, and I don't want to create a separate Silverlight application for them. But at the same time I want to have only one place to configure all my modules - ModuleCatalog.xaml file. So, can I add reference to a module located in DLL in the ModuleCatalog.xaml\r\n file?</p>\r\n",
+    "PostedDate": "2011-03-01T13:46:01.117-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "574424",
+    "ThreadId": "248056",
+    "Html": "<p>Hi,</p>\r\n<p>The Silverlight security model does not allow you to load assemblies from the file system. This means you can&acute;t specify in the <strong><em>Ref</em></strong> property of the <strong>XAML ModuleInfo</strong> element, a DLL located in the file system.</p>\r\n<p>You will need to package all your module&acute;s DLLs in a XAP file in order to use them as modules loaded in a Silverlight Prism application.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-03-02T06:21:47.413-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "574643",
+    "ThreadId": "248056",
+    "Html": "<p>Hi Miguel,</p>\r\n<p>I don't want to specify DLL located in the file system, I want to specify DLL located in the XAP file of the main Silverlight application (that contains bootstrapper, shell, etc.)</p>",
+    "PostedDate": "2011-03-02T14:04:04.177-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "575029",
+    "ThreadId": "248056",
+    "Html": "<p>Hi,</p>\r\n<p>The scenario you're describing isn't possible out-of-the-box. You might use other of the mechanisms for loading modules to load the ones that are statically referenced by your shell project. For example, if you're using MEF you could add an <strong>AssemblyCatalog </strong>to the <strong>AggregateCatalog</strong>.</p>\r\n<p>You might find more information about this in the following resources:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921163%28PandP.40%29.aspx\">Modularity QuickStarts for Silverlight</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28PandP.40%29.aspx\">Chapter 4: Modular Application Development</a></li>\r\n</ul>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-03T06:36:48.723-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "585372",
+    "ThreadId": "248056",
+    "Html": "<p>Thanks, Guido.</p>",
+    "PostedDate": "2011-03-23T16:29:13.703-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

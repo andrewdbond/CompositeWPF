@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "478032",
+    "ThreadId": "222911",
+    "Html": "<p>Can someone please clarify the difference in approach between using the event aggregator and a composite command.</p>\r\n<p>I think, in my mind, it comes down to threading/processing but I'm not sure if that's all I need to consider or if there's more to it.</p>\r\n<p>I have an (shell) exe and a bunch of modules. <br>From my shell I want to be able to initiate a 'save' action. Unlike many of the samples, my application is not an MDI type app. <br>So when I initiate a 'save' action I'm not looking at a 'save all' ie. several order views performing a Save Order. <br>What I am looking for is for each module to persist it's state in an way that appropriate to the given module. <br>The customer module would save the state of the customer, the vehicle module would save the state of the vehicle etc etc</p>\r\n<p>My dilemna...</p>\r\n<p>I could use the event aggregator and publish a 'save' event. <br>Each module (that needed to persist state) could then register for that event and when it gets raised persist it's state in the appropriate way.</p>\r\n<p>Alternatively, could I use a composite command to call a save method for each module? <br>(As you can probably tell - I don't have much experience in composite commands). <br>I'm assuming as long as each module's save command/method had the same signature I could wrap them all up into a composite command.</p>\r\n<p>If my assumption is correct, I think the significant difference in the 2 approaches is to do with threading/processing. <br>If I wanted to do something immediately after the save (and only once the save of each module had finished) am I right in thinking that composite command is the way to go?</p>\r\n<p>My thoughts here are that simply publishing an event is a bit like 'fire and forget' ie. you won't get any indication of when each subscriber to the event has finished handling the event. <br>Where as the composite command is a more synchronous approach and will execute each individual save command before continuing on to the next instruction.</p>\r\n<p>So is that all there is to consider, or is there something I'm overlooking?</p>\r\n<p>Thanks in advance,</p>\r\n<p>CA.</p>",
+    "PostedDate": "2010-08-09T04:36:06.9-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "478172",
+    "ThreadId": "222911",
+    "Html": "From what I understand: Commands are synchronous and will execute on the UI thread. With the event you have three options: Publisher thread, UI thread and, Background thread. If you receive the events on the publisher thread, that I believe will make it synchronous like a command. With the composite command your UI wont be responsive until all saves are complete.",
+    "PostedDate": "2010-08-09T08:49:57.327-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

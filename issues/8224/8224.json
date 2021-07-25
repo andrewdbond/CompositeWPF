@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Remove views manually during navigation when views implements KeepAlive => false throws an exception\n \nDiscussion thread:\nhttp://compositewpf.codeplex.com/discussions/256689",
+    "LastUpdatedDate": "2015-02-25T06:44:00.073-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-05-09T12:26:44.37-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Silverlight - Add/Remove view - ArgumentException",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 5,
+    "Id": 8224
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nFor those concerned with this problem, we have modified the ShouldKeepAlive method in the RegionMemberLifetimeBehavior class, so as to avoid this issue. The modifications include making the method an instance method (so as to be able to access the Region property in the behavior), and checking if the view belongs to the region in consideration, before attempting to decide whether it should be removed from it or not. The code below illustrates this proposed fix:\r\n\r\nprivate bool ShouldKeepAlive(object inactiveView)\r\n        {\r\n            if (this.Region.Views.Contains(inactiveView))\r\n            {\r\n                IRegionMemberLifetime lifetime = GetItemOrContextLifetime(inactiveView);\r\n                if (lifetime != null)\r\n                {\r\n                    return lifetime.KeepAlive;\r\n                }\r\n\r\n                RegionMemberLifetimeAttribute lifetimeAttribute = GetItemOrContextLifetimeAttribute(inactiveView);\r\n                if (lifetimeAttribute != null)\r\n                {\r\n                    return lifetimeAttribute.KeepAlive;\r\n                }\r\n            }\r\n\r\n            return true;\r\n        }\r\n\r\nWe then verified the scenario of trying to remove an IRegionMemberLifetime view with the KeepAlive property set to false, and found that it worked properly after applying the fix.\r\n\r\nWe ran all the tests in both the Desktop and Silverlight version of the Prism Library, and this change seems to cause no problems in the code base.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-11-03T05:49:18.517-07:00",
+      "Id": 156449
+    }
+  ]
+}

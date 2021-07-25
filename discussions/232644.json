@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "513929",
+    "ThreadId": "232644",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>I have a RadDocking control from Telerik. I defined a region on document host. It works very well until I try to add twice the same view.</p>\r\n<p>I tried to add a different name when adding the view to the IRegion, but it didn't work. I always gave the &quot;View already exists in region.&quot; exception.</p>\r\n<p>&nbsp;</p>\r\n<p>How could I solve this? Region behavior? etc?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p>Adrien Pellegrini.</p>\r\n",
+    "PostedDate": "2010-10-28T05:34:41.27-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514690",
+    "ThreadId": "232644",
+    "Html": "\r\n<p>Hi Adrien,</p>\r\n<p>In Prism you can add two different instances of the same view in the same region. But it is not possible to add the same instance twice by design. As you are experiencing it throws a System.InvalidOperationException.</p>\r\n<p>If you resolve this view using your container and you do not want to add the same &quot;instance&quot; twice, you could check the way that you are registering your view. Please take into account that if you are using Unity and also use a\r\n<strong>ContainerControlledLifetimeManager, </strong>it will retrieve you a Singleton of your view. The same occurs if you are using MEF and indicates a\r\n<strong>CreationPolicy.Shared </strong>when exporting your view<strong>.</strong></p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero</p>\r\n<p><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n",
+    "PostedDate": "2010-10-29T11:42:53.19-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514697",
+    "ThreadId": "232644",
+    "Html": "\r\n<p>Thanks for your response.</p>\r\n<p>I don't use Unity. I use only MEF (I'm trying for now ...). Views aren't registered in the container. When a module is initialized, the constructor get an instance of a view model and the view model gets an instance of the view.After in the initialize method\r\n of the &quot;IModule&quot; module, I add the view to the region by view injection.</p>\r\n<p>I read that, what I want to do, will be easier using view discovery. Also, I'm questionning myselft about registering viewmodels in the container and try to add them in the region. Thanks to that I'll be able to have two identical view but with two different\r\n data context.</p>\r\n<p>I'm not sure I'm on the right way, am I?</p>\r\n<p>&nbsp;</p>\r\n<p>My goal is to have the &quot;same&quot; view (defined in a module) added twice in a document host (or TabControl, it should be identical regarding the way to do it). By same view I mean that the usercontrol is the same but it is two separate instance and both have\r\n their own view model.</p>\r\n",
+    "PostedDate": "2010-10-29T11:54:59.12-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514708",
+    "ThreadId": "232644",
+    "Html": "\r\n<p>Hi Adrien,</p>\r\n<p>If you need two instances of the same view in the same region, you must use View Injection since it is necessary to indicate a view name. Otherwise, you will receive an exception.</p>\r\n<p>Regarding to your particular situation, you could check the way that your view model is creating your view, since it seems that retrieve the &quot;same&quot; instance of the view. And this is why you are experiencing a\r\n<strong>System.InvalidOperationException</strong> when injecting the second view in your region.</p>\r\n<p><strong>In conclusion:</strong> In Prism you can add the same view twice in a region, but they must be different instances. As you use MEF, I assume that you are importing your views, so please check that the Export attribute of the view does not indicate\r\n<strong>CreationPolicy.Shared, </strong>since it will retrieve the same instance when importing.</p>\r\n<p>If you continue experiencing this situation in your scenario, could you please share a repro sample? For example you could use\r\n<a href=\"http://explore.live.com/windows-live-skydrive\">Windows Live SkyDrive</a>.</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero</p>\r\n<p><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-10-29T12:27:41.91-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514884",
+    "ThreadId": "232644",
+    "Html": "\r\n<p>Well, I feel stupid ... It was very simple in fact.</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2010-10-30T04:15:55.797-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "515495",
+    "ThreadId": "232644",
+    "Html": "\r\n<p>Hi Adrien,</p>\r\n<p>I am glad that you found a solution in your scenario. Please let me know if you have any other questions.</p>\r\n<p>Fernando Antivero</p>\r\n<p><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n",
+    "PostedDate": "2010-11-01T10:06:46.213-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

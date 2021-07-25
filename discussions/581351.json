@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1353922",
+    "ThreadId": "581351",
+    "Html": "Hello,\r<br />\nIn our team, we want build solution with all errors + warnings fixed. \r<br />\nThe only one remaining warning concerns this one:<br />\n<blockquote>\n&quot;warning MSB3277: Found conflicts between different versions of the same dependent assembly&quot;<br />\n</blockquote>\nAfter a Msbuild with diag log enabled, they are a couple of conflicts warnings:<br />\n<blockquote>\nThere was a conflict between &quot;mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&quot; and &quot;mscorlib, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, Retargetable=Yes&quot;.<br />\nThere was a conflict between &quot;System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&quot; and &quot;System, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, Retargetable=Yes&quot;. &quot;System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&quot; was chosen because it was primary and &quot;System, Version=2.0.5.0, Culture=neutral,_ ...<br />\n</blockquote>\nAfter investigating the References dependency, I discovered stange dependency among Prism 5.0 packages \r<br />\n<br />\nHere are the screen captures of 2 differents Prism packages referencing different version of MsCorLib: <a href=\"https://onedrive.live.com/redir?resid=2D1F299DEB45D4A3!1101036&amp;authkey=!AIVdICSFXPaY488&amp;v=3&amp;ithint=photo%2cpng\" rel=\"nofollow\">https://onedrive.live.com/redir?resid=2D1F299DEB45D4A3!1101036&authkey=!AIVdICSFXPaY488&v=3&ithint=photo%2cpng</a>\r<br />\n<br />\nWould be possible to reference the same version of MsCorLib 4.0.0.0 ?\r<br />\n<br />\nThanks in advance for any help\r<br />\n-Vince\r<br />\n<br />\nps. There is no Prism v5 in the Topic's List :-)<br />\n",
+    "PostedDate": "2015-02-19T01:54:34.57-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1354333",
+    "ThreadId": "581351",
+    "Html": "Did you use Nuget to install Prism?  I haven't experienced this issue, but if you manually added it you may to need add a binding redirect for SharedInterfaces.\r<br />\n<br />\n  &lt;runtime&gt;<br />\n<pre><code>&lt;assemblyBinding xmlns=&quot;urn:schemas-microsoft-com:asm.v1&quot;&gt;\n  &lt;dependentAssembly&gt;\n    &lt;assemblyIdentity name=&quot;Microsoft.Practices.Prism.SharedInterfaces&quot; publicKeyToken=&quot;31bf3856ad364e35&quot; culture=&quot;neutral&quot;/&gt;\n    &lt;bindingRedirect oldVersion=&quot;0.0.0.0-1.1.1.0&quot; newVersion=&quot;1.1.1.0&quot;/&gt;\n  &lt;/dependentAssembly&gt;\n&lt;/assemblyBinding&gt;</code></pre>\n\n&lt;/runtime&gt;<br />\n",
+    "PostedDate": "2015-02-20T06:59:35.397-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1354336",
+    "ThreadId": "581351",
+    "Html": "Hello Brian,\r<br />\n<br />\nYes, we use Nuget and the binding redirect are present. \r<br />\n<br />\ntxs anyway\r<br />\n<br />\n-Vince<br />\n",
+    "PostedDate": "2015-02-20T07:03:28.087-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

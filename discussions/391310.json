@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "898724",
+    "ThreadId": "391310",
+    "Html": "\r\n<p><span>After intalling and registering Prism 4.1 I've found that Prism dlls do not listed in &quot;Add Reference..&quot; list filtered by Silverlight 5.</span><br>\r\n<span>I've registered them by using GacUtil in MSVS 2010 SP1 command prompt:</span><br>\r\n<span>gacutil /i &quot;C:\\Program Files (x86)\\Microsoft Prism v4.1\\Bin\\Silverlight\\Microsoft.Prac</span><span>tices.Prism.dll&quot;</span><br>\r\n<span>gacutil /i &quot;C:\\Program Files (x86)\\Microsoft Prism v4.1\\Bin\\Silverlight\\Microsoft.Prac</span><span>tices.Prism.Interactivity.dll&quot;</span><br>\r\n<span>...</span><br>\r\n<span>and so forth.</span><br>\r\n<span>There was message that dll registered successfully for each dll.</span><br>\r\n<span>However these dlls do not appears in &quot;Add Reference..&quot; list filtered by Silverlight 5.</span><br>\r\n<span>Then I'm trying to add Microsoft.Practices.Prism.dll in my fresh new SL5 project and getting error message that:</span><br>\r\n<span>Error 1 Cannot resolve reference assemblies. Please check the reference assemblies. Could not load file or assembly 'System.Windows, Version=5.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e' or one of its dependencies. Не удается найти указанный\r\n файл. SilverlightApplication2 E:\\Work\\Projects\\testProjects\\Silve</span><span>rlightApplication2\\SilverlightAppli</span><span>cation2\\MainPage.xaml</span><br>\r\n<span>Currently I'm can't build SL5 projects with linked prism dlls.</span></p>\r\n<p>I was wrong thinking that adding dll to GAC will help to show dll in Add Reference.. list.</p>\r\n<p><span><span>I used this to get dll in AddRef list: http://compositewpf.codeplex.com/workitem/9225</span><br>\r\n<br>\r\n<span>But I don't understand why adding dll to GAC led to this issue. And I still getting this error.</span><br>\r\n</span></p>\r\n",
+    "PostedDate": "2012-08-13T04:47:59.11-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "898885",
+    "ThreadId": "391310",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding assemblies installed to the <strong>GAC </strong>are not necessarily listed in the\r\n<strong>Visual Studio </strong>References dialog box and it is highly recommended that you not install your assemblies to the global assembly cache, unless you want to share your assemblies with other applications running on that system.</p>\r\n<p>The <strong>Prism </strong>library provides the <strong>RegisterPrismBinaries</strong>.<strong>bat\r\n</strong>which does not put the assemblies in the <strong>GAC</strong>, it only adds registry entries so that\r\n<strong>Visual Studio </strong>will list the <strong>Prism </strong>and <strong>Unity\r\n</strong>assemblies in the Add References dialog.</p>\r\n<p>So far, I'm not familiar with the error your are receiving, perhaps you could check the following thread from the\r\n<strong>Silverlight </strong>forums where a similar issue was described:</p>\r\n<ul>\r\n<li><a href=\"http://forums.silverlight.net/t/248654.aspx/1\">References in Silverlight 5</a>\r\n</li></ul>\r\n<p>Also, I believe you could try, uninstalling the assemblies from <strong>GAC</strong>.<br>\r\n<br>\r\nRegards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-08-13T12:03:27.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "898984",
+    "ThreadId": "391310",
+    "Html": "<p>Thank you for answer!</p>\r\n<p>I've tried to uninstall assemblies from GAC:</p>\r\n<p><span>gacutil /u Microsoft.Practices.Prism.dll for each one, but there was message that dll not found.</span></p>\r\n<p><span>I've looked in c:\\windows\\assembly directory to locate and delete dlls but nou found them.</span></p>\r\n<p><span>I've tried to follow recomendations from thread&nbsp;</span><a href=\"http://forums.silverlight.net/t/248654.aspx/1\">References in Silverlight 5</a>, reinstalling MSVS 2010, .NET FW, SL SDK but without success.</p>\r\n<p>However, lastly I tried to install in gac system.windows, and error about this dll has gone, but appeared errors about system and system.core. I've gac'ed them too, and now I am able to build project without errors. I hope I'll never see this error again.</p>",
+    "PostedDate": "2012-08-13T20:46:11.167-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

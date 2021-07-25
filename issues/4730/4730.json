@@ -1,0 +1,71 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 5,
+    "Custom": "",
+    "Description": "hi, \n \nI am using silverlight 3 library caching feature. It doesnt work when I try to load modules. Prism doesnt download the libraries configured as external parts. \nIs it a know bug?\n \nRegards,\nRams",
+    "LastUpdatedDate": "2013-02-21T18:38:44.417-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-08-06T23:32:33.48-07:00",
+    "Status": {
+      "Name": "Active",
+      "Id": 2
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "SL3 caching not working with Modules",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 6,
+    "Id": 4730
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897964,
+      "FileName": "project.png",
+      "DownloadUrl": ".\\897964"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi Rams,\r\nAs explained in the Deployment chapter (http://msdn.microsoft.com/en-us/library/gg430856%28PandP.40%29.aspx) of the Prism v4 MSDN documentation, you need to have the necessary metadata in your modules in order to leverage Silverlight Application Library Caching. \r\nFrom the documentation: “The second approach (on how to reduce XAP file size) is to leverage application library caching in Silverlight. To use this feature, you go to the Silverlight project properties of a project and select the check box labeled Reduce XAP size by using application library caching. When you do this, any referenced assemblies that have the right metadata files collocated with them will not be included in the XAP file; instead, they will be placed in a separate .zip file, and the .zip file will be referenced by the XAP file's ApplicationManifest.xaml file as an external part. The signed Silverlight Prism Library binaries have the required metadata files to use this feature as well as the libraries from the Silverlight SDK and the Silverlight Toolkit. To leverage this functionality for your own shared assemblies, you need to provide a metadata file, as described in the topic, \"How to: Use Application Library Caching\" on MSDN (http://msdn.microsoft.com/en-us/library/dd833069%28VS.95%29.aspx).”\r\n",
+      "PostedDate": "2011-02-11T07:28:05.39-08:00",
+      "Id": 156169
+    },
+    {
+      "Message": "Hi,\r\nI have similar problem.\r\nI'm using Prizm 4 MVVM model, and loading my modules with catalog.xaml.\r\nI want to reduce the xap file size with application library caching, \r\n\r\nThis is the list i did,\r\n1. create assembly.extmap.xml file for my custom assembly\r\n2. select the check box for my silverlight applications Reduce XAP size by using application library caching\r\n3. build my project and everything is done as expected. \r\n4. All required assemblies seperated as different zip files. as well as my custom assembly\r\n5. the problem starts here. When module initialize, It is expecting my custom assembly, but it is waiting seperate zip file in ClientBin folder.\r\n\r\nWhat must I do?\r\n",
+      "PostedDate": "2011-03-30T10:06:45.52-07:00",
+      "Id": 156170
+    },
+    {
+      "Message": "This does not answer the question.\r\n\r\nI have a module XAP that is using the System.Xml.Linq assembly, which has been correctly compressed to it's own seperate .zip file in the ClientBin folder. The module's manifest has the Deployment.ExternalParts set-up indicating that it needs this assembly. When I load this module into my main assembly using Prism, it fails to load the assemblies listed in the Deploymet.ExternalParts.\r\n\r\nThis is definitely a bug!\r\n\r\nMartin",
+      "PostedDate": "2011-10-25T07:42:56.843-07:00",
+      "Id": 156171
+    },
+    {
+      "Message": "Hi,\r\n\r\nYou might find the explanations in the following discussion (http://compositewpf.codeplex.com/discussions/279315) useful. In this thread we examined the way Prism loads assemblies from Xap files in memory, and found that the external parts are ignored. We provided a possible workaround in that thread, which you might find useful for your problem.\r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-11-16T04:19:58.757-08:00",
+      "Id": 156172
+    },
+    {
+      "Message": "Hi,\r\n\r\nYou might find the following blog post useful, as it provides an explanation and a possible workaround for this in both Unity and MEF:\r\nhttp://blogs.southworks.net/gmaliandi/2012/01/how-to-use-application-library-caching-in-prism-modules/\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2012-01-20T12:24:27.383-08:00",
+      "Id": 156173
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "635344",
+    "ThreadId": "263394",
+    "Html": "\r\n<p>I have a situation in which I need to create a new Region from a Custom Region Adaptor and bind this new Region to a Control.</p>\r\n<p>How do I do that in PRISM 4.0 using MEF?</p>\r\n<p>This is the code that I found so far not sure if it is correct.&nbsp;</p>\r\n<p>&nbsp;<span style=\"color:blue\">if</span>(!RegionManager.Regions.ContainsRegionWithName(<span style=\"color:#a31515\">&quot;AdminRightDockedRegion&quot;</span>))<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AdminRightDockedSplitContainer = AdminDockSite.CreateDockedSplitContainer(DockSide.Right, DockSiteEdge.Inside, 400);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IRegionAdapter regionAdapter =\r\n<span style=\"color:blue\">new</span> DockedSplitContainerRegionAdapter(Container.GetExportedValue&lt;IRegionBehaviorFactory&gt;());<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<span style=\"color:blue\">var</span> region = regionAdapter.Initialize(AdminRightDockedSplitContainer,\r\n<span style=\"color:#a31515\">&quot;AdminRightDockedRegion&quot;</span>);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegionManager.Regions.Add(region);<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</p>\r\n<p>&nbsp;I need help&nbsp;to understand how to Import a reference to the Container so I&nbsp;can&nbsp;satisfy the code line...&nbsp;Container.GetExportedValue&lt;IRegionBehaviorFactory&gt;()) ... shown in above snippet.</p>\r\n<p>For example how to I get a handle to the Container</p>\r\n<p>i.e.</p>\r\n<p>[Import]</p>\r\n<p>public ???&nbsp; Container;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<div id=\"_mcePaste\" style=\"width:1px; height:1px; overflow:hidden; top:0px; left:-10000px\">\r\n&#65279;</div>\r\n",
+    "PostedDate": "2011-06-30T04:59:00.863-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "635450",
+    "ThreadId": "263394",
+    "Html": "<div style=\"background-color: white; color: black;\">\n<pre>I have resolved my issue. Used the ServiceLocator to get the regionFactory.  This resolved another issue I had where my custom regions were unloading.  </pre>\n<pre>It turns out this was normal behavior of the 3rd Party Docking solution that I am using.  My issue was that when I removed all ToolWindows from the docking area (which I had built a custom region for) the Dock Control automatically unloaded the Docking Area control.</pre>\n<pre>As you can see by the code below, when I detect that the Docking Area has unloaded, I check if the Region has also gone, then I recreate the Docking Area and then bind the Custom Region to that Docking Area registering it back into the RegionManager.</pre>\n<pre>&nbsp;</pre>\n<pre>  <span style=\"color: blue;\">if</span> (!_unloadedRightDockedSplitContainer) <span style=\"color: blue;\">return</span>;\r\n            <span style=\"color: blue;\">if</span> (RegionManager.Regions.ContainsRegionWithName(<span style=\"color: #a31515;\">\"AdminRightDockedRegion\"</span>)) <span style=\"color: blue;\">return</span>;\r\n\r\n            <span style=\"color: blue;\">var</span> regionFactory = ServiceLocator.Current.GetInstance&lt;IRegionBehaviorFactory&gt;();\r\n            <span style=\"color: blue;\">if</span>(regionFactory == <span style=\"color: blue;\">null</span>) <span style=\"color: blue;\">return</span>;\r\n                     \r\n            AdminRightDockedSplitContainer = AdminDockSite.CreateDockedSplitContainer(DockSide.Right, DockSiteEdge.Inside, 400);\r\n            AdminRightDockedSplitContainer.Unloaded +=AdminRightDockedSplitContainer_Unloaded;\r\n            <span style=\"color: blue;\">var</span> regionAdapter = <span style=\"color: blue;\">new</span> DockedSplitContainerRegionAdapter(regionFactory);\r\n            regionAdapter.Initialize(AdminRightDockedSplitContainer, <span style=\"color: #a31515;\">\"AdminRightDockedRegion\"</span>);\r\n                      \r\n            _unloadedRightDockedSplitContainer = <span style=\"color: blue;\">false</span>;\r\n</pre>\n</div>\n<p>﻿</p>",
+    "PostedDate": "2011-06-30T08:12:40.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "635504",
+    "ThreadId": "263394",
+    "Html": "<p>Hi,</p>\r\n<p>Thank you for share this solution with the rest of the community, as other users might benefit from knowing this.</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-06-30T09:53:02.297-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

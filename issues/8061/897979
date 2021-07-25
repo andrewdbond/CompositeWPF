@@ -1,0 +1,181 @@
+﻿using System;
+using System.Collections.Specialized;
+using System.Windows;
+using Microsoft.Practices.Prism;
+using Microsoft.Practices.Prism.Regions;
+using System.Linq;
+
+namespace HC.OPUS.Client.Utils
+{
+    public class RecursiveRegionActiveAwareBehavior : IRegionBehavior
+    {
+        /// <summary>
+        ///   Name that identifies the <see cref = "RecursiveRegionActiveAwareBehavior" /> 
+        ///   behavior in a collection of <see cref = "IRegionBehavior" />.
+        /// </summary>
+        public const string BehaviorKey = "RecursiveActiveAware";
+
+        #region private static bool IsRecursivelyDeactivated
+
+        public static readonly DependencyProperty IsRecursivelyDeactivatedProperty =
+            DependencyProperty.RegisterAttached("IsRecursivelyDeactivated", typeof(bool),
+                typeof(RecursiveRegionActiveAwareBehavior), new PropertyMetadata(false));
+
+        private static bool GetIsRecursivelyDeactivated(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(IsRecursivelyDeactivatedProperty);
+        }
+
+        private static void SetIsRecursivelyDeactivated(DependencyObject obj, bool value)
+        {
+            obj.SetValue(IsRecursivelyDeactivatedProperty, value);
+        }
+
+        #endregion
+
+        #region IRegionBehavior Members
+
+        /// <summary>
+        ///   The region that this behavior is extending
+        /// </summary>
+        public IRegion Region { get; set; }
+
+        /// <summary>
+        ///   Attaches the behavior to the specified region
+        /// </summary>
+        public void Attach()
+        {
+            var collection = GetCollection();
+            if (collection != null)
+            {
+                collection.CollectionChanged += OnCollectionChanged;
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        ///   Detaches the behavior from the <see cref = "INotifyCollectionChanged" />.
+        /// </summary>
+        public void Detach()
+        {
+            var collection = GetCollection();
+            if (collection != null)
+            {
+                collection.CollectionChanged -= OnCollectionChanged;
+            }
+        }
+
+        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (var item in e.NewItems)
+                {
+                    ProcessSubItems(item, Region, true);
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (var item in e.OldItems)
+                {
+                    ProcessSubItems(item, Region, false);
+                }
+            }
+
+            // May need to handle other action values (reset, replace). 
+            // Currently the ViewsCollection class does not raise CollectionChanged with these values.
+        }
+
+        private void ProcessSubItems(object item, IRegion region, bool isActive)
+        {
+            var dependencyObject = item as DependencyObject;
+            if (dependencyObject != null)
+            {
+                var regionManager = RegionManager.GetRegionManager(dependencyObject);
+
+                if (Region.RegionManager != regionManager &&
+                    region.RegionManager != regionManager)
+                {
+                    var subItems = regionManager.Regions.
+                        SelectMany(r => r.Views.Select(i => new Tuple<object, IRegion>(i, r))).
+                        Where(t =>
+                            {
+                                var depObj = t.Item1 as DependencyObject;
+                                if (depObj != null)
+                                {
+                                    var isDeactivated = GetIsRecursivelyDeactivated(depObj);
+                                    return isActive ? isDeactivated : !isDeactivated;
+                                }
+
+                                return false;
+                            }).ToArray();
+
+                    foreach (var tuple in subItems)
+                    {
+                        SetIsActive(tuple.Item1, isActive);
+                        ProcessSubItems(tuple.Item1, tuple.Item2, isActive);
+                    }
+                }
+            }            
+        }
+
+        private static void SetIsActive(object item, bool isActive)
+        {
+            var frameworkElement = item as FrameworkElement;
+
+            if (isActive && !GetIsRecursivelyDeactivated(frameworkElement)) return;
+
+            var currentIsActive = GetIsActive(item);
+
+            if (!currentIsActive.HasValue || currentIsActive.Value != isActive)
+            {
+                var activeAware = item as IActiveAware;
+                if (activeAware != null)
+                {
+                    activeAware.IsActive = isActive;
+                }
+
+                if (frameworkElement != null)
+                {
+                    var activeAwareDataContext = frameworkElement.DataContext as IActiveAware;
+                    if (activeAwareDataContext != null)
+                    {
+                        activeAwareDataContext.IsActive = isActive;
+                    }
+                }
+
+                SetIsRecursivelyDeactivated(frameworkElement, !isActive);
+            }
+        }
+
+        private static bool? GetIsActive(object item)
+        {
+            bool? result = null;
+
+            var activeAware = item as IActiveAware;
+            if (activeAware != null)
+            {
+                result = activeAware.IsActive;
+            }
+
+            var frameworkElement = item as FrameworkElement;
+            if (frameworkElement != null)
+            {
+                var activeAwareDataContext = 
+                    frameworkElement.DataContext as IActiveAware;
+                if (activeAwareDataContext != null)
+                {
+                    result = activeAwareDataContext.IsActive;
+                }
+            }
+
+            return result;
+        }
+
+        private INotifyCollectionChanged GetCollection()
+        {
+            return Region.ActiveViews;
+        }
+    }
+}

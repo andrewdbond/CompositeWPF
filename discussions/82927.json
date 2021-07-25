@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "284953",
+    "ThreadId": "82927",
+    "Html": "<p>Hi,</p>\r\n<p>I have a module that:</p>\r\n<ol>\r\n<li>does some container registrations</li>\r\n<li>instantiates a view and adds it to a region</li>\r\n<li>subscribes to an event using an event aggregator (the event handler is a non-static method of the module)</li>\r\n</ol>\r\n<p>Everything worked fine.</p>\r\n<p>In some moment in time I removed the second part and now the event subscription does not work. My handler is not invoked when the even is published. It seems to me that the module is collected by the garbage collector or something similar.</p>\r\n<p>Any ideas?</p>",
+    "PostedDate": "2010-02-02T13:36:47.437-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "284999",
+    "ThreadId": "82927",
+    "Html": "<p style=\"margin-top:1em;margin-bottom:1em\">Hi,</p>\r\n<p style=\"margin-top:1em;margin-bottom:1em\">A possible reason for events not firing could be because the event is being implemented with Weak References (<a style=\"text-decoration:underline;color:#3e62a6\" href=\"http://neverindoubtnet.blogspot.com/2009/05/prism-event-aggregator-subscription.html\">this post</a>&nbsp;provides a detailed scenario about it).</p>\r\n<p style=\"margin-top:1em;margin-bottom:1em\"><a href=\"http://msdn.microsoft.com/en-us/library/dd458904.aspx\">This article</a> from the Prism documentation provides an explanation of the overload to be used to keep the subscriber alive.</p>\r\n<p style=\"margin-top:1em;margin-bottom:1em\">Please let me know if this helps.</p>\r\n<p style=\"margin-top:1em;margin-bottom:1em\">Damian Schenkelman<br><span style=\"font-size:11pt\" lang=EN-US><a style=\"text-decoration:underline;color:#3e62a6\" href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></span></p>",
+    "PostedDate": "2010-02-02T14:47:12.693-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "285019",
+    "ThreadId": "82927",
+    "Html": "<p>thanks, that was it! Setting the argument keepSubscriberReferenceAlive to true solved the problem.</p>",
+    "PostedDate": "2010-02-02T15:29:33.197-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "546374",
+    "ThreadId": "241070",
+    "Html": "\r\n<p>MEF is still a mystery to me. &nbsp;</p>\r\n<p>With Unity I could have an IUnityContainer injected into my module's constructor and from there I would simply register my IService with a Service type by utilizing the UnityContainer.</p>\r\n<p>I couldn't find a single MEF example how to do this within MEF driven Modules. &nbsp;Modules don't get an equivalent to&nbsp;IUnityContainer injected and hence the service can't be resolved within the module.</p>\r\n<p>In a way it seems MEF is used within the BootStrapper class only, while the container that registers everything remains referenced in there only. Other Modules don't have access to it and can't resolve anything.</p>\r\n<p>How do I register my IService with Service type and resolve it within a module please? &nbsp;Any code snippets?&nbsp;</p>\r\n<p>Many Thanks for clarification,<br>\r\n<br>\r\nHouman&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-09T15:13:22.757-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "546459",
+    "ThreadId": "241070",
+    "Html": "\r\n<p>MEF is initialized from the MEF Bootstrapper from there you can do everything that Unity can do.&nbsp; Now for Resolving&nbsp; types...</p>\r\n<p>As long as the class is attributed with the [Export] or the Variable is tagged with [Import] then it will be resolved.&nbsp; If it can't find a matching item in the container dictionary it will explode on run time and throw errors for you try and interpret.&nbsp;</p>\r\n<p>[Export(typeof(IService))]&nbsp;&nbsp; // typeof(IService) suggested not required, but to be resolved in the Container it must have the [Export] attribute.<br>\r\npublic class Service : IService{</p>\r\n<p>&nbsp; [ImportingConstructor]<br>\r\n&nbsp; public Service(){ }</p>\r\n<p>&nbsp;&nbsp; //do what ever here..</p>\r\n<p>}</p>\r\n<p>public interface IService{</p>\r\n<p>&nbsp;&nbsp; // stuff here if necessary.</p>\r\n<p>}</p>\r\n<p>&nbsp;</p>\r\n<p>//ViewModel sample code.</p>\r\n<p>[Export(typeof(ISomeViewModel))]<br>\r\npublic class SomeViewModel : NotificationObject{</p>\r\n<p>&nbsp;&nbsp; private IService service;</p>\r\n<p><br>\r\n&nbsp;&nbsp; [ImportingConstructor]<br>\r\n&nbsp;&nbsp; public SomeViewModel (IService service){<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.service = service;</p>\r\n<p>&nbsp;&nbsp; }</p>\r\n<p>}</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-09T22:14:17.447-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "550464",
+    "ThreadId": "241070",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>&nbsp;</p>\r\n<p>Many Thanks for your response. I was still stuck with some other issues in Prism that I had to overcome first.</p>\r\n<p>Now while this makes sense, what if i have two implementations for the IService (Obviously to mock it for unit testing). Both Servies would be exported for the type of interface: [Export(typeof(IService))]</p>\r\n<p>But how does it know which one to pick at the constructor injection within the view model?</p>\r\n<p>Many Thanks,</p>\r\n<p>Houman</p>\r\n<p>&#65279;&#65279;&#65279;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-17T04:08:24.677-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "550641",
+    "ThreadId": "241070",
+    "Html": "\r\n<p>Houman,</p>\r\n<p>I guess the simplest answer would be use ExportMetaData or even to go as far as strongly typing your exports</p>\r\n<p>Examples can be found here:&nbsp; <a href=\"http://mef.codeplex.com/wikipage?title=Exports%20and%20Metadata&referringTitle=Guide\">\r\nhttp://mef.codeplex.com/wikipage?title=Exports%20and%20Metadata&amp;referringTitle=Guide</a></p>\r\n<p>&nbsp;</p>\r\n<p>Morgan.</p>\r\n",
+    "PostedDate": "2011-01-17T09:10:45.993-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "551352",
+    "ThreadId": "241070",
+    "Html": "\r\n<p>Hi Morgan,</p>\r\n<p>Thanks for the tip I have looked into it, but I still don't see the light.</p>\r\n<p>Looking at Shawn Wildermuth example here: &#65279;&#65279;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>http://wildermuth.com/2010/04/16/Updated_RIA_Services_MVVM_Example\r\n</pre>\r\n</div>\r\n<p>He has an [Export] ViewModel that consumes a [Import]Model.</p>\r\n<p>In his unit test class he is retrieving a new instance (non Shared) of the ViewModel and does his unit testing.</p>\r\n<p>However how does MEF magically know that it has to inject the MockModel inside the ViewModel instead of the GamesModel? There are no attributes as such. Both GamesModel and MockModel implement only the IGamesModel interface.&nbsp; The Export happens to be\r\n [Export(typeof(IGamesModel))]&nbsp;ob both models.&nbsp;No indication of distinctive attributes&nbsp;between the two implementations.</p>\r\n<p>Thanks,<br>\r\nHouman</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-18T09:34:21.7-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

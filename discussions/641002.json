@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1433328",
+    "ThreadId": "641002",
+    "Html": "Hi,\r<br />\n<br />\ni need to use eventaggregator interface in my WPF App class.\r<br />\nthe reason for this, because i might have general exception, which i can handle in the application DispatcherUnhandledException event\r<br />\ndepending on the exception type i might have to call an event to display the proper UI to the user.\r<br />\n<br />\nfor all over my viewmodels i use the eventaggregator import through constructor import, but App doesn't have constructor allowing me specifying parameter there. so i try with field import, but it is always null.\r<br />\nmost probably i need some export, but none of the export variations work. i tried already with many configurations.\r<br />\n<br />\ncan you please help me, <br />\n",
+    "PostedDate": "2015-07-06T23:28:53.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1433374",
+    "ThreadId": "641002",
+    "Html": "I would handle this by leveraging the fact that the bootstrapper has a public Container property on it. After calling Bootstrapper.Run in your App code behind, grab the Container ref and use it to inject (programmatically) an IEventAggregator ref into your App class to use when the unhandled exception event (or others) fire. <br />\n",
+    "PostedDate": "2015-07-07T06:23:05.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2015-07-07T07:55:57.763-07:00"
+  },
+  {
+    "Id": "1433384",
+    "ThreadId": "641002",
+    "Html": "thanks Brian,\r<br />\n<br />\nthis works!<br />\n",
+    "PostedDate": "2015-07-07T07:55:54.12-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

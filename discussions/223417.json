@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "479925",
+    "ThreadId": "223417",
+    "Html": "<p>If you prefer Dave Hill's Prism Application Template over the Modularity QuickStarts project with Prism4 CTP then a few tweaks are needed: <br><br>1) Change the Prism libraries from 2.2 to 4.0 CTP versions <br><br>2) The bootstrapper changes because the old GetModuleCatalog() has been changed to CreateModuleCatalog, a full referrence to CreateFromXaml is required.</p>\r\n<p><br>The Old</p>\r\n<p>protected override IModuleCatalog GetModuleCatalog() becomes: <br><br></p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> IModuleCatalog <span style=\"color:#ff0000\">CreateModuleCatalog</span>( ) </pre>\r\n<pre>{ </pre>\r\n<pre><span style=\"color:blue\">return</span> <span style=\"color:#ff0000\">Microsoft.Practices.Composite.Modularity.ModuleCatalog.CreateFromXaml</span>( <span style=\"color:blue\">new</span> Uri(<span style=\"color:#a31515\">&quot;/Shell;component/ModuleCatalog.xaml&quot;</span>, UriKind.Relative)); </pre>\r\n<pre>}\r\n</pre>\r\n</div>\r\n<p>4)&nbsp; Make sure TryResolve() and not Resolve() is used to create the ShellView from the bootstrapper</p>\r\n<p>&nbsp;</p>\r\n<pre>        protected override DependencyObject CreateShell( )\r\n        {\r\n            // Use the container to create an instance of the shell.\r\n            ShellView view = Container.<span style=\"color:#ff0000\">TryResolve</span><span style=\"color:#ff0000\">();</span>\r\n\r\n            // Set it as the root visual for the application.\r\n            Application.Current.RootVisual = view;\r\n\r\n            return view;\r\n        }</pre>\r\n<p><br><br>3) Make sure your web project setting are done as usual (set as start up, set SL applications to all 3 modules) <br><br>4) F5</p>",
+    "PostedDate": "2010-08-12T14:47:27.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

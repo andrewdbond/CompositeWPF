@@ -1,0 +1,20 @@
+<div class="wikidoc"><h1>InvalidOperationException occurs when the same view instance is added to multiple ContentControl regions</h1><ul><li><a href="#Description">Description</a></li>
+<li><a href="#ReproSteps">Repro Steps</a></li>
+<li><a href="#OffendingCode">Offending Code</a></li>
+<li><a href="#Suggestion">Suggestion</a></li></ul>
+<h2>Description <a name="Description"></a></h2>When the same view instance is added to more than one ContentControl region, an unhandled InvalidOperationException occurs. 
+<h2>Repro Steps <a name="ReproSteps"></a></h2><ol><li>Define two ContentControl regions Region A and Region B.</li>
+<li>Add view1 to both the Regions A and B.</li>
+<li>Display Region A&#39;s view using Region A.Show(view1) method.</li>
+<li>Display Region B&#39;s view using Region B.Show(view1) method.</li>
+<li>Unhandled Exception is thrown. - &quot;Specified element is already the logical child of another element. Disconnect it first.&quot;</li></ol>
+<h2>Offending Code <a name="OffendingCode"></a></h2><b>File Name</b>: SimpleRegion.cs<br /><b>Line N&#186;</b>: 119<br /><pre>
+public void Show(object view)
+{
+    if (!Views.Contains(view))
+    {
+        Add(view);
+    }
+    Views.MoveCurrentTo(view);
+} </pre>
+<h2>Suggestion <a name="Suggestion"></a></h2>Before associating a view with the parent element, a conditional check can be made to find if the view is already associated with some other parent element.</div><div class="ClearBoth"></div>

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1354204",
+    "ThreadId": "581441",
+    "Html": "Hi,\r<br />\n<br />\nI am developing an application with Prism 4.1/.NET 4.0 now. I choose MEF as the container. I am trying to show the market trading window in a new UI thread(STA) so that it will not be affected by the main UI changes.\r<br />\n<br />\nI googled and found this <a href=\"https://eprystupa.wordpress.com/2008/07/28/running-wpf-application-with-multiple-ui-threads/\" rel=\"nofollow\">blog</a>. It helped me a lot and I can show the window now. \r<br />\n<br />\nI'd like to implement this in my application with Prism.  It's a trading client app that receives information from the server and shows them in datagrids to users.\r<br />\n<br />\nI've two modules for now. The shell module contains all the network functions and its views show the news to users in the main UI thread (<strong>let's call it UI thread A</strong>). The trading module contains the business logic to show real-time data and trading functions. The views in trading module should be shown in a different STA UI thread (<strong>let's call it UI thread B</strong>).  which I create following the above blog. The shell module should publish data to the trading module. I plan to implement the communication via event aggregator. \r<br />\n<br />\nHere is the problem. When the viewmodels in trading module subscribe the event from the viewmodels in shell,  the callback method always runs on UI thread A(the main UI thread), no matter I set the parameter of Subscribe() to ThreadOption.UIThread or ThreadOption.PublisherThread. Then if I want to insert records to an ObservableCollection&lt;T&gt; property in viewmodel to update the datagrid, it throws exceptions saying that it can't be invoked in a different thread. \r<br />\n<br />\nThe workaround I can figure out is that when the viewmodels of trading module are created, they should save the referrence to the dispather in UI thread B. In that case, updating UI can call dispather.BeginInvoke(new Action(()=&gt;...)) to insert records. I think it's not good to include a dispather object in viewmodels, which breaks the MVVM pattern.\r<br />\n<br />\nAny one can help on this? Do you have similar problems? Thank you in advance!<br />\n",
+    "PostedDate": "2015-02-19T21:22:08.55-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1354314",
+    "ThreadId": "581441",
+    "Html": "I would say that you need to be really committed to wanting to do multiple UI threads and convince yourself of why you really need them. I recently put together a framework for a customer built on top of Prism to spin up separate UI threads per module and put all of the views from the module into a separate window with a separate UI thread. It was a BIG job - weeks of effort. You have to be expert level with multithreading and synchronization across threads to get it right, because you have to override/extend a lot of things that Prism does natively. Prism was designed with the assumption of a single UI thread, which is generally a good idea anyway for the reasons I mention above. \r<br />\n<br />\nIf you are really committed to doing this, you can contact me by email brian.noyes on gmail - but this is something that is complex enough that I would have to help in a paid consulting way, not something I can just rattle off a few things in a forum post or email to show how to do.<br />\n",
+    "PostedDate": "2015-02-20T06:34:14.513-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

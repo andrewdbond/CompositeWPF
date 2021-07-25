@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "226963",
+    "ThreadId": "66771",
+    "Html": "<p>Hi,<br>First, sorry for this potential stupid question as I'm new in Silverlight and Prism.</p>\r\n<p>I'm a bit confuse. Silverlight 3 offer the new functionnality to communicate with other SL application</p>\r\n<p>on the same page, on a different TAB or even a different browser using&nbsp;Local Messaging functionnality.</p>\r\n<p>&nbsp;</p>\r\n<p>What would be the difference with EVENTAGREGATOR inside a prism application ?</p>\r\n<p>Could we use Prism to load dynamically module (SL sub applications) and then use SL3 Messages to communicate through module/application ?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks in advance,</p>\r\n<p>Christophe</p>",
+    "PostedDate": "2009-08-24T02:16:30.373-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "227620",
+    "ThreadId": "66771",
+    "Html": "<p>Hi Christophe,&nbsp;</p>\r\n<p>The <a href=\"http://msdn.microsoft.com/en-us/library/dd458915.aspx\">Prism EventAggregator</a> and the <a href=\"http://msdn.microsoft.com/en-us/library/dd833063(VS.95).aspx\">Silverlight 3 Local messaging</a> are similar concepts, but still they are different. Basically SL3 is target to communicate different SL applications while prism EA is meant to resolve communication between modules in a decoupled fashion.</p>\r\n<p>You can take only prism module loading and still use SL3 LM without problems. You can even extend the default prism event aggregator to use Silverlight 3 messaging underneath.<br>Some of the differences I can think of, that might help you decide which fits better in your scenario:&nbsp;</p>\r\n<ol>\r\n<li>Prism EA uses typed payloads while SL3 LM accepts only strings.</li>\r\n<li>SL3 LM focus on communication between different SL apps. Prism EA does not communicate different applications.</li>\r\n<li>Prism EA can be used either on SL and WPF (<a href=\"http://msdn.microsoft.com/en-us/library/dd458864.aspx\">multi-targeted</a> applications)</li>\r\n</ol>\r\n<p>Hope it helps!</p>\r\n<p>Matias Bonaventura<br><a href=\"http://blogs.southworks.net/matiasb\">http://blogs.southworks.net/matiasb</a></p>",
+    "PostedDate": "2009-08-25T12:57:33.797-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "227968",
+    "ThreadId": "66771",
+    "Html": "<p>Hi Matias,</p>\r\n<p>Thanks for your quick response :) !</p>\r\n<p>I see more clear now, and Local Messaging don't fit my need. But...</p>\r\n<p>In the meantime, I found new info and I'm even more lost. I read about Prism, MEF and MAF (System.Addin).</p>\r\n<p>I'm in trouble to find which way to use, as those three technos could even work togheter.</p>\r\n<p>&nbsp;</p>\r\n<p>My app is an Silverlight Navigation Application.</p>\r\n<p>One page is a kind of dashboard that would contain buttons to run some plugin/module, or&nbsp;shortcuts to another XAP.</p>\r\n<p>Those plugin/modules will be displayed in a page container, the page itself will be displayed in the FRAME container of the Navigation Application.</p>\r\n<p>I read (and tested) that Prism Region are available only if the shell is set as the rootvisual of the main App, and&nbsp;that not's fine with my app (as it's already a navigation app).</p>\r\n<p>&nbsp;</p>\r\n<p>I think I'll go for MEF to implement modularity, with a combination of MAF to load/unload modules in a separate AppDomain. Or I could use only MAF. I don't know.<br>As I said, I'm lost even after three days reading articles about those topics :)<br><br>BY chance, do you have more info/advices ?</p>\r\n<p>Thanks (again :) )</p>\r\n<p>Christophe</p>\r\n<p>&nbsp;[EDIT] I've just read that MAF is not possible with Silverlight. Too bad....</p>",
+    "PostedDate": "2009-08-26T07:34:00.957-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

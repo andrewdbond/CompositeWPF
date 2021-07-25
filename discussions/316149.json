@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "767153",
+    "ThreadId": "316149",
+    "Html": "<p>I have silverlight application using Prism and I am using ContentControl as a region something like below</p>\n<p>In some rare cases the application is throwing an exception \"This control is being associated with a region, but the control is already bound to something else\".</p>\n<p>I checked the prism library and it is throwing this error from ContentControlRegionAdapter.Adapt method. In this method it is doing following checking</p>\n<pre><pre><code><div style=\"color: black; background-color: white;\"><pre><span style=\"color: blue;\">if</span> (regionTarget == <span style=\"color: blue;\">null</span>) <span style=\"color: blue;\">throw</span> <span style=\"color: blue;\">new</span> ArgumentNullException(<span style=\"color: #a31515;\">\"regionTarget\"</span>); <span style=\"color: blue;\">bool</span> contentIsSet = regionTarget.Content != <span style=\"color: blue;\">null</span>; <span style=\"color: blue;\">if</span> (contentIsSet) { <span style=\"color: blue;\">throw</span> <span style=\"color: blue;\">new</span> InvalidOperationException(Resources.ContentControlHasContentException); }\n</pre>\n</div>\n</code></pre>\n<p>In which scenario contentIsSet  will be true? Also is there any issue if  I remove that condition and set the view to the <br />content directly?</p>\n<br /><br /></pre>",
+    "PostedDate": "2012-02-15T01:45:07.13-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "767474",
+    "ThreadId": "316149",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, this exception might be caused if you set the content property of the control that contains the region. In Prism you are not allowed to associate a control with content and a region, as the content registered within that region will be loaded there at run time, hence you will probably have issues if you remove that condition and defined additional content in your control. By design controls associated to regions should be kept as empty containers.</p>\r\n<p>If you are interested, you could find useful information about Prism region implementation in the following chapter of the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098(v=pandp.40).aspx\">Chapter 7: Composing the User Interface</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-02-15T05:21:44.48-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "767706",
+    "ThreadId": "316149",
+    "Html": "<p>Hi Agustin,</p>\r\n<p>&nbsp;Thanks for your replay. Actually we are not setting the content manually.Is there any chance that the Prism will call the&nbsp;adapter&nbsp;method twice to set the content?</p>",
+    "PostedDate": "2012-02-15T07:44:40.973-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "769521",
+    "ThreadId": "316149",
+    "Html": "<p>Hi,</p>\r\n<p>So far, I haven't seen&nbsp; a similar issues reported so far. It could be helpful if you could provide us with more information about your scenario or a repro sample, so that we can help you further with this.</p>\r\n<p>Thanks,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-02-16T05:14:23.177-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

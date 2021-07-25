@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "513828",
+    "ThreadId": "232618",
+    "Html": "\r\n<p>Related to this post (<a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=232409\">http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=232409</a>)&nbsp;i would like to ask a &quot;cleaner&quot; question:</p>\r\n<p>What is the better way to recognize the active view in my shell?<br>\r\nwhat kind of pattern did you suggest? I&nbsp;have not&nbsp;found nothing on QuickStart projects or documentation.</p>\r\n<p>Regards</p>\r\n",
+    "PostedDate": "2010-10-28T01:39:17.543-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514681",
+    "ThreadId": "232618",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>A Region instance provides you a collection of its active views. It provides a collection because depending on the region type that you are using, you could display either multiple views (ItemsControl/Selector exposed as a region) or only one view (ContentControl\r\n exposed as a region).&nbsp; Fore more information on this topic you could take a look at the following documentation sections on MSDN:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.composite.presentation.regions.region.activeviews.aspx\">ActiveViews\r\n</a>property </li><li><a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.composite.presentation.regions.singleactiveregion.aspx\">SingleActiveRegion</a>\r\n</li><li><a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.composite.presentation.regions.allactiveregion.aspx\">AllActiveRegion</a>\r\n</li></ul>\r\n<p>Therefore, for achieving this scenario you could use the following code (pseudo-code):&nbsp;</p>\r\n<pre>var yourActiveView = regionManager.Regions[<span style=\"color:#a31515\">&quot;MainRegion&quot;</span>].ActiveViews;</pre>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero</p>\r\n<p><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n",
+    "PostedDate": "2010-10-29T11:19:30.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514840",
+    "ThreadId": "232618",
+    "Html": "\r\n<p>To get the first active view you can do:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> singleView = regionManager.Regions[<span style=\"color:#a31515\">&quot;MyRegion&quot;</span>].ActiveViews.FirstOrDefault();\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>To be notified when the set of ActiveViews changes:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>regionManager.Regions[<span style=\"color:#a31515\">&quot;&quot;</span>].ActiveViews.CollectionChanged &#43;= (sender, e) =&gt;\r\n{\r\n    <span style=\"color:green\">// process e.Action and e.NewItems...</span>\r\n};\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-10-29T23:44:29.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514937",
+    "ThreadId": "232618",
+    "Html": "\r\n<p>Thankyou fro your replies.</p>\r\n<p>@fantiveo<br>\r\nThankyou verymuch for your help but what do you think about a more structured managment of active/focused view?<br>\r\nA toolbar is related to all the application but in one application there could be more regionsso...more than one active view.\r\n<br>\r\nAnyway only one region is &quot;realy&quot; active because it have the input focus in a child control<br>\r\nSo i was thinkling to &quot;something&quot; that can live &quot;crosswise&quot; respect regions and all application views.<br>\r\nSomething that can manage the real active view and notify events to toolbar or to other objects.<br>\r\nI&nbsp;am just thinking and searching a way to solve this problem so there could be other wrong hypothesis that i am doing.</p>\r\n<p><br>\r\nAnyway what do you think about applicontion controller for this purpose is it wrong? Is there any other better system or suggested from PRISM team?\r\n<br>\r\nI can't find nothing about this problems in PRISM quick start.</p>\r\n",
+    "PostedDate": "2010-10-30T09:53:45.957-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "516608",
+    "ThreadId": "232618",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>There is not guidance on this topic in Prism out-of-the-box. But WPF and Silverlight provides two main concepts related to focus. For more information on this topic you could take a look at the following documentation sections and Blog Post:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/aa969768.aspx\">Focus Overview</a>\r\n</li><li><a href=\"http://msdn.microsoft.com/en-us/library/system.windows.input.focusmanager.focusedelement.aspx\">FocusManager.FocusedElement</a>\r\n</li><li><a href=\"http://blogs.msdn.com/b/luc/archive/2010/08/05/silverlight-wpf-debugging-determining-the-focused-element.aspx\">Silverlight/WPF debugging: Determining the focused element</a>\r\n</li></ul>\r\n<p>Regarding to create <em>&quot;something that can live crosswise respect regions</em>...<em>&quot;</em>: In my opinion you could use Event Aggregator and when the active element changes, it can notifies all modules. For more information about EventAggregation, you\r\n could check the following documentation section on MSDN:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28PandP.20%29.aspx\">Event Aggregator</a>\r\n</li></ul>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-03T11:57:14.743-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

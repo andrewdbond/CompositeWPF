@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "668606",
+    "ThreadId": "271765",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>My WPF class library is in prism. This class library contained some tools/buttons that to be place in the host application. Some of the buttons will bring up WPF window/usercontrol which I know how to implement.&nbsp;But other buttons will just fire some\r\n event (like mouse click) in the host app and has no UI. And I need to pass the event (and the parameters that associated with the event, like mouse position) into my DataService module (which is already added in bootstrapper). When the button is clicked, the\r\n bootsrapper is alreay initialized and configured and ready to use.</p>\r\n<p>Some snipets:</p>\r\n<p>In bootsstrapper:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> <span style=\"color:blue\">void</span> ConfigureAggregateCatalog()\r\n{\r\n<span style=\"color:blue\">this</span>.AggregateCatalog.Catalogs.Add(<span style=\"color:blue\">new</span> AssemblyCatalog(<span style=\"color:blue\">typeof</span>(DataServiceIni).Assembly));\r\n}\r\n</pre>\r\n</div>\r\n<p>In my button OnClick:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">override</span> <span style=\"color:blue\">void</span> OnMouseDown(<span style=\"color:blue\">int</span> Button, <span style=\"color:blue\">int</span> Shift, <span style=\"color:blue\">int</span> X, <span style=\"color:blue\">int</span> Y)\r\n{\r\n            <span style=\"color:green\">// TODO: send OnMouseDown and x,y into the DataService that added in Bootstrapper catalog</span>\r\n}\r\n</pre>\r\n</div>\r\n<p>How to do this?</p>\r\n<p>Thanks!</p>\r\n",
+    "PostedDate": "2011-09-07T06:58:26.847-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "668618",
+    "ThreadId": "271765",
+    "Html": "<p>Hi,</p>\r\n<p>Prism does not provide a way to achieve this out-of-the-box; depending on the nature of the host application you're using, you could create a \"bridge\" service that communicates with the Prism application through, for example, the Event Aggregator. You can probably access the Event Aggregator through the <strong>ServiceLocator.Current</strong> static property, in case you have already defined the service locator provider in the Bootstrapper (which is done by default in the <strong>ConfigureServiceLocator </strong>method).</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-09-07T07:33:25.403-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "444411",
+    "ThreadId": "213048",
+    "Html": "<p>Hi, I have a problem when I have a ContentRegion defined within a BusyIndicator. Basically, the RegionManager does not register the region and so we have an exception throw when you try:</p>\r\n<p>regions[RegionConstants.MainRegion]</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var regionManager = Container.Resolve&lt;Microsoft.Practices.Composite.Regions.IRegionManager&gt;();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Microsoft.Practices.Composite.Presentation.Regions.RegionManager.SetRegionManager(shellView.MainContentRegion, regionManager);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Microsoft.Practices.Composite.Presentation.Regions.RegionManager.UpdateRegions();</p>\r\n<p>&nbsp;</p>\r\n<p>or</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var regionManager = Container.Resolve&lt;Microsoft.Practices.Composite.Regions.IRegionManager&gt;();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Microsoft.Practices.Composite.Presentation.Regions.RegionManager.SetRegionManager(shellView, regionManager);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Microsoft.Practices.Composite.Presentation.Regions.RegionManager.UpdateRegions();</p>\r\n<p>&nbsp;</p>\r\n<p>but the regions property is still showing zero count. As soon, as I remove the BusyIndicator, the region is registered and everything works. Any ideas? Thanks,.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-05-18T09:23:29.953-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "444998",
+    "ThreadId": "213048",
+    "Html": "<p id=54536eb0-4595-012d-2099-12313b06d9a1>Hi,</p>\r\n<p id=54538ed0-4595-012d-209a-12313b06d9a1>If I understood your scenario  correctly, you are trying to add a region inside a Silverlight  BusyIndicator&rsquo;s content, but the region isn&rsquo;t being added to the <strong>RegionManager</strong>.  I created a working sample (which you can download <a href=\"http://public.blu.livefilestore.com/y1pw5l6cK4tPur8PmdKT24fz2hNoysgp38NZiGzx3h98MnBbE6220Oe_jVd1PuIOUzAN9ke7xRlJU4TEoRkYl4TQw/RegionInBusyIndicatorSample.zip?download&psid=1\">here</a>)  in which I add a region to a BusyIndicator&rsquo;s <strong>BusyContent</strong>.</p>\r\n<p>Please note that if you are setting the region in the  BusyIndicator&rsquo;s <strong>BusyContentTemplate</strong> property, it won&rsquo;t  be added correctly, since the default <strong>RegionManagerRegistrationBehavior</strong> can&rsquo;t find regions inside <strong>DataTemplates</strong>. You can find  more information about this in <a href=\"View.aspx?ThreadId=212150\">this  thread</a>.</p>\r\n<p id=5453e1f0-4595-012d-209c-12313b06d9a1>I hope  you find this helpful.</p>\r\n<p id=54540c20-4595-012d-209d-12313b06d9a1>Guido  Leandro Maliandi    <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-05-19T09:58:07.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "445034",
+    "ThreadId": "213048",
+    "Html": "<p>Hi Guido: thanks for the reply. I declared the region declaratively in the page inside the content template of BusyIndicator. So, there is a problem. I also noticed that some blogs mentioned you can manually wire using AddToRegion in RegionManager, but I can't find this method in IRegionManager or the implementation. Seems to be a method that was depreciated. I will have a look at your working example. Thanks again.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-05-19T11:03:55.697-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "445113",
+    "ThreadId": "213048",
+    "Html": "<p>Hi Guido:</p>\r\n<p>It works with you use:</p>\r\n<p>regionManager.RegisterViewWithRegion(...)</p>\r\n<p>but, when you try to do anything like</p>\r\n<p>IRegion region&nbsp; = regionManager.Regions[&quot;MainRegion&quot;];</p>\r\n<p>region.Add(ShellPresenter.View);<br>region.Activate(ShellPresenter.View);</p>\r\n<p>it won't work because the Regions collection is always empty.&nbsp; To test this, I used the HelloWorld sample you sent me and I ran it with BusyIndicator commented out and then with it&nbsp; uncommented.</p>\r\n<p>When BusyIndicator was commented out, when I hit the breakpoint in overridden InitializeModules() method in Bootstrapper, I get one ActiveRegion in Container.Resolve&lt;IRegionManager&gt;().Regions.</p>\r\n<p>When I re-run with BusyIndicator uncommented, it says no results &lt;Empty&gt;.</p>\r\n<p>&nbsp;You would think that it would be pretty common use case to have busy indicator wrapping most of the shell and thereby wrapping at least one region. Anyways, thanks for the sample, as it allowed me to see exactly what my problem was.</p>\r\n<p>You see, I have a menu on the shell that loads views from various  modules into a main region (also in the shell). So, I need to have  better control than simply calling RegisterViewWithRegion. I need to be  able to deactivate and remove views from regions, and I think this can  only be done with IRegion instances. My app is working, but I may have to move the busyindicator to a section of the screen where it doesn't contain a region. Unless someone has another solution.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-05-19T13:36:11.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "445996",
+    "ThreadId": "213048",
+    "Html": "<p id=54536eb0-4595-012d-2099-12313b06d9a1>Hi,</p>\r\n<p id=54538ed0-4595-012d-209a-12313b06d9a1>The &ldquo;MainRegion&rdquo; isn&rsquo;t being added to  the Regions collection inside the <strong>RegionManager</strong> because the  behavior responsible for doing so (<strong>RegionManagerRegistrationBehavior.cs </strong>in  <strong>Microsoft.Practices.Composite.Presentation.Regions.Behaviors</strong>)  can&rsquo;t find the <strong>RegionManager</strong> for that region. This happens  because the control containing the region (an <strong>ItemsControl</strong> in  my example)&nbsp;doesn&rsquo;t have a&nbsp;parent. The behavior looks upwards through the  logical tree to find the <strong>RegionManager.RegionManagerProperty</strong> attached property, which is usually in the shell; but since the  <strong>ItemsControl </strong>doesn&rsquo;t have a <strong>Parent </strong>property,  it stops there and returns null, as if there were no  <strong>RegionManager</strong>.</p>\r\n<p id=49bf50e0-4718-012d-5d7f-123139097e21>A possible workaround for that would  be adding the <strong>BusyContent</strong> to the <a href=\"http://msdn.microsoft.com/en-us/library/ms753391.aspx\">WPF Logical  Tree</a>. Another option would be to <a href=\"http://msdn.microsoft.com/en-us/library/ff650219.aspx\">create a custom  RegionAdapter</a> to expose the <strong>BusyIndicator</strong> itself<strong>&nbsp;</strong>as a region.</p>\r\n<p id=5453e1f0-4595-012d-209c-12313b06d9a1>I hope you find this helpful.</p>\r\n<p id=54540c20-4595-012d-209d-12313b06d9a1>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-05-21T12:41:32.723-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

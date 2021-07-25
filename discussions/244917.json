@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "561741",
+    "ThreadId": "244917",
+    "Html": "\r\n<div id=\"x_DescriptionPanel\">We are building a LOB application using SL4,PRISM and MVVM. I noticed very lately that my App is not releasing any memory. It Starts around 150MB and grows to 1 GB&#43; very fast if i switch b/w pages. Our design involves 3 modules\r\n each having a Controller class(Unity singleton) which listens for events and injects views into the appropriate region. So this is whats happening in those controllers when an event is fired to inject a view.<br>\r\n<br>\r\nvar v = Container.resolve&lt;view&gt;() <br>\r\nvar vm = Container.resolve&lt;viewmodel&gt;() <br>\r\nv.datacontext = vm; myregion.addtoregion(v); <br>\r\n<br>\r\nso 100 calls for this view will exceute this 100 times. And in addviewregion method, i'm removing all existing views before adding the new one. And after seeing the memory problem, i set both view &amp; viewmodel to null in addviewtoregion method for all the\r\n views nedd to be removed. still memry consumption is same. Is Unity ContainerControllled... objects(my controllers) holding referrences to these objects?<br>\r\n<br>\r\n<br>\r\n<br>\r\nUpdate:<br>\r\n<br>\r\nThe following behavior illustrates the title of this discussion:<br>\r\n<br>\r\nWeakReference ref1 = new WeakReference(Container.Resolve&lt;Footer&gt;());<br>\r\nWeakReference ref2 = new WeakReference(new Footer());<br>\r\nGC.Collect();<br>\r\nGC.WaitForPendingFinalizers();<br>\r\nbool isRef1Alive = ref1.IsAlive;<br>\r\nbool isRef2Alive = ref2.IsAlive;<br>\r\n<br>\r\nFooter is a UserControl and here first one returns true whereas the second one returns false. Why is this behavior different? Does Container holds any reference to the item it resolves? BTW, i dont have any interfaces for this view. I added<br>\r\n<br>\r\nContainer.RegisterType&lt;Footer, Footer&gt;();<br>\r\n<br>\r\nin the Bootstrapper(ConfigureContainer method). still same result.</div>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-02-06T22:35:56.663-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "561926",
+    "ThreadId": "244917",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>This is an existing issue on Prism v2, you could take a look at the <a href=\"http://blogs.southworks.net/dschenkelman/\">\r\n<span style=\"font-size:9.5pt\">Damian Schenkelman&rsquo;s Blog</span></a> post, which describes a memory leak:</p>\r\n<p><a href=\"http://blogs.southworks.net/dschenkelman/2009/12/23/memory-leak-removing-view-with-child-regions-in-prism-v2/\"><span style=\"font-size:9.5pt\">Memory Leak removing View with child regions in Prism-v2</span></a></p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-02-07T06:33:16.683-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "583696",
+    "ThreadId": "244917",
+    "Html": "<p>Hi,</p>\n<p>I register view like this (just user control with text block)<br /> <br /> regionManager.RegisterViewWithRegion(\"MainRegion\", typeof(Views.HelloWorldView));<br /> <br /> region is declared like <br /> <br /> &lt;ItemsControl Grid.Row=\"1\" Name=\"MainRegion\" Regions:RegionManager.RegionName=\"MainRegion\"/&gt;<br /> <br /> then I remove it from region like<br /> <br /> IRegion mainRegion = _regionManager.Regions[\"MainRegion\"];<br /> object view = mainRegion.Views.FirstOrDefault();<br /> mainRegion.Remove(view);<br /> GC.Collect();<br /> <br /> Then I create dump file to see references to the view in windbg and the result is <br /> <br /> !gcroot 05a087dc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /> Note: Roots found on stacks may be false positives. Run \"!help gcroot\" for<br /> more info.<br /> Please note that 05a087dc is not a valid object.<br /> Scan Thread 5 OSTHread 158c<br /> Scan Thread 28 OSTHread 3c8<br /> Scan Thread 29 OSTHread f80<br /> <br /> I also add destructor to view to see if it is called<br /> <br /> ~HelloWorldView()<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GC.SuppressFinalize(this);<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /> But it is called only when browser is closed.<br /> <br /> So why does this view hangs in memory? btw, I use Prism v.4 nov 2010</p>",
+    "PostedDate": "2011-03-21T05:44:57.023-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "583938",
+    "ThreadId": "244917",
+    "Html": "<p>Hi,</p>\r\n<p>As we mentioned in the previous thread, this is a known existing issue in Prism, which affects v2.2 and v4.</p>\r\n<p>A <a href=\"http://compositewpf.codeplex.com/workitem/3896\">work item</a> has been created on the issue tracker, so the team is aware of this issue. We expect this issue is going to be fixed in the next drops.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>",
+    "PostedDate": "2011-03-21T12:51:41.62-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

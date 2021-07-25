@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "559992",
+    "ThreadId": "244468",
+    "Html": "\r\n<p>'ello all</p>\r\n<p>I'm new to Prism so please bear with me :)</p>\r\n<p>I am writing a Prism App base on the Stock Trader Example.</p>\r\n<p>What is the recommended way to get an instance of the CompositionContainer in the Bootstrapper?&nbsp; I'm creating an object outside of the mef framework that I then need to run through the SatisfyImportsOnce method.</p>\r\n<p>Thanx</p>\r\n<p>Hein</p>\r\n",
+    "PostedDate": "2011-02-03T02:48:51.61-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "560312",
+    "ThreadId": "244468",
+    "Html": "\r\n<p>Hi Hein,</p>\r\n<p><strong>MefBootstrapper</strong> implements a protected property <strong><em>Container</em></strong>, which is the default instance of the\r\n<strong>CompositionContainer</strong> object.</p>\r\n<p>You can read more about the <strong>Bootstrapper</strong> in a Prism application\r\n<a href=\"http://msdn.microsoft.com/en-us/library/gg430868(v=PandP.40).aspx\">here</a>.</p>\r\n<p>I hope you find this information useful.</p>\r\n<div>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n</div>\r\n",
+    "PostedDate": "2011-02-03T10:49:42.947-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "560614",
+    "ThreadId": "244468",
+    "Html": "\r\n<p>Hi there.&nbsp; Thanx for the reply.</p>\r\n<p>On reading my question again, I see I was not very clear.&nbsp;</p>\r\n<p>My problem is this.&nbsp; I'm loading a treeview, so the imports of the viewModel of the treeview are automatically injected.&nbsp; Then I dynamically load all the items in the tree &amp; create viewModels for them.&nbsp; Because I'm creating these viewModels,\r\n their imports are not injected.</p>\r\n<p>My solution to this is to export the container in the bootstrapper' ConfigureContainer override</p>\r\n<p>protected override void ConfigureContainer()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.ConfigureContainer();<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Export the CompositionContainer so we can import it if neccesary.<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Container.ComposeExportedValue(Container);\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;</p>\r\n<p>Now the Container is available to be imported by my TreeViewModel, so I can pass it as a parameter in the constructors of the individual viewModels of the treeitems.&nbsp; Each treeItemViewModel can now run SatisfyImportsOnce(this) to inject their dependencies.</p>\r\n<p>&nbsp;</p>\r\n<p>Is this the correct way to do this, or is there a better way?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanx</p>\r\n<p>Hein</p>\r\n",
+    "PostedDate": "2011-02-04T01:15:41.733-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "585945",
+    "ThreadId": "244468",
+    "Html": "<p>Did you ever find a better way to achieve this behavior?&nbsp; I'm having the same issue and wondering if there is a more efficient way to do this?</p>",
+    "PostedDate": "2011-03-24T12:07:35.527-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "587636",
+    "ThreadId": "244468",
+    "Html": "<p>Hi,</p>\r\n<p>In order to achieve this behavior, one possibility would be to use the <strong>ServiceLocator </strong>to retrieve the instances that you need to use from the MEF container. In order to access the <strong>ServiceLocator</strong>, you can use the <strong>ServiceLocator.Current</strong> static property.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-03-28T08:17:45.023-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "587736",
+    "ThreadId": "244468",
+    "Html": "<p>That is exactly what I was after, thanks much!</p>",
+    "PostedDate": "2011-03-28T11:00:17.137-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "636614",
+    "ThreadId": "244468",
+    "Html": "<p>Intellsense indicates ServiceLocator.Current only provides about 6 methods of the form GetInstatnce...&nbsp; In my particular case I need to call ComposeExportedValue and it looks like you needed SatisfyImportsOnce.&nbsp; To achieve this goal do we do something like  below.&nbsp; If this is indeed possible does it defeat the purpose of ServiceLocator which hides the particular container.&nbsp; Why doesn't ServiceLocator provide more features of the underlying container like exporting (Pretty Important)?&nbsp; Also I don't really understand  the difference in my 2 options below as ServiceLocator.Current exists without any import required (However Prism always imports IServiceLocator)).</p>\n<p>&nbsp;[Import]<br /> &nbsp;IServiceLocator _MyServiceLocator;</p>\n<p>((CompositionContainer)_MyServiceLocator).ComposeExportedValue&lt;IMyExport&gt;(myExport)</p>\n<p>OR</p>\n<p>&nbsp;((CompositionContainer)ServiceLocator.Current).ComposeExportedValue&lt;IMyExport&gt;(myExport)</p>\n<p>&nbsp;</p>\n<p>Thanks!</p>",
+    "PostedDate": "2011-07-03T05:36:57.417-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "637171",
+    "ThreadId": "244468",
+    "Html": "<p>Hi,</p>\r\n<p>We have provided an answer in the following <a href=\"http://compositewpf.codeplex.com/discussions/263641\">thread</a>, regarding how to access via <strong>Composition Container</strong> through<strong> ServiceLocation</strong>.</p>\r\n<p>On the other hand, regarding your second question there is no significant differences since using the <strong>ServiceLocator.Current property</strong> or if you choose to inject it in your component as an imported value. For a matter of simplicity we commonly use the first choice.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-07-04T14:02:03.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

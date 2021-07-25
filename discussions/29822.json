@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "99358",
+    "ThreadId": "29822",
+    "Html": "I have&nbsp; an app that mimics the StockTrader intialization process and my Regions are not being added to the RegionManager.Regions collection.&nbsp; I have included the&nbsp;<span style=\"font-size:13px;color:#ff0000\">\r\n<p>cal</p>\r\n</span>\r\n<p><span style=\"font-size:13px;color:#0000ff\">:</span><span style=\"font-size:13px;color:#ff0000\">RegionManager.RegionName</span><span style=\"font-size:13px;color:#0000ff\">=&quot;MainNavigationBar&quot;<br>\r\n<br>\r\nattribute to my control.&nbsp; As well as one for the MainRegion and the MainToolBarRegion, added the constants to the Regions class in infrastructure, and also added&nbsp;<span style=\"font-size:13px;color:#ff0000\">\r\n<p>&nbsp;</p>\r\n<p>xmlns</p>\r\n</span>\r\n<p><span style=\"font-size:13px;color:#0000ff\">:</span><span style=\"font-size:13px;color:#ff0000\">cal</span><span style=\"font-size:13px;color:#0000ff\">=&quot;http://www.codeplex.com/CompositeWPF&quot;<br>\r\n<br>\r\nto the xaml file.&nbsp; OnSetRegionManagerCallback gets called but the none of the controls with the RegionName attribute set are getting passed to this method.&nbsp; The controls in question do inherit from DependencyObject but are controls in the Actipro Suite of Navigation controls (third party).&nbsp; Is there some hard coded registry of supported&nbsp;types that are monitored under the hood or something?&nbsp; Do I need to somehow make the framework aware of the custom control library by registering these custom UI control types?&nbsp; If so how do I do that?&nbsp;\r\n<p>&nbsp;</p>\r\n</span></p>\r\n</span></p>\r\n",
+    "PostedDate": "2008-06-17T12:45:48.21-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99386",
+    "ThreadId": "29822",
+    "Html": "Oh wait.&nbsp; I think I see it.&nbsp; RegionAdapterMappings.&nbsp; I'll let you know if it works.&nbsp;\r\n",
+    "PostedDate": "2008-06-17T15:17:12.533-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99404",
+    "ThreadId": "29822",
+    "Html": "That in an off itself did not work.&nbsp; So I did a little finegaling and it seems that while my controls with the cal:RegionManager.RegionName attribute are being passed to OnSetRegionManagerCallback the call to element.GetValue always returns null.&nbsp; Anyone seen this?\r\n",
+    "PostedDate": "2008-06-17T18:34:13.087-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99512",
+    "ThreadId": "29822",
+    "Html": "Make sure that the RegionManagerProperty has been set on the window.&nbsp; This is done automatically if you return your window in the ShowShell method when using the UnityBootstrapper (see StockTraderRIBootstrapper.cs for an example of this).<br>\r\n<br>\r\nIf you are using your own bootstrapper or are trying to use the RegionManager directly, you should be able to call RegionManager.SetRegionManager(window, regionManager).<br>\r\n<br>\r\n-b\r\n",
+    "PostedDate": "2008-06-18T07:54:50.783-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99551",
+    "ThreadId": "29822",
+    "Html": "Hi Brumfb,<br>\r\n<br>\r\nI have&nbsp;BootStrapper that is almost identical to the StockTraderRIBoostrapper with the exception that I load my own modules in GetModuleEnumerator.&nbsp; The UnityBootStrapper is setting the RegionManager on the Shell, but when the OnSetRegionManagerCallback fires this line<br>\r\n<br>\r\nstring regionName = element.GetValue(RegionNameProperty) as string<br>\r\n<br>\r\nalways evaluates to null which aborts the processing of the method.&nbsp; <br>\r\n<br>\r\nMy issue is that I have cal:RegionManager.RegionName=&quot;appropriateValue&quot; set on three&nbsp;controls but the call to element.GetValue never sees the RegionNameProperty.&nbsp; So it seems to me that either A) my controls with the RegionNameProperty set are embedded in a containing control that is not passing its children to&nbsp;whataver low level code is traversing the&nbsp;tree&nbsp;or B) there is some other configuration I need to set that I have not or C) stuffs broke.&nbsp; I have simplified my form dramatically to test scenario A by just having a grid in my Shell.xaml and setting the region name on the grid and then firing up the BootStrapper.&nbsp; That did not solve my problem.&nbsp; <br>\r\n<br>\r\nSo let me restate, I oversimplyfied my XAML by removing everything but a simple Grid and applied a cal:RegionManager.RegionName=&quot;MainRegion&quot; attribute to that element and even that scenario resulted in 0 regions being Attached to the RegionManager because <br>\r\n<br>\r\nstring regionName = element.GetValue(RegionNameProperty) as string <br>\r\n<br>\r\nalways returns null. <br>\r\n<br>\r\nAny ideas?\r\n",
+    "PostedDate": "2008-06-18T09:55:31.097-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99639",
+    "ThreadId": "29822",
+    "Html": "Hi,<br>\r\nI'm not sure what the problem is because I'm not able to repro it.<br>\r\nAnyways, Grids (or Panels) should not work with the attached property, because there are no region adapters that work with them out of the box. The controls that have region adapters are the ones that inherit from ContentControl or ItemsControl.<br>\r\nBut the thing is that if you put a grid, you should get an exception, and not get a null region name on <em>every</em> control.<br>\r\nCan you provide more information on your scenario? what's the complete tree structure? Is there a way you could send me a sample app with this problem?<br>\r\n<br>\r\nThanks,<br>\r\nJulian Dominguez<br>\r\n<a href=\"http://blogs.southworks.net/jdominguez\">http://blogs.southworks.net/jdominguez</a><br>\r\n",
+    "PostedDate": "2008-06-18T15:00:02.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99649",
+    "ThreadId": "29822",
+    "Html": "Sure I can send the whole solution.&nbsp; Not sure you will be able to compile since I use the Actipro Control Library, but at least you can see what is going on.&nbsp; Gimme a&nbsp;few and I will get it off to you.\r\n",
+    "PostedDate": "2008-06-18T16:12:16.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99796",
+    "ThreadId": "29822",
+    "Html": "<p style=\"margin:0in;font-family:Calibri;font-size:11pt\">Hi, I've been\r\nlooking at your code, and I stripped out the 3rd party controls, so the\r\nfindings may not be entirely correct.\r\nOne thing I found\r\nthat may be causing this issue is that the Shell's constructor is not calling\r\nInitializeComponent(), so the region name property is not being set on the\r\ncontrols.</p>\r\n<p style=\"margin:0in;font-family:Calibri;font-size:11pt\">I also found that\r\nthe names of the regions in the XAML do not correlate with the names in the\r\ncode (you may want to use string constants to avoid this in the future)</p>\r\n<p style=\"margin:0in;font-family:Calibri;font-size:11pt\"></p>\r\n<p style=\"margin:0in;font-family:Calibri;font-size:11pt\">Let me know if this helps,</p>\r\n<p style=\"margin:0in;font-family:Calibri;font-size:11pt\">Julian</p>\r\n",
+    "PostedDate": "2008-06-19T10:53:09.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99831",
+    "ThreadId": "29822",
+    "Html": "Thanks Julian,<br>\r\n<br>\r\n<br>\r\nLooks like the third party control vendor had a release where you could not call InitializeComponent in anything than inherited from RibbonWindow.&nbsp; A subsequent service release fixed that and all is well.&nbsp;\r\n",
+    "PostedDate": "2008-06-19T13:46:20.25-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

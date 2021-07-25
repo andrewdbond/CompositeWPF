@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "534239",
+    "ThreadId": "237965",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I have shell view with one region. In the shell view (not in the region mentioned) I have a docking control which gives my app a paned UI like visual studio. Some of the document panes added to the docking control contain regions and when multiple instances\r\n of the same pane are docked they must be scoped to avoid region name issues. I scope the regions like this:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> scopedRegionManager = shellRegionManager.CreateRegionManager();<br>RegionManager.SetRegionManager(paneView, scopedRegionManager);\r\n<br>I then add views to the regions in the scopedRegionManager.<br><br>I'm experiencing intermittent ArgumentExceptions which state that a region is already registered. After spending quite some time debugging, it looks like DelayRegionCreationBehavior.CreateRegion <br>is executing twice resulting in the creation of two instances of RegionManagerRegistrationBehavior for the same target element. So far I haven't been able to figure out why/how this is happening.<br><br>Any ideas?</pre>\r\n</div>\r\n<p></p>\r\n",
+    "PostedDate": "2010-12-10T17:27:31.03-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "535037",
+    "ThreadId": "237965",
+    "Html": "\r\n<p>Hi</p>\r\n<p>We&acute;ve had no similar issues reported so far. It could be helpful if you could provide us with a repro sample or more information about your scenario, so we can help you solve this issue.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-13T07:45:43.96-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "535049",
+    "ThreadId": "237965",
+    "Html": "\r\n<p>Thanks for replying Miguel.</p>\r\n<p>The only issue that is similar is <a title=\"http://compositewpf.codeplex.com/workitem/7521\" href=\"http://compositewpf.codeplex.com/workitem/7521\" target=\"_blank\">\r\nhttp://compositewpf.codeplex.com/workitem/7521</a></p>\r\n<p>I've spent two days trying to figure out what would cause DelayedRegionCreationBehavior.CreateRegion to be called twice. So far I don't understand how it's possible, but my debugging efforts seem to indicate that this is the cause of the problem. If you\r\n can think of a scenario where this could happen please let me know. So far I've made two changes: 1) Made WeakEventsManager thread safe 2) Changed DelayedRegionCreationBehavior.TryCreateRegion to the implementation below. I'm not confident these changes will\r\n fix the problem but I need to move on.</p>\r\n<p>Thanks,</p>\r\n<p>Joe</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> TryCreateRegion()\r\n        {\r\n            DependencyObject targetElement = <span style=\"color:blue\">this</span>.TargetElement;\r\n            <span style=\"color:blue\">if</span> (targetElement == <span style=\"color:blue\">null</span>)\r\n            {\r\n                <span style=\"color:blue\">this</span>.Detach();\r\n                <span style=\"color:blue\">return</span>;\r\n            }\r\n\r\n            <span style=\"color:blue\">if</span> (targetElement.CheckAccess())            <br>            {                \r\n                <span style=\"color:blue\">if</span> (!<span style=\"color:blue\">this</span>.regionCreated)\r\n                {\r\n                    <span style=\"color:blue\">this</span>.Detach();\r\n                    <span style=\"color:blue\">this</span>.regionCreated = <span style=\"color:blue\">true</span>; \r\n                    <span style=\"color:blue\">string</span> regionName = <span style=\"color:blue\">this</span>.RegionManagerAccessor.GetRegionName(targetElement);\r\n                    CreateRegion(targetElement, regionName);                    \r\n                }\r\n            }\r\n        }\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-13T08:11:20.953-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "536871",
+    "ThreadId": "237965",
+    "Html": "\r\n<p>Hi Joe,</p>\r\n<p>Thank you for sharing your findings with the rest of the community, both here and in the\r\n<a href=\"http://compositewpf.codeplex.com/workitem/7521\">Work Item</a> you're pointing to.</p>\r\n<p>Your workaround seems valid to mitigate the effects of this undesired behavior.</p>\r\n<p>Thanks again.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-16T09:36:01.633-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

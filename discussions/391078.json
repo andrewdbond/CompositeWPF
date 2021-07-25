@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "898235",
+    "ThreadId": "391078",
+    "Html": "\r\n<p>I am hitting a brick wall and cannot grasp the idea of this. I am just starting in using the MVVM and Prism.</p>\r\n<p>I have a shell with two regions, my ribbonRegion and the mainRegion. I am trying to figure out how to even do the simplest update to my view in the mainRegion from a button click in a view in the ribbonRegion. Say, click a button and change the text on the\r\n view from 'My Text' to 'Hello World'.</p>\r\n<p>So, obviously you tie the view in the ribbionRegion to a view model and therein tie the button click command to a delegate command right? Well, how do I have that command update something on the main view model and ultimately the main view? It is in the\r\n same module, just a different region. I should be able to so that without using eventAggregator, shouldn't I?</p>\r\n<p>I've read through many tutorials and the Prism dev guide, but they are all overly complicated, so I can't figure out what exactly needs to happen. I just want to know the basics of how to get it to work.</p>\r\n",
+    "PostedDate": "2012-08-10T13:27:16.14-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "898744",
+    "ThreadId": "391078",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding , the aforementioned approach seems to be right, the only thing you may be missing is that to ensure that the\r\n<strong>UI </strong>is kept up to date when the data changes in your view model, you should implement the appropriate change notification interface. For example if you bind a value in your view&nbsp; to a property exposed in your view model that could be changed\r\n when clicking a button, your view model should implement the <strong>INotifyPropertyChanged\r\n</strong>interface, which defines an event that is raised whenever the underlying data is changed, in order to notify the\r\n<strong>UI </strong>about the changes.</p>\r\n<p>You will find that the <strong>Prism </strong>Library provides a convenient base class (<a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.prism.viewmodel.notificationobject%28v=pandp.40%29.aspx\">NotificationObject</a>) that implements\r\n the <strong>INotifyPropertyChanged </strong>interface, from which you can derive your view model classes. This way your view model can raise the property change event by either invoking\r\n<strong>RaisePropertyChanged </strong>with the property name specified or using a lambda expression that refers to the property for example like this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:green\">//Using property name</span>\n<span style=\"color:blue\">this</span>.RaisePropertyChanged(<span style=\"color:#a31515\">&quot;MyProperty&quot;</span>);\n\n<span style=\"color:green\">//Using lambda expression</span>\n<span style=\"color:blue\">this</span>.RaisePropertyChanged(() =&gt; <span style=\"color:blue\">this</span>.MyProperty);\n</pre>\r\n</div>\r\n<p>You could find more information and examples in the following resources:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405484%28v=pandp.40%29\">Chapter 5: Implementing the MVVM Pattern</a>\r\n</li><li><a href=\"http://msdn.microsoft.com/en-us/library/gg430869%28v=pandp.40%29\">MVVM QuickStart</a>\r\n</li></ul>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-08-13T06:00:17.543-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "898819",
+    "ThreadId": "391078",
+    "Html": "\r\n<p>Ah, everything is slowly starting to click. I am kind of trying to learn too much at once (moving from forms to WPF/MVVM/Prism), so it is taking me a little bit to really start thinking differently.</p>\r\n<p>So, lets take this a step further...</p>\r\n<p>So, I have a 'Load/Reload' button in my ribbonRegion. Upon clicking that, I invoke a service to retrieve the data, utilizing a shared service. Essentially, since the other region is using the shared service, once I reload data in that service, the 'mainRegion'\r\n is notified simply by a property change and updates accordingly, correct?</p>\r\n",
+    "PostedDate": "2012-08-13T09:11:52.603-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "898864",
+    "ThreadId": "391078",
+    "Html": "<p>Hi,</p>\r\n<p>Take into account that the <strong>RaisePropertyChanged </strong>is only used to communicate between your view and your view model. If you need to communicate from different views I believe you should use other communication approach like events.</p>\r\n<p>For example in your scenario the view model of the view in your \"<em>mainRegion</em>\" could be subscribed to a custom event, so your shared service could publish/raise this event when the data is changed. Then in the handler of this event, you could retrieve the updated data from the <strong>Shared Service </strong>and set the property that exposes the information, also calling the <strong>RaisePropertyChanged </strong>in order to notify the <strong>UI </strong>properly.</p>\r\n<p>I hope you find this helpful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-08-13T10:32:23.447-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

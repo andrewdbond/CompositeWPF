@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nI'm closing this work item, as it seems that the problem portrayed in it is not related to an issue in Prism. If you need further support on the subject, you can create a thread in the Discussions section (http://compositewpf.codeplex.com/discussions).\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-10-28T09:44:51.69-07:00",
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "This is killing me!!\nWe have spent the better part of 6 hours trying to get RequestNavigate to actually work.  Here is what we know.\nWe created a simple ItemsControl Region and on in a Command Execute we are attempting to inject a view into this region through RequestNavigate without much sucess. \n \nThis always works;\nRegionManager.RegisterViewWithRegion(\"RegionName\", typeof(MyView));\n \nHowever as we have made many different iterations, and although the Action CallBack gets called, and all apears well (no errors) our simple view does not display using this line of code;\nRegionManager.RequestNavigate(\"RegionName\", new URI(typeof(MyView).FullName, UriKind.Relative), CallBack);\nnor this line of code...\nRegionManager.RequestNavigate(\"RegionName\", new URI(typeof(MyView).Name, UriKind.Relative), CallBack);\nnor this line of code...\nRegionManager.RequestNavigate(\"RegionName\", \"MyView\", CallBack);\nnor this line of code...\nRegionManager.RequestNavigate(\"RegionName\", \"MyNameSpace.MyView\", CallBack);\n \nPlease help!",
+    "LastUpdatedDate": "2013-05-16T05:28:43.06-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-05-10T20:14:08.58-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "RequestNavigate Not working",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8233
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "The answer to your question is here:\r\nhttp://blogs.msdn.com/b/kashiffl/archive/2011/03/10/prism-4-region-navigation-with-silverlight-frame-navigation-and-unity.aspx\r\n\r\nYou should register the View like this:\r\n\r\nRegisterType(typeof(AboutView).FullName);\r\n\r\nI am not sure how to use RegisterViewWithRegion in this context but I believe it's something similar.",
+      "PostedDate": "2011-05-11T06:09:10.983-07:00",
+      "Id": 156452
+    },
+    {
+      "Message": "Thanks for your quick response however we are using MEF and I believe that RegisterType is only for Unity.\r\n\r\nProblem seems to be with the creation of a view that we are attempting to Navigate to that in-turn has region(s) defined within it.  In a simple test, we can easily navigate between two separate views that target the same region, however if either of those views are made to include a region within the view the Navigation, does not show the navigated-to-view but it appears like all of the related events are functioning normally, ie. INavagiationAware to/from fire the RegionNavigationService events such as Navigating/Navigated fire, the RequestNavigate call-back has no errors, the region where the new view is to be stored shows that region and finally the over-arching Navigation Complete shows similar kinds of stuff, i.e. nothing appears to have failed, however nothing shows.  Also we can see in the Journal that the current view is the correct one and the back-stack shows the old view and the journal says it can go-back (all makes sense).  What does not make sense is why we can't see the sub views within the newly navigated view, as they appear to be there from a debugger's perspective.  \r\nAssuming that PRISM 4.0 Naviagtion supports navigating to a view where that view contains regions, then are there any other debug techniques that you can offer up to help us weed through our issues.",
+      "PostedDate": "2011-05-11T06:34:20.333-07:00",
+      "Id": 156453
+    },
+    {
+      "Message": "We created a very simplistic version of what we have and it works just fine, so we are recreating our projects as we can't see what the difference is.  As a result, if we get it all to work, we likely will not know what the issue was however I will provide others the results of our findings to ensure if others have similar issues that this posting provides some value. ",
+      "PostedDate": "2011-05-11T08:02:58.057-07:00",
+      "Id": 156454
+    },
+    {
+      "Message": "Be sure that in your view, in the (Unity) injection constructor or MEF equivalent that you call InitializeComponent. I have forgotten to do this in the past when overloading constructors in my views. ",
+      "PostedDate": "2011-07-13T03:17:27.307-07:00",
+      "Id": 156455
+    }
+  ]
+}

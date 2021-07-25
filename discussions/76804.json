@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "262583",
+    "ThreadId": "76804",
+    "Html": "<p>I'm trying to use a module that is not referenced as part of the project.</p>\r\n<p>Here's my setup:</p>\r\n<p>- WPF project</p>\r\n<p>- Project holding the interface IJsonViewer (the WPF project has a reference to it)</p>\r\n<p>- Project that holds the module JsonViewer (the WPF project does not have to reference to it) having a reference to the interface IJsonViewer and implementing it.</p>\r\n<p>&nbsp;</p>\r\n<p>In the WPF project the bootstrapper loads the module from its path declared in the DirectoryModuleCatalog. Now how to I resolve its type?</p>\r\n<p>this.Container.RegisterType&lt;IJsonViewer, JsonViewer&gt;()</p>\r\n<p>is not valid since JsonViewer is unknown from the WPF project.</p>\r\n<p>I have access to the module info through this.ModuleCatalog.Modules though. How should I proceed? For some reason I haven't found any hints in the documentation. Is this possible at all?</p>\r\n<p>Thank you,</p>\r\n<p>Eric.</p>",
+    "PostedDate": "2009-12-01T21:13:01.773-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "264521",
+    "ThreadId": "76804",
+    "Html": "<p id=6310a5d0-c560-012c-001d-12313b03045a>Hi Eric,</p>\r\n<p id=6310bda0-c560-012c-001e-12313b03045a>As you said, it is not possible to register the type in the container without having a reference to the assembly that holds the JsonViewer. Therefore, from your WPF project you will not be able to register the type mapping, but you will be able to resolve this item. The following are the steps to follow to get this done:</p>\r\n<ol>\r\n<li>You need to load the module that does have a reference to the JsonViewer implementation (if I understand correctly the third one you enumerated).</li>\r\n<li>Register the <a href=\"http://msdn.microsoft.com/en-us/library/dd203172.aspx\">type mapping in the container</a> as you are, in the module&rsquo;s Initialize method.</li>\r\n<li>In the WPF project module (the first one enumerated), resolve a JsonViewer instance from the container as follows:     <br>IJsonViewer jViewer = container.Resolve&lt;IJsonViewer&gt;();</li>\r\n</ol>\r\n<p id=6310e7b0-c560-012c-001f-12313b03045a>As you explained this approach lets you decouple the module with the JsonViewer&rsquo;s real implementation and other modules that consume it.</p>\r\n<p id=631138e0-c560-012c-0020-12313b03045a>In the StockTrader RI that comes with Prism, you can see a similar approach. The <strong>MarketModule </strong>class registers the <strong>IMarketFeedService</strong> and the <strong>ObservablePosition</strong> class in the <strong>PositionModule</strong> uses it (through <a href=\"http://msdn.microsoft.com/en-us/library/dd203129.aspx\">constructor injection</a>).</p>\r\n<p id=631196a0-c560-012c-0021-12313b03045a>Please let me know if this helps.</p>\r\n<p id=6311f9a0-c560-012c-0022-12313b03045a>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-12-07T08:29:41.837-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "264919",
+    "ThreadId": "76804",
+    "Html": "<p>Thank you Damian,</p>\r\n<p>Yes, it is working! It's an amazing piece of software.</p>\r\n<p>Eric.</p>",
+    "PostedDate": "2009-12-08T06:26:21.297-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

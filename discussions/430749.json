@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "991617",
+    "ThreadId": "430749",
+    "Html": "\r\n<p>Hi</p>\r\n<p>&nbsp;</p>\r\n<p>I am having a strange problem;&nbsp;</p>\r\n<p>In my application I have a shell with a region &quot;MainView&quot;, that holds a mainview;&nbsp;Inside the mainview, I have a 2 tabs, each of them has its own region (with different names). Both views that register to the regions using RegisterViewWithRegion are\r\n working and everything is ok. BTW regions are declared as contentControl.</p>\r\n<p>Now my problem is that I want to add a region to the internal view that sits on the second tab.</p>\r\n<p>When I add this to the XAML (Without&nbsp;register nothing in the code)</p>\r\n<p>&nbsp;&lt;ContentControl rgn:RegionManager.RegionName=&quot;Test123&quot; /&gt;</p>\r\n<p>&nbsp;- the application hangs for a&nbsp;minute&nbsp;in some loop in the region creation, and ends up with&nbsp;exception that hold many many exceptions inside - copy the exception&nbsp;text to notepad shows 70,000 lines.</p>\r\n<p>Any idea why?</p>\r\n<p>My guess is that the RegisterViewWithRegion is creating the parent window, and wants to create the region, but the tab is not selected so its not loaded yet, and this cause some mess with the region manager.</p>\r\n<p><a title=\"Link\" href=\"http://sdrv.ms/UZqizz\">Link</a> to the log file (~14 Mega)</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks for any help,</p>\r\n<p>Ady.</p>\r\n<p>&nbsp;</p>\r\n<p>Edit:</p>\r\n<p>I moved the&nbsp;&nbsp;&lt;ContentControl rgn:RegionManager.RegionName=&quot;Test123&quot; /&gt; to the first tab, also happening.&nbsp;</p>\r\n",
+    "PostedDate": "2013-01-24T08:38:53.2-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "991726",
+    "ThreadId": "430749",
+    "Html": "\r\n<p>Hi Ady,</p>\r\n<p>So far we have not been able to find the exact cause behind this error, but according the stack trace the exceptions seem to be related to a problem when creating a &quot;<strong>Measure.Options</strong>&quot; region. According to the exception message, it seems that\r\n the <strong>ContentControl </strong>where this region is being attached has its <strong>\r\nContent </strong>property populated or bound to a source (for example, by using a\r\n<strong>Binding</strong>):</p>\r\n<p><em>&quot;An exception occurred while creating a region with name '<strong>Measure.Options</strong>'. The exception was:</em><br>\r\n<em>System.InvalidOperationException: ContentControl's Content property is not empty.\r\n</em><br>\r\n<em>This control is being associated with a region, but the control is already bound to something else. If you did not explicitly set the control's Content property, this exception may be caused by a change in the value of the inherited RegionManager attached\r\n property.&quot;</em></p>\r\n<p>In would be helpful if you could provide us with more information regarding this region, for example, where the region is declared, how it relates to other regions, etc. so that we can help you find the cause behind the exception.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2013-01-24T12:17:16.69-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "991769",
+    "ThreadId": "430749",
+    "Html": "\r\n<p>Thanks Damian</p>\r\n<p>&nbsp;</p>\r\n<p>I don't&nbsp;understand&nbsp;why this exception raise when I add this&nbsp;<span>&lt;ContentControl rgn:RegionManager.RegionName=&quot;Test123&quot; /&gt; to a XAML that is not connected at all. Something went wrong with the region manager and I guess that adding\r\n &nbsp;this to the XAML is not the real problem. </span></p>\r\n<p><span>I will check it next week and update.</span></p>\r\n<p>&nbsp;</p>\r\n<p><span>Thanks,</span></p>\r\n<p>&nbsp;</p>\r\n<p><span>Ady.</span></p>\r\n",
+    "PostedDate": "2013-01-24T13:21:43.787-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

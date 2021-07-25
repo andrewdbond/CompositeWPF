@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1398482",
+    "ThreadId": "616120",
+    "Html": "Hi,\r<br />\n<br />\nI have a wpf application using prism and mef. \r<br />\nIn my Shell I have define ModuleRegion. \r<br />\nIn moduleRegion, when I load ModuleA, ModuleAMainView is loaded. ModuleAMainView has nested region LeftRegion and RightRegion.\r<br />\nModuleAMainViewModel is implementing INavigationAware interface. \r<br />\n<br />\nWhen I try to access LeftRegion and RightRegion in OnNavigateTo function:-\r<br />\n              <br />\nvar regionManager = ServiceLocator.Current.GetInstance&lt;IRegionManager&gt;();\r<br />\nvar cregion = regionManager.Regions[&quot;LeftRegion&quot;];\r<br />\n<br />\nI get exception that region is not present.\r<br />\n<br />\nregionManager contains only those regions which are defined in Shell.\r<br />\nAlso if I try to call these line in UserControlLoaded event then I can see that regionManager has all the nested regions.\r<br />\n<br />\nHow to access these regions in OnNavigateTo functions.\r<br />\n<br />\nRegards,\r<br />\nSharda.<br />\n",
+    "PostedDate": "2015-03-31T22:25:29.91-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1398557",
+    "ThreadId": "616120",
+    "Html": "I'm afraid you can't access the nested regions in OnNavigateTo, it is too early in the view lifecycle of the region. Regions are defined with an attached property and the implementation uses a DelayedRegionCreationBehavior that has to wait until the Visual Tree is created to determine what kind of element it is being attached to so that it can select the appropriate region adapter. And basically the visual tree does not come into being until after construction of your view class and before the Load event fires. So the Load event is the only reliable place to know that any contained regions have been created and the RegionManager is aware of them.\r<br />\n<br />\nThe way I typically deal with these kinds of things that are dependent on waiting for view load is to use a CallMethodAction behavior in the view to call a &quot;Loaded&quot; or &quot;Initialized&quot; method in the ViewModel based on the Loaded event in the view (tied in with an EventTrigger on the behavior). If what you need to do depends on the arguments passed to the OnNavigatedTo method, then store those parameters in a ViewModel variable when it gets called, and do the handling in the method called when Loaded fires.<br />\n",
+    "PostedDate": "2015-04-01T03:30:37.15-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1398937",
+    "ThreadId": "616120",
+    "Html": "Hi BrianNoyes,\r<br />\n<br />\n&quot;The way I typically deal with these kinds of things that are dependent on waiting for view load is to use a CallMethodAction behavior in the view to call a &quot;Loaded&quot; or &quot;Initialized&quot; method in the ViewModel based on the Loaded event in the view (tied in with an EventTrigger on the behavior). &quot;\r<br />\n<br />\nI have never tried this solution. Could you please demonstrate it with some sample lines of code.\r<br />\n<br />\nRegards,\r<br />\nSharda<br />\n",
+    "PostedDate": "2015-04-02T03:27:12.6-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1414334",
+    "ThreadId": "616120",
+    "Html": "Codeplex does not seem to want to let me paste in XAML code snippets here - probably sees as a cross-site scripting attempt or something.\r<br />\n<br />\nShoot me an email brian.noyes at gmail.com and I can send you a snippet.\r<br />\nThanks\r<br />\nBrian<br />\n",
+    "PostedDate": "2015-04-15T10:50:36.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1416224",
+    "ThreadId": "616120",
+    "Html": "Hi BrianNoyes,\r<br />\n<br />\nI mailed you. Please check.\r<br />\n<br />\nRegards,\r<br />\nSharda.<br />\n",
+    "PostedDate": "2015-04-21T02:27:59.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1441804",
+    "ThreadId": "616120",
+    "Html": "I tried fetching the &quot;Loaded&quot; event, but for me the region is still not there! Also, the attached property &quot;RegionManager.RegionManager&quot; is not set. What could be wrong? It seems I get the Loaded event too early...<br />\n<pre><code>&lt;UserControl&gt;\n   &lt;i:Interaction.Triggers&gt;\n        &lt;i:EventTrigger EventName=&quot;Loaded&quot;&gt;\n            &lt;ei:CallMethodAction MethodName=&quot;OnLoaded&quot; TargetObject=&quot;{Binding}&quot; /&gt;\n        &lt;/i:EventTrigger&gt;\n    &lt;/i:Interaction.Triggers&gt;\n    &lt;TabControl prism:RegionManager.RegionName=&quot;TabRegion&quot; prism:RegionManager.RegionManager=&quot;{Binding MyRegionManager}&quot;&gt;\n    </code></pre>\n\nMy UserControl belongs to the &quot;MainRegion&quot;.<br />\n",
+    "PostedDate": "2015-08-25T04:31:32.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1441819",
+    "ThreadId": "616120",
+    "Html": "I'm afraid I don't know what the issue is then, but it still sounds like a race condition in terms of when the region manager becomes aware of the region and when you are trying to navigate. If you can put together a small simple repro project that you could send, post an issue to our new location at <a href=\"http://github.com/PrismLibrary/Prism\" rel=\"nofollow\">http://github.com/PrismLibrary/Prism</a> with a link to download the repro and we can take a look.<br />\n",
+    "PostedDate": "2015-08-25T05:42:55.833-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

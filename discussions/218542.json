@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "464059",
+    "ThreadId": "218542",
+    "Html": "<p>I want to change something in view(user-control) from itself Presentation. For example i want to change button text(or change an image-Source of image) from Presentation.<br>change something refer to make a change in Controls-visual or something like that.<br> so How I do That?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-07-06T21:43:02.233-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "464882",
+    "ThreadId": "218542",
+    "Html": "<p id=a315fc40-6c37-012d-c06a-1231390ee8f1>Hi,</p>\r\n<p>if you need to modify the appearance of a view based on an event that occurs in the view (for example, changing the text of a button when you click it), you can do it using the mechanisms provided by WPF/Silverlight directly. For example you could use code behind, triggers or bindings.</p>\r\n<p>if you need to modify the appearance of a view based on an event that occurs on the model, or based on some business logic (for example, showing a particular image depending on the value of the model), you can use binding to the ViewModel using the MVVM pattern:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/wikipage?title=Model View ViewModel (MVVM)\">Model View ViewModel (MVVM)</a> </li>\r\n</ul>\r\n<p id=a3164740-6c37-012d-c06e-1231390ee8f1>Please let me know if this helps.</p>\r\n<p id=a3165f50-6c37-012d-c06f-1231390ee8f1>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-07-08T08:17:04.057-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "465899",
+    "ThreadId": "218542",
+    "Html": "@fantivero\r\nsorry but i use prism ver2, and I don't think that use MVVM pattern. so Your solution cant help me!\r\nalso I wont change them by triggers.\r\nLet explain what I want to do?\r\nIn presentation Class within occurred method, I checked ‍Condition and then if result was true, then change image-source of an image-control.\r\n@fantivero thank you cuz you Attention to my problem. :)\r\nregards Rev",
+    "PostedDate": "2010-07-10T21:22:22.35-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "466107",
+    "ThreadId": "218542",
+    "Html": "<p>My <a href=\"http://ehr.CodePlex.com\">http://ehr.CodePlex.com</a>&nbsp;(folder <strong>ModularityWithMef.Desktop</strong>)&nbsp;is a Prism V4 Drop 3 prototype using the MVPVM pattern w/MEF container&nbsp;- the principals still apply regardless of version or pattern.&nbsp;&nbsp; I have a property &quot;ModuleStatus&quot; that will swap out smiley images; if ModuleStatus=&quot;Initialized&quot; (indicating module is loaded) then a happy smiley appears.&nbsp;&nbsp;</p>\r\n<p>An except from the Themes/ModularityControl.generic.xaml file follows:&nbsp;&nbsp; I name my Image &quot;ModuleImage&quot; so that within my trigger I can change its source when ModuleStatus value=&quot;Initialized&quot;.&nbsp;</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre>        ...<br>        ...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Grid Grid.Row=<span style=\"color:#a31515\">&quot;2&quot;</span>&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Viewbox Height=<span style=\"color:#a31515\">&quot;15&quot;</span> x:Name=<span style=\"color:#a31515\">&quot;<strong>ModuleImageContainer</strong>&quot;</span>&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>&lt;Image</strong> x:Name=<span style=\"color:#a31515\">&quot;<strong>ModuleImage</strong>&quot;</span> Source=<span style=\"color:#a31515\">&quot;/GWN.Library.WPF;component/Images/smiley1.gif&quot;</span> /&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Viewbox&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Grid&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/Grid&gt;<br>&lt;/Border&gt;<br>&lt;ControlTemplate.Triggers&gt;<br>&nbsp;&nbsp;&nbsp; &lt;Trigger Property=<span style=\"color:#a31515\">&quot;ModuleStatus&quot;</span> Value=<span style=\"color:#a31515\">&quot;Initialized&quot;</span>&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Setter TargetName=<span style=\"color:#a31515\">&quot;<strong>ModuleImage</strong>&quot;</span> Property=<span style=\"color:#a31515\">&quot;Source&quot;</span> Value=<span style=\"color:#a31515\">&quot;/GWN.Library.WPF;component/Images/smiley2.gif&quot;</span>/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Setter TargetName=<span style=\"color:#a31515\">&quot;<strong>ModuleImageContainer</strong>&quot;</span> Property=<span style=\"color:#a31515\">&quot;Height&quot;</span> Value=<span style=\"color:#a31515\">&quot;18&quot;</span>/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Setter Property=<span style=\"color:#a31515\">&quot;Background&quot;</span> Value=<span style=\"color:#a31515\">&quot;{DynamicResource ModuleControl.Initialized.BackgroundBrush-Simple}&quot;</span>/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Setter Property=<span style=\"color:#a31515\">&quot;Foreground&quot;</span> Value=<span style=\"color:#a31515\">&quot;{DynamicResource ModuleControl.Initialized.ForegroundBrush-Simple}&quot;</span>/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Setter Property=<span style=\"color:#a31515\">&quot;BorderBrush&quot;</span> Value=<span style=\"color:#a31515\">&quot;{DynamicResource ModuleControl.Initialized.BorderBrush-Simple}&quot;</span>/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Setter Property=<span style=\"color:#a31515\">&quot;FontSize&quot;</span> Value=<span style=\"color:#a31515\">&quot;14.667&quot;</span>/&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/Trigger&gt;</pre>\r\n<pre><br></pre>\r\n</div>\r\n<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>RevCode wrote:</strong><br>@fantivero sorry but i use prism ver2, and I don't think that use MVVM pattern. so Your solution cant help me! also I wont change them by triggers. Let explain what I want to do? In presentation Class within occurred method, I checked &zwj;Condition and then if result was true, then change image-source of an image-control. @fantivero thank you cuz you Attention to my problem. :) regards Rev</blockquote>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-07-11T20:52:21.423-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

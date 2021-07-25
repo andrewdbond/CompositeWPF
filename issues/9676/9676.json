@@ -1,0 +1,61 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Addressed in Prism 5.0 for WPF.",
+    "ClosedDate": "2014-05-01T10:43:59.977-07:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "Feature request:\nI have a child window with a view model. The view model has some dependencies that should be injected (I'm using unity). I want to trigger opening this child window from another view model. I want to pass some data to the child window's viewmodel and on closing the child window I want some data back. \n\nIt turns out there isn't a ready-to-use solution for this. I prefer to follow the InteractionRequest approach of Prism, and I like the idea of passing context data. I don't like the option of communicating data between the calling view model and the child window's view model using the event aggregator, because in principle any party can subscribe to these events, while the data passing should be private between both view models. Furthermore, the InteractionRequest approach supports a callback mechanism where the context data is returned to the calling view model, with the event aggregator approach this would mean sending yet another event.\n\nTherefore, after quite some experimenting and searching, I ended up with the following approach which I found pretty satisfying:\n\n1)    First, to have proper dependency injection in my view models, I obtain an instance of the view model in the constructor of the child window using ServiceLocator.Current.GetInstance. This is perhaps not the nicest way, but it works. \n\n2)    Second, I make use of Prism's InteractionRequestTrigger in combination with a custom PopupChildWindow action to open my child window and to pass context data to the view model of the ChildWindow. The child window's view model implements IInteractionRequestDataReceiver. My calling view model calls Raise on an InteractionRequest object and passes an instance of InteractionRequestData as context data. InteractionRequestData is a class that inherits from Notification (this is a requirement of Prism) and forms the data object to pass to the child windows's view model. This is a strongly-typed way of passing data between view models using the InteractionRequest approach. There is no coupling between the view models (apart from the commonly shared InteractionRequestData type, which can be seen as a sort of contract between the two view models). Apart from the parent view, that defines an  interaction trigger for, there's no knowledge in the views of the data transfer that takes place. \n\n3)    Third, I created an ICloseRequest interface and a CloseRequestor attached property for child windows. My child window's view model implements ICloseRequest, the ChildWindow creates a binding for the CloseRequestor property. The effect is that the view model can raise a Close request, which is then responded to by the child window by closing itself. This is a simple MVVM way for closing a child window from within a view model. \n\nThese three things together form a pretty nice MVVM way for firing an interaction request, handling the request in a child window, sending some input data to the child window's view model, closing the child window, and sending back result data to the calling view model. It extends Prism's interaction request pattern by passing the context data not to the child window's data context, but to the view model of the child model (if it implements the IInteractionRequestDataReceiver  interface ).\n\nI've attached an example program that makes use of this new meachnism. I hope you like it.\n\nKind regards,\nMerijn",
+    "LastUpdatedDate": "2014-05-01T10:43:59.977-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-10-16T07:34:36.313-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "An MVVM-friendly way for opening and closing a child window from a view model, and sending data back and forth between the two corresponding view models.",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 3,
+    "Id": 9676
+  },
+  "FileAttachments": [
+    {
+      "FileId": 898011,
+      "FileName": "PrismMVVMChildWIndowExample.zip",
+      "DownloadUrl": ".\\898011"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi Merijn\r\n\r\nI have checked your sample application and it seems to be a valid approach to support the scenario of raising a popup ChildWindow with its own view model, without generating coupling between the ChildWindow and the view model of the owner view.\r\n\r\nThe disadvantage I found with this approach is that, based on my understanding of your implementation, it does not support the default functionality portrayed by Prism's PopupChildWindowAction to show simple notifications messages to the user. Instead, your ChildWindows are always forced to have a view model that implements the IInteractionRequestDataReciever interface in order to handle the notification messages. Other than that, I believe it's an useful approach.\r\n\r\nAs you mentioned, when using Prism's PopupChildWindowAction, the Notification object of the InteractionRequest is set as the DataContext of the ChildWindow. Hence, a possible approach to use a view model in a ChildWindow with Prism's default implementation, could be to make the view model inherit from the Notification class and pass that view model as the Notification object in the InteractionRequest. However, this could generate coupling between the two view models, a problem that is not present in your solution.\r\n\r\nI will leave this work item open as I believe your approach could be useful for other users of the community pursuing a similar scenario.\r\n\r\nAs a side note, for those interested in using a similar functionality to the one described in this work item but in WPF, I believe you could find the implementation proposed in the following blog post:- PopupWindowAction: using custom views instead of windows in WPF and Prism (http://blogs.southworks.net/dcherubini/2012/05/24/popupwindowaction-using-custom-views-instead-of-windows-in-wpf-and-prism/)\r\n\r\nThanks for sharing this,\r\n\r\nDamian Cherubinihttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-10-19T13:08:38.993-07:00",
+      "Id": 156618
+    },
+    {
+      "Message": "Hi Damion,\r\n\r\nThanks for your comments on this issue.\r\n\r\nIn addition to coupling between two view models, another drawback of using Notification as base class is that this enforces the use of a particular base class and so prevents using another. Since all my view models derive from NotificationObject I would have to break this design to enable using view models in combination with Prism's PopupChildWindowAction. \r\n\r\nYour WPF approach looks similar. Perhaps we can merge the two into one to get the best out of two.\r\n\r\nKind regards,Merijn",
+      "PostedDate": "2012-10-20T05:42:44.173-07:00",
+      "Id": 156619
+    },
+    {
+      "Message": "Hi Merijn,\r\n\r\nYou are right. With Prism's currently implementation of the Notification class, you are forced to use it as the base class of the corresponding view model to be able to send it as a notification in the InteractionRequest. This prevents you for using any other class as the base of the view model (for example, the NotificationObject class.)\r\n\r\nThis specific issue has been already reported before by the community and there is a work-item created suggesting to change the current implementation to use an interface instead of a class: - 'Notification' really should be an interface ( http://compositewpf.codeplex.com/workitem/9153 )\r\n\r\nRegards,\r\n\r\nDamian Cherubinihttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-10-29T13:14:53.9-07:00",
+      "Id": 156620
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1204250",
+    "ThreadId": "529652",
+    "Html": "Hi,\r<br />\n<br />\nI have a Prism with MEF framework application. UI Composition is mentioned below\r<br />\n<br />\nShell-&gt;<br />\n<pre><code>     Top Region     -&gt;View (Load View with MenuControl)\n     BottomRegion -&gt; View (Load View from different Modules when user clicks MenuItem) \n                                      -&gt; SubRegion (Each View has SubRegion) \n                                           (Load view inside SubRegion from the loaded Module)\n</code></pre>\n\nFor Navigation, I am using RequestNavigate function. When I call RequestNavigate function to navigation to a view without SubRegion it works fine. But when i navigate to view with SubRegion I get below exception\r<br />\n&quot;Activation error occured while trying to get instance of type Object&quot;<br />\n",
+    "PostedDate": "2014-02-07T05:23:19.803-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1204578",
+    "ThreadId": "529652",
+    "Html": "Hi,\r<br />\n<br />\nBased on the exception message it seems there was an error when trying to create the view. It would be useful if you could provide us with more information like the inner exceptions, how you are registering the view for navigation, etc.\r<br />\nAlso, do you have any view registered thought view discovery (RegisterViewWithRegion...) for the SubRegion?\r<br />\n<br />\nThanks,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2014-02-07T12:58:07.48-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1206140",
+    "ThreadId": "529652",
+    "Html": "Hi Damian,\r<br />\n<br />\nInnerException is null.\r<br />\nBelow is the snapshot of the code which throws Exception at RequestNavigate: -\r<br />\nLoadModuleA()\r<br />\n{\r<br />\n_moduleManager.LoadModule(ModuleNames.ModuleA);\r<br />\n_regionManager.RequestNavigate(RegionNames.BottomRegion, new Uri(ViewNames.ModuleAMainView, UriKind.Relative));\r<br />\n}\r<br />\nModuleA.lib\r<br />\npublic void Initialize()\r<br />\n{\r<br />\n}\r<br />\n<br />\nIf I add the code as below, exception is not thrown:-\r<br />\nModuleA.lib\r<br />\npublic void Initialize()\r<br />\n{\r<br />\nvar regionManager = ServiceLocator.Current.GetInstance&lt;IRegionManager&gt;();\r<br />\nregionManager.RegisterViewWithRegion(RegionNames.BottomRegion, typeof(ModuleAMainView));\r<br />\n}\r<br />\n<br />\nAs per my knowledge, Registering the view with region using RegisterViewWithRegion() should not be required for calling RequestNavigate().<br />\n",
+    "PostedDate": "2014-02-09T22:22:33.513-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1207417",
+    "ThreadId": "529652",
+    "Html": "Hi,\r<br />\n<br />\nThe observation you made is correct. <strong><em>RequestNavigate()</em></strong> call properly registers the <strong>View</strong> into the <strong>Region</strong> if it was not previously added. However, the problem may remain on the <strong>View</strong> registration into the Container. When calling <strong><em>RequestNavigate()</em></strong>, the <strong>Region</strong> tries to resolve the <strong>View</strong> by using <em>serviceLocator</em> in order to add it to the <strong>Region</strong> on <em>ExecuteNavigation()</em> process:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">protected</span> <span style=\"color:Blue;\">virtual</span> <span style=\"color:Blue;\">object</span> CreateNewRegionItem(<span style=\"color:Blue;\">string</span> candidateTargetContract)\n        {\n            <span style=\"color:Blue;\">object</span> newRegionItem;\n            <span style=\"color:Blue;\">try</span>\n            {           \n                newRegionItem = <span style=\"color:Blue;\">this</span>.serviceLocator.GetInstance&lt;<span style=\"color:Blue;\">object</span>&gt;(candidateTargetContract);\n            }\n            ...\n}\r\n</pre></div>Therefore, this would be the core of your problem. I reproduced the exception you mentioned after I copied your scenario and commented the <strong>[Export]</strong> attribute of the navigated <strong>View</strong>. In order to properly register the <strong>Views</strong> in the container, one way you could accomplish is by declaring the <strong>[Export]</strong> attribute right above the class declaration, as follows:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n[Export(<span style=\"color:#A31515;\">&quot;HelloWorldView&quot;</span>)]\n<span style=\"color:Blue;\">public</span> <span style=\"color:Blue;\">partial</span> <span style=\"color:Blue;\">class</span> HelloWorldView : UserControl, INavigationAware\r\n</pre></div>Notice that this issue would happen for both <strong>View</strong> structures, with and without <strong>SubRegions</strong> though. \r<br />\nIf you keep encountering an issue we would appreciate if you could provide us a small sample so we can debug it and give better support.\r<br />\n<br />\nI hope this helped you,\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-02-12T09:31:37.29-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-02-21T05:49:12.48-08:00"
+  },
+  {
+    "Id": "1211728",
+    "ThreadId": "529652",
+    "Html": "Hi Gabriel,\r<br />\n<br />\nI change the Export attribute from\r<br />\n[Export(typeof(HelloWorldView))] -&gt; [Export(&quot;HelloWorldView&quot;)]\r<br />\n<br />\nand it worked.\r<br />\n<br />\nThanks,\r<br />\nSharda.<br />\n",
+    "PostedDate": "2014-02-21T05:53:51.263-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

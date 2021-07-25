@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "532649",
+    "ThreadId": "237535",
+    "Html": "\r\n<p>In the StockTraderRI, popup is implemented with PopupWrapper attached to DialogActivationBehavior. I really like this behavior because it gives any popup with the same behavior (close button, style).</p>\r\n<p>Within my application, views can be added and activated to MainRegion. I want all these view to have uniform behaviors, which means they should have close button, resize button, and style as well. The reason I'm considering the popup example in StockTraderRI\r\n is because it has the flexibility to convert any UserControl (view) to receive these behaviors.</p>\r\n<p>I intent to use the popup behavior in StockTraderRI and apply to my case. However, I do not like to use the popup control (dealing with z-index...)&nbsp;as the parent container to usercontrol (view). Is there a better approach to tackle this scenario?</p>\r\n<p>&nbsp;</p>\r\n<p>//PopupWrapper from StockTraderRI</p>\r\n<p>&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;&#65279;private readonly Popup popUp;<br>\r\nprivate readonly ContentControl container;</p>\r\n<p>public PopWrapper()<br>\r\n{<br>\r\n&nbsp;this.container = new ContentControl();<br>\r\n&nbsp;this.popUp = new Popup();<br>\r\n&nbsp;this.popUp.Child = this.container;<br>\r\n}</p>\r\n<p>public event EventHandler Closed<br>\r\n{<br>\r\n&nbsp;add{&nbsp;this.popUp.Closed &#43;= value;&nbsp;}<br>\r\n&nbsp;remove{&nbsp;this.popUp.Closed&nbsp;-= value;&nbsp;}<br>\r\n}</p>\r\n<p>//............</p>\r\n",
+    "PostedDate": "2010-12-07T19:57:42.567-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533652",
+    "ThreadId": "237535",
+    "Html": "\r\n<p id=\"x_bf7677b0-e5fb-012d-7d0c-12313b03061e\">Hi,</p>\r\n<p id=\"x_bf768080-e5fb-012d-7d0d-12313b03061e\">According to your scenario, you might want to extend the\r\n<strong>DialogActivationBehavior</strong> so that&nbsp;instead of using the <strong>\r\nPopUpWrapper</strong> you could implement your desired wrapper for the control that you wish to use.</p>\r\n<p id=\"x_bf768b40-e5fb-012d-7d0e-12313b03061e\">Take into account that Prism provides the possibility of extending its functionality through, for example by creating your own\r\n<strong>Region Behaviors</strong>. For more information you can read the following chapters of Prism&acute;s documentation:</p>\r\n<p id=\"x_bf769750-e5fb-012d-7d0f-12313b03061e\">&middot; Region Behavior, <a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28v=PandP.40%29.aspx\">\r\nChapter 7: Composing the User Interface</a> (<em>Region Behavior section</em>)</p>\r\n<p id=\"x_bf76a480-e5fb-012d-7d10-12313b03061e\">&middot; Extending Prism, <a href=\"http://msdn.microsoft.com/en-us/library/gg430866%28v=PandP.40%29.aspx\">\r\nAppendix E: Extending Prism</a></p>\r\n<p>I hope this information is useful.</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n",
+    "PostedDate": "2010-12-09T14:23:50.41-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

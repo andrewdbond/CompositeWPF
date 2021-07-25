@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "512589",
+    "ThreadId": "232334",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I need to display multiple instances&nbsp;of a&nbsp;basketDetailsView.xaml within a region placed in basketView.xaml, but I'm getting the following errormessage when i debug my code:</p>\r\n<p>&quot;An exception occurred while creating a region with name 'basketRegion'. The exception was: System.InvalidOperationException: ItemsControl's ItemsSource property is not empty. This control is being associated with a region, but the control is already bound\r\n to something else. If you did not explicitly set the control's ItemSource property, this exception may be caused by a change in the value of the inherited RegionManager attached property&quot;</p>\r\n<p>The basketView XAML contains an ItemsControl tag defined like this:</p>\r\n<pre>&lt;ItemsControl x:Name=&quot;basketItemsControl&quot; BorderThickness=&quot;0&quot; cal:RegionManager.RegionName=&quot;basketRegion&quot; Margin=&quot;0,10,0,10&quot; /&gt;</pre>\r\n<p>The view also has a listbox where I can uncheck/check the BasketDetailsViews I want to look at:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>&lt;ListBox x:Name=&quot;basketListBox&quot; ItemsSource=&quot;{Binding basket}&quot;  MinWidth=&quot;200&quot;&gt;\r\n  &lt;ListBox.ItemTemplate&gt;\r\n    <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">DataTemplate</span><span style=\"color:blue\">&gt;</span>\r\n      &lt;CheckBox commands:Checked1.Command=&quot;{Binding DataContext.CheckCommand,    ElementName=basketListBox}&quot; Content=&quot;{Binding basketName}&quot; &gt;<span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">CheckBox</span><span style=\"color:blue\">&gt;</span>\r\n    <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">DataTemplate</span><span style=\"color:blue\">&gt;</span>       \r\n  &lt;/ListBox.ItemTemplate&gt;\r\n&lt;/ListBox\r\n\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>When I run without debugging it executes fine and I can pop in/out the different basketDetailsViews, but when debugging the above mentioned error shows. What Am i doing wrong?<br>\r\n&nbsp;</p>\r\n<div style=\"color:black; background-color:white\"></div>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-10-26T02:16:06.947-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "513811",
+    "ThreadId": "232334",
+    "Html": "\r\n<p>Am I running into this issue? <a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=213889\">\r\nhttp://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=213889</a></p>\r\n<p>How can I solve it in my case?</p>\r\n",
+    "PostedDate": "2010-10-28T00:58:21.873-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514140",
+    "ThreadId": "232334",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>First of all, please take into account that this is not related with the other thread. This exception is thrown in the Prism Library by design, more specifically in the\r\n<strong>ItemsControlsRegionAdpater </strong>class. This is because you have set previously the\r\n<strong>ItemsControl.ItemsSource</strong> property with some value. So, when the <strong>\r\nAdapt </strong>method of the region adapter is executed, it throws this exception.<br>\r\n<br>\r\nIt means that when you expose an ItemsControl as a region the <strong>ItemSource </strong>\r\nproperty is reserved, since it will be assigned with the view collection.<br>\r\n<br>\r\nHope this helps</p>\r\n<p>Fernando Antivero</p>\r\n<p><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n",
+    "PostedDate": "2010-10-28T11:32:00.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "671119",
+    "ThreadId": "272418",
+    "Html": "Hi, i have an existing WindowsForms application, and now i want to host some prism modules in it. The visual part should work with ElementHost, but what about the bootstrapper? Greets, **Jürgen**",
+    "PostedDate": "2011-09-13T05:23:40.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "671372",
+    "ThreadId": "272418",
+    "Html": "<p>Hi,</p>\r\n<p>An approach to create and run a <strong>Bootstrapper</strong> in a windows forms application could be to use the following code in your <strong>Bootstrapper</strong>:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>        <span style=\"color: blue;\">private</span> ElementHost host;\r\n\r\n        <span style=\"color: blue;\">public</span> WindowsFormsBootstrapper(ElementHost host)\r\n            : <span style=\"color: blue;\">base</span>()\r\n        {\r\n            <span style=\"color: blue;\">this</span>.host = host;\r\n        }\r\n\r\n        <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> InitializeShell()\r\n        {\r\n            <span style=\"color: blue;\">base</span>.InitializeShell();\r\n            <span style=\"color: blue;\">this</span>.host.Child = (<span style=\"color: blue;\">this</span>.Shell <span style=\"color: blue;\">as</span> Shell);\r\n        }\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Where <strong>host</strong> is the <strong>ElementHost</strong> control that will host your <strong>Shell</strong>, and in the code-behind of you windows form window&rsquo;s constructor add:</p>\r\n<p>&nbsp;</p>\r\n<p><span style=\"font-size: 9.5pt; color: blue;\">\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">        private</span> ElementHost host;\r\n\r\n        <span style=\"color: blue;\">private</span> <span style=\"color: blue;\">static</span> WindowsFormsBootstrapper bootstrapper;\r\n\r\n        <span style=\"color: blue;\">public</span> WinFormsWindow()\r\n        {\r\n            InitializeComponent();<br /><br />           &nbsp;<span style=\"color: blue;\">if</span> (host != <span style=\"color: blue;\">null</span>)\r\n            {\r\n                bootstrapper = <span style=\"color: blue;\">new</span> WindowsFormsBootstrapper(host);\r\n                bootstrapper.Run();\r\n            }\r\n        }\r\n</pre>\r\n</div>\r\n</span></p>\r\n<p>However, there is a known issue in the Prism library where if the host application is not a <strong>WPF Application</strong>, the <strong>RegionManager</strong> does not register the views.</p>\r\n<p>To prevent this for happening you need to change the code of the <strong>IsInDesignMode </strong>method of the <strong>RegionManager </strong>class with the following one:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">private</span> <span style=\"color: blue;\">static</span> <span style=\"color: blue;\">bool</span> IsInDesignMode(DependencyObject element)\r\n{\r\n    <span style=\"color: blue;\">return</span> DesignerProperties.GetIsInDesignMode(element);\r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p>You can find more information about this issue in the following links:</p>\r\n<ul>\r\n<li><span class=\"codeplexpageheader\"><span style=\"font: 7pt 'Times New Roman';\">&nbsp;</span></span><span class=\"codeplexpageheader\"><a href=\"246195\">Using Unitybootstrapper in WinForms</a></span></li>\r\n<li><span class=\"codeplexpageheader\"><a href=\"../workitem/7102\">Regions in a view added from code does not get registered</a></span></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-09-13T14:01:31.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "672704",
+    "ThreadId": "272418",
+    "Html": "<p>Hi,</p>\n<p>&nbsp;</p>\n<p>thanks, this helped a lot. Fixed it!!</p>\n<p>&nbsp;</p>\n<p>Greets,</p>\n<p>&nbsp;</p>\n<p>**J&uuml;rgen**</p>\n<div style=\"color: black; background-color: white;\">\n<pre>\r\n</pre>\n</div>",
+    "PostedDate": "2011-09-16T06:36:57.923-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

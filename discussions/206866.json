@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "422081",
+    "ThreadId": "206866",
+    "Html": "<p>Hi List,</p>\r\n<p>my MainRegion is an ItemsControl. To this MainRegion i add different UserControls. One of this Controls is a TabControl with one fixed TabItem, the other two TabItems should be defiend as Regions, so i can change the contend of both by Commands.</p>\r\n<p>Is there any chance to do this.</p>\r\n<p>Thanks</p>\r\n<p>Peter</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-03-22T05:46:59.657-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "422199",
+    "ThreadId": "206866",
+    "Html": "<p id=606a9c70-1808-012d-f177-12313d019651>Hi Peter,</p>\r\n<p id=606aa800-1808-012d-f178-12313d019651>I can think of two possible  approaches to achieve what you want. One of them is the one you are  proposing, where your <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.controls.tabcontrol(VS.95).aspx\">TabControl</a> would look like this in XAML (the code below assumes you are using  Silverlight, but for WPF it should be quite similar):</p>\r\n<p id=606ae870-1808-012d-f17a-12313d019651>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">Controls</span><span style=\"color:Blue\">:</span><span style=\"color:#A31515\">TabControl</span><span style=\"color:Blue\">&gt;</span>\r\n    <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">Controls</span><span style=\"color:Blue\">:</span><span style=\"color:#A31515\">TabItem</span><span style=\"color:Blue\">&gt;</span>\r\n        <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">TextBlock</span><span style=\"color:Blue\">&gt;</span>I am in no region<span style=\"color:Blue\">&lt;/</span><span style=\"color:#A31515\">TextBlock</span><span style=\"color:Blue\">&gt;</span>\r\n    <span style=\"color:Blue\">&lt;/</span><span style=\"color:#A31515\">Controls</span><span style=\"color:Blue\">:</span><span style=\"color:#A31515\">TabItem</span><span style=\"color:Blue\">&gt;</span>\r\n    <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">Controls</span><span style=\"color:Blue\">:</span><span style=\"color:#A31515\">TabItem</span> <span style=\"color:Red\">Regions:RegionManager.RegionName</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">RegionOne</span><span style=\"color:Black\">&quot;</span> <span style=\"color:Red\">Header</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">RegionOne</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">/&gt;</span>\r\n    <span style=\"color:Blue\">&lt;</span><span style=\"color:#A31515\">Controls</span><span style=\"color:Blue\">:</span><span style=\"color:#A31515\">TabItem</span> <span style=\"color:Red\">Regions:RegionManager.RegionName</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">RegionTwo</span><span style=\"color:Black\">&quot;</span> <span style=\"color:Red\">Header</span><span style=\"color:Blue\">=</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">RegionTwo</span><span style=\"color:Black\">&quot;</span><span style=\"color:Blue\">/&gt;</span>\r\n<span style=\"color:Blue\">&lt;/</span><span style=\"color:#A31515\">Controls</span><span style=\"color:Blue\">:</span><span style=\"color:#A31515\">TabControl</span><span style=\"color:Blue\">&gt;</span>\r\n</pre>\r\n</div>\r\nAs <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.controls.tabitem(VS.95).aspx\">TabItems</a> inherit from <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.controls.contentcontrol(VS.95).aspx\">ContentControl</a>,  the <strong>ContentControlRegionAdapter</strong> will create a <strong>SingleActiveRegion</strong> for each of them.</p>\r\n<p id=606b1120-1808-012d-f17b-12313d019651>Another  possible approach could be marking the <strong>TabControl</strong> as a  Region and add different views to it (still having a fixed <strong>TabItem</strong>).  This approach can bee seen in the UIComposition Quickstarts (<a href=\"http://msdn.microsoft.com/en-us/library/dd458934.aspx\">ViewDiscovery</a> and <a href=\"http://msdn.microsoft.com/en-us/library/dd458920.aspx\">View  Injection</a>).</p>\r\n<p id=606b3be0-1808-012d-f17c-12313d019651>Please  let me know if this helps.</p>\r\n<p id=606b6730-1808-012d-f17d-12313d019651>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-03-22T11:00:39.23-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "422409",
+    "ThreadId": "206866",
+    "Html": "<p>Hi Damian,</p>\r\n<p>solution two is exactly what i'm looking for.</p>\r\n<p>Thanks</p>\r\n<p>Peter</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-03-22T23:50:34.29-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "422923",
+    "ThreadId": "206866",
+    "Html": "<p>Hi,</p>\r\n<p>me agian.</p>\r\n<p>I try your first approach.</p>\r\n<p>For testing reasons i add one Label to &quot;RegionOne&quot; and &quot;RegionTwo&quot;</p>\r\n<p>At runtime i got the following error:</p>\r\n<p>ContentControl's Content property is not empty. <br>&nbsp;&nbsp;&nbsp; This control is being associated with a region, but the control is already bound to something else. <br>&nbsp;&nbsp;&nbsp; If you did not explicitly set the control's Content property, <br>&nbsp;&nbsp;&nbsp; this exception may be caused by a change in the value of the inherited RegionManager attached property.</p>\r\n<p>If both reagions are empty, there is no error</p>\r\n<p>Does that means that i have to add my UserControls at runtime ?</p>\r\n<p>Thanks</p>\r\n<p>Peter</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-03-24T01:15:24.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "428408",
+    "ThreadId": "206866",
+    "Html": "<p id=7e6bc020-2496-012d-f35b-12313d013db1>Hi Peter,</p>\r\n<p id=7e6bd360-2496-012d-f35c-12313d013db1>In the case of the <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.controls.contentcontrol.aspx\">ContentControl</a> (opposed to <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.controls.primitives.selector.aspx\">Selector</a> and <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.controls.contentcontrol.aspx\">ItemsControl</a>),  you cannot make the control a Region if it already has content. So, if I  understand correctly you added a Label inside each of the <strong>TabItems</strong>.  As they are <strong>ContentControls </strong>you get an error.  Summarizing, if you mark a <strong>ContentControl</strong> as a region you  can only add views to it, not direct content.</p>\r\n<p id=7e6bf9f0-2496-012d-f35d-12313d013db1>Please let me know if this  helps.</p>\r\n<p id=7e6c2010-2496-012d-f35e-12313d013db1>Damian  Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-04-07T10:58:31.623-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "428719",
+    "ThreadId": "206866",
+    "Html": "<p>Hi ,</p>\r\n<p>&lt;if you mark a <strong>ContentControl</strong> as a region you can only add views to it, not direct content.&gt;</p>\r\n<p>that's what i did.</p>\r\n<p>I mark my TabItems as regions as you suggested and the stuff is working very well.</p>\r\n<p>Thanks a lot</p>\r\n<p>Peter</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-08T02:57:08.323-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "465378",
+    "ThreadId": "206866",
+    "Html": "<p>Hi Damian,</p>\r\n<p>This works well in Xaml :</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">Controls</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">TabControl</span><span style=\"color:blue\">&gt;</span>\r\n    <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">Controls</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">TabItem</span><span style=\"color:blue\">&gt;</span>\r\n        <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">TextBlock</span><span style=\"color:blue\">&gt;</span>I am in no region<span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">TextBlock</span><span style=\"color:blue\">&gt;</span>\r\n    <span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">Controls</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">TabItem</span><span style=\"color:blue\">&gt;</span>\r\n    <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">Controls</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">TabItem</span> <span style=\"color:red\">Regions:RegionManager.RegionName</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">RegionOne</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">Header</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">RegionOne</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">/&gt;</span>\r\n    <span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">Controls</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">TabItem</span> <span style=\"color:red\">Regions:RegionManager.RegionName</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">RegionTwo</span><span style=\"color:black\">&quot;</span> <span style=\"color:red\">Header</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">RegionTwo</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">/&gt;</span>\r\n<span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">Controls</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">TabControl</span><span style=\"color:blue\">&gt;</span>\r\n\r\n</pre>\r\n</div>\r\n<p>But how&nbsp;can i do it in C# code behind if i want to dynamically add TabItem with new RegionName for each new TabItem?</p>\r\n<p>it will help me a lot;)</p>\r\n<p>thanks for your answer</p>\r\n<p>Vincent</p>",
+    "PostedDate": "2010-07-09T06:22:39.85-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "502524",
+    "ThreadId": "206866",
+    "Html": "<p>Hi,</p>\r\n<p>If your scenario requires to add multiple tabitems, you could use the  Damian&rsquo;s second approach. It allows you to add programmatically TabItems. For  more information on this topic, you could check the <a href=\"http://msdn.microsoft.com/en-us/library/dd458920.aspx\">View  Injection Quickstart</a>.</p>\r\n<p>This Quickstart contains a TabControl marked as a region and has two fixed  TabItems in xaml (General and Location). When an employee is selected the  application programmatically adds a new TabItem (Current Projects) using View  Injection.</p>\r\n<p>Fernando Antivero<br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-05T08:14:26.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

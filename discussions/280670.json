@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "702755",
+    "ThreadId": "280670",
+    "Html": "<p>Hi,</p>\n<p>I cam across this strange problem where my View is implementing INavigationAware and the dataContext for the view is itself. What is happening is OnNavigatedTo is getting called twice.</p>\n<div style=\"color: black; background-color: white;\">\n<pre>[Export(\"MyView\")]\r\n[PartCreationPolicy(CreationPolicy.NonShared)]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> MyView : INavigationAware\r\n{\r\n     <span style=\"color: blue;\">public</span> MyView()\r\n     {\r\n           InitializeComponent();\r\n           DataContext = <span style=\"color: blue;\">this</span>;\r\n     }\r\n\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> OnNavigatedTo(NavigationContext navigationContext)\r\n        {\r\n        }\r\n\r\n        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">bool</span> IsNavigationTarget(NavigationContext navigationContext)\r\n        {\r\n            <span style=\"color: blue;\">return</span> <span style=\"color: blue;\">true</span>;\r\n        }\r\n\r\n        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> OnNavigatedFrom(NavigationContext navigationContext)\r\n        {\r\n        }\r\n}\r\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>Now when I navigate to this view</p>\n<div style=\"color: black; background-color: white;\">\n<pre>_regionManager.RequestNavigate(<span style=\"color: #a31515;\">\"MainRegion\"</span>, <span style=\"color: blue;\">new</span> Uri(<span style=\"color: #a31515;\">\"MyView\"</span>, UrikKind.Relative));\r\n</pre>\n</div>\n<p>It goes into OnNavigatedTo twice. The moment I comment out <strong>DataContext = this</strong>, it is working as expected. I think this is a bug. I never saw anything like this in the samples as well, where the View is its own DataContext. Can this be verified?</p>\n<p>Thanks!</p>",
+    "PostedDate": "2011-11-23T22:01:49.153-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "702762",
+    "ThreadId": "280670",
+    "Html": "<p>Actually I resolved this. What you simply need to do is set the DataContext of the <strong>LayoutRoot</strong> (or whatever your topmost element is in the UserControl) to <strong>this</strong> instead of setting the <strong>DataContext</strong>. This works just fine.</p>\r\n<p>Cheers!</p>",
+    "PostedDate": "2011-11-23T22:44:59.027-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "906408",
+    "ThreadId": "280670",
+    "Html": "\r\n<p>Hi gan_s! just checking if u happened to find a better solution of this by now as I am also running into same problem.</p>\r\n",
+    "PostedDate": "2012-08-30T09:38:03.187-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "906643",
+    "ThreadId": "280670",
+    "Html": "<p>Hi imadulhaque,</p>\r\n<p>I would suggest you to have a viewmodel for the view and that should implement the INavigationAware. That will solver your problem or use the solution I used.</p>\r\n<p>Cheers!</p>\r\n<p>Ganesh</p>",
+    "PostedDate": "2012-08-30T21:41:02.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

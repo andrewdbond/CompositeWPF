@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "212779",
+    "ThreadId": "62683",
+    "Html": "<p>I'm getting the following exception trying to load any WPF view in my entire solution. I'm not even using the region based stuff and had the designers working fine earlier in the day.</p>\r\n<p>&nbsp;</p>\r\n<p>Method not found: 'Microsoft.Practices.Composite.Regions.IRegion Microsoft.Practices.Composite.Regions.IRegionAdapter.Initialize(System.Object, System.String)'.<br>&nbsp;&nbsp; at System.RuntimeTypeHandle.GetDeclaringType()<br>&nbsp;&nbsp; at System.RuntimeType.RuntimeTypeCache.GetEnclosingType()<br>&nbsp;&nbsp; at System.RuntimeType.get_DeclaringType()<br>&nbsp;&nbsp; at MS.Internal.Xaml.AssemblyNode.BuildNamespaces()<br>&nbsp;&nbsp; at MS.Internal.Xaml.AssemblyNode.FindNamespace(Identifier name)<br>&nbsp;&nbsp; at MS.Internal.Xaml.ReflectionProjectNode.BuildNamespaces()<br>&nbsp;&nbsp; at MS.Internal.Xaml.ReflectionProjectNode.Find(Identifier namespaceUri)<br>&nbsp;&nbsp; at MS.Internal.Xaml.PrefixScope.FindType(XamlName name)<br>&nbsp;&nbsp; at MS.Internal.Xaml.XmlElement.FindElementType(PrefixScope parentScope, IParseContext context)<br>&nbsp;&nbsp; at MS.Internal.DocumentTrees.Markup.XamlSourceDocument.get_RootType()<br>&nbsp;&nbsp; at Microsoft.Windows.Design.Documents.Trees.MarkupDocumentTreeManager.get_RootType()<br>&nbsp;&nbsp; at Microsoft.Windows.Design.Documents.MarkupDocumentManager.CalculateLoadErrorState()<br>&nbsp;&nbsp; at Microsoft.Windows.Design.Documents.MarkupDocumentManager.get_LoadState()<br>&nbsp;&nbsp; at MS.Internal.Host.PersistenceSubsystem.Load()<br>&nbsp;&nbsp; at MS.Internal.Host.Designer.Load()<br>&nbsp;&nbsp; at MS.Internal.Designer.VSDesigner.Load()<br>&nbsp;&nbsp; at MS.Internal.Designer.VSIsolatedDesigner.VSIsolatedView.Load()<br>&nbsp;&nbsp; at MS.Internal.Designer.VSIsolatedDesigner.VSIsolatedDesignerFactory.Load(IsolatedView view)<br>&nbsp;&nbsp; at MS.Internal.Host.Isolation.IsolatedDesigner.BootstrapProxy.LoadDesigner(IsolatedDesignerFactory factory, IsolatedView view)<br>&nbsp;&nbsp; at MS.Internal.Host.Isolation.IsolatedDesigner.BootstrapProxy.LoadDesigner(IsolatedDesignerFactory factory, IsolatedView view)<br>&nbsp;&nbsp; at MS.Internal.Host.Isolation.IsolatedDesigner.Load()<br>&nbsp;&nbsp; at MS.Internal.Designer.DesignerPane.LoadDesignerView()</p>",
+    "PostedDate": "2009-07-16T14:36:45.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213141",
+    "ThreadId": "62683",
+    "Html": "<p>Hi DesertFox,</p>\r\n<p>The <strong>IRegionAdapter </strong>interface is in the <strong>Microsoft.Practices.Composite</strong> assembly, an only exposes a method which is Initialize. One of the things you could check is that you have that assembly in place.<br>If I understand correctly you are not using regions to compose the UI:</p>\r\n<ol>\r\n<li>Could you provide more information about how you are loading the views? Code snippets showing where the code fails would be useful and also view code.</li>\r\n<li>Are you registering regions related stuff in the <strong>Bootstrapper</strong>?&nbsp;</li>\r\n<li>Any other information that you might believe relevant.</li>\r\n</ol>\r\n<p>Please let me know if this helps.&nbsp;</p>\r\n<p>Damian Schenkelman<br><span style=\"font-size:11pt\" lang=EN-US><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></span></p>",
+    "PostedDate": "2009-07-17T11:07:23.06-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "213154",
+    "ThreadId": "62683",
+    "Html": "<p>Thanks for the reply, I just figured this out a bit ago. Somehow the Microsoft.Practices.Composite and Presentation dll's were out of sync. I downloaded the latest CAB library and built everything and updated all my references to the new versions and that fixed it.</p>",
+    "PostedDate": "2009-07-17T11:28:37.03-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

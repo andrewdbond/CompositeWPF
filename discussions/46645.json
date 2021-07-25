@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "155842",
+    "ThreadId": "46645",
+    "Html": "<p>I have an application which works like Visual Studio; You have a tree view with items, and when you double click an item, a view for that item appears in a content region. (Like a code window in VS)<br>\r\nI've run into an issue regarding adding a view to a region.<br>\r\nWhat happens is that I get an exception saying that &quot;The region manager does not contain the ContentRegion region&quot;.<br>\r\n<br>\r\nThe problem is that this only occurs after I have added one or more views to that region, and then removed all of them, so my &quot;ContentRegion&quot; does actually exist.<br>\r\nI was able to track the &quot;problem&quot; to <strong>Microsoft.Practices.Composite.Presentation.Regions.DefaultRegionManagerAccessor.GetRegionManager</strong>(...) which is called by <strong>Microsoft.Practices.Composite.Presentation.Regions.Behaviors.RegionManagerRegistrationBehavior.TryRegisterRegion</strong>().<br>\r\n<strong>GetRegionManager</strong> returns null for the content host, but it should have returned a region manager...<br>\r\nI don't understand why this only happens after I have removed (closed) <em>all</em> my views from a region.<br>\r\n<br>\r\nAfter some investigation I discovered that if I set a value for x:Name on the content host, everything workes fine...<strong>GetRegionManager</strong> suddenly returns a region manager.<br>\r\nI do not understand this behavior. Can anyone shed some light on this?<br>\r\n<br>\r\nNote: I'm using Infragistics, and the content hosts are TabGroupPanes contained in a xamDockManager.<br>\r\nI've got a region adapter for the TabGroupPane which seems to work just fine.<br>\r\n<br>\r\nThanks!<br>\r\n<br>\r\n<br>\r\n<br>\r\n</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2009-02-09T09:19:20.393-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "155867",
+    "ThreadId": "46645",
+    "Html": "Hi,<br>\r\nThis may be a bug, but regarding the &quot;x:Name&quot; workaround it may also be a behavior on the TabGroupPane... maybe it is recycling and recreating the tab group pane that is used to host the region, ignoring the fact that it was being &quot;adapted&quot;.<br>\r\n<br>\r\nCan you check if replacing the TabGroupPane with a host control that works natively with Prism still experiences this problem (for example a TabControl)?<br>\r\n<br>\r\nOr if you have a small repro solution that we can use, that will also be helpful.<br>\r\n<br>\r\nThanks,<br>\r\nJulian Dominguez\r\n",
+    "PostedDate": "2009-02-09T10:01:11.493-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "156000",
+    "ThreadId": "46645",
+    "Html": "<p>Hi Julian,</p>\r\n<p>You are right, I only get this behavior with the TabGroupPane...the native controls works fine, so I guess I'll have to ask Infragistics about this one.<br>\r\n<br>\r\nThe workaround is easy so it's no big deal, I just thought it was a strange behavior.</p>\r\n<p>Thanks!</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2009-02-09T14:08:18.613-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "572525",
+    "ThreadId": "247676",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>I would like to override this method &quot;void Activate(object obj)&quot; of the Region class.</p>\r\n<p>Is it possible to replace this without modifying the Prism library of course?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p>Adrien</p>\r\n",
+    "PostedDate": "2011-02-26T05:25:12.217-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573368",
+    "ThreadId": "247676",
+    "Html": "<p>Hi Adrien,</p>\r\n<p>You could extend <strong>Region</strong> class and <strong>override</strong> the <em>Activate</em> method since is a virtual method. By doing this, you can provide your own logic to activate regions in your application without modifying the Prism library.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-02-28T10:16:42.54-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573697",
+    "ThreadId": "247676",
+    "Html": "<p>Yes, it is what I tried. But my custom class was not used.</p>\n<p>I have missed something ...</p>\n<p>&nbsp;</p>\n<p>How do you tell prism to use mine instead of its default class?</p>",
+    "PostedDate": "2011-03-01T00:41:51.29-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573836",
+    "ThreadId": "247676",
+    "Html": "<p>In order to achieve what you've mentioned, you need to create a custom region adapter to indicate that a region of type <em>CustomRegion </em>should be created when a control of certain type is marked as a region.</p>\r\n<p>For example, the <strong>SelectorRegionAdapter </strong>currently maps the selector controls to the <strong>Region </strong>region, while the <strong>ContentControlRegionAdapter</strong> maps the content controls to the <strong>SingleActiveRegion</strong> region, and so forth. You might find the following classes useful to your purpose (located in the <strong>Regions </strong>folder inside the <strong>Prism.Silverlight</strong> project of the Prism Library):</p>\r\n<ul>\r\n<li>Region</li>\r\n<li>SingleActiveRegion</li>\r\n<li>AllActiveRegion</li>\r\n<li>RegionAdapterBase</li>\r\n<li>SelectorRegionAdapter</li>\r\n<li>TabControlRegionAdapter</li>\r\n<li>ItemsControlRegionAdapter</li>\r\n<li>ContentControlRegionAdapter</li>\r\n</ul>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n<p>&nbsp;</p>\r\n<div id=\"_mcePaste\" class=\"mcePaste\" style=\"position: absolute; left: -10000px; top: 0px; width: 1px; height: 1px; overflow: hidden;\">http://compositewpf.codeplex.com/discussions/247930 m</div>",
+    "PostedDate": "2011-03-01T06:48:46.933-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573868",
+    "ThreadId": "247676",
+    "Html": "<p>I have already created a custom region adapter but not for the same purpose. In fact, I want to pass my viewModel throughout the activate method and not the view. And of course that crashes the application since the region needs a view to work properly. I want to modify that method for every view in my application.</p>\r\n<p>I don't want to create a custom region adapter because if I do that, it will use only my custom adapter and not anymore the predefined ones and/or I will need to override all the enlisted region adapter you mentioned above.</p>",
+    "PostedDate": "2011-03-01T07:32:45.403-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "573982",
+    "ThreadId": "247676",
+    "Html": "<p>Hi Adrien,</p>\r\n<p>In case you need to achieve that scenario without using a custom region adapter, you should have to create your custom region object and manually attach it to its hosting control.</p>\r\n<p>In order to do so, you should do something similar to what a region adapter does, but manually. For example, here's the code of the <strong>ContentControlRegionAdapter.Adapt</strong> method:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>        <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> Adapt(IRegion region, ContentControl regionTarget)\r\n        {\r\n            <span style=\"color: blue;\">if</span> (regionTarget == <span style=\"color: blue;\">null</span>) <span style=\"color: blue;\">throw</span> <span style=\"color: blue;\">new</span> ArgumentNullException(<span style=\"color: #a31515;\">\"regionTarget\"</span>);\r\n            <span style=\"color: blue;\">bool</span> contentIsSet = regionTarget.Content != <span style=\"color: blue;\">null</span>;\r\n<span style=\"color: blue;\">#if</span> !SILVERLIGHT\r\n            contentIsSet = contentIsSet || (BindingOperations.GetBinding(regionTarget, ContentControl.ContentProperty) != <span style=\"color: blue;\">null</span>);\r\n<span style=\"color: blue;\">#endif</span>\r\n            <span style=\"color: blue;\">if</span> (contentIsSet)\r\n            {\r\n                <span style=\"color: blue;\">throw</span> <span style=\"color: blue;\">new</span> InvalidOperationException(Resources.ContentControlHasContentException);\r\n            }\r\n            region.ActiveViews.CollectionChanged += <span style=\"color: blue;\">delegate</span>\r\n            {\r\n                regionTarget.Content = region.ActiveViews.FirstOrDefault();\r\n            };\r\n            region.Views.CollectionChanged +=\r\n                (sender, e) =&gt;\r\n                {\r\n                    <span style=\"color: blue;\">if</span> (e.Action == NotifyCollectionChangedAction.Add &amp;&amp; region.ActiveViews.Count() == 0)\r\n                    {\r\n                        region.Activate(e.NewItems[0]);\r\n                    }\r\n                };\r\n        }\r\n</pre>\r\n</div>\r\n<p>Also, you should probably have to&nbsp;manually call the <strong>RegionManager.SetRegionManager </strong>and set the <strong>RegionManager.RegionName</strong> attached property in your hosting control.</p>\r\n<p>You should take into account that regions aren't meant to be mapped to ViewModels, but rather to views, so the approach you're following isn't recommended by Prism's guidance.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-03-01T10:36:14.717-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

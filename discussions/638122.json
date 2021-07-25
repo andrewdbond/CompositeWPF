@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1425993",
+    "ThreadId": "638122",
+    "Html": "I am fairly new to Prism, however, if the bootstrapper takes care of the IOC container and launches the shell, where do I initialise a login screen and how would that link in? It would need unity to resolve the data service etc. <br />\n",
+    "PostedDate": "2015-05-18T05:58:44.767-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1426022",
+    "ThreadId": "638122",
+    "Html": "It depends on whether you want the user to see the shell in the background with the login as a pop up over it, or you want only the login dialog and never show the main window if they don't successfully log in. For the former, you can just trigger showing the dialog from the Loaded event of the main window/shell. If the latter, you can wire it into the Boostrapper CreateShell method. The trick for the latter is knowing that you have to set the Application.Current.MainWindow since that drives the lifetime of the application and WPF automatically sets it to the first window you show, which will be your login dialog window.<br />\n",
+    "PostedDate": "2015-05-18T08:45:19.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1426406",
+    "ThreadId": "638122",
+    "Html": "Thanks for the reply Brian,\r<br />\n<br />\nI am pretty sure I want it prior to the main shell showing, it is a shame because I will have to resolve the dependency on the service layer myself as the unity container does all the resolving in the bootstrapper.  Is this normal practice, seems such a struggle coming from a winforms background :-)\r<br />\n<br />\n<br />\nWould you put it here<br />\n<pre><code>     base.OnStartup(e);\n\n</code></pre>\n\n<blockquote>\n<blockquote>\nSome code - If success then proceed<br />\n</blockquote>\n</blockquote>\n<pre><code>         Bootstrapper bootstrapper = new Bootstrapper();\n        bootstrapper.Run();</code></pre>\n\n",
+    "PostedDate": "2015-05-19T08:38:55.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1426422",
+    "ThreadId": "638122",
+    "Html": "Not sure I understand your concern. \r<br />\n<br />\nIt is very normal to register some shell level services in the Bootstrapper. Typically that is done by overriding ConfigureContainer, and after the call to the base method, add your calls to Container.Register there to register services. Then in the CreateShell override, you would construct the View, Resolve the ViewModel through the container so that it does the dependency injection for you, and then set the View's data context to the ViewModel to complete the MVVM wire up. Then wire up a completion handler for the login dialog (possibly an event raised by the ViewModel indicating successful completion of login, and in that handler construct the shell main window, show it, and set it as the Application.Current.MainWindow.\r<br />\n<br />\nHope that helps.\r<br />\nBrian<br />\n",
+    "PostedDate": "2015-05-19T09:16:44.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1426509",
+    "ThreadId": "638122",
+    "Html": "You have been really helpful so far, currently I have the following - the configure container will resolve and DI and I am using ViewModelLocator to hook everything up, I am just not sure about how and where to launch the login in form and add a new handler prior to InitialiseShell\r<br />\n<br />\npublic class Bootstrapper : UnityBootstrapper<br />\n<pre><code>{\n    public Bootstrapper()\n    {\n        ViewModelLocationProvider.SetDefaultViewTypeToViewModelTypeResolver((viewType) =&gt;\n        {\n            var viewName = viewType.FullName;\n            var viewAssemblyName = viewType.GetTypeInfo().Assembly.FullName;\n            var viewModelName = String.Format(CultureInfo.InvariantCulture, &quot;{0}ViewModel, {1}&quot;, viewName, viewAssemblyName);\n            return Type.GetType(viewModelName);\n        });\n  }\n\n    protected override void ConfigureContainer()\n    {\n        base.ConfigureContainer();\n\n        //Container.RegisterType&lt;IMyObject, MyObject&gt;();\n\n        ViewModelLocationProvider.SetDefaultViewModelFactory((type) =&gt;\n        {\n            return Container.Resolve(type);\n        });\n\n    }\n\n    protected override DependencyObject CreateShell()\n    {\n        return Container.Resolve&lt;Shell&gt;();</code></pre>\n\n}<br />\n<pre><code>    protected override void InitializeShell()\n    {\n        base.InitializeShell();\n\n        Application.Current.MainWindow = (Window)Shell;\n        Application.Current.MainWindow.Show();\n    }\n\n    protected override void ConfigureModuleCatalog()\n    {\n        base.ConfigureModuleCatalog();\n\n        ModuleCatalog moduleCatalog = (ModuleCatalog)this.ModuleCatalog;\n        //moduleCatalog.AddModule(typeof(ModuleA.ModuleA));\n    }\n}</code></pre>\n\n}<br />\n",
+    "PostedDate": "2015-05-20T00:54:02.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1426675",
+    "ThreadId": "638122",
+    "Html": "You can put it in InitializeShell - create and show your login dialog from there, and don't do the two lines of code that set the main window and show it until after the login dialog is successfully completed.<br />\n",
+    "PostedDate": "2015-05-20T11:02:19.663-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1426800",
+    "ThreadId": "638122",
+    "Html": "Thanks for your help Brian <br />\n",
+    "PostedDate": "2015-05-21T01:20:05.207-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "165492",
+    "ThreadId": "49457",
+    "Html": "Every RI view that I've tried to open in VS2008 results in something like this:<br>\r\n<br>\r\nStaticResource reference 'PopupTextBoxStyle' was not found.<br>\r\n<br>\r\nThese styles are actually defined in a file named Styles.xaml in the RI Shell project itself, but these Modules have no notion of such a project.  So, is the VS design-time experience of Modules dead with Composite WPF?  I couldn't find anything in the docs that explain this shortcoming.  Am I missing something?<br>\r\n<br>\r\nThanks,<br>\r\nNate\r\n",
+    "PostedDate": "2009-03-06T12:46:14.547-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "165542",
+    "ThreadId": "49457",
+    "Html": "Hi Nate,<br>\r\n<br>\r\nYou are correct, the VS designer doesn't work, due to some design choices we took while developing the RI. But you will find that Expression Blend will still work. <br>\r\n<br>\r\nIn the approach we took, the RI is responsible for setting some styles that will ensure the application has an overall appearance of the application. Since the modules and the shell don't depend on each other, it make sense that you can't see the effect of the 'global' styles in your modules.<br>\r\n<br>\r\nUnfortunately, the WPF editor of Visual Studio doesn't work very well if your modules depend on 'external' styles. Expression blend does a much better job at this.<br>\r\n<br>\r\nIf you want to have the design time experience for your modules in Vs.Net, i'm afraid the only option is to have all these styles present in the modules themselves. <br>\r\n<br>\r\nHope this helps,<br>\r\n_Erwin\r\n",
+    "PostedDate": "2009-03-06T15:43:39.85-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "165640",
+    "ThreadId": "49457",
+    "Html": "Thanks for the reply.  I sorta gathered this from the Guidance doc section &quot;UI Design Guidance Overview&quot; but was suprised that the VS failure wasn't called out specifically someplace.<br>\r\n<br>\r\nHopefully the VS2010 designer can catch up a bit and allow styles to be located from &quot;arbitrary&quot; places.<br>\r\n<br>\r\nNate<br>\r\n<br>\r\n",
+    "PostedDate": "2009-03-07T04:07:50.69-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "165835",
+    "ThreadId": "49457",
+    "Html": "Hello Nate!<br>\r\n<br>\r\nAn alternative solution would be to move the shared resources (e.g. Styles.xaml) into the StockTraderRI.Infrastructure assembly because this is referred by all modules. So the VS designer is able to show the UI with the correct styles.<br>\r\n<br>\r\nUnfortunately, there is another issue that you might run into with this approach. See this link for further information: <a href=\"http://compositewpf.codeplex.com/WorkItem/View.aspx?WorkItemId=3504\">http://compositewpf.codeplex.com/WorkItem/View.aspx?WorkItemId=3504</a> <br>\r\n<br>\r\nMaybe you find this helpful<br>\r\njbe\r\n",
+    "PostedDate": "2009-03-08T11:52:23.953-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

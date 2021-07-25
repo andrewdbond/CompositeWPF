@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "161459",
+    "ThreadId": "48375",
+    "Html": "I am new to Prism.  I installed  Prism V2 Drop 9 and built the Stock Trader RI and successfully ran the WPF and Silverlight versions.<br>\r\nI am considering using Prism to build a Silverlight data driven application.  In looking through the hands on-labs and Prism Help file, I did not see any guidance or examples explaining how to use Prism with Silverlight web services. <br>\r\nIf you could point me in the right direction, I would appreciate it.  <br>\r\n<br>\r\nThank you very much,<br>\r\n<br>\r\nPhilip\r\n",
+    "PostedDate": "2009-02-24T07:30:41.753-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "161470",
+    "ThreadId": "48375",
+    "Html": "I've blogged a wee bit on the topic.  Perhaps one of the following will get you pointed in the right direction (many have short webcast)<br>\r\n<br>\r\n<a href=\"http://www.global-webnet.net/blogengine/search.aspx?q=wcf\">http://www.global-webnet.net/blogengine/search.aspx?q=wcf</a><br>\r\n<br>\r\nYou may want to visit my <a href=\"http://www.CodePlex.com/SDMS\">http://www.CodePlex.com/SDMS</a> - it has a functional demo with Prism and WCF<br>\r\n<br>\r\nBill\r\n",
+    "PostedDate": "2009-02-24T07:54:53.25-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "161513",
+    "ThreadId": "48375",
+    "Html": "Check this excellent article <a href=\"http://www.netfxharmonics.com/2008/11/Understanding-WCF-Services-in-Silverlight-2\">Understanding WCF Servics in Silverlight 2</a>.<br>\r\n<br>\r\nJani<br>\r\n",
+    "PostedDate": "2009-02-24T09:20:15.58-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "161528",
+    "ThreadId": "48375",
+    "Html": "Some books I would &quot;strongly&quot; recommend:<br>\r\n<br>\r\n&quot;Data-Driven Service with Silverlight 2&quot; by John Papa - search for him on the Internet - he has great Silverlight WCF material to include MSDN articles (available online); I consider him an authortitative source on the topic of Silverlight and WCF.<br>\r\n<br>\r\n&quot;Developing Service-Oriented AJAX Application on the Microsoft Platform&quot; by Daniel Larson<br>\r\n<br>\r\n&quot;Microsoft .NET: Architecting Applications for the Enterprise&quot; by Dino Esposito and Andrea Altarello<br>\r\n<br>\r\nThese books were instrumental in helping me build an Enterprise Level Framework (around Prism/WCF) in the absence of authoritative sources  / samples.<br>\r\n<br>\r\nBill<br>\r\n",
+    "PostedDate": "2009-02-24T09:54:43.69-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "161694",
+    "ThreadId": "48375",
+    "Html": "Bill,<br>\r\n<br>\r\nThank you for your response.<br>\r\n<br>\r\nI bought &quot;Data-Driven Services with Silverlight 2&quot; as soon as it hit the market.  After review and some prorgramming practice, I decided to build my data driven Sliverlight LOB application using RESTful services with WebClient and HttpWebRequest.  That decision was driven in part by a strong desire to avoid depending on <em><strong>magical service client creation as you point out above.</strong><strong><br>\r\n<br>\r\n</strong></em>That said, could you comment on the feasibility of developing a Silverlight application using RESTful services with Prism V2?         <br>\r\n <br>\r\nBest,<br>\r\n<br>\r\nPhilip\r\n",
+    "PostedDate": "2009-02-24T16:07:25.773-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "161734",
+    "ThreadId": "48375",
+    "Html": "Unfortunately I have not had the ability to use RESTful services...  I'm developing a Patient Record Management System for local doctors and the idea of patient records being available via REST would probably not go well with HIPAA.   On a different contract our first Silverlight/WCF application was built around an Employee Service that is fed from multiple data sources, i.e.,  Active Directory and other proprietary systems; having employee information available via REST was not an option.  So I have no experience in this area (yet)...   <br>\r\n<br>\r\nI have a pretty decent workaround (until a SvcUtil is available to generate proxy classes).  I still have to update <strong>every</strong> Web Service whenever I update the service interface but I can then delete the configuration file;  the entire solution, i.e.,  Unit Test, WCF Services, Silverlight application/modules and ASP.NET all work off a single Web.Config (through the power of Unity).<br>\r\n<br>\r\nThe following is why I can delete the configuration file after manually Updating the WCF Service reference: <br>\r\n<p>        /// &lt;summary&gt;<br>\r\n        /// Initializes a new instance of the &lt;see cref=&quot;DoctorServiceDAL&quot;/&gt; class.<br>\r\n        /// &lt;/summary&gt;<br>\r\n        /// &lt;param name=&quot;aggregator&quot;&gt;The aggregator.&lt;/param&gt;<br>\r\n        public DoctorServiceDAL(IUnityContainer container)<br>\r\n        {<br>\r\n            try<br>\r\n            {<br>\r\n                // Set container reference for class use<br>\r\n                Container = container;</p>\r\n<p>                IServerConfiguration config = container.Resolve&lt;IServerConfiguration&gt;();</p>\r\n<p>                // Use basic HttpBinding on both Silverlight and Desktop<br>\r\n                BasicHttpBinding binding =<br>\r\n                    new BasicHttpBinding(BasicHttpSecurityMode.None);</p>\r\n<p>                binding.Name = &quot;bndDoctorService&quot;;</p>\r\n<p>                // Get the WebServiceURI from the unity container<br>\r\n                Uri baseAddress = new Uri(config.WebServiceURI_DEV);</p>\r\n<p>                EndpointAddress address = new EndpointAddress(baseAddress);</p>\r\n<p>                // Instantiate our service using configured data<br>\r\n                client = new wcf.DoctorServiceClient(binding, address);</p>\r\n<p> </p>\r\n",
+    "PostedDate": "2009-02-24T19:20:46.363-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "161874",
+    "ThreadId": "48375",
+    "Html": "Bill,<br>\r\n<br>\r\nThank you for taking the time to post some code from your Patient Record Management System to provide a workaround!<br>\r\n<br>\r\nI will study it and try to move forward.<br>\r\n<br>\r\n<br>\r\nSincerely,<br>\r\n<br>\r\nPhilip<br>\r\n",
+    "PostedDate": "2009-02-25T05:29:35.687-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "220108",
+    "ThreadId": "48375",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\">I copied a previous&nbsp;post to this one and deleted the emails from the previous post at the request of one of the people in the email.&nbsp;<span style=\"font-size:10pt\">Unfortunately&nbsp;this causes the post to be out of sequence.&nbsp;</span>\r\n<p><strong>billkrat wrote:</strong><br><strong>I agree, I started with this Blog but be wary!</strong><br><br></p>\r\n<p style=\"margin-right:0px\" dir=ltr><em>Now we may turn our attention to the client application.&nbsp; To begin, let me start off by reminding everyone that <strong>you shouldn't ever use &quot;Add Service Reference&quot; in Visual Studio for magical service client creation</strong>.&nbsp; The code is incredibly verbose, hard to manageable, edits are prone to being overwritten, and it's almost always used as an excuse to not actually learn WCF.&nbsp; There are few things worse than having to deal with people who thing they know a product simply because they know how to use a mouse.&nbsp; There are reasons why </em><a href=\"http://idesign.net/idesign/DesktopDefault.aspx?tabindex=3&tabid=5\"><em>Juval Lowy</em></a><em>, in all his books and talks, repeatedly tells people to avoid using this flawed feature.&nbsp; Fortunately, as professionals, we have the ability to understand how to do things without magic.<br><br></em><strong>The above excerpt from the mentioned link sent me on a long hard wild goose chase (considering the title of the blog).&nbsp; To make a very long story short I'll share correspondance that I had with&nbsp;a&nbsp;Silverlight Web Services Team&nbsp;member.</strong></p>\r\n<p>-----Original Message-----<br>From: Yavor Georgiev<br>Sent: Monday, January 12, 2009 12:05 PM<br>To: Bill Kratochvil</p>\r\n<p>Cc: CDF Silverlight Customer Issues<br>Subject: RE: (Silverlight Web Services Team) : SLSvcUtil - what is recommended P&amp;P?</p>\r\n<p>Hi Bill,</p>\r\n<p>Thanks for your note.</p>\r\n<p>I understand the scenario you are encountering in your enterprise app around managing config files. This is a common customer request and a command-line tool like svcutil is being considered in the next version of Silverilght.</p>\r\n<p>Unfortunately we don't have any additional tips we can provide at this point. Please continue to follow our blog for SL3-related updates.</p>\r\n<p>Thanks,<br>-Yavor</p>\r\n<p>-----Original Message-----<br>From: bill&nbsp; Kratochvil<br>Sent: Wednesday, January 07, 2009 7:21 PM<br>To: Yavor Georgiev<br>Subject: (Silverlight Web Services Team) : SLSvcUtil - what is recommended P&amp;P?<br>Importance: High</p>\r\n<p>Can the team provide guidance for consuming WCF service for enterprise level applications?&nbsp;&nbsp; My initial efforts were somewhat frustrating as the Silverlight forums have you going in circles looking for a SLSvcUtil that doesn't exist, or SVCUtil flags that supposedly support Silverlight (that no one can reference).</p>\r\n<p>The following blog highlights an issue with using Prism/CompositeWPF and Silverlight - the main assembly has to have a copy of the ServiceReferences.ClientConfig referenced in a module (separate assembly):&nbsp;</p>\r\n<p><a href=\"http://www.global-webnet.net/blogengine/post/2009/01/03/PrismWCF-Cannot-find-ServiceReferencesClientConfig-in-xap-application-package.aspx\">http://www.global-webnet.net/blogengine/post/2009/01/03/PrismWCF-Cannot-find-ServiceReferencesClientConfig-in-xap-application-package.aspx</a></p>\r\n<p>The above provides a simple solution for a single module that consumes a single WCF service.&nbsp;&nbsp; When we have 20+ modules, configuration promises to be quite the nightmare complicated by a cyle that has the solution moving through development, staging and production environments.</p>\r\n<p>&quot;Add Web Service&quot; doesn't seem to be a viable solution.</p>\r\n<p>Your guidance and assistance will be appreciated as we have numerous sprints planned throughout the year that will be based on the infrastructure I provide; as an Independent Contractor&nbsp;I have a large responsibility to get this done right .<br><br>Bill Kratochvil<br>Global Webnet, LLC<br>Blog: <a href=\"http://www.global-webnet.net/BlogEngine\">http://www.Global-webnet.net/BlogEngine</a><br>----------------------------------<br>This message was generated from a contact form at: <a href=\"http://blogs.msdn.com/silverlightws/default.aspx\">http://blogs.msdn.com/silverlightws/default.aspx</a><br>It was submitted by BillKrat</p>\r\n<p>Your contact information was not shared with the user.</p>\r\n</blockquote>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-05T19:38:15.8-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

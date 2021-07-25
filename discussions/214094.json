@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "448278",
+    "ThreadId": "214094",
+    "Html": "<p>I have a Silverlight 4 app using PRISM. I have a region in a usercontrol that is loading a modular app. The modular app has the initialize as this:\r\n<p>&nbsp;</p>\r\n<span style=\"font-size:x-small;font-family:Consolas\"><span style=\"font-size:x-small;font-family:Consolas\"><span style=\"font-size:x-small;font-family:Consolas\"><span style=\"font-size:x-small;font-family:Consolas\">\r\n<div style=\"color:black;background-color:white\">\r\n<pre>       <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> Initialize()\r\n        {\r\n            _regionManager.RegisterViewWithRegion(<span style=\"color:#a31515\">&quot;SolutionRegion&quot;</span>, () =&gt; _container.Resolve&lt;Views.SolutionView&gt;());\r\n        }\r\n</pre>\r\n</div>\r\n</span></span></span></span></p>\r\n<p>My application overall uses tabs to navigate. My problem is that each time I tab to the control that has the region, a new instance of my view is loaded. I need to load one instance and leave it there so the user can come back and not lose work. Any ideas?</p>",
+    "PostedDate": "2010-05-27T10:04:27.07-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "448881",
+    "ThreadId": "214094",
+    "Html": "<p id=6739ba20-4cbb-012d-4245-12313b071d41>Hi,</p>\r\n<p id=6739c320-4cbb-012d-4246-12313b071d41>In order to keep the same instance of  your view each time you resolve it through the container, you have to register  it as a <a href=\"http://msdn.microsoft.com/en-us/library/ff648211.aspx#ks_registersingleton\">singleton  instance</a>.</p>\r\n<p id=6739cc70-4cbb-012d-4247-12313b071d41>In that case, your code would look  like this:</p>\r\n<p id=6739d6b0-4cbb-012d-4248-12313b071d41>&nbsp;</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> Initialize()\r\n\r\n{\r\n\r\n_regionManager.RegisterViewWithRegion(<span style=\"color:#a31515\">&quot;SolutionRegion&quot;</span>, () =&gt; _container.Resolve&lt;Views.SolutionView&gt;(<span style=\"color:blue\">new</span> ContainerControlledLifetimeManager()));\r\n\r\n}\r\n</pre>\r\n</div>\r\n<p id=6739f4f0-4cbb-012d-424b-12313b071d41>&nbsp;</p>\r\n<p id=6739ff20-4cbb-012d-424c-12313b071d41>You can find a deeper explanation in  <a href=\"View.aspx?ThreadId=213883\">this  thread</a>.</p>\r\n<p>If you register it as a singleton, depending on your scenario you should be  careful with memory issues, as the view will be kept alive (probably along with  the ViewModel and all the instances it keeps) until the application is  closed.</p>\r\n<p>If you are using a TabControl as a region following the Prism approach, that  shouldn&rsquo;t behave as it does now. You should be able to switch between tabs  without losing the state of your view. In that case there is no need to register  the view as a singleton instance, avoding memory issues. You could check the <a href=\"http://msdn.microsoft.com/en-us/library/ff647669.aspx\">UI Composition  quickstart</a> to see an example of this behavior.</p>\r\n<p id=673a08f0-4cbb-012d-424d-12313b071d41>I hope you find this helpful.</p>\r\n<p id=673a12e0-4cbb-012d-424e-12313b071d41>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-05-28T14:43:51.147-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

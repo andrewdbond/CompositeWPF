@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "523701",
+    "ThreadId": "235143",
+    "Html": "\r\n<p>I have silverlight prism 4 application called MyApp which has MyApp.ModuleA.xap and MyApp.ModuleB.xap modules. MyApp itself isn't module (no class implementing IModule). So how can I show a view called LoginView (which is defined inside MyApp) after Shell.xaml\r\n is initialized (which has region called MainRegion content control)?&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-18T02:08:40.423-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "523783",
+    "ThreadId": "235143",
+    "Html": "\r\n<p>I think you have some options:</p>\r\n<ol>\r\n<li>Move LoginView to a module\r\n<ol>\r\n<li>Module added to MyApp.xap </li><li>Module added to ModuleA.xap or ModuleB.xap </li><li>Module added to a newly created ModuleC.xap </li></ol>\r\n</li><li>Register the view with MainRegion while overriding CreateShell within your Bootstrapper\r\n</li><li>Register the view with MainRegion in Application_Startup after calling Run on your bootstrapper\r\n</li></ol>\r\n<p>I personally prefer any option that involves a module because modules give a structured and&nbsp;discoverable place to do that type of activity whereas the other options I mentioned would take some hunting to know that code was even there.</p>\r\n",
+    "PostedDate": "2010-11-18T06:07:12.887-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "523902",
+    "ThreadId": "235143",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>All&nbsp;options indicated above are possible approaches. Additionally, If you are using MEF, you could use the ViewExportAttribute class to decorate a particular view (LoginView). This attribute is part of the\r\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921074%28PandP.40%29.aspx\">StockTrader Reference Implementation</a> and allows you to indicate in which region the view will be registered.&nbsp;</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero<br>\r\n<a href=\"http://blogs.southworks.net/fantivero\"><span style=\"color:#0066cc\">http://blogs.southworks.net/fantivero</span></a></p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-18T09:19:42.21-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

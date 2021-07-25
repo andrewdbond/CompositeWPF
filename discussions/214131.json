@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "448429",
+    "ThreadId": "214131",
+    "Html": "Greetings -<br><br>\r\n\r\nI've got some sliders in my application (basically popups).  When the user first runs the application they are open.  I want to close them when they move to another area the app (in this case activate a view on another region).  I'm not sure how to go about doing this... my guess is adding a RegonBehavior to the MainRegion that fires an event when a new view is activated....-<br><br>\r\n\r\nHere is an example of what I'm talking about.<br><br>\r\n\r\n&lt;window&gt;<br>\r\n&nbsp;&nbsp; &lt;grid&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&lt;ContentControl cal:RegionManager.RegionName=&quot;{x:Static regions:RegionNames.MainRegion}&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&lt;cc:Slider IsExpanded=&quot;True&quot; cal:RegionManager.RegionName=&quot;{x:Static regions:RegionNames.MessageCenter}&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&lt;cc:Slider IsExpanded=&quot;True&quot; cal:RegionManager.RegionName=&quot;{x:Static regions:RegionNames.AppointmentCenter}&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&lt;cc:Slider IsExpanded=&quot;True&quot; cal:RegionManager.RegionName=&quot;{x:Static regions:RegionNames.WeatherCenter}&quot;/&gt;<br>\r\n&nbsp;&nbsp;&lt;/grid&gt;<br>\r\n&lt;/window&gt;<br>\r\n<br>\r\n\r\nBasically the three sliders need to know when the content in the content control is changed.   <br>\r\n<br>\r\nWhat would you do??<br>\r\nThanks!<br><br>\r\n\r\nEDIT: Forgot to mention the related question - If I do add a behavior to the main region - how?  I can't add it in the code behind of the shell because the region hasn't been added to the region manager yet, and I can't add it in the bootstrapper for the same reason...??\r\n",
+    "PostedDate": "2010-05-27T15:50:35.407-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "501265",
+    "ThreadId": "214131",
+    "Html": "<p>Hi,</p>\r\n<p>I think that you can find interesting&nbsp;the following&nbsp;forum thread where it is  used the <a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.composite.presentation.regions.behaviors.regionactiveawarebehavior.aspx\">RegionActiveAwareBehavior</a>:  <a href=\"View.aspx?ThreadId=225965\">Detecting  view model close</a></p>\r\n<p>Regarding to how to implement your own region behavior, it is necessary to  implement IRegionBehavior or derive from RegionBehavior class. Then you should  register this by overriding the ConfigureDefaultRegionBehaviors method in your  bootstrapper class (pseudo-code):</p>\r\n<p>protected override IRegionBehaviorFactory  ConfigureDefaultRegionBehaviors()<br>{<br>&nbsp;&nbsp;&nbsp; var factory =  base.ConfigureDefaultRegionBehaviors();<br>&nbsp;&nbsp;&nbsp;  factory.AddIfMissing(&ldquo;MyBehavior&rdquo;, typeof(YourRegionBehavior));<br>}</p>\r\n<p>Additionally, as you want to add this in your MainRegion, your code can be  similar to the following (pseudo-code):</p>\r\n<p>var mainRegion =  regionManager.Region[&ldquo;MainRegion&rdquo;];<br>mainRegion.Behaviors.Add(&ldquo;YourBehavior&rdquo;,  new YourRegionBehavior());</p>\r\n<p>If you need more information on this topic, you could take a look a the  following the documentation section on MSDN: <a href=\"http://msdn.microsoft.com/en-us/library/ff921075(PandP.20).aspx\">UI Composition</a></p>\r\n<p>I hope this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-01T14:28:44.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "501267",
+    "ThreadId": "214131",
+    "Html": "<p>If you override ConfigureDefaultRegionBehaviors, you will probably want to call the base implementation at the end of your implementation to ensure any core items you do not register get properly hooked up.</p>\r\n<p>That RegisterIfMissing method shoudl ensure that there are no double registrations and allow you to &quot;override&quot; the built in implementations by registering your implementations first.</p>",
+    "PostedDate": "2010-10-01T14:38:03.863-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1265009",
+    "ThreadId": "551327",
+    "Html": "From the InteractivityQuickStart sample, I'm trying to customize the PopUp window to make it a ToolWindow (remove controlbox etc.). I was hoping this would do it:<br />\n<pre><code>&lt;prism:InteractionRequestTrigger SourceObject=&quot;{Binding ConfirmationRequest, Mode=OneWay}&quot;\n            &lt;prism:PopupWindowAction IsModal=&quot;True&quot; CenterOverAssociatedObject=&quot;True&quot; &gt;\n                &lt;prism:PopupWindowAction.WindowContent&gt;\n                    &lt;DefaultPopupWindows:DefaultConfirmationWindow WindowStyle=&quot;ToolWindow&quot;/&gt;\n                &lt;/prism:PopupWindowAction.WindowContent&gt;\n            &lt;/prism:PopupWindowAction&gt;\n        &lt;/prism:InteractionRequestTrigger&gt;</code></pre>\n\nBut I get a runtime error: <em>Window must be the root of the tree. Cannot add Window as a child of Visual.</em>\r<br />\n<br />\nIs it the case one still needs to implement this behavior in PRISM5 such as described here:\r<br />\n<a href=\"https://compositewpf.codeplex.com/discussions/541018\" rel=\"nofollow\">https://compositewpf.codeplex.com/discussions/541018</a>?<br />\n",
+    "PostedDate": "2014-07-11T16:42:39.82-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1265652",
+    "ThreadId": "551327",
+    "Html": "Looks like you are trying to add a new Window instance as the WindowContent of the PopupWindowAction. The PopupWindowAction.WindowContent expects a user control to provide the content of the window. \r<br />\n<br />\nThe actual window is provided by the PopupWindowAction GetWindow virtual method. The CreateDefaultWindow method returns either a confirmation or notification style window based on the notification. I suggest you derive from PopupWindowAction and override the GetWindow method.<br />\n",
+    "PostedDate": "2014-07-14T13:57:33.533-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

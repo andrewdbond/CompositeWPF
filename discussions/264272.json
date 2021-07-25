@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "638810",
+    "ThreadId": "264272",
+    "Html": "<p>In scenarios where manually loading two modules using IModuleManager.LoadModule<br /> ex.</p>\n<div style=\"color: black; background-color: white;\">\n<pre><span style=\"color: blue;\">void</span> OnPermissionsLoaded(Permission p)\n{\n  <span style=\"color: blue;\">if</span>(p.IsModule1Allow) _moduleManager.LoadModule(<span style=\"color: #a31515;\">\"Module1\"</span>);\n  <span style=\"color: blue;\">if</span>(p.IsModule2Allow) _moduleManager.LoadModule(<span style=\"color: #a31515;\">\"Module2\"</span>);\n}\n\n</pre>\n</div>\n<p>In case there are dependent modules defined in the module-catalog they will be loaded as well and the LoadModuleCompleted event will be raised for each module and module.<br /> In case a dependent module is being loaded and we get the LoadModuleCompleted event for it, in the EventArgs there is no info about the origin module that we called in ModuleManager.LoadModule for.</p>\n<p>Another behavior of ModuleManager, if a dependent module failed to load, the entire module loading is stopped (make sense).</p>\n<p><span style=\"text-decoration: underline;\">The Problem<br /> </span>When two module-loading are done in parallel and one of them failed since its dependent module failed to load, there is no way to know to which origin module that we tried to load, the failure relates to.<br /> This prevent to correctly perform any custom handling in the application for each module.<span style=\"text-decoration: underline;\">&nbsp;</span></p>\n<p>&nbsp;</p>\n<p><span style=\"text-decoration: underline;\">Problem in practice</span><br /> When trying to extend Prism so region navigation will integrate with on-demand module-loading, it became more meaningful, since when navigating (INavigateAsync.RequestNavigate)<br /> you expect to call the navigationCollback supplied delegate when navigation either failed or done, but since parallel module-loading failure cannot be correlated to the initiating navigation/module-load, it breaks.</p>\n<p>&nbsp;</p>\n<p>Any solutions advices?</p>\n<p>&nbsp;</p>\n<p>Thanks</p>",
+    "PostedDate": "2011-07-07T08:48:34.173-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "638869",
+    "ThreadId": "264272",
+    "Html": "<p>Hi,</p>\r\n<p>You could create a work item in the issue tracker describing this undesired behavior, so that the team considers reviewing it for future versions.</p>\r\n<p>On the other hand, you could also extend the module manager to support passing an identifier for the operation, so that you can obtain that information later on.</p>\r\n<p>Thanks,</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-07T10:07:47.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "89899",
+    "ThreadId": "26886",
+    "Html": "\r\nDoes the Prism team intend to provide more guidance on module enumeration/discovery? Are there plans for a default implementation of IModuleEnumerator? Or do we expect PrismContrib to help fill the gaps here?<br />",
+    "PostedDate": "2008-04-30T10:18:23.49-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "89914",
+    "ThreadId": "26886",
+    "Html": "\r\nHah! Looks like I asked my question one hour too early. :-) I'll go look at the bits in the latest drop.<br />",
+    "PostedDate": "2008-04-30T12:46:44.363-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "90115",
+    "ThreadId": "26886",
+    "Html": "\r\nAfter reviewing the \"modularity\" examples in the latest drop, I have a few questions:<br /><ol><li>The ConfigurationModuleEnumerator requires all &lt;Module&gt; elements to specify a moduleType. This obviously contrasts with CAB, which would reflect over the types in the assembly to find the implementer of ModuleInit . Was the cost of reflection on the target assembly deemed too costly? I agree that the direct instantiation of the moduleType is more straightforward, but could ConfigurationModuleEnumerator be extended to search for the IModule/[Module] class if a type is not specified?</li><li>I find it a bit ironic that the DirectoryLookupEnumerator has to load all of the modules from its target directory into a separate AppDomain in order to determine which ones it shouldn't be loading! Perhaps a better solution is to load all of the modules into the main AppDomain but then skip the IModule.Initialize() calls on the non-startup modules? </li><li>Do you intend to use ConfigurationStore for other purposes than module configuration?</li></ol>",
+    "PostedDate": "2008-05-01T14:42:04.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "90163",
+    "ThreadId": "26886",
+    "Html": "\r\nHi,<br />I'm glad that the drop addressed your needs. As for the questions:<br /><ol><li>This is because we are not enforcing a 1 to 1 mapping between modules and assemblies. You could have more than 1 module in the same assembly (and of course 1 module spread across several assemblies)</li><li>That is because the discovering doesn't mean that you're going to load all of those assemblies in the directory. You could have lots of lazy loaded modules, and extra assemblies that you don't want to load on startup. Loading assemblies is a very expensive task... In the separate AppDomain the assemblies are not really being loaded anyway, it just does a ReflectionOnlyLoad on them, which is very lightweight and fast.</li></ol><br />I hope that clears some doubts,<br />Julian Dominguez<br />",
+    "PostedDate": "2008-05-01T22:28:37.817-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "90205",
+    "ThreadId": "26886",
+    "Html": "\r\nThanks very much for the reply, Julian. These answers certainly help.<br /><br /><ol><li>I understand where you are coming from. I expect that the added flexibility could be advantageous when factoring initialization concerns. Regardless, I still think my developers would appreciate the convenience of a reflection-based sweep for IModule implementers so that <b>all</b> of them could be candidates for startup initialization. I could easily imagine this capability using the [Module] attribute to derive dependencies and to register start-up vs. on-demand intent. That said, I wouldn't want to violate Prism's goal of keeping things simple; perhaps this alternate implementation would be more appropriate as a submission to PrismContrib.</li><li>The subtlety I missed in my review was the ReflectionOnlyLoad. This makes perfect sense now.</li></ol><br />Cheers,<br />BRU<br />",
+    "PostedDate": "2008-05-02T06:38:43.543-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

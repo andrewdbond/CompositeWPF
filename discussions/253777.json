@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "596796",
+    "ThreadId": "253777",
+    "Html": "\r\n<p>Pls help...<br>\r\nThere&nbsp;are:</p>\r\n<p>-&nbsp;<a></a><a></a>CommonClassLibrary (IMyService interface)<br>\r\n- ServiceImplementation ClassLibrary (MyService: IMyService) with&nbsp;2 attributes applied:&nbsp; [Export(typeof(IMyService))]&nbsp;and [PartCreationPolicy(CreationPolicy.Shared)]<br>\r\n- ModuleA using MyService (references to ServiceImplementation) :&nbsp;&nbsp;[Import] public IMyService Service { get; set; }<br>\r\n- ModuleB using MyService (references to ServiceImplementation) :&nbsp;&nbsp;[Import] public IMyService Service { get; set; }</p>\r\n<p>Shell App loads ModuleA, and Service property initialized. Everything is cool.\r\n<br>\r\nNow Shell loads ModuleB, and I get exception... Changing&nbsp; Service&nbsp;property to &nbsp;List&lt;IMyService&gt; service with attribute ImportMany solves problem...<br>\r\nI understand that because ModuleB loaded there are more then 1 export of type IMyService...</p>\r\n<p>Pls advice how to arrange solution, that each module has&nbsp;&nbsp;[Import] public IMyService Service { get; set; }.&nbsp;&nbsp; I belive&nbsp;&nbsp;[PartCreationPolicy(CreationPolicy.Shared)] on service implementation should do this trick, but obviously\r\n not.....<br>\r\n<br>\r\n<br>\r\n</p>\r\n",
+    "PostedDate": "2011-04-13T12:52:41.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "597228",
+    "ThreadId": "253777",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding of your scenario, one possible way to ensure your dependency is resolved correctly could be to directly specify imports through constructor parameters. By doing this you avoid any timing issues when resolving your imports as property imports. For example like this:</p>\r\n<p>\r\n<p><span style=\"font-size: 9pt;\" lang=\"EN-US\">\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>...\r\n<span style=\"color: blue;\">private</span> <span style=\"color: blue;\">readonly</span> IMyService service;\r\n\r\n[ImportingConstructor]\r\n<span style=\"color: blue;\">public</span> ModuleA(IMyService theService)\r\n{\r\n    service = theService;\r\n}\r\n\r\n...\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\nIf you continue experiencing this issue, it could be helpful if you could provide us with a repro sample of your solution, so that we can help you to identify the cause of your issue.</span></p>\r\n</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-04-14T07:24:48.873-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

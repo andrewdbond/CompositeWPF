@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "500042",
+    "ThreadId": "229038",
+    "Html": "<p>Here's one to exercise the ageing grey matter...</p>\r\n<p>I have 5 modules...<br>ModuleA<br>ModuleB<br>ModuleAPanel<br>ModuleBPanel<br>ModuleAandBDialog</p>\r\n<p>Modules A and B are in essence user controls. They are frame/border less UIs responsible for independant areas of functionality.</p>\r\n<p>The things is, in certain situations I want/need to present those 2 UIs as dockable windows/panels in the shell&nbsp;whilst in other situations I need those UIs to be presented side by side in a dialog box.</p>\r\n<p>The view for ModuleAPanel simply provides RegionA (the region where ModuleA will register it's view) in a DockableContent control.<br>That view is then subsequently&nbsp;injected into a defined region in the shell; &quot;LeftEdge&quot;.</p>\r\n<p>The view for ModuleBPanel simply provides RegionB (the region where ModuleB will register it's view) in a DockableContent control.<br>That view is then subsequently injected into a defined region in the shell; &quot;RightEdge&quot;.</p>\r\n<p>As for ModuleAndBDialog, the view here is actually a new window (that's going to be the dialog) with 2 content controls on it, 1 for RegionA and 1 for RegionB.<br>Clearly, this view doesn't get injected into the shell, as it needs to popup.<br>(I have code that handles all of that, that's not the problem).</p>\r\n<p>The problem basically boils down to the difference in presentation styles.</p>\r\n<p>A dockable window/panel similar to those in Visual Studio is somewhat different to a modal dialog and probably the most significant difference is being able to Cancel the dialog.<br>Clearly, if you cancel the dialog you need to rollback any changes you made to the data since you opened it.</p>\r\n<p>I've been reading into IEditableObject which I think is a start.<br>I could make my ModuleA and ModuleB both implement this interface and hence provide BeginEdit, CancelEdit and EndEdit functionality.</p>\r\n<p>ModuleAPanel and ModuleBPanel would simply ignore all of these methods which is no big deal, you can't cancel a panel so the idea of a transaction doesn't apply.</p>\r\n<p>In the case of ModuleAandBDialog, that would need to call BeginEdit when the dialog was shown and CancelEdit if it was cancelled or EndEdit if it was okay'd.</p>\r\n<p>The problem is though, ModuleAandBDialog literally just provides a window with 2 named regions.<br>It has no idea what we're going to put in those regions, so how can I wire up the Begin,Cancel and EndEdit actions?</p>\r\n<p>I think I'm almost there, but there's just the final piece of the puzzle I'm not seeing right now.<br>So that's where you guys come in, I need a fresh pair of eyes please!</p>\r\n<p>Anyone done this before? or think they know how to do it?</p>\r\n<p><br>Thanks in advance...</p>\r\n<p><br>CA.</p>",
+    "PostedDate": "2010-09-29T08:12:18.55-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "500105",
+    "ThreadId": "229038",
+    "Html": "<p>Hi CA,</p>\r\n<p>There is no guidance on this topic in Prism out-of-the-box. But a  similar question has been treated in the following thread: <a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=67191\"><span>Too many regions in my shell</span></a></p>\r\n<p>I hope this help.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-29T10:08:57.54-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

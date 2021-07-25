@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "530267",
+    "ThreadId": "236916",
+    "Html": "\r\n<p>Hi,&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>i have a Shell project and three module projects. In my shell project there is a folder Modules and after every build the module files are copied to this module folder. With a&nbsp;DirectoryCatalog i get all the modules and if i just copy another module\r\n in this folder, i can also find it.</p>\r\n<p>My problem is that one module needs some other third party binary and if this thirdpary.dll is not in my modules folder, i cannot load my module. but i only want real modules in my module-folder. can anybody help me? how to separate modules and thirdparty\r\n binaries?</p>\r\n",
+    "PostedDate": "2010-12-02T12:08:30.203-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "530508",
+    "ThreadId": "236916",
+    "Html": "\r\n<p>You could add reference to the thirdparty dll in your shell. And mark copylocal=false in your module for the dll. that way when shell is loaded the dll would be present and your module can pick it up automatically. and of course you module folder will just\r\n have module files in it.</p>\r\n<p>Cheers.</p>\r\n",
+    "PostedDate": "2010-12-02T23:57:04.89-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533613",
+    "ThreadId": "236916",
+    "Html": "\r\n<p>What do you mean with &quot;the dll would be present&quot;? When i mark copylocal as false, i get an FileNotFoundException that sais that the file yould not be found. This is what i would expect, because the file is not there. Does anybody know, how to get all my\r\n reference-files in a seperate folder? I don't want all my dlls in the folder of the shell.exe.</p>\r\n",
+    "PostedDate": "2010-12-09T13:08:16.487-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533882",
+    "ThreadId": "236916",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>The suggestion gan_s has given is correct. In order for this approach to work, you need to set\r\n<strong>CopyLocal</strong> to <strong>true </strong>in your reference to the third party library\r\n<em>in the shell</em>, and to <strong>false</strong> <em>in your modules</em>.<em><br>\r\n</em></p>\r\n<p>The exception you're experiencing might be because you're not setting <strong>\r\nCopyLocal</strong> to true in your reference to the third party library in the shell<em>.</em></p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n<p><em><br>\r\n</em></p>\r\n",
+    "PostedDate": "2010-12-10T06:30:19.337-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "534353",
+    "ThreadId": "236916",
+    "Html": "\r\n<p>ah, ok, i understood. thank you.</p>\r\n",
+    "PostedDate": "2010-12-11T06:10:06.703-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

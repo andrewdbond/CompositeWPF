@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "483706",
+    "ThreadId": "224540",
+    "Html": "<p>After upgrading my project to the latest release, I started receiving error messages like this when loading a module (this one is actually from the ModularityWithMef quickstart, repro instructions below):</p>\r\n<p>&quot;The composition remains unchanged. The changes were rejected because of the following error(s): The composition produced multiple composition errors, with 10 root causes. The root causes are provided below. Review the CompositionException.Errors property for more detailed information.</p>\r\n<p>1) Change in exports prevented by non-recomposable import 'Microsoft.Practices.Prism.MefExtensions.Modularity.MefModuleManager.MefXapModuleTypeLoader (ContractName=&quot;Microsoft.Practices.Prism.MefExtensions.Modularity.MefXapModuleTypeLoader&quot;)' on part 'Microsoft.Practices.Prism.MefExtensions.Modularity.MefModuleManager'.</p>\r\n<p>...&quot;</p>\r\n<p>I've tracked it down to the fact that my projects have Copy Local set to True on all the Prism/MEF references. When my Shell loads, everything loads correctly. The moment I load a module with the module manager, when the module loading is finished I receive the above error message.</p>\r\n<p>This can be reproduced easily:</p>\r\n<p>In the ModularityWithMef quickstart sample, change the following references in ModuleB to Copy Local = True:<br>* Microsoft.Practices.Prism<br>* Microsoft.Practices.Prism.MefExtensions</p>\r\n<p>When ModuleB loads, you'll get the above error.</p>\r\n<p>In the previous&nbsp;drop of Prism, this doesn't happen. You can take the same quickstart sample and change the same references, and it'll work fine.</p>\r\n<p>It makes sense for Copy Local to be False on shared libraries so the XAPs aren't larger than they need to be, however since this is the default value when you browse to a DLL to add a reference, anyone using modularity will encounter this issue. And it's not an easy issue to track down.</p>",
+    "PostedDate": "2010-08-23T11:01:45.123-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "483708",
+    "ThreadId": "224540",
+    "Html": "<p>Sorry, just saw there was an issue tracker. I created a new issue there.</p>",
+    "PostedDate": "2010-08-23T11:05:14.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "541253",
+    "ThreadId": "224540",
+    "Html": "\r\n<p>Microsoft.Practices.Prism.MefExtensions: Copy Local=False.</p>\r\n",
+    "PostedDate": "2010-12-28T08:57:12.697-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "541258",
+    "ThreadId": "224540",
+    "Html": "\r\n<p>Yes, I said that in my description above. This also applies to any assembly shared across different modules that has any imports or exports in it. You have to guarantee that all shared assemblies (MefExtensions or your own) have CopyLocal set to false.</p>\r\n",
+    "PostedDate": "2010-12-28T09:05:33.14-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

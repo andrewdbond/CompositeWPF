@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "821809",
+    "ThreadId": "351743",
+    "Html": "\r\n<p>Hi<br>\r\nI'm using prism and MVVM architecture for my WPF application and I have a problem with RaisePropertyChanged,I have a gridview in my view that its itemsource is binded to an ObservableCollection named AllOrderProducts in my viewmodel,the problem is that when\r\n I change AllOrderProducts and i use this.RaisePropertyChanged(() =&gt; this.AllOrderProducts);<br>\r\nin doesn't refresh the gridview in my view, and I have this problem with other fields or properties in my viewmodel when I use RaisePropertyChanged<br>\r\n&nbsp;<br>\r\ncan anyone help me with this problem plzz????</p>\r\n",
+    "PostedDate": "2012-04-09T22:52:08.2-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "821916",
+    "ThreadId": "351743",
+    "Html": "<p>I have a couple of suggestions/questions:</p>\r\n<p>- when you set a breakpoint on the RaisePropertyChanged, is this getting hit</p>\r\n<p>- when running your app in F5 mode, do you see any BindingExpression errors in the Output window?</p>\r\n<p>If you are still having problems, it would help if you post some XAML and viewmodel code to reproduce the problem. In principle, what you are trying to do should work.</p>\r\n<p>Also, I believe that using an ObservableCollection should mean that you don't need to use a raisepropertychanged event. Perhaps someone can correct me if I'm wrong on that one.</p>\r\n<div id=\"_mcePaste\" class=\"mcePaste\" style=\"position: absolute; width: 1px; height: 1px; overflow: hidden; top: 0px; left: -10000px;\">﻿</div>",
+    "PostedDate": "2012-04-10T03:59:55.903-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "822025",
+    "ThreadId": "351743",
+    "Html": "<p>thank you for replying...</p>\r\n<p>about our first question answer in yes the breakpoint gets hit,and I have no error while I'm running the application.</p>\r\n<p>I have two textboxes in my xaml:</p>\r\n<p>&lt;TextBox Text=\"{Binding Path=Rrgo02,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}\" DataContext=\"{Binding CurrentOrder}\" /&gt; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>&lt;TextBox Text=\"{Binding Path=Rrgo04,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}\" DataContext=\"{Binding CurrentOrder}\" /&gt;</p>\r\n<p>as you see they are binded to&nbsp;CurrentOrder that is defined like this</p>\r\n<p>public RRegisterOrder CurrentOrder &nbsp; &nbsp;&nbsp;&nbsp;</p>\r\n<p>{&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return _currentOrder; }&nbsp; &nbsp;</p>\r\n<p>&nbsp; &nbsp; &nbsp; &nbsp; private set&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>{&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>&nbsp; _currentOrder = null;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>&nbsp; _currentOrder = value;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>&nbsp; RaisePropertyChanged(\"CurrentOrder\");&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>&nbsp; }&nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>}</p>\r\n<p>and a button :</p>\r\n<p>&nbsp;&lt;Button Command=\"{Binding NextCommand}\" Content=\"Next\" /&gt;</p>\r\n<p>and in my viewmodel:</p>\r\n<p>in the execute part of my NextCommand i call amethod like this and it works:</p>\r\n<p>public void Next(object parameter)&nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>{&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>var tmp = from o in _orEntities.RRegisterOrder.Where(o =&gt; o.Rrgo36 == -1 &amp;&amp; o.Rrgo01 &gt; CurrentOrder.Rrgo01).OrderBy(o =&gt; o.Rrgo01).Take(1)&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; select o;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>if (tmp.Count() &gt; 0)&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>this.CurrentOrder = tmp.Single();&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>GetAllOrderProducts(); &nbsp;</p>\r\n<p>}</p>\r\n<p>&nbsp;</p>\r\n<p>and i have a gridview :</p>\r\n<p>&lt;telerik:RadGridView CanUserInsertRows=\"True\" &nbsp;ItemsSource=\"{BindingPath=AllOrderProducts}\" &nbsp;x:Name=\"RadGridView1\" ShowGroupPanel=\"False\" &gt;&nbsp; &nbsp;</p>\r\n<p>&nbsp;&lt;telerik:RadGridView.Columns&gt;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>&nbsp; &nbsp; &nbsp;&lt;telerik:GridViewDataColumn DataType=\"{x:Null}\" Header=\"ردیف\" UniqueName=\"Rorp01\" /&gt;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>&nbsp; &nbsp; &nbsp;&lt;telerik:GridViewDataColumn DataType=\"{x:Null}\" Header=\"کد انبار\" UniqueName=\"Rorp02\" /&gt;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>&lt;/telerik:RadGridView.Columns&gt;&nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>&lt;/telerik:RadGridView&gt;</p>\r\n<p>&nbsp;</p>\r\n<p>and in my viewmodel:</p>\r\n<p>&nbsp; &nbsp; &nbsp; &nbsp; public ObservableCollection&lt;ROrderProducts&gt; AllOrderProducts &nbsp; &nbsp; &nbsp;&nbsp;{&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;private set;&nbsp; &nbsp; &nbsp; &nbsp; }</p>\r\n<p>and in&nbsp;GetAllOrderProducts() method:</p>\r\n<p>public void GetAllOrderProducts()&nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>{&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>var tmp = from o in _orEntities.ROrderProducts.Where(o =&gt; o.Rorp01 == CurrentOrder.Rrgo01 &amp;&amp; o.Rorp11 == CurrentOrder.Rrgo36)&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>select o;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>this.AllOrderProducts = new ObservableCollection&lt;ROrderProducts&gt;(tmp.ToList()); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>\r\n<p>&nbsp;}</p>\r\n<p>&nbsp;</p>\r\n<p>when this method is called&nbsp;AllOrderProducts updates and it will be set to corrcect value but the data shown in my gridview is still the same and its not updated...</p>\r\n<p>Here is the problem......!!!!</p>",
+    "PostedDate": "2012-04-10T08:53:13.03-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "822114",
+    "ThreadId": "351743",
+    "Html": "<p>Hi,</p>\r\n<p>In my opinion, the problem you are experiencing might be related to the following line of the code snippets you posted:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: green;\">// In the GetAllOrderProducts method</span>\r\n\r\n<span style=\"color: blue;\">this</span>.AllOrderProducts = <span style=\"color: blue;\">new</span> ObservableCollection&lt;ROrderProducts&gt;(tmp.ToList());  \r\n</pre>\r\n</div>\r\n</p>\r\n<p>According to the description of the <a href=\"http://msdn.microsoft.com/en-us/library/ms668604.aspx\">ObservableCollection class</a>, the collection notifies a change when an item is <strong>added</strong>, <strong>removed </strong>or when the collection is <strong>refreshed</strong>. However, in the aforementioned line of code, none of these operations is performed; instead, the whole collection is replaced with a new one. This mean that the collection is not being modified; the one modified is the <strong>property </strong>that references the collection.</p>\r\n<p>Based on my understanding, a possible approach could be to invoke the <strong>RaisePropertyChanged </strong>method right after the aforementioned line.</p>\r\n<p>If this is not the case, it would be helpful if you could provide us with a repro sample application portraying this problem so that we can help you further with this.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-04-10T13:10:46.38-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "822240",
+    "ThreadId": "351743",
+    "Html": "<p>thank you for replying...</p>\r\n<p>I've tried invoking&nbsp;<strong>RaisePropertyChanged &nbsp;</strong>but it didn't work...isn't there any other sulotion to solve this problem...if not how can i send you my application??</p>",
+    "PostedDate": "2012-04-10T22:17:10.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "822365",
+    "ThreadId": "351743",
+    "Html": "<p>Hi,</p>\r\n<p>You could upload your repro sample application to <a href=\"https://skydrive.live.com/\">SkyDrive</a>, or any other storage site you'd like to, and post the link here.</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2012-04-11T06:06:35.223-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "822571",
+    "ThreadId": "351743",
+    "Html": "<p>here is the link to my project:</p>\r\n<p>https://skydrive.live.com/redir.aspx?cid=f9298de8d2bd14a7&amp;resid=F9298DE8D2BD14A7!107&amp;parid=F9298DE8D2BD14A7!106&amp;authkey=!ABJyBHE-9MUWp6w</p>\r\n<p>&nbsp;</p>\r\n<p>hope you can help me...</p>",
+    "PostedDate": "2012-04-11T12:57:46.173-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "823114",
+    "ThreadId": "351743",
+    "Html": "<p>Hi,</p>\r\n<p>After we could mock the database and make the sample to run correctly, we found that the error you are experiencing is being caused by the fact that your <strong>OrderView </strong>and <strong>OrderDetailView </strong>(the one that host the <strong>RadDataGrid</strong>) are using <em><strong>two different instances of the same view model</strong></em>.</p>\r\n<p>The reason behind this is that the <strong>OrderViewModel </strong>is being exported with the attribute <strong>[PartCreationPolicy(CreationPolicy.NonShared)]</strong>. This means that each time this type is <strong><em>imported </em></strong>a different instance of the view model will be created. As both the <strong>OrderView </strong>and the <strong>OrderDetailView </strong>declare an import of type <strong>OrderViewModel </strong> in their code behind, each of the views will obtain a different instance of the view model.</p>\r\n<p>When you invoked the <strong>RaisePropertyChange </strong>method in the view model of the <strong>OrderView</strong>, the view was notified of the changes correctly. But as the <strong>OrderDetailView</strong> had a different view model, no changes in the data were performed and no notifications were raised to this view.</p>\r\n<p>If you wish to share the same view model between the two views, a possible approach could be to define the <strong>OrderViewModel</strong> as a singleton by changing the aforementioned attribute for this one: <strong>[PartCreationPolicy(CreationPolicy.Shared)].</strong> Another possible approach is to eliminate the <strong>ViewModel</strong> property and its <strong>Import </strong>attribute from the <strong>OrderDetailView</strong>'s code behind. The view then will inherit the view model of the <strong>OrderView</strong>. As a side note we have checked that both approaches seem to work correctly.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n<p>&nbsp;</p>\r\n<div id=\"_mcePaste\" class=\"mcePaste\" style=\"position: absolute; left: -10000px; top: 0px; width: 1px; height: 1px; overflow: hidden;\"><strong>[PartCreationPolicy(CreationPolicy.NonShared)]</strong></div>",
+    "PostedDate": "2012-04-12T13:42:13.45-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "823121",
+    "ThreadId": "351743",
+    "Html": "<p>It worked....</p>\r\n<p>thank you so much dear&nbsp;<span>Damian..</span></p>\r\n<p>that was a big help!</p>",
+    "PostedDate": "2012-04-12T13:50:28.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,154 @@
+[
+  {
+    "Id": "602676",
+    "ThreadId": "255240",
+    "Html": "<p>Hi,</p>\n<p>I developing a silverlight app, I have trouble when I want create multi-shells, use can change shell when they want.</p>\n<p>How can I do this.</p>\n<p>Thank you</p>",
+    "PostedDate": "2011-04-25T20:21:28.25-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602678",
+    "ThreadId": "255240",
+    "Html": "<p>Hi,</p>\r\n<p>The shell is nothing but the main silverlight app that gets loaded when your application is accessed. As far as I know you cannot load multiple shell applications on startup. What is the exact nature of your requirement? What do you mean by user can change the shell?</p>\r\n<p>Cheers,</p>\r\n<p>Ganesh</p>",
+    "PostedDate": "2011-04-25T20:29:09.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602730",
+    "ThreadId": "255240",
+    "Html": "<p>Actually, use don't know shell :).</p>\r\n<p>I mean when user run application they can change layout display (example: Shell_1 has 4 regions, they can change to Shell_2 has 3 regions,... and I will manipulate which views will display in these regions)</p>\r\n<p>I know that CreateShell of Bootstrapper run only one time when app loaded, so I have no way to create another shell.</p>\r\n<p>Thank you.</p>",
+    "PostedDate": "2011-04-26T00:04:51.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602733",
+    "ThreadId": "255240",
+    "Html": "<p>In that case use this structure.</p>\r\n<p>MainPage</p>\r\n<ul>\r\n<li>MainRegion\r\n<ul>\r\n<li>Shell1.xaml (4 regions)</li>\r\n<li>Shell2.xaml (3 regions)</li>\r\n</ul>\r\n</li>\r\n</ul>\r\n<p>When app loads, load Shell1 in MainRegion,or Shell2 whichever is default in your case. Now when changes layout (assuming from a drop down) to Shell2, load Shell2 in MainRegion. Here the concept of nested regions arise</p>\r\n<p>Case 1</p>\r\n<p>MainRegion (with Shell1)</p>\r\n<ul>\r\n<li>SubRegion1</li>\r\n<li>SubRegion2</li>\r\n<li>SubRegion3</li>\r\n<li>SubRegion4</li>\r\n</ul>\r\n<p>﻿﻿﻿Case 2</p>\r\n<p>MainRegion (with Shell2)</p>\r\n<ul>\r\n<li>SubRegion1</li>\r\n<li>SubRegion2</li>\r\n<li>SubRegion3</li>\r\n</ul>\r\n<p>With this you can easily achieve what you want to.</p>\r\n<p>Note MainPage.xaml, Shell1.xaml and Shell2.xaml are in your Shell project. And in the CreateShell you would do</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> DependencyObject CreateShell()\r\n        {\r\n            <span style=\"color: blue;\">return</span> Container.GetExportedValue&lt;MainPage&gt;();\r\n        }\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>Hope this helps.</p>\r\n<p>Cheers</p>",
+    "PostedDate": "2011-04-26T00:11:00.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602738",
+    "ThreadId": "255240",
+    "Html": "<p>Thank for quick response</p>\n<p>I understand you ideal, the problem is I don't know have to implement it.</p>\n<p>I tried create a MainPage with a Region is \"ShellRegion\", but I don't know how can I load Shell1 or Shell2 onto that (Shell1 and Shell2 have another Region and other views will use region of Shell1 or Shell2).</p>\n<p>I'm using PRISM not MEF so I can not use function Container.GetExportedValue();</p>\n<p>If quickly, can you create a simple example. I'm very appreciate.</p>\n<p>Thank you.</p>",
+    "PostedDate": "2011-04-26T00:25:27.633-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602742",
+    "ThreadId": "255240",
+    "Html": "<p>Unfortunately I cannot post code from work. If you can wait till end of today I can probably put something up for you.</p>",
+    "PostedDate": "2011-04-26T00:28:00.533-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602753",
+    "ThreadId": "255240",
+    "Html": "<p>Sure, thank for your help.</p>",
+    "PostedDate": "2011-04-26T00:47:09.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "603023",
+    "ThreadId": "255240",
+    "Html": "<p><a href=\"http://cid-0b3d61b7a214f81a.office.live.com/self.aspx/.Documents/NestedRegions.rar\" target=\"_blank\">Here</a> is the sample app. The app is structured as follows.</p>\r\n<p>MainPage (MainRegion, has 2 buttons to switch between shells, Shell1 is loaded by default)</p>\r\n<ul>\r\n<li>Shell1 (2 regions : Shell11Region and Shell12Region)\r\n<ul>\r\n<li>Shell1SubView1 loaded into Shell11Region</li>\r\n<li>Shell1SubView2 loaded into Shell12Region</li>\r\n</ul>\r\n</li>\r\n<li>Shell2 (1 region : Shell2Region)\r\n<ul>\r\n<li>Shell2SubView1 loaded into Shell2Region</li>\r\n</ul>\r\n</li>\r\n</ul>\r\n<p>Hope this clears your understanding.</p>\r\n<p>Cheers,</p>\r\n<p>Ganesh</p>",
+    "PostedDate": "2011-04-26T09:33:39.03-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "603299",
+    "ThreadId": "255240",
+    "Html": "<p>Thank you very much.</p>\r\n<p>I saw you're using MefBootstrapper, I'm using UnityBootstrapper, so can I ask a questtion</p>\r\n<p>What difference between MefBootstrapper and UnityBootstrapper? Can I use UnityBootstrapper?</p>\r\n<p><span style=\"font-family: Consolas; color: #2b91af; font-size: x-small;\"><span style=\"font-family: Consolas; color: #2b91af; font-size: x-small;\"><span style=\"font-family: Consolas; color: #2b91af; font-size: x-small;\">&nbsp;</span></span></span></p>\r\n<p><span style=\"font-family: Consolas; color: #ff0000; font-size: x-small;\"><span style=\"font-family: Consolas; color: #ff0000; font-size: x-small;\"><span style=\"font-family: Consolas; color: #ff0000; font-size: x-small;\">&nbsp;</span></span></span></p>",
+    "PostedDate": "2011-04-26T19:37:53.963-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "603305",
+    "ThreadId": "255240",
+    "Html": "<div style=\"color: black; background-color: white;\">Of course you can. So what you would do is register the views you want to navigate to in the unitycontainer like below</div>\n<div style=\"color: black; background-color: white;\">\n<pre>_unityContainer.RegisterType&lt;Object, Shell1&gt;(<span style=\"color: #a31515;\">\"NestedRegions.Shell1.Shell1\"</span>);\r\n</pre>\n</div>\n<p>and you would navigate to it this way :</p>\n<div style=\"color: black; background-color: white;\">\n<pre>_regionManager.RequestNavigate(<span style=\"color: #a31515;\">\"MainRegion\"</span>, <span style=\"color: blue;\">new</span> Uri(<span style=\"color: #a31515;\">\"NestedRegions.Shell1.Shell1\"</span>, UriKind.Relative));\r\n\r\n</pre>\n</div>\n<p>Using MEF or Unity is purely a matter of choice. I'm more comfortable with MEF so used that in the example. Both work the same, the difference being the views are resolved from UnityContainer if you use Unity or from AggregateCatalog if you use MEF.</p>\n<p><strong>For more information read up Basic region navigation (page 119) in the developers guide pdf.</strong></p>",
+    "PostedDate": "2011-04-26T20:07:21.833-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "603343",
+    "ThreadId": "255240",
+    "Html": "<p>I have a bootstrapper like below</p>\r\n<p>&nbsp; protected override DependencyObject CreateShell()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //create shell window<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return Container.Resolve&lt;MainPage&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override IModuleCatalog CreateModuleCatalog()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var catalog = new ModuleCatalog();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catalog.AddModule(typeof(ContentModule));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catalog.AddModule(typeof(TopModule));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catalog.AddModule(typeof(LeftModule));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catalog.AddModule(typeof(RightModule));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catalog.AddModule(typeof(BottomModule));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return catalog;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>And MainPage i register a Shell1 (or Shell2)</p>\r\n<p>&nbsp;public partial class MainPage: UserControl<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private readonly IUnityContainer container;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private readonly IRegionManager regionManager;</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public MainPage(IUnityContainer container,IRegionManager regionManager)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeComponent();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.container = container;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.regionManager = regionManager;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Loaded += MainPageLoaded;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void MainPageLoaded(object sender, System.Windows.RoutedEventArgs e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var shell1 = container.Resolve&lt;Shell1&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var region = regionManager.Regions[\"ShellRegion\"];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; region.Add(shell1, null);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; region.Activate(shell1);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception ex)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.WriteLine(ex.Message);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }</p>\r\n<p>First I want to try load Shell1 to MainPage and Shell1 will load Top Views, RightViews, ......</p>\r\n<p>But I'm not success, I don't know If MainPage load Shell1 and Shell1 load views or not.</p>",
+    "PostedDate": "2011-04-26T23:30:57.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "603355",
+    "ThreadId": "255240",
+    "Html": "<p>As far as I understand Shell1 seems to load modules into regions in it? If that is the case is Shell1 downloading the modules using modulemanager? For starters add a textblock in Shell1 that says something like \"Shell1\" so you know if Shell1 is loaded in the MainPage. You can use my app as a reference. If you're still having trouble upload your sample app and i'll have a look tonight !!</p>",
+    "PostedDate": "2011-04-26T23:56:27.667-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "603366",
+    "ThreadId": "255240",
+    "Html": "<p>Thank you</p>\n<p><a href=\"http://cid-de2eae0d3eb81078.office.live.com/self.aspx/Prism%20Multi-Shell/MySilverlightApplication.zip\">Here</a>&nbsp;is my project, I got exception at OnChangeShellHandler</p>\n<p><span style=\"font-family: Consolas; font-size: x-small;\"><span style=\"font-family: Consolas; font-size: x-small;\"></span></span>\n<p>&nbsp;</p>\n</p>\n<p>Tell me, if you can not get project or project can not built.</p>",
+    "PostedDate": "2011-04-27T00:27:45.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "603393",
+    "ThreadId": "255240",
+    "Html": "<p>Currently, I have switch between 2 shell. I change OnChangeShellHadler like below</p>\r\n<p>But, I have a trouble. function OnChangeShellHandler call many time&nbsp;and it increase after I click button switch shell</p>\r\n<p>&nbsp; public void OnChangeShellHandler(string param)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var interviewShell = container.Resolve&lt;InterviewModeShell&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var formShell = container.Resolve&lt;FormModeShell&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var region = regionManager.Regions[\"ShellRegion\"];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; switch (param)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case \"InterviewMode\":<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (RegionHelper.GetView(region, \"FormModeShell\") != null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var shellRegion = regionManager.Regions[\"ShellRegion\"];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var view = shellRegion.GetView(\"FormModeShell\");<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; region.Remove(view);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (RegionHelper.GetView(region, \"InterviewModeShell\") == null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; region.Add(interviewShell, \"InterviewModeShell\");<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; region.Activate(interviewShell);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case \"FormMode\":<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (RegionHelper.GetView(region, \"InterviewModeShell\") != null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var shellRegion = regionManager.Regions[\"ShellRegion\"];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var view = shellRegion.GetView(\"InterviewModeShell\");<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; region.Remove(view);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (RegionHelper.GetView(region, \"FormModeShell\") == null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; region.Add(formShell, \"FormModeShell\");<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; region.Activate(formShell);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception ex)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.WriteLine(ex.Message);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;</p>\r\n<div id=\"_mcePaste\" class=\"mcePaste\" style=\"position: absolute; width: 1px; height: 1px; overflow: hidden; top: 0px; left: -10000px;\">﻿</div>",
+    "PostedDate": "2011-04-27T01:13:03.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "603943",
+    "ThreadId": "255240",
+    "Html": "<p><a href=\"http://cid-0b3d61b7a214f81a.office.live.com/self.aspx/.Documents/MySilverlightApplication%5E_Modified.rar\">Heres</a> your modified app. The problem was you were using ItemsControl for all your regions. ItemsControl uses AllAciveRegion so you cant deactive views in this kind og region. I changed them to ContentControls, which use SingleActiveRegion where you can deactivate views.</p>\r\n<p>Also few things I noted</p>\r\n<ul>\r\n<li>You need a lot of refactoring and clean up</li>\r\n<li>Modules can be loosely coupled</li>\r\n<li>Your InterViewModelShell and FormModeShell have regions with same name, like ContentRegion/TopRegion etc. which can cause issues, i.e region names clash. Either you need different names or make sure those sub regions are removed when you deactivate a view.</li>\r\n</ul>\r\n<p>I would suggest you to have a look at the MEF way. Makes code very clean.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-04-27T23:00:59.153-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "603956",
+    "ThreadId": "255240",
+    "Html": "<p>Thank for your help.</p>\r\n<p>Currently, I solved all problems I have.</p>\r\n<p>There are some change is my code</p>\r\n<ul>\r\n<li>Change global command to EventAggregator (It'll prevent call function many time).</li>\r\n<li>Remove all current region before add other region (It'll prevent problem same region name name).</li>\r\n</ul>\r\n<p>Can you explain more about modules loosely couple.</p>\r\n<p>I'm very appreciate.</p>",
+    "PostedDate": "2011-04-27T23:47:51.83-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "603995",
+    "ThreadId": "255240",
+    "Html": "<p>By loosely coupled I mean modularising your app even more. You could create separate modules for the views you load in different regions. Also I noticed you have added reference to your modules project. Instead you could use modulemanager to download the xap when needed, i.e. on demand.</p>",
+    "PostedDate": "2011-04-28T01:32:08.163-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "618625",
+    "ThreadId": "255240",
+    "Html": "<p>Hi gan_s</p>\r\n<p>Can you please check that the sample app that you included a link to in your post on ﻿Apr 26 at 6.33pm is still accessible? I've downloaded it and tried to open it with both WinZip and WinRar and I keep getting an error message indicating that the archive is damaged.&nbsp; Maybe I'm doing something wrong.</p>\r\n<p>Your replies to this discussion thread are very helpful and it would be great to be able to access the sample application.</p>\r\n<p>Thanks.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-26T05:36:26.99-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "618666",
+    "ThreadId": "255240",
+    "Html": "<p>﻿Sorry, I have got the download working now.</p>\r\n<p>Thanks again for sharing the sample.</p>",
+    "PostedDate": "2011-05-26T06:34:51.05-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

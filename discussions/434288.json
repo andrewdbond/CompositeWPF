@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1005860",
+    "ThreadId": "434288",
+    "Html": "My application has 4 modules inherited from ModuleBase which implements IModule, I'm using a custom sorting routine for the modules via making a custom DirectoryModuleCatalog.<br />\n<br />\nHere is some details:<br />\n<br />\n<strong>During InnerLoad:</strong><br />\nthe <strong>LoadedAssemblies</strong> will contain all the Modules except the &quot;Domain Module&quot;.<br />\n<br />\n<strong>During GetModuleInfos</strong><br />\n the call to <strong>GetNotAllreadyLoadedModuleInfos</strong> will get the Domain Module.<br />\n<br />\nAs a result at the end I just have 1 module instead of 4.<br />\n<br />\nthe code is based on  <a href=\"http://blog.thomaslebrun.net/2011/11/prism-load-modules-in-specific-order-even-for-modules-loaded-on-demand/\" rel=\"nofollow\">This Link</a>   and is quite the same.<br />\n<br />\n_I tried to change it a bit, which if there wasn't a direct solution to this,<br />\nI will post my modified version of the code which still needs some fixes on it._<br />\n<br />\nWhat could be the solution ?<br />\n",
+    "PostedDate": "2013-02-24T03:25:23.773-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1006502",
+    "ThreadId": "434288",
+    "Html": "Hi,\r<br />\n<br />\nI am not familiar with the module catalog / module loader you are mentioning, but as a possible approach I believe we could start by checking if the cause of this behavior is related to the modules or not. For example, you mentioned that you are using a modified version on this <strong>PrioritizedDirectoryModuleCatalog</strong> . Does this behavior also happen when using the original <strong>PrioritizedDirectoryModuleCatalog</strong> ? Also, it could be useful if you could check your modules against <strong>Prism's</strong> default <strong>DirectoryModuleCatalog</strong> to see if the modules can be loaded correctly.\r<br />\n<br />\nAnother thing we can check are the differences (if any) between the <strong>Domain Module</strong> and the other 3 modules in order to find why the custom <strong>PrioritizedDirectoryModuleCatalog</strong> behaves differently with it than with the rest of the modules.\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-02-25T12:18:51.057-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

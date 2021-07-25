@@ -1,0 +1,56 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "I think you should refactor IPrismContainer making TryResolve like this\n \nbool TryResolve(Type type, out object item);\n \nIn order to make this I changed my  test in UnityPrismContainerFixture\n \n        [TestMethod]\n        public void TryResolveShouldResolveTheElementIfElementExist()\n        {\n            IUnityContainer container = new UnityContainer();\n            IPrismContainer prismContainer = new UnityPrismContainer(container);\n \n            container.RegisterType<IService, MockService>(new ContainerControlledLifetimeManager());\n \n            object dependantA;\n            Assert.IsTrue(prismContainer.TryResolve(typeof(IService), out dependantA));\n            Assert.IsNotNull(dependantA);\n        }\n \n        [TestMethod]\n        public void TryResolveShouldReturnNullIfElementNotExist()\n        {\n            IUnityContainer container = new UnityContainer();\n            IPrismContainer prismContainer = new UnityPrismContainer(container);\n \n            object dependantA;\n            Assert.IsFalse(prismContainer.TryResolve(typeof(IDependantA), out dependantA));\n            Assert.IsNull(dependantA);\n        }\nthen the concrete implementation could be:\n public bool TryResolve(Type type, out  object item)\n        {\n            try\n            {\n                item = Resolve(type);\n            }\n            catch\n            {\n                item = null;\n                return false;\n            }\n \n            return true;\n        }\n \nbye\nmakka",
+    "LastUpdatedDate": "2013-02-21T18:39:00.18-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-05-17T08:19:14.58-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "IPrismContainer.TryResolve",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 2,
+    "Id": 2201
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897954,
+      "FileName": "IServiceLocatorExtensions.cs",
+      "DownloadUrl": ".\\897954"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Although there isn't a PrismContainer anymore, the suggestion is still valid, as there could be something similar to use with the ServiceLocator.\r\n\r\nFor example, there could be an extension method for the IServiceLocator interface which tries to call the GetInstance method.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-07-27T06:34:11.443-07:00",
+      "Id": 155997
+    },
+    {
+      "Message": "Hi,\r\n\r\nFor those interested in this topic, we have attached to this work item a IServiceLocatorExtensions.cs class which contains four extension methods for the IServiceLocator interface:\r\n\r\n - bool TryGetInstance(Type serviceType, out object instance)\r\n - bool TryGetInstance(Type serviceType, string key, out object instance)\r\n - bool TryGetInstance(out TService instance)\r\n - bool TryGetInstance(string key, out TService instance)\r\n\r\nThe aforementioned methods pass the corresponding object through the \"instance\" parameter and return \"true\" if the object was found or \"false\" otherwise.\r\n\r\nWe are leaving this work item opened as a suggestion so that the team can analyze it for future releases.\r\n\r\nI hope you find this useful,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-03-26T14:04:07.24-07:00",
+      "Id": 155998
+    }
+  ]
+}

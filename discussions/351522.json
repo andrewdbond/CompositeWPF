@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "821116",
+    "ThreadId": "351522",
+    "Html": "\r\n<p>Hi Commuity,</p>\r\n<p>I saw in the StockTrader demo app that the Action-Region will get a scrollbar if I insert more usercontrols.</p>\r\n<p>XAML shows me that a ContentControl is used which normally only displays one view but it seams in the StockTrader that I can insert more than one control.</p>\r\n<p>I cant find the method in the StockTrader app to insert more then one usercontrol and showing the scrollbar.</p>\r\n<p>Can somebody help me? Is it possible to insert different usercontrols in a ContentControl?</p>\r\n<p><span style=\"font-family:Consolas; color:#a31515; font-size:x-small\"><span style=\"font-family:Consolas; color:#a31515; font-size:x-small\"><span style=\"font-family:Consolas; color:#a31515; font-size:x-small\">&nbsp;</span></span></span></p>\r\n",
+    "PostedDate": "2012-04-07T07:01:13.717-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "821561",
+    "ThreadId": "351522",
+    "Html": "<p>Hi,</p>\r\n<p>As you mentioned, if the host control of your region is a <strong>ContentControl </strong>you can display only a single object. To display multiple items you should use a different host control for your region (e.g. an <strong>ItemsControl</strong>).</p>\r\n<p>The <strong>StockTrader RI</strong>, implements both the single view and the multiple views layout approaches, particularly, the shell's <strong>ActionRegion </strong>contains an <strong>OrdersView</strong> which also contains an <strong>OrdersRegion</strong>. The <strong>OrdersRegion </strong>is attached to a <strong>ListBox </strong>control which displays multiple <strong>OrderCompositeViews</strong>. This way by using nested regions, when the application is buying or selling a stock the <strong>Buy/Sell</strong> area is a list-style region that shows multiple buy/sell views (<strong>OrderCompositeView</strong>) as part of its list.</p>\r\n<p>You could find more information about this in the following chapter of the <strong>Prism </strong>documentation at <strong>MSDN</strong>:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098(v=pandp.40).aspx#sec33\">Chapter 7: Composing the User Interface, Stock Trader RI Shell Regions</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2012-04-09T07:23:36.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "833378",
+    "ThreadId": "351522",
+    "Html": "<p>Hi aadami,</p>\r\n<p>I build my own shell which works well. Thanx for your help... and sorry for my delay to answer. Prism is very helpful. :-)</p>\r\n<p>My only question for now belongs to the MainRegion. The ContentGrid expands if the DetailGrid is collapsed. I cant recognize, why the ContentGrid expands automatically.</p>\r\n<p>How does it works? Could you help me???</p>",
+    "PostedDate": "2012-05-08T04:10:00.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "833581",
+    "ThreadId": "351522",
+    "Html": "<p>Hi,</p>\r\n<p>In order to understand how the aforementioned <strong>Grid </strong>controls are sized automatically, we first need to look at the top level <strong>Grid </strong>that contains them. This <strong>Grid </strong>defines 3 rows:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">Grid.RowDefinitions</span><span style=\"color: blue;\">&gt;</span>\r\n    <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">RowDefinition</span> <span style=\"color: red;\">Height</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">124</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">/&gt;</span>\r\n    <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">RowDefinition</span> <span style=\"color: red;\">Height</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">4*</span><span style=\"color: black;\">\"</span> <span style=\"color: blue;\">/&gt;</span>\r\n    <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">RowDefinition</span> <span style=\"color: red;\">Height</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">{Binding Visibility, ElementName=ActionContent, Converter={StaticResource VisibilityToStarHeightConverter}, ConverterParameter=5}</span><span style=\"color: black;\">\"</span> <span style=\"color: blue;\">/&gt;</span>\r\n<span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">Grid.RowDefinitions</span><span style=\"color: blue;\">&gt;</span>\r\n</pre>\r\n</div>\r\n</p>\r\n<p>The second row contains the <strong>ContentGrid </strong>and the third one contains the <strong>DetailGrid</strong>. As you can see, the last row's <strong>Height </strong>has a data binding to the <strong>ActionContent</strong> control (which is the \"<strong>ActionContent</strong>\" region inside the <strong>DetailsGrid.) </strong>The <strong>ActionContent </strong>control also has a trigger which changes its <strong>Visibility </strong>property to \"<em>Collapsed</em>\" if the controls has no content:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">Trigger</span> <span style=\"color: red;\">Property</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">HasContent</span><span style=\"color: black;\">\"</span> <span style=\"color: red;\">Value</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">false</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">&gt;</span>\r\n    <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">Setter</span> <span style=\"color: red;\">Property</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">Visibility</span><span style=\"color: black;\">\"</span> <span style=\"color: red;\">Value</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">Collapsed</span><span style=\"color: black;\">\"</span> <span style=\"color: blue;\">/&gt;</span>\r\n<span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">Trigger</span><span style=\"color: blue;\">&gt;</span>\r\n</pre>\r\n</div>\r\n</p>\r\n<p>Therefore, when a view is added / removed from the region, the <strong>ActionContent </strong>is shown / hidden by changing its <strong>Visibility </strong>property and as a result the <strong>Height</strong> of the row containing the <strong>DetailGrid </strong>control is also changed through a <strong>Value Converter</strong>:</p>\r\n<ul>\r\n<li>If the <strong>Visibility </strong>property is set to \"<em>Collapsed</em>\" the Height of the row is: <strong>0*</strong></li>\r\n<li>If the <strong>Visibility </strong>property is different from \"<em>Collapsed</em>\" the Height of the row is: <strong>5*</strong></li>\r\n</ul>\r\n<p>As the <strong>Height </strong>of the row containing the <strong>ContentGrid </strong>is <strong>4*</strong>, this row will adapt its <strong>Height </strong>automatically to use all available space when the last row's <strong>Height </strong>is <strong>0*</strong> and will use <strong>4/9</strong> parts of the available space when the last row's <strong>Height </strong>is <strong>5*</strong>.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-05-08T11:19:23.46-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "833659",
+    "ThreadId": "351522",
+    "Html": "<p>Hey Damian,</p>\r\n<p>many many thanx for your explanation.</p>\r\n<p>I implement it in my shell and it works well. :-)))</p>\r\n<p>GREAT!!!!</p>",
+    "PostedDate": "2012-05-08T14:21:19.447-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

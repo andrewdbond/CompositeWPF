@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "113291",
+    "ThreadId": "34179",
+    "Html": "Compositional UI designers beware! If you use the StackPanel and attempt to load&nbsp;a view containing any kind of ListView inside that StackPanel's tree, said ListView will never scroll vertically.<br>\r\n<br>\r\nAt least I can't figure a way to make it work. I've replaced the ListView's ItemsPanel and tried the equivalent with Styles. No dice. Oh, I can stick a DockPanel in there (and give up virtualizating the ListView) but now it scrolls horizontally and no amount of fiddling with DockPanel.Dock seems to make a difference.<br>\r\n<br>\r\nThis is a big problem for us because people use StackPanels all the time, not knowing what havoc they create for nested views.<br>\r\n<br>\r\nMy reading of Chris Anderson's &quot;Essential WPF&quot; says this problem is intractible (&quot;StackPanel must be used carefully because it measures children using an infinite width or height based on the orientation. This lack of a control on size can break other child layout panels, specifically causing problems for .. ScrollViewer. ... There is no way to avoid this problem with StackPanel.&quot; (p.190)<br>\r\n<br>\r\nHere's the scenario:<br>\r\n<br>\r\n&lt;!--&nbsp;Scrolls ok&nbsp;--&gt;<br>\r\n&lt;DockPanel&gt;<br>\r\n&nbsp;&lt;ListBox ItemsSource=&quot;{Binding}&quot;/&gt;<br>\r\n&lt;!-- bind to lots of items --&gt;<br>\r\n&lt;/DockPanel&gt;<br>\r\n<br>\r\n&lt;!-- Won't scroll for me --&gt;<br>\r\n&lt;StackPanel&gt;<br>\r\n&nbsp;&lt;ListBox ItemsSource=&quot;{Binding}&quot;/&gt;<br>\r\n&lt;!-- bind to lots of items --&gt;<br>\r\n&lt;/StackPanel&gt;<br>\r\n<br>\r\nAny suggestions?\r\n",
+    "PostedDate": "2008-08-24T15:49:57.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "113322",
+    "ThreadId": "34179",
+    "Html": "Have you tried replacing the StackPanel with a ScrollViewer?&nbsp;&nbsp; WPF Unleashed - pg-173,174 :)&nbsp;&nbsp; Havn't done anything with it personally - still working my way through the book.\r\n",
+    "PostedDate": "2008-08-24T20:47:20.853-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "113330",
+    "ThreadId": "34179",
+    "Html": "Let me try to&nbsp;clarify. I am warning against using&nbsp;StackPanel in any situation in which someone might introduce a ListView within that StackPanel. Imagine&nbsp;this structure:<br>\r\n<br>\r\n&nbsp;&lt;StackPanel x:Name=&quot;Oops&quot;&gt;<br>\r\n&nbsp;&nbsp; &nbsp;&lt;ContentControl x:Name=&quot;NestedRegion&quot;&nbsp;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Width=&quot;Auto&quot; Height=&quot;Auto&quot;&nbsp;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HorizontalAlignment=&quot;Stretch&quot;&nbsp; VerticalAlignment=&quot;Stretch&quot;/&gt;<br>\r\n&lt;/StackPanel&gt;<br>\r\n<br>\r\nThe author of this layout view is inviting clients to add views&nbsp;to &quot;NestedRegion&quot;. Unfortunately, &quot;NestedRegion&quot; is unconstrained and will not scroll any material placed inside of it. <br>\r\n<br>\r\nTo illustrate, add a simple view to &quot;NestedRegion&quot; such as:<br>\r\n<br>\r\n&lt;ScrollViewer&gt;<br>\r\n&nbsp;&nbsp; &nbsp;&lt;ListBox ItemsSource=&quot;{Binding}&quot;/&gt;&lt;!-- bind to lots of items --&gt;<br>\r\n&lt;/ScrollViewer&gt;<br>\r\n<br>\r\nThe ScrollViewer&nbsp;does not help. In fact, you will see a big empty scrollbar on the right .. with no opportunity to scroll. The&nbsp;ListBox actually has its own&nbsp;ScrollViewer in its default ItemsPanelTemplate so all we are doing is doubling up on ScrollViewers .. to no avail. The author of the &quot;Oops&quot; view holding &quot;NestedRegion&quot; has handcuffed all clients.<br>\r\n<br>\r\nInterestingly, if the author of &quot;Oops&quot; tries to compensate by rewriting his view as:<br>\r\n<br>\r\n&nbsp;&lt;ScrollViewer x:Name=&quot;OopsAgain&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp; &lt;StackPanel &gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&lt;ContentControl x:Name=&quot;NestedRegion&quot;&nbsp;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; Width=&quot;Auto&quot; Height=&quot;Auto&quot;&nbsp;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;HorizontalAlignment=&quot;Stretch&quot;&nbsp; VerticalAlignment=&quot;Stretch&quot;/&gt;<br>\r\n&nbsp;&nbsp; &lt;/StackPanel&gt;<br>\r\n&lt;/ScrollViewer&gt;<br>\r\n<br>\r\n.. a ScrollViewer will appear ... but now it covers the entirety of&nbsp; each view added to NestedRegion. It does not help an embedded ListView scroll properly.<br>\r\n<br>\r\nTo make this evident, imagine&nbsp;we add a view to NestedRegion consisting of a DockPanel holding:<br>\r\n<br>\r\na) Label &quot;A&quot;<br>\r\nb) A ListView &quot;B&quot;&nbsp;with lots of stuff<br>\r\nc) Label &quot;C&quot;.<br>\r\n<br>\r\nHere's a schematic representation of the entire&nbsp;logical tree:<br>\r\n<br>\r\n&lt;ScrollViewer x:Name=&quot;OopsAgain&quot;&gt;<br>\r\n&nbsp; &lt;StackPanel&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;ContentControl x:Name=&quot;NestedRegion&quot;&nbsp;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!------&nbsp;view added to &quot;NestedRegion -----&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;DockPanel&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &lt;Label Content=&quot;A&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DockPanel.Dock=&quot;Top&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&lt;ListView&nbsp;x:Name=&quot;B&quot;&nbsp;&nbsp;DockPanel.Dock=&quot;Top&quot; ... /&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Label Content=&quot;C&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DockPanel.Dock=&quot;Top&quot;/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/DockPanel &gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!-------------------------------------------&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ContentControl&gt;<br>\r\n&nbsp; &lt;/StackPanel&gt;<br>\r\n&lt;/ScrollViewer&gt;<br>\r\n<br>\r\nYou&nbsp;would see that, yes, there is scrolling of the added DockPanel .. but of the whole DockPanel. You can see Label&nbsp;&quot;A&quot; but you can't see Label &quot;C&quot; until you have scrolled the entire length of the ListView &quot;B&quot;. That's not what I, the hopeful author of the added view,&nbsp;intend. I want to see Label &quot;A', a scrollable ListView &quot;B&quot;, <span style=\"text-decoration:underline\">and</span> Label &quot;C&quot; ... all at the same time.<br>\r\n<br>\r\n<strong>The lesson: When you write a view with a region, do not&nbsp;let a&nbsp;StackPanel appear as an ancestor of that region.</strong><br>\r\n<br>\r\nI hope I'm wrong.<br>\r\n",
+    "PostedDate": "2008-08-24T22:51:53.397-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "145395",
+    "ThreadId": "34179",
+    "Html": "<p>&nbsp;</p>\r\n<p>I am also facing a similar problem. Created a user control and added a stackpanel to it. Then put the user control in a region. When resizing the shell the contents of stackpanel dont bring the horizontal scroll bar or vertical scrollbar. Putting the scrollviewer doesnt help either. The scroll bars are visible but disabled. Anyone can help me, sure its a common problem</p>\r\n<p>Any help?</p>\r\n",
+    "PostedDate": "2009-01-08T05:26:25.08-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "147907",
+    "ThreadId": "34179",
+    "Html": "I think the only work around is to not use a StackPanel as a host for a control that may need to scroll. The control thinks it has an infinite height to work with so its CanContentScroll property is never set to true. I struggled with this for 2 days with my Treeview wondering where the scrollbars went. I replaced the StackPanel with a Grid and everything was peachy. \r\n",
+    "PostedDate": "2009-01-16T21:25:15.647-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "208961",
+    "ThreadId": "34179",
+    "Html": "<p>Did anyone resolve this?</p>\r\n<p>I have a contentcontrol and loading a different view inside the contentcontrol. This new view has a list which needs to scroll, but I seem to have similar problem with not viewing the scroll bars. Oh, and i have an expander in th efirst view too.</p>\r\n<p>So</p>\r\n<p>&lt;Expander&gt;</p>\r\n<p>&lt;Expander.Header&gt; ... Some buttons .. &lt;/&nbsp; &gt;</p>\r\n<p>&lt;ContentControl .. RegiaonManager.RegionName= &quot;&quot; /&gt;</p>\r\n<p>... Load the new view in this region. This new view has a list view which needs to scroll ..</p>\r\n<p>&lt;/Expander&gt;</p>",
+    "PostedDate": "2009-07-06T07:53:51.903-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

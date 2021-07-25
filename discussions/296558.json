@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "744303",
+    "ThreadId": "296558",
+    "Html": "<p>Hi Experts,</p>\n<p>Is there any way to use RegionManager's RegisterViewWithRegion and RequestNavigate together? I make use of RegisterViewWithRegion at initialization because the region is not yet registered moment. Then, to change the view in the region at a later moment I make use of RequestNavigate. The problem with this setup is that for RequestNavigate to work, the view should be exported explicitly using</p>\n<p>[Export(\"ExplicitViewNameHere\")]</p>\n<p>as described here: <a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40).aspx\">http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40).aspx</a></p>\n<pre>Important: When the region navigation service creates a view, it requests a type of Object\r\nfrom the container with a name that matches the one supplied in the navigation URI. Various\r\ncontainers provide different registration mechanisms to support this.\r\nFor instance, in Unity you will need to register your views against the Object type, map it to\r\nyour view type, and provide a name that matches the one used in the navigation URI. In MEF, it\r\nis implemented differently and only the contract name is used.\r\nTherefore, as long as the view is exported with a contract name that matches the name in the URI\r\nrequest, the view can be successfully constructed. </pre>\n<p>The problem now is that RegisterViewWithRegion now cannot find the export anymore when using</p>\n<p>regionManager.RegisterViewWithRegion(RegionNames.MyRegion, typeof(MyView))</p>\n<p>Is there any way to solve this or is using both methods together not recommended anyway?</p>\n<p>Thanks in advance,</p>\n<p>Laurens</p>",
+    "PostedDate": "2012-02-06T19:58:52.7-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "745340",
+    "ThreadId": "296558",
+    "Html": "<p>Hi,</p>\r\n<p>I believe you might find the following work item useful, where a possible workaround is suggested, to achieve a similar scenario:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/workitem/8504\">RequestNavigate doesn't work if View is not Exported with ContractName</a></li>\r\n</ul>\r\n<p>Additionally, as we saw you're mentioning you're using a contract name that is different to the type of your view, you could find the following blog post interesting, where the differences between the contract name and type name are explained, and the possible problems you might get when exporting a view with a contract name (string) different than the name of the view&rsquo;s type:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/aadami/2011/10/14/matching-contract-names-and-view-names-in-prism-region-navigation/\">Matching contract names and view names in Prism region navigation</a></li>\r\n</ul>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2012-02-07T08:31:58.18-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "745653",
+    "ThreadId": "296558",
+    "Html": "<p>Hi aadami,</p>\r\n<p>The extension method in the first link you supplied does exactly what i need. I searched the discussions before posting but forgot about the issue tracker. Oops. The contract name I use is not different from the view name, I wrote it that way to make things more clear but I guess it had the opposite effect.</p>\r\n<p>Thanks for explaining this to me :-)</p>",
+    "PostedDate": "2012-02-07T11:51:41.117-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "745674",
+    "ThreadId": "296558",
+    "Html": "<p>Hi,</p>\r\n<p>I'm glad you found the extension method proposed in the work item useful.</p>\r\n<p>As we realize it might not be straightforward to find it in the work items section, we added an entry into the <a href=\"http://compositewpf.codeplex.com/wikipage?title=UI%20Composition\">UI Composition section of the knowledge base</a> so that it's easier to be found on future occasions.</p>\r\n<p>Thanks,</p>\r\n<p>Guido Leandro Maliandi<br /><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2012-02-07T12:03:14.91-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "746192",
+    "ThreadId": "296558",
+    "Html": "<p>Good Idea!</p>\r\n<p>Thanks again!</p>",
+    "PostedDate": "2012-02-07T17:51:21.82-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

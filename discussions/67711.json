@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "230102",
+    "ThreadId": "67711",
+    "Html": "<p>Hi, guys,</p>\r\n<p>Today I refactor my Silverlight project in Prism. I met a puzzled issue about ComboBox.</p>\r\n<p>As you know, when we changed the selected item of the ComboBox, we must invoke its UpdateLayout method to refresh the control, otherwise, no change to the control. So in the normal code style, we write code like this:</p>\r\n<p>cbo.SelectedItem = XXXX;</p>\r\n<p>cbo.UpdateLayout();</p>\r\n<p>But in Prism, we use VM patterns now, all the data are binding to the controls, including the ComboBox, so when I fire some event, the property binding to the ComboBox will update, along with the ComboBox's SelectedItem property. But I&nbsp;have no chance to&nbsp;control the ComboxBox, because I can only control the data.</p>\r\n<p>Can somebody else&nbsp;resolve this isuse?</p>",
+    "PostedDate": "2009-09-02T02:42:00.963-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230156",
+    "ThreadId": "67711",
+    "Html": "<p>Bearing in mind that the Presentation Model and Model-View-ViewModel are synomonous, you are running into a problem identified by Martin Fowler back in 2006 in his article <a href=\"http://www.martinfowler.com/eaaDev/uiArchs.html\">GUI Architectures</a>.&nbsp; In the section on the VisualWorks Application Model (aka Presentation Model) he notes the following below figure 11:</p>\r\n<p style=\"padding-left:30px\"><em>Directly updating the widgets like this is not part of </em><a href=\"http://compositewpf.codeplex.com/Thread/PresentationModel.html\"><em>Presentation Model</em></a><em>, which is why the visual works application model isn't truly a </em><a href=\"http://compositewpf.codeplex.com/Thread/PresentationModel.html\"><em>Presentation Model</em></a><em>. This need to manipulate the widgets directly was seen by many as a bit of dirty work-around and helped develop the Model-View-Presenter approach.</em></p>\r\n<p>In PRISM V2 Drop 7 there was a TopDownComposition sample that showed how you could utilize MVP and MVVM effectively - gaining the best of both worlds/patterns.&nbsp;&nbsp; In my <a href=\"http://MultiTargeting.CodePlex.com\">http://MultiTargeting.CodePlex.com</a> project I abstracted the concept into a series of PRISMContrib libraries supporting the SL3, SL3 w/RIA, WPF and Winforms - all platforms share the same codebase using MVP and MVVM; perhaps it will give you ideas on how you can approach your requirement.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-02T05:13:07.917-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230175",
+    "ThreadId": "67711",
+    "Html": "<p>Hi, billkrat,</p>\r\n<p>I am not care about the difference between VM&nbsp;and PresentationModel patterns.</p>\r\n<p>Now I find solution to resolve the ComboBox's UpdateLayout method, so I can update UI ASAP.</p>",
+    "PostedDate": "2009-09-02T06:01:26.583-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230186",
+    "ThreadId": "67711",
+    "Html": "<p>Understood, I would use &quot;a bit of dirty work-around&quot; to meet your requirements ;)</p>\r\n<p>1.&nbsp; Update the View's interface to include the following - this effectively gives you access to the views controls.</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp; object FindName(string controlName);</p>\r\n<p>2.&nbsp; Update the ViewModel so that it contains a reference to the views Interface, e.g. the model would contain a property <strong>IMyView View {get; set; }</strong>.&nbsp; Not knowing how you wire-up I might suggest this could be done after the View is registered.</p>\r\n<p>3.&nbsp; At the point in code where I need to set the combobox.SelectedItem&nbsp;I would do something to the following:</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;ComboBox myCombo = (ComboBox)&nbsp;View.FindName(&quot;myControlName&quot;);</p>\r\n<p>4.&nbsp;&nbsp; Set myCombo.SelectedItem as applicable.</p>\r\n<p>Please update this thread if you find a better way so it can help the next guy.</p>",
+    "PostedDate": "2009-09-02T06:17:00.59-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230264",
+    "ThreadId": "67711",
+    "Html": "<p>Hi, billkrat,</p>\r\n<p>Some steps are the same between us.</p>\r\n<p>I make a small demo for it. You can download it from here: <a href=\"http://files.cnblogs.com/Jax/SilverlightApplication9.zip\">http://files.cnblogs.com/Jax/SilverlightApplication9.zip</a></p>\r\n<p>The PrintScreen is as follow:</p>\r\n<p>1.When the page loaded</p>\r\n<p><img style=\"border-right:0px;border-top:0px;display:inline;border-left:0px;border-bottom:0px\" title=\"clip_image002\" src=\"http://images.cnblogs.com/cnblogs_com/Jax/WindowsLiveWriter/xx_150CC/clip_image002_thumb.jpg\" border=0 alt=\"clip_image002\" width=420 height=100></p>\r\n<p>2.I click the CheckBox, from checked status to unchecked in &ldquo;China&rdquo; row.</p>\r\n<p>I want to make the OverflyReason field not enabled, and set the OverflyReason default value &ldquo;Please select a Station&rdquo;.</p>\r\n<p><img style=\"border-right:0px;border-top:0px;display:inline;border-left:0px;border-bottom:0px\" title=\"clip_image002[4]\" src=\"http://images.cnblogs.com/cnblogs_com/Jax/WindowsLiveWriter/xx_150CC/clip_image002[4]_thumb.jpg\" border=0 alt=\"clip_image002[4]\" width=420 height=105></p>\r\n<p>&nbsp;</p>\r\n<p>But I try my best, the result is as follow, that is say, no update in UI, although the binding data behind is already been changed.</p>\r\n<p><img style=\"border-right:0px;border-top:0px;display:inline;border-left:0px;border-bottom:0px\" title=\"clip_image002[6]\" src=\"http://images.cnblogs.com/cnblogs_com/Jax/WindowsLiveWriter/xx_150CC/clip_image002[6]_thumb.jpg\" border=0 alt=\"clip_image002[6]\" width=418 height=106></p>",
+    "PostedDate": "2009-09-02T09:00:28.313-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230274",
+    "ThreadId": "67711",
+    "Html": "<p>Great!&nbsp; The demo really makes it easier.&nbsp; &nbsp;I have some requirements I have to complete for a client but I will work on this later this evening and will try to have something for you in the morning.</p>",
+    "PostedDate": "2009-09-02T09:16:55.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230299",
+    "ThreadId": "67711",
+    "Html": "<p>Hi, billkrat,</p>\r\n<p>It looks like I resolve it.</p>\r\n<p>As you see in my code, each row in the&nbsp;datagrid has a combobox, so I have set up View property for each row, that is say, entity Station. But I doubt it is a good design.</p>\r\n<p>And also, about combobox, when the selected item changed, if we only write code to change the SelectedItem property, no update in UI.</p>\r\n<p>So I have a try to change the SelectedIndex property, that's all right. UI update as I requied. In another word, I must bind SelectedIndex, rather than SelectedItem property.</p>\r\n<p>Let me summurize the code, and upload a successful one.</p>\r\n<p>billkrat, even the issue is resolved, but I still doubt on it. Please give me some suggestion for my new&nbsp;code, all right?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-02T10:15:31.447-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230312",
+    "ThreadId": "67711",
+    "Html": "<p>New version project, which is successfully done: <a href=\"http://files.cnblogs.com/Jax/SilverlightApplication9_new.zip\">http://files.cnblogs.com/Jax/SilverlightApplication9_new.zip</a></p>\r\n<p>The key snipper code in the entity &quot;Station&quot;&nbsp;as follows:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>        <span style=\"color:Blue\">void</span> ModelPropertyChanged(<span style=\"color:Blue\">object</span> sender, PropertyChangedEventArgs e)\r\n        {\r\n            <span style=\"color:Blue\">switch</span> (e.PropertyName)\r\n            {\r\n                <span style=\"color:Blue\">case</span> <span style=\"color:#A31515\">&quot;IsChecked&quot;</span>:\r\n                    <span style=\"color:Blue\">if</span> (!<span style=\"color:Blue\">this</span>.IsChecked)\r\n                    {\r\n                        <span style=\"color:Green\">//this.OverflyReason = new OverflyReasonInfo()</span>\r\n                        <span style=\"color:Green\">//{</span>\r\n                        <span style=\"color:Green\">//    ReasonName = &quot;Please select a Station!&quot;</span>\r\n                        <span style=\"color:Green\">//};</span>\r\n\r\n                        DataGrid dg = View.FindName(<span style=\"color:#A31515\">&quot;dgGrid&quot;</span>) <span style=\"color:Blue\">as</span> DataGrid;\r\n                        <span style=\"color:Blue\">if</span> (dg != <span style=\"color:Blue\">null</span>)\r\n                        {\r\n                            <span style=\"color:Blue\">foreach</span> (<span style=\"color:Blue\">object</span> o <span style=\"color:Blue\">in</span> dg.ItemsSource)\r\n                            {\r\n                                ComboBox cb = dg.Columns[2].GetCellContent(o).FindName(<span style=\"color:#A31515\">&quot;cboOverflyReason&quot;</span>) <span style=\"color:Blue\">as</span> ComboBox;\r\n\r\n                                <span style=\"color:Blue\">if</span> (cb.SelectedItem <span style=\"color:Blue\">as</span> OverflyReasonInfo == <span style=\"color:Blue\">this</span>.OverflyReason)\r\n                                {\r\n                                    cb.SelectedIndex = 0;\r\n                                    <span style=\"color:Blue\">break</span>;\r\n                                }\r\n                            }\r\n                        }\r\n\r\n                        \r\n                        <span style=\"color:Blue\">this</span>.ChargeableAircraft = <span style=\"color:#A31515\">&quot;&quot;</span>;\r\n                    }\r\n                    <span style=\"color:Blue\">this</span>.IsEnabled = <span style=\"color:Blue\">this</span>.IsChecked;\r\n                    <span style=\"color:Blue\">break</span>;\r\n                <span style=\"color:Blue\">default</span>:\r\n                    <span style=\"color:Blue\">break</span>;\r\n            }\r\n        }\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>In the code above,&nbsp;I mark the statement to change the SelectedItem property. Because I add a reference to the View, so I can&nbsp;iterate the view's controls &quot;dgGrid&quot; and set the SelectedIndex to 0. As a result, UI updates with no problems.</p>\r\n<p>Hi, <a id=\"ctl00_ctl00_MasterContent_Content_PostRepeater_ctl10_UserNameLink\" href=\"http://www.codeplex.com/site/users/view/billkrat\">billkrat</a>, could you give me a binding syntax, make UI update automatically, rather than handling the controls manually?</p>",
+    "PostedDate": "2009-09-02T10:37:50.08-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "230463",
+    "ThreadId": "67711",
+    "Html": "<p>Very nice Jianqiang :)</p>\r\n<p><em>[Jianqiang] could you give me a binding syntax,&nbsp;make UI update automatically, rather than handling the controls manually</em></p>\r\n<p>In WPF I'd use triggers, however Silverlight has limitations as highlighted by Rocky Lhotka in this blog entry <a href=\"http://www.lhotka.net/weblog/SilverlightTriggers.aspx\">http://www.lhotka.net/weblog/SilverlightTriggers.aspx</a>.&nbsp;&nbsp;&nbsp; His hack will require Expression 3 (which you can download w/trial period).&nbsp;&nbsp; Personally, I'd take the simple route and manually update.</p>",
+    "PostedDate": "2009-09-02T18:00:48.69-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

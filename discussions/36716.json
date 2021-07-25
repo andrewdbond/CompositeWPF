@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "121775",
+    "ThreadId": "36716",
+    "Html": "<br>\r\nIs there any guidance on ordering items in a region? For example if I have a StatusBar region and 3 modules that each wish to add a StatusBarItem. However regardless of module load order I want to make sure that the StatusBarItems are ordered moduleA, moduleB, moduleC, etc.<br>\r\n<br>\r\nI've haven't found anything in the docs or any posts online that seems to talk about this. I played around with the source and came up with the following kludge, but it doesn't feel right.<br>\r\n<br>\r\nI created the following:<br>\r\n<br>\r\nISequencedControl&nbsp; -- add a Sequence value<br>\r\nSequencedStatusBarItem <br>\r\nSequencedItemsControlRegionAdapter : ItemsControlRegionAdapter&nbsp; -- override CreateRegion() to return a SequencedRegion<br>\r\nSequencedRegion : AllActiveRegion&nbsp; -- override ItemMetadataCollection to return a SequencedObservableCollection<br>\r\nSequencedObservableCollection&lt;T&gt; : ObservableCollection&lt;T&gt; where T : ItemMetadata&nbsp; -- override InsertItem to insert in order of sequence and call base.OnCollectionChanged(NotifyCollectionChangedAction.Reset)<br>\r\n<br>\r\nThe SequencedObservableCollection really feels wrong. especially since it looks like I have to call the OnCollectionChanged(reset) to force the UI to actually update. I have also considered getting rid of SequencedObservableCollection and in Sequenced region listening to the OnCollectionChanged event and on adds, re-evaluate and move items around. Also feels not right.<br>\r\n<br>\r\nAnyone have any other ideas? I'd be happy to find out that I've reinvented the wheel because I missed some simple way of doing this.<br>\r\n",
+    "PostedDate": "2008-09-29T21:58:08.027-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "121838",
+    "ThreadId": "36716",
+    "Html": "This can be done via configuration - I think you'll find the following very interesting:<br>\r\n<br>\r\n+ Development Activities<br>\r\n&nbsp;&nbsp; + How to: Dynamically load modules<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + Using the Configuration Module Enumerator<br>\r\n<br>\r\nSpecifically, the &lt;modules&gt;&lt;module&gt;&lt;dependencies&gt;&lt;<strong>dependency</strong> moduleName=&quot;Module B&quot;&gt; element<br>\r\n<br>\r\nEdited:&nbsp; the configuration doesn't provide your&nbsp;&quot;regardless of module load order&quot;; however it does provide a work-around to ensure your modules add menu items in a specified order.<br>\r\n<br>\r\n",
+    "PostedDate": "2008-09-30T06:19:20.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "121901",
+    "ThreadId": "36716",
+    "Html": "<br>\r\nThat would work if modules loaded items in chunks.&nbsp;&nbsp; (e.g. itemA1, itemA2, itemB1, itemB2) but I really need is dynamic sequencing. <br>\r\n<br>\r\nitemA1 - 50<br>\r\nitemA2 - 10<br>\r\nitemB1 - 5<br>\r\nitemB2 - 25<br>\r\n<br>\r\nthen the layout should be: itemB1, itemA2, itemB2, itemA1<br>\r\n<br>\r\nThe method I described above does this, it just has that code smell to it that is not right. I am starting to think the other option I listed (listening to the change notifications and kludging the order after the fact) might be a bit cleaner, but still not ideal.<br>\r\n<br>\r\n",
+    "PostedDate": "2008-09-30T09:47:42.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "121955",
+    "ThreadId": "36716",
+    "Html": "<p>At a high level, looking at&nbsp;the code provided,&nbsp;your solution <strong><span style=\"text-decoration:underline\">doesn't</span></strong> seem so kludgy; I'd probably call it more creative - particularly since it works.&nbsp;&nbsp; An approach I might take when/if I run into this requirement, particularly if you don't give us your code;)&nbsp;&nbsp;is to&nbsp;follow in MEF's (<a href=\"http://www.codeplex.com/mef\">Managed Extensibility Framework</a>)&nbsp;footsteps.<br>\r\n<br>\r\nIn the absence of regions, the following is one of the ways the MEF team populates&nbsp;a view.&nbsp;&nbsp;I saw in their solution (<strong>default:</strong> below) a possible alternate solution to your sequencing issue.&nbsp; In the status bars presenter - pull your items into a collection, order by sequence number and then populate your status bar (perhaps this is how you are currently doing it?).&nbsp;&nbsp; The presenter can handle any events to update the status bar as applicable (if new modules are added after populated)<br>\r\n<br>\r\nPrimer on MEF follows along with a code snippet from their XFileExplorer sample project follows:<br>\r\n<br>\r\nExternal modules will contain an <strong>Export</strong> attribute with the same contract name shown below in the Import attribute; there will be multiple exports.&nbsp; The following Import attribute pulls all of the&nbsp;exports it finds into a _views collection which is used below.&nbsp; Note: The Export methods also have attributes which define their order in the universe.</p>\r\n<p>[Import(&quot;Microsoft.Samples.XFileExplorer.FileExplorerViewContract&quot;)]<br>\r\nprivate ExportCollection&lt;UserControl, IFileExplorerViewMetadata&gt; _views = null;</p>\r\n<p>// Reload all views<br>\r\nforeach (var view in _views.<strong>OrderBy(i =&gt; i.MetadataView.DockId))</strong><br>\r\n{<br>\r\n&nbsp;&nbsp;&nbsp; //Get the instance of current view<br>\r\n&nbsp;&nbsp;&nbsp; var childPane = view.GetExportedObject();</p>\r\n<p>&nbsp;&nbsp;&nbsp; //Dock the view properly according to its metadata<br>\r\n&nbsp;&nbsp;&nbsp; switch (view.MetadataView.Docking)<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case Dock.Top:<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TopPanel.Children.Add(childPane); break;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case Dock.Bottom:<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BottomPanel.Children.Add(childPane); break;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case Dock.Left:<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LeftPanel.Children.Add(childPane); break;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>default</strong>:<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TabItem item = RightPanelTabs.Items.Cast&lt;TabItem&gt;()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .FirstOrDefault(i =&gt; (int)i.Tag == view.MetadataView.DockId);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (item != null)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (item.Content as DockPanel).Children.Add(childPane);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n",
+    "PostedDate": "2008-09-30T13:22:59.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "122245",
+    "ThreadId": "36716",
+    "Html": "rmccready,<br>\r\n<br>\r\nThe idea you posted doesn't seem bad to me. We actually left the ItemMetadataCollection property virtual (even though its protected) for cases exactly like these.<br>\r\nWhat it does feel a little odd for me is the OnCollectionChanged(reset) call. You must call OnCollectionChanged, but maybe you could provide a more specific parameter (instead of Reset use Add, and tell it the index where it was added).<br>\r\n<br>\r\nYou're not saying how are you storing the order value to know in what position to add the view in the collection. I'm curious to know if you are using an attached property in ItemMetadata. The only reason ItemMetadata is a DependencyObject is to allow extending the metadata properties on a view, for cases like these.<br>\r\n<br>\r\nI hope this helps ease your concerns on this solution.<br>\r\n<br>\r\nJulian Dominguez<br>\r\n<a href=\"http://blogs.southworks.net/jdominguez\">http://blogs.southworks.net/jdominguez</a><br>\r\n",
+    "PostedDate": "2008-10-01T15:44:24.407-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "122742",
+    "ThreadId": "36716",
+    "Html": "At the moment the Sequence value comes from the interface ISequenceControl that I created. I subclass StatusBarItem -&gt; SequencedStatusBarItem. <br>\r\n<br>\r\nI'm researching moving our winforms/CAB app over to prism, but this is my first week digging into WPF/prism so far. I'll look into the DependencyObject a bit more, and try to post code on Monday.<br>\r\n<br>\r\nThanks for the help.\r\n",
+    "PostedDate": "2008-10-03T12:20:21.273-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "123054",
+    "ThreadId": "36716",
+    "Html": "Had some &quot;ah-ha&quot; moments this weekend on DependencyProperties/AttachedProperties. <br>\r\n<br>\r\n<br>\r\n1) Created an attached Sequence property<br>\r\n2)&nbsp; this.statusBar.Items.SortDescriptions.Add(new SortDescription(&quot;Sequence&quot;, ListSortDirection.Ascending));<br>\r\n<br>\r\nSeems to work fine.<br>\r\n<br>\r\nI started looking into the SortDescriptors a bit more and found this post:<br>\r\nhttp://alexshed.spaces.live.com/Blog/cns!71C72270309CE838!139.entry<br>\r\n<br>\r\nI'm expanding it a bit and can replace #2 above with a snip of XAML which seems much cleaner.<br>\r\n<br>\r\n&lt;StatusBar Name=&quot;statusBar&quot;<br>\r\n&nbsp;&nbsp; cal:RegionManager.RegionName=&quot;{x:Static infc:RegionNames.StatusBar}&quot;<br>\r\n&nbsp;&nbsp; inf:ItemControlSorting.PropertyName=&quot;Sequence&quot;<br>\r\n&nbsp;&nbsp; inf:ItemControlSorting.SortDirection=&quot;Descending&quot;&gt;<br>\r\n&lt;/StatusBar&gt;<br>\r\n",
+    "PostedDate": "2008-10-05T15:17:10.237-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

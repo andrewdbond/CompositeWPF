@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "508017",
+    "ThreadId": "231080",
+    "Html": "<p>Hy guys,</p>\r\n<p>I'm starting to rewrite a big business application, and I am considering to use Prism with Silverlight.</p>\r\n<p>I studied the prism, I saw some videos and got some doubts:</p>\r\n<p>The basic of my app is that i have a main page (Shell), with a main region. In that region i'll load the Modules. For Exemple:</p>\r\n<p>When i click in the Customer button, i ll load the CusomerModule, and show the CustomerView in the MainRegion</p>\r\n<p>When i Click in the Contact button, i ll load the ContactModule, and show the ContactView in the MainRegion.</p>\r\n<p>All modules will be loaded &quot;OnDemand&quot;.</p>\r\n<p>Here my doubts:</p>\r\n<p>1 - I register the CustomerView in the MainRegion, but when i go to the ContactsView, the CostomerView is sitll &quot;Active&quot;?</p>\r\n<p>2 - How can i reload the CustomerView? i dont need only to show that the CustomerView again, because the user can do lots of things in that view, and when he come back to that view, i need to reload that.</p>\r\n<p>3 - In a big app with lots of modules and views, isnt that a problem? lots of views crteated and in memory?</p>\r\n<p>4 - Is there a better solution for that kind of app?</p>\r\n<p>thx.</p>",
+    "PostedDate": "2010-10-15T13:41:39.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "508488",
+    "ThreadId": "231080",
+    "Html": "<p>Hi, you can remove the views in the region first where you intend to insert a new view. This might help -</p>\r\n<p>if (RegionManager.Regions[&quot;RegionName&quot;] != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; List&lt;object&gt; views = new List&lt;object&gt;(RegionManager.Regions[&quot;RegionName&quot;].Views);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (object view in views)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegionManager.Regions[&quot;RegionName&quot;].Remove(view);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-17T10:07:29.15-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "508758",
+    "ThreadId": "231080",
+    "Html": "<p>Ok, i now i know how to remove the views from my region, but i need more information about the oder questions plz.</p>\r\n<p>3 - In a big app with lots of modules and views, isnt that a problem? lots of views crteated and in memory?</p>\r\n<p>4 - Is there a better solution for that kind of app?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-18T04:56:26.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "508987",
+    "ThreadId": "231080",
+    "Html": "<p>Hi,</p>\r\n<p>I think that you can find interesting the following post from the Blaine Wastell's Blog: <a href=\"http://blogs.msdn.com/b/blaine/archive/2009/11/03/customers-using-prism.aspx\">Customers using Prism</a></p>\r\n<p>Regarding to your specific questions:</p>\r\n<p><em>3 - In a big app with lots of modules and views, isnt that a problem? lots of views crteated and in memory?</em></p>\r\n<p><strong>If you add/remove your views from your regions, you should not see to increase your memory more than expected.</strong></p>\r\n<p><em>4 - Is there a better solution for that kind of app?</em></p>\r\n<p><strong>If you have a lot views and a complex navigation in your application, you could take a look at the <a href=\"http://compositewpf.codeplex.com/releases/view/53942\">last drop (10) of Prism</a>, since it includes a Navigation Quickstart that might help you</strong>.</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero    <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-18T14:06:54.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509296",
+    "ThreadId": "231080",
+    "Html": "<p>Thanks alot&nbsp;<a id=\"ctl00_ctl00_MasterContent_Content_PostRepeater_ctl06_UserNameLink\" href=\"http://www.codeplex.com/site/users/view/fantivero\">fantivero</a></p>\r\n<p>I'll take a look at the last drop (90) of prism, to see how the navigation works.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p><strong><br></strong></p>",
+    "PostedDate": "2010-10-19T04:43:32.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509555",
+    "ThreadId": "231080",
+    "Html": "<p>I took a look at the &quot;Quick Start Navigation&quot; from prism 4 dop&nbsp;10, and in that sample, he still doesnt destroy or remove the view from the region.</p>\r\n<p>If u navigate to another module, the first module are not destroyed.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-19T11:49:48.127-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509563",
+    "ThreadId": "231080",
+    "Html": "<p>Hi,</p>\r\n<p>If you active a view in a ContentControl exposed as a region, the current active view will be deactivated. Additionally, Prism has introduced a new <strong>RegionMemberLifetimeBehavior</strong> that removes views from a region when they become deactivated since drop 9.</p>\r\n<p>Either the view or its view  model can opt in to this by using the <strong>RegionMemberLifetimeAttribute</strong> or  the <strong>IRegionMemberLifetime</strong> interface.</p>\r\n<p>For more information, you could take a look at the <strong> RegionMemberLifetimeBehavior </strong>class the following CHM(s):</p>\r\n<ul>\r\n<li> Prism4APIReference-Desktop.chm </li>\r\n<li>Prism4APIReference-Silverlight.chm</li>\r\n</ul>\r\n<p>You could see an implementation of this <strong>&nbsp;</strong>in the <strong>Region Navigation Quickstart</strong>:</p>\r\n<ul>\r\n<li><strong>ComposeEmailViewModel.cs</strong>, see the code comments<strong>.<br></strong></li>\r\n</ul>\r\n<p>There is no problem about the creation of the views when using RequestNavigate, since when a particular view is not located, a new instance of the view will be created. This concept is named <strong>just in time view creation</strong>.</p>\r\n<p>For more information about this you could take a look at the following documentation section in the Prism4.chm:</p>\r\n<ul>\r\n<li>View-Switching Navigation Quickstart (new), see the <em>introduction</em> section and the <em>Implementation Details</em> section</li>\r\n</ul>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero    <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-19T12:19:30.6-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509576",
+    "ThreadId": "231080",
+    "Html": "<p>Thanks fantivero, found it.</p>\r\n<p>also found that post too:&nbsp;<a href=\"http://blogs.msdn.com/b/kashiffl/archive/2010/10/05/integrating-prism-v4-region-navigation-with-silverlight-frame-navigation.aspx\">http://blogs.msdn.com/b/kashiffl/archive/2010/10/05/integrating-prism-v4-region-navigation-with-silverlight-frame-navigation.aspx</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-19T12:49:43.043-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509582",
+    "ThreadId": "231080",
+    "Html": "<p>Hi,</p>\r\n<p>I am glad that you found it. Additionally, in the Karl Shifflett's blog you can find the following blog post: <a href=\"http://blogs.msdn.com/b/kashiffl/archive/2010/10/04/prism-v4-region-navigation-pipeline.aspx?wa=wsignin1.0\">Prism v4 Region Navigation Pipeline</a></p>\r\n<p>I think that you can find interesting the section that he talks about the <strong>IRegionMemberLifeTime</strong>.</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero    <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-19T12:58:32.5-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

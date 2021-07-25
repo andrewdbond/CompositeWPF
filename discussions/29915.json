@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "99695",
+    "ThreadId": "29915",
+    "Html": "<strong>Hi,<br>\r\n</strong><br>\r\n<strong>I&nbsp;am working with prism framework and having three modules. how can i load this&nbsp;three modules based on the role through config file?.<br>\r\nor is there any other way to load modules based on the roles?<br>\r\n<br>\r\nplease anyone help me as soon as possible.<br>\r\n<br>\r\nThanks,<br>\r\nJ.Alexander.</strong>\r\n",
+    "PostedDate": "2008-06-18T22:53:38.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99866",
+    "ThreadId": "29915",
+    "Html": "Hi J<br>\r\n<br>\r\nThe modue loader out of the box won't do this for you. What you can do though is create your own module&nbsp;loader (by implementing IModuleLoader)&nbsp;that will check group permissions before loading a module&nbsp;Then you will need to register your version in the container. If you are using the UnityPrismBootstrapper, you can do this by overriding the ConfigureContainer method. In that method register the new ModuleLoader BEFORE you call the base. In the base we call a RegisterTypeIfMissing method that will only register our ModuleLoader if an IModuleLoader has not already been registered.<br>\r\n<br>\r\nRegards<br>\r\nGlenn<br>\r\n<br>\r\n",
+    "PostedDate": "2008-06-19T17:01:37.873-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "276803",
+    "ThreadId": "29915",
+    "Html": "<p>Glenn,</p>\r\n<p>Do you have any examples of this?&nbsp; I am looking for something like the Smart Client Baseline Architecture Toolkit (SC-BAT).&nbsp;&nbsp;<span style=\"font:7pt 'Times New Roman'\">&nbsp;</span>Using the module loader extensions provided by CAB, SC-BAT provides a module loader that will download any optional module by using role-based information loaded from the authentication service. Roles can be assigned to each module by using the schema in the profile catalog.&nbsp; Only those modules assigned to any one role will be downloaded to the desktop from the server.&nbsp;</p>\r\n<p>What needs to be done to&nbsp;make PRISM work this way?&nbsp;</p>\r\n<p>&nbsp;<span style=\"color:blue;font-size:8pt\">&lt;</span><span style=\"color:maroon;font-size:8pt\">Modules</span><span style=\"color:blue;font-size:8pt\">&gt;</span></p>\r\n<p><span style=\"color:blue;font-size:8pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span style=\"color:maroon;font-size:8pt\">ModuleInfo</span><span style=\"color:blue;font-size:8pt\"> </span><span style=\"color:red;font-size:8pt\">AssemblyFile</span><span style=\"color:blue;font-size:8pt\"> =</span><span style=\"font-size:8pt\">&quot;<span style=\"color:blue\">Desktop.Module.CustomerModule.dll</span>&quot;<span style=\"color:blue\"> /&gt;</span></span></p>\r\n<p><span style=\"color:blue;font-size:8pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>&lt;</strong></span><strong><span style=\"color:maroon;font-size:8pt\">Roles</span></strong><strong><span style=\"color:blue;font-size:8pt\">&gt;</span></strong></p>\r\n<p><strong><span style=\"color:blue;font-size:8pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span></strong><strong><span style=\"color:maroon;font-size:8pt\">Role</span></strong><strong><span style=\"color:blue;font-size:8pt\"> </span></strong><strong><span style=\"color:red;font-size:8pt\">Allow</span></strong><strong><span style=\"color:blue;font-size:8pt\">=</span></strong><strong><span style=\"font-size:8pt\">&quot;<span style=\"color:blue\">RoleA</span>&quot;<span style=\"color:blue\">/&gt;</span></span></strong></p>\r\n<p><strong><span style=\"color:blue;font-size:8pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span></strong><strong><span style=\"color:maroon;font-size:8pt\">Roles</span></strong><strong><span style=\"color:blue;font-size:8pt\">&gt;</span></strong></p>\r\n<p><span style=\"color:blue;font-size:8pt\">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &lt;</span><span style=\"color:maroon;font-size:8pt\">ModuleInfo</span><span style=\"color:blue;font-size:8pt\"> </span><span style=\"color:red;font-size:8pt\">AssemblyFile</span><span style=\"color:blue;font-size:8pt\"> =</span><span style=\"font-size:8pt\">&quot;<span style=\"color:blue\">Desktop.Module.OnlineBankingModule.dll</span>&quot;<span style=\"color:blue\">&gt;</span></span></p>\r\n<p><span style=\"color:blue;font-size:8pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>&lt;</strong></span><strong><span style=\"color:maroon;font-size:8pt\">Roles</span></strong><strong><span style=\"color:blue;font-size:8pt\">&gt;</span></strong></p>\r\n<p><strong><span style=\"color:blue;font-size:8pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span></strong><strong><span style=\"color:maroon;font-size:8pt\">Role</span></strong><strong><span style=\"color:blue;font-size:8pt\"> </span></strong><strong><span style=\"color:red;font-size:8pt\">Allow</span></strong><strong><span style=\"color:blue;font-size:8pt\">=</span></strong><strong><span style=\"font-size:8pt\">&quot;<span style=\"color:blue\">RoleB</span>&quot;<span style=\"color:blue\">/&gt;</span></span></strong></p>\r\n<p><strong><span style=\"color:blue;font-size:8pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span></strong><strong><span style=\"color:maroon;font-size:8pt\">Roles</span></strong><strong><span style=\"color:blue;font-size:8pt\">&gt;</span></strong></p>\r\n<p><span style=\"color:blue;font-size:8pt\">&lt;/</span><span style=\"color:maroon;font-size:8pt\">ModuleInfo</span><span style=\"color:blue;font-size:8pt\">&gt;</span></p>\r\n<p><span style=\"font-size:8pt\"><span style=\"color:#000000\">Regards,</span></span></p>\r\n<p><span style=\"font-size:8pt\"><span style=\"color:#000000\">Geoff Niehaus, MCPD:EA</span></span></p>",
+    "PostedDate": "2010-01-13T11:29:24.99-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "276964",
+    "ThreadId": "29915",
+    "Html": "<p>As far as I know there is nothing in Prism equivelent to the role-based loading / profile catalog type support in SCSF.</p>",
+    "PostedDate": "2010-01-13T20:53:50.473-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "277251",
+    "ThreadId": "29915",
+    "Html": "<p>Glenn,</p>\r\n<p>It looks like the SCSF has not been updated since <span id=\"ctl00_ctl00_MasterContent_Content_ReleaseDateLiteral\">April of 2008, and I don't see any planned updates.&nbsp; I am not interested in going with any technology that is not being moved forward.&nbsp; PRISM is the only one I am aware of that will have .NET 4.0 support (e.g. MEF, etc.).&nbsp; The project I am starting has the potential of having several hundred modules and not all users will need all modules.&nbsp; I am thinking that having some kind of configurable role-based module loading will keep users from getting application updates to modules they are not using, and allow them to get new modules if their role changes. </span></p>\r\n<p><span>Maybe there is a better approach here.&nbsp; What would you recommend around controlling what modules get loaded in a configurable way based on what role and/or subscription a user has?&nbsp; What I am hearing is that I have to roll my own code for this, or should I wait a few months...</span></p>\r\n<p><span>Regards,</span></p>\r\n<p><span>Geoff Niehaus, MCPD:EA</span></p>",
+    "PostedDate": "2010-01-14T11:05:45.13-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "279072",
+    "ThreadId": "29915",
+    "Html": "<p id=2ecdc730-e748-012c-ec94-12313b030e09>Hi Geoff,</p>\r\n<p id=2ecdd390-e748-012c-ec95-12313b030e09>The SCSF is going to be updated for VS 2010 as you can read in <a href=\"http://blogs.msdn.com/simplifying_patterns_and_practices/archive/2009/11/05/factories-on-visual-studio-2010-an-update.aspx\">this blog post</a> by <a href=\"http://blogs.msdn.com/donsmith/\">Don Smith</a>. As Glenn said, there is not an out-of-the-box way in Prism-v2 to perform role based module loading, but the following thread deals with a similar question (which also has links to many other threads) and might be useful:</p>\r\n<ul>\r\n<li><a href=\"View.aspx?ThreadId=79345\">Conditional loading of Modules</a></li>\r\n</ul>\r\n<p>Another thing you might find useful is proposing this kind of feature/guidance to be in for the <a href=\"http://blogs.msdn.com/blaine/archive/2010/01/15/prism-4-0.aspx\">next Prism version</a>. You can do that either <a href=\"View.aspx?ThreadId=80980\">here</a> or in the <a href=\"../WorkItem/List.aspx\">Issue Tracker</a>.</p>\r\n<p id=2ece03c0-e748-012c-ec97-12313b030e09>Please let me know if this helps.</p>\r\n<p id=2ece1ca0-e748-012c-ec98-12313b030e09>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-01-19T10:01:54.897-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1135437",
+    "ThreadId": "473479",
+    "Html": "We have a product which acts as a base framework for other applications/teams.<br />\n<br />\nI am declaring type mappings through unity configuration. On the other hand, every configured module has its IModule implementation in which we map a view with predefined region.<br />\n<br />\nHowever, to achieve this, every other 'module' project team has to write its 'IModule' implementation and do 'region mapping/registration' themselves in the code. <br />\n<br />\n__Is it somehow possible for every module to tell my base product that it wants to register  X, Y, Z  types/instances through unity &quot;configuration&quot;? My base framework will resolve types/instances and do appropriate mappings. It will allow module teams to focus just on their WPF business views instead of implementing <code>IModule</code> etc.__<br />\n<br />\n<em>At present, type mapping is possible in unity but I cannot associate registration with the Prism module. Further, it's not possible to map a resolved type with the predefined region.</em><br />\n<br />\nE.g. In our application Shell we have a region named 'BusinessRegion'. We have an interface called 'IBusinessView'. Every module will have several business views. Depending on module &amp; its workflow, we have to navigate from one business view to another. However, at present I cannot know which business view belongs to which module. <br />\n",
+    "PostedDate": "2013-12-13T03:18:37.23-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1135603",
+    "ThreadId": "473479",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding there is no method to know which instances, classes or type registrations came from each module. This is mainly because the concept of &quot;module&quot; is only valid before it's loaded and initialized. After that, the components exposed by the module become components of the application like all the others and hence, there is no distinction between them that could help you &quot;know&quot; from which &quot;module&quot; they came.\r<br />\n<br />\nWhat's more, we could think of a module like simply a &quot;logic abstraction&quot; that groups a collection of types, instances and configurations to be added to the main application. Therefore, a module could be anything from an assembly to a collection of classes in you main application. The only requirement is to have what we could describe as the &quot;definition of the module&quot; which is a class implementing the <strong>IModule</strong> interface. Without it, we could argue that there would be no difference between an common assembly and a Prism module at all. At most, they could be assemblies with types to add to the container, which is something I believe that can be done using <strong>Unity</strong> directly without requiring to treat the assembly as a module.\r<br />\n<br />\nTherefore, to implement the architecture you are describing you could drop the Prism modules and work with common assemblies directly. When you load them manually, you could then analyze it then, include the required configurations, register views in regions etc. \r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-12-13T09:58:32.503-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

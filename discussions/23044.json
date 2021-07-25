@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "77069",
+    "ThreadId": "23044",
+    "Html": "\r\nI know it is only spike code, but if it's there, I believe is so you get feedback so here it is :)<br /><br />I think we should leverage existing delegates such as: System.Action&lt;T&gt;. System.Func&lt;T, ...&gt;<br /><br />I don't see the need for the following delegates:<br /><br />Listener&lt;TSubscriber&gt;<br />CommandDelegate&lt;TDelegate&gt;<br /><br />In my \"app framework\", I already defined plenty of \"default\" actions that could be leveraged.<br />",
+    "PostedDate": "2008-02-28T07:16:33.043-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "77597",
+    "ThreadId": "23044",
+    "Html": "\r\nThanks for the feedback, and we will keep this in mind.<br />",
+    "PostedDate": "2008-03-01T12:50:06.723-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "78181",
+    "ThreadId": "23044",
+    "Html": "\r\nThere is a good argument that the Action&lt;T&gt; is not self documenting in the same was as Listener&lt;TSubscriber&gt; is.<br />",
+    "PostedDate": "2008-03-04T13:20:45.08-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "78212",
+    "ThreadId": "23044",
+    "Html": "\r\nBuilding on existing knowledge is a lot more \"self documenting\" to me than trying to understand some new delegateS.<br /><br />Just by reading \"Listener&lt;TSubscriber&gt;\" doesn't give me a clue about the delegate signature. Action&lt;T&gt; does. It's everywhere. So is Func&lt;T&gt;. In my world at least :)<br /><br />I'll give you another example:<br /><br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\npublic class Person\r\n{\r\n  public bool IsOnMedicine{ get; set; }\r\n  public int Age { get; set; }\r\n}\r\n \r\npublic static class PersonExpressions\r\n{\r\n  public static Func&lt;Person, bool&gt; CanDrink = person =&gt; person.Age &gt; 18 &amp;&amp; !person.IsOnMedicine;\r\n}\r\n</pre><br />In the BCL, they've introduced the Predicate&lt;T&gt; delegate. I understand it \"documents\" well the intent. However, everywhere a method accepts a Predicate&lt;T&gt; parameter, I can say bye-bye to my existing expressions I've build for LINQ.<br /><br />LINQ:<br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\nList&lt;Person&gt; persons = ...\r\nIEnumerable&lt;Person&gt; personsIWantToBeWithTonight = persons.Where(PersonExpressions.CanDrink);\r\n</pre><br />List&lt;T&gt;.FindAll(Predicate&lt;T&gt; predicate)<br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\nList&lt;Person&gt; persons = ...\r\nList&lt;Person&gt; personsIWithICouldBeWithIfItCompiled = persons.FindAll(PersonExpressions.CanDrink); // Won't compile\r\n</pre><br />I personally think leveraging well established delegates has great value for reuse, especially with business rules.<br />",
+    "PostedDate": "2008-03-04T15:16:34.13-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

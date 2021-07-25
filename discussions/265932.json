@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "645140",
+    "ThreadId": "265932",
+    "Html": "\r\n<p>Hi there,</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp; &nbsp;recently ive been working on a silverlight project which was based heavily on popup ChildWindows. We've decided to use prism. Ive studied samples of interaction requests and how to separate visual and logical part of our popup child window mechanism\r\n but ive encountered a few problems. We had some main tab region and there were registered main views from each module. After some user input a popup window came out and user was able to setup some properties. My question is how can i use Microsoft.Practices.Prism.Interactivity.InteractionRequest\r\n for my custom popup ChildWindow so i can modify content of a childwindow in a runtime but this window must be closable from within content context. Next thing i need standard ValidationSummary and for example BusyIndicator as a standard predefined part of\r\n this ChildWindow UI but source of validation summary and busy indicator value must came from content assigned to a childwindow. ive made a few tweaks and its looks akward to me but they worked. -&gt;</p>\r\n<p>&lt;telerik:RadBusyIndicator IsBusy=&quot;{Binding Content.DataContext.IsBusy, ElementName=contentControl}&quot;&gt;</p>\r\n<p>As you can see IsBusy property is bound to Content and underlying DataContext which contain IsBusy property on contentControl object within this xaml :-) As ive stated before it seems little bit weird and i am looking for a better solution since i dont like\r\n ElementName or named controls within the xaml. Is there any other way how to do this?</p>\r\n<p>And another important things is if i close this popup child window and reopen it silverlight end up with error describing i am trying to add the same visual controls which exists somewhere else.</p>\r\n<p>&nbsp;</p>\r\n<p>Thank you for any ideas and sorry for my bad english.</p>\r\n",
+    "PostedDate": "2011-07-20T12:31:45.693-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645257",
+    "ThreadId": "265932",
+    "Html": "<p>One solution&nbsp;I have been studying child containers in unity <a href=\"http://www.pnpguidance.net/Post/UnityNestedContainersIUnityParentContainerCreateChildContainer.aspx\">http://www.pnpguidance.net/Post/UnityNestedContainersIUnityParentContainerCreateChildContainer.aspx</a></p>\n<p><a href=\"http://development-guides.silverbaylabs.org/Video/Prism-Eventing\">http://development-guides.silverbaylabs.org/Video/Prism-Eventing</a>&nbsp; eventing is very important part of prism</p>\n<p><a href=\"http://weblogs.asp.net/rashid/archive/2009/03/05/use-event-aggregator-to-make-your-application-more-extensible.aspx\">http://weblogs.asp.net/rashid/archive/2009/03/05/use-event-aggregator-to-make-your-application-more-extensible.aspx</a></p>\n<p><a href=\"http://compositewpf.codeplex.com/discussions/211908\">http://compositewpf.codeplex.com/discussions/211908</a></p>\n<p><a href=\"http://www.dotnetcurry.com/ShowArticle.aspx?ID=699\">http://www.dotnetcurry.com/ShowArticle.aspx?ID=699</a></p>\n<p><a href=\"http://csharperimage.jeremylikness.com/2009/09/decoupled-childwindow-dialogs-with.html\">http://csharperimage.jeremylikness.com/2009/09/decoupled-childwindow-dialogs-with.html</a></p>\n<p><a href=\"http://blogs.infosupport.com/blogs/alexb/archive/2011/02/21/silverlight-4-creating-useful-base-classes-for-your-views-and-viewmodels-with-prism.aspx\">http://blogs.infosupport.com/blogs/alexb/archive/2011/02/21/silverlight-4-creating-useful-base-classes-for-your-views-and-viewmodels-with-prism.aspx</a></p>\n<p><a href=\"http://forums.silverlight.net/t/231347.aspx/2/10\">http://forums.silverlight.net/t/231347.aspx/2/10</a></p>\n<p>&nbsp;</p>",
+    "PostedDate": "2011-07-20T17:45:00.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645301",
+    "ThreadId": "265932",
+    "Html": "<p><a href=\"http://msdn.microsoft.com/en-us/library/gg405494(v=PandP.40).aspx#UserInteractionPatterns\">http://msdn.microsoft.com/en-us/library/gg405494(v=PandP.40).aspx#UserInteractionPatterns</a></p>\n<p>your answer is really found under interaction requests, It mentions publish subscribe&nbsp; which&nbsp;is event aggregator in prism &nbsp;&nbsp;</p>\n<p>and using behaviors in prism</p>\n<p><a href=\"http://mokosh.co.uk/?tag=/prism\">http://mokosh.co.uk/?tag=/prism</a>&nbsp;this is another useful tool</p>\n<p>you could I suppose use shared services it uses mef, service locator pattern as well</p>\n<p>service locator is registered&nbsp; inside the xaml&nbsp;&nbsp;&nbsp;<a href=\"http://blogs.msdn.com/b/bobbrum/archive/2010/11/22/prism-4-in-silverlight-with-mef-compositioninitializer.aspx\">http://blogs.msdn.com/b/bobbrum/archive/2010/11/22/prism-4-in-silverlight-with-mef-compositioninitializer.aspx</a>&nbsp; read the shared services&nbsp; section</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>",
+    "PostedDate": "2011-07-20T19:56:19.487-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645310",
+    "ThreadId": "265932",
+    "Html": "<p><a href=\"http://www.dotnetpatterns.net/content/185-Silverlight-4.0-Prism-4.0-Telerik-Ribbon-Application-Template\">http://www.dotnetpatterns.net/content/185-Silverlight-4.0-Prism-4.0-Telerik-Ribbon-Application-Template</a></p>\n<p>I am not familar with telerik this may help...&nbsp;&nbsp;<a href=\"http://www.telerik.com/community/forums/wpf/busy-indicator/radbusyindicator-not-showing-in-mvvm-app.aspx\">http://www.telerik.com/community/forums/wpf/busy-indicator/radbusyindicator-not-showing-in-mvvm-app.aspx</a></p>\n<p><a href=\"http://weblogs.asp.net/fredriknormen/archive/2009/11/30/silverlight-4-mvvm-with-commanding-and-wcf-ria-services.aspx\">http://weblogs.asp.net/fredriknormen/archive/2009/11/30/silverlight-4-mvvm-with-commanding-and-wcf-ria-services.aspx</a></p>",
+    "PostedDate": "2011-07-20T20:16:56.587-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "623097",
+    "ThreadId": "260230",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I am using AvalonDock with prism.</p>\r\n<p>I have written a simple&nbsp;<span style=\"font-family:Consolas,'Courier New',Courier,monospace; white-space:pre\">PaneRegionAdapter from a example i found on the net (below)</span></p>\r\n<p>now this was working fine in the following example</p>\r\n<pre><div style=\"color:black; background-color:white\"><pre><span style=\"color:blue\"><br></span></pre>\r\n<pre><span style=\"color:blue\">var</span> dcViewModel = ServiceLocator.Current.GetInstance&lt;DocumentContentViewModel&gt;();\r\n<span style=\"color:blue\">var</span> cdView = <span style=\"color:blue\">new</span> DocumentContentView() {DataContext = dcViewModel};\r\n_regionManager.Regions[<span style=\"color:#a31515\">&quot;regionName&quot;</span>].Add(cdView)\r\n</pre>\r\n</div>\r\n</pre>\r\n<pre><br></pre>\r\n<pre>but i wanted to do it in a way where i don't have to set the DataContext all the time.</pre>\r\n<pre><br></pre>\r\n<pre>so the way i am trying to do it now is the following</pre>\r\n<pre><br></pre>\r\n<pre> <div style=\"color:black; background-color:white\"><pre> <span style=\"color:green\">// ResourceDictionary.xaml</span>\r\n &lt;DataTemplate DataType=<span style=\"color:#a31515\">&quot;{x:Type ViewModels:DocumentContentViewModel}&quot;</span> &gt;\r\n \t&lt;Views:DocumentContentView/&gt;\r\n &lt;/DataTemplate&gt;\r\n</pre>\r\n</div>\r\n</pre>\r\n<pre><pre><br></pre>\r\n<pre><span>&nbsp;</span><div style=\"color:black; background-color:white\"><pre><span style=\"color:green\">// add in the resource when module loads (this seem to load correctly</span>\r\nResourceDictionary rd = <span style=\"color:blue\">new</span> ResourceDictionary();\r\nrd.Source = <span style=\"color:blue\">new</span> Uri(<span style=\"color:#a31515\">&quot;pack://application:,,,/&lt;moduleName&gt;;Component/Views/ResourceDictionary.xaml&quot;</span>);\r\nApplication.Current.Resources.MergedDictionaries.Add(rd);\r\n</pre>\r\n</div>\r\n<br></pre>\r\n<pre><pre><div style=\"color:black; background-color:white\"><pre><span style=\"color:green\">// add the viewModel to the region </span>\r\n<span style=\"color:blue\">var</span> dcViewModel = ServiceLocator.Current.GetInstance&lt;DocumentContentViewModel&gt;();\r\n_regionManager.Regions[<span style=\"color:#a31515\">&quot;regionName&quot;</span>].Add(dcViewModel);\r\n</pre>\r\n</div>\r\n<br></pre>\r\n<pre><pre><br></pre>\r\n<pre>now the adapters OnViewsCollectionChanged event gets called but the <span>NotifyCollectionChangedEventArgs.NewItem&nbsp;</span></pre>\r\n<pre><span>is of type DocumnetContentViewModel which means that nothing is getting added to the regionTarget.&nbsp;</span></pre>\r\n<pre><span><br></span></pre>\r\n<pre><span>What i would be expecting is that prism would have resolved DocumentContentViewModel to a DocumentContentView through the resourceDictonary.</span></pre>\r\n<pre><span><br></span></pre>\r\n<pre>I was looking at other examples that do it this way but not to a AvalonDock. I think it's because i'm not adding any Behaviors to the adapter&nbsp;</pre>\r\n<pre>but i wouldn't know where to start with that as i have (re)read the Prism4 pdf.... with no luck </pre>\r\n<pre>I was wondering:</pre>\r\n<pre>1) if anyone could give me some hints on how this could/should be done?&nbsp;</pre>\r\n<pre>2) do i need to resolve the mapping manually? or is Prism meant to do this?&nbsp;</pre>\r\n<pre>3) am i barking up the wrong tree?</pre>\r\n<pre> </pre>\r\n<pre>Thank you</pre>\r\n<pre><br></pre>\r\n<pre>Rhys</pre>\r\n<pre><div style=\"color:black; background-color:white\"><pre>\r\n<span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> PaneRegionAdapter : RegionAdapterBase&lt;Pane&gt;\r\n    {\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">delegate</span> <span style=\"color:blue\">void</span> DockableContentHandler();\r\n \r\n        <span style=\"color:blue\">public</span> PaneRegionAdapter( IRegionBehaviorFactory regionBehaviorFactory ) : <span style=\"color:blue\">base</span>( regionBehaviorFactory )\r\n        {\r\n        }\r\n \r\n        <span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> IRegion CreateRegion()\r\n        {\r\n            <span style=\"color:blue\">return</span> <span style=\"color:blue\">new</span> Region();\r\n        }\r\n \r\n        <span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> <span style=\"color:blue\">void</span> Adapt(IRegion region, Pane regionTarget)\r\n        {\r\n            region.Views.CollectionChanged &#43;= <span style=\"color:blue\">delegate</span>(<span style=\"color:blue\">object</span> sender, NotifyCollectionChangedEventArgs e)\r\n            {\r\n                OnViewsCollectionChanged(sender, e, region, regionTarget);\r\n            };\r\n        }\r\n \r\n     \r\n        <span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> OnViewsCollectionChanged(<span style=\"color:blue\">object</span> sender, NotifyCollectionChangedEventArgs e, IRegion region, Pane regionTarget)\r\n        {\r\n            <span style=\"color:blue\">switch</span> (e.Action)\r\n            {\r\n                <span style=\"color:blue\">case</span> NotifyCollectionChangedAction.Add:\r\n                    <span style=\"color:blue\">foreach</span> (<span style=\"color:blue\">object</span> item <span style=\"color:blue\">in</span> e.NewItems)\r\n                    {\r\n                        <span style=\"color:blue\">var</span> newContent = item <span style=\"color:blue\">as</span> ManagedContent;\r\n \r\n                        <span style=\"color:blue\">if</span> (newContent != <span style=\"color:blue\">null</span>)\r\n                        {\r\n                            regionTarget.Items.Add(newContent);\r\n                            newContent.InvalidateParents();\r\n                        }\r\n                    }\r\n                    <span style=\"color:blue\">break</span>;\r\n            }\r\n        }\r\n    }\r\n\r\n</pre>\r\n</div>\r\n<br></pre>\r\n<pre><br></pre>\r\n</pre>\r\n</pre>\r\n</pre>\r\n<pre><br></pre>\r\n<p><span style=\"font-family:Consolas,'Courier New',Courier,monospace; white-space:pre\"><br>\r\n</span></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-06-05T02:51:01.787-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "623661",
+    "ThreadId": "260230",
+    "Html": "<p>Hi,</p>\r\n<p>You might find the articles mentioned in <a href=\"http://compositewpf.codeplex.com/discussions/250936\">this thread</a> useful to your purpose.</p>\r\n<p>If you can't find a solution to your problem by reading the aformentioned articles, it would be helpful if you could provide us with a repro sample application, so that we can help you further with this.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-06-06T11:52:54.37-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "659342",
+    "ThreadId": "260230",
+    "Html": "<p>Hi!</p>\r\n<p>I have looked around to find a complete example of how to use AvalonDock for handling regions in Prism 4.0. Since I'm pretty new to both these framworks I would love to have&nbsp;a complete sample application. There seems to a bunch of code snippets out there but no one is&nbsp;complete as far as I can see.</p>\r\n<p>Peter Svahn</p>",
+    "PostedDate": "2011-08-17T03:41:47.747-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "659608",
+    "ThreadId": "260230",
+    "Html": "<p>Hi, <br />I think you might find this link helpful, there you will find an application which merged <strong>Prism</strong> and<strong> AvalonDock</strong> for the GUI:</p>\r\n<ul>\r\n<li><a href=\"http://sofawpf.codeplex.com/\">Sofa V2.5, a WPF library for composite application</a></li>\r\n</ul>\r\n<p>Also note that&nbsp; regardless of which <strong>Region Adapter</strong> you are using, the behavior of a region remains the same. You'll fin more information regarding how the Regions mechanism works in prism in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921098(v=PandP.40).aspx\">Composing the User Interface chapter</a>:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098(v=PandP.40).aspx#sec14\">Default Region Functionality</a></li>\r\n</ul>\r\n<p><br />I hope you find this useful.</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-08-17T13:09:54.773-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "659818",
+    "ThreadId": "260230",
+    "Html": "<p>Thank you for your reply!</p>\r\n<p>I have seen the Sofa library too and It is probably great, but&nbsp;I would like to avoid bringing in yet another library. I was more looking for a \"standard\" example of how to implement a region adapter for AvalonDock in Prism, and I have found a couple, like <a href=\"http://blog.raffaeu.com/archive/2010/07/04/prism-and-wpf-custom-tab-region-adapter.aspx\">Prism and WPF. Custom Tab region adapter</a>. However they are not complete and have some loose ends. So if someone have the missing pices, please let me know.</p>\r\n<p>Peter Svahn</p>",
+    "PostedDate": "2011-08-18T00:04:59.39-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "925457",
+    "ThreadId": "260230",
+    "Html": "<p>Check the implemantion of PRISM &nbsp;that uses MEF + Avalon Dock + elysium + WPF ... <a href=\"http://central.codeplex.com/\">http://central.codeplex.com/</a></p>",
+    "PostedDate": "2012-10-11T11:58:00.023-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

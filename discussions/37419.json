@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "124145",
+    "ThreadId": "37419",
+    "Html": "Hi All,<br>\r\n<br>\r\nI'm having a resolve problem that I'm struggling with at the moment, any pointers would be great.<br>\r\n<br>\r\nAt the initialisation of ModuleA I register a Type like:<br>\r\n<br>\r\n&nbsp;_container.RegisterType&lt;IExportViewDataModel, ExportViewDataModel&gt;(new ContainerControlledLifetimeManager());<br>\r\n<br>\r\nI was under the impression this was almost like registering a Singleton?<br>\r\n<br>\r\nIn the same Module I need an instance of ExportViewDataModel which I get from the the container by:<br>\r\n<br>\r\nthis._dataModel = _container.Resolve&lt;ExportViewDataModel&gt;();<br>\r\n<br>\r\nNow in ModuleB I also need a reference to the same instance of ExportViewDataModel which I get from the container by:<br>\r\n<br>\r\nthis._exportViewDataModel = _container.Resolve&lt;IExportViewDataModel&gt;();<br>\r\n<br>\r\nHowever, I'm seeing the ExportViewDataModel constructor being called twice which means anything accessing the IExportViewDataModel is pushing data into one instance and the ExportViewController is pushing data into another instance of the ExportViewDataModel.&nbsp; I'm really confused by this as I was under the impression that since the type is registered with the container using the LifetimeManager that I would always be provided with a reference to the same instance.<br>\r\n<br>\r\nAny help, ideas would be great.<br>\r\n<br>\r\nThanks,<br>\r\n<br>\r\nJames.<br>\r\n",
+    "PostedDate": "2008-10-09T13:35:27.317-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "124147",
+    "ThreadId": "37419",
+    "Html": "Ahh ... schoolboy error ...<br>\r\n<br>\r\nI was registering my ExportPage at module initialisation BEFORE registering the type detailed above hence ... two instances kicking around ... DOH! (&gt;_&lt;)!!<br>\r\n",
+    "PostedDate": "2008-10-09T13:45:56.2-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

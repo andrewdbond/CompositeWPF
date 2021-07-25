@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "263618",
+    "ThreadId": "77110",
+    "Html": "<p>Hi,</p>\r\n<p>&nbsp;&nbsp;I was wondering what is the usual way of converting domain entities to ViewModels. &nbsp;Do you</p>\r\n<p>&nbsp;</p>\r\n<ul>\r\n<li>implement an UpdateModelFromDomainEntity() method and use Automapper</li>\r\n<li>do you update the VM from a service which fetches &nbsp;the domain/business entity from the domain/business layer, and let the service do the mapping?</li>\r\n<li>does the VM itself fetch the domain/business entity and maps its properties with that of the domain entity with the ViewModel?</li>\r\n<li>does the domain/business entity itself act as the ViewModel?</li>\r\n</ul>\r\n<p>Would like to here any other options that you follow.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p>Arun</p>",
+    "PostedDate": "2009-12-04T05:57:42.247-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "263654",
+    "ThreadId": "77110",
+    "Html": "<p>Hi Arun!</p>\r\n<p>These are just my experiences :-) The chosen solution is Use Case dependent and it's possible that multiple patterns fit within 1 system.</p>\r\n<p>- Generally speaking the DTO (Data Transfer Object) is rarely&nbsp;a ViewModel too. Of course with partial classes you can solve this problem, but by default a generated DTO doesn't support Property Changed notification, again it can be added by the proxy generation tool or by a custom T4 template and so on.</p>\r\n<p>-&nbsp;On the wire within a DTO only Id values are travelling for enum types. These are resolved to localized!! strings on the client, so here, the DTO can not be the ViewModel itself. My client side classes are heavily attributed, DisplayAttribute, various Validation attributes applied to members of a ViewModel.</p>\r\n<p>- Regarding the WHERE to translate them...I've a Service factory class which creates the proxy as needed and I've a &quot;local service&quot; class which encapsulates the real service call. In this class you can do client side caching and object translation too. This way the invoker (which is usally a view's command handler) gets a ViewModel back (or a propageted exception).</p>\r\n<p>- Regarding the HOW to translate them...you can have a 1-1 translator classes or you can add a constructor to your ViewModel which accepts one or more DTO to do the mapping.</p>\r\n<p>&nbsp;</p>\r\n<p>I hope I give some insights from my point of view which can help you in your decisions!</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p>Attila</p>",
+    "PostedDate": "2009-12-04T07:35:39.69-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

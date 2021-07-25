@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "709015",
+    "ThreadId": "282188",
+    "Html": "\r\n<p>I implemented my own TabControl (based on TabControl). I also created IMPLICIT style for TabItem.</p>\r\n<p>Everything works great before I start using Region with this TabControl. Tabs I add via XAML look properly as I styled them. But tabs region manager inserts DO NOT. They look stock. That means, when RegionManager creates tab - it somehow assigns it different\r\n style.</p>\r\n<p>I tried to make this tyle explicit and assign it to <span style=\"font-family:Consolas; color:#008000; font-size:x-small\">\r\n<span style=\"font-family:Consolas; color:#008000; font-size:x-small\"><span style=\"font-family:Consolas; color:#008000; font-size:x-small\">TabControlRegionAdapter.ItemContainerStyle\r\n</span></span></span></p>\r\n<p><a href=\"http://compositewpf.codeplex.com/discussions/65361\">http://compositewpf.codeplex.com/discussions/65361</a>&nbsp;</p>\r\n<p>This Works, but I'd rather have RabControlRegionAdapter to pick up my implicit style. Is there any way to make it work right?</p>\r\n",
+    "PostedDate": "2011-12-07T13:37:34.39-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "711088",
+    "ThreadId": "282188",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, setting the <strong>TabControlRegionAdapter.ItemContainerStyle</strong> property in the corresponding <strong>TabControl </strong>is part of the normal behavior of the <strong>TabControlRegionAdapter</strong>. As it can be seen in the <strong>PrepareContainerForItem </strong>method of the <strong>TabControlRegionSyncBehavior</strong> behavior, when the item is \"prepared\" to be added in the <strong>TabControl</strong>, its <strong>Style </strong>property is set to the value returned by the <strong>GetItemContainerStyle </strong>method of the <strong>TabControlRegionAdapter</strong>, which simply returns the value of the <strong>ItemContainerStyle </strong>property of a specific <strong>DependencyObject </strong>(in this case, the <strong>TabControl</strong>). This is why, when the <strong>ItemContainerStyle</strong> property is set in your <strong>TabControl</strong>, the style is applied properly.</p>\r\n<p>If you do not wish to use this property, you could create your own custom region adapter (based on the <strong>TabControlRegionAdapter</strong>) that obtains the required style through other means (for example, using the other properties of your <strong>TabControl</strong>) and register that behavior overriding the <strong>ConfigureRegionAdapterMappings </strong>method in your bootstrapper.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-12-12T12:46:13.39-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

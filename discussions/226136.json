@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "489456",
+    "ThreadId": "226136",
+    "Html": "<p>I have implemented MVVM with DelegateCommands. <strong>The commands shall listen to the CommandManager (UI changes).</strong></p>\r\n<p>The following thread does provide a working solution, but one has to change the Prism source code:</p>\r\n<p><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=47338\">http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=47338</a></p>\r\n<p>The follwing solution did not work in my case:</p>\r\n<p><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=44750\">http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=44750</a></p>\r\n<p>I implemented the lambada in the View, as well as in the ViewModel, but both did not work.</p>\r\n<p>Does anyone have a suggestion, I am looking for a solution, where I do not need to change the Prism source code.</p>\r\n<p>Would it be an option to have the first solution be implemented in the offical source code? ;-)</p>\r\n<p>Thankx, Harry</p>",
+    "PostedDate": "2010-09-05T11:03:23.697-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "490239",
+    "ThreadId": "226136",
+    "Html": "<p>Harry,</p>\r\n<p>Sorry you have run into a snag in implementing your scenario.&nbsp;&nbsp;By default, the&nbsp;Prism DelegateCommand does not subscribe to CommandManager.</p>\r\n<p>This is by design.&nbsp; We do this for two reasons.&nbsp; First to make the WPF DelegateCommand work the same as the Silverlight DelegateCommand.&nbsp; Second, the ViewModel's should know when a state change occurs that could effect if a command can execute or not; when this state change occurs the ViewModel would raise the CanExecuteChanged event.</p>\r\n<p>If you want to use command manager in your WPF applications you have two options.&nbsp;&nbsp;Either modify the DelegateCommand to meet your needs or use the WPF&nbsp;RelayCommand that does subscribe to command manager.</p>\r\n<p>At this time, we won't be changing the Prism source code that we deliver.</p>\r\n<p>Have a great day,</p>\r\n<p>Karl</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-07T10:07:53.15-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "492695",
+    "ThreadId": "226136",
+    "Html": "<p>Ran into exactly the same issue last week. I was using Josh Smith's RelayCommand, but have been switching over to prism so thought I might as well use the delegate command instead. Seems I need to stick to RelayCommand for my purposes, although this thread got me a bit worried... <a href=\"http://groups.google.com/group/wpf-disciples/browse_thread/thread/4b18a9de327be281/2486661b5ede0fd9\">http://groups.google.com/group/wpf-disciples/browse_thread/thread/4b18a9de327be281/2486661b5ede0fd9</a></p>\r\n<p>Might be a good idea to point this out in the commanding example maybe?</p>\r\n<p>-Nick</p>",
+    "PostedDate": "2010-09-13T03:27:28.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "492942",
+    "ThreadId": "226136",
+    "Html": "<p>Nick,</p>\r\n<p>I've put in a request for a change to the docs to call this out.</p>\r\n<p>Thank you for taking the time to report this to us.</p>\r\n<p>Cheers,</p>\r\n<p>Karl</p>",
+    "PostedDate": "2010-09-13T11:36:13.833-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

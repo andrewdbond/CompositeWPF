@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "257674",
+    "ThreadId": "75306",
+    "Html": "<p>We ran across an interesting scenario this afternoon that I thought I should probably ask about. All of our PresentationModels are registered with the Unity Container via each modules Module.cs. like so.</p>\r\n<p>mContainer.RegisterType&lt;IMyType, MyTYpe&gt;();</p>\r\n<p>We use the container as a service locator when working within a single module like so.</p>\r\n<p>IMyType myType = mContainer.Resolve&lt;IMyTYpe&gt;();</p>\r\n<p>A colleague of my mentioned to me today that he could remove the registration entry from the module file completely and still access the type in the container like so.</p>\r\n<p>MyType myType = mContainer&lt;MyType&gt;();</p>\r\n<p>I was a little taken back by this as I did not think it was possible. Could someone please explain the difference between registering a item and the resolving it as opposed to simple resolving it?</p>\r\n<p>Thanks,</p>\r\n<p>Brette</p>",
+    "PostedDate": "2009-11-16T14:10:20.61-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "257683",
+    "ThreadId": "75306",
+    "Html": "<p>I'm no expert but here is my take...</p>\r\n<p>If you *always* only ever use the MyType implementation of IMyType, then there is no difference (i.e. I believe you will get pretty much the same impementaion using either method). However,&nbsp;the non-register method&nbsp;couples you to that concrete implementation. This may not be a problem depending how and where you are using IMyType/MyType.</p>\r\n<p>Generally speaking decoupled is a better pattern, leading to less rigid systems. You could, potentially, create a new MyType2 that you use in certain circumstances (customer specific maybe?) so you would register it for those circumstances and MyType otherwise.</p>\r\n<p>One place that decoupling can&nbsp;help is when Unit Testing - an interface is generally easier to Fake.</p>\r\n<p>So my gut feeling is that you are probably right to use the method you are currently using, but that only you/your colleagues can decide if the extra work involved creating and using the interfaces is worth that potential benefit of decoupling.</p>\r\n<p>I'm sure someone else can create a more compelling argument, but that's the best I can do :)</p>\r\n<p>Cheers</p>\r\n<p>Mark</p>",
+    "PostedDate": "2009-11-16T14:43:23.707-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "257687",
+    "ThreadId": "75306",
+    "Html": "<p>Yeah I agree philosophically, however I am just trying to understand if there is a technical difference.</p>\r\n<p>Thanks for the insight,</p>\r\n<p>Brette</p>",
+    "PostedDate": "2009-11-16T15:15:19.773-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

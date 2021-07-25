@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1079980",
+    "ThreadId": "453245",
+    "Html": "Hi,<br />\n<br />\nI am using Prism 4.1 with MEF. What i want is to run Bootstrapper on background silently while my login window shows up. So that user can continue to input username and password while the Bootstrapper is loading a lot of modules.<br />\n<br />\nIn order to get this, I am using BackgroundWorker.However i get error saying &quot;The calling thread must be STA, because many UI components require this.&quot;. I tried to use a thread with STA mode to run the BackgroundWorker, however it caused other issues that i could't figure out. in order to avoid this issue, i return null as a result of CreateShell()<br />\n when the Bootstrapper is running.  and after Bootstrapper is loaded completely, i set the Shell property via SetShell() as shown in below. However, I got error saying &quot;The region manager does not contain the ShellApplicationMdiContainerRegion region.&quot; . The &quot;ShellApplicationMdiContainerRegion&quot; is the region name I defined in ShellView xaml. Seems to me that this region is not registered in the prism.<br />\n<br />\nCould someone shred some light on this?<br />\n<br />\nBy the way, I neither want to use a thread with STA mode nor Application.Current.Dispatcher.Invoke method to run Bootstrapper as any of them will cause other big issues.<br />\n<br />\nin my Bootstrapper class:<br />\n<pre><code>    protected override DependencyObject CreateShell()\n    {\n        return null;\n    }\n</code></pre>\n\nin my login class:<br />\n<pre><code>    private void Backgroundworkder_DoWork(object sender, DoWorkEventArgs e)\n    {\n        bootstrapper = new Bootstrapper();\n        bootstrapper.Run();\n    }\n    private void Backgroundworkder_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)\n    {\n        bootstrapper.SetShell();\n    }\n    public void SetShell()\n    {\n        this.Shell = this.Container.GetExportedValue&lt;ShellView&gt;();\n    }</code></pre>\n\n",
+    "PostedDate": "2013-08-13T02:13:36.81-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1080165",
+    "ThreadId": "453245",
+    "Html": "Hi,\r<br />\n<br />\nI've seen that your question was answered in a <a href=\"https://compositewpf.codeplex.com/discussions/450301\" rel=\"nofollow\">previous thread</a>. Therefore, it would be helpful to know why you are trying to run the <strong>Login Window</strong> in the main thread and the <strong>Bootstrapper</strong> on a <strong>BackgroundWorker</strong> instead of doing the opposite (<strong>Bootstrapper</strong> on main thread and the <strong>Login Window</strong> on a STA thread).\r<br />\n<br />\nRegards,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a> <br />\n",
+    "PostedDate": "2013-08-13T09:59:37.1-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1080532",
+    "ThreadId": "453245",
+    "Html": "Yes. I used that approach as Damian suggested. It did work but the problem was that it took a long time to show up the Login Window as it's running on a seperate STA thread(my customer don't like this as it's a bad user experience).<br />\n<br />\nAnyway, Thanks Federico and your colleagues for helping me all the time....<br />\n<br />\nNow i use BackgroundWorker back and fix the error &quot;The region manager does not contain the ShellApplicationMdiContainerRegion region.&quot; by calling below method and like to share it here.<br />\n<pre><code>    public void RegisterRegion(DependencyObject regionControl, string regionName)\n    {\n        if (null == regionControl || string.IsNullOrEmpty(regionName))\n            return;\n\n        if (false == regionManager.Regions.ContainsRegionWithName(regionName))\n        {\n            RegionManager.SetRegionManager(regionControl, regionManager);\n        }\n    }</code></pre>\n\n",
+    "PostedDate": "2013-08-14T06:50:19.707-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1081022",
+    "ThreadId": "453245",
+    "Html": "Hi,\r<br />\n<br />\nI'm glad you found an approach to solve this problem. Thanks for sharing your solution with the community as it would be useful for other users facing a similar scenario. \r<br />\n<br />\nRegards,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a> <br />\n",
+    "PostedDate": "2013-08-15T09:40:55.743-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "Scenario:\n \nStandard Prism application (Shell + ModuleA) with MefBootstrapper. \n \nModuleCatalog.xaml describes ModuleInfo like this:\n \n﻿<Modularity:ModuleInfo\n        InitializationMode=\"OnDemand\"\n        Ref=\"ModuleA.xap\"\n        ModuleName=\"ModuleA\"\n        ModuleType=\"ModuleA.ModuleDefinitions.ModuleA, ModuleA, Version=1.0.0.0\"\n        >\n    </Modularity:ModuleInfo>\n \nModuleA.cs\n [ModuleExport(typeof(ModuleA))] public class ModuleA : IModule   //pay attention I don't name myModule here...\n    {\n        private readonly IRegionManager _RegionManager;\n        private IModuleCatalog _Container;\n \n        [ImportingConstructor]\n        public ModuleA(IModuleCatalog container, IRegionManager regionManager)\n        {\n            this._Container = container;\n            this._RegionManager = regionManager;\n        }\n \n        public void Initialize()\n        {\n            _RegionManager.RegisterViewWithRegion(\"ModuleARegion\", typeof(ModuleAView));\n        }\n    }\n \nModuleA is loaded OnDemand from Shell using  ModuleManager.LoadModule(\"ModuleA\");.... Everything is nice...\n \nNow, rename ﻿﻿ModuleName in ModuleCatalog.xaml to something else, for example like this:\n \n<Modularity:ModuleInfo InitializationMode=\"OnDemand\" \nRef=\"ModuleA.xap\" \nModuleName=\"ModuleAAAAA\"\nModuleType=\"ModuleA.ModuleDefinitions.ModuleA, ModuleA, Version=1.0.0.0\" > \n</Modularity:ModuleInfo>\n \nand load moduleAAAAA again in code, or just set InitializationMode = WhenAvailabe... Boom Crash...Exception: ﻿\n \nUnable to locate the module with type 'ModuleA.ModuleDefinitions.ModuleA, ModuleA, Version=1.0.0.0' among the exported modules. Make sure the module name in the module catalog matches that specified on ModuleExportAttribute for the module type.\n \nOnly name of the module was changed in config... \nI found that ModuleName should match  [ModuleExport(typeof(ModuleA))]  in ModuleA class.... or export should be done with name [ModuleExport(\"moduleAAAAA\",typeof(ModuleA))] and this name must be the same as in config...\n \nBug?\n \nWith Unity ModuleName can have any value in ModuleName - everything works fine....\nBUG -((",
+    "LastUpdatedDate": "2013-02-21T18:38:17.943-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-03-29T10:49:22.307-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ModuleInfo.ModuleName with MefBootstrapper must be the same as Type Implementing IModule",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 1,
+    "Id": 8068
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nAs explained in this discussion (http://compositewpf.codeplex.com/discussions/251672), this is currently by design.\r\n\r\nWe are leaving this work item open as a suggestion so that the Prism team might consider it for future releases.\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami﻿",
+      "PostedDate": "2012-01-05T10:02:40.773-08:00",
+      "Id": 156422
+    },
+    {
+      "Message": "Hi,\r\n\r\nFor those interested in changing the ways modules are loaded and initialized, like mentioned in this work item, take into account that the Prism Library provides various ways to populate the module catalog and load modules; however, some scenario may have needs that the library does not provide.\r\n\r\nTherefore to achieve different needs, the Prism Library can be customized as mentioned in the Prism documentation, Appendix E: Extending Prism (http://msdn.microsoft.com/en-us/library/gg430866%28v=pandp.40%29.aspx)  \r\n\r\nRegarding the aforementioned scenario, in my opinion a possible approach to allow naming the modules with a different value than the type name, could be achieved by providing a custom implementation of the MefModuleManager and the MefModuleInitializer, as currently when retrieving a module the checking to see if a module exists is done with the Metadata.ModuleName which in cases where the contract name is not define is the same as the module type.\r\n\r\nFor example, based on the Prism implementation of these classes you could try modifying the following methods, to avoid the aforementioned exceptions:\r\n\r\nThe OnImportsSatisfied method in the MefModuleManager class could be changed to also compare with the Metadata.ModuleType.Name instead of only the Metadata.ModuleName in the registeredModules dictionary. This should be done to avoid loading the same module twice.\r\n\r\nIf so, you will also have to modify the CreateModule method in the MefModuleInitializer class to also check for the ModuleType in the ImportedModules collection, to avoid an exception when initializing the module.\r\n\r\nAlso to avoid changing the Prism library, you can replace the default implementation of these classes with the new ones by deriving your new type from the interface you want to replace and apply the appropriate MEF Export attributes to it (Replacing Default Types Using MEF: http://msdn.microsoft.com/en-us/library/gg430866(v=pandp.40).aspx#sec14).\r\n\r\nTake into account that this approach might not be suitable for all scenarios, as this could cause unexpected behaviors.\r\n\r\nRegards,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami﻿ ",
+      "PostedDate": "2012-03-20T11:34:11.087-07:00",
+      "Id": 156423
+    }
+  ]
+}

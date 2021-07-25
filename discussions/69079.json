@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "235045",
+    "ThreadId": "69079",
+    "Html": "<p>Hi all,</p>\r\n<p>I'm relatively new to WPF and have been looking through the Stock Trader Reference Implementation and cannot for the life of me figure out how MainToolbar gets it's data source. It's clearly somehow bound to modules but I can't see where that is happening.</p>\r\n<p>Anyone care to solve that mystery for me?</p>\r\n<p>Cheers,</p>\r\n<p>Rich</p>",
+    "PostedDate": "2009-09-16T01:34:50.64-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "235719",
+    "ThreadId": "69079",
+    "Html": "<p>Hi Rich,</p>\r\n<p>You can check the WatchModule class located in the WatchList module, which  uses <a href=\"http://msdn.microsoft.com/en-us/library/dd490826.aspx\">View  Discovery</a> to register the view in the region in its Initialize() method.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-17T11:48:48.303-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "237191",
+    "ThreadId": "69079",
+    "Html": "<p>Ah, that makes sense now. Thanks Damian!</p>",
+    "PostedDate": "2009-09-22T01:09:34.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "503003",
+    "ThreadId": "69079",
+    "Html": "<p>I have been trying to figure this out as well. What I can't understand is: What is contained in the MainToolbar? I only see two buttons labeled &quot;POSITIONS&quot; and &quot;WATCH LIST&quot;. Are these two buttons contained in the MainToolbar?</p>\r\n<p>This code is in the WatchModule.cs:</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> Initialize()\r\n        {\r\n            <span style=\"color:blue\">this</span>.watchListController.Run();\r\n            <span style=\"color:blue\">this</span>.regionManager.RegisterViewWithRegion(RegionNames.MainToolBarRegion, () =&gt; <span style=\"color:blue\">this</span>.addWatchPresenter.View);\r\n        }\r\n\r\n</pre>\r\n</div>\r\n<p>And this code is in the PositionModule.cs:</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> Initialize()\r\n        {            \r\n            <span style=\"color:blue\">this</span>.regionManager.RegisterViewWithRegion(RegionNames.ResearchRegion, () =&gt; <span style=\"color:blue\">this</span>.positionPieChartPresentationModel.View);\r\n            <span style=\"color:blue\">this</span>.regionManager.RegisterViewWithRegion(RegionNames.MainRegion, () =&gt; <span style=\"color:blue\">this</span>.positionSummaryPresentationModel.View);\r\n        }\r\n</pre>\r\n</div>\r\n<p>When doing a global Find, there is no place where the PositionModule is added to the MainToolBar.</p>\r\n<p>Where exactly in the code are &quot;POSITIONS&quot; and &quot;WATCH LIST&quot; added? I tried stepping through the code above but was unable to find this.</p>\r\n<p>What I would like to do is create a new module and a new button to launch the module.</p>",
+    "PostedDate": "2010-10-06T07:37:36.36-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "503792",
+    "ThreadId": "69079",
+    "Html": "<p>Hi,</p>\r\n<p>The view which is added to the Main Toolbar is named  <strong>AddWatchView.xaml</strong>. This view contains&nbsp;the&nbsp;text box that allows  you to add symbols to the WatchList.</p>\r\n<p>Regarding to where the &ldquo;POSITION&rdquo; and &ldquo;WATCH LIST&rdquo; texts are added, you  could&nbsp;check the following locations:</p>\r\n<ol>\r\n<li>PositionSummaryPresentationModel.cs (line 61)</li>\r\n<li>WatchListPresentationModel.cs (line 47)</li>\r\n</ol>\r\n<p>Both of them are returned in the <strong>HeaderInfo </strong>property of the  aforementioned classes.</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-07T10:21:52.863-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

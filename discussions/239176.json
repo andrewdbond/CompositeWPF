@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "539000",
+    "ThreadId": "239176",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>I made my WPF project file with &quot;Microsoft.Practices.Prism.dll&quot; as same as StockTrader RI example.</p>\r\n<p>It comes from source code version Prism 52595.</p>\r\n<p>In this version, under the &quot;V4/PrismLibrary/Destop&quot; directory can generate the that assembly.</p>\r\n<p>But In the References(by adding reference), two Assemblies name appeared.</p>\r\n<p>One is &quot;Microsoft.Practices.Prism&quot;. It comes from &quot;\\V4\\Bin\\Desktop&quot; binary library directory of Prism 4.</p>\r\n<p>Other is &quot;Prism.Desktop&quot; It comes from &quot;V4/PrismLibrary/Destop&quot; source directory of Prism 4.</p>\r\n<p>both are same Assembly name.</p>\r\n<p>&nbsp;</p>\r\n<p>I want to using source code &quot;Prism.Desktop&quot; source code only but the Visual Studio 2010 make a error like a this.</p>\r\n<p>&quot;Error&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp; The type 'Microsoft.Practices.Prism.Bootstrapper' is defined in an assembly that is not referenced. You must add a reference to assembly 'Microsoft.Practices.Prism, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35'.&nbsp;&nbsp;&nbsp;\r\n my project~~&quot;</p>\r\n<p>&nbsp;</p>\r\n<p>How can I solve this compile error?</p>\r\n<p>And why two assembly shows different reference name even if same assemply name in the properties view window of visual studio.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks in advance.</p>\r\n",
+    "PostedDate": "2010-12-21T14:18:33.973-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "539448",
+    "ThreadId": "239176",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>The difference between Microsoft.Practices.Prism and Prism.Desktop is that the former is the compiled assembly, and the latter is the project (with the source code), both provided in the Prism release. The error you're experiencing might be because you're\r\n adding some references to compiled assemblies, and some to the projects.</p>\r\n<p>In order to avoid these errors, you could try removing all the references in your target solution, and then adding the references to the projects from the Prism Library (not the compiled DLLs). Conversely, you could add all the compiled DLLs and not the\r\n projects, which should work as well.</p>\r\n<p>I hope you find this information useful.</p>\r\n<div>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n</div>\r\n",
+    "PostedDate": "2010-12-22T09:57:12.18-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "539617",
+    "ThreadId": "239176",
+    "Html": "\r\n<p>Hi Miguel,</p>\r\n<p>Thanks your helping. It was my first experince a quastion in patterns &amp; practice discussion.</p>\r\n<p>Your tip was works well after removing compiled assembly.</p>\r\n<p>Only using the binary's assembly that's OK.</p>\r\n<p>But I would like to use&nbsp;only compiled assembly for more easy debugging purpose. It was same error message. as I posted it.</p>\r\n<p>Any&nbsp;tip or solving method?</p>\r\n<p>Redsock</p>\r\n<div><a id=\"x_ctl00_ctl00_MasterContent_ProjectTitleControl1_ProjectTitleLink\" href=\"http://compositewpf.codeplex.com/\"></a><a id=\"x_ctl00_ctl00_MasterContent_ProjectTitleControl1_ProjectTitleLink1\" href=\"http://compositewpf.codeplex.com/\">\r\n<h1 id=\"x_ctl00_ctl00_MasterContent_ProjectTitleControl1_ProjectHeader\"><span id=\"x_ctl00_ctl00_MasterContent_ProjectTitleControl1_TitleLabel\">&nbsp;</span></h1>\r\n</a></div>\r\n",
+    "PostedDate": "2010-12-22T15:25:43.863-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "540002",
+    "ThreadId": "239176",
+    "Html": "\r\n<p id=\"x_6c19cb30-f0d7-012d-bce5-123139181d06\">Hi Redsock,</p>\r\n<p id=\"x_6c19dcf0-f0d7-012d-bce7-123139181d06\">As I mentioned in my former answer, in case you want to reference the source code of Prism to help when you are debugging your application, you need to remove all the references to the Prism Binary assemblies.\r\n That is to say, you should remove all the references to external Prism DLLS, and only keep references to the projects you've added to the solution (taken from the Prism Library solution included in the Prism release). Note that after you have removed the assemblies,\r\n you should clean your solution, and only then you should add the references to the projects.</p>\r\n<p id=\"x_6c19dcf0-f0d7-012d-bce7-123139181d06\">An example of your solution structure would be like this (assuming that you're using all of the Prism Library's functionalities):</p>\r\n<p id=\"x_6c1a2410-f0d7-012d-bced-123139181d06\" style=\"padding-left:30px\"><strong><em>---</em></strong></p>\r\n<p id=\"x_6c1a2410-f0d7-012d-bced-123139181d06\" style=\"padding-left:30px\">&Oslash;\r\n<strong><em>Prism.Desktop </em></strong></p>\r\n<p id=\"x_6c1a3140-f0d7-012d-bcee-123139181d06\" style=\"padding-left:30px\">&Oslash;\r\n<strong><em>Prism.MefExtensions.Desktop or Prism.UnityExtensions.Desktop</em></strong></p>\r\n<p id=\"x_6c1a40c0-f0d7-012d-bcef-123139181d06\" style=\"padding-left:30px\">&Oslash;\r\n<strong><em>Prism.Interactivity</em></strong></p>\r\n<p id=\"x_6c1a40c0-f0d7-012d-bcef-123139181d06\" style=\"padding-left:30px\"><strong><em>---</em></strong></p>\r\n<p id=\"x_6c1a5080-f0d7-012d-bcf0-123139181d06\" style=\"padding-left:30px\">&Oslash;\r\n<strong><em>ModuleA --&gt; Reference to the projects from above</em></strong></p>\r\n<p id=\"x_6c1a5080-f0d7-012d-bcf0-123139181d06\" style=\"padding-left:30px\">&Oslash;\r\n<strong><em>ModuleB --&gt; Reference to the projects from above</em></strong></p>\r\n<p id=\"x_6c1a5080-f0d7-012d-bcf0-123139181d06\" style=\"padding-left:30px\">&Oslash;<em><strong> (...)&nbsp;</strong></em><strong><em> --&gt; Reference to the projects from above</em></strong></p>\r\n<p id=\"x_6c1a6290-f0d7-012d-bcf1-123139181d06\" style=\"padding-left:30px\">&Oslash;\r\n<strong><em>ShellProject </em><em>--&gt; Reference to the projects from above</em></strong></p>\r\n<p id=\"x_6c1a9d00-f0d7-012d-bcf4-123139181d06\">I hope you find this handy to resolve your scenario.</p>\r\n<p id=\"x_6c1ab300-f0d7-012d-bcf5-123139181d06\">Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-23T11:21:55.433-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

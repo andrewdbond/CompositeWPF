@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1018770",
+    "ThreadId": "437476",
+    "Html": "I am doing a design using PRISM framework and Domain-Driven design pattern. I have a question regarding the domain type reference between different Modules.\r<br />\n<br />\nI have a Module (Assembly) called Order, another Module (Assembly) called Product. In the Model and ViewModel of the Order Module, we will use Product Class (Type) from Product Module.\r<br />\nHow can I reference the Product type with loosely-coupled way. \r<br />\n<br />\nI am thinking to do this by two ways:<br />\n<ol>\n<li>\nDefine all the domain types in the Infrastructure Assembly, which will be referenced by all the Modules<br />\n</li>\n<li>\nDefine the interfaces in Infrastructure Assembly, and the domain types in the Modules will implement the according interface (Like Product will implement IProduct).<br />\n</li>\n</ol>\nBut I think these two solutions are not good. I hope I can get help from your guys here.\r<br />\n<br />\nThanks a lot.\r<br />\n<br />\nKevin<br />\n",
+    "PostedDate": "2013-03-21T04:07:48.2-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1018953",
+    "ThreadId": "437476",
+    "Html": "Could you elaborate on why you don't think these are good solutions?\r<br />\n<br />\nThe problem you describe is independent from Prism.\r<br />\nYou will <em>have</em> to reference another .NET assembly to use a type in a, dependent, assembly.\r<br />\nThere is no loosely-coupled way to do this AFAIK.\r<br />\n<br />\nAdditionally separating the interface from the implementation is a good thing.\r<br />\n<br />\njan<br />\n",
+    "PostedDate": "2013-03-21T08:54:47.53-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1018975",
+    "ThreadId": "437476",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding, and taking into account the context of your scenario, the best option for this case would be to define those domain types in a Shared Assembly (Option 1), so they can be referenced by the rest of your Modules that use them. \r<br />\n<br />\nAs far as I know, the second option you are mentioning is more commonly used to share a Service between Modules in a loosely coupled way, but not for sharing types. That's why it doesn't seem to provide a benefit in your application context.\r<br />\n<br />\nHope this helps,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-03-21T09:07:26.253-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1019170",
+    "ThreadId": "437476",
+    "Html": "Thanks Janverley and Fmartinez's reply.\r<br />\n<br />\nProbably I will take the option 1, and use option 2 to share the services between Modules.\r<br />\n<br />\nKevin<br />\n",
+    "PostedDate": "2013-03-21T13:49:32.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

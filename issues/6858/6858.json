@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Please see Prism 4.0 CTP - August 2010 at http://compositewpf.codeplex.com/releases/view/49963\r\n",
+    "ClosedDate": "2010-08-02T13:57:39.187-07:00",
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "Microsoft.Practices.ServiceLocation.ActivationException was unhandled by user code\n  Message=Activation error occured while trying to get instance of type DelayedRegionCreationBehavior, key \"\"\n  Source=Microsoft.Practices.ServiceLocation\n  StackTrace:\n       at Microsoft.Practices.ServiceLocation.ServiceLocatorImplBase.GetInstance(Type serviceType, String key) in C:\\Projects\\Framework\\CommonServiceLocator\\Microsoft.Practices.ServiceLocation\\ServiceLocatorImplBase.cs:line 53\n       at Microsoft.Practices.ServiceLocation.ServiceLocatorImplBase.GetInstance[TService]() in C:\\Projects\\Framework\\CommonServiceLocator\\Microsoft.Practices.ServiceLocation\\ServiceLocatorImplBase.cs:line 90\n       at Microsoft.Practices.Composite.Presentation.Regions.RegionManager.CreateRegion(DependencyObject element) in C:\\Projects\\Framework\\Prism 4\\CAL\\Desktop\\Composite.Presentation\\Regions\\RegionManager.cs:line 121\n       at Microsoft.Practices.Composite.Presentation.Regions.RegionManager.OnSetRegionNameCallback(DependencyObject element, DependencyPropertyChangedEventArgs args) in C:\\Projects\\Framework\\Prism 4\\CAL\\Desktop\\Composite.Presentation\\Regions\\RegionManager.cs:line 114\n       at System.Windows.DependencyObject.OnPropertyChanged(DependencyPropertyChangedEventArgs e)\n       at System.Windows.FrameworkElement.OnPropertyChanged(DependencyPropertyChangedEventArgs e)\n       at System.Windows.DependencyObject.NotifyPropertyChange(DependencyPropertyChangedEventArgs args)\n       at System.Windows.DependencyObject.UpdateEffectiveValue(EntryIndex entryIndex, DependencyProperty dp, PropertyMetadata metadata, EffectiveValueEntry oldEntry, EffectiveValueEntry& newEntry, Boolean coerceWithDeferredReference, Boolean coerceWithCurrentValue, OperationType operationType)\n       at System.Windows.DependencyObject.SetValueCommon(DependencyProperty dp, Object value, PropertyMetadata metadata, Boolean coerceWithDeferredReference, Boolean coerceWithCurrentValue, OperationType operationType, Boolean isInternal)\n       at System.Windows.DependencyObject.SetValue(DependencyProperty dp, Object value)\n       at System.Windows.Baml2006.WpfMemberInvoker.SetValue(Object instance, Object value)\n       at MS.Internal.Xaml.Runtime.ClrObjectRuntime.SetValue(XamlMember member, Object obj, Object value)\n       at MS.Internal.Xaml.Runtime.ClrObjectRuntime.SetValue(Object inst, XamlMember property, Object value)\n  InnerException: System.InvalidOperationException\n       Message=Sequence contains more than one element\n       Source=System.Core\n       StackTrace:\n            at System.Linq.Enumerable.Single[TSource](IEnumerable`1 source)\n            at Microsoft.Practices.Composite.MefExtensions.MefServiceLocatorAdapter.DoGetInstance(Type serviceType, String key) in C:\\Projects\\Framework\\Prism 4\\CAL\\Desktop\\Composite.MefExtensions\\MefServiceLocatorAdapter.cs:line 58\n            at Microsoft.Practices.ServiceLocation.ServiceLocatorImplBase.GetInstance(Type serviceType, String key) in C:\\Projects\\Framework\\CommonServiceLocator\\Microsoft.Practices.ServiceLocation\\ServiceLocatorImplBase.cs:line 49\n       InnerException: \n \n \nlatest drop Prism v4, Loading fails with nothing other than a region being placed in the shellview.   <ContentControl rgn:RegionManager.RegionName=\"MainRegion\" Grid.Row=\"1\" />\n \ngoing deep into the debugger shows that we have more than 1 Instance and based on the comments in the MefServiceLocatorAdapter.cs  at the implementation of  DoGetInstance(Type serviceType, string key) at line 51 of MefServiceLocatorAdapter.cs",
+    "LastUpdatedDate": "2013-05-16T05:28:52.97-07:00",
+    "PlannedForRelease": "Prism 4.0 CTP - August 2010",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-06-12T18:41:03.057-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "PrismV4 and Regions with MEF, throws error",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 4,
+    "Id": 6858
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi, i Resolved this changed in the class MefBootstrapper the method ConfigureContainer, like this:\r\nprotected virtual void ConfigureContainer()\r\n        {\r\n            Assembly executingAssembly = Assembly.GetExecutingAssembly();\r\n            //Comment this line\r\n            //this.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(executingAssembly));\r\n\r\n            this.Container.ComposeExportedValue(this.Logger);\r\n            this.Container.ComposeExportedValue(this.ModuleCatalog);\r\n            this.Container.ComposeExportedValue(this.Container);\r\n            this.Container.ComposeExportedValue(this.AggregateCatalog);\r\n\r\n            IServiceLocator serviceLocator = this.Container.GetExportedValue();\r\n            Microsoft.Practices.ServiceLocation.ServiceLocator.SetLocatorProvider(() => serviceLocator);\r\n        }\r\n\r\nthays why they used CatalogExportProvider in the MefBootstrapper Dll here:\r\nprotected virtual void CreateContainer()\r\n        {\r\n#if SILVERLIGHT                                \r\n            ComposablePartCatalog defaultCatalog = new AssemblyCatalog(Assembly.GetCallingAssembly());\r\n#else\r\n            //HERE\r\n            ComposablePartCatalog defaultCatalog = new AssemblyCatalog(Assembly.GetAssembly(typeof(MefBootstrapper)));\r\n#endif\r\n            \r\n            CatalogExportProvider defaultExportProvider = new CatalogExportProvider(defaultCatalog);\r\n            this.Container = new CompositionContainer(this.AggregateCatalog, defaultExportProvider);\r\n            defaultExportProvider.SourceProvider = this.Container;\r\n\r\n            return;\r\n        }\r\n\r\nthis line:\r\nthis.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(executingAssembly));\r\njust add again all export/import parts from MefBootstrapper",
+      "PostedDate": "2010-06-15T05:30:52.357-07:00",
+      "Id": 156239
+    },
+    {
+      "Message": "Another thing tha you need care is when you use DirectoryCatalog in the method ConfigureAggregateCatalog, you need to delete the Microsoft.Practices.* dlls, from the folder that you need to load parts. if you left this file get the same error cuz it's export\\import all dlls there(and yeah  Microsoft.Practices.* dlls too once again).",
+      "PostedDate": "2010-06-15T06:01:58.327-07:00",
+      "Id": 156240
+    },
+    {
+      "Message": "confirmed.\r\n\r\nthat singular line commented out works, allowing regions to work and not throw an error.",
+      "PostedDate": "2010-06-15T06:38:54.557-07:00",
+      "Id": 156241
+    },
+    {
+      "Message": "as for the directorycatalog I only allow the DLLs for the part created to go to that folder via a post - build action.",
+      "PostedDate": "2010-06-15T06:40:19.38-07:00",
+      "Id": 156242
+    }
+  ]
+}

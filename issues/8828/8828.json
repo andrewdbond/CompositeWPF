@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": "2012-04-04T10:42:55.1-07:00",
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "When downloading 'XAP A' with dependent module 'A1' on module 'B1' from 'XAP B' I found a race condition during A1 module initialization. Even if A1 has DependsOnModules attribute set to module B1, it happens when XAP A is downloaded and processed before XAP B download completed. In this case A1 just skip DependsOnModules in ModuleManger.AreDependenciesLoaded by checking currently loaded Modules in ModuleCatalog only.\n \nProposed fix:\nchange return value in Prism.Desktop\\Modularity\\ModuleManager.cs to consider DependsOn qunatity\nprivate bool AreDependenciesLoaded(ModuleInfo moduleInfo)\n        {\n            IEnumerable<ModuleInfo> requiredModules = this.moduleCatalog.GetDependentModules(moduleInfo);\n            if (requiredModules == null)\n            {\n                return true;\n            }\n \n            int notReadyRequiredModuleCount =\n                requiredModules.Count(requiredModule => requiredModule.State != ModuleState.Initialized);\n \n            // bug: it wasn't checking whether module depends on other not yet loaded modules in ModulesCatalog\n            return notReadyRequiredModuleCount == 0 && requiredModules.Count() >= moduleInfo.DependsOn.Count;\n        }",
+    "LastUpdatedDate": "2013-05-16T05:28:40.367-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-10-16T08:45:40.08-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "PRISM4 Dowloading XAPs each other dependent via DeploymentCatalog issue",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8828
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nI tried to reproduce the error you are mentioning, but without success. To do this, I created a sample application with two modules A and B (in different XAPs) registered through a Xaml file, where module A depends on module B. These modules are downloaded remotely at the same time, and module B size is larger than A, to ensure module A completes its download before its dependency. As expected, module A is not initialized until module B initializes, because of the dependency. You can find the sample in my skydrive account (https://skydrive.live.com/?ppud=4#!/?cid=7890102b5b8bc928&sc=documents&uc=1&id=7890102B5B8BC928!103), under the name remoteModuleLoadingWithProgress. \r\n\r\nPlease let us know if your scenario is different. If that’s the case, it would be helpful if you could provide us with a repro sample application that portrays your problem, so we can find the cause and a possible solution for your issue.\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami﻿",
+      "PostedDate": "2011-11-02T06:01:37.277-07:00",
+      "Id": 156526
+    },
+    {
+      "Message": "Hi,\r\n\r\nWe are closing this work item as the issue described could not be reproduced and it doesn't seem to be related to Prism.\r\n\r\nFor additional support regarding this subject, you could create a thread in the discussions section (http://compositewpf.codeplex.com/discussions), where we will help you with your concerns.\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini\r\n\n\n** Closed by DCherubini 3/30/2012 12:10 PM",
+      "PostedDate": "2012-03-30T12:12:23.573-07:00",
+      "Id": 156527
+    },
+    {
+      "Message": "Hi,\r\n\r\nWe are closing this work item as the issue described could not be reproduced and it doesn't seem to be related to Prism.\r\n\r\nFor additional support regarding this subject, you could create a thread in the discussions section (http://compositewpf.codeplex.com/discussions), where we will help you with your concerns.\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-03-30T12:12:24.273-07:00",
+      "Id": 156528
+    }
+  ]
+}

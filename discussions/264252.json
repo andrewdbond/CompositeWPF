@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "638734",
+    "ThreadId": "264252",
+    "Html": "\r\n<p>I'm trying to accomplish the following, but I think that my understanding as to how MEF and PRISM share controls is a bit skewed.&nbsp; For the sake of brevity, I have created\r\n<span style=\"text-decoration:underline\">fictitious </span>controls to hit my point.</p>\r\n<p>&nbsp;</p>\r\n<p><strong>Host.xaml -</strong> this view hosts an area where other fully functional views are plugged into</p>\r\n<p>Within Host.xaml....</p>\r\n<p>&lt;ContentControl regions:RegionManager.RegionName=&quot;<strong>mainRegion</strong>&quot; /&gt;</p>\r\n<p>&nbsp;</p>\r\n<p><strong>Employees.xaml - </strong>loaded into <strong>mainRegion </strong>upon link request</p>\r\n<p>Within Employees.xaml....</p>\r\n<p><strong>&nbsp;</strong></p>\r\n<p>&lt;ContentControl regions:RegionManager.RegionName=&quot;<strong>empAddressRegion</strong>&quot; /&gt;</p>\r\n<p>&nbsp;</p>\r\n<p><strong>Customers.xaml - </strong>loaded into <strong>mainRegion </strong>upon link request</p>\r\n<p>Within Customers.xaml....</p>\r\n<p><strong>&nbsp;</strong></p>\r\n<p>&lt;ContentControl regions:RegionManager.RegionName=&quot;<strong>custAddressRegion</strong>&quot; /&gt;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;<strong>Addresses.xaml</strong> - loaded into <strong>empAddressRegion</strong> or\r\n<strong>custAddressRegion</strong> when Employees.xaml or Customers.xaml&nbsp;is loaded into\r\n<strong>mainRegion </strong>on <strong>Host </strong>view, respectively.</p>\r\n<div id=\"_mcePaste\" style=\"width:1px; height:1px; overflow:hidden; top:0px; left:-10000px\">\r\n&#65279;</div>\r\n<p>&nbsp;Here is the class definition:&nbsp;</p>\r\n<pre style=\"font-family:Consolas; background:white; color:black; font-size:13px\">&nbsp;&nbsp;&nbsp;&nbsp;[<span style=\"color:#2b91af\">Export</span>]\r\n&nbsp;&nbsp;&nbsp;&nbsp;[<span style=\"color:#2b91af\">PartCreationPolicy</span>(<span style=\"color:#2b91af\">CreationPolicy</span>.Shared)]\r\n&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">public</span>&nbsp;<span style=\"color:blue\">partial</span>&nbsp;<span style=\"color:blue\">class</span>&nbsp;<span style=\"color:#2b91af\">Addresses</span>&nbsp;:&nbsp;<span style=\"color:#2b91af\">UserControl</span></pre>\r\n<p>So what I'm trying to achieve here is that I want the Addresses view to be loaded once, and once only, and used by other dynamically loaded content.</p>\r\n<p>When the app first loads, I can load <strong>Employees </strong>into <strong>mainRegion</strong>, and\r\n<strong>Addresses </strong>will load fine into <strong>empAddressRegion</strong>.&nbsp; I am performing the loading of the\r\n<strong>Addresses </strong>view into <strong>empAddressRegion </strong>via the following statement:&nbsp;</p>\r\n<pre style=\"font-family:Consolas; background:white; color:black; font-size:13px\"><span style=\"color:#008000\">\t// Code within Employees code behind</span></pre>\r\n<pre style=\"font-family:Consolas; background:white; color:black; font-size:13px\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">public</span>&nbsp;<span style=\"color:blue\">void</span>&nbsp;OnImportsSatisfied()\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{   \r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RegionManager.RegisterViewWithRegion(<span style=\"color:#a31515\">&quot;empAddressRegion&quot;</span>,&nbsp;<span style=\"color:blue\">typeof</span>(<span style=\"color:#2b91af\">Addresses</span>));\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}\r\n</pre>\r\n<p>However, when I attempt to load <strong>Customers </strong>into <strong>mainRegion</strong>, it fails with the &quot;Value does not fall within expected range&quot; exception when it attempts to load\r\n<strong>Addresses </strong>into <strong>custAddressRegion</strong> via the following statement:</p>\r\n<pre style=\"font-family:Consolas; background:white; color:black; font-size:13px\"><span style=\"color:#008000\">\t// Code within Customers code behind</span></pre>\r\n<pre style=\"font-family:Consolas; background:white; color:black; font-size:13px\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:blue\">public</span>&nbsp;<span style=\"color:blue\">void</span>&nbsp;OnImportsSatisfied()\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RegionManager.RegisterViewWithRegion(<span style=\"color:#a31515\">&quot;custAddressRegion&quot;</span>,&nbsp;<span style=\"color:blue\">typeof</span>(<span style=\"color:#2b91af\">Addresses</span>));\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}\r\n</pre>\r\n<pre style=\"font-family:Consolas; background:white; color:black; font-size:13px\">&nbsp;</pre>\r\n<pre style=\"font-family:Consolas; background:white; color:black; font-size:13px\">&nbsp;</pre>\r\n<p>It should also be noted that if <strong>Customers </strong>is loaded first, then the loading of\r\n<strong>Employees </strong>fails with the same exception.</p>\r\n<p>Again, the controls and their intent are fictitious, so I'm not after whether the Addresses control\r\n<span style=\"text-decoration:underline\">should </span>be shared.&nbsp;</p>\r\n<p>In my application, I do have a control that loads quite a bit of data that needs to be displayed on multiple controls that are dynamically loaded upon request, and I really want it to be loaded once and reused throughout.</p>\r\n<p>Given my scenario, is it possible to achieve the desired behavior based on my layout?</p>\r\n<p>If so, what am I doing wrong?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-07-07T06:54:41.253-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "638772",
+    "ThreadId": "264252",
+    "Html": "<p>Hi,</p>\r\n<p>You might find the following thread handy where similar behaviors using MEF are covered:</p>\r\n<p><a href=\"http://compositewpf.codeplex.com/discussions/240411\">RegionCreationException when opening page second time</a></p>\r\n<p>In case you continue experiencing this problem, it could be helpful if you could provide us with a repro sample (for example, uploading to <a href=\"http://skydrive.live.com/\">SkyDrive</a>) of your solution, so that we can help you find out the cause.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-07-07T07:57:37.92-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "638798",
+    "ThreadId": "264252",
+    "Html": "<p>Hi Miguel, thanks for the response.&nbsp; I had read that post you suggested before posting myself, however, it is not the same issue.&nbsp;</p>\r\n<p>My issue is a bit different, in that I have a control that I <span style=\"text-decoration: underline;\">want</span> to be shared by other controls that are <span style=\"text-decoration: underline;\">dynamically </span>loaded.&nbsp;</p>\r\n<p>The first dynamically loaded control that needs the shared control is able to load the shared control.&nbsp;</p>\r\n<p>Any further dynamically loaded content who needs access to the shared control fails.</p>\r\n<p>Is this a limitation of PRISM and the RegionManager?&nbsp;&nbsp;Can I truly share a control the way I have described?</p>\r\n<p>&nbsp;</p>\r\n<p>Much thanks!</p>",
+    "PostedDate": "2011-07-07T08:35:43.91-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "638866",
+    "ThreadId": "264252",
+    "Html": "<p>Hi,</p>\r\n<p>It could be helpful to know that a single instance of a control cannot be added to the visual tree twice. Therefore, if you wish to share the same instance of a control between different regions, you should remove it from one region before adding it to the other one.</p>\r\n<p>This happens because of the way Silverlight works, not due to a Prism limitation.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-07T10:04:59.407-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "639149",
+    "ThreadId": "264252",
+    "Html": "<p>Guido, thanks much, that answers my question.</p>",
+    "PostedDate": "2011-07-07T17:59:08.613-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

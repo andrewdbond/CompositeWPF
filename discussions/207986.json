@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "426215",
+    "ThreadId": "207986",
+    "Html": "<p>Hello,</p>\r\n<p>I am using PRISM v2 with Silverlight 4 beta (No VWD Express RC =&gt; No Silverlight RC). I have a module with a view named &quot;MyView.xaml&quot; in it. This view shows up in a region in the Shell page.</p>\r\n<p>When I add AutoCompleteBox using xaml and run the application and navigate to the page, I get Parser Error. If I add the AutoCompleteBox using code behind, it works.</p>\r\n<p>I am assuming it is because I am using Regions that this error is coming up since if I add the AutoCompleteBox in the Shell page(XAML) as a sibling to other ItemsControl's, it works.</p>\r\n<p>Any thoughts?</p>\r\n<p>Thanks.</p>",
+    "PostedDate": "2010-03-31T16:08:25.583-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "430955",
+    "ThreadId": "207986",
+    "Html": "<p>Hi,</p>\r\n<p>The exception is probably&nbsp;caused because the  <strong>System.Windows.Controls.Input</strong> assembly is not included in the  main XAP file at the moment the XAML is parsed. Silverlight XAML parser&nbsp;needs  the assembly to be&nbsp;deployed in the main&nbsp;xap file in order&nbsp;to map it to a  namespace, so a&nbsp;<strong>XamlParseException </strong>is thrown if that isn&rsquo;t the  case.&nbsp;You can find more information about&nbsp;the aforementioned&nbsp;behavior&nbsp;in&nbsp;<a href=\"http://msdn.microsoft.com/en-us/library/cc917841(VS.95).aspx\">this  article</a>.</p>\r\n<p>A possible solution to that problem could be to add a reference to the  <strong>System.Windows.Controls.Input </strong>assembly from the Shell  project.</p>\r\n<p>You can also check&nbsp;<a href=\"http://msdn.microsoft.com/en-us/library/dd458946.aspx\">this article</a>,  which clarifies that assemblies that are loaded in the main application don&rsquo;t  necessarily&nbsp;have to be in the modules&rsquo; XAP files under certain conditions.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-04-14T07:47:56.11-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

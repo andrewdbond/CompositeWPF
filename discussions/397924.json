@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "921391",
+    "ThreadId": "397924",
+    "Html": "\r\n<ul>\r\n<li>MEF, WPF, .Net4 </li></ul>\r\n<p>In my main project we inject scoped region managers everywhere typically using importing constructors.</p>\r\n<p>In every case I've checked the object is declared as IRegionManager, imported as the same and at run time shows as&nbsp;<strong>{Microsoft.Practices.Prism.Regions.RegionManager}</strong></p>\r\n<p>I have a separate project I'm building based on the main as an example to share code which declares and injects the variables the same way, but I'm running into some problems injecting views. &nbsp;In trying to troubleshoot the issue I noticed my region\r\n managers show up at run time as&nbsp;<strong>{Microsoft.Practices.Prism.MefExtensions.Regions.MefRegionManager}</strong></p>\r\n<p>The errors I'm having are unexpected so I'm trying to rule out the difference in region manager types.</p>\r\n<p>Any reason they would be different?</p>\r\n<p>Thanks</p>\r\n",
+    "PostedDate": "2012-10-03T10:53:41.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "921470",
+    "ThreadId": "397924",
+    "Html": "<p>Hi,</p>\r\n<p>As far as I know the <strong>MefRegionManager </strong>class implementation does not differ from the <strong>RegionManager </strong>class, this is a derived class from the <strong>Microsoft.Practices.Prism.Regions.RegionManager</strong> class, used to export and expose this type using the Managed Extensibility Framework (<strong>MEF</strong>).</p>\r\n<p>The <strong>Prism </strong>team created derived classes like this one, in the <strong>Microsoft.Practices.Prism.MefExtensions</strong> assembly that derived from the types they wanted to expose in order to ensure that the core <strong>Prism </strong>libraries were not container-specific.</p>\r\n<p>Perhaps, it would be helpful if you could provide us with more information about the problem you are experiencing, so we that can help you further with this.</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-10-03T12:41:31.07-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "921490",
+    "ThreadId": "397924",
+    "Html": "<p>That's all I needed for now. &nbsp;I was getting distracted by the different derived class while trying to resolve a different issue.</p>\r\n<p>It's the usual \"view already exists\" that I've deal with many times before, I wanted to make sure the problem wasn't coming from somewhere new.</p>\r\n<p>I'll post again if I need more help with it, thanks.</p>",
+    "PostedDate": "2012-10-03T13:13:07.253-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "502277",
+    "ThreadId": "229603",
+    "Html": "<p>Greetings,</p>\r\n<p>I have recently inherited a reasonably young user interface project with my company (previous person resigned).</p>\r\n<p>Without going into too much detail, one of the project goals is to allow injection of content and views of this content from third parties. To achieve this we are building a service oriented framework that uses dependency injection combined with MVVM techniques and allows people to register their content/views/services during bootstrap and it all magically becomes integrated.</p>\r\n<p>Prism was chosen as primary guidance and in particular the Unity flavor of implementation.</p>\r\n<p>Entering the project at this point I am happy with the technique/technology choices, and do not wish to change them.</p>\r\n<p>The concerns I have at this point is that it appears that (in my opinion) IUnityContainer has been ... abused. It has been injected into just about everything in the framework including base class Views and View Models. It is passed deep into our framework at a confusingly fine granularity -- and this rings alarm bells for me. Individual declarations (local, properties etc) count over 100, and individual uses count over 300, and the project/product is less than one third complete.</p>\r\n<p>From what I can gather, it is being used in the following (primary) ways:</p>\r\n<p>1. Service Locator (confusingly, Container.Resolve is being used in constructors of classes that also use [Dependency] properties)<br>2. Object factory (Container.Resolve&lt;ConcreteType&gt;() in order to have its dependencies injected)<br>3. Injection post construction (MyObject obj = new MyObject(myParameter); Container.BuildUp(obj);)<br>4. Service Context (Container.CreateChildContainer(), register 'local' services/objects in child, and pass around this 'context' to perform 1., 2. and 3.)</p>\r\n<p>My thoughts on these are:</p>\r\n<p>1. I don't so much mind, but for consistency I would prefer to use <em>either </em>service locator or dependency injection (personally preferring DI). I don't like that I do not know the object dependencies by looking at it's constructor or properties, instead I need to read the source code (which for a framework is questionable).</p>\r\n<p>2. Conceptually I don't mind, but I would prefer it to be wrapped in some kind of factory which sits on type of DI instead of using the container as a factory. This is fairly easy to achieve with an open generic type mapping of IFactory&lt;&gt; to UnityFactory&lt;&gt;.</p>\r\n<p>3. Problematic, I would like to use a factory, but would prefer not to create a factory for every single type that might take non-DI injected parameters. This appears to be a common challenge on forums I have read. I could create IMyObjectFactory which has a method Create(myParameter) and then create and instance of UnityMyObjectFactory to allow it to then have DI performed on it, but given the number of types that do this it seems cumbersome and clumsy (as opposed to 2. which is quite clean but only works for types that do not have non-DI dependencies).</p>\r\n<p>4. This one has really got me stumped. I can appreciate the value of context, and sometimes context with has some kind of hierarchy/inheritance/nesting/recursion (whichever you like), but I am struggling to see the value of creating IUnityContainer contexts deep inside your application. On a coarse level, I can see <em>some</em> value in a child unity container that holds services specific to a module, but not to any given service/view/viewmodel or indeed object instance. Whats the benefit? I can override a service at fine granularity, sure, but why? I can't test it. Runtime behavior predictability reduces even more (DI at a course level is enough of a challenge).</p>\r\n<p>My feeling at this point is that IUnityContainer should really only be referenced from the Bootstrapper and most likely and Module that requires integration, but extracting/replacing IUnityContainer with other suitable patterns appears to be quite painful unless I can figure a reasonably generic way to solve 3. and 4.</p>\r\n<p>So this is a call out to some seasoned Prism/Unity veterans.</p>\r\n<p>Are my gut feelings valid?<br> Which usages sound reasonable and which do not and why?<br> What recommendations can anyone offer at this point to help me move forward?</p>\r\n<p>A thousand thanks,</p>\r\n<p>Jahmai</p>",
+    "PostedDate": "2010-10-04T19:34:34.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "502598",
+    "ThreadId": "229603",
+    "Html": "<p>I think you are on the right track.&nbsp; My team &quot;banned&quot; passing&nbsp;IUnityContainer references into most objects (mostly viewmodels and such).&nbsp; Of course there were some exceptions but we found that using strict DI felt much clearer, and easier to manage.&nbsp; It also means it would be easier to replace Unity with something else in the future, if we need to.</p>",
+    "PostedDate": "2010-10-05T09:56:26.723-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "502616",
+    "ThreadId": "229603",
+    "Html": "<p id=a853e630-b2d4-012d-409a-123139183160>Hi Jahmai,</p>\r\n<p id=a853f010-b2d4-012d-409b-123139183160>As most of your concerns are related specifically to Unity and not to Prism scenarios, you could ask this question in the <a href=\"http://unity.codeplex.com/discussions\">Unity forum</a>, where you might get more accurate guidance.</p>\r\n<p>Fernando Antivero<br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-05T10:40:06.21-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "502716",
+    "ThreadId": "229603",
+    "Html": "<p>Thanks for the feedback John.</p>\r\n<p>Fantivero, my questions are Unity centric, but really they are guidance questions about best practices using such a container within the Prism framework, my apologies if that doesn't translate in my question.</p>",
+    "PostedDate": "2010-10-05T14:46:04.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "508040",
+    "ThreadId": "229603",
+    "Html": "<p>Hi Jahmai,</p>\r\n<p>I think this is an interesting question and I didn't take it to be just Unity-centric.&nbsp; I believe you are asking the more general question of how much dependency your code should have on references to any container,&nbsp;Unity or otherwise, and how best to reduce that&nbsp;dependency.</p>\r\n<p>Overall I agree with johnmathis2001.&nbsp; That is, use &quot;strict-DI&quot; where-ever you can, so that your code has no references to the container or service-locator.&nbsp; Any dependencies will be magically supplied by whatever container you happen to be using (which still is a kind of dependency on a general container being available,&nbsp; but looser).</p>\r\n<p>But what if it is difficult to use &quot;strict-DI&quot; in a particular case?&nbsp; I don't think it's worth losing too much sleep over the perfectionist goal of having 100%-DI-only.&nbsp; For example, in Prism's StockTrader sample you will find the following direct reference to the &quot;global&quot; service locator (See: StockTraderRI.Infrastructure\\ Behaviors\\ RegionPopupBehaviors.cs)</p>\r\n<p><em>&nbsp; IRegionManager regionManager =&nbsp;ServiceLocator.Current.GetInstance&lt;IRegionManager&gt;();<br></em>&nbsp;&nbsp;&nbsp;<br>I'm sure we could come up with a way to get rid of that dependency, but at what cost?&nbsp; Probably we would end up with something that was more complex and difficult to understand.&nbsp; What is the chance that we'll need to reuse this code in a context where a &quot;global&quot; ServiceLocator is not available? If there is almost no chance, then I'd rather put that&nbsp;time into something else.</p>\r\n<p>SLEverywhere</p>",
+    "PostedDate": "2010-10-15T14:27:51.247-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "508570",
+    "ThreadId": "229603",
+    "Html": "<p>Hi SLEverywhere,</p>\r\n<p>Thanks for the considered advice. This is what we have decided to do, which is to reduce dependency on the DI container by using &quot;strict-DI&quot; as much as possible, and then for places that it doesn't make sense or is difficult to achieve, expose a service locator. The trick is exposing the locator in such a way that it doesn't get abused, and educate the team so that misuse is caught in code review.</p>\r\n<p>Thanks :)</p>",
+    "PostedDate": "2010-10-17T17:25:00.603-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

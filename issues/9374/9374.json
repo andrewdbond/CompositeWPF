@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Hi,\n \nAs reported in related discussions, an exception is thrown when importing the IModuleManager instance inside a Module with Mef, this seems to occur when the module is registered in the bootstrapper using the MEF AggregateCatalog.\n \nThe following exception is thrown:\n \nAn exception occurred while initializing module 'HelloWorldModule'. \n    - The exception message was: GetExportedValue cannot be called before prerequisite import 'Microsoft.Practices.Prism.MefExtensions.Modularity.MefModuleManager..ctor (Parameter=\"moduleInitializer\", ContractName=\"Microsoft.Practices.Prism.Modularity.IModuleInitializer\")' has been set.\n \nMore information and possible approaches to avoid this can be found in the following related threads:\n \nImporting IModuleManager Inside a Module (http://compositewpf.codeplex.com/discussions/258960)\n \nProblem with importing IModuleManager in a Module (http://compositewpf.codeplex.com/discussions/354228)\n \nRegards,\n \nAgustin Adami\nhttp://blogs.southworks.net/aadami",
+    "LastUpdatedDate": "2013-02-21T18:38:00.16-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-05-03T10:36:07.187-07:00",
+    "Status": {
+      "Name": "Active",
+      "Id": 2
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Importing IModuleManager Inside a Module with Mef",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9374
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi Agustin,\r\n\r\nI came here after facing the same problem.\r\n\r\nMy workaround for that was so easy.\r\nIn overrided method ConfigureContainer of my bootstrapper,\r\nI added the following code :\r\n\r\nprotected override void ConfigureContainer()\r\n{\r\n    base.ConfigureContainer();\r\n\r\n    //Workaround\r\n    Container.SatisfyImportsOnce(typeof(ModuleManager));\r\n\r\n    //Add your own code here\r\n}\r\n\r\n\r\nRegards,\r\n\r\nAurélien SUDRE",
+      "PostedDate": "2012-05-27T06:24:48.04-07:00",
+      "Id": 156602
+    }
+  ]
+}

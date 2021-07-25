@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "939396",
+    "ThreadId": "402634",
+    "Html": "\r\n<p>I have a view which contains a tab control into which I inject a number of other views. One of the views that is in a tab has a browse button that navigates to a view where the user can select a record. On selecting a record, I call Journal.GoBack. This\r\n returns me to my previous view but the OnNaviagatedTo method is not called.&nbsp;Is there a way to update the navigation context to allow a proper return to my previous view?</p>\r\n<p>Andy</p>\r\n<div id=\"_mcePaste\" style=\"width:1px; height:1px; overflow:hidden; top:0px; left:-10000px\">\r\n&#65279;</div>\r\n",
+    "PostedDate": "2012-11-09T14:28:38.387-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "940293",
+    "ThreadId": "402634",
+    "Html": "<p>Hi Andy,</p>\r\n<p>I'm not sure if I have understood your scenario completely. But in my experience, when calling the <strong>NavigationService.Journal.GoBack()</strong> method, if the navigated view implements the <strong>INavigationAware </strong>interface then the <strong>OnNavigatedTo </strong>method is called, allowing to set the logic to initialize the view, the only thing to consider is that the previous view will be called with the same parameters passed when navigating it the previous time.</p>\r\n<p>On the other hand, take into account that the navigation journal can only be used for region-based navigation operations that are coordinated by the region navigation service. If you use view discovery or view injection to implement navigation within a region, the navigation journal will not be updated during navigation and cannot be used to navigate forward or backward within that region, perhaps this could be related to your problem.</p>\r\n<p>If this does not help, it would be helpful if you could provide us with more detailed information about your scenario so we can help you further with this.</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-11-12T06:24:09.507-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "940370",
+    "ThreadId": "402634",
+    "Html": "<p>Agustin,</p>\r\n<p>The issue is definitely that the journal is not up to date as it has no knowledge of the originator view as it was injected into the tab control rather than being navigated to. I was looking for a method to somehow preload the journal with details of the source view to allow a proper return to it.&nbsp;</p>\r\n<p>In the end I decided that it was neater to pop-up a window rather than navigate to a different view.</p>\r\n<p>Thanks.</p>\r\n<p>Andy</p>",
+    "PostedDate": "2012-11-12T08:36:31.347-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

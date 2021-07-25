@@ -1,0 +1,36 @@
+<div class="wikidoc"><h1>Project Linker: Issue when opening a solution with solution folders from Windows Explorer</h1><h2>Content</h2><ul><li><a href="#Problem">Problem</a></li>
+<li><a href="#Cause">Cause</a></li>
+<li><a href="#Fix">Fix</a></li>
+<li><a href="#Workaround">Workaround</a></li></ul>
+<a name="Problem"></a>
+<h2>Problem</h2>When a solution, that contains solution folders and project links, is opened from Windows Explorer or the BAT files provided by Composite Application Library (CAL), the Project Linker does not work as expected:
+<ul><li>Projects are not linked</li>
+<li>Updates made to the source projects will not be replicated in the target projects.</li>
+<li>Grid inside the &quot;Project Links&quot; Window (Menu: Project &gt; Edit Links) does not contain any project links.</li></ul>
+<a name="Cause"></a>
+<h2>Cause</h2>There is an issue inside the Project Linker&#39;s source code that does not detect project links when a Solution has solution folders. <br /><a name="Fix"></a>
+<h2>Fix</h2>Update the default implementation of the private GetProjects method of the ProjectLinkTracker class of the Project Linker’s source code to the following code:<br /><br /><pre>
+private static void GetProjects(Project project, List&lt;Project&gt; projects)
+{
+    //const string SolutionFolderGuid = &quot;66a26720-8fb5-11d2-aa7e-00c04f688dde&quot;; THIS LINE HAD THE WRONG CONSTANT         
+    // Don&#39;t add the MiscFilesProject to the list of projects
+    if (project.UniqueName == EnvDTE.Constants.vsMiscFilesProjectUniqueName) 
+        return;
+            
+    if (project.Kind.Equals(EnvDTE.Constants.vsProjectKindSolutionItems, StringComparison.OrdinalIgnoreCase)) //USING ENVDTE CONSTANT TO CHECK IF THE ITEM IS A SOLUTION FOLDER
+    {
+        foreach (ProjectItem projectItem in project.ProjectItems)
+        {
+            if (projectItem.SubProject != null)
+            {
+                GetProjects(projectItem.SubProject, projects);
+            }
+        }
+    }
+    else
+    {
+        projects.Add(project);
+    }
+}
+</pre><br />This fix uses an EnvDTE constant to detect the solution folders correctly instead of the wrong constant defined inside the method (called SolutionFolderGuid).<br />After implement this change, you should recompile and register the new package version.<br /><a name="Workaround"></a>
+<h2>Workaround</h2>To implement the fix, you should modify the Project Linker&#39;s source code, recompile and register it again. A workaround to avoid that is opening your solution, that contains solutions folders and project links, from Visual Studio using the &quot;Open&quot; or &quot;Recent Projects&quot; options from the &quot;File&quot; menu.<br /></div><div class="ClearBoth"></div>

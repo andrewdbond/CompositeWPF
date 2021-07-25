@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "220963",
+    "ThreadId": "64886",
+    "Html": "<p><span style=\"font-family:'Segoe UI','sans-serif';color:black;font-size:10pt\">Hello,</span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif';color:black;font-size:10pt\">Using Prism in Silverlight, is there any way to completely hide the tab UI of a TabControl? I want the functionality of switching tabs but I want to use my own UI that is not attached in the same way. Any ideas?</span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif';color:black;font-size:10pt\">I have tried using an ItemsControl but am having issues showing and hiding the views.</span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif';color:black;font-size:10pt\">Thank you,</span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif';color:black;font-size:10pt\">Rick</span></p>",
+    "PostedDate": "2009-08-07T15:43:39.517-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "221020",
+    "ThreadId": "64886",
+    "Html": "<p>Sounds to me like you really just want to use the ContentsControl instead of the ItemsControl so you only have 1 active view. I am using this as a Window Manager and then when they click on the window item, the main panel (ContentsControl) has its active view switched to the one click.</p>",
+    "PostedDate": "2009-08-07T20:55:24.767-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "221120",
+    "ThreadId": "64886",
+    "Html": "<p>Essentially I want one window that has three overlapping views. The user can switch between them by clicking a widget. I don't think a ContentControl will work well for that.</p>\r\n<p>Rick</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-08-08T10:13:50.587-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "221134",
+    "ThreadId": "64886",
+    "Html": "<p>Are you saying that you want parts of all 3 controls to be visible at the same time or like the tab control where there is only one &quot;active&quot; view? If it is the one active view then the ContentControl IS the right choice for you. You would use the IRegion to Activate and Deactivate the view that you currently want shown. Then you are free to create any special widget to control the activating of those views.</p>",
+    "PostedDate": "2009-08-08T12:05:40.047-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "221249",
+    "ThreadId": "64886",
+    "Html": "<p>Hi rboarman,</p>\r\n<p>As an example of what fredhirschfeld is suggesting I offer the following code:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>    <span style=\"color:Blue\">void</span> buttonClickHandler(<span style=\"color:Blue\">object</span> sender, System.Windows.RoutedEventArgs e)\r\n    {\r\n      <span style=\"color:Green\">// Cast sender to button so we can access it easier</span>\r\n      Button button = sender <span style=\"color:Blue\">as</span> Button;\r\n\r\n      Logger.Log(<span style=\"color:Blue\">string</span>.Format(<span style=\"color:#A31515\">&quot;Button Click: {0} for View: {1}&quot;</span>,\r\n        button.Name,button.Tag), Category.Debug, Priority.None);\r\n\r\n      aggregator.GetEvent&lt;StatusEvent&gt;().Publish(<span style=\"color:Blue\">new</span> StatusEventArgs\r\n      {\r\n        Message = <span style=\"color:Blue\">string</span>.Format(<span style=\"color:#A31515\">&quot;View {0} selected&quot;</span>, button.Tag),\r\n        StatusPanel = StatusType.Left  <span style=\"color:Green\">// Left status bar</span>\r\n      });\r\n\r\n      <span style=\"color:Green\">// Disable the button just clicked</span>\r\n      button.IsEnabled = <span style=\"color:Blue\">false</span>;\r\n\r\n      <span style=\"color:Green\">// Get all views that are using MainRegion</span>\r\n      IRegion mainRegion = regionManager.Regions[<span style=\"color:#A31515\">&quot;MainRegion&quot;</span>];\r\n    \r\n      <span style=\"color:Green\">// Activate the view if the view name matches the current</span>\r\n      <span style=\"color:Green\">// button's tag value.  </span>\r\n      <span style=\"color:Blue\">foreach</span> (IViewBase view <span style=\"color:Blue\">in</span> mainRegion.Views)\r\n        <span style=\"color:Blue\">if</span> (view.Name.Contains(button.Tag.ToString()))\r\n          mainRegion.Activate(view);\r\n\r\n    }\r\n</pre>\r\n<pre>I use this code to swap out (activate) the layout that will be utilized in my &quot;MainRegion&quot;.&nbsp; I load multiple <br>views into my main region and above my MainRegion have a MenuRegion.&nbsp;&nbsp; The menu region contains <br>buttons that contain the name of the View in it's tag (extensible).&nbsp;&nbsp; The above code resides in my MenuPresenter.</pre>\r\n</div>",
+    "PostedDate": "2009-08-09T07:25:50.207-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "221401",
+    "ThreadId": "64886",
+    "Html": "<p>I also used a ContentControl for this at the beginning, before switching to a TrasitioningContentControl, which&nbsp;lets you define an animation that is displayed when pages are switched.</p>",
+    "PostedDate": "2009-08-09T23:22:16.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "222729",
+    "ThreadId": "64886",
+    "Html": "<p>This was solved using Activate. Thank you all.</p>\r\n<p>Rick</p>",
+    "PostedDate": "2009-08-12T14:54:16.933-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

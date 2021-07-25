@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "908933",
+    "ThreadId": "394556",
+    "Html": "\r\n<p>We have a WPF application written in C# using Prism 4 and MVVM. Our team is having a hard time trying to determine what can go in the View Code Behind and what cannot. In the context of Best Practices and writing testable code please comment on how to address\r\n the inherit limitations of the MVVM pattern (using Prism). There are all sorts of techniques from giving the ViewModel access to the View via Interface to raising events from the ViewModel that are wired to from within the View. Are any of these suggestions\r\n okay? I do realize that in some scenarios we could write additional code creating dependency properties, but this feels like we have to spend time creating and eventually maintaining the pattern faculties and not focusing on our application.</p>\r\n",
+    "PostedDate": "2012-09-05T18:26:49.423-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "909311",
+    "ThreadId": "394556",
+    "Html": "<p>Hi,<br /><br />Regarding how to determine what code must be placed in <strong>View </strong>and <strong>View Model</strong> classes, as mentioned in the documentation, sometimes this may not be so obvious and as a general rule this could be considered:</p>\r\n<p><em>Anything concerned with the specific visual appearance of the UI on the screen and that could be re-styled later (even if you are not currently planning to re-style it) should go into the view; anything that is important to the logical behavior of the application should go into the view model. In addition, because the view model should have no explicit knowledge of the specific visual elements in the view, code to programmatically manipulate visual elements within the view should reside in the view's code-behind or be encapsulated in a behavior.Similarly, code to retrieve or manipulate data items that are to be displayed in the view through data binding should reside in the view model.</em></p>\r\n<p>Also, particularly, I found the following post from Glenn Block (which discusses this topic) interesting:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.msdn.com/b/gblock/archive/2009/08/03/the-spirit-of-mvvm-viewmodel-it-s-not-a-code-counting-exercise.aspx\">The spirit of MVVM (ViewModel), it&rsquo;s not a code counting exercise</a></li>\r\n</ul>\r\n<p>On the other hand, regarding the interaction between these classes, as far as I know the recommended approaches are to take benefit of:</p>\r\n<ul>\r\n<li><strong>Data bindings</strong> (to Change the View, by setting a Property in the View Model)</li>\r\n<li><strong>Commands</strong> (for the View to Execute Code) </li>\r\n<li><strong>Data validation interfaces</strong> (to perform data validation and to signal any data validation errors to the view) </li>\r\n<li><strong>Behaviors</strong> (often used to Implement Interaction Users Experience)</li>\r\n</ul>\r\n<p>For more information about this approaches, and how to implement them using <strong>Prism</strong>, I recommend you to check the following chapters of the documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405484(v=pandp.40)\">5: Implementing the MVVM Pattern</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405494(v=pandp.40)\">6: Advanced MVVM Scenarios</a></li>\r\n</ul>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-09-06T11:46:38.417-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

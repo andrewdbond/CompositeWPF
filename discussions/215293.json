@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "452880",
+    "ThreadId": "215293",
+    "Html": "<p>Hello everybody,</p>\r\n<p>I am in the process of rewriting my entire <a title=\"Smart Client Framework\" href=\"http://genesissmartclient.codeplex.com\">smart client framework</a> using PRISM. I am worried about compatibility when it comes to PRISM V4. Can we have some indication that we're not wasting our time right now and that we should all rather wait until August when PRISM V4 comes out?</p>\r\n<p>How much of a change would it have to be to our existing code and infrastructure to upgrade to using PRISM V4?</p>\r\n<p>Considering that PRISM V4 might have a Unity/MEF option, how does it affect all of us using Unity with PRISM V2.x if we would be interested in using MEF in PRISM V4?</p>\r\n<p><a title=\"Download my implementation of a PRISM Shell for WPF and Silverlight\" href=\"http://genesissmartclient.codeplex.com/releases/view/46518\">Download my implementation of&nbsp;a PRISM Shell for WPF and Silverlight</a>. This project uses Multi-Targeting and the Project Linker to develop simultaniously for WPF and Silverlight. There are no extra modules included, only what you need to start writing your own modules for PRISM.</p>\r\n<p>Once again, I fear breaking changes between PRISM V2.x and PRISM V4. Please confirm that there would be some degree of backwards-compatibility.</p>\r\n<p>Regards</p>\r\n<p>Stephan Johnson</p>",
+    "PostedDate": "2010-06-08T02:48:18.28-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "454131",
+    "ThreadId": "215293",
+    "Html": "<p>Hi Stephan,</p>\r\n<p>There is no guarantee that Prism v4 will have full backwards compatibility  with Prism v2. Although there are no known breaking changes, you might have to  make some changes to your code, as the final implementation of new features in  Prism v4 are still in progress. However, take into account that you could adopt  Prism's capabilities in a progressive way (as explained in <a href=\"http://msdn.microsoft.com/en-us/library/ff650338.aspx\">this article</a> under the category of subsetatbility<a href=\"http://msdn.microsoft.com/en-us/library/ff650338.aspx)\">)</a>.</p>\r\n<p>If you are interested on porting your Prism v2/Unity app to Prism v4/MEF, you  should replace the <strong>UnityBootstrapper </strong>by the  <strong>MefBootstrapper </strong>and replace the usage of Unity in your code  (such as Constructor Injection,&nbsp;calls to <strong>Register</strong> and  <strong>Resolve</strong> methods, etc.) by the&nbsp;MEF elements (such as  <strong>Import</strong> and <strong>Export</strong> attributes, etc.) in all  your modules.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-06-10T11:37:17.597-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "454154",
+    "ThreadId": "215293",
+    "Html": "<p>Hi Guido,</p>\r\n<p>You guys are doing such a great job with PRISM that I could not stop myself from starting my rewrite sooner rather than later. I understand what the article is telling me. Even if there is code to be replaced, I think that it should be fairly easy to replace. I don't think I'll have millions of dependant lines of code by August (I am still correct in my assumption that this was your target date for PRISM v4?) anyway.</p>\r\n<p>By stating that I will have to change the Unity components to Mef components, I assume that there would be no PRISM abstraction layer so that we can choose which code injection mechanism to use. I believe in the survey there was a question regarding the topic?!</p>\r\n<p>Regards</p>\r\n<p>Stephan</p>",
+    "PostedDate": "2010-06-10T12:50:09.18-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "454487",
+    "ThreadId": "215293",
+    "Html": "<p id=94299280-5795-012d-4552-12313b04bdf1>Hi Stephan,</p>\r\n<p id=94299e80-5795-012d-4553-12313b04bdf1>Thanks for the feedback. You are  right, currently there are no plans on creating an abstraction layer for  Unity/MEF, although Prism will probably&nbsp;stay container agnostic as  it is now.</p>\r\n<p id=9429ada0-5795-012d-4554-12313b04bdf1>About the release, you can find an  estimated date in <a href=\"http://blogs.msdn.com/b/simplifying_patterns_and_practices/archive/2010/03/15/prism-a-look-ahead.aspx\">this  blog post</a>.</p>\r\n<p id=9429c050-5795-012d-4555-12313b04bdf1>I hope you find this helpful.</p>\r\n<p id=9429d2e0-5795-012d-4556-12313b04bdf1>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-06-11T09:30:54.473-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,111 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 12,
+    "Custom": "",
+    "Description": "Hi, I have created a module with SMF player v2.7 as view and used with prism to show in a region. When I build the solution, the player is loading but it is not playing anything in there. Code for the player is as follows where mediasource is static. \n\n<smf:SMFPlayer>\n        <smf:SMFPlayer.Playlist>\n            <media:PlaylistItem DeliveryMethod=\"AdaptiveStreaming\" MediaSource=\"http://video3.smoothhd.com.edgesuite.net/ondemand/Big%20Buck%20Bunny%20Adaptive.ism/Manifest\"/>\n        </smf:SMFPlayer.Playlist>\n    </smf:SMFPlayer>\n\nPlease anyone help me fix this. Any help would be greatly appreciated.",
+    "LastUpdatedDate": "2013-04-22T06:31:30.093-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2013-03-17T02:01:28.053-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "SMFv2.7 Player not playing with Prism",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 9967
+  },
+  "FileAttachments": [
+    {
+      "FileId": 898014,
+      "FileName": "SMF_Player_Test.zip",
+      "DownloadUrl": ".\\898014"
+    },
+    {
+      "FileId": 898015,
+      "FileName": "HelloWorld with SMF 2.6.zip",
+      "DownloadUrl": ".\\898015"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nWe tried to use SMF Player in a module on a Silverlight Application and it works without problems. Nevertheless, we could reproduce your issue when a reference from the following list is missing:\r\n\r\n* Microsoft.SilverlightMediaFramework.Core.dll* Microsoft.SilverlightMediaFramework.Plugins.dll* Microsoft.SilverlightMediaFramework.Plugins.SmoothStreaming.dll* Microsoft.SilverlightMediaFramework.Utilities.dll* Microsoft.Web.Media.SmoothStreaming.dll\r\n\r\nAs a possible solution, check if you have these references added in both your module and your shell project.\r\n\r\nHope this helps,\r\n\r\nFederico Martinez http://blogs.southworks.net/fmartinez",
+      "PostedDate": "2013-03-20T10:32:09.99-07:00",
+      "Id": 156637
+    },
+    {
+      "Message": "Thanks for replying. \r\n\r\nI have all these references added both in my module and shell project. If I use this as a stand alone player then it will play and when used inside prism region, player is loading but its not playing. Could you please provide me some sample prism project that you have tested with?\r\n\r\nThanks!Sharath\r\n\r\n",
+      "PostedDate": "2013-03-21T04:18:19.567-07:00",
+      "Id": 156638
+    },
+    {
+      "Message": "Hi Sarath,\r\n\r\nAttached to the work item you can find a sample using a __SMF Player__ in a view injected inside a region.The sample was built over the __Hello World QuickStart__. It has a \"MainRegion\" in the __Shell__ and a decoupled __SMFModule__ (loaded through a __XAML ModuleCatalog__) that has the view containing the __SMF Player__. This view is injected in the aforementioned region at start up.\r\n\r\nI hope this helps,\r\n\r\nDamian Cherubinihttp://blogs.southworks.net/dcherubini ",
+      "PostedDate": "2013-03-21T10:02:20.973-07:00",
+      "Id": 156639
+    },
+    {
+      "Message": "Hi Damian,\r\n\r\nYour sample project works perfectly fine for me. I saw that your project's target version was silverlight 5.  Its worth mentioning that I am trying to add this player inside my existing silverlight 4 application but couldn't get it to work. Isn't that possible? Could you please walk me through brief steps how I can upgrade the player in an existing application?\r\n\r\nThanks,Sharath",
+      "PostedDate": "2013-03-22T07:16:40.433-07:00",
+      "Id": 156640
+    },
+    {
+      "Message": "Hi Sharath,\r\n\r\nNow that you mention you are using __Silverlight 4__, it's worth mentioning that according to the following thread, the __2.7__ version of the SMF Player targets __Silverlight 5__, so for __Silverlight 4__, you should use version __2.6__ of the Player.\r\n\r\n+ [Does SMF 2.7 support Silverlight 4?](http://smf.codeplex.com/discussions/399649)\r\n\r\nThis might be related to your problem,Regards,\r\n\r\nFederico Martinez http://blogs.southworks.net/fmartinez",
+      "PostedDate": "2013-03-22T10:03:33.133-07:00",
+      "Id": 156641
+    },
+    {
+      "Message": "Hi Federico,\r\n\r\nI will try with player v2.6 and Silverlight 4 and will let you know how it goes. what should be the SSME version for 2.6 player?\r\n\r\nAlso, does 2.7v player work if I just change the silverlight version to 5? I did that but no luck :(\r\n\r\nThanks,Sharath",
+      "PostedDate": "2013-03-26T03:57:57.63-07:00",
+      "Id": 156642
+    },
+    {
+      "Message": "Hi,\r\n\r\nWe tried to use the __SMF Player v2.6__ with __Silverlight 4__ and it works without problems. Nevertheless, you will need to ge the __IIS Smooth Streaming Client 1.5 RTW - Update 2__ to reference the __Microsoft.Web.Media.SmoothStreaming__ assembly for __Silverlight 4__, since the __IIS Smoth Streaming Client 2.0__ is targeted to __Silverlight 5__ only and doesn't work properly with v2.6 of the player. You can get it here:\r\n\r\n- [IIS Smooth Streaming Client 1.5 RTW - Update 2](http://www.microsoft.com/en-us/download/details.aspx?id=8227)\r\n\r\nRegards, \r\n\r\nFederico Martinez http://blogs.southworks.net/fmartinez\r\n\r\n",
+      "PostedDate": "2013-04-08T11:14:29.787-07:00",
+      "Id": 156643
+    },
+    {
+      "Message": "Hi,\r\n\r\nThanks for trying with player v2.6. Could you please provide me the sample project that you have created for my reference?\r\n\r\nThanks,Sharath",
+      "PostedDate": "2013-04-18T07:57:50.837-07:00",
+      "Id": 156644
+    },
+    {
+      "Message": "Hi,\r\n\r\nI just uploaded the sample with name __\"HelloWorld with SMF 2.6.zip\"__.\r\n\r\nHope this helps,\r\n\r\nFederico Martinez http://blogs.southworks.net/fmartinez",
+      "PostedDate": "2013-04-18T10:06:11.58-07:00",
+      "Id": 156645
+    },
+    {
+      "Message": "Hi,\r\n\r\nThanks for quick reply. One thing I noticed in the sample project is that full screen doesn't work with prism. Any idea why?\r\n\r\nThanks,Sharath\r\n\r\n",
+      "PostedDate": "2013-04-19T02:45:20.73-07:00",
+      "Id": 156646
+    },
+    {
+      "Message": "Hi,\r\n\r\nThe maximum size that the Player can achieve is determined by the Width and Height properties from your __Shell.xaml__. To get the fullscreen work, just set these properties to __Auto__.\r\n\r\nRegards, \r\n\r\nFederico Martinez http://blogs.southworks.net/fmartinez",
+      "PostedDate": "2013-04-19T11:48:42.993-07:00",
+      "Id": 156647
+    },
+    {
+      "Message": "Hi,\r\n\r\nI have installed SMF Player v2.6 & IIS Smooth Streaming Client 1.5 RTW - Update 2, but I couldn't get the player to work inside Prism region again (though it works as a stand alone player). Player loads in prism region but doesn't play. \r\n\r\nBelow is what I did - please let me know what I am missing here?I have added a module to my existing  Silverlight 4 project by adding a SMF Smooth Streaming Application which has a view (player) & a class (inheriting IModule)  and injected that view to shell region. Also I have added correct versions of the below references to Shell project.\r\n\r\nMicrosoft.SilverlightMediaFramework.Core.dllMicrosoft.SilverlightMediaFramework.Plugins.dllMicrosoft.SilverlightMediaFramework.Plugins.SmoothStreaming.dllMicrosoft.SilverlightMediaFramework.Utilities.dllMicrosoft.Web.Media.SmoothStreaming.dll\r\n\r\nPlayer loads but doesn't play. Please help...\r\n\r\nThanks,Sharath",
+      "PostedDate": "2013-04-22T06:31:30.093-07:00",
+      "Id": 156648
+    }
+  ]
+}

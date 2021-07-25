@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1427861",
+    "ThreadId": "638875",
+    "Html": "Hi I'm registering my Views like this, but can't seem to get the name right to remove them. I get the views in my var vs, but It always errors when I try to remove it.<br />\n<br />\nError Message<br />\n{&quot;The region does not contain the specified view.\\r\\nParameter name: view&quot;}<br />\n<br />\n<br />\nEdit<br />\nfixed with the below code.<br />\n<pre><code>    private void CloseTab()\n    {\n       // var vs = _regionManager.Regions[RegionNames.ContentRegion].Views.ToList();\n       //if (vs != null)\n       // {\n       //    _regionManager.Regions[RegionNames.ContentRegion].Remove(view:&quot;CTUserView&quot;);\n       // }\n        List&lt;object&gt; views = new List&lt;object&gt;();\n        List&lt;object&gt; removeViews = new List&lt;object&gt;();\n\n        if (_regionManager.Regions[RegionNames.ContentRegion] != null)\n        {\n            foreach (object view in _regionManager.Regions[RegionNames.ContentRegion].ActiveViews)\n            {\n                views.Add(view);\n            }\n            for (int i = 0; i &lt; views.Count; i++)\n            {\n                if (views[i].GetType().Name == &quot;CTUserView&quot; ||\n                    views[i].GetType().Name == &quot;AACustomersView&quot; ||\n                    views[i].GetType().Name == &quot;ViewBView&quot; ||\n                    views[i].GetType().Name == &quot;ViewAView&quot;)\n                    removeViews.Add(views[i]);\n            }\n\n            if (removeViews.Count &gt; 0)\n                for (int i = 0; i &lt; removeViews.Count; i++)\n                {\n                    _regionManager.Regions[RegionNames.ContentRegion].Remove(removeViews[i]);\n                }\n        }\n\n   }</code></pre>\n\n",
+    "PostedDate": "2015-05-27T17:46:22.38-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2015-05-28T04:00:50.62-07:00"
+  }
+]

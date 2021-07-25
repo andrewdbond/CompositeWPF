@@ -1,0 +1,122 @@
+[
+  {
+    "Id": "535641",
+    "ThreadId": "238346",
+    "Html": "\r\n<p>I &nbsp;have a couple of modules. Each module has a chart control. I need to be able to open up a modal window control when the user clicks on a single bar on the chart populating a grid in the window with some data pertinent to the bar clicked. How do I\r\n go about this. Any direction on the code and structure would be helpful.</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2010-12-14T08:49:26.41-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "535694",
+    "ThreadId": "238346",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>You might find the following thread useful to your purpose, as shows a similar requirement:</p>\r\n<p><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=231079\"><span>Simulate Modal Window</span></a></p>\r\n<p>Additionally, you could make use of <a href=\"http://public.blu.livefilestore.com/y1pn_EenFiRFKaPyW166gyL8noGuyYmoGL-EWQCHgBPX7FXuFvQDmwzJ2dlXw0i-6ASIg4ohp9JmlvP8qmJ7v8XoQ/RegionInChildWindowSample.zip?download&psid=1\">\r\nthis sample</a>, in which there is a region defined inside a <a href=\"http://msdn.microsoft.com/en-us/library/system.windows.controls.childwindow%28VS.95%29.aspx\">\r\nSilverlight Child Window</a>.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-14T10:29:50.65-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "535791",
+    "ThreadId": "238346",
+    "Html": "\r\n<p>Can I instead create a module with the modal control and subscribe to events published by other modules and show the modal window? Has anybody tried this approach. My concern here is how to show and hide the region/modal window.</p>\r\n",
+    "PostedDate": "2010-12-14T13:20:33.773-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "536228",
+    "ThreadId": "238346",
+    "Html": "\r\n<p id=\"x_8d1ca720-ea82-012d-319c-123139180f64\">Hi,</p>\r\n<p id=\"x_8d1cb020-ea82-012d-319d-123139180f64\">Prism provides an event mechanism that enables communications between loosely coupled components in your applications. You could fulfill this scenario using\r\n<strong>Event Aggregator</strong> which allows <em>communication</em> via events with components that do not have references to each other.</p>\r\n<p id=\"x_8d1cbb60-ea82-012d-319e-123139180f64\">You can read more about this in <a href=\"http://msdn.microsoft.com/en-us/library/ff921122(v=PandP.40).aspx\">\r\nChapter 9: Communicating Between Loosely Coupled Components</a>, Event Aggregator&acute;s Section.</p>\r\n<p>As Guido mentioned in the Simulate Modal Window&acute;s <a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=231079\">\r\nthread</a>, you can use <a href=\"http://msdn.microsoft.com/en-us/library/ff921074(v=PandP.40).aspx\">\r\nStock Trader Reference Implementation</a> to achieve your scenario of modal window.</p>\r\n<p id=\"x_8d1cd720-ea82-012d-31a0-123139180f64\">Thanks,</p>\r\n<p>&nbsp;</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-15T09:14:39.76-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "537286",
+    "ThreadId": "238346",
+    "Html": "\r\n<p>I am having trouble understanding what all pieces I would need from the Stocktrader RI implementation to get the modal window working in my application. At this time from the behaviors folder I have the&nbsp;DialogActivationBehavior.cs,&nbsp;IWindow.cs,&nbsp;PopupDialogActivationBehavior.cs,&nbsp;PopupWrapper.cs,&nbsp;RegionPopupBehaviors.cs\r\n included in my infrastructure project. and added these 2 lines of code in the shell.xaml changing the namespaces to my application namespaces.</p>\r\n<p>xmlns:infBehaviors=&quot;clr-namespace:MyApplication.Infrastructure.Behaviors;assembly=MyApplication.Infrastructure&quot;&nbsp;&nbsp; &nbsp;</p>\r\n<p>infBehaviors:RegionPopupBehaviors.CreatePopupRegionWithName=&quot;SecondaryRegion&quot;</p>\r\n<p>&nbsp;</p>\r\n<p>What other pieces do I need to open the pop up on a button click from one of my views.</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2010-12-17T06:27:58.137-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "537432",
+    "ThreadId": "238346",
+    "Html": "\r\n<p>that is all that is necessary, then using RegionManager to activate/deactivate (open/close) the &quot;popup&quot;, once you have added the views to the SecondaryRegion in the RegionManager.&nbsp; Also might considering running this region scoped for the reason of\r\n making sure that you don't get a reused viewmodel.&nbsp; I have found that the view/viewmodel doesn't get collected or properly disposed even with lifetime of the window attributed to false for some reason.</p>\r\n",
+    "PostedDate": "2010-12-17T10:44:29.993-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "537450",
+    "ThreadId": "238346",
+    "Html": "\r\n<p id=\"x_9143d220-ec32-012d-6cae-123139081390\">Hi,</p>\r\n<p id=\"x_9143dae0-ec32-012d-6caf-123139081390\">As mentioned by Morgan, with the components that you've mentioned it is possible to complete your popup window requirement. Additionally, you could check this components to see how this functionality is wired up,\r\n so as to understand how to fit them into your scenario:</p>\r\n<p id=\"x_9143e3e0-ec32-012d-6cb0-123139081390\">&middot; The <em>view</em> of the modal window (in the\r\n<strong>StockTrader</strong> application is<strong> NewsReaderView.xaml</strong>)</p>\r\n<p id=\"x_9143ee10-ec32-012d-6cb1-123139081390\">&middot; The <em>view model</em> to work with your aforementioned\r\n<em>view</em> (<strong>NewsReaderViewModel</strong>)</p>\r\n<p id=\"x_9143f890-ec32-012d-6cb2-123139081390\">&middot; The controller <strong>NewsController</strong> which interacts between your viewmodels (the parent hosting\r\n<em>view model</em> and the popup <em>view model</em>)</p>\r\n<p id=\"x_91440470-ec32-012d-6cb3-123139081390\">You might find useful the StockTrader RI documentation, where you can read more about its main features, how\r\n<strong>Stock Trader RI</strong> works and the technical challenges it addresses,\r\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921074%28v=PandP.40%29.aspx\">here</a>.</p>\r\n<p id=\"x_91441350-ec32-012d-6cb4-123139081390\">Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-17T11:11:59.553-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "537454",
+    "ThreadId": "238346",
+    "Html": "\r\n<p>Hi Morgan,</p>\r\n<p>As for the lifetime issue you mentioned, you might find the following thread useful:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=238346\">Best way to manage views in a region</a>\r\n</li></ul>\r\n<p>Also, it would be helpful if you could provide us with a repro sample or more information regarding this and the workaround you've proposed for it.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-17T11:13:35.703-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "537563",
+    "ThreadId": "238346",
+    "Html": "\r\n<p>I have only seen it when using the closing X in the right corner. I am guessing before the closing completes and moves on causes a null exception but it can be trapped and recovered.</p>\r\n",
+    "PostedDate": "2010-12-17T14:33:15.36-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538365",
+    "ThreadId": "238346",
+    "Html": "\r\n<p>I have got major pieces of it in my application. However I have run into a roadblock. I have a 3rd party chart control and I need to show a popup on the itemclick event of the chart control. I tried to use the stocktrader example where the button click is\r\n bound&nbsp;</p>\r\n<p>&lt;Button Command=&quot;{Binding ShowNewsReaderCommand}&quot; ...</p>\r\n<p>I tried something &nbsp;similar for the chart control however I got an exception.</p>\r\n<p>How could I get the click event handled in the viewmodel?</p>\r\n<p>Thanks.</p>\r\n<p>&nbsp;</p>\r\n<p>PS: I have also migrated my application to Prism v4 now.</p>\r\n",
+    "PostedDate": "2010-12-20T09:43:32.583-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538375",
+    "ThreadId": "238346",
+    "Html": "\r\n<p>Hi Morgan,</p>\r\n<p>You could check the following thread in which there is some insight on the issue of view's garbage collection:</p>\r\n<p><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=56692\"><span>Best way to manage views in a region</span></a></p>\r\n<p>I hope you find this helpful. In case you find it is an issue in the Prism Library, you could post it as a work item in the\r\n<a href=\"http://compositewpf.codeplex.com/workitem/list/basic\">Issue Tracker</a>.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-20T09:59:11.937-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538376",
+    "ThreadId": "238346",
+    "Html": "\r\n<p>Hi scorpsteals,</p>\r\n<p>Could you provide us with more information about the exception you're experiencing, so that we can help you troubleshoot your issue?</p>\r\n<p>Thanks.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-20T10:00:11.79-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538392",
+    "ThreadId": "238346",
+    "Html": "\r\n<p>In XAML: I have</p>\r\n<p>&lt;chart:ChartArea ItemClick=&quot;{Binding showPopupCommand}&quot;&gt;&nbsp;</p>\r\n<p>In the viewModel I have the following lines of code:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">private</span> <span style=\"color:blue\">readonly</span> ICommand showPopupCommand;\r\n\r\n<span style=\"color:blue\">this</span>.showPopupCommand = <span style=\"color:blue\">new</span> DelegateCommand(<span style=\"color:blue\">this</span>.ShowPopupView);\r\n\r\n\r\n\r\n<span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> ShowPopupView()\r\n\r\n{\r\n<span style=\"white-space:pre\">\t</span>//Need to show a popup&nbsp;</pre>\r\n<pre>\t<span style=\"color:blue\">string</span> test = <span style=\"color:#a31515\">&quot;test&quot;; //entered this for test to see if I can get to here.</span>\r\n\r\n}\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>I am getting an Exception on InitializeComponent()</p>\r\n<p>Failed to assign to property 'Telerik.Windows.Controls.Charting.ChartArea.ItemClick'.&nbsp;</p>\r\n<p>I am not sure if I am missing any pieces.</p>\r\n",
+    "PostedDate": "2010-12-20T10:35:47.25-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "538405",
+    "ThreadId": "238346",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>If I understood your exception correctly, it seems to be an error when assigning a command binding to the ItemClick property of the Telerik ChartArea control.</p>\r\n<p>You might find <a href=\"http://www.telerik.com/community/forums/silverlight/chart/chart-area-click.aspx\">\r\nthis thread</a> from the Telerik forums useful. As this is not related to Prism, you might find better support in the\r\n<a href=\"http://www.telerik.com/community/forums.aspx\">Telerik forums</a>.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-20T10:48:43.35-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "540472",
+    "ThreadId": "238346",
+    "Html": "\r\n<blockquote style=\"border:solid .1em #ccc; font-style:italic; margin:.25em 1em 0 1em; padding:0 .25em 0 .25em\">\r\n<strong>mbronzovic wrote:</strong><br>\r\n<p>Hi Morgan,</p>\r\n<p>As for the lifetime issue you mentioned, you might find the following thread useful:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=238346\">Best way to manage views in a region</a>\r\n</li></ul>\r\n<p>Also, it would be helpful if you could provide us with a repro sample or more information regarding this and the workaround you've proposed for it.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n</blockquote>\r\n<p>Found my problem it was related to the regionmanager trying to kill a null view object that was passed to it...&nbsp; Not a Prism issue but related to the idiot behind the keyboard.</p>\r\n",
+    "PostedDate": "2010-12-25T18:10:51.09-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "250718",
+    "ThreadId": "73367",
+    "Html": "<p>We're trying to register a view (<em>RegisterMeView</em>) with a region (<em>PutViewHereRegion</em>). &nbsp;The <em>PutViewHereRegion</em> region is in a view that is in <strong>module A</strong> and the <em>RegisterMeView</em>&nbsp;View is in <strong>module B.</strong></p>\r\n<p>When we've had to use objects from one module in another module in the past we just publish and subscribe with a IEventAggregator. &nbsp;I suppose I could do this here too, but it just doesn't seem correct. &nbsp;It seems to me that I should be able to tell Prism's ModuleCatalog that a module exists and do all the stuff that's needed and then, when I need to register, the ModuleCatalog could load what it needs in order to put the view where it needs to be. &nbsp;I haven't seen anything obvious in the documentation, but I don't understand it all, so I might just be missing something elementary.</p>\r\n<p>Does Prism handle views special-like with the &nbsp;ModuleCatalog or RegionManager, or are views just objects that I use the EventAggregator for? &nbsp;Or maybe my basic understanding is flawed, and I'm going about everything wrong...</p>",
+    "PostedDate": "2009-10-28T08:38:39.397-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "250745",
+    "ThreadId": "73367",
+    "Html": "<p>You can get IRegionViewRegistry from the container, call its RegisterViewWithRegion (&lt;string - region name&gt;, &lt;Type - your view type&gt;)...&nbsp; the region doesn't have to exist at the point of this call...</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-28T09:20:58.427-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "250764",
+    "ThreadId": "73367",
+    "Html": "<p>Michael,</p>\r\n<p>&nbsp; &nbsp; So you're saying that I should register my view in my moduleInit with a region, and then, in the other moduleInit when I create that region it will show up? &nbsp;I'm trying this, and it kind of works, but it's a little sketchy.</p>\r\n<p>&nbsp;</p>\r\n<p>I think it'll give me something to build on though, and I can keep moving from here. &nbsp;Thanks a lot for your time! &nbsp;</p>",
+    "PostedDate": "2009-10-28T09:51:50.6-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

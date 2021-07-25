@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "675750",
+    "ThreadId": "273586",
+    "Html": "\r\n<p>Hi,<br>\r\n<br>\r\nI am placing a region &quot;JobTabRegion&quot;<span>(using a&nbsp;<span>ContentControl</span>)&nbsp;</span>in the&nbsp;<em>DataTemplate&nbsp;</em>of &nbsp;a RadTabControl in my Shell. This&nbsp;<span>&quot;JobTabRegion&quot; is bind to view named &quot;MainJobView&quot; which in turn has\r\n a RadTabControl and regions are marked inside the&nbsp;<em>RadTabItem.Content</em>&nbsp;<span>(using a&nbsp;<span>ContentControl</span>)&nbsp;</span>of each RadTabItem. One such region would be &quot;JobRequestRegion&quot; which is bind to a view named &quot;JobRequestView&quot;.\r\n This&nbsp;<span>&quot;JobRequestView&quot; has a RadExpander control and I am having a region marked&nbsp;<span>(using a&nbsp;<span>ContentControl</span>)&nbsp;</span>inside the&nbsp;<em>RadExpander.Content</em>&nbsp;called &quot;ExpanderRegion&quot;<span>&nbsp;</span>. I am\r\n using two buttons to switch the contents of the RadExpander. To do so, in the ViewModel of&nbsp;<span>&nbsp;&quot;JobRequestView&quot;, when i try to access the &quot;ExpanderRegion&quot; from the Region Manager instance, i get an error saying &quot;The region manager does not contain\r\n the ExpanderRegion region.&quot;&nbsp;</span></span></span></p>\r\n<p>var region = _regionManager.Regions[RegionNames.EXPANDERREGION];</p>\r\n<p><span><span><br>\r\nI have read in an article that the regions marked inside a DataTemplate will not be available in the RegionCollection of the Region Manager. But i didn't get any proper solution. I am using&nbsp;<strong>PRISM v 4&nbsp;</strong>and<strong>Silverlight 4.<br>\r\n</strong><br>\r\nAny help would be appreciated. Thanks in advance.<br>\r\n<br>\r\nSyam</span></span></p>\r\n",
+    "PostedDate": "2011-09-23T03:06:20.057-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "676009",
+    "ThreadId": "273586",
+    "Html": "<p>Hi Syam,</p>\r\n<p>As you have mentioned, this is <a href=\"http://compositewpf.codeplex.com/workitem/3612\">a known issue</a> in Prism where, if a region is defined inside a <strong>DataTemplate</strong>, the region is created but not registered in the <strong>RegionManager</strong>.</p>\r\n<p>You can find a possible workaround for this in the aforementioned work item or in the following blog post:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/dcherubini/2011/09/23/regions-inside-control-templates-in-prism-v4/\">Regions inside DataTemplates in Prism v4</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-09-23T12:45:02.867-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "676108",
+    "ThreadId": "273586",
+    "Html": "<p>Hi DCherubini,</p>\r\n<p>Thanks for your reply.</p>\r\n<p>In my requirement, i need to use View Injection as i have to switch views in the same region. In your blog post, you had mentioned that 'Attaching the RegionManager in the DataTemplate as a property' solution doesn't work properly in Silverlight. Is there any alternative for this in Silverlight as I am facing this issue in Silverlight.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>\r\n<p>Syam</p>",
+    "PostedDate": "2011-09-23T23:08:33.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "676724",
+    "ThreadId": "273586",
+    "Html": "<p>Hi,</p>\n<p>Based on my understanding, there is no problem when adding the <strong>RegionManager </strong>as an Attached Property in the region defined inside a data template in Silverlight. That is to say, the main idea of the blog post, which is to make the <strong>FindRegionManager </strong>method in the <strong>RegionManagerRegistrationBehavior </strong>find an actual region manager in regions defined inside data templates, is still valid in Silverlight; so it can be used as a workaround to avoid these regions not being found in the correct region manager.</p>\n<p>However, it is equally important to know which region manager will be attached into that region (especially if you have a scenario when you need to use scoped regions.) The workaround mentioned in the blog post (which is to define a dynamic resource that  is updated when the view containing the data template is added into the visual tree) won't be possible to implement, because Silverlight doesn't provide <strong>OnVisualParentChanged </strong>method.</p>\n<p>Therefore you should follow a different approach to obtain the appropriate region manager. One possible way to achieve this could be to define your ViewModel as a resource in your view, so you can bind to its properties from within your data template, which  would look like this (assuming you have defined a resource named \"ViewModel\" in your view, and a property named <strong>RegionManager </strong>in your view model):</p>\n<div style=\"color: black; background-color: white;\">\n<pre> &lt;ItemsControl prism:RegionManager.RegionManager=<span style=\"color: #a31515;\">\"{Binding RegionManager, Source={StaticResource ViewModel}}\"</span> prism:RegionManager.RegionName=<span style=\"color: #a31515;\">\"RegionInsideDataTemplate\"</span>&gt;&lt;/ItemsControl&gt;\n</pre>\n</div>\n<p>If you do this, please take into account that you need to define a proper logic to obtain the appropiate <strong>RegionManager </strong>in your view model, especially if you are using Scoped Regions. For example, you could define a shared service responsible for obtaining the correct region manager based on certain criteria that you define, or you could simply  obtain the main region manager from the container if you are sure you won't be using scoped regions in that case.</p>\n<p>I hope you find this helpful.</p>\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-09-26T07:59:11.547-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "677490",
+    "ThreadId": "273586",
+    "Html": "<p>Hi Agustin,</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks for your reply. I will try this and let you know.</p>",
+    "PostedDate": "2011-09-27T19:44:15.843-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

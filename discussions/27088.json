@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "90437",
+    "ThreadId": "27088",
+    "Html": "<br />FYI.  When setting up a new project with only the shell configured, and I haven't created any modules yet, the ConfigurationModuleEnumerator EnsureModulesDiscovered crashes on the foreach (ModuleConfigurationElement element in section.Modules).  section.Modules is null.<br /><br />An instance of the ConfigurationStore is created in the InitializeModules method in the Bootstrapper class.<br />",
+    "PostedDate": "2008-05-04T07:36:52.883-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "90501",
+    "ThreadId": "27088",
+    "Html": "\r\nThanks planefun<br /><br />I will forward this on to the team.<br /><br />Glenn<br />",
+    "PostedDate": "2008-05-05T00:46:15.803-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "90656",
+    "ThreadId": "27088",
+    "Html": "\r\nIn trying to understand why this occured, i have been building a Prism Application.   <br /><br />You said you didn't create any modules yet.  If so why did the ConfigurationStore get created in the InitializeModules?  What code did you run in this function?<br /><br />When I did this with no modules, I initialized the container and the InitializeModules() didn't call anything since there was no modules for the container to Resolve. <br /><br />thanks, Larry<br />",
+    "PostedDate": "2008-05-05T16:57:15.23-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "91364",
+    "ThreadId": "27088",
+    "Html": "\r\nThis is my InitializeModules method from the Bootstrapper.cs file:<br /><br />        private void InitializeModules()<br />        {<br />            ConfigurationStore store = new ConfigurationStore();<br />            container.RegisterInstance&lt;IModuleEnumerator&gt;(new ConfigurationModuleEnumerator(store));<br /><br />            IModuleEnumerator enumerator = container.Resolve&lt;IModuleEnumerator&gt;();<br />            IModuleLoaderService loaderService = container.Resolve&lt;IModuleLoaderService&gt;();<br /><br />            loaderService.Initialize(enumerator.GetStartupLoadedModules());<br />        }<br /><br />This calls the GetStartupLoadedModules method in ConfigurationModuleEnumerator  which calls the EnsureModulesDiscovered method. <br />",
+    "PostedDate": "2008-05-08T18:13:04.403-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

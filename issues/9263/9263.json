@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": "",
+    "Description": "[ Feedback provided on the Prism book by user AlanMC in this discussion: http://compositewpf.codeplex.com/discussions/349695 ]\n \n \nI made a short list of a few things I was thinking of when reading through the book and starting my first project using Prism... This is what I had so far.\n \n \n - There's no main menu example\n \nIt was mentioned that a menu service could be implemented, but this is a common exercise and question and I really thought there could have been an example that showed a data bound menu implementation that was configurable by the different modules. I've written my own version of this, but not sure if I'd ever post it somewhere or not. I think it is decent, but it was quite difficult being new to WPF and Prism.\n \n \n - There was no explanation of including your data templates from your modules into the shell\n \n  For example, if your view for something is only a DataTemplate in a resource dictionary, how do you inject it into your application shell?  The book mentions that your view can be only a data template and shows the template, but not how to include it. Here's what I've done... it would have been nice if the book said how this should be done. I think this is reasonable...\n \nResourceDictionary dictionary = new ResourceDictionary();\ndictionary.Source = new Uri(\"pack://application:,,,/Company.Product.Menu;Component/Resources/MainMenuResources.xaml\");\nApplication.Current.Resources.MergedDictionaries.Add(dictionary);\n \nvar menu = container.Resolve<MainMenuViewModel>();\nregionManager.Regions[RegionNames.MenuRegion].Add(menu);\n \n \n - No explanation of conditionally interacting with a module / service\n \nOk, so.. you have modules, some have dependencies on other interfaces implemented by other modules. But what if it isn't necessary for a service to exist, however if it does, I want to add some functionality?  For example, if the main menu module doesn't exist, then perhaps I just don't register my commands with the menu, but the module can still load and be interacted with in other ways. If I require that dependency through injection into my constructor, then I think I'll get an error if it doesn't exist. Here's what I've done, for example for the MenuService.\n \nif (container.IsRegistered<IMainMenuService>())\n{\n//....\n}\nMy thought is I'm going to have to live with the Container being a dependency so I suppose this is better than relying on that service directly if it is an optional thing..\n \n \n - Stock Trader Reference Implementation is sometimes overly confusing\n \nThe book talks about how to do things like setting up a [Export] attribute to export a module and use its initialize method to initialize the module. However, the only reference implementation decides to completely avoid doing this and instead provide a custom attribute (think it is called ViewExportAttribute or something). I found this confusing and I didn't understand why the book would explain the way to do things while the reference example would do something completely different in what I felt was at times overly complicated.\n \n \n - No example of registering types for module initialization even though it is listed as a step\n \nOk this is probably minor, but the book mentioned registering the types provided by the module with the container, but only shows examples of doing this with MEF not Unity. (Chapter 4, Module Loading Process figure). At least I believe so... been a while but I remember specifically looking through the examples for this.. I've been using container.ReigsterType<Type>() to register my types in the Module.Initialize method.\n \n \n - Internationalization & Localization\n \nI would have liked to see some explanation of how to implement multiple language resources in a modular application. Should the language resources be declared in the infrastructure project? Should they be different versions of each module. I would think that would be undesirable as it may multiple the number of assemblies you have.\n \n \n - Help functionality\n \nAny thought on implementing help functionality for a modular application. One advantage of my application being modular is being able to release different component configurations or versions separately. I suppose we will probably just have to write the documentation somehow with that in mind and have multiple versions but I wonder if anyone else has thought about any way to go about simplifying this.\n \n \nAnyway, those were my first thoughts... I'm sure I'll have some questions when I work with it more.",
+    "LastUpdatedDate": "2013-02-21T18:38:01.2-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Medium",
+      "Severity": 100,
+      "Id": 2
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-03-23T11:12:20.187-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Feedback & Notes on Prism4 Book",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 1,
+    "Id": 9263
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "182211",
+    "ThreadId": "54097",
+    "Html": "Hi all, I created a shell with 2 regions:<br>\r\n<ol>\r\n    <li>MenuRegion; </li>\r\n    <li>ApplicationRegion; </li>\r\n</ol>\r\n<p>In the MenuRegion, the shell loads a module that display a menu. When user select an item from the menu, the shell loads a module on demand (AppModule) in the ApplicationRegion.<br>\r\nThink at the shell like a container of applications. The user select an item from the menu, and the relative application will be loaded.<br>\r\nThe problem is that the application to load (AppModule) in the ApplicationRegion is quite complex, so I think to use regions and modules inside it. <br>\r\nWhat are the best practice to do this? How can I create the AppModule that use it's own ModuleCatalog and it's own regions?<br>\r\n<br>\r\nThanks.</p>\r\n",
+    "PostedDate": "2009-04-22T02:28:18.363-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "182503",
+    "ThreadId": "54097",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi, </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Though I don't know your exact scenario, I think you won't need to have a special ModuleCatalog (different than the one used to load the AppModule). The ModulesCatalog in Prism is accessible to any module and can be used to load other modules.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">If your AppModule is complex you can declare as many regions as you need within its views. Moreover your AppModule can load other modules as needed that will in turn register their views into the those regions.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"color:#1f497d;font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:calibri\">Another feature you can use to have a <b>RegionManager</b> delimited to the <b>AppModule’s View</b> is </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458914.aspx\"><span style=\"font-family:calibri\">Scoped Regions</span></a><span style=\"font-family:calibri\">. </span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:calibri\">You can find a sample of a module that loads another module in the </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458902.aspx\"><span style=\"font-family:calibri\">Modularity QuickStarts</span></a><span style=\"font-family:calibri\">. You might find the following articles from the documentation useful:</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt 36pt\"><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><a href=\"http://compositewpf.codeplex.com/Thread/•&#9;http:/msdn.microsoft.com/en-us/library/dd458868.aspx\"><span style=\"color:#0000ff;font-family:calibri\">UI Composition</span></a><span style=\"font-family:calibri\"> (Design Concept) <br>\r\n</span><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458944.aspx\"><span style=\"font-family:calibri\">UI Composition</span></a><span style=\"font-family:calibri\"> (Technical Concept) <br>\r\n</span><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><a href=\"http://msdn.microsoft.com/en-us/library/dd490825.aspx\"><span style=\"font-family:calibri\">Modularity</span></a><span style=\"font-family:calibri\"> (design Concept)</span> <br>\r\n<span style=\"font-family:calibri\"><span style=\"font:7pt 'times new roman'\"><span style=\"font-family:symbol\">·</span><span style=\"font:7pt 'times new roman'\">     </span> </span><a href=\"http://msdn.microsoft.com/en-us/library/dd458911.aspx\"><span style=\"font-family:calibri\">Module</span></a><span style=\"font-family:calibri\"> (Technical Concept)</span> \r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-size:10pt;font-family:'courier new'\"> <br>\r\n</span><span style=\"font-family:calibri\">Hope it helps!</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> <br>\r\n</span><span style=\"font-family:calibri\">Matias Bonaventura<br>\r\n</span><a href=\"http://blogs.southworks.net/\"><span style=\"font-family:calibri\">http://blogs.southworks.net/matiasb</span></a></p>\r\n</span></span></span></span></p>\r\n",
+    "PostedDate": "2009-04-22T13:08:34.02-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "182651",
+    "ThreadId": "54097",
+    "Html": "Thank you for your reply!<br>\r\nScoped Regions are what I am looking for. They solved my problem.<br>\r\n<br>\r\nThank you,<br>\r\nGiuseppe.\r\n",
+    "PostedDate": "2009-04-23T00:05:28.37-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

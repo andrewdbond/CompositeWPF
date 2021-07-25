@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "139927",
+    "ThreadId": "42105",
+    "Html": "Hi,<br>\r\n<br>\r\nI create DelegateCommand in my controller (MenuTemplateController)&nbsp; and bound to TreeviewItem in my view (MainMenu.xaml), but It does not work.<br>\r\n<br>\r\nMenuTemplateController.cs<br>\r\n<br>\r\npublic DelegateCommand&lt;object&gt; Command1 { get; private set; }<br>\r\n<br>\r\nprotected virtual void InitializeCommand()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Command1 = new DelegateCommand&lt;object&gt;(x =&gt; OnCommand1());<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\n&nbsp;private void OnCommand1()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var shell = container.Resolve&lt;IShell&gt;();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IPresenter presenter = container.Resolve(MainMenu) as IPresenter;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; shell.Show(presenter.View);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\nMainMenu.xaml<br>\r\n<br>\r\n&nbsp;&lt;controls:TreeViewItem Header=&quot;Employee List&quot; cal:Commands.Command=&quot;{Binding Path=Command1}&quot;/&gt;<br>\r\n<br>\r\nCould you give me any tip to make it work corretly! :)\r\n",
+    "PostedDate": "2008-12-11T20:19:15.603-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "140028",
+    "ThreadId": "42105",
+    "Html": "<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Hi</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">The </span><a href=\"http://www.codeplex.com/CompositeWPF/Release/ProjectReleases.aspx?ReleaseId=20206\"><span style=\"font-family:calibri\">Prism V2 - Drop 7</span></a><span style=\"font-family:calibri\"> introduces a <b>Command.Click</b> attached property and <b>ClickCommandBehavior</b> that connects the Click event of a ButtonBase to an ICommand. If you need to handle the Click event of the <b>TreeViewItem</b> control, try modifying your XAML to include the <b>Click</b> attached property as follows:</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'courier new'\">&lt;controls:TreeViewItem Header=&quot;Employee List&quot; <b>cal:Commands.Command.Click</b>=&quot;{Binding Path=Command1}&quot;/&gt;</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Please let me know if this helps.</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Mariano Converti </span></p>\r\n<span style=\"font-size:11pt;font-family:'calibri','sans-serif'\"><a href=\"http://blogs.southworks.net/mconverti\">http://blogs.southworks.net/mconverti</a></span>\r\n",
+    "PostedDate": "2008-12-12T05:43:17.723-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "143912",
+    "ThreadId": "42105",
+    "Html": "After hours (days, even) of banging my head on the keyboard, I think I can say why this doesn't work.&nbsp; Also why my head hurts.&nbsp; :)<br>\r\n<br>\r\nIf you use this command.click with a treeview.&nbsp; So the xaml looks something like:<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;controls:TreeView Grid.Row=&quot;4&quot; x:Name=&quot;treeview&quot; BorderThickness=&quot;0&quot; ItemTemplate=&quot;{StaticResource accountDataTemplate}&quot; <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ItemsSource=&quot;{Binding NavigationItems}&quot; cal:Command.Click=&quot;{Binding ClickCommand}&quot;&gt;&lt;/controls:TreeView&gt;<br>\r\n<br>\r\nThen here is the problem<br>\r\nin the Composite.Presentation.Silverlight dll, in the Command.cs, <br>\r\n<br>\r\nOnSetClickCallback is looking for a ButtonBase as shown here:<br>\r\n<br>\r\n&nbsp;private static void OnSetClickCallback(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ButtonBase buttonBase = dependencyObject as ButtonBase;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (buttonBase != null)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ClickCommandBehavior behavior = GetOrCreateBehavior(buttonBase);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; behavior.Command = e.NewValue as ICommand;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n<br>\r\nSo when a treeview comes through as the dependencyObject, buttonBase will always be null.<br>\r\n<br>\r\nI had actually fixed and worked with a modified command.cs of my own for all this, but ran into another issue with being able to pass the IEventAggregator along the way I needed to and am trying to work around that separate issue.&nbsp; I went back to the Prism DLL's and finally just loaded them as projects and realized what was happening there.&nbsp; I guess I'm a little slow to catch on.&nbsp; This is my first experience with anything remotely resembling loosely coupled architecture.<br>\r\n<br>\r\nAny suggestions how to get the Prism stuff to work with a treeview click?&nbsp; Am I missing something here?<br>\r\n<br>\r\nThanks<br>\r\n<br>\r\nSam <br>\r\n<br>\r\n<br>\r\n\r\n",
+    "PostedDate": "2009-01-01T16:50:41.317-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "147400",
+    "ThreadId": "42105",
+    "Html": "&lt;BUMP&gt;<br>\r\n<br>\r\nAnyone have any answer to this?&nbsp; The fact that this cannot work with a treeview?&nbsp; I have my own workaround, but wanted to hear from anyone who knows more than I do about Prism, if this is true or not (see my last post).<br>\r\n<br>\r\nJust as an additional note, I am working the same way with a data grid now, which like the treeview of course isn't a buttonbase dependency object.<br>\r\n<br>\r\nThanks\r\n",
+    "PostedDate": "2009-01-15T08:08:27.347-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

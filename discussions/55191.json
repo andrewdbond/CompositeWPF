@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "186317",
+    "ThreadId": "55191",
+    "Html": "<br>\r\n<span style=\"font-size:13px;color:#0000ff\"><span style=\"font-size:13px;color:#0000ff\">\r\n<p>public</p>\r\n</span>\r\n<p>&nbsp;</p>\r\n</span>\r\n<p><span style=\"font-size:13px\"> ExpenseListPresentationModel(</span><span style=\"font-size:13px;color:#2b91af\">IEventAggregator</span><span style=\"font-size:13px\"> eventAggregator, </span><span style=\"font-size:13px;color:#2b91af\">IExpenseListView</span><span style=\"font-size:13px\"> expenseListView)\r\n<p>&nbsp;</p>\r\n<p><span style=\"text-decoration:underline\">{</span></p>\r\n</span></p>\r\n<p><span style=\"text-decoration:underline\"><span style=\"font-size:13px;color:#0000ff\">this</span><span style=\"font-size:13px\">.View = expenseListView;\r\n<p>&nbsp;</p>\r\n</span></span></p>\r\n<br>\r\nThe underlined code causes the problem. If I inspect the Model property before the line executes it is null as expected but once it enters the setter it causes the stack overflow.<br>\r\n<br>\r\nModel = Cannot evaluate expression because the current thread is in a stack overflow state.\r\n",
+    "PostedDate": "2009-05-03T12:05:51.26-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "186319",
+    "ThreadId": "55191",
+    "Html": "changing from <br>\r\npublic IExpenseListView View<br>\r\n{<br>\r\n get<br>\r\n {<br>\r\n  return this.View;<br>\r\n }<br>\r\n set<br>\r\n {<br>\r\n  this.View = value;<br>\r\n }<br>\r\n}<br>\r\n<br>\r\nto <br>\r\npublic IExpenseListView View {get; set;}<br>\r\n<br>\r\navoided the stack overflow.<br>\r\n<br>\r\nCan anyone explain please?<br>\r\n",
+    "PostedDate": "2009-05-03T12:11:20.03-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "186411",
+    "ThreadId": "55191",
+    "Html": "I acutally had a similar issue and fixed it using a work around similar to yours :-).<br>\r\n<br>\r\nI dont exactly know why this is happening, but when you have a view model refer to the view and the view refer to the view model, there is a cyclic reference and this could be causing the stack overflow exception. \r\n",
+    "PostedDate": "2009-05-03T23:34:37.84-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "286663",
+    "ThreadId": "55191",
+    "Html": "<p>Okay, my guess:</p>\r\n<p>We have:</p>\r\n<p>public IExpenseListView <strong><span style=\"color:#ff0000\">View</span></strong><br> {<br> &nbsp;get<br> &nbsp;{<br> &nbsp;&nbsp;return this.<strong><span style=\"color:#ff0000\">View</span></strong>;<br> &nbsp;}<br> &nbsp;set<br> &nbsp;{<br> &nbsp;&nbsp;this.<strong><span style=\"color:#ff0000\">View </span></strong>= value;<br> &nbsp;}<br> }</p>\r\n<p>If you call the setter ( <em><span style=\"font-size:13px\">ExpenseListPresentationModel</span></em>.View = <em>IExpenseListView</em>)&nbsp; it will call <em><span style=\"font-size:13px\">ExpenseListPresentationModel</span></em>.View = <em>IExpenseListView</em>, which will call <em><span style=\"font-size:13px\">ExpenseListPresentationModel</span></em>.View = <em>IExpenseListView. </em>Thus: stack overflow.</p>\r\n<p>Similar is true for calling the getter.</p>\r\n<p>Your change replaced the setter/getter implementations (accessing a hidden, generated backing field instead of performing infinite recursion), thereby removing the stack overflow.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-02-06T12:29:41.183-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "496758",
+    "ThreadId": "228082",
+    "Html": "<p>Can you tell me if any thought has been given to allowing the creation of delegate commands where the command's parameter type is a non-reference type. I'm thinking of the case of where maybe you have a Map object and you want to zoom to a particular scale but the scale is a double. You could create an class to hold the scale parameter and pass that to the command but it would be more convenient to declare a delegate command with the parameter of type double. This currently does not appear to be possible because the T parameter has a class constraint.</p>\r\n<p>Does that make sense or am I missing something?</p>\r\n<p>Kevin Rintoul<br>Latitude Geographics</p>",
+    "PostedDate": "2010-09-21T17:12:10.313-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "496971",
+    "ThreadId": "228082",
+    "Html": "<p>Hi Kevin,</p>\r\n<p>Thanks for your feedback, since it is really valuable. I will copy this as a  work-item, so the product team will be notified. Additionally, it allows that  other users could vote for this.</p>\r\n<p>As you mentioned this implementation of Delegate command has a class  constrain, so It does not accept double/Double as a value type or struct. The  workaround within sight is to create&nbsp;another implementation of the  DelegateCommand without this constraint or create your own Command.</p>\r\n<p>Fernando Antivero<br><a href=\"http://blogs.southworks.net/fantivero\"><span style=\"color:#0066cc\">http://blogs.southworks.net/fantivero</span></a></p>",
+    "PostedDate": "2010-09-22T06:06:12.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "496973",
+    "ThreadId": "228082",
+    "Html": "This discussion has been copied to a work item. Click <a href=\"http://compositewpf.codeplex.com/workitem/7272\">here</a> to go to the work item and continue the discussion.",
+    "PostedDate": "2010-09-22T06:07:17.157-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "497080",
+    "ThreadId": "228082",
+    "Html": "<p>We did look into this.&nbsp; However, there is a problem with using value types in this instance if the class constraint is removed.&nbsp; The ICommand interface (implemented by DelegateCommand) has two methods that both take objects, which by itself would not be an issue.&nbsp; However, when you add binding from XAML into the mix with value types, there will often be null values&nbsp;for the value types, which for double or int is an issue.&nbsp;&nbsp;We did look into constraining&nbsp;the DelegateCommand to nullable value types, but there is no such&nbsp;constraint to ensure that there are no issues.</p>\r\n<p>There has been some work done in the DelegateCommand which you could leverage and use the DelegateCommandBase to create your own.&nbsp; As a fallback, you can also do a DelegateCommand&lt;object&gt;, cast yourself where necessary, and handle the null values as appropriate for your app.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-22T09:50:51.033-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "506053",
+    "ThreadId": "228082",
+    "Html": "<p>Hi Kevin,</p>\r\n<p>In the Drop 9 of Prism the product team has updated the <strong>DelegateCommand&lt;T&gt;</strong> class to support value types by using a <strong>Nullable&lt;T&gt;</strong>. I think that you can find interesting the comments from the product team in the <a href=\"http://compositewpf.codeplex.com/workitem/7272\">work-item</a>.</p>\r\n<p>Thanks again for your feedback, since it was really useful.</p>\r\n<p>Fernando Antivero<br><a href=\"http://blogs.southworks.net/fantivero\"><span style=\"color:#0066cc\">http://blogs.southworks.net/fantivero</span></a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-12T07:54:35.463-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

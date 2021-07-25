@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "99685",
+    "ThreadId": "29913",
+    "Html": "I have successfully added a dynamic&nbsp;toolbar based on from suggestions on a prior thread &quot;<span class=CodePlexPageHeader><strong><span>Access the shell from modules</span></strong></span>&quot;.&nbsp; When taking these suggestions and applying them to a menu, you end up with a nested menu item.&nbsp; The menu will place a menuitem wrapper around the ItemsControl.&nbsp; I found this artical that discusses a similar problem.<br>\r\n&quot;Three&nbsp;Ways to Create Dynamic Menus&quot;&nbsp;<a href=\"http://weblogs.asp.net/okloeten/archive/2007/11/14/5149692.aspx\"><span style=\"color:#3e62a6\">http://weblogs.asp.net/okloeten/archive/2007/11/14/5149692.aspx</span></a><br>\r\nDoes anyone have a suggestion on how to avoid the nested menu item?<br>\r\n<br>\r\n<br>\r\nMy ideal world would consist of being able to specify in a module the target parent MenuItem.&nbsp; If it exists, it would attach my menu item to it.&nbsp; If it doesn't, it would create it at that level.&nbsp; This way I can have a dynamic module that can have it's own sub menu item, and any modules it loads can attach to this sub menu item.<br>\r\n<br>\r\nFor example:<br>\r\n<span style=\"font-family:courier new\">File&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reports<br>\r\n&nbsp; Exit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Clinic Reports &lt;&lt;Clinic Module it the parent menu&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Report1&nbsp; &lt;&lt;Report from sub-module1 loaded from Clinic Module&gt;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Report2&nbsp; &lt;&lt;Report from sub-module2 also loade from Clinic Modules&gt;&gt;<br>\r\n</span><br>\r\nThe Main parent module should not need to know that Clinic Reports is one of the menuitems.<br>\r\n<br>\r\nDoes anyone have any other suggestions providing this kind of support, or at least how I can avoid the nested menu item when using an itemcontrol as a menu item?<br>\r\n<br>\r\nBen\r\n",
+    "PostedDate": "2008-06-18T21:50:38.527-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99918",
+    "ThreadId": "29913",
+    "Html": "Ben<br>\r\n<br>\r\nThere's a couple of approaches you can try. One&nbsp;using regions&nbsp;(and to get around the border isssue) is to&nbsp;create a specifc Menu Region Adapter. By default we register Region Adapters to handle Content Controls and Item Controls. You can create a custom one that is implemented specifically for a menu. If you want to support specifying the parent node and such, then create a custom model for your menu items. Have the adapter implementation check that model to retrieve the information it needs for the nodes.<br>\r\n<br>\r\nThe second approach is not use regions at all and create a Menu service that wraps the functionality.<br>\r\n<br>\r\nRegards<br>\r\nGlenn<br>\r\n<br>\r\n",
+    "PostedDate": "2008-06-19T23:20:19.903-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "99937",
+    "ThreadId": "29913",
+    "Html": "I think I'm the kind that likes services, I'll be working towards using a services approach myself.<br>\r\n<br>\r\nWhat I was thinking of was to be able to create a service where modules explain what they want<br>\r\n<ol>\r\n    <li>Get the menu service</li>\r\n    <li>Tell the menu service you want to create a menu item under some path &quot;Reports&gt;Clinic Reports&quot;</li>\r\n    <li>Tell the menu service your content for the menu item should be either a FrameworkElement object or an object</li>\r\n    <li>If you specified an object in step #3, then provide a DataTemplate in a merged resource file.</li>\r\n</ol>\r\nAs an extension to this idea, one module may publish to the menu service that it registered an &quot;extendable&quot; menu by which other modules can locate and add to it (possibly this could be implemented as a child menu service.<br>\r\n<br>\r\nMy reasoning for this approach is to allow multiple menus to be present within the UI similar to how IE7 has multiple menus yet they are both the same tree structure. You could then allow a user to alter the layout of the menu through a configuration screen since it's basically just a data model. For my windows forms CAB apps I do a similar thing but use XML config files to register menu items.<br>\r\n<br>\r\nWhat are your thoughts on doing this? It's just a concept I'd like to try out, but I think it could prove to be very flexible.<br>\r\n<br>\r\n-Brett<br>\r\n",
+    "PostedDate": "2008-06-20T02:01:06.343-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

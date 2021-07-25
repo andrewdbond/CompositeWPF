@@ -1,0 +1,51 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "The region navigation mechanism of Prism is a very powerful and flexible mechanism for navigating between views in a region.\n \nUnfortunately, the region navigation mechanism of Prism only supports synchronous navigation between views. Sometimes however,it is necessary that some asynchronous code is executed during the navigation from one view to another. An example is a wizard where between two wizard steps an asynchronous web service call has to be performed to validate input or to process some data.\n \nTo overcome this limitation, I've created the IAsyncNavigationAware interface and corresponding ASyncRegionNavigationService. Similar to Prism's IConfirmNavigationRequest interface (which does execute asynchronously), the interface uses continuations to proceed the navigation process:\n \npublic interface IAsyncNavigationAware\n{\n    void NavigateTo(NavigationContext navigationContext, Action continuationCallback);\n    bool IsNavigationTarget(NavigationContext navigationContext);\n    void NavigateFrom(NavigationContext navigationContext, Action continuationCallback);\n}\n \nAs you can see, this interface uses continuations for the two navigation actions. This way, asynchronous code can be executed when navigating to or navigating from a view/viewmodel and when this code completes, calling continuationCallback() will continue the navigation process.\n \nI've also created the IConfirmAsyncNavigationRequest interface which is similar to IConfirmNavigationRequest but now derives from IAsyncNavigationAware.\n \nI've also created the AsyncNavigationAwareBehavior region behavior which takes care of attaching the RegionAsyncNavigationService to your regions.\n \nI've attached a zip file with the source code.\n \nKind regards,\n \nMerijn",
+    "LastUpdatedDate": "2014-07-16T07:36:59.097-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-08-09T08:17:36.803-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "IAsyncNavigationAware: Asynchronous region navigation with continuations",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 9542
+  },
+  "FileAttachments": [
+    {
+      "FileId": 898009,
+      "FileName": "AsynchronousRegionNavigation.zip",
+      "DownloadUrl": ".\\898009"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nFirst of all, thanks for sharing your findings with the rest of the community as it could be helpful for others pursuing this kind of scenarios.\r\n\r\nI have run some tests with your implementation and it seems an useful approach for adding asynchronous calls functionality to the navigation mechanism.\r\nI believe, that something that should be considered when using this approach, is that when using the IAsyncNavigationAware the IsNavigationTarget property may be ignored, this is because the RegionNavigationContentLoader filters the existing view candidates to perform the navigation in the region depending on the state of the IsNavigationTarget property, based on the default INavigationAware interface, hence in order to support this a new implementation of the RegionNavigationContentLoader that uses the new IAsyncNavigationAware interface should be implemented.\r\n\r\nAlso, as an alternative for applying your custom implementation of the RegionNavigationService to all the regions instead of using Region Behaviors, you could replace the default Prism Library type, by registering your custom implementation of the  RegionNavigationService class into the container through the IRegionNavigationService interface, for example when using Unity you could replace the type during the bootstrapping sequence like this:\r\n\r\nprotected override void ConfigureContainer()\r\n        {\r\n            RegisterTypeIfMissing(typeof(IRegionNavigationService), typeof(RegionAsyncNavigationService), false);\r\n            base.ConfigureContainer();\r\n        }\r\nYou could find more information about this in the following section of the Prism documentation:\r\n\r\nAppendix E: Extending Prism, Replacing Default Prism Library Types (http://msdn.microsoft.com/en-us/library/gg430866(v=pandp.40)#sec12)\r\n\r\nWe are leaving this work item open so the team can analyze you suggestion for future releases.\r\n\r\nThanks!\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2012-08-17T10:04:59.91-07:00",
+      "Id": 156612
+    }
+  ]
+}

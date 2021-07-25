@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1010786",
+    "ThreadId": "435487",
+    "Html": "Is it possible to have a call back to the publisher using PrismEventAggregator. Here is the example scenario:\r<br />\n •MainPage\r<br />\n •LeftControl\r<br />\n •RightControl\r<br />\n \r<br />\nThe LeftControl publishes an Event and RightControl subcribes to act upon the event.\r<br />\n<br />\nUpon completion of the action in the right control, I would like to execute another function to refresh the left control. For this, can I pass an Action in the EventAggregator event as a callback? How do I do it?<br />\n",
+    "PostedDate": "2013-03-05T11:19:43.973-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1011289",
+    "ThreadId": "435487",
+    "Html": "Hi, \r<br />\n<br />\nBased on my understanding of your question, I believe there are two possible approaches for your scenario:\r<br />\n<br />\n1) Create a new <strong>CompositePresentationEvent</strong> and subscribe your <strong>LeftControl</strong> to it to handle the refresh. Then, after the <strong>RightControl</strong> finishes handling the first event, it could publish a second one with the <strong>EventAggregator</strong> as a callback.\r<br />\n<br />\n2) Create a new class with both the parameter you are passing with your <strong>CompositePresentationEvent</strong> and a callback event:<br />\n<pre><code>public class MyClass\n{\n    public ParameterType parameter;\n    public event MyCallbackEvent callback;\n}</code></pre>\n\nThen, in your <strong>LeftControl</strong>, you could create an instance of this class, where you would set the parameter to be passed and subscribe to the callback event. After publishing the <strong>CompositePresentationEvent</strong> with this instance as the payload, the subscribed <strong>RightControl</strong> would receive the instance in its handler. So, after handling the published event, the <strong>RightControl</strong> could simply raise the callback event passed as a method of executing a callback in the <strong>LeftControl</strong> :<br />\n<pre><code>// In LeftControl\nMyClass c = new MyClass();\nc.parameter = // The original parameter\nc.callback += // The method of the LeftControl that will be invoked as the callback\nthis.eventAggregator.GetEvent&lt;MyCompositeEvent&gt;().Publish(c);\n\n// In RightControl\npublic void EventHandler(MyClass c)\n{\n    // Do work...\n    c.callback.Invoke();\n}</code></pre>\n\nHope this helps,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-03-06T09:00:48.99-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

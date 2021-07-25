@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "172657",
+    "ThreadId": "51481",
+    "Html": "Hi!<br>\r\n<br>\r\nI am trying to build an application with an ApplicationModel. The model takes care of my diferent ModuleApplications which can be loaded into a TabControl, when the user clicks a button in the toolbar. The ModuleApplications implement the IActiveAware interface. <br>\r\nAdding views to the TabControl works but the latest added view is never set as SelectedItem automatically.<br>\r\nI don't know what I am doing wrong. Here is how I activate a ModuleApplication:<br>\r\n<span style=\"font-size:13px;color:#2b91af\"><span style=\"font-size:13px;color:#2b91af\">\r\n<p>BuchungModuleApplication</p>\r\n</span>\r\n<p>&nbsp;</p>\r\n</span>\r\n<p><span style=\"font-size:13px\"> app = </span><span style=\"font-size:13px;color:#0000ff\">null</span><span style=\"font-size:13px\">;\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n</span></p>\r\n<p><span style=\"font-size:13px;color:#0000ff\">int</span><span style=\"font-size:13px\"> kontoID = </span><span style=\"font-size:13px;color:#0000ff\">int</span><span style=\"font-size:13px\">.Parse(id.ToString());<br>\r\n</span><span style=\"font-size:13px;color:#2b91af\">List</span><span style=\"font-size:13px\">&lt;</span><span style=\"font-size:13px;color:#2b91af\">IViewsCollection</span><span style=\"font-size:13px\">&gt; list = </span><span style=\"font-size:13px;color:#0000ff\">new</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#2b91af\">List</span><span style=\"font-size:13px\">&lt;</span><span style=\"font-size:13px;color:#2b91af\">IViewsCollection</span><span style=\"font-size:13px\">&gt;();<br>\r\nlist.Add(</span><span style=\"font-size:13px;color:#0000ff\">this</span><span style=\"font-size:13px\">.MainModuleApplications);<br>\r\n</span><span style=\"font-size:13px;color:#0000ff\">foreach</span><span style=\"font-size:13px\"> (</span><span style=\"font-size:13px;color:#2b91af\">ActiveAwareModuleApplicationController</span><span style=\"font-size:13px\"> con </span><span style=\"font-size:13px;color:#0000ff\">in</span><span style=\"font-size:13px\"> list[0])<br>\r\n{<br>\r\n    </span><span style=\"font-size:13px;color:#0000ff\">if</span><span style=\"font-size:13px\"> (con.Name.Equals(</span><span style=\"font-size:13px;color:#a31515\">&quot;Buchungen&quot;</span><span style=\"font-size:13px\">))<br>\r\n    {<br>\r\n        app = (</span><span style=\"font-size:13px;color:#2b91af\">BuchungModuleApplication</span><span style=\"font-size:13px\">)con;<br>\r\n        </span><span style=\"font-size:13px;color:#0000ff\">this</span><span style=\"font-size:13px\">.mainModuleApplication.Activate(app);<br>\r\n        app.buchungViewModel.LoadModel(kontoID);<br>\r\n        </span><span style=\"font-size:13px;color:#0000ff\">break</span><span style=\"font-size:13px\">;<br>\r\n    }<br>\r\n}<br>\r\n<br>\r\nThe view gets activated but not set as SelectedItem.  I thought I would have to deactivate the other views and made an else wher I said app.IsActive = false;<br>\r\nMy implementation took this great article as base:<br>\r\n<a href=\"http://blogs.msdn.com/erwinvandervalk/archive/2009/03/02/how-to-build-an-outlook-style-application.aspx\">http://blogs.msdn.com/erwinvandervalk/archive/2009/03/02/how-to-build-an-outlook-style-application.aspx</a><br>\r\n<br>\r\nHas anybody an idea what could be wrong?<br>\r\nThanks in advance!</span></p>\r\n",
+    "PostedDate": "2009-03-27T01:10:05.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "172790",
+    "ThreadId": "51481",
+    "Html": "Check if this is causing the issue for you.<br>\r\n<br>\r\n<strong>Note:</strong> <strong>The release was refreshed on 2/25/2009 to correct an issue with </strong><a href=\"http://www.codeplex.com/CompositeWPF/Wiki/View.aspx?title=Active view in TabControl behaves differently in Prism V2 compared to Prism V1&referringTitle=Known Issues / Fixes\"><span style=\"color:#3e62a6\"><strong>TabControl<span></span></strong></span></a><span style=\"color:#30332d\"><strong> regions</strong> and an </span><a href=\"http://www.codeplex.com/CompositeWPF/Wiki/View.aspx?title=Fix: CAL Build failure with Silverlight GDR update&referringTitle=Known Issues / Fixes\">issue with an upcoming Silverlight release<span></span></a><span style=\"color:#30332d\">. You can download the latest release from the 'final version' link above. You can verify if you have the latest version of the self-extracting archive by examining the Digital Signature timestamp it should read 'Tuesday, February 24, 2009 12:00:07 PM'.</span><br>\r\n",
+    "PostedDate": "2009-03-27T07:54:57.83-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "173345",
+    "ThreadId": "51481",
+    "Html": "Hi Kaja,<br>\r\n<br>\r\nI checked the timestamp and indeed we had the older version. I replaced it with the new one, but the problem remains. The newly added view is not set as selected item.\r\n",
+    "PostedDate": "2009-03-29T23:36:58.397-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1046667",
+    "ThreadId": "444469",
+    "Html": "Hi,\r<br />\n<br />\nI need to navigate/show a View as a PopupWindow that slides in, from left to righ, and out in inverse direction of the Screen.\r<br />\n<br />\nI have already found a WindowRegionAdapter here (<a href=\"http://blogs.southworks.net/ibaumann/2008/09/26/windowregionadapter-for-compositewpf-prism/\" rel=\"nofollow\">http://blogs.southworks.net/ibaumann/2008/09/26/windowregionadapter-for-compositewpf-prism/</a>) that works perfectly. How can I define a Transition/Effects to show this sliding.\r<br />\n<br />\nCan I use the NavigateTo/NavigateFrom to implement the Effect ?\r<br />\nWhat is the best solution for this ?\r<br />\n<br />\nThanks in advance<br />\n",
+    "PostedDate": "2013-05-21T11:45:04.69-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1047213",
+    "ThreadId": "444469",
+    "Html": "Hi,\r<br />\n<br />\nIn order to apply effect to your <strong>PopupWindow</strong>, you could subscribe to the <strong>Loaded</strong> and <strong>Closing</strong> events of your window in the code behind, and apply the corresponding effects on the handlers of these events. <br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">public</span> <span style=\"color:Blue;\">partial</span> <span style=\"color:Blue;\">class</span> MyPopupWindow : Window\n{\n    <span style=\"color:Blue;\">public</span> MyPopupWindow()\n    {\n        <span style=\"color:Blue;\">this</span>.Loaded += Shell_Loaded;\n        <span style=\"color:Blue;\">this</span>.Closing += Shell_Closing;\n        InitializeComponent();\n    }\n\n    <span style=\"color:Blue;\">void</span> Shell_Closing(<span style=\"color:Blue;\">object</span> sender, System.ComponentModel.CancelEventArgs e)\n    {\n        <span style=\"color:Green;\">//exit animation</span>\n    }\n\n    <span style=\"color:Blue;\">void</span> Shell_Loaded(<span style=\"color:Blue;\">object</span> sender, RoutedEventArgs e)\n    {\n        <span style=\"color:Green;\">//start animation</span>\n    }\n\n}\r\n</pre></div>Hope this helps,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-05-22T09:38:39.99-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1047864",
+    "ThreadId": "444469",
+    "Html": "Thanks Frederico. I will try and let you know results.<br />\n",
+    "PostedDate": "2013-05-23T10:28:14.433-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

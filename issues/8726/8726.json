@@ -1,0 +1,81 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 6,
+    "Custom": "",
+    "Description": "I have some strange behaviour when using the modulecatalog.xaml approach.\n \nWhen I have one module list, I get injected with the correct amount of tabs.  When I add a second module, then there is a doubling of the number of tabs for one of the modules (could be any module).\n \nWhen I add a thrid module then one of the modules views (tabs) gets injected three times, another one two times, and another one once.\n \nAdd a 4th module and the cycle appears again, 4-3-2-1\n \nAttached is a screen shot with three modules.\n \nHere is the xaml from modulescatalog:\n \n<Modularity:ModuleCatalog xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" \n                          xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\" \n                          xmlns:sys=\"clr-namespace:System;assembly=mscorlib\" \n                          xmlns:Modularity=\"clr-namespace:Microsoft.Practices.Prism.Modularity;assembly=Microsoft.Practices.Prism\">\n \n    <Modularity:ModuleInfo Ref=\"WAPL.BBMGradeControl.Modules.OBCSampler.Silverlight.xap\" ModuleName=\"ObcSamplerModule\" ModuleType=\"WAPL.BBMGradeControl.Modules.OBCSampler.OBCSamplerModule, WAPL.BBMGradeControl.Modules.OBCSampler.Silverlight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\" />\n    <Modularity:ModuleInfo Ref=\"WAPL.BBMGradeControl.Modules.MineBlock.Silverlight.xap\" ModuleName=\"MineBlockModule\" ModuleType=\"WAPL.BBMGradeControl.Modules.MineBlock.MineBlockModule, WAPL.BBMGradeControl.Modules.MineBlock.Silverlight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\" />\n    <Modularity:ModuleInfo Ref=\"WAPL.BBMGradeControl.Modules.MineTransactions.Silverlight.xap\" ModuleName=\"MineTransactionsModule\" ModuleType=\"WAPL.BBMGradeControl.Modules.MineTransactions.MineTransactionsModule, WAPL.BBMGradeControl.Modules.MineTransactions.Silverlight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\" />\n \n</Modularity:ModuleCatalog>\n \nAny ideas?",
+    "LastUpdatedDate": "2013-02-21T18:38:07.893-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-09-25T21:53:43.53-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Using ModuleLoader creates multiple tabs for multiple modules",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 8726
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897990,
+      "FileName": "MultipleModuleTabs.PNG",
+      "DownloadUrl": ".\\897990"
+    },
+    {
+      "FileId": 897991,
+      "FileName": "SilverlightApplication1.zip",
+      "DownloadUrl": ".\\897991"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\nIt would be helpful if you could provide us with a repro sample application that portrays this scenario, so we can help you troubleshoot your problem.\r\n\r\nRegards,\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami ",
+      "PostedDate": "2011-09-26T10:02:39.303-07:00",
+      "Id": 156513
+    },
+    {
+      "Message": "Here's a sample with two modules showing the problem.",
+      "PostedDate": "2011-09-27T05:25:00.257-07:00",
+      "Id": 156514
+    },
+    {
+      "Message": "Any news?",
+      "PostedDate": "2011-09-30T01:54:10.38-07:00",
+      "Id": 156515
+    },
+    {
+      "Message": "Hi,\r\n\r\nWe checked your repro-sample application and we saw that you are using the AutoPopulateExportedViewsBehavior class from the Stock Trader RI. We also found that, apparently, this behavior is having an issue where the registered views will be added to the region each time that the AddRegisteredViews method is called.\r\n\r\nBased on my understanding, this happens because the this method is called each time a module defined in the ModuleCatalog.xaml is initialized, where a new instance of each view is created, and the condition !this.Region.Views.Contains(view) fails.\r\n\r\nSome possible workarounds to avoid this problem are:\r\n\r\n-Defining the views as singletons, by decorating them with the PartCreationPolicy attribute set as Shared.\r\n\r\n-Adding the modules' assembly catalogs in the aggregate catalog directly instead of using a xaml file (this is the approach used in the Stock Trader RI). This works because the method AddRegisteredViews is executed after all the modules are loaded, so the views are only added to the region once. You can do this including the following lines in the ConfigureAggregateCatalog method of the bootstrapper and removing the override of the CreateModuleCatalog method:\r\nthis.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(Module1.Module1).Assembly));\r\nthis.AggregateCatalog.Catalogs.Add(new AssemblyCatalog(typeof(Module2.Module2).Assembly));\r\n\r\n-Finally, if none of the above approach works for you scenario, you can modify the AddRegisteredViews method of the AutoPopulateExportedViewsBehavior like this:\r\n\r\nprivate void AddRegisteredViews()\r\n        {\r\n            if (this.Region != null)\r\n            {\r\n                foreach (var viewEntry in this.RegisteredViews)\r\n                {\r\n                    if (viewEntry.Metadata.RegionName == this.Region.Name)\r\n                    {\r\n                        var view = viewEntry.Value;\r\n\r\n                        if (!this.Region.Views.Select(e => e.GetType()).Contains(viewEntry.Value.GetType()))\r\n                        {\r\n                            this.Region.Add(view);\r\n                        }\r\n                    }\r\n                }\r\n            }\r\n        }\r\n\r\nThis approach checks the types of the views that the region contains instead of checking the views themselves, so no more than one view of each type is added to the region by this behavior (this is similar to add them using the RegisterViewWithRegion method of a RegionManager).\r\n\r\nI will leave this work item open as the AutoPopulateExportedViewsBehavior provided with the Stock Trader RI does not work properly with the xaml module catalog approach.\r\n\r\nI hope you find this useful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-10-04T04:48:18.707-07:00",
+      "Id": 156516
+    },
+    {
+      "Message": "We'll keep investigating to find the cause for this unexpected behavior. Once we have some findings to share, we will post in this work item again.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-10-04T05:16:00.22-07:00",
+      "Id": 156517
+    },
+    {
+      "Message": "Hi,\r\n\r\nBased on my understanding, this problem is caused by how the AutoPopulateExportedViewsBehavior imports and stores the registered views:\r\nThe registered views are imported through the container to the RegisteredViews property, which is an array of Lazy objects. When the registered views are retrieved (in the AddRegisteredViews method) the views are resolved by the container creating a new instance of the each view (if the view is not registered as a singleton). Also, the AddRegisteredViews method is called each time that the array of registered views is modified (which is reflected by a call to the OnImportsSatisfied method) or the behavior is attached to a region.\r\n\r\nWhen the modules are defined through the xaml catalog approach, each time a view is registered (using the ViewExportAttribute) the RegisteredViews property is modified in the behavior and the AddRegisteredViews is executed. Each time that the AddRegisteredViews method executes it retrieves the registered views for the RegisteredViews property but, as the RegisteredViews was modified, the instances of the views have to be created again (except if the aforementioned views have been previously registered as singletons). Then, when the method checks if the view is already in the region, the condition fails because the instance of the view that the region contains is not the same instance that the view contained in the array of registered views and thus two instances of the view are injected into the region.\r\n\r\nWhen specifying the modules in the bootstrapper (like in the Stock Trader RI) the RegistedViews property is only modified once, when all the modules have been loaded, and all the views are registered at the same time. This means that the AddRegisteredViews is called only once, and that the views are injected in the region only once. Because of this, the problem described in this work item doesn't impact your application when following this approach.\r\n\r\nChecking the types of the views instead of the instances of the views seems to solve this problem. However, have in mind that if the region already has an instance of the view injected this approach would prevent this particular behavior for injecting another instance of the same view in the region. However, more instances of the view can still be injected through the Add method in the region or through the RegisterViewWithRegion method in the region manager if the aforementioned view is not registered as a singleton.\r\n\r\nThanks,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2011-10-04T11:57:43.36-07:00",
+      "Id": 156518
+    }
+  ]
+}

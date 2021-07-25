@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1082035",
+    "ThreadId": "453788",
+    "Html": "iv'e got tow viewmodels (implementing IConfirmNavigationRequest ) ,  which can be propagated into a region using navigation .\r<br />\n<br />\n1) if i call the <em>first</em> and then the <em>second</em> :\r<br />\n<br />\n<strong>NavigateFrom</strong> is called in the <em>First</em> and <strong>NavigateTo</strong> is called in the <em>second</em><br />\nand my navigation callback is called \r<br />\n<br />\n2)but if i call <em>second</em> and the <em>first</em> :\r<br />\n Nothing occurs  . (no navigation) \r<br />\n<br />\nIn both cases the navigation is called as such : <br />\n<pre><code> _regionManager.RequestNavigate(requests[i].RegionName, new Uri(requests[i].ViewName, UriKind.Relative),OnNavigationComplete); </code></pre>\n\nany ideas what could be causing this behavior ?\r<br />\n<br />\n(Again if call the navigation in the  order described in (1) everything is o'k \r<br />\n and if the order is (2) navigation never occurs ) <br />\n",
+    "PostedDate": "2013-08-19T01:40:12.743-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1082788",
+    "ThreadId": "453788",
+    "Html": "Hi,\r<br />\n<br />\nBased on the scenario you described us, there wouldn’t be any special considerations for this to run. As far as I know, <strong>OnNavigatedFrom</strong> and <strong>OnNavigatedTo</strong> shouldn't be the cause of the problem if the navigation does not occurs. However, I think you should verify the following:<br />\n<h1></h1>\n<ul>\n<li>Requests[i].RegionName and Requests[i].ViewName exist and are correctly spelled as equals to its registration name.</li>\n<li>The views are correctly registered in your Container.</li>\n<li>\nThe Request.Navigate call from the second view is executed.<br />\n</li>\n</ul>\nAlso, take into account that the <strong>Navigation API</strong> swallows any type of exception so any issue regarding the navigation won't be output. Therefore, if you need to know if there is an exception in your navigation, you can subscribe to the <strong>IRegionNavigationServiceNavigationFailed</strong> event to get more details.\r<br />\n<br />\nYou may also find helpful the following thread:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"https://compositewpf.codeplex.com/discussions/452384\" rel=\"nofollow\">View Base Navigation not taking place</a><br />\n</li>\n</ul>\nIf that doesn't help you, it would be helpful if you can provide us with additional information on how the <strong>Navigate</strong> requests and the <strong>OnNavigatedTo</strong> and <strong>OnNavigatedFrom</strong> methods are implemented. \r<br />\n<br />\nHope this helps,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a> <br />\n",
+    "PostedDate": "2013-08-20T10:36:15.1-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

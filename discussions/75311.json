@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "257692",
+    "ThreadId": "75311",
+    "Html": "<p>I have a modular application, which loads some modules at runtime. I am using Prism v2 w/ Silverlight 3. I have verified that the modules load OK.</p>\r\n<p>Now, if a module is missing from the server, Prism throws the ModuleTypeLoadingException. I tried catching the exception at several points:</p>\r\n<p>e.g.</p>\r\n<p>&nbsp;try<br> {<br> _moduleManager.LoadModule(_currentColorTheme.Name);<br> }<br> catch (Exception ee)<br> {<br> Debug.WriteLine(&quot;Loading module failed.&quot;);<br> }</p>\r\n<p>However, I can't catch the exception in my code (it eventually gets caught in Application_UnhandledException but that's too high up the chain for me and not ideal).</p>\r\n<p>Is there a recommended approach for catching exceptions originating in the Prism assemblies?</p>\r\n<p>Thanks,</p>\r\n<p>Alex</p>",
+    "PostedDate": "2009-11-16T15:54:35.877-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "257716",
+    "ThreadId": "75311",
+    "Html": "<p>I didn't digged up the source for the LoadModule method, but I assume that it's an async method, that's why you can't put it into a try..catch.</p>\r\n<p>What should be a help here is that in the Application_UnhandledException raise an event for handling the exception and pass an action with the event which should be called if none of the subscribers handled the raised exception.</p>\r\n<p>This way, your exception handling is happening in an async fashion too ;-)</p>\r\n<p>Meanwhile I digged up the source :-))) as I see your another choice is to derive your own class from ModuleManager and override the HandleModuleTypeLoadingError method which ones 2nd method is the exception occured during module loading. From the overridden method you should also raise an event which can be handled in the appropriate part of your application.</p>\r\n<p>Hope that helps,</p>\r\n<p>Attila</p>",
+    "PostedDate": "2009-11-16T17:31:56.257-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "262057",
+    "ThreadId": "75311",
+    "Html": "<p>Attilah,</p>\r\n<p>Thank you for your response and sorry it took me a while to answer (was out of the country and in the woods). I implemented your 2nd idea, overrode the HandleModuleTypeLoadingError() method and it worked beautifully. I like how the Prism team has designed the extensibility points. As it turns out, they're quite useful. Thanks again, Attilah!</p>",
+    "PostedDate": "2009-11-30T15:17:05.697-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

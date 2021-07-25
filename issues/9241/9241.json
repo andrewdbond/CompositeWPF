@@ -1,0 +1,66 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "We are closing this work item, as this is probably not an issue in Prism as XBAPS are currently not addressed in the Prism Guidance. For additional support regarding this subject you could check the related threads mentioned in this workitem and the sample attached, or you could create a thread in the discussions section, where we will help you with your concerns.\r\n\r\nRegards,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami﻿",
+    "ClosedDate": "2012-10-25T10:04:02.733-07:00",
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "I have a WPF Windows application that I have developed using Prism/Unity framework.\n \nNow I want to convert it to XBAP application as well so it can be hosted in the IIS and can be shared on the network.\n \nI have one Main view (Shell.xaml) that is derived from Windows and rest of the views are UserControls. I have converted the Shell.xaml to be derived from Page Class and made required changes in teh application code to make it work.\n \nEverything works well and there is no error as such but the first view (which is login view should be displayed on the Shell's content region) is not getting displayed. I tried to debug the application and saw that IRegion.ActivateView is getting called properly but some how the view is not getting displayed onto UI.\n \nCan any one tell me why this is happening? If there is any limitation or specific steps to make it work for WPF XBAP application. I also tried RegionManager.RequestNavigate method but no luck.\nLet me know if anyone else has faced such an issue before.\n \nThanks in advance.\n \nSharad Rastogi",
+    "LastUpdatedDate": "2013-05-16T05:28:38.5-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-03-12T22:45:54.807-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "IRegion.ActivateView doesn't show the View in an XBAP application",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 9241
+  },
+  "FileAttachments": [
+    {
+      "FileId": 898004,
+      "FileName": "HelloWorld XAP Sample.zip",
+      "DownloadUrl": ".\\898004"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nAs far as I know, XBAPs are not in the scope of the Prism Guidance; therefore some changes might need to be done in your application to achieve this conversion. \r\n\r\nI believe, you might find the following resources helpful, where the scenario of migrating Prism WPF applications to XBAP is addressed:\r\n\r\n- Migrating Composite Application Guidance (Prism-v2) to XBAP \r\n(http://blogs.southworks.net/matiasb/2009/03/11/using-cal-with-xbap-applications/)\r\n\r\n- Composite Application Guidance for WPF & Silverlight (Prism v2) Reference Implementation migrated to XBap \r\n(http://blogs.southworks.net/dschenkelman/2009/03/13/composite-application-guidance-for-wpf-silverlight-prism-v2-reference-implementation-migrated-to-xbap/)\r\n\r\n- Can I develop XBAP application with this framework? \r\n(http://compositewpf.codeplex.com/discussions/31058)\r\n\r\nAlthough, these are targeting Prism v2, they can be used as a reference for other versions.\r\n\r\nI hope you find this handy,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami﻿",
+      "PostedDate": "2012-03-13T10:42:27.513-07:00",
+      "Id": 156592
+    },
+    {
+      "Message": "Unfortunately, The examples given in the link contain a single view page which doesn't require IRegion.Activate. As explained in the example we need to convert views derived from Windows to Page and it will work.  Same technique works with Prism 4 as well without but the issue appears when we have multiple views and we need to navigate between them. There is no code that says we can achieve this.\r\n\r\nPlease suggest if there is any alternate way to achieve this.\r\n\r\nSharad Rastogi",
+      "PostedDate": "2012-03-19T00:14:07.633-07:00",
+      "Id": 156593
+    },
+    {
+      "Message": "Hi,\r\n\r\nI believe I don't properly understand your scenario yet.\r\nIn order reproduce the behavior you are describing I tried to created a simple XBAP application that uses view discovery and navigation, following the links mentioned by Agustin. However, I didn't experience the problem you are mentioning. You can find this sample attached to this work item.\r\n\r\nThe sample application injects a HelloWorldView in the MainRegion using the view discovery approach and activates it manually. This HelloWorldView contains a button which raises a navigation request to navigate to the OtherView. In this view, another button allows you to navigate to the HelloWorldView. As you will see, the aforementioned operations (view discovery, view activation, navigation) seems to be performed without problems.\r\n\r\nAs a side note, you will find that the sample contains some projects from the Prism v4 library. This is because of a small workaround applied to the AssemblyInfo.cs file of the Prism.Desktop project in order to allow it to work with a XBAP application because, as mentioned by Agustin, Prism XBAPs applications are not in the scope of the Prism guidance and it seems that the Prism library is not prepared to be used in a XBAP application as out of the box.\r\n\r\nIf you need more support regarding this subject, it would be helpful if you could provide us with a repro-sample application portraying the problem you are mentioning, so that we can help you find the causes behind it.\r\n\r\nI hope you find this useful,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-03-20T13:25:15.073-07:00",
+      "Id": 156594
+    },
+    {
+      "Message": "Hi,\r\n\r\nWe are closing this work item, as this is probably not an issue in Prism as XBAPS are currently not addressed in the Prism Guidance. For additional support regarding this subject you could check the related threads mentioned in this workitem and the sample attached, or you could create a thread in the discussions section, where we will help you with your concerns.\r\n\r\nRegards,\r\n\r\nAgustin Adamihttp://blogs.southworks.net/aadami﻿",
+      "PostedDate": "2012-10-25T10:03:26.683-07:00",
+      "Id": 156595
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "I have a multi window wpf app, I create scoped container in each window's viewmodel and inject some window scoped service object into the container, then I use this unity container to resolve views and inject into the window. but in some module, the view have a region host inside and there have some vew registertion in other module. this cause problem, the sub view which has been registered in to view regestery by using RegionManager.RegisterViewWithRegion(regionname, viewtype) will be resolved by a global servicelocator. so the window scoped service object ca not been reterived by thosr viewmodel's cotr",
+    "LastUpdatedDate": "2013-03-15T02:16:49.8-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-10-26T04:31:08.037-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "scpoed unity container and RegionManager.RegisterViewWithRegion",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 9693
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nBased on my understanding when using the view discovery approach to register your views with an specific region, if you want to specify that the view will be resolved from a different container, I believe you could benefit of the RegisterViewWithRegion overload method that allows you to pass a delegate that can be used to specify how to retrieve the content associated with the region name:\r\n\r\nvoid RegisterViewWithRegion(string regionName, Func getContentDelegate);\r\n\r\nAs you mentioned, by default a delegate which uses the global ServiceLocator is created. This can be seen in the RegionViewRegistry class provided with Prism. Hence in order to specify that a different container should be used to resolve the desired type, you could create a custom delegate which uses your child container instead (e.g. regionViewRegistry.RegisterViewWithRegion(\"innerRegion\", () => childContainer.Resolve());)\r\n\r\nThe problem with this approach, is that you will have to define some logic to pass the corresponding child container that will be used in the module to register the views. Perhaps, a possible approach could be to use the event aggregator to communicate between these modules. For example, your view model class that contains a region which should be populated by views in other modules, could publish this event passing the name of the region and the corresponding child container as a payload. Then the subscriber in your module could register its views with the child container passed as mentioned above.\r\n\r\nI hope this helps,\r\n\r\nAgustin Adamihttp://blogs.southworks.net/aadami ",
+      "PostedDate": "2012-10-26T11:01:58.043-07:00",
+      "Id": 156621
+    }
+  ]
+}

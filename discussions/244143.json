@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "558695",
+    "ThreadId": "244143",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I am developing an application which loads 2 Module on 2 different region. Module A gets the data from database with list of all available applicaiton and show it to user. When user clicks on the application it publishes an event. Following is the code for\r\n it.</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> ApplicationClick(<span style=\"color:blue\">object</span> parameter)\r\n        {\r\n            <span style=\"color:green\">//Some implementation</span>\r\n            <span style=\"color:green\">//MessageBox.Show(parameter.ToString() &#43; &quot; - In Discovery Manager&quot;);</span>\r\n\r\n            ApplicationInformation appInfo = <span style=\"color:blue\">new</span> ApplicationInformation();\r\n            appInfo.Name = parameter.ToString();\r\n\r\n            <span style=\"color:blue\">if</span> (!<span style=\"color:blue\">string</span>.IsNullOrEmpty(appInfo.Name))\r\n                _eventAggregator.GetEvent&lt;ApplicationClickEvent&gt;().Publish(appInfo);\r\n        }</pre>\r\n<pre>ApplicationClick is called via ICommand implementation. Module A also register IEventAggregator type in the container as follows</pre>\r\n<pre>\tthis._container.RegisterType&lt;IEventAggregator, EventAggregator&gt;(new ContainerControlledLifetimeManager());</pre>\r\n</div>\r\n<p>Module B in one of the ViewModel of a view&nbsp;subscribe to the event published by Module A as follows.</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> ApplicationNameViewModel(IEventAggregator eventAggregator)\r\n        {\r\n            _eventAggregator = eventAggregator;\r\n            <span style=\"color:blue\">this</span>.ApplicationName = <span style=\"color:#a31515\">&quot;No Applcation Loaded&quot;</span>;\r\n\r\n            ApplicationClickEvent applicationClickEvent = _eventAggregator.GetEvent&lt;ApplicationClickEvent&gt;();\r\n\r\n            <span style=\"color:blue\">if</span> (_subscriptionToken != <span style=\"color:blue\">null</span>)\r\n            {\r\n                applicationClickEvent.Unsubscribe(_subscriptionToken);\r\n            }\r\n\r\n            <span style=\"color:blue\">bool</span> keepSubscriberReferenceAlive = <span style=\"color:blue\">true</span>;\r\n            _subscriptionToken = applicationClickEvent.Subscribe(ApplicationClickedEventHandler, ThreadOption.UIThread, keepSubscriberReferenceAlive);\r\n\r\n        }</pre>\r\n<pre>Module B also register IEventAggregator as follows.</pre>\r\n<pre>this._container.RegisterType&lt;IEventAggregator, EventAggregator&gt;(new ContainerControlledLifetimeManager());\r\n</pre>\r\n<pre>Now my problem is, I am not receving any event notification on Module B, any ideas why? Am I doing anything wrong?</pre>\r\n</div>\r\n",
+    "PostedDate": "2011-02-01T07:05:48.37-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "559387",
+    "ThreadId": "244143",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Take into account that is no need to register the <strong>EventAggregator</strong> in the\r\n<em>Initialize</em> method of your modules. The <strong>UnityBootstrapper</strong> class is already registering the\r\n<strong>EventAggregator</strong> in the container, in the <em>ConfigureContainer</em> method.</p>\r\n<p>When you <span style=\"color:#000000\">get the</span> <em>ApplicationClickEvent</em> in the ApplicationClick event of moduleA<span style=\"color:#000000\"> to publish it, you must use the same\r\n</span>EventAggregator <span style=\"color:#000000\">instance that will be used to&nbsp;get\r\n</span><em>ApplicationClickEvent</em> &nbsp;in moduleB.&nbsp;</p>\r\n<p>Since you are registering again the <strong>EventAggregator</strong> in the other module, that<span style=\"color:#000000\"> is probably\r\n</span>be the reason why you are not receiving notifications in your viewmodels<span style=\"color:#000000\">, as Unity is creating a different singleton instance after the new type mapping is registered.&nbsp;</span></p>\r\n<p>I hope you find this information useful.&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n",
+    "PostedDate": "2011-02-02T06:55:43.643-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "559471",
+    "ThreadId": "244143",
+    "Html": "\r\n<p>Thanks for the reply.</p>\r\n<p>I think EventAggregator doesn't work with MefBootStrapper implementation. Since I was using MefExtension in my main Bootstrapper class, I was not able to send the container class from Bootstrapper to ModuleA and ModuleB. Since I converted my Bootstrapper\r\n to use UnityBootstrapper all started working well.</p>\r\n<p>Correct me if I am wrong, but does anyone ever implemented EventAggregator with Mef. Sample would be very helpful.</p>\r\n<p>Thanks</p>\r\n",
+    "PostedDate": "2011-02-02T08:39:41.61-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "559551",
+    "ThreadId": "244143",
+    "Html": "\r\n<p>Take into account that is possible to use <strong>MEF</strong> with <strong>EventAggregator\r\n</strong>to support this functionality. Prism Library provides a <strong>MefEventAggregator</strong> class.</p>\r\n<p>You might find the following <a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=235745\">\r\nthread</a> very useful where this topic is covered.</p>\r\n<p>Please, let me know if this information helps you.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-02-02T09:46:22.793-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

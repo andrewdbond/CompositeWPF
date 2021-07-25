@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nI'm closing the work item, since Larry Brader has already provided an explanation for this behavior in the ModuleInfoGroup class.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-08-19T07:38:49.32-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "The ModuleInfoGroup does not implement int IList.Add(object value) properly.  In current implementaion the method always returns 1, but it is expected to return the index at which the item was added at.  It is expected to be added at the end of the list.  Changing the implementation to something like the following solves the issue.\n \n    int IList.Add(object value)\n    {\n        int insertPos = this.Count;\n        this.Add((ModuleInfo)value);\n        return insertPos;\n    }",
+    "LastUpdatedDate": "2013-05-16T05:28:49.15-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-09-16T14:36:50.93-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ModuleInfoGroup.Add is not implemented properly",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 7252
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "While the ModuleInfoGroup does inherit from IList, it actually useds Collection underneath, which returns a Void not a integer.\r\n\r\nIList is used to support issues with Silverlight.  But the Collection is still used underneath. ",
+      "PostedDate": "2010-10-26T14:56:21.327-07:00",
+      "Id": 156310
+    }
+  ]
+}

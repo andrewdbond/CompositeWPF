@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "523244",
+    "ThreadId": "235031",
+    "Html": "\r\n<p>Hello to all,</p>\r\n<p>I've started writing an application with prism v4 and I'm trying to unit test my bootstrapper. The problem is that my app.current is null and that cause an error in my code. Also, when I try to call code from a module, when it tries to register a view with\r\n a region, it also cause an error because it's not present.</p>\r\n<p>Should I mock everything or is there a nice and clean way to go through that?</p>\r\n<p>I'm using TypeMock as a mocking framework and Unity.</p>\r\n<p>Thanks!</p>\r\n<p>Jonathan</p>\r\n",
+    "PostedDate": "2010-11-17T06:52:50.343-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "523470",
+    "ThreadId": "235031",
+    "Html": "\r\n<p>Hi Jonathan,</p>\r\n<p>Nice to see that you started using Prism 4. First of all, take into account that the product team is using Moq to create its mock objects. That said, there is no guidance about how to mock the Application.Current in Prism out-of-the-box. I assume that you\r\n are trying to test the following method:</p>\r\n<pre><span style=\"color:blue\">protected override void </span>InitializeShell()<br>{<br>    <span style=\"color:blue\">base</span>.InitializeShell();<br><br><span style=\"color:blue\">#if </span>SILVERLIGHT<br>    <span style=\"color:gray\">Application.Current.RootVisual = (Shell)this.Shell;            <br></span><span style=\"color:blue\">#else<br>    </span>Application.Current.MainWindow = (Shell)<span style=\"color:blue\">this</span>.Shell;<br>    Application.Current.MainWindow.Show();<br><span style=\"color:blue\">#endif<br></span>}<br></pre>\r\n<p>In the Prism Library the <strong>base.InitializedShell</strong> method has already been tested. That said, I am not sure whether the override method in your Bootstrapper should be tested or not, as it contains reference to static classes. A possible solution\r\n for testing this could be create a CodeUI test.</p>\r\n<p>Regarding to test the registration of views in regions, it is something tested in the PrismLibrary, so this might be solved by creating a mock of the IRegionManager/IRegion. You can check similar tests on the StockTraderRI.</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n",
+    "PostedDate": "2010-11-17T13:43:24.193-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

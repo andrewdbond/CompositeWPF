@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "989996",
+    "ThreadId": "430345",
+    "Html": "\r\n<p>Hello all,</p>\r\n<p>&nbsp;</p>\r\n<p>I had made some really cool changes to the framework which work great on my own machine.</p>\r\n<p>I copied over the prism source to my work laptop and recompiled it there.</p>\r\n<p>When I copy the updated Microsoft.Practices.Prism.dll file to the location used by our app, &nbsp;and recompile the application that uses it, I get this error:</p>\r\n<p>The type 'Microsoft.Practices.Prism.Modularity.InitializationMode' is defined in an assembly that is not referenced. You must add a reference to assembly 'Microsoft.Practices.Prism, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35'.&nbsp;</p>\r\n<p>The new dll is in the same location as the old one and I can double click it in the reference section and bring up the object explorer on it. It has the &quot;initializationMode&quot; property that says can't be found. The property sheet for this dll states\r\n it is version 4.0.0.0.</p>\r\n<p>&nbsp;</p>\r\n<p>Any ideas why I can't drop this new dll in place?</p>\r\n<p>Thanks.. this will be a huge help to the team when it works in this location!</p>\r\n<p>Harold</p>\r\n",
+    "PostedDate": "2013-01-21T14:04:37.997-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "990055",
+    "ThreadId": "430345",
+    "Html": "\r\n<p>further note....</p>\r\n<p>&nbsp;</p>\r\n<p>Looking at the properties for the&nbsp;<span>Microsoft.Practices.Prism.dll file as originally distributed in the Prism download, it has a digital&nbsp;signature. The one I built&nbsp;with&nbsp;my custom changes does not have a&nbsp;signature. Would this throw the above error?</span></p>\r\n<p>&nbsp;</p>\r\n<p><span>thanks</span></p>\r\n<p><span>Harold</span></p>\r\n<p><span><br>\r\n</span></p>\r\n",
+    "PostedDate": "2013-01-21T17:28:24.17-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "990294",
+    "ThreadId": "430345",
+    "Html": "\r\n<p>Hi Harold,</p>\r\n<p>I believe that this problem could be related to the use of strong names in <strong>\r\nPrism </strong>assemblies, as strong-named assemblies can only reference other strong-named assemblies. Hence this may be the cause of your\r\n<strong>DLL </strong>conflicts.</p>\r\n<p>In other words, if you rebuild your <strong>Microsoft.Practices.Prism </strong>\r\nassembly and reference it in your application, other assemblies (e.g. <strong>Microsoft.Practices.Prism.UnityExtensions</strong>) which reference this assembly may cause a conflict.</p>\r\n<p>As a quick test I believe you could try referencing all the the <strong>Prism </strong>\r\nassemblies required in your application and not only the <strong>Microsoft.Practices.Prism\r\n</strong>assembly , that were build from the <strong>PrismLibrary </strong>solution you modified, as using these new build assemblies altogether may not present this kind of errors.</p>\r\n<p>Also, for more information on <strong>Strong-Named Assemblies</strong> you could check the following\r\n<strong>MSDN </strong>article mentioned in the <a href=\"http://msdn.microsoft.com/en-us/library/gg430866(v=pandp.40).aspx#sec4\">\r\nRecommendations for Modifying the Prism Library</a> section of the <strong>Prism </strong>\r\ndocumentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/wd40t7ad%28vs.71%29.aspx\">Strong-Named Assemblies</a>\r\n</li></ul>\r\n<p>As a side note, you may check that the new assemblies are unblocked before referencing them in your application.</p>\r\n<p>I hope this helps,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2013-01-22T06:10:28.013-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "990361",
+    "ThreadId": "430345",
+    "Html": "\r\n<p>Hey Agustin,</p>\r\n<p>&nbsp;</p>\r\n<p>the weird part is I did strong name it and looked at using the IL Disassembler and it looks ok. but still same error. When I build it on my own Win 7 box I don't sign it and it works fine with the other dll's. When I build it on my work computer, it fails.\r\n My work laptop is really locked down.. while my own box everything is admin rights... does that matter?</p>\r\n<p>My work project I want to use it on is huge and I don't want to go and modify all of the projects.. I should just be able to replace the existing Microsoft.Practices.Prism.dll file with my newly built one...</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks for your reply!</p>\r\n<p>Harold</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2013-01-22T07:56:38.913-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "990490",
+    "ThreadId": "430345",
+    "Html": "\r\n<p>Hi Harold,</p>\r\n<p>Based on my understanding, what Agustin means is that you cannot use you own version of\r\n<strong>Microsoft.Practices.Prism.dll</strong> along side the original <strong>Prism</strong> assemblies, as\r\n<strong>Prism </strong>uses strong named assemblies, thus generating the exception you are mentioning. Hence, if you wish to use your custom version of\r\n<strong>Prism</strong>, you will need to rebuilt and replace <strong>ALL </strong>\r\nthe <strong>Prism</strong> assemblies.</p>\r\n<p>For doing so, when building your custom <strong>Prism </strong>solution, you will need to copy\r\n<strong>ALL </strong>of the following assemblies to the environment where your application is running:</p>\r\n<ul>\r\n<li><strong>Microsoft.Practices.Prism.dll</strong> </li><li><strong>Microsoft.Practices.Prism.Interactivity.dll</strong> </li><li><strong>Microsoft.Practices.Prism.UnityExtensions.dll</strong> (only required if you are using\r\n<strong>Unity</strong>) </li><li><strong>Microsoft.Practices.Prism.MefExtensions.dll</strong> (only required if you are using\r\n<strong>MEF</strong>) </li></ul>\r\n<p><em>(As far as I know, you still should be able to use the original <strong>Microsoft.Practices.ServiceLocation.dll</strong> and\r\n<strong>Microsoft.Practices.Unity.dll</strong> assemblies without problems.)</em></p>\r\n<p>Also, take into account that you will need to change all the references to the aforementioned assemblies in the application to point your custom versions, by manually removing and adding the references.</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2013-01-22T11:44:48.813-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "990503",
+    "ThreadId": "430345",
+    "Html": "\r\n<p>ah ok.. gotcha.. .i'll try that.. i can see where that would make a difference... they all need to be in sync and come from the same build.</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks</p>\r\n<p>Harold</p>\r\n",
+    "PostedDate": "2013-01-22T12:15:27.37-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "991199",
+    "ThreadId": "430345",
+    "Html": "\r\n<p>that did it Damian! Thanks very much, it was a huge help!</p>\r\n<p>&nbsp;</p>\r\n<p>Harold</p>\r\n",
+    "PostedDate": "2013-01-23T13:28:15.007-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

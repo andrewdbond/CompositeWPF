@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "200597",
+    "ThreadId": "59250",
+    "Html": "<p><span style=\"font-family:'Segoe UI','sans-serif';color:black;font-size:10pt\">Can anyone help?&nbsp; I can't seem to figure out why my views and view models are not being garbage collected when I'm removing a view from a region.&nbsp; Could the regionmanager be holding the objects in scope?&nbsp; Pretty sure its not the container (unity).&nbsp; I've tried to figure out from the quick starts and reference implementation when various views and presentation models are garbage collected however it looks like they don't get GC'd when removing the view from the region.</span></p>\r\n<p><span style=\"font-family:'Segoe UI','sans-serif';color:black;font-size:10pt\">Any help greatly appreciated.</span></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-06-11T15:05:47.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "201272",
+    "ThreadId": "59250",
+    "Html": "<p>I think I've tracked down the source of the problem but it still doesn't make any sense.&nbsp; Basically, I add a view to a tab control region and pass in the viewmodel as the datacontext.&nbsp; When I remove the view from the region it gets GC'd as expected however the viewmodel doesn't.&nbsp; I've stripped out everything from the view and viewmodel so they are basically empty classes/user controls.&nbsp; The interesting thing is that if&nbsp;I pass in the viewmodel to the view but don't set it to the datacontext, the view and viewmodel get GC'd when the view is removed from the region.&nbsp; So, it looks like something is holding&nbsp;a reference to the datacontext (even when it is GC'd!!) or the content of the datacontext.&nbsp; I thought it might be the region adapter causing all the trouble but that doesn't make sense either.</p>\r\n<p>Any thoughts?</p>",
+    "PostedDate": "2009-06-14T03:02:47.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "488425",
+    "ThreadId": "225854",
+    "Html": "<p>Whats the best way to determine if a module has completed loading?</p>",
+    "PostedDate": "2010-09-02T11:55:27.18-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "488480",
+    "ThreadId": "225854",
+    "Html": "<p>Hi,</p>\r\n<p>Once the module assembly is transferred from disk into memory (process of loading a module), the <strong>State </strong>property is updated for each <strong>ModuleInfo </strong>object in the <strong>ModuleCatalog </strong>collection. Therefore, the recommended approach for achieving your scenario would be to look up in this collection and check the property. You could use a code like the following to check if a module has been loaded: <br>ModuleInfo info = catalog.Modules.First(m =&gt; m.ModuleName == &quot;MyModule&quot;); <br>if (info.State == ModuleState.Initialized)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>{ <br>&nbsp;&nbsp;&nbsp; //your code here <br>}</p>\r\n<p>As for how to know when your module has been loaded, you could raise an event from the Initializer method of your module to get notified. This could be achieved by using Event Aggregator, for more information on this topic, you could check the following documentation section on MSDN:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122(PandP.20).aspx\">Event Aggregator</a></li>\r\n</ul>\r\n<p><br>Additionally, this question was also treated in other forums thread, so you could take a&nbsp; look at the following:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=70159\">How to know that a module is already loaded</a> </li>\r\n</ul>\r\n<p>On the other hand, the modularity quickstarts (MEF and Unity) could be helpful, since they are logging all the states when loading their modules.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-09-02T13:40:54.21-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

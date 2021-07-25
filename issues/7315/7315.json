@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "We are closing this work item, as this is probably not an issue in Prism. For additional support regarding this subject, you could create a thread in the discussions section, where we will help you with your concerns.\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+    "ClosedDate": "2011-09-15T10:32:17.807-07:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "I bumped into that issue when I converted my prism 2.2 application to prism 4 mef edition\nEnvironment: \nSo, I currently use prism drop 8, .net Mef for silverlight (file version 4.0.50826.0).\n \nHow to reproduce:\nI can reproduce it on the ModularityWithMef sample from the Prism drop 8 package. \n1. Add project ModuleE as a reference to the ModuleF project.\n2. Set CopyLocal=False for the ModuleE reference\n3. Go to ModuleE.cs (Quickstarts\\Modularity\\Silverlight\\ModularityWithMef\\ModuleE\\ModuleE.cs), add a new class \n  [Export]\n  public class testE\n  {\n  }\n \n4. Go to ModuleF.cs (Quickstarts\\Modularity\\Silverlight\\ModularityWithMef\\ModuleF\\ModuleF.cs) and add a new field into class ModuleF:\n \n    [Import]\n    public ModuleE.TestE Test;\n \n5. Start the application and click the Module F box. It will start locading modules F and E. Once module F is loaded, it will raise and exception:\n \nWebpage error details\n \nUser Agent: Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729; .NET4.0C; .NET4.0E)\nTimestamp: Wed, 29 Sep 2010 22:00:14 UTC\n \n \nMessage: Unhandled Error in Silverlight Application Code: 4004    Category: ManagedRuntimeError       Message: Microsoft.Practices.Composite.Modularity.ModuleTypeLoadingException: Failed to load type for module ModuleF. Error was: Could not load file or assembly 'ModuleE, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null' or one of its dependencies. The system cannot find the file specified.. ---> System.IO.FileNotFoundException: Could not load file or assembly 'ModuleE, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null' or one of its dependencies. The system cannot find the file specified.\n   at System.Signature.GetSignature(SignatureStruct& signature, Void* pCorSig, Int32 cCorSig, RuntimeFieldHandleInternal fieldHandle, IRuntimeMethodInfo methodHandle, RuntimeType declaringType)\n   at System.Signature..ctor(IRuntimeFieldInfo fieldHandle, RuntimeType declaringType)\n   at System.Reflection.RtFieldInfo.get_FieldType()\n   at System.ComponentModel.Composition.ReflectionModel.ReflectionField.get_ReturnType()\n   at System.ComponentModel.Composition.AttributedModel.AttributedModelDiscovery.CreateMemberImportDefinition(MemberInfo member, ICompositionElement origin)\n   at System.ComponentModel.Composition.AttributedModel.AttributedPartCreationInfo.GetImportDefinitions()\n   at System.ComponentModel.Composition.AttributedModel.AttributedPartCreationInfo.DiscoverExportsAndImports()\n   at System.ComponentModel.Composition.AttributedModel.AttributedPartCreationInfo.GetExports()\n   at System.ComponentModel.Composition.ReflectionModel.ReflectionComposablePartDefinition.get_ExportDefinitions()\n   at lambda_method(Closure , ComposablePartDefinition )\n   at System.Linq.Enumerable.WhereEnumerableIterator`1.MoveNext()\n   at System.Linq.Buffer`1..ctor(IEnumerable`1 source)\n   at System.Linq.Enumerable.ToArray[TSource](IEnumerable`1 source)\n   at System.ComponentModel.Composition.Hosting.ComposablePartCatalogCollection.<>c__DisplayClass1.<Add>b__0()\n   at System.Lazy`1.CreateValue()\n   at System.Lazy`1.LazyInitValue()\n   at System.Lazy`1.get_Value()\n   at System.ComponentModel.Composition.Hosting.ComposablePartCatalogCollection.RaiseChangingEvent(Lazy`1 addedDefinitions, Lazy`1 removedDefinitions, AtomicComposition atomicComposition)\n   at System.ComponentModel.Composition.Hosting.ComposablePartCatalogCollection.Add(ComposablePartCatalog item)\n   at Microsoft.Practices.Composite.MefExtensions.Modularity.MefXapModuleTypeLoader.HandleDownloadCompleted(DeploymentCatalog deploymentCatalog, AsyncCompletedEventArgs e)\n   --- End of inner exception stack trace ---\n   at Microsoft.Practices.Composite.Modularity.ModuleManager.HandleModuleTypeLoadingError(ModuleInfo moduleInfo, Exception exception)\n   at Microsoft.Practices.Composite.Modularity.ModuleManager.IModuleTypeLoader_LoadModuleCompleted(Object sender, LoadModuleCompletedEventArgs e)\n   at Microsoft.Practices.Composite.MefExtensions.Modularity.MefXapModuleTypeLoader.RaiseLoadModuleCompleted(LoadModuleCompletedEventArgs e)\n   at Microsoft.Practices.Composite.MefExtensions.Modularity.MefXapModuleTypeLoader.RaiseLoadModuleCompleted(ModuleInfo moduleInfo, Exception error)\n   at Microsoft.Practices.Composite.MefExtensions.Modularity.MefXapModuleTypeLoader.HandleDownloadCompleted(DeploymentCatalog deploymentCatalog, AsyncCompletedEventArgs e)\n   at Microsoft.Practices.Composite.MefExtensions.Modularity.MefXapModuleTypeLoader.DeploymentCatalog_DownloadCompleted(Object sender, AsyncCompletedEventArgs e)\n   at System.ComponentModel.Composition.Hosting.DeploymentCatalog.OnDownloadCompleted(AsyncCompletedEventArgs e)\n   at System.ComponentModel.Composition.Hosting.DeploymentCatalog.HandleOpenReadCompleted(Object sender, OpenReadCompletedEventArgs e)\n   at System.Net.WebClient.OnOpenReadCompleted(OpenReadCompletedEventArgs e)\n   at System.Net.WebClient.OpenReadOperationCompleted(Object arg)     \nLine: 54\nChar: 13\nCode: 0\nURI: http://localhost:60252/\n \nWhat I have found during debugging:\nOnce required module is downloaded, it handles in PrismLibrary\\Silverlight\\Prism.MefExtensions\\Modularity\\MefXapModuleTypeLoader.cs, method HandleDownloadCompleted().\nThis method calls AggregateCatalog.Catalogs.Add(deploymentCatalog); and this action leads to the recomposition of a property \n public IEnumerable<Lazy<IModule, IModuleExport>> ImportedModules  \n(see PrismLibrary\\Desktop\\Prism.MefExtensions\\Modularity\\MefModuleManager.cs)\n \nbut there is no downloaded module in the ImportedModules enumerations and it will raise an exception.\n \nI can provide sources, if you need",
+    "LastUpdatedDate": "2013-05-16T05:28:48.027-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-09-29T15:30:54.377-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ModuleTypeLoadingException when dependent module is loading",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 2,
+    "Id": 7315
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "the issue happens, when we use cataog as a source of modules\r\nIf I use assembly catalog instaed, everything is ok",
+      "PostedDate": "2010-09-29T15:32:18.457-07:00",
+      "Id": 156321
+    },
+    {
+      "Message": "Hi,\r\n\r\nThe exception you've described might indicate that your module's assembly is not being found, since you've set its copy local property to false.\r\n\r\nYou can find more information on this in this thread: http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=236916\r\n\r\nAs an additional note, have you tried reproducing this with the latest release of Prism? You can download it from this link: http://www.microsoft.com/downloads/details.aspx?FamilyID=3453ab2b-2067-41e4-b087-312d8385cf1b\r\n\r\nIf you are still experiencing this issue, it would be helpful if you could provide us with your source code.\r\n\r\nI hope you find this helpful.\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2010-12-10T12:05:16.27-08:00",
+      "Id": 156322
+    }
+  ]
+}

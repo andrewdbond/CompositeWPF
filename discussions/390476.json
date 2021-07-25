@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "896206",
+    "ThreadId": "390476",
+    "Html": "\r\n<p>Hello all,</p>\r\n<p>I have the following question; I am trying to use parameterOverride in conjenction with my view first approach in prism.&nbsp; I have a command on productMainView, when the command fires, I have the following code:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> detailPage = _unityContainer.Resolve&lt;ProductDetailView&gt;(<span style=\"color:blue\">new</span> ParameterOverride(<span style=\"color:#a31515\">&quot;ProductToOpen&quot;</span>, dataItem).OnType&lt;ProductDetailViewModel&gt;());\r\n_regionManager.RequestNavigate(RegionNames.MainRegion, <span style=\"color:blue\">new</span> Uri(<span style=\"color:blue\">typeof</span>(ProductDetailView).FullName, UriKind.Relative));\r\n</pre>\r\n</div>\r\n<p>when we get to the detailPage variable, the constructor on my viewmodel is called and it has the correct dataItem pass into it.&nbsp; Then I get another call when I set the &quot;Dependecy&quot; attribute on my view model in the view code behind like this</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>[Dependency] \r\n<span style=\"color:blue\">public</span> ProductDetailViewModel ViewModel { <span style=\"color:blue\">set</span> { DataContext = value; } }\r\n</pre>\r\n</div>\r\n<p>However, the second time it calls the constructor the dataitem value is a new object. How can I ensure that I pass the object I want into the ViewModel everytime. Any suggestions, better approach is greatly appreciated.</p>\r\n",
+    "PostedDate": "2012-08-06T13:01:18.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "896221",
+    "ThreadId": "390476",
+    "Html": "<p>Hi,</p>\r\n<p>The problem seems to be that you are creating two different views (each with its own view model).</p>\r\n<p>Based on my understanding, in the following line you are resolving an instance of the <strong>ProductDetailsView </strong>by passing the <strong>dataItem </strong>to the \"<strong>ProductToOpen</strong>\" parameter of the view model.</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">var</span> detailPage = _unityContainer.Resolve&lt;ProductDetailView&gt;(<span style=\"color: blue;\">new</span> ParameterOverride(<span style=\"color: #a31515;\">\"ProductToOpen\"</span>,\r\ndataItem).OnType&lt;ProductDetailViewModel&gt;());\r\n</pre>\r\n</div>\r\nThen, in the following line, you are performing a navigation request to a <strong>ProductDetailsView</strong>, <span style=\"text-decoration: underline;\"><em><strong>which doesn't know the aforementioned view at all</strong></em></span>. Therefore, the navigation request creates a new <strong>ProductDetailsView </strong>where a new <strong>ProductDetailsViewModel </strong>is injected and this new view is added to the region.</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>_regionManager.RequestNavigate(RegionNames.MainRegion, \r\n<span style=\"color: blue;\">new</span> Uri(<span style=\"color: blue;\">typeof</span>(ProductDetailView).FullName, UriKind.Relative));\r\n</pre>\r\n</div>\r\nBased on this, this is why the view injected in your region does not have the <strong>dataItem </strong>you specified, because they are two different views.</p>\r\n<p>In this case I believe the simpler approach to achieve the scenario you are mentioning is to use the <strong>view injection</strong> instead of <strong>navigation</strong>, as view injection allows you to inject a specific instance of a view, allowing you to have more control over the composition of the UI.</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">var</span> detailPage = _unityContainer.Resolve&lt;ProductDetailView&gt;(<span style=\"color: blue;\">new</span> ParameterOverride(<span style=\"color: #a31515;\">\"ProductToOpen\"</span>,\r\ndataItem).OnType&lt;ProductDetailViewModel&gt;());\r\n_regionManager.Regions[RegionNames.MainRegion].Add(detailPage);\r\n</pre>\r\n</div>\r\n</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-08-06T14:04:34.123-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "896265",
+    "ThreadId": "390476",
+    "Html": "<p>Thanks for your reply; I follow what you are saying, but I am using Non-Linear navigation and I need the navigation framework methods to be called.&nbsp; When I tried this code, after adding the view, how can I navigate to it.&nbsp; I do not naivgate to it.</p>\r\n<p>You mentioned simpler approach which is what you showed, but what are my options if I want use requestnavigate and still use parameteroverride?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-08-06T18:11:20.597-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "896517",
+    "ThreadId": "390476",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding, once you added the instance of your view to your region like Damian's mentioned by using view injection approach, you could navigate to it, by using the view's type Name or FullName without problems, for example like this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>_regionManager.RequestNavigate(RegionNames.MainRegion, <span style=\"color:blue\">new</span> Uri(<span style=\"color:blue\">typeof</span>(ProductDetailView).Fullname, UriKind.Relative));\n</pre>\r\n</div>\r\n<p>This is because to find the target of the navigation request the <strong>RegionNavigationContentLoader\r\n</strong>first calls the <strong>GetCandidatesFromRegion </strong>method, which returns the set of candidates by comparing the requested contract name with the type\r\n<strong>Name </strong>or <strong>FullName </strong>of the views present in the region. And if no candidates are found then a new instance is retrieved from the container using the target contract name, which as mentioned before won't be the same instance resolved\r\n when using the <strong>ParameterOverride</strong>.</p>\r\n<p>As far as I know this would be the recommended approach, based on the aforementioned behavior.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-08-07T06:49:04.963-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

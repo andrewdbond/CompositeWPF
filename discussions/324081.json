@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "776300",
+    "ThreadId": "324081",
+    "Html": "\r\n<p>Hi Prism Masters,</p>\r\n<p>What's the improvement in Prism 4.1 to support &quot;5495 &ndash; Event to Command&quot;?</p>\r\n<p>Thanks,</p>\r\n<p>Tim</p>\r\n",
+    "PostedDate": "2012-02-17T13:53:56.617-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "797887",
+    "ThreadId": "324081",
+    "Html": "<p>Hi Tim,</p>\r\n<p>If I am not mistaken, <strong>Prism 4.1</strong> includes its own custom <strong>InvokeCommandAction </strong>in order to provide support to event-to-command functionality. This <strong>InvokeCommandAction </strong>should be in the <strong>Prism.Interactivity</strong> project and can be used, for example, doing something like this:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">TextBox</span><span style=\"color: blue;\">&gt;</span>\r\n     <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">i</span><span style=\"color: blue;\">:</span><span style=\"color: #a31515;\">Interaction.Triggers</span><span style=\"color: blue;\">&gt;</span>\r\n          <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">i</span><span style=\"color: blue;\">:</span><span style=\"color: #a31515;\">EventTrigger</span> <span style=\"color: red;\">EventName</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">KeyUp</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">&gt;</span>\r\n               <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">prism</span><span style=\"color: blue;\">:</span><span style=\"color: #a31515;\">InvokeCommandAction</span> <span style=\"color: red;\">Command</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">{Binding MyCommand}</span><span style=\"color: black;\">\"</span> <span style=\"color: blue;\">/&gt;</span>\r\n          <span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">i</span><span style=\"color: blue;\">:</span><span style=\"color: #a31515;\">EventTrigger</span><span style=\"color: blue;\">&gt;</span>\r\n     <span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">i</span><span style=\"color: blue;\">:</span><span style=\"color: #a31515;\">Interaction.Triggers</span><span style=\"color: blue;\">&gt;</span>\r\n<span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">TextBox</span><span style=\"color: blue;\">&gt;</span>  \r\n</pre>\r\n</div>\r\n<p>Based on my understanding, it was already possible to achieve event-to-command functionality using <strong>Expression Blend's InvokeCommandAction.</strong> However, <strong>Blend</strong>&rsquo;s built-in <strong>InvokeCommandAction </strong>does not update the enabled state of the control based on the value of the command&rsquo;s <strong>CanExecute </strong>method, which might be useful in certain cases. This is supported by <strong>Prism 4.1's InvokeCommandAction.</strong></p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-02-23T09:33:28.557-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

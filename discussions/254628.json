@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "600275",
+    "ThreadId": "254628",
+    "Html": "\r\n<p>I have interesting situation and am not sure what the best solution is. My problem is loading views from different modules into the region on demand.</p>\r\n<p>The scenario is: user clicks on the button in the Shell UI and then I would like to load views from the multiple modules into one region.</p>\r\n<p>Then, user clicks on one of the views/buttons and I need to load again multiple views from different modules into the region (or 2 regions) and remove/hide previously displayed views.</p>\r\n<p>&nbsp;What would be the best approach here?</p>\r\n<p>Thanks for the help.</p>\r\n",
+    "PostedDate": "2011-04-20T03:00:40.21-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "600531",
+    "ThreadId": "254628",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding of your scenario, the most suitable approach to fulfill this would be to use <strong>Navigation</strong>. View based navigation concepts could help you to complete this scenario. You can read more in <a href=\"http://msdn.microsoft.com/en-us/library/gg430861(PandP.40).aspx\">Chapter 8: Navigation</a> from Prism MSDN documentation and you can check the <a href=\"http://msdn.microsoft.com/en-us/library/gg430881(PandP.40).aspx\">View-Switching Navigation QuickStart</a> where these concepts are covered.</p>\r\n<p>Also you might find handy the <strong>Navigation Hand-On Labs</strong> exercises provided with <a href=\"http://prismtk.codeplex.com/\">Prism Training Kit</a>.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-04-20T10:27:01.193-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "601328",
+    "ThreadId": "254628",
+    "Html": "<p>Hi Miguel, <br />Thank you for the quick response. I read and went through all the on-line documentation and examples. I couldn&rsquo;t find the technique that covers my case or just I missed it. Here is what I need:<br />Requirements:<br />1. I need to instantiate multiple Views of the same type. I also have to pass parameters to the view.<br />2. Views belong to modules that are in separate projects.<br />3. I am using MEF<br />4. I need to display the views from Shell button events<br />5. I need to display views from the view button event. Views that I need to display may belong to the module that is in a different project.</p>\r\n<p>Below is the technique that I am using and the problems I have. I am sure that there is better solution and/or technique but this is what I know at the moment. <br />1.&nbsp;In order to instantiate multiple view of the same type I need to use the following:<br />&nbsp;&nbsp;&nbsp; this.regionManager.Regions[\"MainNavigationRegion\"].Add(new NavigationItemView(\"Overall\"), \"OverallView\");<br />&nbsp;&nbsp;&nbsp; this.regionManager.Regions[\"MainNavigationRegion\"].Add(new NavigationItemView(\"Projectors\"), \"ProjectorsView\");<br />&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp; Here I have to provide different names for the views (OverallView and&nbsp; ProjectorsView).<br />&nbsp;&nbsp;&nbsp; I also have to pass parameters to the view and I do that in the constructor.<br />2. The consequence of the approach above is that I have to have reference of the view type. The problem arises when I want to display view from the different project (module) since I don&rsquo;t have reference of the view type. <br />3. One of the solution for the reference problem would be to use RequestNavigate. Unfortunately I cannot use it since the approach above requires view initialization like below and no [Export(&ldquo;viewname&rdquo;)].</p>\r\n<p>&nbsp;&nbsp;&nbsp; public partial class FillRateDashboard2 : UserControl, INavigationAware {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;public FillRateDashboard2() {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;InitializeComponent();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;CompositionInitializer.SatisfyImports(this);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &hellip;..<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />4.&nbsp;Same problem is with the item in Request 4.</p>\r\n<p>Any ideas and suggestions here.<br />Thanks.</p>",
+    "PostedDate": "2011-04-21T16:51:07.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602541",
+    "ThreadId": "254628",
+    "Html": "<p>Hi,</p>\r\n<p>Based on your description of your scenario, you could fulfill it by passing parameters during navigation. Prism provides the <strong>UriQuery</strong> class to help specify and retrieve navigation parameters.</p>\r\n<p>You can read more <a href=\"http://msdn.microsoft.com/en-us/library/gg430861(PandP.40).aspx#sec10\">here</a> from Prism Navigation MSDN documentation.</p>\r\n<p>Additionally, in case you need to obtain a reference to your exported classes without having a direct reference to the assembly that contains it, you just need to use the <strong>ServiceLocator</strong> to retrieve instances from the container. You can read more about <strong>ServiceLocator</strong> in <a href=\"http://msdn.microsoft.com/en-us/library/ff921098(PandP.40).aspx\">Chapter 7: Composing the User Interface</a>. Note that in that case, you need to have a reference to the interface of the class you&rsquo;re going to retrieve. In the scenario that you&rsquo;re explaining, however, this doesn&rsquo;t seem to be necessary, since you can fulfill your requirement by using navigation with parameters as explained above.</p>\r\n<p>Please let me know if this information helps you.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-04-25T11:43:35.977-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602568",
+    "ThreadId": "254628",
+    "Html": "<p>Hi Miguel, <br />That would certainly be acceptable solution, but I was unable to use RequestNavigate since I dont use [Export(&ldquo;viewname&rdquo;)] (see my post ubove). <br />Dragan</p>",
+    "PostedDate": "2011-04-25T12:29:14.29-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602593",
+    "ThreadId": "254628",
+    "Html": "<p>Hi Dragan,</p>\r\n<p>The way to implement Region Navigation in Prism is to export the view using a contract name. If you need to pass a string to your view when it is navigated to, you could use the aforementioned approach of using a <strong>UriQuery</strong> in the navigation request. If you need to specify a dependency into your view when it is loaded, you could use Constructor Injection and specify that dependency in the constructor. Note that you don't necessarily have to use MEF; you could use any other dependency injection mechanism of your preference (for example Unity, which is also supported by Prism) to register and resolve the dependencies into your view.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-04-25T13:28:19.157-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

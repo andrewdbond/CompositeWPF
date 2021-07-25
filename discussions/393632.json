@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "905941",
+    "ThreadId": "393632",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I have started a project for converting a legacy C#/WPF code to PRISM/MEF. My biggest limitation is I cannot use MVVM pattern in order to re-use existing code as much as&nbsp;possible.&nbsp;</p>\r\n<p>What would be the recommendations in this scenario in terms of using best practices while still using old code. Can MVP pattern be a better choice in my&nbsp;scenario?</p>\r\n<p>Currently I am running into a problem and seeking a solution for that as well. I have a&nbsp;UserControlBase class that defines the common properties and methods. Each of my view drived from UserControlBase is a usercontrol and would be displayed in tabs.\r\n The DataContext of each view is set to itself. In my TabRegionAdapter I am setting the view to the content of tabcontrol.</p>\r\n<p>UserControlBase implements INavigationAware interface. Any parameters passed to the view are used to initialize the View in&nbsp;OnNavigatedTo function.</p>\r\n<p>So for example View has TabHeader property which is initialized in&nbsp;OnNavigatedTo funciton. In my&nbsp;TabRegionAdapter I want to bind TabHeader property of view to the Header of TabControl.</p>\r\n<p>To do that I was doing something like this:</p>\r\n<p>TabControl newTab = new TabControl { &nbsp;Content = myView, DataContext = myView.DataContext};</p>\r\n<p>and then I was binding my view's TabHeader to Header of TabControl.&nbsp;</p>\r\n<p>It works but the problem is, due to setting DataContext of my View to itsself (which I am doing in constructor of My View like this.DataContext= this;), IsNavigationTarget and OnNavigatedTo are called two times when doing RequestNavigation meaning initialization\r\n happens two times.</p>\r\n<p>I'll appreciate any help to solve this problem.</p>\r\n<p>Thanks,</p>\r\n<p>Imad.</p>\r\n",
+    "PostedDate": "2012-08-29T13:40:01.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "906317",
+    "ThreadId": "393632",
+    "Html": "<p>Hi Imad,</p>\r\n<p>Regarding the behavior your are experiencing, I believe you could check the following threads where a possible approach to avoid this kind of problems have been discussed:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/280670\">INaviagtionAware issue when DataContext of View is itself</a></li>\r\n</ul>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/347486\">ConfirmNavigationRequest() called twice when DataContext = this</a></li>\r\n</ul>\r\n<p>On the other hand take into account that the <strong>Prism </strong>Library itself is intended to be neutral with respect of the choice of the presentation pattern. In my opinion this choice will depend mostly on your application&rsquo;s needs and your comfort using each of them.</p>\r\n<p>Regarding this, I believe you could find the following article interesting, which contains information about the use of the <strong>MVVM </strong>pattern and also compares it with the <strong>MVP</strong>:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/magazine/dd419663.aspx\">WPF Apps With The Model-View-ViewModel Design Pattern</a></li>\r\n</ul>\r\n<p>I hope you find this helpful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-08-30T06:58:00.997-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "906401",
+    "ThreadId": "393632",
+    "Html": "\r\n<p>Hi AAdami,</p>\r\n<p>Thanks for your reply and suggestions.</p>\r\n<p>I tried that but didn't work. I need to set DataContext of TabContent to the view or to the DataContext of view and thats what is causing&nbsp;&nbsp;OnNavigatedTo to getting called twice. I need to set dataContext of TabControl to my View since binding is\r\n the only choice of setting value of properties from view to TabControl which become available after initialization (in OnNavigatedTo). So even in my View if I set the DataContext of root child to View I still need to set DataContect of TabControl to view which\r\n causes the problem.</p>\r\n<p>TabControl newTab = new TabControl { Content = myView, DataContext = myView};</p>\r\n<p>So code in my adpter to set my view to content of tabcontrol executes first then I do my bindings and then OnNavigatedTo executes&nbsp;(in which values of view's properties are initialized). And due to setting DataContext of tab to my view in adapter,&nbsp;OnNavigatedTo\r\n executes twice.</p>\r\n<p>Any ideas how to solve this?</p>\r\n<p>Thanks,</p>\r\n<p>Imad.</p>\r\n<p>PS: initially thought that solution propsed above would solve my problem but then edited my initial response as it didn't solve.</p>\r\n",
+    "PostedDate": "2012-08-30T09:29:13.04-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "906529",
+    "ThreadId": "393632",
+    "Html": "\r\n<p>Now I tried binding TabControl properties to my view without using datacontext. This is what I did:</p>\r\n<p>&nbsp;TabControl newTab = <span style=\"color:blue\">new</span> TabControl { Content = myView};<br>\r\n<br>\r\n<span style=\"color:blue\">var</span> headerBinding = <span style=\"color:blue\">new</span> Binding(<span style=\"color:#a31515\">&quot;TabHeader&quot;</span>);<br>\r\nheaderBinding.Source = newContentPane.Content;<br>\r\nnewContentPane.SetBinding(ContentPane.HeaderProperty, headerBinding);</p>\r\n<p>Now it doesn't invoke&nbsp;OnNavigatedTo twice but now in case when <span style=\"font-family:Consolas; font-size:x-small\">\r\n<span style=\"font-family:Consolas; font-size:x-small\">IsNavigationTarget returns true meaning it should not navigate to view, it still calls OnNavigatedTo (meaning it stil executes initialization code) which it should not do in this case.</span></span></p>\r\n<p><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\">Will appreciate any help to solve this.</span></span></p>\r\n<p><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\">Thanks,</span></span></p>\r\n<p><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\">Imad.</span></span></p>\r\n<p><span style=\"font-family:Consolas; font-size:x-small\"><span style=\"font-family:Consolas; font-size:x-small\">&nbsp;</span></span></p>\r\n",
+    "PostedDate": "2012-08-30T13:22:24.08-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "906970",
+    "ThreadId": "393632",
+    "Html": "\r\n<p>Hi Imad,</p>\r\n<p>In my opinion, another work around to avoid this behavior, when setting<strong> this.DataContext= this;</strong> could be by providing a custom implementation of the\r\n<strong>RegionNavigationService </strong>which filters the calls to these methods. For example you could achieve this by modifying the\r\n<strong>InvokeOnNavigationAwareElement </strong>method of your <strong>RegionNavigationService\r\n</strong>class like this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>(...)\n<span style=\"color:blue\">private</span> <span style=\"color:blue\">static</span> <span style=\"color:blue\">void</span> InvokeOnNavigationAwareElement(<span style=\"color:blue\">object</span> item, Action&lt;INavigationAware&gt; invocation)\n        {\n            <span style=\"color:blue\">var</span> navigationAwareItem = item <span style=\"color:blue\">as</span> INavigationAware;\n            <span style=\"color:blue\">if</span> (navigationAwareItem != <span style=\"color:blue\">null</span>)\n            {\n                invocation(navigationAwareItem);\n            }\n\n            FrameworkElement frameworkElement = item <span style=\"color:blue\">as</span> FrameworkElement;\n            <span style=\"color:blue\">if</span> (frameworkElement != <span style=\"color:blue\">null</span>)\n            {\n                INavigationAware navigationAwareDataContext = frameworkElement.DataContext <span style=\"color:blue\">as</span> INavigationAware;\n               \n        <span style=\"color:green\">    //by adding this condition: frameworkElement!=frameworkElement.DataContext the second invocation is avoided</span><br>&nbsp;           <span style=\"color:blue\">if</span> (navigationAwareDataContext != <span style=\"color:blue\">null</span> &amp;&amp; frameworkElement!=frameworkElement.DataContext)\n                {\n                    invocation(navigationAwareDataContext);\n                }\n            }\n        }\n(...)\n</pre>\r\n</div>\r\n<p>So far, I tested this approach without problems. In my case I added these modifications to a custom implementation of the\r\n<strong>RegionNavigationService </strong>and replaced the default implemetantion by registering it to the container through the\r\n<strong>IRegionNavigationService </strong>interface, this way you don't have to modify the\r\n<strong>Prism </strong>library. You could find more information on how to a replace the default\r\n<strong>Prism </strong>Types in the following section of the documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430866(v=pandp.40)#sec12\">Appendix E: Extending Prism, Replacing Default Prism Library Types</a>\r\n</li></ul>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-08-31T10:18:47.337-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "908214",
+    "ThreadId": "393632",
+    "Html": "\r\n<p>Hi AAdami,</p>\r\n<p>Thank you for your reply. Its a good suggestion. Will give it a try. I have also created a work item for this issue under issue tracker section.</p>\r\n<p>Thanks,</p>\r\n<p>Imad.</p>\r\n",
+    "PostedDate": "2012-09-04T07:29:14.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

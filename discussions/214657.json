@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "450375",
+    "ThreadId": "214657",
+    "Html": "<p>Hi,</p>\r\n<p>As I see you are still upgrading project linker. But what about shared code feature of RIA services. Isn't it a better approach?</p>\r\n<p>Best regards,</p>\r\n<p>Alexey Zakharov</p>",
+    "PostedDate": "2010-06-01T19:25:19.763-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "451860",
+    "ThreadId": "214657",
+    "Html": "<p id=6db55ed0-5082-012d-4103-12313b04bc71>Hi Alexey,</p>\r\n<p id=6db56840-5082-012d-4104-12313b04bc71>The main difference between  these technologies is that they target different scenarios. The shared  feature of RIA Services is useful for sharing code between the middle  tier and the presentation tier of an application, as exemplified on this  <a href=\"http://blogs.microsoft.co.il/blogs/bursteg/archive/2009/04/14/net-ria-services-sharing-code-between-the-client-and-server.aspx\">blog  post</a>. However, the scenario in Prism is different, as the sharing  of code in Prism usually needs to be done between a similar solutions  that target different technologies (WPF and Silverlight). You would  probably choose the one that suits better to you depending on your  requirements. Below you can find my thoughts on why Project Linker  probably suits better the <a href=\"http://msdn.microsoft.com/en-us/library/ff648215.aspx\">multi-targeting</a> scenario.</p>\r\n<p id=0787c0a0-5242-012d-731b-12313b065a51>From the  MSDN documentation, <a href=\"http://msdn.microsoft.com/en-us/library/ee707371(VS.91).aspx\">shared  code</a> offers two possibilities for sharing source:</p>\r\n<ol>\r\n<li>The  first possibility is using the shared naming convention, which has the  disadvantages that the developer must be aware of that convention, and  that the files are physically copied between the projects. </li>\r\n<li>The  second possibility is using linked files, which is an out-of-the-box  capability of Visual Studio. The problems with this approach are mainly  that the developer must link each file, and there is no  self-maintenance. </li>\r\n</ol>\r\n<p id=0787eb10-5242-012d-731c-12313b065a51>The <a href=\"http://msdn.microsoft.com/en-us/library/ff648745.aspx\">Project  Linker</a> addresses the problems of both approaches, as it:</p>\r\n<ul>\r\n<li>Implies knowledge of no conventions whatsoever. </li>\r\n<li>Does  not physically copy the files. </li>\r\n<li>Links entire projects,  avoids the need of linking each file separately. </li>\r\n<li>Keeps the  target project updated when files are added or removed in the source  project. </li>\r\n</ul>\r\n<p id=07881970-5242-012d-731d-12313b065a51>Another  point of interest is that, if you use the first approach mentioned in  shared code, as source files are copied into the target project in  compile time, you might end up in a situation in which you modify the  copied file and when you compile the solution, it gets overridden and  the changes are lost. This behavior might confuse developers.</p>\r\n<p id=6db57bb0-5082-012d-4105-12313b04bc71>I hope you find this helpful.</p>\r\n<p id=6db58f80-5082-012d-4106-12313b04bc71>Guido Leandro Maliandi     <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-06-04T13:07:48.263-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "452187",
+    "ThreadId": "214657",
+    "Html": "<p>Thank you for this feedback. It is very useful.</p>\r\n<p>Because we are using Prism with Silverlight only shared code suits us better.</p>",
+    "PostedDate": "2010-06-06T10:37:56.95-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

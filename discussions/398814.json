@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "924639",
+    "ThreadId": "398814",
+    "Html": "\r\n<p>I want to bind the titles of the Views to static text's from our Infrastructure's Titles Class.<br>\r\nAdding a symbol prefix (e.g &quot;Ref&quot;) and registering it's namespace and use it in the View<br>\r\nWhat I want is to achieve something similar to this :<br>\r\n<br>\r\n<strong>Part1:</strong></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>xmlns:Ref=<span style=\"color:#a31515\">&quot;clr-namespace:Xz.Infrastructure;assembly=Xz.Infrastructure&quot;</span>\n</pre>\r\n</div>\r\n<p><strong>Part2:</strong></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>&lt;TextBlock Text=<span style=\"color:#a31515\">&quot;{Binding Titles.Title1}&quot;</span> /&gt;<br><br>Hopefully a way more similar to :<br>&lt;TextBlock Text=<span style=\"color:#a31515\">&quot;{Binding Ref:Titles.Title1}&quot;</span> /&gt;<br>Please correct me.<br></pre>\r\n</div>\r\n<p><strong>Part3:</strong></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">namespace</span> Xz.Infrastructure\n{\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> Titles\n    {\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">static</span> <span style=\"color:blue\">string</span> Title1 = <span style=\"color:#a31515\">&quot;Title1&quot;</span>;\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">static</span> <span style=\"color:blue\">string</span> RgnContent = <span style=\"color:#a31515\">&quot;RgnContent&quot;</span>;\n    }\n}\n</pre>\r\n</div>\r\n<p>Our Infrastructure isn't defined as a <strong>module</strong>, it's just an assembly.</p>\r\n",
+    "PostedDate": "2012-10-10T05:41:46.337-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "924707",
+    "ThreadId": "398814",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I believe you could try something like this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>&lt;TextBlock Text=<span style=\"color:#a31515\">&quot;{x:Static Ref:Titles.Title1}&quot;</span>&gt;&lt;/TextBlock&gt;\n</pre>\r\n</div>\r\n<p>As you may find, a similar approach is used in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921074(v=pandp.40).aspx\">\r\nStockTrader RI</a> for defining the region names in its <strong>RegionNames </strong>\r\nclass, inside the <strong>Infrastructure </strong>project.</p>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-10-10T07:57:12.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "925073",
+    "ThreadId": "398814",
+    "Html": "<p>Yes,</p>\r\n<p>That's right, I found that after I asked,</p>\r\n<p>Thanks...</p>",
+    "PostedDate": "2012-10-11T00:02:59.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

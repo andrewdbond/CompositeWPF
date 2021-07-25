@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "1220504",
+    "ThreadId": "538349",
+    "Html": "Hi,\r<br />\n \r<br />\nI am trying to load multiple data entry views onto a single content region. On each View the data context (View Model) is bound to presentation objects. All the presentation objects together form a business object which will get saved to the database on a global command.\r<br />\n \r<br />\nThe problem here is achieving UI validation where on the global command, the Validation.ErrorTemplate should be visible for all the views on view activation.\r<br />\n \r<br />\nAny suggestions will be helpful.\r<br />\n \r<br />\nThanks,\r<br />\n Jeevan<br />\n",
+    "PostedDate": "2014-03-07T21:29:24.447-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1221052",
+    "ThreadId": "538349",
+    "Html": "Hi Jeevan,\r<br />\n<br />\nBased on my understanding, you would like to validate every <strong>View</strong> when each one gets active by showing the <strong><em>Validation.ErrorTemplate</em></strong>. Then, you could have the global command to be handled on another <strong>Control Region</strong>. The <strong>Global command</strong> would be executed when handling the subscription for the <strong>MainRegion's</strong> <strong>Active</strong> <strong>View</strong> changed.\r<br />\n<br />\nThe separate <strong>Control View</strong> registered on the <strong>Control Region</strong> may manage the business object persistence.\r<br />\n<br />\nIf I haven't completely understand the scenario you described, I would ask you for more details about the application flow. Therefore, I would give you better support on your issue.\r<br />\n<br />\nI hope this helps,\r<br />\n<br />\nRegards.\r<br />\nGabriel Ostrowsky.\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-03-10T07:27:56.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1221413",
+    "ThreadId": "538349",
+    "Html": "Thanks Gabriel for the the response.\r<br />\n<br />\nYou got it right, I have a Global Command which Invokes a FormValidator component (custom component). This component invokes the IDataErrorInfor.Validate(onActionCompletedCallback) on all the views loaded within the main Content Region including the Active and Inactive Views. The problem is the validation happens fine but the Validation.ErrorTemplate seems to be set only for the Active View and when I navigate to the Inactive Views, though the validation function is executed, I do not see the ErrorTemplates getting applied. There are times when I trigger the global command and the active view also does not get the ErrorTemplate set.\r<br />\n<br />\nI am not sure if I am missing something or if there is a better way to handle this.\r<br />\n<br />\nRegards,\r<br />\nJeevan<br />\n",
+    "PostedDate": "2014-03-11T05:57:56.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1222847",
+    "ThreadId": "538349",
+    "Html": "Hi Jeevan,\r<br />\n<br />\nHow would you handle the ErrorTemplate and show it on each View? Are you binding a Property with a <em>two-way</em> mode set?\r<br />\n<br />\nIf you could share a small sample with this particular behavior, I would gratefully debug it to troubleshoot this issue. \r<br />\n<br />\nRegards.\r<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-03-14T10:58:45.95-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1224353",
+    "ThreadId": "538349",
+    "Html": "Hi Gabriel,\r<br />\n<br />\nI have 2 View classes V1.xaml and V2.xaml both have a corresponding datacontext set as V1VM.cs and V2VM.cs. There is a presentation object Root.cs having two properties Root.Property1 and Root.Property2 where Property1 returns Child1.cs and Property2 returns Child2.cs, both are complex types. Now, in the view models, Child1.cs and Child2.cs are exposed as properties. On Application load, V1, V2, V1VM and V2VM are all loaded to the Mef container. V1 and V2 are registered to the main Content region through AutoPopulateExportedViewBehavior.  Onn INavigationAware.OnNavigateFrom(), the view model properties are set from the Root object. In the XAML, the textbox property is set as below;\r<br />\n<br />\n&lt;TextBox name=&quot;txtNoOfStages&quot; Text=&quot;{Binding Child1.NoOfStages, Mode=TwoWay, ValidatesOnDataErrors=True, NotifyOnValidationError=True, UpdateSourceTrigger=LostFocus}&quot; Validation.ErrorTemplate=&quot;{StaticResource TextBoxErrorTemplate}&quot; Style=&quot;{DynamicResource TextBoxMedium}&quot; /&gt;\r<br />\n<br />\nI am using the MVVMValidator to do the validation. So I implement the IDataErrorInfo and configure the validation rules on the Child1.cs and Child2.cs. On a global save command, my FormValidator component which adds the instance of V1VM and V2VM fires the Validate method on the Child1 and Child2 instance accessible through the view models. Here the validation happens on the presentation objects and the error is only displayed on the current active View on the region. If I now activate the second view model on the same content region, I do not get to see the adorners though the rules get executed.\r<br />\n<br />\nLet me know if you still need a sample and I can share one.\r<br />\n<br />\nRegards,\r<br />\nJeevan<br />\n",
+    "PostedDate": "2014-03-19T03:48:35.447-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1224566",
+    "ThreadId": "538349",
+    "Html": "Hi Jeevan, \r<br />\n<br />\nI would suggest you to raise the Validation errors again for the inactive Views when navigating into them. Therefore, the Validation errors stored on the inactive Views would be displayed after raising them again on the <strong><em>OnNavigatedTo()</em></strong> method when the View would become active.\r<br />\n<br />\nIf that still does not solve the problem, it would be helpful if you could provide a sample with this behavior.\r<br />\n<br />\nRegards.\r<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-03-19T13:10:27.267-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1228851",
+    "ThreadId": "538349",
+    "Html": "Apologies for this late reply.\r<br />\n<br />\nI have tried your suggestion earlier but here each time I navigate, I get the adorners. On the first time navigate without initiating any data capture, I should not validate. Only on click of Save I should validate before submit. For this reason, tried creating a bool value in the application context to identify Save click but does look like it helps since resetting the validation is a bigger pain. :(\r<br />\n<br />\nAny thoughts or suggestions?\r<br />\n<br />\nRegards,\r<br />\nJeevan<br />\n",
+    "PostedDate": "2014-03-31T19:05:23.97-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1230464",
+    "ThreadId": "538349",
+    "Html": "Hi Jeevan,\r<br />\n<br />\nBased on my understanding you have successfully got the adorners every time you navigate to a <em>View</em>. \r<br />\nTherefore, adding a boolean parameter for the <em>Save</em> action should not affect the validation resetting. It may just <em>enable/disable</em> the adorners from being viewed and submitted.\r<br />\n<br />\nIf I haven't understand correctly I would appreciate if you could describe what action would be difficult to implement, and send a sample from which I could get a better understanding of the problem and find a proper solution to it.\r<br />\n<br />\nRegards.\r<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-04-04T11:10:44.3-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "252489",
+    "ThreadId": "73834",
+    "Html": "<p>Hi,</p>\r\n<p>In a Prism v2 WPF app I've currently assigned&nbsp;the region name maincontentregion to a tab control.&nbsp; I've added&nbsp;4 modules (boy, girl, dog, cat) each with their own view and viewmodel with observationcollection containing many boys, girls, dogs, cats, etc.&nbsp; Disclaimer: these aren't the real domains.</p>\r\n<p>Each module adds their view to the MainContentRegion via calls to the regionManager.AddToRegion(..., myListViewOfDogs) etc.&nbsp; I end up with a tabbed view with 4 tab items one for each view/module.</p>\r\n<p>We have now decided that we would like to see the boys and girls side by side in the same tab item while maintaining low coupling (ignorance) between boy and girl modules.&nbsp; There would now be only 3 tab items with boys and girls in one, while dogs and cats live in their own separate tab item.&nbsp;</p>\r\n<p>What's the best way (low time, single developer, good quality) of implementing this?&nbsp;</p>\r\n<p>Perhaps I shouldn't be jamming this in a tab control?&nbsp; The customer will typically be monitoring near real time updates to the boy girl collections and will occaisonally&nbsp;click to the other lists.</p>\r\n<p>Thanks,</p>\r\n<p>John</p>",
+    "PostedDate": "2009-11-02T10:17:36.513-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "252495",
+    "ThreadId": "73834",
+    "Html": "<p>If you know ahead of time how many tabs you will have, you can create the tabs and place a region on each tab (two on the first tab if you like).</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-11-02T10:29:02.89-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "252519",
+    "ThreadId": "73834",
+    "Html": "<p>I have swung&nbsp;three times&nbsp;and missed.</p>\r\n<p>1.&nbsp; To my existing TabControl (which was named MainContentRegion) I added a TabItem with the region name of JointRegion.&nbsp; I modified both modules to add to the JointRegion vice the MainContentRegion.&nbsp; Only one of the modules has their view displayed.&nbsp; Sorta makes I think, one module gets initialized first so its view gets to the region first (debugger supports this theory).</p>\r\n<p>2.&nbsp; I add a stack panel to the TabItem and try and give it the name JointRegion.&nbsp; Ooops, stackpanel is not an ItemsControl, ContentControl, nor a Selector.&nbsp; Exception thrown trying to name the element.</p>\r\n<p>3.&nbsp; I re-read the post and note that you say &quot;two on the first tab&quot;.&nbsp; Here I assume you meant add a 2nd named region to the tab item.&nbsp; Nope doesn't support multiple attributes.</p>\r\n<p>It feels like I need a stack panel in on of the tabitems so that both views can be displayed simultaneously.&nbsp;</p>\r\n<p>John</p>",
+    "PostedDate": "2009-11-02T11:33:42.663-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "252529",
+    "ThreadId": "73834",
+    "Html": "<p>You can add a stack panel orientation horizontal to the tab item you added (remove the region attribute from this tab item), and add two user controls to the stack pannel and add a region attribute to each.</p>\r\n<p>You are right that ContentControl derrived classes like Window, UserControl, and ListBoxItem get only one view (last writer wins, I think)</p>\r\n<p>ItemsControl and its derrivitives (StatusBar, TreeView, MenuBase, etc.) can hold multiples.</p>\r\n<p>As can Selector derrived like ListBox, ComboBox &amp; TabControl.</p>",
+    "PostedDate": "2009-11-02T12:09:51.84-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

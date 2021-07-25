@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "833798",
+    "ThreadId": "355012",
+    "Html": "<p>I am new to prism and the patterns it uses. I have 3 modules; Sales, Purchasing and Common. Sales has a class called Customer and Purchasing has a class called Vendor. In the Common module I made a view called ContactEditor. Both Customer and Vendor use Contact. When I make my customer editor I want to embed the contact view in it, as well as in the vendor editor. I could just make references from the sales and purchasing modules directly to the common module, but I feel that this may be in violation of the loosly coupled principal. However, it feels silly to drop the common module and code the contact editor in both sales and purchasing. Is there an accepted practice for sharing a piece of UI?</p>\n<p>Phylum</p>\n<p>&nbsp;</p>\n<p>(Prism 4.1, with silverlight 5)</p>",
+    "PostedDate": "2012-05-08T21:20:25.043-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "834160",
+    "ThreadId": "355012",
+    "Html": "<p>Hi Phylum,</p>\r\n<p>Generally when building composite applications the approach followed is having a common <strong>shell </strong>composed of <strong>UI </strong>components contributed from various modules that interact in a loosely coupled way. Hence your modules usually shouldn't have references between each other.</p>\r\n<p>To achieve this the <strong>Prism </strong>library provide the <strong>Region </strong>functionality that allows placing dynamic content contained in modules in predefined placeholders in a <strong>UI</strong> container.</p>\r\n<p>Hence you could keep you modules' loosely coupled by defining regions to specify where your views will appear, as this regions will act as placeholders for one or more views that will be displayed at run time. Then your modules can locate and add content to regions in the layout without knowing how and where the region is displayed.</p>\r\n<p>You could find more information about regions, and how to add content to this regions from your modules in the following chapter of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28v=pandp.40%29.aspx\">Chapter 7: Composing the User Interface</a></li>\r\n</ul>\r\n<p>Also, take into account that if one of your modules depends on components and services provided by other module, <strong>Prism </strong>also supports the ability to register dependencies between modules so that they are loaded and initialized in the right order. During this initialization, the module can retrieve references to the additional components and services it requires, and/or register any components and services that it contains in order to make them available to other modules.</p>\r\n<p>More information about this can be found in the following section of documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405479(v=pandp.40).aspx#sec15\">Chapter 4: Modular Application Development,Use Dependency Injection for Loose Coupling</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-05-09T11:23:53.49-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

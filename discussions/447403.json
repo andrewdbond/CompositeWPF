@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1058129",
+    "ThreadId": "447403",
+    "Html": "Hi Everyone. I'm having issues using EventAggregator in a multi-threaded way.\r<br />\n<br />\nI'm creating a partially connected application which synchronises databases. In the app I've got two View/ViewModels, one which displays the number of registered students on a dashboard and another which displays the list of students. \r<br />\n<br />\nI've got a service which I've outlined roughly below. GetStudents ensures the databases are syncd and then returns the list, the other simply gets the count. \r<br />\n<br />\nWhen Sync is successful it raises the SyncCompletedEvent. \r<br />\n<br />\nThe ShowCountView subscribes to this event and should re-count but because the event is raised from within a Task the binding in UI doesn't get updated because I'm on the wrong thread. Even if I invoke on Dispatcher.CurrentDispatcher it doesn't get executed on the UI thread, presumably because the CurrentDispatcher within the Task doesn't exist so a default one is created.\r<br />\n<br />\nTL;DR; How do I update the UI using an Event raised within a Task?<br />\n<pre><code>public void GetStudents(Action&lt;IEnumerable&lt;Student&gt;&gt; callback)\n{\n    Task.Run(() =&gt; \n    {\n          Sync();\n          return students;\n    }).ContinueWith(task =&gt;\n    {\n          callback(task.Result);\n    }, TaskScheduler.FromCurrentSynchronizationContext());\n}\npublic void CountStudents(Action&lt;int&gt; callback)\n{\n    Task.Run(() =&gt; \n    {\n        return students.Count();\n    }).ContinueWith(task =&gt; \n    {\n        callback(task.Result);\n    }, TaskScheduler.FromCurrentSynchronizationContext());\n}\n\nvoid Sync()\n{\n    // do sync\n    _eventAggregator.GetEvent&lt;SyncCompletedEvent&gt;().Publish();\n}</code></pre>\n\n",
+    "PostedDate": "2013-06-18T04:08:00.963-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1058317",
+    "ThreadId": "447403",
+    "Html": "Hi Ben,\r<br />\n<br />\nWhen subscribing to an composite event using the <strong>EventAggregator</strong> you can specify in which thread you want to execute the &quot;<em>subscribed method</em>&quot; when the event is published; for example like this:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">this</span>.eventAggregator.GetEvent&lt;MyEvent&gt;().Subscribe(<span style=\"color:Blue;\">this</span>.Method, ThreadOption.UIThread);\r\n</pre></div>By default, the <em>subscribed method</em> is executed in the publisher's thread (in this case the <strong>Task</strong>'s thread.) However, you should be able to change that so that it's executed in the UI thread passing <strong>ThreadOption.UIThread</strong> as an option during the subscription.\r<br />\n<br />\nYou can find more information about this in the following section of the documentation:<br />\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28v=pandp.40%29.aspx#sec14\" rel=\"nofollow\">Chapter 9 - Communicating Between Loosely Coupled Components - Subscribing to Events</a><br />\n</li>\n</ul>\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-06-18T10:10:12.557-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1058321",
+    "ThreadId": "447403",
+    "Html": "\r\n<div dir=\"ltr\">Hi Damian\r\n<div><br>\r\n</div>\r\n<div style=\"\">Thanks for taking the time to reply. I actually discovered this overload this afternoon and hadn't had chance to reply myself yet. This has solved the problems I was having.</div>\r\n<div style=\"\"><br>\r\n</div>\r\n<div style=\"\">Thanks</div>\r\n<div style=\"\">Ben</div>\r\n<div style=\"\"><br>\r\n</div>\r\n<div style=\"\"><br>\r\n</div>\r\n<div style=\"\"><br>\r\n</div>\r\n</div>\r\n<div><br>\r\n<br>\r\n<div></div>\r\n</div>\r\n",
+    "PostedDate": "2013-06-18T10:19:04.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

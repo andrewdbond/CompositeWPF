@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "543532",
+    "ThreadId": "240359",
+    "Html": "\r\n<p>Hi Guys,</p>\r\n<p>&nbsp;</p>\r\n<p>I've implemented design time support for Prism 4:</p>\r\n<p><a href=\"http://blogs.microsoft.co.il/blogs/tomershamam/archive/2011/01/03/blendability-part-ii-design-time-support-for-prism.aspx\">http://blogs.microsoft.co.il/blogs/tomershamam/archive/2011/01/03/blendability-part-ii-design-time-support-for-prism.aspx</a></p>\r\n<p>But I had to remove the &quot;<span style=\"font-family:Consolas; white-space:pre\"><span><span style=\"color:#0000ff\">if</span></span><span style=\"color:#000000\"><span> (!IsInDesignMode(element))&quot; statement from the RegionManager.</span></span></span><span style=\"font-family:Consolas; white-space:pre\">OnSetRegionNameCallback\r\n callback method.</span></p>\r\n<p><span style=\"font-family:Consolas; white-space:pre\">In my case I created an adapter to the RegionManager instead of changing the source code.</span></p>\r\n<p><span style=\"font-family:Consolas\"><span style=\"white-space:pre\">Is there any other way I could get rid of this statement without changing the code?</span></span></p>\r\n<p><span style=\"font-family:Consolas\"><span style=\"white-space:pre\"><br>\r\n</span></span></p>\r\n",
+    "PostedDate": "2011-01-03T23:26:50.567-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "543739",
+    "ThreadId": "240359",
+    "Html": "\r\n<p>Hi Tomer,</p>\r\n<p>Thank you for sharing your findings on blendability for Prism. Another possibility for addressing your issue with the creation of regions in design time with the Region Manager would be to create an alternative Region Manager (a class that inherits from\r\n<strong>IRegionManger</strong>) that could be similar to the regular Region Manager implementation, but with a different\r\n<strong>OnSetRegionNameCallback</strong> method. Then, you could make your Design Time bootstrapper set your implementation of\r\n<strong>IRegionManager </strong>to the shell. That way, you would have the regular region manager in run time, and the one you've modified in design time.</p>\r\n<p>The notes on the <strong>MefRegionManager </strong>class could be helpful to that purpose:</p>\r\n<p><em>&quot;Exports the RegionManager using the Managed Extensibility Framework (MEF).</em><br>\r\n<br>\r\n<em>This allows the MefBootstrapper to provide this class as a default implementation.</em><br>\r\n<em>If another implementation is found, this export will not be used.&quot;</em></p>\r\n<p>Also, it could be helpful to know that the <strong>Run </strong>method on the <strong>\r\nMefBootstrapper </strong>class obtains the Region Manager from the container and sets it to the shell:</p>\r\n<p>(...)</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>RegionManager.SetRegionManager(<span style=\"color:blue\">this</span>.Shell, <span style=\"color:blue\">this</span>.Container.GetExportedValue&lt;IRegionManager&gt;());\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>(...)</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2011-01-04T07:26:19.86-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "543758",
+    "ThreadId": "240359",
+    "Html": "\r\n<p>Thanks Guido for your quick and informative answer.</p>\r\n<p>What I've done so far is something very simple.</p>\r\n<p>I've created a simple class called &quot;RegionManager&quot; which has the relevant-for-XAML attached properties as in the original RegionManager.</p>\r\n<p>Now when calling at design time, it uses its own <strong>OnSetRegionNameCallback</strong>&nbsp;method.</p>\r\n<p>At runtime it just calls the original RegionManager attached properties. No need to implement the whole IRegionManager.</p>\r\n<p>A great thing will be to have my solution for Prism Blendability in the next Prism drop/update.</p>\r\n<p>Thanks</p>\r\n<p>Tomer</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-04T07:44:20.193-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "543781",
+    "ThreadId": "240359",
+    "Html": "\r\n<p>Hi Tomer,</p>\r\n<p>Your approach seems valid as well. However, it might be helpful to name the class differently, so as to avoid confusions with the regular Region Manager; having a class named Region Manager, but which doesn't inherit from IRegionManager could be misleading.</p>\r\n<p>On a different note, you could create a work item in the <a href=\"http://compositewpf.codeplex.com/workitem/list/basic\">\r\nIssue Tracker</a> so that the product team is aware of this for future releases. I've also added a link to your blog post to the\r\n<a href=\"http://compositewpf.codeplex.com/wikipage?title=Samples%20and%20Extensions\">\r\nPrism Knowledge Base</a> so that other users can benefit from your approach.</p>\r\n<p>Thank you for your contribution.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-04T08:23:14.093-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "543853",
+    "ThreadId": "240359",
+    "Html": "\r\n<p>Sounds right what you're offering. I'll change it to something else.</p>\r\n<p>Thinking of something like:</p>\r\n<p>&lt;ContentControl ts:<strong>Region</strong>.Name=&quot;regionName&quot; &nbsp;prism:RegionManager.RegionContext=&quot;context&quot;&nbsp;... /&gt;</p>\r\n<p>Thanks!</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-01-04T10:55:20.747-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

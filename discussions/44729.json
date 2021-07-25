@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "148920",
+    "ThreadId": "44729",
+    "Html": "Hi,<br>\r\n<br>\r\nFirst I have to say that I've seen similar questions but none that fits exactly to what I need:<br>\r\n<br>\r\n<br>\r\nI have a Shell with two regions: TaskBarRegion and MainRegion<br>\r\nThe TaskBarRegion is a ItemsControl and the MainRegion is a ContentControl.<br>\r\n<br>\r\nI\r\nhave a couple of Modules loaded during startup where each Module has a\r\nView that I want to add to the MainRegion. At the same time I want a\r\nButton to be automagically created and added to the TaskBarRegion. The\r\ncreated Button should correspond to the added View and should get its\r\ntext, a icon, etc. from properties defined in the loaded Module. When the Button is pressed the View should be activated.<br>\r\n<br>\r\nThe\r\nbehavior I'm looking for is exactly the same as the behavior of a\r\nTabControl where each View loaded into the MainRegion gets its own\r\nTabItem.<br>\r\nOf course I could use a TabControl if there was a way of\r\nseparating the TabItems from the actual Tab-content (think of it as\r\nadding tabpages to a TabControl but the tabselectionbuttons should show\r\nup in a separate toolbar, menu or something similar instead.)<br>\r\n<br>\r\nI've followed the suggested solution\r\nfrom jtango18 and gblock in this thread:&nbsp;<a href=\"http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=28536\">Access the shell from modules</a>\r\nand sure that works just fine. But for me it seems a little bit strange\r\nthat each View must implement the ActivateView()-method. I want the\r\nShell to take care of showing/hiding my Views because that's kind of a\r\n&quot;core functionality&quot;. If a third party developer should develop a module for my system I don't want him to bother about showing the view when a button is clicked. The only thing he should provide specifically for this, is a string for the name of the view (and button) and a icon.<br>\r\n<br>\r\n<br>\r\nIs the jtango18/gblock-solution the best for this kind of problem or is there a better way of doing it?<br>\r\n",
+    "PostedDate": "2009-01-20T14:30:57.593-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "148993",
+    "ThreadId": "44729",
+    "Html": "Hi ErikH.<br>\r\n<br>\r\nI've been away from CWPF development for a few months but starting to get back into it. I found for myself the easiest solution was to not use a region manager and instead create my own management around a document model. This way the module does not need to know how or where it is being displayed or how many times it's being displayed.<br>\r\n<br>\r\nHave a look here at my samples that demonstrate this model <a href=\"http://code.google.com/p/cwpfsamples/\" title=\"Composite WPF Samples\">http://code.google.com/p/cwpfsamples/</a>.<br>\r\n<br>\r\nAs mentioned I've been away for a while, I've got to get back into creating more examples of how to solve sole of these use-cases in a fairly straighforward way.<br>\r\n",
+    "PostedDate": "2009-01-20T18:17:21.733-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "149130",
+    "ThreadId": "44729",
+    "Html": "Hi, and thanks for the reply!<br>\r\n<br>\r\nI've looked through your sample and in some sense it does what I'm asking for but I'm actually not interested in opening/closing documents but rather to show/hide views of different modules.<br>\r\n<br>\r\nBasically what I want is: Each time a View is added to the MainRegion I want to create a Button with a text and a image in another container in the Shell. The View should have some properties (or attributes) defining a string and a image that the generated button should display. When the button is pressed the corresponding view should be activated and shown in the MainRegion.<br>\r\n<br>\r\nFrom my point of view this should be a quite common scenario in a CAL-application?<br>\r\n<br>\r\nThanks! =) \r\n",
+    "PostedDate": "2009-01-21T02:34:24.47-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

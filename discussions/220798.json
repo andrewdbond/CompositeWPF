@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "471192",
+    "ThreadId": "220798",
+    "Html": "I have Just the general question .... \r\nWhat will be the best practice to do in WPF \r\n-to add the modules at the begining or ON demand ...  we know eventually we need it..\r\n- adding all the view at the begining to the region without activating --- does it hinder application performance\r\n- in which case it is best to use controller .....\r\n--\r\nThank you",
+    "PostedDate": "2010-07-22T12:56:55.373-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "471202",
+    "ThreadId": "220798",
+    "Html": "<p>In the Prism docs we cover a number of possible approaches for both module initialization and for view registration in regions.&nbsp; I'd skim through the UI Composition and Modularity docs under both the Technical Concepts and Development activities in the chm file as a starting point.</p>\r\n<p>With module initialization, we have options to intialize on demand or at app startup to allow flexibility for difference scenarios.&nbsp; For some applications, all the modules need to be loaded for the applicaiton to be useful, so everything should be initialized at startup. For other types of apps, or scenarios where memory footprint or startup time are critical, loading most modules on demand may make sense.&nbsp; There is a spectrum of possible approaches, dependent on the application user's needs and constraints.</p>\r\n<p>For registering views with regions, there are three options:</p>\r\n<ul>\r\n<li>Register the view type with region&nbsp;during module&nbsp;initialization.&nbsp; This way,&nbsp;when region appears and is activated, the view will be created and shown.</li>\r\n<li>Register a view instance with region during&nbsp;initialization. This&nbsp;way, the region and view should appear immediately.</li>\r\n<li>If you need any other timing for registering views with regions, you will need a controller to orchestrate the registration when requested.</li>\r\n</ul>\r\n<p>Again, all of these options apply to different scenarios, and one is not necessarily better than another.&nbsp; Choosing which approach to take will depend on how you want the app to behave.</p>\r\n<p>In summary, there is no one best practice for all situations... it depends on the needs of the application you are building which approach or mix of approaches makes the most sense.</p>\r\n<p>I hope this helps,<br>Michael Puleio</p>",
+    "PostedDate": "2010-07-22T13:19:21.777-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "471208",
+    "ThreadId": "220798",
+    "Html": "Thank You..  helped me to clarify my doubt ..",
+    "PostedDate": "2010-07-22T13:28:12.997-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

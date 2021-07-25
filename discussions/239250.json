@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "539311",
+    "ThreadId": "239250",
+    "Html": "\r\n<p>Hi everyone!</p>\r\n<p>I have 2 views that fail in Expression Blend 4 designer, even though they work in Visual Studio&nbsp;designer and while being executed. I am using Prism 4.</p>\r\n<p>In one of the views, in the constructor I register a command, like this:</p>\r\n<p><em>MatchChanged = new DelegateCommand&lt;object&gt;(this.OnMatchChanged);</em><br>\r\n<em>GlobalCommands.MatchChangedCommand.RegisterCommand(MatchChanged);</em></p>\r\n<div id=\"x__mcePaste\" style=\"width:1px; height:1px; overflow:hidden; top:0px; left:-10000px\">\r\n&#65279;</div>\r\n<p>When i load this view in Blend 4, it says: &quot;Method not found: 'Void Microsoft.Practices.Prism.Commands.CompositeCommand.RegisterCommand(System.Windows.Input.ICommand)'&quot;, and the view does not load.</p>\r\n<p>In the other, I use &quot;RaisePropertyChanged&quot; in the setters like this:</p>\r\n<p>public int SelectedPageIndex<br>\r\n{<br>\r\n&nbsp;&nbsp; get {&nbsp;return selectedPageIndex; }<br>\r\n&nbsp;&nbsp; set { selectedPageIndex = value;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaisePropertyChanged(() =&gt; SelectedPageIndex); }</p>\r\n<p>}</p>\r\n<p>When i load this view in Blend 4, it says: &quot;Method not found: 'Void Microsoft.Practices.Prism.ViewModel.NotificationObject.RaisePropertyChanged(System.Linq.Expression`1&lt;System.Func`1&lt;!!0&gt;&gt;)'&quot;, and the view does not load.</p>\r\n<p>Note that all views work, both in Visual Studio as when they are used as part of a executable, so there is no programming issue.</p>\r\n<p>Does anyone&nbsp;have a clue what's wrong?</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-22T04:43:39.033-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "539480",
+    "ThreadId": "239250",
+    "Html": "\r\n<p id=\"x_ded00690-f024-012d-5dfb-12313d03107a\">Hi,</p>\r\n<p id=\"x_ded00ee0-f024-012d-5dfc-12313d03107a\">You might find some information that might help you troubleshoot this on the following chapter of the Prism MSDN documentation, under the &quot;Guidelines for Creating Designer Friendly Views&quot;:</p>\r\n<p id=\"x_ded00ee0-f024-012d-5dfc-12313d03107a\"><a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28v=PandP.40%29.aspx\">Chapter 7: Composing the User Interface</a></p>\r\n<p id=\"x_3b626910-f02b-012d-1050-12313d03107a\">Inside the aforementioned section you can find a table that shows different things that can or cannot be done in Blend, as well as some guidance on how to avoid these kind of errors.</p>\r\n<p>Also you might find <a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=224396\">\r\nthis thread</a> interesting.</p>\r\n<p id=\"x_ded02180-f024-012d-5dfe-12313d03107a\">I hope you find this information useful.</p>\r\n<p id=\"x_ded02b10-f024-012d-5dff-12313d03107a\">Thanks,</p>\r\n<p>Miguel Bronzovic<br>\r\n<a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-22T11:01:55.027-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "539508",
+    "ThreadId": "239250",
+    "Html": "\r\n<p>Thanks for your answer!</p>\r\n<p>I already read the Guidelines but could'nt find a useful hint regarding these problems.</p>\r\n<p>Obviously, this is some kind of bug. There are means to work around these problems, f. e. one can use the RaisePropertyChanged()-overload that takes a string argument instead of the one with the Function. In the other case, you can move the code out of the\r\n constructor in some subroutine which makes Blend want to work again. Still, these things are unsettling because you start working around things and you never know if you have a reasonable, acceptable workaround the next time such a problem arises. This makes\r\n me feel uncomfortable about the Visual Studio-Blend workflow. Seems to be&nbsp;much more&nbsp;fragile than it should be.</p>\r\n<p>Greetings!</p>\r\n",
+    "PostedDate": "2010-12-22T12:01:09.743-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

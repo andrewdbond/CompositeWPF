@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "644571",
+    "ThreadId": "265776",
+    "Html": "\r\n<p><span id=\"result_box\" lang=\"en\"><span title=\"Clique para mostrar traduções alternativas\">How do I get</span>\r\n<span title=\"Clique para mostrar traduções alternativas\">a</span> <span title=\"Clique para mostrar traduções alternativas\">\r\nCollection</span> <span title=\"Clique para mostrar traduções alternativas\">with all modules</span>\r\n<span title=\"Clique para mostrar traduções alternativas\">loaded</span> <span title=\"Clique para mostrar traduções alternativas\">\r\nin my application</span><span title=\"Clique para mostrar traduções alternativas\">?</span></span></p>\r\n",
+    "PostedDate": "2011-07-19T12:15:41.153-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "644942",
+    "ThreadId": "265776",
+    "Html": "<p>Hi,</p>\r\n<p>As explained on <a href=\"http://compositewpf.codeplex.com/discussions/265699\">this thread</a>, you could have a custom service hold a collection of loaded modules; that service could subscribe to the <strong>ModuleManager.LoadModuleCompleted</strong> event, and could use the <strong>ModuleCatalog.Modules</strong> property to have a notion of the total modules present in the catalog.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-20T06:14:52.877-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "644983",
+    "ThreadId": "265776",
+    "Html": "<p><span id=\"result_box\" lang=\"en\"><span class=\"hps\" title=\"Clique para mostrar tradu&ccedil;&otilde;es alternativas\">Thank you</span><span title=\"Clique para mostrar tradu&ccedil;&otilde;es alternativas\">.</span> <span class=\"hps\" title=\"Clique para mostrar tradu&ccedil;&otilde;es alternativas\">I'll try to</span> <span class=\"hps\" title=\"Clique para mostrar tradu&ccedil;&otilde;es alternativas\">implement</span> <span class=\"hps\" title=\"Clique para mostrar tradu&ccedil;&otilde;es alternativas\">something like that.</span> </span></p>\r\n<p><em><span id=\"result_box\" lang=\"en\"><span class=\"hps\" title=\"Clique para mostrar tradu&ccedil;&otilde;es alternativas\">Sorry for</span> <span class=\"hps\" title=\"Clique para mostrar tradu&ccedil;&otilde;es alternativas\">my bad</span> <span class=\"hps\" title=\"Clique para mostrar tradu&ccedil;&otilde;es alternativas\">English.</span></span></em></p>",
+    "PostedDate": "2011-07-20T07:18:44.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "644984",
+    "ThreadId": "265776",
+    "Html": "<p>Once you have your service implemented, it would be helpful if you could post it here, so that other users from the community can benefit from it, and also review and suggest improvements for your implementation.</p>\r\n<p>Thanks,</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-20T07:20:38.703-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645001",
+    "ThreadId": "265776",
+    "Html": "<p>This service ... would be another project (application) to communicate with my application, right? I am doing a menu that will be assembled programmatically. ModuleCatalog had seen, but can not get the instance with the modules that were loaded, the service was going to do that, right? But there is no way to do this with static class?<br /><br />I'm scheduling based on samples and documentation.</p>",
+    "PostedDate": "2011-07-20T07:51:13.543-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645008",
+    "ThreadId": "265776",
+    "Html": "<p>Hi,</p>\n<p>The service could be simply a class that provides that functionality. A common practice for doing so is to provide an interface for your service in an infrastructure project (one that is referenced throughout the different projects in your solution), and  provide the implementation for that service in a specific project you consider appropriate (i.e. a module, or the shell project, as you find it better); then register an interface mapping using Unity/MEF between the interface and the corresponding implementation.  Therefore, the service will be shared, but the modules will not necessarily have a reference to the project that contains the implementation. That is a benefit over using a static class; and also, using a shared service improves testability (as you can mock  that service in a test scenario) over using a static class (which can't be mocked).</p>\n<p>You can read more about shared services in <a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28PandP.40%29.aspx#sec7\"> this section</a> of the Communication Chapter of the Prism MSDN documentation. Also, you can find an example of the usage of shared services in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921074%28PandP.40%29.aspx\" target=\"_top\"> Stock Trader Reference Implementation</a> (where the <strong>INewsFeedService </strong> is an example of a shared service interface, with the implementation being provided in the <strong>NewsFeedService </strong>class placed in the<strong> StockTraderRI.Modules.News </strong>module, and exported via MEF using the interface as the contract type).</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-20T08:00:40.133-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

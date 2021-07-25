@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "700154",
+    "ThreadId": "280000",
+    "Html": "\r\n<p>I have a requirement where in I am having a Silverlight Page consisting of Master-Detail View. The Detail Section gets changed dynamically based on a Combo box selection in Master View. I am now using Prism DataTemplateSelector to dynamically load the detail\r\n view based on the Entity Type of Detail.</p>\r\n<pre><span>&lt;</span><span><span>prism</span>:<span>DataTemplateSelector</span></span> <span>Content</span><span>=&quot;{Binding}&quot;</span></pre>\r\n<pre><span id=\"lnum4\">  </span>                                   <span>HorizontalContentAlignment</span><span>=&quot;Stretch&quot;</span></pre>\r\n<pre><span id=\"lnum5\">  </span>                                   <span>IsTabStop</span><span>=&quot;False&quot;</span><span>&gt;</span></pre>\r\n<pre><span id=\"lnum6\">   </span>            <span>&lt;</span><span><span>prism</span>:<span>DataTemplateSelector</span>.Resources</span><span>&gt;</span></pre>\r\n<pre>               <span>&lt;</span><span>DataTemplate</span> <span>x:Key</span><span>=&quot;DetailType1&quot;</span><span>&gt;</span></pre>\r\n<pre>                  &lt;views:DetailOneView&gt;</pre>\r\n<pre>                <span>&lt;/</span><span>DataTemplate</span><span>&gt;</span></pre>\r\n<pre><span><pre><span style=\"white-space:pre\">\t\t</span>&lt;DataTemplate x:Key=&quot;DetailType2&quot;&gt;</pre>\r\n<pre>                  &lt;views:DetailTwoView&gt;</pre>\r\n<pre>                &lt;/DataTemplate&gt;</pre>\r\n<pre><pre>  <span>&lt;/</span><span><span>prism</span>:<span>DataTemplateSelector</span>.Resources&gt;</span></pre>\r\n<pre><span id=\"lnum24\"> </span>     <span>&lt;/</span><span><span>prism</span>:<span>DataTemplateSelector</span></span><span>&gt;</span></pre>\r\n<br></pre>\r\nIn my application, I have only one ViewModel (MainViewModel) which will serve as the DataContext for the Master View and all the Detail Views. So when i choose the</span></pre>\r\n<pre>Detail View based on the above shown code, the DetailType1 &amp; DetailType2 classes becomes the DataContext for the DetailOneView and DetailTwoViews respectively, even</pre>\r\n<pre>though I set the DataContext of DetailOneView and DetailTwoView to MainViewModel in the Xaml.cs of both views.</pre>\r\n<pre><br></pre>\r\n<pre>How do i explicitly make the MainViewModel as the DataContext for DetailOneView and DetailTwoView while using DataTemplateSelector. </pre>\r\n<pre>Any help is appreciated.</pre>\r\n<pre><br></pre>\r\n<pre>Thanks</pre>\r\n<pre>Syam</pre>\r\n",
+    "PostedDate": "2011-11-18T05:45:31.243-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "700342",
+    "ThreadId": "280000",
+    "Html": "<p>Hi Syam,</p>\r\n<p>Based on my understanding, when you use a <strong>DataTemplateSelector </strong>the data context of the view that you want to show will be the object \"selected\" in the <strong>DataTemplateSelector</strong>.</p>\r\n<p>As a possible approach, you could define the data context of your <strong>MasterView </strong>(that is, the <strong>MainViewModel</strong>) as a resource of the <strong>MasterView </strong>(for example, in the code behind) and then use bindings to set the <strong>DataContext </strong>property of your <strong>DetailView </strong>as that resource:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">DataTemplate</span> <span style=\"color: red;\">x:Key</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">DetailType1</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">&gt;</span>\r\n         <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">views</span><span style=\"color: blue;\">:</span><span style=\"color: #a31515;\">DetailOneView</span> <span style=\"color: red;\">DataContext</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">{StaticResource MainViewModelResource}</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">/&gt;</span>\r\n<span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">DataTemplate</span><span style=\"color: blue;\">&gt;</span>\r\n\r\n</pre>\r\n</div>\r\nNote that usually, <strong>DataTemplateSelector </strong>is used to select which data template is going to be applied to an element based on that element's type. If you wish to show a view that uses the same view model that your <strong>MasterView</strong> you might find other approaches (like view injection) more useful.<strong><br /></strong></p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-11-18T10:56:34.257-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "702417",
+    "ThreadId": "280000",
+    "Html": "<p>Hi Damian,</p>\r\n<p>Thanks for your input. It was really useful.</p>\r\n<p>Thanks</p>\r\n<p>Syam</p>",
+    "PostedDate": "2011-11-23T08:30:18.713-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

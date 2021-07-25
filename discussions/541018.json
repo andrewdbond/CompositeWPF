@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1229805",
+    "ThreadId": "541018",
+    "Html": "I am just wondering whether it is possible to customize more a Popup window (PopupWindowAction) beyond setting the IsModal and CenterOverAssociatedObject properties of it. For example:<br />\n<ul>\n<li>It would be great if the Minimize and Maximize button of the displayed view can be enabled/disabled</li>\n<li>\nThe view will always be shown in the the taskbar. A similar property like the ShowInTaskbar would be very useful.<br />\n</li>\n</ul>\nFor a relevant example, please open the &lt;Quickstart&gt;\\Interactivity.\r<br />\n<br />\nThanks.<br />\n",
+    "PostedDate": "2014-04-03T01:52:20.287-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1230448",
+    "ThreadId": "541018",
+    "Html": "Hi,\r<br />\n<br />\nYou would be able to extend the Customizable Window Properties by modifying the Interactivity project from the Prism Library.\r<br />\n<br />\nBoth properties you mentioned may be configured from the corresponding <strong>InteractionRequestViewModel</strong> raise methods according to each popup view desire Style. In order to accomplish this, you would need to implement the desired Properties into the <strong>INotification</strong> (and also <strong>Notification</strong>) class, and generate the Bindings into them from the <strong>DefaultNotificationWindow.xaml</strong> class. You could also extend more Window properties in the same way than these ones described.\r<br />\n<br />\nThe following code shows how the <strong>CustomPopupView</strong> would have the <em>Maximize</em> and <em>Minimize</em> buttons disabled. And the <em>DefaultNotification</em> popup would have configured not to be shown in the <em>TaskBar</em>:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\nInteractionRequestViewModel.cs\n...\n<span style=\"color:Blue;\">private</span> <span style=\"color:Blue;\">void</span> RaiseCustomPopupView()\n{\n     <span style=\"color:Green;\">// In this case we are passing a simple notification as a parameter.</span>\n     <span style=\"color:Green;\">// The custom popup view we are using for this interaction request does not have a DataContext of its own</span>\n     <span style=\"color:Green;\">// so it will inherit the DataContext of the window, which will be this same notification.</span>\n     <span style=\"color:Blue;\">this</span>.InteractionResultMessage = <span style=\"color:#A31515;\">&quot;&quot;</span>;\n     <span style=\"color:Blue;\">this</span>.CustomPopupViewRequest.Raise(\n         <span style=\"color:Blue;\">new</span> Notification { Content = <span style=\"color:#A31515;\">&quot;Message for the CustomPopupView&quot;</span>, Title = <span style=\"color:#A31515;\">&quot;Custom Popup&quot;</span>, ResizeMode = ResizeMode.NoResize, TaskBar = <span style=\"color:Blue;\">true</span> });\n}\n...\n<span style=\"color:Blue;\">private</span> <span style=\"color:Blue;\">void</span> RaiseNotification()\n{\n     <span style=\"color:Green;\">// By invoking the Raise method we are raising the Raised event and triggering any InteractionRequestTrigger that</span>\n     <span style=\"color:Green;\">// is subscribed to it.</span>\n     <span style=\"color:Green;\">// As parameters we are passing a Notification, which is a default implementation of INotification provided by Prism</span>\n     <span style=\"color:Green;\">// and a callback that is executed when the interaction finishes.</span>\n     <span style=\"color:Blue;\">this</span>.NotificationRequest.Raise(\n        <span style=\"color:Blue;\">new</span> Notification { Content = <span style=\"color:#A31515;\">&quot;Notification Message&quot;</span>, Title = <span style=\"color:#A31515;\">&quot;Notification&quot;</span>, ResizeMode = ResizeMode.CanResize, TaskBar = <span style=\"color:Blue;\">false</span> },\n        n =&gt; { InteractionResultMessage = <span style=\"color:#A31515;\">&quot;The user was notified.&quot;</span>; });\n}\r\n</pre></div><div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">public</span> <span style=\"color:Blue;\">interface</span> INotification\n{\n    <span style=\"color:Gray;\">///</span> <span style=\"color:Gray;\">&lt;summary&gt;</span>\n    <span style=\"color:Gray;\">///</span><span style=\"color:Green;\"> Gets or sets the title to use for the notification.</span>\n    <span style=\"color:Gray;\">///</span> <span style=\"color:Gray;\">&lt;/summary&gt;</span>\n    <span style=\"color:Blue;\">string</span> Title { <span style=\"color:Blue;\">get</span>; <span style=\"color:Blue;\">set</span>; }\n\n    <span style=\"color:Gray;\">///</span> <span style=\"color:Gray;\">&lt;summary&gt;</span>\n    <span style=\"color:Gray;\">///</span><span style=\"color:Green;\"> Gets or sets the content of the notification.</span>\n    <span style=\"color:Gray;\">///</span> <span style=\"color:Gray;\">&lt;/summary&gt;</span>\n    <span style=\"color:Blue;\">object</span> Content { <span style=\"color:Blue;\">get</span>; <span style=\"color:Blue;\">set</span>; }\n\n    <span style=\"color:Gray;\">///</span> <span style=\"color:Gray;\">&lt;summary&gt;</span>\n    <span style=\"color:Gray;\">///</span><span style=\"color:Green;\"> Gets or sets the resize mode of the notification window.</span>\n    <span style=\"color:Gray;\">///</span> <span style=\"color:Gray;\">&lt;/summary&gt;</span>\n    System.Windows.ResizeMode ResizeMode { <span style=\"color:Blue;\">get</span>; <span style=\"color:Blue;\">set</span>; }\n        \n    <span style=\"color:Gray;\">///</span> <span style=\"color:Gray;\">&lt;summary&gt;</span>\n    <span style=\"color:Gray;\">///</span><span style=\"color:Green;\"> Gets or sets the a boolean for being the Notification Window visible on the task bar.</span>\n    <span style=\"color:Gray;\">///</span> <span style=\"color:Gray;\">&lt;/summary&gt;</span>\n    <span style=\"color:Blue;\">bool</span> TaskBar { <span style=\"color:Blue;\">get</span>; <span style=\"color:Blue;\">set</span>; }\n}\r\n</pre></div>I hope this helped,\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-04-04T10:46:01.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1238182",
+    "ThreadId": "541018",
+    "Html": "Hi Gabriel,\r<br />\n<br />\nSo this means that I have to modify Prism source code in order to achieve the desired behavior. Is there any other solution/workaround for it?\r<br />\nOn the other hand, I have found a blog post about displaying a dialog with Prism and the implementation is very similar to the offical Prism based one, however it has a Window instead of a User Control:\r<br />\n<a href=\"http://blog.magnusmontin.net/2013/04/20/implement-a-confirmation-dialog-in-wpf-with-mvvm-and-prism/\" rel=\"nofollow\">http://blog.magnusmontin.net/2013/04/20/implement-a-confirmation-dialog-in-wpf-with-mvvm-and-prism/</a><br />\n",
+    "PostedDate": "2014-04-25T13:36:06.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1238211",
+    "ThreadId": "541018",
+    "Html": "Hi Gabriel,\r<br />\n<br />\nInstead of modifying the Prism source code, you can just derive from PopupWindowAction. The GetWindow and PrepareContentForWindow methods are both virtual so you can provide your own implementation if the base implementation is not sufficient. \r<br />\n<br />\nIf that doesn't provide enough flexibility, you can derive from TriggerAction&lt;FrameworkElement&gt; and implement your own Blend action.<br />\n",
+    "PostedDate": "2014-04-25T15:27:04.843-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1311777",
+    "ThreadId": "541018",
+    "Html": "HI, <br />\n  I also need the same, i want to disable maximize and minimize button,also i need to remove close button from the notification window.I gone through the code you given here but it didn't help me much as am new to Prism.Can u please explain how o  to implement the desired Properties into the INotification (and also Notification) class as am not aware of that. can please give me sample .<br />\n",
+    "PostedDate": "2014-10-09T01:25:33.24-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

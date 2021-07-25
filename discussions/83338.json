@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "286556",
+    "ThreadId": "83338",
+    "Html": "<p>I was having a discussion with one of my colleagues the other day about where to format (simple) data meant for display.</p>\r\n<p>Let's say I have an external source, which returns a floating point value. I use a service to fetch that value from the external source. On my view I have 2 text blocks where I'd like to show that value, one with 2 digits behind the decimal sign, one with 4 digits behind the decimal sign. My colleague insists that the formatting should happen in my service, hence creating 2 properties which return the formatted value. This feels wrong to me. If I want to display this value in 10 different ways this means I have to create 10 properties with silly names such as DataWith2DigitsBehindDecimalSign, DataWith4DigitsBehindDecimalSign. To me it seems more logical to use 1 property which simply returns the floating point value and format the data in the property where the view binds to.</p>\r\n<p>If this service is used by multiple views and all of those views display the data in the same way, then I would be OK with adding a property which returns the proper formatted data, but even then I would still prefer to do it per view as this would give me greater control to modify a single display later on.</p>\r\n<p>Is there a proper way of doing this, if so, which one is it?</p>\r\n<p>Thanks.</p>",
+    "PostedDate": "2010-02-06T03:07:55.197-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "289478",
+    "ThreadId": "83338",
+    "Html": "<p id=2d6b4f80-f949-012c-58d6-123139061101>Hi,</p>\r\n<p id=2d6b5e90-f949-012c-58d7-123139061101>This topic is something that  does not have <em>a </em>right answer, but I&rsquo;ll express my point of view  hoping it can be of help.</p>\r\n<p id=2d6b71d0-f949-012c-58d8-123139061101>As you said, having the  formatting done in the service that retrieves the value is an  unnecessary overhead for the service&rsquo;s interface, as it should only care  on returning the value. Formatting the number is specifically related  to the presentation layer of your application, so it should be done  there instead of the business logic of your application which is where  the service works.</p>\r\n<p id=2d6b8e70-f949-012c-58d9-123139061101>In  my personal opinion, taking advantage of WPF <a href=\"http://msdn.microsoft.com/en-us/library/ms771571.aspx\">ValueConverters</a> would be the way to go here. This way, the service only gets the  required information and the properties always hold the same value. You  simply change the <strong>ValueConverter</strong> associated to the  binding to get the different formats.</p>\r\n<p id=2d6bb1d0-f949-012c-58da-123139061101>Another approach could be a  &ldquo;formatting service&rdquo; that lives in the presentation layer, and is in charge of formatting the  numbers before they are exposed by properties in the ViewModel for the  View to bind to.</p>\r\n<p id=2d6bd4f0-f949-012c-58db-123139061101>One possible case when  providing multiple service methods to get more/less precision from the  service is a viable approach is if getting a value with more resolution  takes considerably more time than without it. That way, if you don&rsquo;t  actually need the extra numbers you can save the extra time.</p>\r\n<p id=2d6bfac0-f949-012c-58dc-123139061101>Please let me know if  this helps.</p>\r\n<p id=2d6c20a0-f949-012c-58dd-123139061101>Damian  Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-02-11T06:50:00.477-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

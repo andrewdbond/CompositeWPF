@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "216362",
+    "ThreadId": "63626",
+    "Html": "<p>hi,</p>\r\n<p>I need to write a NUnit test case for&nbsp;testing my following method&nbsp;in a Prism application.</p>\r\n<p>How do I get a reference of Unity Container in my test class? Typically the NUnit test cases are built into a separate project from the main applicatioin.</p>\r\n<p>My application registers a lot of services with the Unity container, Object Manager service is one example which needs to be tested</p>\r\n<p><span style=\"color:blue\">public</span> <span style=\"color:blue\">override</span>&nbsp;<span style=\"color:#2b91af\">Object</span> get(<span style=\"color:blue\">string</span> guid)</p>\r\n<p><span style=\"font-size:10pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</span></p>\r\n<p><span style=\"font-size:10pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"color:blue\">try</span></span></p>\r\n<p><span style=\"font-size:10pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</span></p>\r\n<p><span style=\"font-size:10pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style=\"color:#2b91af\">Object</span> data = <span style=\"color:blue\">null</span>;</span></p>\r\n<p><span style=\"font-size:10pt\">&nbsp;</span><span style=\"font-size:10pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>ObjectManager objectManager = CompositeContainer.Container.Resolve&lt;ObjectManager&gt;();</strong></span></p>\r\n<p><span style=\"font-size:10pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data = objectManager.Get&lt;Object&gt;(<span style=\"color:blue\">new</span> <span style=\"color:#2b91af\">Guid</span>(guid));</span></p>\r\n<p><span style=\"font-size:10pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"color:blue\">return</span> data;</span></p>\r\n<p><span style=\"font-size:10pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</span></p>\r\n<p><span style=\"font-size:10pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"color:blue\">catch</span> (<span style=\"color:#2b91af\">Exception</span> ex)</span></p>\r\n<p><span style=\"font-size:10pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</span></p>\r\n<p><span style=\"font-size:10pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style=\"color:blue\">throw</span> <span style=\"color:blue\">new</span> <span style=\"color:#2b91af\">InvalidOperationException</span>(ex.Message); </span></p>\r\n<p><span style=\"font-size:10pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</span></p>\r\n<p><span style=\"font-size:10pt\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</span></p>",
+    "PostedDate": "2009-07-27T06:29:33.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "216477",
+    "ThreadId": "63626",
+    "Html": "<p>Hi</p>\r\n<p>One possible approach I can think of is mocking the <strong>UnityContainer</strong> to suit your test needs. You can check out the <strong>MockUnityContainer</strong> class in the Mocks folder of the <strong>UnityExtension</strong> tests project for a possible implementation of the mock.</p>\r\n<p>You can also check the <a href=\"http://msdn.microsoft.com/en-us/library/dd458919.aspx\">Stock Trader RI</a> tests to check out the different approaches the Prism team used to get the container in tests.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><span style=\"font-size:11pt\" lang=EN-US><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></span></p>",
+    "PostedDate": "2009-07-27T10:57:57.603-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "262213",
+    "ThreadId": "63626",
+    "Html": "<p>Hi&nbsp; Damian Schenkelman,</p>\r\n<p>I am just trying to do Nunit testing in the prism (SL) application. I am trying to implement the Mocks to write test cases with reference of Stock Trader RI, I have few Questions regarding Stock Trader RI application how did they implemented Mocks I did not find any explanation regarding testing.</p>\r\n<p>Can i get some references to Implement Mocks with some Explanation.</p>\r\n<p>Thanks in Advance.</p>",
+    "PostedDate": "2009-12-01T02:56:10.483-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "262428",
+    "ThreadId": "63626",
+    "Html": "<div>\r\n<p id=4e47f370-c0e0-012c-766e-12313b030631>Hi,</p>\r\n<p id=4e47ff70-c0e0-012c-766f-12313b030631>The Prism documentation doesn&rsquo;t provide any particular information about how to create mock objects.</p>\r\n<p id=4e480bb0-c0e0-012c-7670-12313b030631>However if you want to dig deeper about mocking, you can take a look at the following articles:</p>\r\n<ul>\r\n<li>\r\n<div id=cdce0c40-5f8c-c4c8-db19-4f583cbca05c style=\"border-bottom:medium none\"><a href=\"http://msdn.microsoft.com/en-us/magazine/cc163358.aspx\">Exploring The Continuum Of Test Doubles</a></div>\r\n</li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/magazine/cc135981.aspx#S2\">Advanced Unit Testing, Object Mocking, Profiling Your Apps and More</a></li>\r\n</ul>\r\n<p id=4e481930-c0e0-012c-7671-12313b030631>I hope you can find this answer helpful.</p>\r\nFernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></div>",
+    "PostedDate": "2009-12-01T12:03:28.757-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "262450",
+    "ThreadId": "63626",
+    "Html": "<p>Hi ,</p>\r\n<p>Thanks a lot for reply I have one question.</p>\r\n<p>I created a Sample Test Project and when i tried to run using Nunit I&nbsp; am facing with this Error.</p>\r\n<p>Error:&nbsp;Sample.UnitTesting.Tests.ConfigurationTest.TestConfiguration:<br>System.TypeLoadException : Method 'LoadBy' in type 'Sample.UnitTesting.Mocks.MockConfigurationService' <br>from assembly 'Sample.UnitTesting.Mocks, <br>Version=1.0.0.0, Culture=neutral, PublicKeyToken=null' does not have an implementation.</p>\r\n<p>I am getting same error even I write anything in [Test] method or left Empty. I have no idea any help is Appretiated.</p>\r\n<p>Thanks in Advance</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-01T13:16:35.297-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

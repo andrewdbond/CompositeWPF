@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "871461",
+    "ThreadId": "371756",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>I have a WPF/PRISM application which uses Non-Linear navigation.&nbsp; To enable that functionality, I need to be able to find a way to determine the number of open views for each module within the same module.&nbsp;</p>\r\n<p>Assume, I have an order module, if I open order details for order #1 then I should have a count of 1 next to the menu icon of that module, if I open order details for order #2 I should have a count of 2, so forth and so on.&nbsp; The user can close the module\r\n which means I have to decrement the count.</p>\r\n<p>What is the best way to do that???</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-07-17T15:47:22.34-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "874537",
+    "ThreadId": "371756",
+    "Html": "<p>Hi,</p>\r\n<p>How to implement the functionality will mainly depend on your personal preferences and the requirements of your scenario.</p>\r\n<p>In my opinion, a possible approach could be to implement a <strong>shared service</strong> (lets call it \"<strong>ViewCountService\"</strong>) which could simply hold a <strong>Dictionary </strong>of <strong>string </strong>- <strong>int </strong>and subscribe to events through the <strong>EventAggregator</strong>.</p>\r\n<p>When a view is created you can inject the <strong>EventAggregator </strong>and then:</p>\r\n<ul>\r\n<li>When a view is loaded, publish an event (for example <strong>ViewOpened </strong>event) with a string payload used to identify the module. (You can know when a view is loaded through its <strong>Loaded </strong>event.)</li>\r\n<li>When a view is unloaded, publish an event (for example <strong>ViewClosed </strong>event) with the aforementioned string. (You can know when a view is unloaded through its <strong>Unloaded </strong>event.)</li>\r\n</ul>\r\n<p>The <strong>ViewCountService </strong>would subscribe to both events (through the <strong>EventAggregator</strong>) and increase / decrease the count associated with the string \"identifier,\" which in this case would identify the module. Then, when you need to know the amount of opened views, you could simply consume this service.</p>\r\n<p>You can find more information about <strong>shared services</strong> and the <strong>EventAggregator </strong>in the following chapter of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28v=pandp.40%29\">Chapter 9: Communicating Between Loosely Coupled Components</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-07-18T13:34:09.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

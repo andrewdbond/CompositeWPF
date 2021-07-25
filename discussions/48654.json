@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "162454",
+    "ThreadId": "48654",
+    "Html": "I'm not sure I understand why the module assigns it's view to a region. It seems like you would develop a module to be reusable. <br>\r\n<br>\r\nI have a module that I want to use throughout multiple projects and it may appear more than once in a particular shell. I don't see a way to do this currently. Having a module depend upon a region name seems strange. Why can't the shell be responsible for attaching instances of modules to various regions?<br>\r\n",
+    "PostedDate": "2009-02-26T11:33:17.147-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "163067",
+    "ThreadId": "48654",
+    "Html": "I may be missing what you are saying. However modules do not have to assign views to regions and in my application they never do.  I have several views that are displayed in my main region in one place and in our dialog region it other places. I have a ViewManager object with a method called PresentView(RegionEnum region, IPresentationModel presentationModel); This give the developer the control over what view he/she wants to display as well as in what region. Hope that helps.<br>\r\n<br>\r\nBrette\r\n",
+    "PostedDate": "2009-02-28T09:16:31.68-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "163348",
+    "ThreadId": "48654",
+    "Html": "Hi Brette,<br>\r\n<br>\r\nBrett could you provide a little bit more information about you ViewManager:<br>\r\n<br>\r\n1. Can u share its source?<br>\r\n2. Module presentation model are usually isolated in module assembly. So u are sharing its interface in Infrastructure?<br>\r\n<br>\r\nThanks,<br>\r\nAlexey Zakharov<br>\r\n",
+    "PostedDate": "2009-03-01T21:29:49.913-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "164372",
+    "ThreadId": "48654",
+    "Html": "Hi Mike,<br>\r\n<br>\r\nIt al depends on your goals for applying modularity. <br>\r\n<br>\r\nUsually, the goal of modularity is to make modules loosely coupled from other modules. That doesn't make them reusable per se. <br>\r\n<br>\r\nYou have to put your visual composition somewhere. One approach is to put it in the modules and let them do the composition and we feel this is the most common approach. An other approach is to give this responsibility to the shell (kind of breaks composition, because the shell has to know at least something about your views) or to a seperate composition module or component. You can even decide you want really dynamic composition and have a composition engine (that reads the composition from a config file). However, we're not providing you with one.<br>\r\n<br>\r\nIn Prism we are supporting two composition models: View Injection and View discovery. <br>\r\n<br>\r\n<ul>\r\n    <li>In View Injection, you find a region and add instances of your views to it. This usually is done by your models, because they are the only ones who know about your modules. </li>\r\n    <li>In View Discovery, you register the type of a view against a region name. </li>\r\n</ul>\r\n<p>You can approach view discovery in two ways. If you have defined several views in your shell, then you can say in your modules: Make sure that these views will be added to these regions. <br>\r\n<br>\r\nHOWEVER, you can also approach it from a different perspective. You can register your views under a name. For example, if you have a CustomerView, you can register it under the &quot;CustomerView&quot; name. Now if you want to show that view somewhere (for example in the shell or in a different module), simply show a region with that name, and the view will appear. <br>\r\n<br>\r\nHope this helps,<br>\r\nErwin</p>\r\n<p>&nbsp;</p>\r\n <br>\r\n<br>\r\n",
+    "PostedDate": "2009-03-04T08:39:38.013-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "164541",
+    "ThreadId": "48654",
+    "Html": "Lexer,<br>\r\n<br>\r\nI have a interface in my Infrustructure project called IPresentable that has a method called Present(). All my moudle presentation models implement this interface. My method ViewManager.PresentView(IPresentable, Region region) then calls that method. Basically all presentation models that want to leverage my view manager must implement this interface. And this interface exists in my Inf project. <br>\r\nHope that helps.<br>\r\n<br>\r\n",
+    "PostedDate": "2009-03-04T13:55:04.667-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

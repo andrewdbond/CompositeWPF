@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "948781",
+    "ThreadId": "404976",
+    "Html": "\r\n<p>We are creating a Metro style application with PRISM and WPF. Several tiles (different modules) are shown in a dashboard.</p>\r\n<p>Since we are using the tiles on different dashboards and since we are navigating back and forth to detail views, we use Resolve to get the tile from the container.</p>\r\n<p>Furthermore we are using MVVM, or at least we try to use. When I press a tile the customer will be retrieved from a webservice and the other tiles need to be updated. However, I am not sure how to do this. Every example online is based on the fact that you\r\n change the data by entering a new value in a textbox or something.</p>\r\n<p>So there is:</p>\r\n<ul>\r\n<li>RefreshTileView </li><li>BalanceTileView (which shows Customer.Balance from the ViewModel) </li><li>BalanceTileViewModel (or BalanceTileViewViewModel,&nbsp;which holds the Customer)\r\n</li></ul>\r\n<p>In a host module I am dynamically constructing the composite view, based on the information in the customer object. So basically, this is happening:</p>\r\n<ul>\r\n<li>Customer customer = SomeWebservice.GetCustomer(int someCustomerId); </li><li>Check to see which tiles need to be loaded (based on customer properties) </li><li>BalanceTileView balanceTileView = container.Resolve&lt;BalanceTileView&gt;();\r\n</li><li>??? Pass customer to balanceTileView and/or to BalanceTileViewModel ??? </li><li>RegionManager.AddToRegion(&quot;RegionName&quot;, balanceTileView) </li></ul>\r\n<p>The constructor of the view looks like this:</p>\r\n<p>&nbsp;</p>\r\n<pre>public BalanceTileView(BalanceTileViewModel viewModel) {        \n    this.DataContext = viewModel;\n    InitializeComponent();\n}\n\n</pre>\r\n<p>And the view has a DependencyProperty, like this:</p>\r\n<p>&nbsp;</p>\r\n<pre>public static readonly DependencyProperty CustomerProperty = DependencyProperty.Register(&quot;Customer&quot;, typeof(Customer), typeof(BalanceTileView));\npublic Customer Customer{ get { return (Customer)GetValue(CustomerProperty); }� � set� � {� � � � SetValue(CustomerProperty, value);� � }}\n\n</pre>\r\n<p>When I run the application my Balance property remains empty. This happens because the databinding is done when the TileView is resolved. And after resolving I pass the Customer object.&nbsp;</p>\r\n<p>How do I make sure that when I change the Customer object in the view, some parameter in the ViewModel is changed as well and the new Balance is reflected in the tile? I am not sure how to do this. Or should I pass the new Customer object directly to the\r\n ViewModel instead of the View? If so, how can I access the ViewModel and how can I make sure the Balance is updated in the tile?</p>\r\n<p>Any help will be appreciated since most of the examples work the other way around.</p>\r\n",
+    "PostedDate": "2012-11-28T23:55:09.837-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "948841",
+    "ThreadId": "404976",
+    "Html": "\r\n<p>I am a little bit further. I have made a property in my ViewModel:</p>\r\n<p>(ObservableHelper is a class I copied from Cinch framework)</p>\r\n<pre>static PropertyChangedEventArgs walletChangeArgs = ObservableHelper.CreateArgs(x =&gt; x.Wallet);\n\n        private Wallet wallet;\n        public Wallet Wallet\n        {\n            get { return wallet; }\n            set\n            {\n                wallet = value;\n                NotifyPropertyChanged(walletChangeArgs);\n            }\n        }</pre>\r\n<p>&nbsp;</p>\r\n<p>However I still need to do something like this in my View:</p>\r\n<p>&nbsp;</p>\r\n<pre>public Wallet Wallet { \nset { \n((BalanceTileViewModel)this.DataContext).Wallet = value; } }</pre>\r\n<p>&nbsp;</p>\r\n<p>Which doesn't seem like the right way.</p>\r\n",
+    "PostedDate": "2012-11-29T02:05:25.107-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "948843",
+    "ThreadId": "404976",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Have you tried using the eventaggregator in prism? You could use that to publish information which your other tiles can subscribe to and refresh themselves.</p>\r\n",
+    "PostedDate": "2012-11-29T02:09:47.24-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "948927",
+    "ThreadId": "404976",
+    "Html": "\r\n<p>I have used it for other things and I didn't think about doing it for this problem. Thanks for the tip, it might be as simple as this.</p>\r\n",
+    "PostedDate": "2012-11-29T04:41:49.6-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "948958",
+    "ThreadId": "404976",
+    "Html": "\r\n<p>Works like a charm!</p>\r\n<p>Thanks again</p>\r\n",
+    "PostedDate": "2012-11-29T05:40:56.323-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "948961",
+    "ThreadId": "404976",
+    "Html": "\r\n<p>Cool!</p>\r\n<div>\r\n<blockquote style=\"margin:0 0 0 .8ex; border-left:1px #ccc solid; padding-left:1ex\">\r\n<div>\r\n<div></div>\r\n</div>\r\n</blockquote>\r\n</div>\r\n",
+    "PostedDate": "2012-11-29T05:47:29.56-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

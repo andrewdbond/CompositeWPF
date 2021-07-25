@@ -1,0 +1,39 @@
+<div class="wikidoc"><h1>Summary of what&#39;s new in this drop</h1><ol><li><a href="#Renamings">Renamings</a></li>
+<li><a href="#CompositeApplicationLibraryAssemblies">Redistributed Assemblies</a></li>
+<li><a href="#RegionsRefactoring">Refactored Regions</a></li>
+<li><a href="#StockTraderRI">Updated Stock Trader Reference Implementation</a></li>
+<li><a href="#Spikes">New Spikes</a></li>
+<li><a href="#Documentation">Updated Documentation</a></li></ol>
+<h2>Renamings <a name="Renamings"></a></h2><ul><li><b>Prism</b> has been renamed to <b>Composite Application Guidance for WPF</b></li>
+<li><b>Prism Library</b> has been renamed to <b>Composite Application Library</b></li></ul>
+<h2>Composite Application Library Assemblies <a name="CompositeApplicationLibraryAssemblies"></a></h2>Redistributed the components into three assemblies:
+<ul><li><b>Microsoft.Practices.Composite.dll</b>. This assembly contains the implementation of the Composite Application Library core components such as modularity, logging and communication services, and several core interfaces’ definitions. This assembly does not contain UI-specific elements.</li>
+<li><b>Microsoft.Practices.Composite.Wpf.dll</b>. This assembly contains the implementation of Composite Application Library components that target Windows Presentation Foundation applications including commands, regions, and events.</li>
+<li><b>Microsoft.Practices.Composite.UnityExtensions.dll</b>. This assembly contains the base and utility classes you can reuse in applications created with the Composite Application Library that consume the Unity Application Block. For instance, it contains a <b>Bootstrapper</b> base class —the <b>UnityBootstrapper</b> class— that creates and configures a Unity container with default services when the application starts.</li></ul>
+<h2>Composite Application Library - Regions refactoring <a name="RegionsRefactoring"></a></h2> The following changes were made in the regions classes:
+<ul><li>The <b>RegionAdapterBase</b> base class was added. This class contains common code for region adapters. It contains logic to create regions, attach behaviors and to provide validation.</li>
+<li>The <b>Active Aware</b> logic was moved to a behavior class: <b>CollectionActiveAwareBehavior</b>.</li>
+<li>A new region adapter named <b>SelectorRegionAdapter</b> was added. This region adapter works with controls derived from <b>Selector</b>.</li>
+<li>New region types were added:
+<ul><li><b>Region</b>: Is the base class of the <b>SingleActiveRegion</b> and <b>AllActiveRegion</b> regions and contains their base functionality. <b>Activate</b> and <b>Deactivate</b> methods can be explicitly called.</li>
+<li><b>SingleActiveRegion</b>: Only one view is active at a time. When an item is activated, the previously activated one is automatically deactivated. <b>Activate</b> and <b>Deactivate</b> methods can be explicitly called. An example of a control that can be associated to a <b>SingleActiveRegion</b> is the <b>ContentControl</b> control.</li>
+<li><b>AllActiveRegion</b>: All views are active, for that reason, there is no need to explicitly call activate. An example of control that can be associated to an <b>AllActiveRegion</b> is the <b>ItemsControl</b> control.</li></ul></li></ul>
+<h2>Stock Trader Reference Implementation <a name="StockTraderRI"></a></h2>The following changes were made to the Stock Trader Reference Implementation:
+<ul><li>Some views that had a presenter and presentation model associated, where refactored to have the logic of the presenter and presentation model classes in a single presentation model class that gets associated to the view through the <b>DataContext</b> property. See the following views for examples:
+<ul><li>Position Summary view (StockTraderRI.Modules.Position\PositionSummary)</li>
+<li>Order Details view (StockTraderRI.Modules.Position\Orders)</li></ul></li></ul>
+<table><tr><td> <b>Note:</b> Simple views that did not require a <b>PresentationModel</b> were not changed. These views still use the <b>Supervising Controller</b> pattern. </td></tr></table>
+<ul><li>Folders were created to group all the artifacts related to each view.</li></ul>
+<img src="http://download-codeplex.sec.s-msft.com/Download?ProjectName=CompositeWPF&DownloadId=36851" alt="Folders.png" title="Folders.png" />
+<h2>Spikes <a name="Spikes"></a></h2>Two new spikes were added:
+<ul><li><b>Windsor spike</b>. This spike demonstrates how to use the guidance with Windsor and Log4net in Prism. Look at the following elements for details:
+<ol><li><b>WindsorPrismContainer</b>. This class adapts the Windsor container to Prism.</li>
+<li><b>WindsorPrismBootstrapper</b>. This class is a bootstrapper that uses Windsor.</li></ol></li>
+<li><b>FamilyShow spike</b>. This spike demonstrates how to integrate Prism with an existing WPF application that was not built with Prism.</li></ul>
+<table><tr><td> <b>Note:</b> These spikes are not intended to be used as guidance for developers. They use an old version of Prism Application Block and their main purpose is to verify that the guidance can be used with third party artifacts. </td></tr></table>
+<h2>Documentation <a name="Documentation"></a></h2>New topics were added:
+<ul><li>How To: Create a View with a Presenter</li>
+<li>How To: Load a Module On Demand</li>
+<li>Region Technical concepts</li>
+<li>Patterns Overview</li>
+<li>Designer Guidance for Composite Applications for WPF</li></ul></div><div class="ClearBoth"></div>

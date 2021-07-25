@@ -1,0 +1,114 @@
+[
+  {
+    "Id": "1455252",
+    "ThreadId": "648548",
+    "Html": "Is it possible in Prism 5 to pass the closing event args to a command?<br />\n",
+    "PostedDate": "2015-12-09T03:01:07.2-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1455256",
+    "ThreadId": "648548",
+    "Html": "Yes - and in Prism 6 (<a href=\"http://github.com/PrismLibrary/Prism\" rel=\"nofollow\">http://github.com/PrismLibrary/Prism</a>). Add an InvokeCommandAction behavior to the main Window, with its EventTrigger hooked up to the Closing event, set the Command property of the InvokeCommandAction to a static CompositeCommand defined in your app, and the CancelEventArgs of the Closing event will be passed to any registered commands anywhere in the app that Register with the CompositeCommand.\r<br />\n<br />\n<a href=\"http://blog.pluralsight.com/how-to-use-prism-5%E2%80%99s-invokecommandaction-behavior\" rel=\"nofollow\">http://blog.pluralsight.com/how-to-use-prism-5%E2%80%99s-invokecommandaction-behavior</a><br />\n",
+    "PostedDate": "2015-12-09T03:16:38.863-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1455257",
+    "ThreadId": "648548",
+    "Html": "Thanks for the rapid response Brian, but I think I will hang on to 5 for the time being as everything is working :-)\r<br />\n<br />\nCan this still be done in 5, if so how?<br />\n",
+    "PostedDate": "2015-12-09T03:19:10.297-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1455259",
+    "ThreadId": "648548",
+    "Html": "Same exact answer, Prism's InvokeCommandAction was added in Prism 5.<br />\n",
+    "PostedDate": "2015-12-09T03:38:46.633-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1455268",
+    "ThreadId": "648548",
+    "Html": "Ah sorry Brian, thank you <br />\n",
+    "PostedDate": "2015-12-09T04:27:25.997-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1455270",
+    "ThreadId": "648548",
+    "Html": "Bit of a long shot but I don't suppose you know how I would trigger this on a user control rather than a window, no worries if not<br />\n",
+    "PostedDate": "2015-12-09T04:54:27.73-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1455271",
+    "ThreadId": "648548",
+    "Html": "I don't think it is possible since the Closing event will only be raised on the Window object, so the trigger would have to be attached to the Window.<br />\n",
+    "PostedDate": "2015-12-09T05:25:01.033-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1455272",
+    "ThreadId": "648548",
+    "Html": "I have the following Brian but it only works once, the application goes to close then springs back up but the handler seems to have disappeared.<br />\n<pre><code>  public SettingsContent()\n        {\n            InitializeComponent();\n            Loaded += UserControl_Loaded;\n            vm = DataContext as SettingsContentViewModel;\n\n        }\n\n\n        void UserControl_Loaded(object sender, RoutedEventArgs e)\n        {\n            _parentWindow = Window.GetWindow(this);\n            if (_parentWindow != null) _parentWindow.Closing += parentWindow_Closing;\n        }\n\n        void parentWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)\n        {\n\n            vm.OnClosing(e);\n\n        }</code></pre>\n\n",
+    "PostedDate": "2015-12-09T05:32:57.233-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1455283",
+    "ThreadId": "648548",
+    "Html": "Not sure exactly what you are describing as the problem, but here is another old post of mine with another approach that might shed some light:\r<br />\n<a href=\"http://briannoyes.net/2009/09/05/supporting-graceful-shutdown-and-saving-on-close-from-a-wpf-prism-app/\" rel=\"nofollow\">http://briannoyes.net/2009/09/05/supporting-graceful-shutdown-and-saving-on-close-from-a-wpf-prism-app/</a><br />\n",
+    "PostedDate": "2015-12-09T07:20:56.333-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1455289",
+    "ThreadId": "648548",
+    "Html": "That looks like what I need but the links return 404 :-(<br />\n",
+    "PostedDate": "2015-12-09T07:55:35.077-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1455291",
+    "ThreadId": "648548",
+    "Html": "Hmm, working fine from my machine and my phone, try again. I was doing some blog maintenance back around the time I answered.<br />\n",
+    "PostedDate": "2015-12-09T08:15:16.71-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1455300",
+    "ThreadId": "648548",
+    "Html": "I have now managed to download it but it wont build, tried it in 2013 and 2015, enabled NuGet restore. Under the CAL folder it says the 3 elements are unavailable, am I missing something?<br />\n",
+    "PostedDate": "2015-12-09T08:56:54.71-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1455314",
+    "ThreadId": "648548",
+    "Html": "I pointed you at that to take a look at the code. It is not realistic to expect a 7 year old sample to build and run in todays tools.<br />\n",
+    "PostedDate": "2015-12-09T10:45:26.623-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1455393",
+    "ThreadId": "648548",
+    "Html": "No problem, thanks for your help <br />\n",
+    "PostedDate": "2015-12-10T00:57:58.02-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

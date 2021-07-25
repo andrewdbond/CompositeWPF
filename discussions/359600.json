@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "848969",
+    "ThreadId": "359600",
+    "Html": "\r\n<p><span id=\"result_box\" lang=\"en\"><span>Hello</span><br>\r\n<span>I would like</span> <span>to know.</span> <span>How can I</span> <span>close the</span>\r\n<span>popup window</span> <span>using the</span> <span>X</span> <span>button?</span></span></p>\r\n<p><span lang=\"en\"><span>P.S. </span></span><span id=\"result_box\" lang=\"en\"><span>I am using\r\n</span></span>RegionPopupBehaviors and <span id=\"result_box\" lang=\"en\"><span>I know about\r\n</span></span>regionManager.Regions[&quot;PopupRegion&quot;].Remove();</p>\r\n",
+    "PostedDate": "2012-06-14T06:22:43.12-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "849007",
+    "ThreadId": "359600",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>If you are implementing a popup region following the approach used in the <strong>\r\nNewsReader </strong>view in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921074%28v=pandp.40%29\">\r\n<strong>StockTrader Reference Implementation</strong></a>, you will find that the\r\n<strong>DialogActivationBehavior</strong> class subscribes to the wrapper window <strong>\r\nClosed </strong>event, which will be fired when closing the window with the X button. If what you are looking is to remove the view from this region I believe, the subscribed handler for this event (<strong>ContentDialogClosed</strong>), could be the right\r\n place to do it. In the case of the <strong>Stocktrader RI </strong>you will find that the view is deactivated from the region:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> ContentDialogClosed(<span style=\"color:blue\">object</span> sender, System.EventArgs e)\n        {\n            <span style=\"color:blue\">this</span>.Region.Deactivate(<span style=\"color:blue\">this</span>.contentDialog.Content);\n            <span style=\"color:blue\">this</span>.CloseContentDialog();\n        }\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>After, this the <strong>CloseContentDialog </strong>method is called, which will end up calling the\r\n<strong>Window.Close</strong> method of the wrapper window.</p>\r\n<p>Please let me know if I have misunderstood your scenario,</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-06-14T07:42:02.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "849206",
+    "ThreadId": "359600",
+    "Html": "<p><span id=\"result_box\" lang=\"en\"><span class=\"hps\">Thank you very much</span><span>, </span><span class=\"hps\">but I do not</span> <span class=\"hps\">quite understand.</span> <span class=\"hps\">How to</span> <span class=\"hps\">remove</span> <span class=\"hps\">the window?</span> <span class=\"hps\">I wrote</span> <span class=\"hps\">this code</span> <span class=\"hps\">but it</span> <span class=\"hps\">does not work.</span></span></p>\r\n<p><br />\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>        <span style=\"color: blue;\">private</span> <span style=\"color: blue;\">void</span> ContentDialogClosed(<span style=\"color: blue;\">object</span> sender, System.EventArgs e)\r\n        {\r\n            <span style=\"color: blue;\">this</span>.Region.Deactivate(<span style=\"color: blue;\">this</span>.contentDialog.Content);\r\n            <span style=\"color: blue;\">this</span>.CloseContentDialog();\r\n            <span style=\"color: blue;\">var</span> regionManager = ServiceLocator.Current.GetInstance&lt;IRegionManager&gt;();\r\n            regionManager.Regions[<span style=\"color: #a31515;\">\"PopupRegion\"</span>].Remove(sender);\r\n        }\r\n</pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2012-06-14T12:34:30.523-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "849224",
+    "ThreadId": "359600",
+    "Html": "<p>Hi,</p>\r\n<p>Take into account that when calling the region's <strong>Remove </strong>method you have to pass the <strong>object </strong>view that was added to the region's collection, and not the wrapper window like in your case (which is passed through the <strong>sender </strong>object).</p>\r\n<p>For example, based on my understanding of your scenario your code could be like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">private</span> <span style=\"color: blue;\">void</span> ContentDialogClosed(<span style=\"color: blue;\">object</span> sender, System.EventArgs e)\r\n        {\r\n                     \r\n        <span style=\"color: blue;\">this</span>.Region.Remove(<span style=\"color: blue;\">this</span>.contentDialog.Content);\r\n\r\n        <span style=\"color: blue;\">this</span>.CloseContentDialog();\r\n        }\r\n</pre>\r\n</div>\r\n</p>\r\n<p>In this case, I retrieved the view from the <strong>Content </strong>property of the wrapper window. Take into account, that you have to do this before calling the <strong>CloseContentDialog </strong>method, as it will end up setting the <strong>Content </strong>property to <strong>null</strong>.</p>\r\n<p>Also, note that I'm using the <strong>Region </strong>property of the <strong>RegionBehavior </strong>to remove the view, as it's not required to retrieve the <strong>RegionManager </strong>instance from the container.</p>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-06-14T13:28:40.583-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

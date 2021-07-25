@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "102256",
+    "ThreadId": "30732",
+    "Html": "Hi there!<br>\r\n<br>\r\nIs it possible to enumerate all loaded modules?<br>\r\nI want to get all IModule Instances that are currently loaded for further processing.<br>\r\n<br>\r\nBest regards<br>\r\nAlexander<br>\r\n",
+    "PostedDate": "2008-07-02T13:33:26.563-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "102351",
+    "ThreadId": "30732",
+    "Html": "Hi there lippling, it's pretty easy to do this if you're using the default UnityBootstrapper. Simply resolve IModuleEnumerator from the container, I seem to say this a lot in my replies but check out my samples project it demonstrates this in the LateNight projects About screen.<br>\r\n<br>\r\nClick&nbsp;<a title=\"Composite WPF - samples\" href=\"http://code.google.com/p/cwpfsamples/\">here</a> for the samples project page, be sure to grab the project from source as it's got a lot more in it than the last build I made. Snippet from samples project is provided below.<br>\r\n<br>\r\n<code>&nbsp;&nbsp;&nbsp;&nbsp; public LateNightAboutModel(IUnityContainer container) {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IModuleEnumerator moduleEnum = container.Resolve&lt;IModuleEnumerator&gt;();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; moduleInfos = moduleEnum.GetModules();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp; }<br>\r\n</code>\r\n<br>\r\nI then create a DataTemplate in the view to bind to the infos in a ListView.<br>\r\n<br>\r\nI hope this helps you out.<br>\r\n-Brett<br>\r\n",
+    "PostedDate": "2008-07-03T01:14:12.11-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "102395",
+    "ThreadId": "30732",
+    "Html": "Hi Brett,<br>\r\n<br>\r\nyes, that would work. But your approach only provides all available modules. My requirement is to get all loaded and initialized modules.<br>\r\n<br>\r\nBest regards<br>\r\nAlexander<br>\r\n",
+    "PostedDate": "2008-07-03T04:13:48.643-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "102439",
+    "ThreadId": "30732",
+    "Html": "<br>\r\n<div style=\"border-right:medium none;padding-right:0.2em;border-top:#aaa 0.1em dotted;padding-left:0.2em;padding-bottom:0.2em;margin:1em 0em 2.5em 3em;border-left:medium none;padding-top:0.2em;border-bottom:#aaa 0.1em dotted;font-style:italic\"><br>\r\nlippling wrote:<br>\r\nHi Brett,<br>\r\n<br>\r\nyes, that would work. But your approach only provides all available modules. My requirement is to get all loaded and initialized modules.<br>\r\n<br>\r\nBest regards<br>\r\nAlexander<br>\r\n<br>\r\n<br>\r\n</div>\r\n<br>\r\nsomewhere where you have the container accessable.<br>\r\n<span style=\"font-size:13px\">\r\n<p>&nbsp;</p>\r\n</span>\r\n<p><span style=\"font-size:13px;color:#2b91af\"><span style=\"font-size:13px;color:#2b91af\">IEnumerable</span></span><span style=\"font-size:13px\">&lt;</span><span style=\"font-size:13px;color:#2b91af\"><span style=\"font-size:13px;color:#2b91af\">IModule</span></span><span style=\"font-size:13px\">&gt; modules = </span><span style=\"font-size:13px;color:#0000ff\"><span style=\"font-size:13px;color:#0000ff\">this</span></span><span style=\"font-size:13px\">.Container.ResolveAll&lt;</span><span style=\"font-size:13px;color:#2b91af\"><span style=\"font-size:13px;color:#2b91af\">IModule</span></span><span style=\"font-size:13px\">&gt;();&nbsp;&nbsp; maybe? <br>\r\n<br>\r\nAnd if you have nested containers, you may/will have to loop over them too.\r\n<p>&nbsp;</p>\r\n<p>\r\n<p>&nbsp;</p>\r\n</span></p>\r\n<p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2008-07-03T06:34:11.667-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "102471",
+    "ThreadId": "30732",
+    "Html": "When I do a <br>\r\nvar m = new List&lt;IModule&gt;(Container.ResolveAll&lt;IModule&gt;()); <br>\r\nm.Count is 0<br>\r\n<br>\r\nI think the modules are registered with their concrete type and not with IModule.<br>\r\n",
+    "PostedDate": "2008-07-03T08:13:46.677-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "102503",
+    "ThreadId": "30732",
+    "Html": "The list of initialized modules is there inside the ModuleLoader class. (look for initializedModules member). The problem is that it is a private member. So I think we have 2 options <br>\r\n- Use reflection<br>\r\n- Change the class/interface to expose a property<br>\r\n",
+    "PostedDate": "2008-07-03T09:40:26.03-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "102702",
+    "ThreadId": "30732",
+    "Html": "<br>\r\n<div style=\"border-right:medium none;padding-right:0.2em;border-top:#aaa 0.1em dotted;padding-left:0.2em;padding-bottom:0.2em;margin:1em 0em 2.5em 3em;border-left:medium none;padding-top:0.2em;border-bottom:#aaa 0.1em dotted;font-style:italic\"><br>\r\nlippling wrote:<br>\r\nWhen I do a <br>\r\nvar m = new List&lt;IModule&gt;(Container.ResolveAll&lt;IModule&gt;()); <br>\r\nm.Count is 0<br>\r\n<br>\r\nI think the modules are registered with their concrete type and not with IModule.<br>\r\n<br>\r\n<br>\r\n</div>\r\nSorry,&nbsp; I dont have access to the code right now, but I looked and thought that they were doing the registation using IModule.<br>\r\n<br>\r\nIf not, then you are right.&nbsp; Oh well, thats why&nbsp; I put the &quot;Maybe?&quot;. :)<br>\r\n<br>\r\nYou would also be able &quot;I think&quot; to get a list of all of the registered classes in the container and then enumerate them looking for IModules.&nbsp; Brut force, but should get them all.&nbsp; But you would still have to deal with any chilid containers.<br>\r\n<br>\r\nPaul<br>\r\n",
+    "PostedDate": "2008-07-04T05:39:02.403-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,55 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 3,
+    "Custom": "",
+    "Description": "Hi,\n \nI have an issue of trying to retain order of loading modules by appearance in an XAML Module Catalog:\n \n<Modularity:ModuleCatalog \n    xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" \n    xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\" \n    xmlns:sys=\"clr-namespace:System;assembly=mscorlib\" \n    xmlns:Modularity=\"clr-namespace:Microsoft.Practices.Prism.Modularity;assembly=Microsoft.Practices.Prism\"\n    xmlns:addin=\"clr-namespace:aWhere.Composite.Modularity;assembly=aWhere.Composite.Silverlight\" >\n \n    <Modularity:ModuleInfo \n        InitializationMode=\"WhenAvailable\" \n        Ref=\"ModuleA.xap\" \n        ModuleName=\"ModuleA\" \n        ModuleType=\"ModuleA.Modules.ModuleA, InsiteModuleA, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\" />\n    <Modularity:ModuleInfo \n        InitializationMode=\"WhenAvailable\" \n        Ref=\"ModuleB.xap\" \n        ModuleName=\"ModuleB\" \n        ModuleType=\"ModuleB.Modules.ModuleB, InsiteModuleB, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\" />\n</Modularity:ModuleCatalog>\n \nThe order that the modules load is {ModuleB, ModuleA}, instead of {ModuleA, ModuleB} (order of appearnce).  From tracing the code, the modules are sorted by ModuleCatalog.Sort, or better yet by ModuleCatalog.SolveDependencies, which uses ModuleDependencySolver.Solve() to order the loading of modules by dependency.\n \nThe problem is how dependencies are solved.  The dependencies of modules are found by calling FindLeaves which goes through the dependency graph and returns a list that includes the parent modules and all of their dependencies.  This represents a stack that can be reversed so that the top of the stack is the first element in the array (or the first module loaded).  Although this is a simple solution to loading dependencies first, it doesn't retain the original order. By reversing the stack, it is also reverses the order that parent modules load from the module catalog, every time.  Because of this, views in modules are added to the region in reversed order since the modules are loaded in reversed order.\n \nA better approach to building a stack of modules from the dependency graph is to first use a Queue, where parent modules are added to the queue by appearance, and leaves are added to the top of the queue.  Then a stack (or list) of modules can be built by poping the modules out of the queue and added them to the list.  This would retain the order of node appearances in the graph...\n \nI understand that ViewSortHint attributes can be used, yet this is more a static than a dynamic approach to ordering the appearances of views, which is not always desired...",
+    "LastUpdatedDate": "2013-02-21T18:38:21.123-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-12-06T11:31:42.26-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Bug: Retaining Order of Modules in XAML ModuleCatalog",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 7651
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Below is a solution that mimics the above described behavior by inserting leaves (dependencies) on top of the stack, hence no longer needing to reverse the order:\r\n\r\npublic class ModuleDependencySolver {\r\n...\r\n        public string[] Solve()\r\n        {\r\n            List skip = new List();\r\n            while (skip.Count  leaves = this.FindLeaves(skip);\r\n                if (leaves.Count == 0 && skip.Count  knownModules.Count)\r\n            {\r\n                string moduleNames = this.FindMissingModules(skip);\r\n                throw new ModularityException(moduleNames, String.Format(CultureInfo.CurrentCulture,\r\n                                                            Resources.DependencyOnMissingModule,\r\n                                                            moduleNames));\r\n            }\r\n\r\n            return skip.ToArray();\r\n        }",
+      "PostedDate": "2010-12-06T12:08:56.597-08:00",
+      "Id": 156393
+    },
+    {
+      "Message": "Disregard the solution above, the above still doesn't gaurantee retaining order of appearance by retaining order of module loading, since modules are loaded when available.\r\n\r\nIn order to retain order of appearance, the view sort comparison would have to sort views based on their module's order of appearance from ModuleCatalog.Modules, which is a different problem.",
+      "PostedDate": "2010-12-06T12:20:01.737-08:00",
+      "Id": 156394
+    },
+    {
+      "Message": "Hi,\r\n\r\nAs far as I know, the runtime initialization order of modules is based on when the modules are downloaded, available, and if the dependencies are satisfied, which seems to be by design.\r\n\r\nAdditionally, based on my understanding of the guidance provided by Prism, your application should not depend on the order in which your modules are loaded. It shouldn't be desirable to tie the logic of your application to this order, especially when considering the addition of possible new modules.\r\n\r\nIn case you need to ensure that modules are loaded in a certain order you could benefit from the possibility provided by Prism to register dependencies between them.\r\n\r\nAlso as mentioned in the following chapter of the Prism documentation (http://msdn.microsoft.com/en-us/library/ff921098(v=PandP.40).aspx#sec40), you could change how views are ordered, by setting the SortComparison property that the Region class provides, with your own Comparison delegate method.\r\n\r\nAs a side note, you could find the following work item (http://compositewpf.codeplex.com/workitem/8893) interesting, where a user proposed a modification of  the DefaultSortComparison method, although this approach is possible only with WPF.\r\n\r\nRegards,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami﻿ ",
+      "PostedDate": "2012-01-06T11:23:29.88-08:00",
+      "Id": 156395
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "1213505",
+    "ThreadId": "534704",
+    "Html": "What is the best way to move a view from one region to another? I want to keep the same View and not reload in another region.<br />\n",
+    "PostedDate": "2014-02-24T00:59:33.63-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1213780",
+    "ThreadId": "534704",
+    "Html": "Based on my understanding, you would like to move an active <strong>View</strong> from one <strong>Region</strong> to another, and erase it from the first one.\r<br />\n<br />\nTherefore, you could use a button to fire a <strong><em>moveView</em></strong> command and then, the <strong>commandHandler</strong> would remove the <strong><em>activeView</em></strong> from the first <strong>Region</strong>, and add it on the second one.\r<br />\nThe <strong>CommandHandler</strong> implementation may look like this:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">public</span> <span style=\"color:Blue;\">void</span> MoveViewCommandHandler()\n{\n    <span style=\"color:Blue;\">var</span> viewToMove = <span style=\"color:Blue;\">this</span>.regionManager.Regions[<span style=\"color:#A31515;\">&quot;FirstRegion&quot;</span>].ActiveViews.FirstOrDefault();\n    \n    <span style=\"color:Green;\">// Navigate on First region in order to load a View after the active View is moved</span>\n    <span style=\"color:Blue;\">this</span>.regionManager.Regions[<span style=\"color:#A31515;\">&quot;FirstRegion&quot;</span>].RequestNavigate(<span style=\"color:Blue;\">new</span> Uri(<span style=\"color:#A31515;\">&quot;MainDefaultView&quot;</span>, UriKind.Relative)); \n\n     <span style=\"color:Blue;\">this</span>.regionManager.Regions[<span style=\"color:#A31515;\">&quot;FirstRegion&quot;</span>].Remove(viewToMove);\n     \n     <span style=\"color:Green;\">// Adding the View into the Second Region</span>\n     <span style=\"color:Blue;\">this</span>.regionManager.Regions[<span style=\"color:#A31515;\">&quot;SecondRegion&quot;</span>].add(viewToMove);\n     <span style=\"color:Blue;\">this</span>.regionManager.Regions[<span style=\"color:#A31515;\">&quot;SecondRegion&quot;</span>].RequestNavigate(New Uri(<span style=\"color:#A31515;\">&quot;MyMovedView&quot;</span>, UriKind.Relative));\n}\r\n</pre></div>If the <strong>View</strong> you would move is not active, then you would look for it in the <strong>Region's Views</strong> list and <strong><em>RequestNavigate()</em></strong> on the <strong>First Region</strong> would not be needed.\r<br />\n<br />\n<br />\nI hope this helps,\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-02-24T08:06:45.75-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1214309",
+    "ThreadId": "534704",
+    "Html": "Thanks for replying!\r<br />\n<br />\nYeah this is great, just I am using the navigation journal. How is it best to correct the state of this? I only seem to have a clear on the journal rather than just remove the last entry?<br />\n",
+    "PostedDate": "2014-02-25T00:59:30.377-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1214625",
+    "ThreadId": "534704",
+    "Html": "Hi james,\r<br />\n<br />\nBased on my understanding, the clear method of the <strong>Navigation</strong> Journal would not completely help you as it would erase every <strong>View</strong> in the corresponding <strong>Region</strong>.\r<br />\nHowever, you would be able to create a custom <strong>RegionNavigationJournal</strong> for that region and define a method that would clear only the last entry and return it in order to add it on the other <strong>Region</strong> as you would need.\r<br />\n<br />\nThe new method could be implemented as follows:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">public</span> Entry RemoveLastEntry()\n{\n     <span style=\"color:Blue;\">var</span> lastEntry = <span style=\"color:Blue;\">this</span>.CurrentEntry;\n     <span style=\"color:Blue;\">this</span>.GoBack();\n     <span style=\"color:Blue;\">this</span>.forwardStack.Clear();\n     <span style=\"color:Blue;\">return</span> lastEntry;\n}\r\n</pre></div>Notice that this new method would not be defined by <strong>IRegionNavigationJournal</strong> interface, so you could exclusively cast this <strong>RegionNavigationJournal</strong> to your custom <strong>NavigationJournal</strong> from the <strong><em>MoveViewCommandHandler()</em></strong> in order to make less changes as possible.\r<br />\nFinally, after removing the <strong><em>lastEntry</em></strong> from the first <strong>Region</strong>, you would be able to add the retreived entry into the second <strong>Region</strong> with <strong><em>RecordNavigation(lastEntry)</em></strong> method.\r<br />\n<br />\nI hope you find this helpful.\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-02-25T08:06:28.22-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1215102",
+    "ThreadId": "534704",
+    "Html": "Thanks, that sounds good!\r<br />\n<br />\nWould it be possible for an example of this in action?<br />\n",
+    "PostedDate": "2014-02-26T04:20:19.987-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1215271",
+    "ThreadId": "534704",
+    "Html": "Hi James, \r<br />\n<br />\nYou can find a small sample in the following <strong>SkyDrive</strong> link:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"https://onedrive.live.com/redir?resid=3EE28791A0DF3126%21103\" rel=\"nofollow\">MovingViewsBetweenRegionsWithUnity</a><br />\n</li>\n</ul>\nThe App has a <strong>WindowView</strong> view which defines 2 Regions, <strong>MainRegion</strong> and <strong>SecondRegion</strong>. The <strong>MainRegion</strong> has <strong>HelloWorldView</strong> and <strong>View1</strong> registered while the <strong>SecondRegion</strong> has <strong>View2</strong> registered. Then, when clicking the button, the active <strong>View</strong> in <strong>MainRegion</strong> is moved to <strong>SecondRegion</strong> and activated. Therefore, <strong>View1</strong> would be deactivated and removed from <strong>MainRegion</strong> and become active on <strong>SecondRegion</strong>.\r<br />\n<br />\nPlease notice that if the active view on <strong>MainRegion</strong> would not be the last one registered, the Journal's <em>forwardStack</em> would get empty but the <strong>Views</strong> would not be removed from the <strong>Region</strong>. You may see this in <strong>MainViewModel's</strong> <strong><em>MoveViewToRegion2</em></strong> command handler.\r<br />\n<br />\nI hope you find this helpful,\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-02-26T11:04:01.783-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1215994",
+    "ThreadId": "534704",
+    "Html": "Sorry how do you do this using MEF?<br />\n",
+    "PostedDate": "2014-02-28T00:58:54.717-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1216135",
+    "ThreadId": "534704",
+    "Html": "Hi James, \r<br />\n<br />\nI believe you would find quite useful the following post regarding <strong>Unity</strong> to <strong>Mef</strong> migration and viceversa:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"https://compositewpf.codeplex.com/discussions/371338\" rel=\"nofollow\">Migrating from MEF to Unity and Viceversa</a><br />\n</li>\n</ul>\nYou would basically need to modify the <strong>Views</strong> registration and the way the dependencies are resolved through the container. Then, the solution approach would be quite similar to the one provided above. \r<br />\n<br />\nYou can notice on the PrismLibrary that <strong>MefRegionNavigationJournal</strong>, <strong>MefRegionNavigationService</strong> and <strong>MefRegionNavigationEntry</strong> inherit from the classes we modified and they doesn't add or overrides any other functionality.\r<br />\n<br />\nI hope this helped,\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-02-28T06:38:53.247-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

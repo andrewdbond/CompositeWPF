@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": "",
+    "Description": "EventAggregator should really be shorter than it is.\n \n- Remove the CompositePresentationEvent<TEvent> (What a name!?) - really only the POCO or even body-class (sealed and private ctor!) should be the event\n- Allow non-generic events and corresponding non-generic actions\n- Easier way to unsubscribe and dispose caller\n \nI would say a contract like this would be great.\nWould love to hear what other people think, and why they think different.\n \nThanks\n \npublic interface IEventAggregator\n{\n  void Publish<TEvent>();\n  void Publish<TEvent>(TEvent @event);\n  SubscriptionToken Subscribe<TEvent>(Action action, ThreadOption threadOption = ThreadOption.PublisherThread, bool keepSubscriberReferenceAlive = false);\n  SubscriptionToken Subscribe<TEvent>(Action<TEvent> action, ThreadOption threadOption = ThreadOption.PublisherThread, bool keepSubscriberReferenceAlive = false, Predicate<TEvent> filter = null);\n  void Unsubscribe(SubscriptionToken subscriptionToken);\n  void Unsubscribe<TEvent>(SubscriptionToken subscriptionToken);\n  void Unsubscribe<TEvent>(Action action);\n  void Unsubscribe<TEvent>(Action<TEvent> action);\n}\n \nMeanwhile, read this: http://neverindoubtnet.blogspot.com/2009/07/simplify-prism-event-aggregator.html",
+    "LastUpdatedDate": "2013-02-21T18:38:13.86-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-05-11T17:14:42.923-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Please simplify EventAggregator system!",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 2,
+    "Id": 8241
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

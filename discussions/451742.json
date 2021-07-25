@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1074300",
+    "ThreadId": "451742",
+    "Html": "Dear Prism developpers,\r<br />\n<br />\nCould someone be so kind and explain why are the RequestNavigate methods for IRegionManager defined in RegionManagerExtensions as extension methods?\r<br />\n<br />\nHow can I UnitTest that?\r<br />\nWouldn't it be lovely to write:\r<br />\nvar regionManager= Substitute.For&lt;IRegionManager&gt;();\r<br />\nregionManager.Received().RequestNavigate(Arg.Any&lt;string&gt;,Arg.Any&lt;string&gt;);\r<br />\n<br />\nI'm also wondering why IInteractionRequest is not defined as IInteractionRequest&lt;T&gt; where T: Notification and defining void Raise(T context) and void Raise(T context, Action&lt;T&gt; callback)?\r<br />\n<br />\nI know, I know, you're probably going to answer: we didn't want to break the interfaces, ect...\r<br />\n<br />\nBut now, you've got hundreds of developpers who need to implement dummy classes and interfaces to extend what's missing...\r<br />\n:-(\r<br />\n<br />\nAdditional question: why is PopupChildWindowAction not available for WPF?\r<br />\n<br />\nThanks a lot for all your good and time (if not life)-saving work,\r<br />\nStephan<br />\n",
+    "PostedDate": "2013-07-29T06:29:30.787-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1074406",
+    "ThreadId": "451742",
+    "Html": "Hi Stephan,\r<br />\n<br />\nBased on my understanding the main reason behind why those were designed as extension methods is because the navigation functionality is not pertinent to the <strong>IRegionManager</strong> itself, but to each specific region. We could say that the <strong>RequestNavigate</strong> extension method is a kind of &quot;convenience method&quot; that simply delegates the navigation request to the <strong>RequestNavigate</strong> method of the corresponding region.  The following sentences are equivalent:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\nregionManager.RequestNavigate(<span style=\"color:#A31515;\">&quot;RegionName&quot;</span>, uri, callback);\nregionManager.Regions[<span style=\"color:#A31515;\">&quot;RegionName&quot;</span>].RequestNavigate(uri, callback);\r\n</pre></div>I believe the same applies to the <strong>IInteractionRequest</strong> interface. Said interface declares an <strong>EventHandler</strong> which could be invoked directly when needed. The <strong>Raise</strong> methods of <strong>InteractionRequest&lt;T&gt;</strong> are again a kind of &quot;convenience methods&quot; which simply raise the aforementioned event. Therefore, I believe that implementing those methods should not be required for a class to be an <strong>IInteractionRequest</strong> implementation.\r<br />\n<br />\nFinally, the <strong>PopupChildWindowAction</strong> is not available in <strong>WPF</strong> because of a &quot;limitation&quot; within <strong>WPF</strong> itself: once a <strong>Window</strong> is closed, it cannot be used again. When you use a <strong>PopupChildWindowAction</strong> and set its <strong>ChildWindow</strong>, an instance of that window is created as part of the <strong>XAML</strong> markup and passed to the <strong>PopupChildWindowAction</strong>. The first time the corresponding <strong>InteractionRequest</strong> is raised, the window would be shown correctly. But the following times the window will not be shown, as it was closed and cannot be used again. The action cannot create a new instance of the window either, meaning that in <strong>WPF</strong> a <strong>PopupChildWindowAction</strong> could only be used once. This &quot;limitation&quot; is not present with <strong>Silverlight</strong>'s <strong>ChildWindows</strong>, as they can be reused multiple times without problems.\r<br />\n<br />\nIf you want to use a similar functionality in <strong>WPF</strong>, I believe you could find the <strong>PopupWindowAction</strong> portrayed in the following blog post useful. Instead of receiving a <strong>Window</strong> it receives view which wraps in a new <strong>Window</strong> each time the <strong>InteractionRequest</strong> is raised, allowing it to be used multiple times:<br />\n<ul>\n<li>\n<a href=\"http://blogs.southworks.net/dcherubini/2012/05/24/popupwindowaction-using-custom-views-instead-of-windows-in-wpf-and-prism/\" rel=\"nofollow\">PopupWindowAction: using custom views instead of windows in WPF and Prism</a><br />\n</li>\n</ul>\nI hope this helps to give some light on those topics.\r<br />\n<br />\nThanks,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-07-29T11:04:11.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1074571",
+    "ThreadId": "451742",
+    "Html": "Hi Damian,\r<br />\n<br />\nThank you for your enlightening answer!\r<br />\n<br />\nI'm still unhappy regarding Unit Testing though ;-)\r<br />\n<br />\nStephan<br />\n",
+    "PostedDate": "2013-07-30T00:05:55.187-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

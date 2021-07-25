@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "619324",
+    "ThreadId": "259268",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I have this following situtaion,</p>\r\n<p>- I have a base region, containing my toolbar [Say mainRegion]</p>\r\n<p>- There is a child region in this [say ChildRegion]. This region contains multiple Child Items [different views with View Models]</p>\r\n<p>&nbsp;</p>\r\n<p>I have close button on my toolbar [on MainRegion], on click of that, I want to close all the child items on my ChildRegion.</p>\r\n<p>Now the point is, I am little confused about which mode of communication to use,</p>\r\n<p>1) Composite Command - Have a CloseAll command. Which would raise mutliple Close Commands on all the child items.</p>\r\n<p>2) Service layer?</p>\r\n<p>Any pointers/links highly appreciated.</p>\r\n<p>Thanks,</p>\r\n<p>Indro</p>\r\n",
+    "PostedDate": "2011-05-27T06:45:43.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "619330",
+    "ThreadId": "259268",
+    "Html": "<p>Hi Indro,</p>\r\n<p>Based on my understanding of your scenario, using composite commands should be most suitable to fulfill your requirement.</p>\r\n<p>Although you could achieve the same results using a service layer, composite commands are designed to fulfill scenarios similar to yours. You can find more information about it in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28PandP.40%29.aspx\">Communication Chapter</a> as well as the <a href=\"http://msdn.microsoft.com/en-us/library/ff921082%28PandP.40%29.aspx\">Commanding QuickStart</a>.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-05-27T06:57:05.223-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "619396",
+    "ThreadId": "259268",
+    "Html": "<p>Hello Guido,</p>\r\n<p>Thanks for the reply.</p>\r\n<p>I have one more scenario:)..</p>\r\n<p>I have the same toolbar (with different buttons, like zoom etc.) As a part of childregion, I have multiple child items (of same type).</p>\r\n<p>Now when I use Zoom button, I want only my active view (and its content) to get zoomed...</p>\r\n<p>What should be the communication strategy here?I have considered two approaches here,</p>\r\n<p>1. Using a Composite Command (like ZoomActiveCommand), which will have child ZoomCommands defined in each of the ViewModel (corresponding to each child views). I will zoom the view based on the IsActive flag (from IActiveAware interface implementation in VM)</p>\r\n<p>2. Use Event aggragator in execute handler of the Command attached to the Toolbar button. This event will be subscribed on my different ViewModel (corresponding to each child views). In subscriber, I will use same strategy as (1) [using IsActive flag] to determine my active views and perform zoom.</p>\r\n<p>&nbsp;</p>\r\n<p>Helps appreciated.</p>\r\n<p>Regards,</p>\r\n<p>Indro</p>",
+    "PostedDate": "2011-05-27T08:48:15.82-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "619414",
+    "ThreadId": "259268",
+    "Html": "<p>Hi Indro,</p>\r\n<p>In that case, I would recommend to use the event aggregator, as I believe it would be more comfortable. You could use a filter in the subscription, which could check if the view is active before executing the handler for that event subscription.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-05-27T09:15:08.68-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "619423",
+    "ThreadId": "259268",
+    "Html": "<p>Hello Guido,</p>\r\n<p>Thanks for the suggestion. This works out for me perfectly well.</p>\r\n<p>Thanks again.</p>\r\n<p>Indro</p>",
+    "PostedDate": "2011-05-27T09:28:04.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "620593",
+    "ThreadId": "259268",
+    "Html": "<p>Hello Guido,</p>\r\n<p>I am using&nbsp;ZoomAllCommand bound to my toolbar zoom button, which&nbsp;triggers ZoomCommands on each of the child views (checks if it is&nbsp;active) and exeutes.</p>\r\n<p>Now at this point I am wondering is using composite command a mistake(?) Because I need to access my&nbsp;View (and some custom control on it) and call some method!, which is not possible from ViewModel!!</p>\r\n<p>&nbsp;Any ideas?</p>\r\n<p>Regards,</p>\r\n<p>Indro</p>",
+    "PostedDate": "2011-05-31T00:47:56.297-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "620811",
+    "ThreadId": "259268",
+    "Html": "<p>Hi Indro,</p>\n<p>In that case, you could use <strong>Composite Commands</strong>, but in the handler for your command you could use other mechanisms for communicating between loosely coupled components, such as firing an event with the <strong>Event Aggregator</strong>, or calling a method on a <strong>Shared Service</strong>, so as to communicate to your view that it must zoom its content.</p>\n<p>You can read more about this in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28PandP.40%29.aspx\"> communication chapter</a> of the Prism MSDN documentation.</p>\n<p>Another possibility that I could think of, if you don't want to use the aforementioned mechanisms, would be to have your view implement an <strong>IZoom </strong>interface, which exposes a <strong>Zoom </strong>method (or something similar), and make your view model hold a reference to it. The handler of your composite command should therefore call the <strong>Zoom </strong>method on your view, but it would still have an abstraction over the view it holds (as the only thing it knows about it is that it implements the <strong>IZoom</strong> interface).</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-05-31T07:33:38.983-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "777138",
+    "ThreadId": "259268",
+    "Html": "<p>hi,</p>\r\n<p>i'm new at developing prism app but i'm also building an app using prism. I don't use regions at the moment though. I had a similar problem. I wanted to implement a save and save all command. I implemented these by using <strong>CompositeCommand</strong>s. I think your situation is the same and <strong>CompositeCommand</strong>s worked great for me (although with a little costom code since i'm not using regions yet). here is what i did.</p>\r\n<p>both commands are custom <strong>CompositeCommand</strong>s. the <strong>save all</strong> command doesn't use command monitoring, only the <strong>save </strong>command does. In my app i want to disable saving if the current document isn't dirty. This doesn't work well with the default <strong>CompositeCommand </strong>behavior which can only execute the command if all commands registered with it can execute. To fix this i derived from <strong>CompositeCommand </strong>and i overrode the CanExecute() method.</p>\r\n<p>Next i exposed the commands in my shell view model. In my child view models i registered each view model save command with both the save and save all <strong>CompositeCommand</strong>s. The only problem that remained now was to find a way to make the save command behave properly. Since i'm not using regions i have to implement the <strong>IActiveAware </strong>interface in the child view models. When the <strong>IsActive </strong>property on a particular child view model changes i also change the corresponding save command <strong>IsActive </strong>property. Now, whenever the current document changes i set IsActive to false on the previous one and set IsActive to true on the new one.</p>\r\n<p>This solved my problems. There is no need for event aggregators in this scenario. I hope this helps.</p>",
+    "PostedDate": "2012-02-18T01:53:51.547-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

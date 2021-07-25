@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "229397",
+    "ThreadId": "67495",
+    "Html": "<p>I have a desire to handle an event in my presenter (which is the context of a given view) and have that handler initiate a function in the module that created the presenter. What is the preferred approach? For my scenario, I'd rather not have the function be a global command - it really isn't global. I just want the module to be able to handle this functionality for all the presenters it creates....</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks for any suggestions.</p>",
+    "PostedDate": "2009-08-31T09:54:14.817-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229398",
+    "ThreadId": "67495",
+    "Html": "<p>Is it simply to pass a reference to the module when constructing the presenter?</p>",
+    "PostedDate": "2009-08-31T09:56:56.467-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229416",
+    "ThreadId": "67495",
+    "Html": "<p>Hi</p>\r\n<p>The way I would achieve this functionality is the following:</p>\r\n<ol>\r\n<li>When the module is created instantiate a <strong>ModuleController</strong> or a similar control that is in charge of coordinating the entire module functionality.</li>\r\n<li>This <strong>ModuleController </strong>is in charge of instantiating the presenters, so you can keep a reference to it in the Presenter. </li>\r\n<li>When the presenter handles the event it should call the <strong>ModuleController's </strong>method you want called (or you can raise a .NET event in the Presenter and subscribe to it in the Controller).</li>\r\n</ol>\r\n<p>You can read more about similar topics in these blog posts:</p>\r\n<ul>\r\n<li><a href=\"http://neverindoubtnet.blogspot.com/2009/05/birth-and-death-of-m-v-vm-triads.html\">Birth and Death of M-V-VM Triads</a></li>\r\n<li><a href=\"http://neverindoubtnet.blogspot.com/2009/06/screen-factory.html\">Screen Factory</a></li>\r\n</ul>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman   <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-08-31T10:40:02.403-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229427",
+    "ThreadId": "67495",
+    "Html": "<p>Cool. So what is the architectural reasoning for adding a ModuleController and not putting the logic in the module?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks for your reply.</p>",
+    "PostedDate": "2009-08-31T11:09:29.357-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229434",
+    "ThreadId": "67495",
+    "Html": "<p>I recall&nbsp;demos in the Smart Client Software Factory doing something similiar to what you suggested - particularly for events.&nbsp;&nbsp; &nbsp;I grabbed a demo application that I used for a blog (full source <a href=\"http://www.global-webnet.net/blogengine/post/2009/07/31/Does-PRISM-have-a-performance-issue.aspx\">HERE</a>) and applied your idea to the existing Module class.&nbsp;&nbsp;</p>\r\n<p>The changes required to implement are in bold italics below - I use a Presentation Model (aka View Model) but I think you'll get the point as I show how I can use the Unity Container to pass in the module reference:</p>\r\n<p><strong>&nbsp;MODULE CODE FOLLOWS:</strong></p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><div style=\"color:Black;background-color:White\"><pre><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span><span style=\"color:MediumTurquoise\"> ModuleAModule : IMyModule\r\n</span>{\r\n    <span style=\"color:Blue\">private</span> <span style=\"color:Blue\">readonly</span> IRegionManager regionManager;\r\n    <span style=\"color:Blue\">private</span> IUnityContainer container;\r\n    <span style=\"color:Blue\">private</span> IEventAggregator aggregator;\r\n\r\n    <span style=\"color:Blue\">public</span> ModuleAModule(\r\n        IRegionManager RegionManager, \r\n        IUnityContainer container,\r\n        IEventAggregator aggregator)\r\n    {\r\n        <span style=\"color:Blue\">this</span>.regionManager = RegionManager;\r\n        <span style=\"color:Blue\">this</span>.container = container;\r\n        <span style=\"color:Blue\">this</span>.aggregator = aggregator;\r\n    }\r\n\r\n\r\n    <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">void</span> Initialize()\r\n    {\r\n        container\r\n            <strong><em>.RegisterInstance&lt;IMyModule&gt;(<span style=\"color:Blue\">this</span>)</em></strong>\r\n            .RegisterType&lt;IMyControl, MyControl&gt;(<span style=\"color:Blue\">new</span> ContainerControlledLifetimeManager())\r\n            .RegisterType&lt;IEntityDataService, EntityDataStub&gt;()\r\n            .RegisterType&lt;IMyControlPresentationModel, MyControlPresentationModel&gt;(\r\n                <span style=\"color:Blue\">new</span> ContainerControlledLifetimeManager()); <span style=\"color:Green\">// Singleton</span>\r\n\r\n        <span style=\"color:Green\">// The presenter gets resolved first which in turn resolves the</span>\r\n        <span style=\"color:Green\">// view as configured above</span>\r\n        regionManager.RegisterViewWithRegion(<span style=\"color:#A31515\">&quot;MainRegion&quot;</span>,\r\n            () =&gt; container.Resolve&lt;MyControlPresenter&gt;().View);\r\n\r\n    }\r\n\r\n    <strong><em><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">void</span> MyGlobalProcess(IPresenter presenter)\r\n    {\r\n        MyControlPresentationModel model = presenter.DataContext <span style=\"color:Blue\">as</span> MyControlPresentationModel;\r\n        Debug.WriteLine(<span style=\"color:Blue\">string</span>.Format(<span style=\"color:#A31515\">&quot;Total number of Entities = {0}&quot;</span>, \r\n            model.TestEntities.Count),<span style=\"color:#A31515\">&quot;GLOBAL PROCESS&quot;</span>);\r\n        \r\n    }</em></strong>\r\n\r\n}\r\n</pre>\r\n</div>\r\n</pre>\r\n<pre><strong>PRESENTER CODE FOLLOWS:</strong></pre>\r\n<pre><div style=\"color:Black;background-color:White\"><pre><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span><span style=\"color:MediumTurquoise\"> MyControlPresenter : PresenterBase&lt;IMyControl&gt;, IPresenter\r\n</span>{\r\n    <span style=\"color:Blue\">private</span> IEntityDataService entityService;\r\n    <span style=\"color:Blue\">private</span> IMyControlPresentationModel model;\r\n    <strong><em><span style=\"color:Blue\">private</span> IMyModule module;</em></strong>\r\n\r\n    <span style=\"color:Blue\">public</span> <span style=\"color:Blue\">object</span> DataContext\r\n    {\r\n        <span style=\"color:Blue\">get</span> { <span style=\"color:Blue\">return</span> View.DataContext; }\r\n        <span style=\"color:Blue\">set</span> { View.DataContext = value; }\r\n    }\r\n\r\n    <span style=\"color:Blue\">public</span> MyControlPresenter(\r\n        IMyControl view, IUnityContainer container, IMyControlPresentationModel model,\r\n        <strong><em>IMyModule module</em></strong>, IEntityDataService entityService) : <span style=\"color:Blue\">base</span>(view, container, model)\r\n    {\r\n        <span style=\"color:Blue\">this</span>.entityService = entityService;\r\n        <span style=\"color:Blue\">this</span>.model = model;\r\n        <span style=\"color:Blue\">this</span>.module = module;\r\n    }\r\n\r\n    <span style=\"color:Blue\">protected</span> <span style=\"color:Blue\">override</span> <span style=\"color:Blue\">void</span> OnProcessEvent(ProcessEventArgs e)\r\n    {\r\n        entityService.GetEntityList(model.TestEntities);\r\n        <strong><em>module.MyGlobalProcess(<span style=\"color:Blue\">this</span>);</em></strong>\r\n    }\r\n}\r\n</pre>\r\n</div>\r\n&nbsp;</pre>\r\n</div>",
+    "PostedDate": "2009-08-31T11:28:00.18-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "229779",
+    "ThreadId": "67495",
+    "Html": "<p>Thanks for the input.</p>",
+    "PostedDate": "2009-09-01T09:49:47.233-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

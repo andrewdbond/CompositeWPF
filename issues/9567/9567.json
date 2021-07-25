@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": "",
+    "Description": "Assembly.ReflectionOnlyLoad does not inspect the publishers policies, but requires that the exact version be present on the system.  Assembly.Load DOES inspect the publishers policies and will allow a binding redirect.\n \nThe DirectoryModuleCatalog does a ReflectionOnlyLoad in order to determine which modules are available in the module directory.  The use of ReflectionOnlyLoad puts a restriction on module loading that any referenced assemblies must be the same version that it was built against.  Even though during a normal Assembly.Load it may successfully bind to a more current version.  This is true with .NET core assemblies like System.Core.\n \nDirectoryModuleCatalog could change to use Assembly.Load instead of ReflectionOnlyLoad.  The ModuleCatalog uses a temporary AppDomain and disposes it after discovering all modules, so there shouldn't be a concern of assemblies being left loaded.  I have done this in a local copy of Microsoft.Practices.Prism.dll and this seems to correct the problem.",
+    "LastUpdatedDate": "2015-08-27T18:42:57.3-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-08-22T14:51:38.663-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "DirectoryModuleCatalog use of ReflectionOnlyLoad forces an exact match to dependent assemblies.",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 4,
+    "Id": 9567
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

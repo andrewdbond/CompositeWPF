@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "From this thread in the discussion board (http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=242807):\n \n\"I am getting a really strange behavior in Silverlight OOB Modules (note: NOT offline):\n \nIf the modules are loaded during bootstrapping I do not experience the problem, but recently I moved the module load to after login so I could load modules based on user profile, and the problem started happening ... here is what is happening:\n \nThe module being loaded is not the current version; I can tell this is the case because the debugger can't hit the breakpoint becuase no symbols are loaded and because the latest changes I made are not reflected in the module.\n \nHere is how I am loading the modules after login (in case it has bearing):\n \n// TODO: define available modules via non-coded meta data\nstring basePath = (Application.Current.IsRunningOutOfBrowser ? \"http://localhost:65400/ClientBin/\" : \"\");\nvar availableModules = new List<ModuleInfo>()\n{\n    {new ModuleInfo() { ModuleName = \"ReceptionModule\", Ref = basePath + \"PatientJourney.Reception.xap\", InitializationMode = InitializationMode.WhenAvailable }},\n    {new ModuleInfo() { ModuleName = \"NurseModule\",     Ref = basePath + \"PatientJourney.Nurse.xap\",     InitializationMode = InitializationMode.WhenAvailable }}\n};\n \n// Load modules identified in current users profile\nvar modules = availableModules.Where(m => userModules.Contains(m.ModuleName));\nforeach (var module in modules)\n{\n    this.ModuleCatalog.AddModule(module);\n}\n \nthis.ModuleManager.Run();\n \nIt gets even stranger because a complete reload of the dev environments and asp.net dev servers does not clear the problem ... but, loading the changed modules up via the bootstrapper will load the new changes ... then loading the modules after login will now have the latest changes.\"\n \nThe current workaround for this is to specify an additional parameter in the xap path, so that the browser doesn't cache it.\n \n    protected override IModuleCatalog CreateModuleCatalog()\n    {\n        string basePath = (Application.Current.IsRunningOutOfBrowser ? \"http://localhost:9000/ClientBin/\" : \"\");\n        string noCache = (Application.Current.IsRunningOutOfBrowser && System.Diagnostics.Debugger.IsAttached ? \"?Unused=\" + Guid.NewGuid() : \"\");\n        var availableModules = new List<ModuleInfo>()\n        {\n            {new ModuleInfo() { ModuleName = \"ReceptionModule\", Ref = basePath + \"PatientJourney.Reception.xap\" + noCache, InitializationMode = InitializationMode.OnDemand }},\n            {new ModuleInfo() { ModuleName = \"NurseModule\",     Ref = basePath + \"PatientJourney.Nurse.xap\" + noCache,     InitializationMode = InitializationMode.OnDemand }}\n        };\n        return new ModuleCatalog(availableModules);\n    }\n \nYou can find more information about this in the following thread:\nhttp://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=240811",
+    "LastUpdatedDate": "2013-02-21T18:38:19.577-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Medium",
+      "Severity": 100,
+      "Id": 2
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-01-26T10:25:59.26-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Caching issue with Modules xap files",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 4,
+    "Id": 7846
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nAs mentioned by the user Alito1985 in this thread http://compositewpf.codeplex.com/discussions/273336 , another possible workaround for this problem can be found in the following blog post:\r\n - Prevent your Silverlight XAP file from caching in your browser. (http://michaelcrump.net/prevent-your-silverlight-xap-file-from-caching-in-your-browser)\r\n\r\nThe aforementioned workaround seems to have the advantage of only downloading the XAP files again when they are changed instead of downloading them every time.\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-08-09T13:29:26.66-07:00",
+      "Id": 156406
+    }
+  ]
+}

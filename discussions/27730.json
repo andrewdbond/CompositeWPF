@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "92503",
+    "ThreadId": "27730",
+    "Html": "<p>Problem summary: I don't see where OnApplyTemplates is getting called for a custom control.<br>\r\n<br>\r\nDetail: I have a custom templated control that is being hosted in a region but the overridden OnApplyTemplates is not getting called like it should be or at least like I think it should be.  I double checked and the same is true in the UIComposition project.<br>\r\n<br>\r\nI modified the file .\\Prism\\Source\\QuickStarts\\UIComposition\\UIComposition.Infrastructure\\Controls\\DeckPanel.cs to be as follows<br>\r\n<br>\r\n    public class DeckPanel : Grid<br>\r\n    {<br>\r\n        public DeckPanel()<br>\r\n            : base()<br>\r\n        {<br>\r\n        }  // &lt;- breakpoint here</p>\r\n<p>        public override void OnApplyTemplate()<br>\r\n        {<br>\r\n            base.OnApplyTemplate();    // &lt;- breakpoint here<br>\r\n        }<br>\r\n    }<br>\r\n<br>\r\nWith breakpoints on the noted lines.<br>\r\n<br>\r\nThe constructor is in fact being called but OnApplyTemplate() is not.  I am not sure why but it appears to interfere with using templated custom controls.  <br>\r\n<br>\r\nOf course I am still pretty new to WPF so I could be totally off base.  If so, could you point me in the right direction of how to get a templated custom control to properly retrieve templates and styles when inside prism?<br>\r\nThanks</p>\r\n<p>  </p>\r\n",
+    "PostedDate": "2008-05-14T11:35:50.45-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "94411",
+    "ThreadId": "27730",
+    "Html": "The DeckPanel has actually been removed in the latest version of the UIComposition spike. We are now using a content control with data binding to acheive the same behavior. <br>\r\n<br>\r\nCould you describe the scenario in your own app where you are trying to do this and how that element is being used in the app (i.e. just declared in XAML, or created some other way)?\r\n",
+    "PostedDate": "2008-05-23T09:24:44.417-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

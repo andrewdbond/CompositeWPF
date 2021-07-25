@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "122319",
+    "ThreadId": "36868",
+    "Html": "Hi all,<br>\r\n<br>\r\nI'm new to Prism so please excuse any daft questions! I did lots of work on a CAB implementation last year, and have been looking at the Stock Trader Reference Implementation.<br>\r\n<br>\r\nMy questions are:<br>\r\n<br>\r\n1. I noticed in the RI that PresenterModels are accessing the\r\nControllers (PositionSummaryPresentationModel). This was frowned upon\r\nin CAB - tight coupling a View/Presenter pair to the Controller removed\r\nall re-use from that View in different use-cases. What is the guidance here?<br>\r\n<br>\r\n2.<br>\r\nLets say I have a really re-usable view like selecting from a list of Customers. And I need to use it in a lot of use-cases - say finding orders, viewing accounts.<br>\r\nIn old-skool CAB I used to raise an event scoped locally to my WorkItem - CustomerSelected. How would this scenario work in Prism?<br>\r\n<br>\r\nA few options I can think of:<br>\r\n<br>\r\n1. Use the EventAggregator and have the orders view subscribe to the CustomerSelected event raised by the CustomerList view... Not sure how this would work without being able to scope events to a particular use-case though.<br>\r\n<br>\r\n2. Have a controller with a 'CustomerSelected' method. The Customer List can then call this method. The controller would have to implement an interface to allow the CustomerList to be used across different controllers though. Seems like effort, and links into my first point above. Should views / presentermodels be allowed to access the controllers directly?<br>\r\n<br>\r\n3. Create a simple CustomerList user-control and just embed it directly into the Xaml for the OrderFinder, or the AccountViewer. Have both controls subscribe to a CustomerSelected event which that control raises.<br>\r\n<br>\r\n3 seems like a really simple option to me. It's still testable as you could call the CustomerSelected event directly on each use-case which consumes the CustomerList.<br>\r\n<br>\r\nHas anyone else has come across these issues? If so how have you tackled them? Am I just thinking too deep here!!<br>\r\n<br>\r\nThanks,<br>\r\n<br>\r\nGraeme<br>\r\n<br>\r\n",
+    "PostedDate": "2008-10-02T01:38:28-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "122460",
+    "ThreadId": "36868",
+    "Html": "Hi Graeme, you may find the following thread interesting <a href=\"http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=36581\">http://www.codeplex.com/CompositeWPF/Thread/View.aspx?ThreadId=36581</a>; in this thread there are code examples, links to flash demo and blog on the topic.&nbsp;&nbsp; <br>\r\n<br>\r\nI prefer MVP over the PresentationModel for the reasons you noted - the Guidance (documentation) suggest both as options.<br>\r\n",
+    "PostedDate": "2008-10-02T12:16:40.85-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "122558",
+    "ThreadId": "36868",
+    "Html": "Thanks Bill,<br>\r\n<br>\r\nI had a read of the thread but am still not sure about it. I think this comes down to my dislike of a loosely coupled event approach where:<br>\r\n<br>\r\nI 'select' a customer from the list<br>\r\nThat causes a Customer Selected event to get raised<br>\r\nSomeone else hears that event and shows a details view (or in the CAB case started a new work-item for that customer).<br>\r\n<br>\r\nI don't like that because when I select that customer in the list, _I know_ that I have to display that details view. It's not an event. It's very much a command. I found CAB misused to loosely couple business processes or workflows which IMHO shouldn't be loosely coupled. Eventing is a way to broadcast that something has happened. A stock price has changed for example, or a Customer's details have changed. I don't believe they should be used to control program flow or workflows. It's too confusing.<br>\r\n<br>\r\nWe had the situation where events were being raised, but the modules that handled them weren't there... Double click a customer over here, raise a CustomerSelected event... The user expects the customer details, but nothing happened because the subscribing module for whatever reason wasn't there. <br>\r\n<br>\r\nI like the idea of a CustomerUI Service - when the customer is selected in the list we call the service to say 'DisplayCustomerDetails'. It would then be up-to the service to decide how best to display it.<br>\r\n<br>\r\nGraeme<br>\r\n<br>\r\n",
+    "PostedDate": "2008-10-02T19:50:04.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "122620",
+    "ThreadId": "36868",
+    "Html": "Perhaps I can convince you... &nbsp; I'll be working on wrapping up my <a href=\"http://www.codeplex.com/MEFContrib\">MEFContrib</a> contribution this weekend, I'll create the actual application (completed proof of concept last night) with you in mind so that you can see the benefits.&nbsp; Note: we're on 4/10s so my weekend doesn't end until Monday night ;)<br>\r\n",
+    "PostedDate": "2008-10-03T03:55:50.4-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "122635",
+    "ThreadId": "36868",
+    "Html": "Cool - I look forward to seeing it. I'll be really intrigued to see how it's done.<br>\r\nI don't know what a 4/10 is but it doesn't sound like fun!!!<br>\r\n<br>\r\nGraeme<br>\r\n",
+    "PostedDate": "2008-10-03T05:31:39.657-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "122672",
+    "ThreadId": "36868",
+    "Html": "I guess that wouldn't be to clear outside the context of my workplace :O, it's what our team calls the new shifts that we started to cover different time zones :)&nbsp; We work four ten hour days.<br>\r\n<br>\r\nI'll be providing plenty of details and examples on how everything works.&nbsp;&nbsp; I'll be covering regions, event aggregation, commands and how MEF allows us to easily create Add-ins.&nbsp; I'll also throw workflow, LINQ and entity framework into the mix; I remember how I wished the Smart Client Software Factory had provided real-world data access examples.&nbsp;&nbsp; <br>\r\n<br>\r\nFYI, the MEFContrib contribution will be the foundation for my SDMS project (<a href=\"http://www.CodePlex.com/SDMS\">http://www.CodePlex.com/SDMS</a>) so interested parties will be able to see it grow there. <br>\r\n",
+    "PostedDate": "2008-10-03T07:51:39.863-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "123660",
+    "ThreadId": "36868",
+    "Html": "Hi Graeme,&nbsp; I have a flash demo for the concepts I'm about to present =&gt;&nbsp;<a href=\"http://www.global-webnet.net/flash/demo/MEFSDMS.0.0.0.htm\">http://www.global-webnet.net/flash/demo/MEFSDMS.0.0.0.htm</a>. <br>\r\n<br>\r\nAlthough this is a MEFContrib project all of the applicable features are CompositeWPF.&nbsp; The code is&nbsp;available&nbsp;at <a href=\"http://www.CodePlex.com/MEFContrib\">http://www.CodePlex.com/MEFContrib</a>.&nbsp;&nbsp; The applicable projects will be relative to the MEFApp | MEFSDMS folder within the solution.&nbsp;&nbsp;Bear in mind that MEFContrib project development&nbsp;will be focused on core requirements and is in it's early stages.&nbsp;&nbsp; Before it is released (which obviously won't be before MEF is released) the MVP pattern will be applied to all controls;&nbsp;in the interim you'll find code in code-behind.<br>\r\n<br>\r\nThe MainView project's MainModule.cs &nbsp;loads the MainView.&nbsp; The MainView has a number of regions which will be populated by other project's views; specifically the RSSFeed, RSSFeedView and UserView (as shown by the flash demo).&nbsp;&nbsp; <br>\r\n<br>\r\nImportant to understanding the app - the MenuItem.Click and Button.Click routed events are handled by a RoutedEventFactory class.&nbsp; The MainView.Infrastructure project holds the MainController and MainPresenter (for the above mentioned MainView).&nbsp; In the MainController you'll find that in the OnFactoryExecute() method&nbsp;I currently handle (publish) the ButtonClickEvent and MenuItemClickEvent routed events.&nbsp;&nbsp; <br>\r\n<br>\r\n<div style=\"font-size:8pt;background:white;color:black;font-family:Courier New\">\r\n<p style=\"margin:0px\"><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">UserControl</span><span style=\"color:red\"> x</span><span style=\"color:blue\">:</span><span style=\"color:red\">Class</span><span style=\"color:blue\">=&quot;MainView.Views.MainViewLayout&quot;</span></p>\r\n<p style=\"margin:0px\">&nbsp; <span style=\"color:red\">xmlns</span><span style=\"color:blue\">=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;</span></p>\r\n<p style=\"margin:0px\">&nbsp; <span style=\"color:red\">xmlns</span><span style=\"color:blue\">:</span><span style=\"color:red\">x</span><span style=\"color:blue\">=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;</span></p>\r\n<p style=\"margin:0px\">&nbsp; <span style=\"color:red\">xmlns</span><span style=\"color:blue\">:</span><span style=\"color:red\">cal</span><span style=\"color:blue\">=&quot;http://www.codeplex.com/CompositeWPF&quot;</span></p>\r\n<p style=\"margin:0px\">&nbsp; <span style=\"color:red\">MenuItem.Click</span><span style=\"color:blue\">=&quot;RoutedEventHandler&quot;</span></p>\r\n<p style=\"margin:0px\">&nbsp; <span style=\"color:red\">Button.Click</span><span style=\"color:blue\">=&quot;RoutedEventHandler&quot;&gt;</span></p>\r\n<p style=\"margin:0px\">&nbsp;</p>\r\n</div>\r\n&lt;!--EndFragment--&gt;<br>\r\nYou will find that this application is loosely coupled and there are events flying all over the place.&nbsp; The reason it will be managable is because Buttons, Menus and status messages will be&nbsp;published in applicable areas with no regard to subscribers.&nbsp;&nbsp;&nbsp;<br>\r\n<br>\r\nSubscribers *ONLY* worry about&nbsp;their applicable view, e.g., in the MainView project, MainViewLayout.xamls.cs code-behind you'll find the ButtonClickHandler and GenericHandler populating it's left and right statusbar.&nbsp; Later,&nbsp;the statusbar will be another region and the referenced code will be in its presenter.<br>\r\n<br>\r\nThe benefit is that no matter how large the program gets, no matter how many Views are open, each process only manages itself so if a status bar isn't working correctly or a menu option does not respond there is only one place to look - the Module, Controller or Presenter that has responsibility for that UI component.<br>\r\n",
+    "PostedDate": "2008-10-07T20:41:19.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "480139",
+    "ThreadId": "223477",
+    "Html": "I have structured my Prism app per one of the examples.  I have the Main app and a series of modules (class libraries).  I have a post Build event to copy the modules to a modules directory in the main app.  When the build is finished, I have the referenced Prism assemblies in both the Modules folder and the main app folder.  How to I create a single folder (like a bin folder) for all the external Prism assemblies regardless of which moduels or the main app reference them?\r\nThanks",
+    "PostedDate": "2010-08-13T04:24:26.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "480304",
+    "ThreadId": "223477",
+    "Html": "<p>Hi,</p>\r\n<p>I do not know your exact scenario, but at run time, a referenced assembly must exist in either the global cache assembly (GAC) or the output path of the project. That means that the Prism assemblies must be copied to the output folder (as they are not installed in the GAC) of the main project. The rest of the projects (e.g. modules) could make of use one of the following three options to avoid duplicating assemblies:</p>\r\n<ol>\r\n<li>Set the CopyLocal property of their Prism references to false, since they are loaded by the main project and it contains the Prism assemblies in its output folder. For more information about this, you could take a look at <a href=\"http://msdn.microsoft.com/en-us/library/aa984582(VS.71).aspx\">CopyLocal Property (Reference Object)</a> on MSDN. </li>\r\n<li>Filter those Prism assemblies in the post build event to avoid copying them. </li>\r\n<li>Use the same output folder for all the projects that compose in your application by configuring it from their project properties page in the <strong>Build </strong>tab. </li>\r\n</ol>\r\n<p>Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-08-13T10:30:33.787-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

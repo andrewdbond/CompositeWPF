@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nWe're closing this work item as it seems that the problem reported is not caused by an issue in Prism.\r\n\r\nIf you need further support about this, you could create a thread in the discussions (http://compositewpf.codeplex.com/discussions).\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-10-04T06:45:43.577-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "Hi, \nI use Prism framwwork for a sample application. In the shell i ve two buttons namely home and page2. I want to display the homepage when i click the home button whic is done successfully and the uripapper part in the shell.\n<navigation:Frame.UriMapper>\n                    <uriMapper:UriMapper>\n                        <uriMapper:UriMapping Uri=\"\" MappedUri=\"/Views/Home.xaml\"/>\n                        <uriMapper:UriMapping Uri=\"/{pageName}\" MappedUri=\"/Views/{pageName}.xaml\"/>\n                    </uriMapper:UriMapper> \n<HyperlinkButton x:Name=\"Link1\" NavigateUri=\"Views/Home\"  Content=\"Home\" Style=\"{StaticResource LinkStyle}\" />\nwhen i click the page2 button  it want to load the page2 using Prism page injection method which also loaded successfully and the shell part is this..\n<HyperlinkButton x:Name=\"Lnkpage2\" Click=\"LoadModule_ButtonClick\" Content=\"Page2\" Style=\"{StaticResource LinkStyle}\"/>\non the code behind , i call the module manager to load page2 which works good.\n --------\nThe problem is when i try toclick the home button again, the home page is not displlayed. when i put break point and it looks like the home page is called, loaded but not displayed..and no script errors posted..\nI also tried adding the click event handler for loading homepae , then found the invalidoperationexception --access denied...\n<HyperlinkButton x:Name=\"Link1\"  Click=\"LoadModules_ButtonClick\"  Content=\"Home\" Style=\"{StaticResource LinkStyle}\" />\nHere is my stacktrace\n \n\"   at System.Windows.Browser.ScriptObject.Invoke(String name, Object[] args)\\r\\n   at System.Windows.Browser.HtmlWindow.Navigate(Uri navigateToUri, String target, String targetFeatures)\\r\\n   at System.Windows.Browser.HtmlWindow.Navigate(Uri navigateToUri, String target)\\r\\n   at HospLight.Shell.LoadModules_ButtonClick(Object sender, RoutedEventArgs e)\\r\\n   at System.Windows.Controls.Primitives.ButtonBase.OnClick()\\r\\n   at System.Windows.Controls.HyperlinkButton.OnClick()\\r\\n   at System.Windows.Controls.Primitives.ButtonBase.OnMouseLeftButtonUp(MouseButtonEventArgs e)\\r\\n   at System.Windows.Controls.Control.OnMouseLeftButtonUp(Control ctrl, EventArgs e)\\r\\n   at MS.Internal.JoltHelper.FireEvent(IntPtr unmanagedObj, IntPtr unmanagedObjArgs, Int32 argsTypeIndex, Int32 actualArgsTypeIndex, String eventName)\"\nso first time page is displayed, after page injection, the page is loaded, but nor displayed, but no error...\nwhen tried using codebehind, it says access denied..\nPlease help me to solve this issue\nThanks\nDevasena",
+    "LastUpdatedDate": "2013-05-16T05:28:44.723-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-01-23T21:37:34.473-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Page Navigation : Issue Pls Help",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 7837
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi Devasena,\r\n\r\nThe ModuleManager class is \"responsible for coordinating the modules' type loading and module initialization process\", hence it shouldn't be used to load a page. The main reason for this is that, once loaded, a module cannot be unloaded. In order to achieve the scenario you're describing, you might find the following blog post by Karl Shifflett useful:\r\n\r\nhttp://blogs.msdn.com/b/kashiffl/archive/2010/10/05/integrating-prism-v4-region-navigation-with-silverlight-frame-navigation.aspx\r\n\r\nIf you continue experimenting this issue after trying out the approach mentioned in the blog post, it would be helpful if you could provide us with a repro sample or more information about your implementation, so that we can help you further.\r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-01-27T06:18:44.523-08:00",
+      "Id": 156405
+    }
+  ]
+}

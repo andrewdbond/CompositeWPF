@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "1222150",
+    "ThreadId": "538832",
+    "Html": "Has anyone else run into this problem?  I'm growing fond of the EventAggretator pattern to communicate between loosely coupled components.  However, there's no persistence to the event and it's getting to be a problem.  I have an application where a URI is used to select the object being viewed.  Once everything is loaded, the volatile event works just fine, but on initialization you don't know if the event has fired or not.  Let's say that Region 1 fires the UriChanged event.  Region 2 has no idea when it loads if the event has fired or not so it can end up uninitialized.  I've solved the problem by providing a shared object through the CompositionContainer (&quot;SharedUri&quot;) to go with the UriChanged event, but it would be much easier if I could just query the last value of the UriChanged event.<br />\n",
+    "PostedDate": "2014-03-12T17:08:45.027-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1222530",
+    "ThreadId": "538832",
+    "Html": "Hello,\r<br />\n<br />\nI believe you are refering that <strong>Modules</strong> initialization fires and subscribes to <strong>Events</strong> instead of <strong>Regions</strong>, is this right?\r<br />\nTherefore, if I understood correctly, you are trying to <strong><em>Publish</em></strong> an <strong>Event</strong> from one <strong>Module's initialization</strong> where <strong>Region1</strong> get the <strong>Views</strong> registered, and then you would be subscribing to that <strong>Event</strong> on another <strong><em>Module's Initialize()</em></strong> method where a <strong>Region2</strong> is loaded with the corresponding views.\r<br />\n<br />\nIn this case, the <strong>Event</strong> would be <em>Published,</em> but it would not be handled because the <strong>Subscriber's Module</strong> instance dies after the <strong><em>initialize()</em></strong> action is complete. If you want to keep the subscription alive, then you should implement it on a particular <strong>ViewModel</strong> for example which it would keep the reference alive.\r<br />\n<br />\nOn the other hand, if you would need to subscribe to an <strong>Event</strong> during initialization, then a Shared object would be needed in order to work as an auxiliar interlocutor between both <strong>Modules</strong>. However, subscribing to an event on a <strong>Module</strong> initialization, gives me the idea that something may not be correctly designed.\r<br />\n<br />\nIf you would give me more details of the scenario you are trying to accomplish, I would give you better support to solve it.\r<br />\n<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky \r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-03-13T14:16:46.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1222546",
+    "ThreadId": "538832",
+    "Html": "Gabriel,<br />\n<br />\nI'm not really sure to what class you are referring as you mention <strong>Event</strong> in bold, but I'm using <strong>EventAggregator</strong> class. If I missed a useful class, please point me in the right direction.  Here's my module initialization:<br />\n<pre><code>        /// &lt;summary&gt;\n        /// Initializes the region manager with the component regions.\n        /// &lt;/summary&gt;\n        public void Initialize()\n        {\n            this.regionManager.RegisterViewWithRegion(RegionNames.ToolBarRegion, typeof(ToolbarViewModel));\n            this.regionManager.RegisterViewWithRegion(RegionNames.DetailRegion, typeof(DetailbarViewModel));\n            this.regionManager.RegisterViewWithRegion(RegionNames.ContentRegion, typeof(DirectoryViewModel));\n            this.regionManager.RegisterViewWithRegion(RegionNames.HierarchyRegion, typeof(HierarchyViewModel));\n            this.regionManager.RegisterViewWithRegion(RegionNames.MainRegion, typeof(MainView));\n        }\n</code></pre>\n\nThe classes <em>ToolbarViewModel</em>, <em>DetailViewModel</em> and <em>HierarchyViewModel</em> all consume the <strong>UriChanged</strong> event.  The <em>DirectoryViewModel</em> publishes it when it has initialized.  The problem is that I've found no way to control the initialization of the regions; Prism seems to have it's own logic and reasons as to when each is instantiated.  So even though the <em>DirectoryViewModel</em> publishes the new URI when it is initialized, I have found no way to guarantee that <em>ToolbarViewModel</em> or <em>DetailViewModel</em> will be around to see the event.  Both of these view models require a URI to initialize, so it's become semi-painful to provide a globally available URI value in the <strong>CompostionContainer</strong> in addition to the <strong>UriChanged</strong> EventAggregator.<br />\n<br />\nWhat would be ideal is something like this:<br />\n<br />\nUri uri = this.eventAggregator.GetEvent&lt;UriChanged&gt;().LastValue;<br />\n<br />\nI hope that's a little more clear.  Any ideas that streamline this process would be appreciated.  Am I missing some aspect of the architecture?<br />\n",
+    "PostedDate": "2014-03-13T14:48:58.157-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1222838",
+    "ThreadId": "538832",
+    "Html": "Hi DRAirey1,\r<br />\n<br />\nI apologize for the missunderstanding about the Event word in bold, as it would only refer to any Event class in general.\r<br />\n<br />\nThank you for deeper desciption of the scenario. One possible way you could perform to solve this issue would be to Publish an <em>InitilizationCompletedEvent</em> for example on the <strong>BootStrapper</strong> and subscribe to this event on the <em>DirectoryViewModel</em> so it would know that every other <strong>ViewModel</strong> has already been initialized. Therefore, you could Publish the <strong><em>UriChanged</em></strong> event on the <strong><em>InitializationCompletedEventHandler()</em></strong> method.\r<br />\n<br />\nIn order to Publish the <em>InitializationCompletedEvent</em>, you would need to execute it as always on the overriden BootStrapper's <em>run()</em> method because it would execute right after the Modules initialization according to the BootStrapper's <em>run()</em> order's execution. Then, you would need to <em>Subscribe</em> to <em>InitializationCompletedEvent</em> on the <em>DirectoryViewModel's</em> constructor, in addition to implementing the <em>InitializationCompletedEventHandler</em> from where you would <em>Publish</em> your <em>UriChanged</em> event.\r<br />\n<br />\nFor more information, you could refer to the following disscusion which talks about a similar issue.<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"https://compositewpf.codeplex.com/discussions/531707\" rel=\"nofollow\">Module initialization problem</a><br />\n</li>\n</ul>\nI hope this helped you.\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-03-14T10:30:27.493-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1222925",
+    "ThreadId": "538832",
+    "Html": "Gabriel,\r<br />\n<br />\nThanks for the effort, but I'm afraid we're dealing with a different problem than module initialization.  Your solution appears to be promising for controlling the ordering of events for modules, but it doesn't work for regions.  That is, after stepping through the debugger, your method of overriding the Run method guarantees that all the modules have loaded, but apparently it doesn't guarantee that the Regions have been loaded.  This is the rub: since the loading of viewers into regions is left up to the run-time, there's no accessible event or property that tells us when all the regions have loaded.  Theoretically, if you had a view switching application, you could keep loading up regions continuously and there's no real way to say that you're 'done' initializing the regions.\r<br />\n<br />\nAgain I come back to the fact that we need a persistent property on the <strong>CompositePresentationEvent&lt;TType&gt;</strong> class that gives us the last published value.<br />\n",
+    "PostedDate": "2014-03-14T14:31:11.673-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1223700",
+    "ThreadId": "538832",
+    "Html": "Hi,<br />\n<br />\nWhile the <strong>CompositePresentationEvent</strong> class does not provide this functionality by its own I think it's possible to use a custom event class in your application to do this without problems. For example, you could create the following base class that extends original the <strong>CompositePresentationEvent</strong>:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">public</span> <span style=\"color:Blue;\">class</span> CompositePresentationEventWithPersistentPayload&lt;T&gt; : CompositePresentationEvent&lt;T&gt;\n{\n    <span style=\"color:Blue;\">public</span> T LastMessage { <span style=\"color:Blue;\">get</span>; <span style=\"color:Blue;\">private</span> <span style=\"color:Blue;\">set</span>; }\n\n    <span style=\"color:Blue;\">public</span> <span style=\"color:Blue;\">override</span> <span style=\"color:Blue;\">void</span> Publish(T payload)\n    {\n        <span style=\"color:Blue;\">this</span>.LastMessage = payload;\n        <span style=\"color:Blue;\">base</span>.Publish(payload);\n    }\n}\r\n</pre></div>That class defines a <strong>LastMessage</strong> property and overrides the <strong>Publish</strong> method to store the last payload used in it. If you change your event to inherit from this class, then you should be able to use it like this:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\nMyEvent myEvent = eventAggregator.GetEvent&lt;MyEvent&gt;();\nmyEvent.Publish(message);\n\n<span style=\"color:Green;\">// Now we can obtain the last message published thanks to the property.</span>\n<span style=\"color:Blue;\">var</span> lastMessage = myEvent.LastMessage;\r\n</pre></div>I hope this helps.<br />\n<br />\nDamian Cherubini<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2014-03-17T14:41:23.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1224105",
+    "ThreadId": "538832",
+    "Html": "We had the same issue.  I swapped out the CompositePresentationEvent with a new class, just needs to inherit from EventBase.  The new class just wrapped the Reactive Extension ReplaySubject.  The RX ReplaySubject is built for late subscribers to get all the past events that happened.  We even added a way for it to tell how many last messages it wanted but usually it's either just the last-one or all.\r<br />\n<br />\nThe code isn't that hard and that's the great thing about Prism is being able to change or swap out all the parts you want changed or don't like.\r<br />\n<br />\nThe only thing that ours doesn't have is a &quot;Contains&quot; because RX doesn't have a built in way to query subscribers but we could add our own if we wanted but for us the contains wasn't that big of a deal.  Our Contains always returns true.<br />\n",
+    "PostedDate": "2014-03-18T11:57:04.867-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1228185",
+    "ThreadId": "538832",
+    "Html": "Damian,\r<br />\n<br />\nPerfect.  That's exactly what I was looking for.\r<br />\nShould be incorporated into the standard library.  This is a very useful function during initialization.  Thanks.\r<br />\n<br />\nDon<br />\n",
+    "PostedDate": "2014-03-29T09:23:54.497-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

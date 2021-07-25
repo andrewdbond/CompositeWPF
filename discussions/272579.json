@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "671805",
+    "ThreadId": "272579",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>I am using VS 2010, Prism V4, SL 4, and MVVM.</p>\r\n<p>All that is working fine.</p>\r\n<p>My Question is I have a control in the View, and I would like to pass that control back to the view model to do custom logic etc.&nbsp;</p>\r\n<p>How can I do that, a simple few lines of codes will be very helpful and appreciated.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2011-09-14T09:59:34.51-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "671835",
+    "ThreadId": "272579",
+    "Html": "<p>Hi,</p>\r\n<p>The common approach when following the <strong>MVVM </strong>pattern is that the <strong>ViewModel </strong>should not know about the <strong>View </strong>or any of its child controls. Instead, the <strong>ViewModel </strong>should be the <strong>DataContext </strong>of the <strong>View</strong>, which would retrieve the data and values for the controls' properties from the <strong>ViewModel</strong>'s properties through <strong>Data Binding</strong> and request the <strong>ViewModel </strong>to process data through <strong>Commands</strong>.</p>\r\n<p>If the logic that you need to apply to your control is only used to change the purely visual aspects of the information, you can put that logic in the <strong>View</strong>'s code behind<strong></strong>.</p>\r\n<p>Therefore, passing the <strong>Control </strong>to the <strong>ViewModel </strong>isn't a recommended approach when following the <strong>MVVM </strong>pattern.</p>\r\n<p>For more information about the <strong>MVVM </strong>pattern you can check the following links:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405484%28v=PandP.40%29.aspx\">Chapter 5: Implementing the MVVM Pattern</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405494%28v=PandP.40%29.aspx\">Chapter 6: Advanced MVVM Scenarios</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/magazine/dd419663.aspx\">WPF Apps With The Model-View-ViewModel Design Pattern</a></li>\r\n<li><a title=\"Permanent Link: In the Box &ndash; MVVM&nbsp;Training\" href=\"http://karlshifflett.wordpress.com/2010/11/07/in-the-box-ndash-mvvm-training/\">In the Box &ndash; MVVM&nbsp;Training</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-09-14T11:10:46.38-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "671838",
+    "ThreadId": "272579",
+    "Html": "<p>Thank you so much for your quick reply. &nbsp;</p>\r\n<p>I <strong>fully </strong>understand and I <strong>agree </strong>with what you said.</p>\r\n<p>Unfortunately, the control we are using (third party control) does not really support data binding for most of the stuff I am using for our business need.</p>\r\n<p>Nonetheless, I would like to pass the control to the viewmodel. &nbsp;What is the best way to do that.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-09-14T11:14:04.133-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "671920",
+    "ThreadId": "272579",
+    "Html": "<p>Hi,</p>\r\n<p>In this case, to &ldquo;pass&rdquo; the <strong>Control</strong> from the <strong>View</strong> to the <strong>ViewModel,</strong> you could implement a <strong>Shared Service,</strong> which could be referenced by both the <strong>View</strong> and the <strong>ViewModel,</strong> and store a reference to the <strong>Control</strong> in that service. For example, the <strong>Shared Service</strong> could be injected in the <strong>View</strong>&rsquo;s constructor, where it could store the <strong>Control</strong> in the service without any other code behind, and then the <strong>ViewModel</strong> could obtain the <strong>Control</strong> through the service and apply the required logic when needed. Doing this, the <strong>View</strong> and the <strong>ViewModel</strong> are still &ldquo;decoupled,&rdquo; but the <strong>ViewModel</strong> has to know how to handle the control.</p>\r\n<p>Also, another possible and quick approach for this scenario could be to apply the required changes to the <strong>Control</strong> in the <strong>View</strong>&rsquo;s code behind. For this, you could obtain any required data from the <strong>ViewModel</strong> through bindings with other controls or casting the <strong>View</strong>&rsquo;s <strong>Data Context</strong> (which should be the <strong>ViewModel</strong>) to the corresponding interface and then access the required data directly from the <strong>ViewModel</strong>&rsquo;s <strong>Properties</strong>. With this approach the <strong>ViewModel</strong> doesn&rsquo;t need to know about the <strong>Control</strong>, but the <strong>View </strong>interacts with the <strong>ViewModel</strong> without using bindings, which is not a recommended practice.</p>\r\n<p>Please, take into account that both of these approaches don&rsquo;t comply with the recommended practices given when following the MVVM pattern.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\" target=\"_blank\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-09-14T13:42:31.19-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,71 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "In Composite.Presentation\\Regions\\RegionManager.cs there is a method called IsInDesignMode. When a region is about to be created this method is called, and if this method returns true the region is not created. One of the conditions checked in the method is the type of Application.Current.\n \nWhen our silverlight application starts up and the regions in the shell gets created everything is fine, the Application.Current property is of type \"MyName.Shell.App\". But when a view gets added after startup, as a response to user input, the Application.Current type is suddenly of type \"Application\", and thus the IsInDesignMode method returns true and the regions are not created.\n \nIf I remove the Application.Current conditions everything works as expected. So the question is, is there something wrong in my application or is there something wrong in the prism source code?\n \nFor more detailed information, see the discussion on the same topic: http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=222920",
+    "LastUpdatedDate": "2013-02-21T18:38:34.14-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-08-12T05:02:56.937-07:00",
+    "Status": {
+      "Name": "Active",
+      "Id": 2
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Regions in a view added from code does not get registered",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 7102
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897969,
+      "FileName": "SampleImplementation_5731.zip",
+      "DownloadUrl": ".\\897969"
+    },
+    {
+      "FileId": 897970,
+      "FileName": "RegionProblem.zip",
+      "DownloadUrl": ".\\897970"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "We were unable to reproduce this problem. I have attached a sample that shows our interpretation of the type of app you were writing.  Please take a look and let us know if you can identify the issue and create a repro based on the attached solution.\r\n\r\nYou will need to put the Prism libraries in the \"SampleImplementation\\Lib\" folder and possibly update the project references to get this to compile.   \r\n\r\nThanks.",
+      "PostedDate": "2010-08-13T16:32:15.423-07:00",
+      "Id": 156276
+    },
+    {
+      "Message": "I made some changes to your solution and was able to reproduce my problem.\r\n\r\nI added a button to the main page that adds the views after initial startup, and removed the adding code from MyModule.RegisterViewsWithRegions.\r\n\r\nI also added a class called MyService, that gets registered and resolved in MyModule.RegisterTypesAndServices. It doesn't do much except accepting an Application as parameter to the constructor. In my application the Application parameter is used to get a path. It seems that using Application type as parameter messes things up, and therefor the prism code doesn't work.\r\n\r\nI have attached the modified solution where the problem occurs. I leaved the \"SampleImplementation\\Lib\" folder empty for you to put your prism libraries in.",
+      "PostedDate": "2010-08-16T08:32:38.053-07:00",
+      "Id": 156277
+    },
+    {
+      "Message": "Hmmmmm.  It looks like the behavior of a few things changed in SL4.\r\nFor the moment, hack your version of RegionManager.IsInDesignMode() to look like this:\r\nprivate static bool IsInDesignMode(DependencyObject element)\r\n{  \r\n  return DesignerProperties.GetIsInDesignMode(element);\r\n}\r\n\r\nWe're going to investigate fixes and try to determine if the known issue from Cider (that caused the current implementation of IsInDesignMode to be written) has been fixed.\r\n",
+      "PostedDate": "2010-08-17T14:31:02.517-07:00",
+      "Id": 156278
+    },
+    {
+      "Message": "Hi,\r\n\r\nThis problem seems to be happening because, when Unity resolves the MyService service, it creates a new Application object to pass as a parameter in the constructor. When a new Application object is created, it automatically sets itself as the current application in the Application.Current static property. Therefore, when the IsInDesignMode method of the RegionManager is invoked, the Application.Current is of type Application and this undesired behavior appears.\r\n\r\nAs a possible wokaround to solve this, you could register the current instance of your application in the container (for example, using the following code in your bootstrapper), so when Unity resolves the MyService service, it will pass the current application as the parameter instead of a new one, avoiding this undesired behavior:\r\n\r\nprotected override void ConfigureContainer()\r\n{\r\n      base.ConfigureContainer();\r\n      this.Container.RegisterInstance(typeof(Application), Application.Current);\r\n}\r\n\r\nBased on our understanding, the IsInDesignMode method checks for the current application due to a known issue in Cider with Silverlight 3, where the DesignerProperties.GetIsInDesignMode method doesn’t work correctly. You can find more information about this in the following blog post by David Anson: http://blogs.msdn.com/b/delay/archive/2009/02/26/designerproperties-getisindesignmode-forrealz-how-to-reliably-detect-silverlight-design-mode-in-blend-and-visual-studio.aspx . \r\n\r\nWe have tested the DesignerProperties.GetIsInDesignMode method in Silvelight 4 and it seems to be working correctly, so you could modify the implementation of the IsInDesignMode method of the RegionManager (like mentioned by Michael Puleio) with this:\r\n\r\nprivate static bool IsInDesignMode(DependencyObject element)\r\n{ \r\n      return DesignerProperties.GetIsInDesignMode(element);\r\n}\r\n\r\nAlso, if this implementation presents and undesired behavior in your application, you could check the following blog post where a different implementation to detect if the application is in design mode is proposed: http://geekswithblogs.net/lbugnion/archive/2009/09/05/detecting-design-time-mode-in-wpf-and-silverlight.aspx .\r\n\r\nI hope you find this useful,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini\r\n",
+      "PostedDate": "2011-12-01T12:08:37.433-08:00",
+      "Id": 156279
+    }
+  ]
+}

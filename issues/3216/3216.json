@@ -1,0 +1,66 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "Usually when the end user requires a multi-monitor application, it would be necessary to create multiple shell windows. \n \nnamespace HelloWorldSample\n{\n    internal class Bootstrapper : UnityBootstrapper\n    {\n        protected override IModuleEnumerator GetModuleEnumerator()\n        {\n            return new StaticModuleEnumerator()\n                .AddModule(typeof(HelloWorldModule));\n        }\n \n        protected override DependencyObject CreateShell()\n        {\n            Shell shell = new Shell();\n            shell.Show();\n \n            return shell;\n        }\n    }\n}\n \nThe CreateShell() does not allow the creation of multiple shells. It would be ideal to have a method like this one:\n \n protected override DependencyObject[] CreateShells()\n        {\n            var shell1 = new Shell1();\n            shell1.Show();\n \n     var shell2 = new Shell2();\n            shell2.Show();\n \n            return new []{shell1, shell2};\n        }\n \nAre you planning to add this functionality any time soon?\n \nThanks guys! Great job on PRISM V2 D2!",
+    "LastUpdatedDate": "2013-02-21T18:38:55.353-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-10-09T03:16:53.287-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Applications may have multiple shell windows",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 17,
+    "Id": 3216
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897955,
+      "FileName": "TwoShellsPrismV4.zip",
+      "DownloadUrl": ".\\897955"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Any response from the team on this?  I have a simple solution and would like to know if there is one built-in to the Prism?",
+      "PostedDate": "2009-02-16T11:28:06.41-08:00",
+      "Id": 156042
+    },
+    {
+      "Message": "Comment is required",
+      "PostedDate": "2009-02-23T03:05:11.473-08:00",
+      "Id": 156043
+    },
+    {
+      "Message": "Hi,\r\n\r\nThere is a post by Damian Schenkelman (http://blogs.southworks.net/dschenkelman/2010/01/26/creating-a-multi-shell-application-in-prism-v2) that explains how to achieve a multi-shell solution in Prism v2. Note that it should be similar to achieve this in Prism v4.\r\n\r\nI hope you find this helpful.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2010-12-22T10:05:54.66-08:00",
+      "Id": 156044
+    },
+    {
+      "Message": "Hi,\r\n\r\nI upgraded the sample provided by Damian Schenkelman in his post, so it can be used with Prism v4. You can find it attached in this workitem under the name TwoShellsPrismV4.\r\n\r\nRegards,\r\n\r\n﻿Agustin Adami\r\nhttp://blogs.southworks.net/aadami﻿\r\n ",
+      "PostedDate": "2011-11-03T09:24:25.547-07:00",
+      "Id": 156045
+    }
+  ]
+}

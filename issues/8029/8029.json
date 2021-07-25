@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "If I place Prism\\QuickStarts\\Modularity sample to directory with # (for example c:\\code\\c#\\Modularity) getting an error message:\n \nFailed to load type for module ModuleD. \n \nIf this error occurred when using MEF in a Silverlight application, please ensure that the CopyLocal property of the reference to the MefExtensions assembly is set to true in the main application/shell and false in all other assemblies. \n \nError was: Unable to find the specified file..",
+    "LastUpdatedDate": "2013-02-21T18:38:18.4-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-03-18T02:09:04.957-07:00",
+    "Status": {
+      "Name": "Active",
+      "Id": 2
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Error when place Modularity sample to directory with # in name",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8029
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nThank you for reporting this.\r\n\r\nAs explained in this work item (http://compositewpf.codeplex.com/workitem/7661), paths with the '#' character get escaped, and the result contains %23 instead of it. That might be the cause for the issue you’re experiencing.\r\n\r\nThe product team has been notified of this, and might tackle the issue in a future release.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-03-21T13:02:47.92-07:00",
+      "Id": 156411
+    },
+    {
+      "Message": "Hi,\r\n\r\nWe reproduced the error you mentioned, it seems that this behavior appears when using the Unity container and not with MEF. The root of this can be found in the LoadAssemblyFrom method in the AssemblyResolver Class which is called when using Unity. This method stores the assembly file path in a Uri class (http://msdn.microsoft.com/en-us/library/system.uri.aspx). The problem is that this Class gets any text following a fragment marker (#) in the Uri, including the fragment marker itself to set its Fragment property. Also the LoadAssemblyFrom method uses the LocalPath property of the Uri Class to obtain the local operating-system representation of a file name (which in our case if we added a # will be incomplete). Based on this, I believe a possible way to avoid this behavior, could be for example to concatenate the strings returned by the LocalPath property and the Fragment property of the Uri Class.\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami﻿",
+      "PostedDate": "2011-12-02T10:31:02.53-08:00",
+      "Id": 156412
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+<div class="wikidoc"><h2>Popup region throws error if the region it contains has an items control</h2>
+<h3>Issue</h3>An error related to the PopupRegionBehavior, from the Silverlight StockTrader RI, occurs when:
+<ol><li>The Region contains a view that has an items control and</li>
+<li>One of the items is selected.</li></ol>
+<br /><b>Error:</b> [System.Exception: Catastrophic failure (Exception from HRESULT: 0x8000FFFF (E_UNEXPECTED))].<br />
+<h3>Cause of Issue</h3>The childen of the popup are in the visual tree, while the popup is not. You can read more about this in the following articles:
+<ul><li><a href="http://msdn.microsoft.com/en-us/library/system.windows.controls.primitives.popup(VS.95).aspx">Popup Class</a> on <a href="http://msdn.microsoft.com/en-us/default.aspx">MSDN</a></li>
+<li><a href="http://blogs.conchango.com/darenmay/archive/2009/05/03/silverlight-2-popup-control-hosting-an-itemcontrol-listbox-combobox-etc.aspx">Silverlight 2 Popup control hosting an ItemControl (ListBox, ComboBox, etc.)</a> by <a href="http://blogs.conchango.com/darenmay/">Daren May</a></li></ul>
+
+<h3>Workaround</h3>Add the Popup to the Visual Child before showing it. One of the ways of doing this is finding a control that inherits from panel and add the Popup to the child collection.<br />To apply this workaround you should modify the code of the <b>Show</b> method of the <b>PopupWrapper.Silverlight</b> class of the RI like this:<br /><pre>   public static void Main()
+   { 
+     Panel popupContainer = GetLayoutRoot(owner);
+     popupContainer.Children.Add(popUp);
+     this.popUp.IsOpen = true;
+   }
+</pre><br />The <b>GetLayoutRoot</b> method should return a panel object from the visual tree. Below you can find a possible implementation for it, which performs a recursive call to look for a Panel control in the Visual Tree. This could be customized according to your application needs and specifics.<br /><pre>
+    private static Panel GetLayoutRoot(DependencyObject container)
+        {
+            for (int i = 0; i &lt; VisualTreeHelper.GetChildrenCount(container); i++)
+            {
+                Panel control = VisualTreeHelper.GetChild(container, i) as Panel;
+                if (control != null)
+                    return control;
+            }
+
+            //recursive call
+            for (int i = 0; i &lt; VisualTreeHelper.GetChildrenCount(container); i++)
+            {
+                Panel control = GetLayoutRoot(VisualTreeHelper.GetChild(container, i));
+                if (control != null)
+                    return control;
+            }
+
+            return null;
+        }
+</pre></div><div class="ClearBoth"></div>

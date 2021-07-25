@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "238971",
+    "ThreadId": "70159",
+    "Html": "<p>Hi everyboy</p>\r\n<p>I work on a SL3 project with prism v2. In my application i have some modules to load on demande. These modules</p>\r\n<p>are loaded when the user click on a button. But as the user can click more than one on this button i would like to check</p>\r\n<p>if the module to load is already loaded.</p>\r\n<p>Any help will be appreciated.</p>\r\n<p>Thanks</p>",
+    "PostedDate": "2009-09-25T13:53:22.55-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "238989",
+    "ThreadId": "70159",
+    "Html": "<p id=95d792d0-8c49-012c-d600-12313b003871>Hi</p>\r\n<p id=95d79f50-8c49-012c-d601-12313b003871>You can use code like this to check if a module has been loaded (using ModuleState.Initialized means the Initialize method has been called. Another state might fit your situation better depending what &ldquo;already loaded&rdquo; means):</p>\r\n<p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>ModuleInfo info = catalog.Modules.First(m =&gt; m.ModuleName == <span style=\"color:#A31515\">&quot;MyModule&quot;</span>);\r\n<span style=\"color:Blue\">if</span> (info.State == ModuleState.Initialized)      \r\n{\r\n    <span style=\"color:Green\">//your code here</span>\r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p id=95d7e290-8c49-012c-d604-12313b003871>Take into account, that calling the Load method for an already loaded module does not do anything.</p>\r\n<p id=95d802e0-8c49-012c-d605-12313b003871>Please let me know if this helps.</p>\r\n<p id=95d81ef0-8c49-012c-d606-12313b003871>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-25T14:40:53.583-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "432419",
+    "ThreadId": "209706",
+    "Html": "<p>Hi,</p>\r\n<p>I am loading all modules from a directory into the module catalog. One of the modules has a reference to a DLL that requires another DLL to be in the same directory (Module A references B.dll that needs C.dll to be in the same directory). Only C.dll is not a .net assembly, I believe (it's third party).</p>\r\n<p>When I execute&nbsp;</p>\r\n<p><span style=\"white-space:pre\"> &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;protected override IModuleCatalog GetModuleCatalog()&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return new DirectoryModuleCatalog() { ModulePath = @&quot;.\\&quot; };&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</span></p>\r\n<p><span style=\"white-space:pre\">I</span>&nbsp;get a BadImageFormatException,The module was expected to contain an assembly manifest. What can I do about that? I want it to skip that DLL.</p>",
+    "PostedDate": "2010-04-18T08:33:05.787-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432820",
+    "ThreadId": "209706",
+    "Html": "<p id=796b0460-2dff-012d-041f-12313b069c21>Hi,</p>\r\n<p id=796b0ee0-2dff-012d-0420-12313b069c21>A possible way to workaround  your scenario would be inheriting from the <strong>DirectoryModuleCatalog</strong> and overriding the <strong>InnerLoad</strong> method to use a custom <strong>ModuleInfoLoader  (</strong>the default one is private and most of its methods are  internal so it cannot be extended). In the <strong>LoadAssemblies</strong> method of your custom loader you would add a catch block for this kind  of exception:</p>\r\n<p id=796b1ef0-2dff-012d-0421-12313b069c21><span style=\"font-family:Consolas;font-size:x-small\">\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> LoadAssemblies(IEnumerable&lt;<span style=\"color:blue\">string</span>&gt; assemblies)\r\n            {\r\n                <span style=\"color:blue\">foreach</span> (<span style=\"color:blue\">string</span> assemblyPath <span style=\"color:blue\">in</span> assemblies)\r\n                {\r\n                    <span style=\"color:blue\">try</span>\r\n                    {\r\n                        Assembly.ReflectionOnlyLoadFrom(assemblyPath);\r\n                    }\r\n                    <span style=\"color:blue\">catch</span> (FileNotFoundException)\r\n                    {\r\n                        <span style=\"color:green\">// Continue loading assemblies even if an assembly can not be loaded in the new AppDomain</span>\r\n                    }\r\n                    <span style=\"color:blue\">catch</span> (BadImageFormatException)\r\n                    {\r\n                        <span style=\"color:green\">//Your code here</span>\r\n                    }\r\n                }\r\n            }\r\n</pre>\r\n</div>\r\n<br></span></p>\r\n<p id=796b5930-2dff-012d-0422-12313b069c21>This approach will still  provide the automatic capabilities of deploying new modules by creating  the assembly and does not require any configuration.</p>\r\n<p id=796b9530-2dff-012d-0423-12313b069c21>Another possible approach if  you want explicit control about the assemblies to load could be <a href=\"http://msdn.microsoft.com/en-us/library/dd458908.aspx\">using a  configuration file to populate the catalog</a>. This is probably  something that you might not be inclined to do, as you probably selected  the <strong>DirectoryCatalog</strong> approach to avoid having to  configure any files, but it avoids having to create the extra classes.</p>\r\n<p>This issue is <a href=\"../WorkItem/View.aspx?WorkItemId=4022\">registered  in the Issue Tracker</a> so you might want to vote for it and the team  might take the suggestion into account for a future version.</p>\r\n<p id=796bfd00-2dff-012d-0425-12313b069c21>Please let me know if this  helps.</p>\r\n<p id=796c3180-2dff-012d-0426-12313b069c21>Damian  Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-04-19T11:48:26.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "432830",
+    "ThreadId": "209706",
+    "Html": "<p>Great thanks for the info! I didn't look in the issuetracker, shame on me. I voted.</p>\r\n<p>Jasper</p>",
+    "PostedDate": "2010-04-19T12:17:18.167-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

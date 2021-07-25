@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "514848",
+    "ThreadId": "232868",
+    "Html": "\r\n<p>When a TabControl region is the target for navigation, I expected all of the existing tab item views/view-models to be queried if they implemented\r\n<span style=\"color:#008080\">INavigationAware</span>. This does not seem to be the case.</p>\r\n<p>I am using Prism v4 Drop 10 and MEF in my navigation scenario. My <span style=\"color:#008080\">\r\nTestTabView</span>, a <span style=\"color:#008080\">UserControl</span>, has attributes:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>[<span style=\"color:#008080\">Export</span>(<span style=\"color:#a31515\">&quot;TestTab&quot;</span>)]\r\n[<span style=\"color:#008080\">PartCreationPolicy</span>(System.ComponentModel.Composition.<span style=\"color:#008080\">CreationPolicy</span>.NonShared)]</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p><span style=\"font-size:13.2px\">I navigate to it like this:</span></p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>regionManager.Regions[<span style=\"color:#008080\">ShellRegions</span>.Tabs].RequestNavigate(<span style=\"color:#a31515\">&quot;/TestTab&quot;</span>);\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>This works, except every time I call RequestNavigate, a new <span style=\"color:#008080\">\r\nTestTabView </span>is created and the existing one is never queried via <span style=\"color:#008080\">\r\nINavigationAware</span>.IsNavigationTarget. The <span style=\"color:#008080\">TestTabViewModel</span> also implements\r\n<span style=\"color:#008080\">INavigationAware </span>and it is not queried either. I also tried changing to\r\n<span style=\"color:#008080\">CreationPolicy</span>.Shared, but all that does is keep re-using the same view instance and the&nbsp;<span style=\"color:#008080\">INavigationAware</span>.IsNavigationTarget is still not queried on the view or view-model.</p>\r\n<p>Any suggestions? The quickstart only shows a <span style=\"color:#008080\">ContentControl</span>&nbsp;navigation example.</p>\r\n",
+    "PostedDate": "2010-10-30T00:41:22.913-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514849",
+    "ThreadId": "232868",
+    "Html": "\r\n<p>The overall scenario that I'm trying to implement is documented in another thread -&nbsp;<a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=232599\">http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=232599</a></p>\r\n",
+    "PostedDate": "2010-10-30T00:43:49.81-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "515076",
+    "ThreadId": "232868",
+    "Html": "\r\n<p>Figured out the problem. [Export(&quot;TestTab&quot;)] had to be changed to [Export(&quot;TestTabView&quot;)] so that the name of the contract matched the name of the class type.</p>\r\n<p>More details in a comment on this related issue -&nbsp;<a href=\"http://compositewpf.codeplex.com/workitem/7468\">http://compositewpf.codeplex.com/workitem/7468</a></p>\r\n",
+    "PostedDate": "2010-10-31T01:51:24.61-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "516085",
+    "ThreadId": "232868",
+    "Html": "\r\n<p>Hi Wayne,</p>\r\n<p>I am glad that you figured out the problem in your scenario. Based on this information, I assume that the work-item 7468 can be closed.</p>\r\n<p>Please let me know if you have any other question.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n",
+    "PostedDate": "2010-11-02T12:12:59.497-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "516153",
+    "ThreadId": "232868",
+    "Html": "\r\n<p>Well, no I don't think it should be closed because there is still a bug.</p>\r\n<p>According to the documentation, the navigation string does not have to be the same as the type name. However in that issue I have shown that it DOES have to be the type name in order for the INavigationAware.IsNavigationTarget method to get called at all.</p>\r\n",
+    "PostedDate": "2010-11-02T14:51:45.51-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

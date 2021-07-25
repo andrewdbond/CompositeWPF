@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1345711",
+    "ThreadId": "578555",
+    "Html": "How can I wait for all subscribers to complete after a I publish an event before I continue execution to the next statement.<br />\n\r<br />\n_eventAggregator.GetEvent&lt;MyEvent&gt;().Publish(myData);\r<br />\n//wait for all subscribers to complete?\r<br />\nDoSomething()<br />\n",
+    "PostedDate": "2015-01-25T21:38:14.253-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1345749",
+    "ThreadId": "578555",
+    "Html": "Unless your subscribers are executing asynchronously, execution won't continue until all have completed. Your code should work just fine as is<br />\n",
+    "PostedDate": "2015-01-26T02:46:17.583-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1345813",
+    "ThreadId": "578555",
+    "Html": "I have two publish events in a method.  I want all the subscribers to finish the first publish before I call the second.  None of the subscribers are being called while the method is executing.  The first time a subscriber is called is after the method is completed.  One way I can force the subscribers to get called after the first publish is by using Application.DoEvents().  But after reading about this online it says that we should not call this.  Is there another way to achieve this?<br />\n",
+    "PostedDate": "2015-01-26T07:33:26.977-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1346423",
+    "ThreadId": "578555",
+    "Html": "What you want is not possible without some other form of external locking based on the design of PubSubEvents (which I was directly part of). Events are supposed to be fire and forget from the publishers perspective. Because of the thread dispatching mechanisms of PubSubEvents that allows the subscriber to choose whether to handle the event on the publisher's thread (default), the UI thread, or a background thread, there is no way for the publisher to be sure if the subscriber has finished processing the event or not, nor in which order subscribers are notified.\r<br />\n<br />\nIf you want a more synchronous pub-sub like mechanism for something like you describe, I recommend using CompositeCommands. Those to have a pub-sub like semantic to them (you can register and unregister one or more loosely coupled handlers), but they have an imperative API to them - the &quot;publisher&quot; (command invoker) is explicitly saying &quot;go do this now&quot; and if multiple command handlers are registered, the Execute method will not return until all of the registered command handlers have been invoked and returned. There is no thread dispatching options with CompositeCommands.\r<br />\n<br />\nThere is still nothing stopping a handler from spinning up a separate thread in their handler for the command or handing it asynchronously with an async void Execute handler, but you at least get a guarantee of synchronous dispatch to the handler method start that you can't have (by design) with PubSubEvents.<br />\n",
+    "PostedDate": "2015-01-27T12:41:50.367-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1346428",
+    "ThreadId": "578555",
+    "Html": "Thank you for the response<br />\n",
+    "PostedDate": "2015-01-27T12:47:25.1-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

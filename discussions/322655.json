@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "774591",
+    "ThreadId": "322655",
+    "Html": "\r\n<p>I have a view let's call it 'NestedView', which defines nested region, due to lack of nested region support in XAML I create a view in UserControl constructor like this:</p>\r\n<p>&nbsp;</p>\r\n<pre>RegionManager.SetRegionName(RegionControl, &quot;MyRegionName&quot;);\r\nRegionManager.SetRegionManager(RegionControl, _globalRegionManager);</pre>\r\n<p>'NestedView' is shown (added) to some region let's call it 'MainRegion', at some time I need to close this view (remove it from 'MainRegion'). But If I simply remove 'NestedView' from 'MainRegion', the region it has registered 'MyRegionName' will remain\r\n registered, and the next time I will try to open 'NestedView' it will throw exception that region 'MeregionName' already registered.</p>\r\n<p>&nbsp;</p>\r\n<p>So I need to make sure that when I close view that contains regions, they are unregistered, and all views they contain are disposed. What is the best way to do this?</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-02-17T04:50:38.197-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "775035",
+    "ThreadId": "322655",
+    "Html": "<p>Hi,</p>\r\n<p>I believe, your problem might be related to a known memory leak issue in prism when removing view with child regions inside, you could find more information about this and a possible work around in the following work items:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/workitem/3896\">RegionManagerRegistrationBehavior never stop monitoring the RegionManager</a></li>\r\n<li><a href=\"../workitem/5657\">Remove view does not remove all sub-views</a></li>\r\n</ul>\r\n<p>Additionally, you might find useful to know that since <a href=\"http://compositewpf.codeplex.com/SourceControl/changeset/changes/65392\">Prism 4.1 final release</a>, to support this scenario, an optional behavior was added that will clear the <strong>RegionManager </strong>attached properties on those regions to force their removal from the region manager.</p>\r\n<p>You could find more information about this changes this in the Prism 4.1 <strong>readme.mht</strong> file included in this release.</p>\r\n<p>I hope you find this helpful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-02-17T06:50:22.367-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "1298660",
+    "ThreadId": "565097",
+    "Html": "I noticed something peculiar today. My application has a custom ModuleCatalog that will load the module details from a service. Obviously, this is a long running process, so I made the load asynchronous and plan to run what needs to be run afterwards. I'm using an event to notify when it's complete (I haven't worked out the specifics of how that's going to work in my boostrapper yet).\r<br />\n<br />\nWhat I noticed when I wired up my event in ConfigureModuleCatalog (I also tried it in CreateModuleCatalog) is that the handler is null when it gets time to be fired. Through a little work I determined that the IModuleCatalog returned by CreateModuleCatalog and modified in ConfigureModuleCatalog is not being used to load the modules. Instead a new instance of my ModuleCatalog class is being created. Obviously, the new one doesn't have the handler set, so nothing happens.\r<br />\n<br />\nAdditionally, even with this behavior you have to override CreateModuleCatalog; otherwise, you get an exception in the Run method of the bootstrapper.\r<br />\n<br />\nIs this a bug, or am I missing something?<br />\n",
+    "PostedDate": "2014-09-03T09:46:54.54-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "602534",
+    "ThreadId": "255203",
+    "Html": "\r\n<p><span style=\"color:#000000\">I wanted to refactor my module project and for starter I just changed the xap name from ModuleA.xap to Mynamespace.Mymodule.xap. I also changed entry in ModuleCatalog.xml to\r\n</span><br>\r\n<span style=\"color:#000000\"><span style=\"font-size:9.5pt\">&lt;</span><span style=\"font-size:9.5pt\">Modularity</span><span style=\"font-size:9.5pt\">:</span><span style=\"font-size:9.5pt\">ModuleInfo</span><span style=\"font-size:9.5pt\"> Ref</span><span style=\"font-size:9.5pt\">=&quot;</span>\r\n Mynamespace.Mymodule<span style=\"font-size:9.5pt\">.xap&quot;</span><span style=\"font-size:9.5pt\"> InitializationMode</span><span style=\"font-size:9.5pt\">=&quot;WhenAvailable&quot;</span><span style=\"font-size:9.5pt\"> ModuleName</span><span style=\"font-size:9.5pt\">=&quot;ModuleA&quot;&gt;<br>\r\nModule name stayed the same (ModuleA) in ModuleCatalog.xml as well as in ModuleInit, like:</span></span></p>\r\n<p><span style=\"color:#000000\"><span style=\"font-size:9.5pt\">namespace ModuleA {<br>\r\n</span><span style=\"font-size:9.5pt\">&nbsp;&nbsp; [ModuleExport(&quot;ModuleA&quot;, typeof(ModuleInit))]<br>\r\n</span><span style=\"font-size:9.5pt\">&nbsp;&nbsp; public class ModuleInit : IModule, IModuleInit {<br>\r\n</span><span style=\"font-size:9.5pt\">&hellip;.</span></span></p>\r\n<p><span style=\"color:#000000\"><span style=\"font-size:9.5pt\">When I tried to run it I noticed that all the named elements in my views, like &ldquo;group&rdquo; here:<br>\r\n</span><span style=\"font-size:9.5pt\">&lt;</span><span style=\"font-size:9.5pt\">TextBlock</span><span style=\"font-size:9.5pt\"> x</span><span style=\"font-size:9.5pt\">:</span><span style=\"font-size:9.5pt\">Name</span><span style=\"font-size:9.5pt\">=&quot;group&quot;</span><span style=\"font-size:9.5pt\">\r\n TextWrapping</span><span style=\"font-size:9.5pt\">=&quot;Wrap&quot;</span><span style=\"font-size:9.5pt\"> FontWeight</span><span style=\"font-size:9.5pt\">=&quot;Normal&quot;/&gt;<br>\r\n</span><span style=\"font-size:9.5pt\">Are not recognized any more in code behind where I get null for this.group&nbsp;reference.</span></span></p>\r\n<p><span style=\"color:#000000; font-size:9.5pt\">Any explanation for this kind of behavior?</span></p>\r\n<p><span style=\"color:#000000; font-size:9.5pt\">Thanks.</span></p>\r\n",
+    "PostedDate": "2011-04-25T11:32:34.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602592",
+    "ThreadId": "255203",
+    "Html": "<p>Hi,</p>\r\n<p>We've tried to reproduce the behavior you're mentioning, but we were unable to. Aside from the xap filename, have you changed the assembly name of your module?</p>\r\n<p>Thanks,</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-04-25T13:27:17.583-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602739",
+    "ThreadId": "255203",
+    "Html": "<p>Yes. I changed assembly name too.</p>",
+    "PostedDate": "2011-04-26T00:25:36.687-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "603594",
+    "ThreadId": "255203",
+    "Html": "<p>Hi,</p>\n<p>You should take into account that, if you change the assembly name of your module's project, you need to modify the ModuleType in the modules catalog. For example, if you had the following entry:</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre>ModuleType=\"ModuleB.ModuleB, ModuleB, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\"\n</pre>\n</div>\n<p>&nbsp;</p>\n<p>and you changed the assembly name to ModuleBChanged, you should update it to this:</p>\n<pre><div style=\"color: black; background-color: white;\"><pre>ModuleType=\"ModuleBChanged.ModuleB, ModuleB, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\"\n</pre>\n</div>\n<br /></pre>\n<p>Therefore, you could try specifying the Module Type taking into account the aforementioned consideration.</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-04-27T07:25:55.99-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

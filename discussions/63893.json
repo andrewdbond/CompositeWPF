@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "217251",
+    "ThreadId": "63893",
+    "Html": "<p>I'm using Prism 2 with Silverlight 2. I've looked at the Popup region adapter logic in the StockTrader application (RegionPopupBehaviors.cs and associated logic)&nbsp;and have used the same logic in my application. It means I can assign a region to a popup and load a view into that region and is working well except&nbsp;if I put any listboxes in the&nbsp;content within the popup&nbsp;and then click on them I get the following error : System.Exception: Catastrophic failure (Exception from HRESULT: 0x8000FFFF (E_UNEXPECTED)). Looking on the net&nbsp;it seems it might be related&nbsp;to the&nbsp;registering of the popup with the visual tree. I've set the popup region in my shell.xaml and am referencing that region from other modules successfully but crashes with listboxes. Just wondering if anyone had any ideas. I'm going to look into more to see if I can see what it might be.</p>\r\n<p><span style=\"font-size:x-small\">This is the reference code in my shell.xaml (I'm using the same namespace for now as the StockTrader application)</span></p>\r\n<p>\r\n<p><span style=\"color:#ff0000;font-size:x-small\"><span style=\"color:#ff0000;font-size:x-small\">xmlns</span></span><span style=\"color:#0000ff;font-size:x-small\"><span style=\"color:#0000ff;font-size:x-small\">:</span></span><span style=\"color:#ff0000;font-size:x-small\"><span style=\"color:#ff0000;font-size:x-small\">infBehaviors</span></span><span style=\"color:#0000ff;font-size:x-small\"><span style=\"color:#0000ff;font-size:x-small\">=&quot;clr-namespace:StockTraderRI.Infrastructure.Behaviors;assembly=ShopPortal.Infrastructure&quot;</span></span></p>\r\n<p><span style=\"color:#ff0000;font-size:x-small\"><span style=\"color:#ff0000;font-size:x-small\">infBehaviors</span></span><span style=\"color:#0000ff;font-size:x-small\"><span style=\"color:#0000ff;font-size:x-small\">:</span></span><span style=\"color:#ff0000;font-size:x-small\"><span style=\"color:#ff0000;font-size:x-small\">RegionPopupBehaviors.CreatePopupRegionWithName</span></span><span style=\"color:#0000ff;font-size:x-small\"><span style=\"color:#0000ff;font-size:x-small\">=&quot;PopupRegion&quot;</span></span><span style=\"font-size:x-small\"> &lt;font size=&quot;2&quot;&gt;\r\n<p>&nbsp;</p>\r\n&lt;/font&gt;</span></p>\r\n</p>\r\n<p><span style=\"color:#ff0000;font-size:x-small\"><span style=\"color:#ff0000;font-size:x-small\">infBehaviors</span></span><span style=\"color:#0000ff;font-size:x-small\"><span style=\"color:#0000ff;font-size:x-small\">:</span></span><span style=\"color:#ff0000;font-size:x-small\"><span style=\"color:#ff0000;font-size:x-small\">RegionPopupBehaviors.ContainerWindowStyle</span></span><span style=\"color:#0000ff;font-size:x-small\"><span style=\"color:#0000ff;font-size:x-small\">=&quot;{</span></span><span style=\"color:#a31515;font-size:x-small\"><span style=\"color:#a31515;font-size:x-small\">StaticResource</span></span><span style=\"color:#ff0000;font-size:x-small\"><span style=\"color:#ff0000;font-size:x-small\"> PopupStyle</span></span><span style=\"color:#0000ff;font-size:x-small\"><span style=\"color:#0000ff;font-size:x-small\">}&quot;</span></span></p>\r\n<p><span style=\"color:#000000\">Thanks</span></p>\r\n<p><span style=\"color:#000000\">Gavin</span></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-29T09:49:37.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "217277",
+    "ThreadId": "63893",
+    "Html": "<p>Hi Gavin,</p>\r\n<p>The following article explains the cause of this issue and provides a workaround for it:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/Wiki/View.aspx?title=Popup region throws error if the region it contains has an items control.&referringTitle=Knowledge Base\">Popup region throws error if the region it contains has an items control</a></li>\r\n</ul>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><span style=\"font-size:11pt\" lang=EN-US><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></span></p>",
+    "PostedDate": "2009-07-29T10:34:32.807-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "217309",
+    "ThreadId": "63893",
+    "Html": "<p>Hi Damian</p>\r\n<p>Thanks for getting back so quickly. Yes that fixed it and all working. I could see after a bit more research after writing the post that I needed to add the popup to the visual tree but couldn't see a clean way of doing it within the Popup Region adapter. This code you've shown me does the job.</p>\r\n<p>Many Thanks</p>\r\n<p>Gavin</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-29T11:59:06.917-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

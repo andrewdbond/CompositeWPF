@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1005334",
+    "ThreadId": "434144",
+    "Html": "Hi,<br />\nI'm using Prism-Mef, i have RegionB which is nested inside RegionA<br />\nWhen i declare:<br />\n<pre><code> IRegion regionB= regionManager.Regions[RegionNames.RegionB];\n</code></pre>\n\ni got the exception:<br />\n<pre><code>The region manager does not contain the RegionB region.\n</code></pre>\n\n1-How i can access RegionB to Add view to it, knowing that i will use it as a scoped region.<br />\n2-If i have a third level of nesting: for example RegionC which is nested inside RegionB, how can use RegionC to add a View<br />\n<br />\nThanks in advance.<br />\n",
+    "PostedDate": "2013-02-22T09:43:05.493-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005366",
+    "ThreadId": "434144",
+    "Html": "Hi,\r<br />\n<br />\nBased on your description it seems that the cause of the exception is that you are searching for the <strong>RegionB</strong> in the main region manager instead of the scoped one: The <strong>RegionB</strong> is a scoped region inside the <strong>ViewA</strong> , so it will be register in the scoped region manager of the <strong>ViewA</strong> and not in the main one. Hence, in order to obtain the <strong>RegionB</strong> you need to access that region manager (lets call it <strong>RegionManagerA</strong> .)\r<br />\n<br />\nAs out of the box, <strong>Prism</strong> does not provide any functionality to access scoped region managers, so you will to implement your custom logic to store and retrieve them in order to use them later. How to implement this functionality will depend of the architecture of your application, its requirements and your personal preferences. For example, if you need to obtain the <strong>RegionB</strong> inside a controller, when injecting the <strong>ViewA</strong> and receiving its <strong>RegionManagerA</strong>  you could also store the region manager in the controller (for example using an event) so that later the controller will be able to use it.\r<br />\n<br />\nAs a side note, if for example you need to obtain the <strong>RegionManagerA</strong> in the <strong>ViewModelA</strong> in order to inject or navigate to a view in the <strong>RegionB</strong> , I believe you could find the <strong>RegionManagerAwareBehavior</strong> I developed for the following blog post interesting:<br />\n<ul>\n<li>\n<a href=\"http://blogs.southworks.net/dcherubini/2011/11/10/regions-inside-datatemplates-in-prism-v4-using-a-region-behavior/\" rel=\"nofollow\">Regions inside DataTemplates in Prism v4 using a region behavior</a><br />\n</li>\n</ul>\nAlthough, the behaviors was initially designed for other purposes, it allows a view / view model to find their corresponding view model in the visual tree. Hence, it can be useful to obtain the <strong>RegionManagerA</strong> inside the <strong>ViewModelA</strong> .\r<br />\n<br />\nThese same concepts can be also applied for sub-nested regions and views.\r<br />\n<br />\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-02-22T10:58:02.47-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1005374",
+    "ThreadId": "434144",
+    "Html": "Hi Damian,\r<br />\nThanks for your quick response.\r<br />\ni have the following method in ControllerB in ModuleB which is triggered by EventAggregator\r<br />\nto add ViewB=&quot;TestPacksView&quot; in RegionB=&quot;TestPackGridRegion&quot; which is nested inside RegionA\r<br />\nthat exist in a ViewA in ModuleA.\r<br />\nHow exactly i can modify this code to access the nested region &quot;TestPackGridRegion&quot; and add &quot;TestPacksView&quot;<br />\n<pre><code> private void ShowTestPacksGrid(PreCommissioning.Model.Subsystem Subsys)\n        {   \n            IRegion pipingRegion = regionManager.Regions[RegionNames.TestPackGridRegion];\n            \n            object existingView = pipingRegion.GetView(&quot;TestPacksView&quot;);\n\n\n            if (existingView == null)\n            {\n                // the view does not exist yet. Create it and push it into the region\n                testPacksViewModel.SetSubsystem(Subsys);\n\n                existingView = ServiceLocator.Current.GetInstance&lt;ITestPacksView&gt;();\n                pipingRegion.Add(existingView, &quot;TestPacksView&quot;,true);\n            }\n            else\n            {\n                // The view already exists. Just show it. \n                pipingRegion.Activate(existingView);\n            }\n            \n            \n        }\n\n</code></pre>\n\nYour help is very much appreciated.<br />\n",
+    "PostedDate": "2013-02-22T11:15:55.107-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1007207",
+    "ThreadId": "434144",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding, you have to access the <strong>RegionManager</strong> attached to the <strong>ViewA</strong> view in order for this code to work. If you know in which region the <strong>ViewA</strong> is injected, a quick workaround for doing so (although not the best one) could be to obtain the <strong>ViewA</strong> from that region, then obtain the <strong>RegionManager</strong> from that view.\r<br />\n<br />\nBasically, the <strong>RegionManagers</strong> are stored in their corresponding views as attached properties. Using the <strong>GetRegionManager</strong> static method of the <strong>RegionManager</strong> class you can obtain the <strong>RegionManager</strong> attached to a control. Hence, you could do something like this:<br />\n<ul>\n<li>Obtain the <strong>RegionA</strong> from the common <strong>RegionManager</strong></li>\n<li>Obtain the <strong>ViewA</strong> from the <strong>RegionA</strong> , for example using the <strong>GetView</strong> method</li>\n<li>\nObtain the scoped <strong>RegionManager</strong> from the <strong>ViewA</strong> using the <strong>GetRegionManager</strong> method. This <strong>RegionManager</strong> should contain the <strong>TestPackGridRegion</strong> .<br />\n</li>\n</ul>\nThe rest of the code would be the same, but using the second <strong>RegionManager</strong> .\r<br />\n<br />\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-02-26T12:45:18.883-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

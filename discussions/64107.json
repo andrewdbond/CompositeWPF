@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "217978",
+    "ThreadId": "64107",
+    "Html": "<p>I am just getting started with Prism, after building&nbsp;traditional apps structured around domain-driven design. I have typically put my domain model and data-access layer in separate projects. The Prism documentation suggests that I should partition my model and data-access, and then incorporate the relevant portions into each module.</p>\r\n<p>What is considered best practice?</p>\r\n<p>-- Treat a domain model and data-access as cross-cutting concerns, and keep them in their own loosely-coupled projects?</p>\r\n<p>-- Partition them and incorporate them into the app's modules?</p>\r\n<p>If there is no clear best practice, what would you see as the pros and cons of each approach? Or, if the answer is &quot;It depends&quot;, on what sorts of things would it depend? Thanks for your help.</p>\r\n<p>David Veeneman<br>Foresight Systems</p>",
+    "PostedDate": "2009-07-31T05:51:49.263-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218011",
+    "ThreadId": "64107",
+    "Html": "<p>Since PRISM is a <a href=\"http://msdn.microsoft.com/en-us/magazine/ee321573.aspx\">multi-targeting framework</a> it is my practice to keep my implementation of the data access layer (DAL)&nbsp;interface(s) as &quot;their own loosely-coupled projects&quot;.&nbsp;&nbsp; This way each platform can configure it's own implementation of the DAL&nbsp;interface.&nbsp; For example, in an open source application I am creating (to be activated/released late August) I have a WPF, Silverlight, <strong>RIA</strong>&nbsp;and <strong>WinForms</strong> applications sharing the same codebase (using <a href=\"http://www.global-webnet.net/blogengine/post/2009/01/10/Project-Linker-sharing-single-code-base-between-Silverlight-and-Desktop-applications.aspx\">project linking</a>); I have PrismContrib.xxxxx projects (where xxxxx is WPF, Silverlight and WinForms) that manage the differences for the PRISM framework.</p>\r\n<p>The RIA application&nbsp;implements IDataService using an .NET RIA Service (<a href=\"http://www.global-webnet.net/blogengine/post/2009/07/27/How-to-use-NET-RIA-Services-in-PRISM.aspx\">blogged about here</a>).&nbsp; The WPF, Silverlight and WinForm applications currently implement stubbed in data (work in progress).&nbsp;&nbsp; With the RIA proof of concept out of the way I'll now create a WCF Async service that can be shared by the WPF, Silverlight and WinForm applications.&nbsp;&nbsp;</p>\r\n<p>Within this context it would not be practical to have each data layer&nbsp;incorporated into the module (not extensible nor reusable).&nbsp; I do however have a&nbsp;Service within the module which acts more as a business logic layer - it is shared&nbsp;across each platform and dependency injection dictates which DAL implementation will be used.</p>\r\n<p>Side note:&nbsp; coding in this manner will minimize refactoring when you are ready to implement the Managed Extensibility Framework (MEF).</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-07-31T07:18:57.523-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218201",
+    "ThreadId": "64107",
+    "Html": "\r\n\r\n<div class=Section1>\r\n\r\n<p class=MsoNormal>Thanks—very helpful!</p>\r\n\r\n</div>\r\n\r\n",
+    "PostedDate": "2009-07-31T16:23:11.143-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

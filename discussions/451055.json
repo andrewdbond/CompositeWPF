@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "1072240",
+    "ThreadId": "451055",
+    "Html": "I'm using Prism 4 navigation, and Castle Windsor. I'm a bit unclear on view lifetime, and how to instantiate a new view each time I navigate to it. I've implemented the following:-<br />\n<ul>\n<li>Register the views/view-models with Windsor as &quot;transient&quot;</li>\n<li>\nMark the view-models with attribute &quot;[RegionMemberLifetime(KeepAlive = false)]&quot;<br />\n</li>\n</ul>\nSure enough, each time I navigate to a view using &quot;regionManager.RequestNavigate()&quot;, the constructor gets called, confirming that a new view is instantiated each time. But what happens to the &quot;old&quot; views? I'm finding that they are still responding to events published from my &quot;event aggregator&quot; service, so am I responsible for clearing up these old/inactive views, and if so how? <br />\n<br />\nLastly, one of my views has nested regions/views - assuming I've configured these views as above, will they be destroyed when the parent view gets destroyed?<br />\n",
+    "PostedDate": "2013-07-24T05:40:49.353-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1072279",
+    "ThreadId": "451055",
+    "Html": "For info, I've sorted the problem with the events by unsubscribing in the views' OnNavigatedFrom() method. However it makes me uneasy to think that these views aren't being destroyed for whatever reason, and are sitting around taking up memory. Am I missing something?<br />\n",
+    "PostedDate": "2013-07-24T06:43:34.927-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1072389",
+    "ThreadId": "451055",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding, the approach you took to solve the problem is the correct one. You need to unsubscribe when you navigate since the <strong>KeepAlive = false</strong> will only mark your <strong>ViewModel</strong> for garbage collection, but you can't control when the garbage collection occurs. For that reason, until the <strong>Garbage Collector</strong> runs, those old instances of your <strong>ViewModels</strong> will remain in memory, and that's the reason why they continue responding to events. Take into account that the <strong>Garbage Collector</strong> will remove these <strong>ViewModels</strong> as long as there are no strong references to them.\r<br />\n<br />\nRegarding your nested regions question, in order for you to remove a view and all nested regions/views contained in it afterwards, the following attached property must be defined in your view <strong>XAML</strong> like in the following code snippet: <br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n(...)\nxmlns:Regions=&quot;http://www.codeplex.com/prism&quot;\nRegionBehaviors:ClearChildViewsRegionBehavior.ClearChildViews=&quot;True&quot;&gt;\r\n</pre></div>You can find more information about this topic in the <a href=\"http://msdn.microsoft.com/en-us/library/gg405471%28v=pandp.40%29.aspx#sec10\" rel=\"nofollow\">Prism 4.1 Readme</a>.\r<br />\n<br />\nHope this helps,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a> <br />\n",
+    "PostedDate": "2013-07-24T09:40:38.223-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1072614",
+    "ThreadId": "451055",
+    "Html": "Hi Federico, thanks for your reply.\r<br />\n<br />\nAs the views/view-models are transient, and instantiated by Castle Windsor, I guess I just have to trust Windsor to release them! I don't know if it's possible to know when a view/VM is released - I tried implementing IDisposable and putting a breakpoint in Dispose(), but I've read somewhere that Castle Windsor doesn't honour IDisposable when releasing.\r<br />\n<br />\nRegarding the ClearChildViews attribute, I've tried this and it doesn't seem to do anything. Would you expect it to call OnNavigatedFrom() of each child view-model or is it some kind of &quot;internal&quot; cleanup routine?<br />\n",
+    "PostedDate": "2013-07-25T00:15:23.423-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1073009",
+    "ThreadId": "451055",
+    "Html": "Hi,\r<br />\n<br />\nAs you correctly pointed out, <strong>Castle Windsor</strong> discourages to implement <strong>IDisposable</strong> because the release policy can opt out of tracking components and therefore lose the ability to perform the proper destruction of the component. Also, take into account that <strong>Windsor</strong> may track components defined as &quot;transient&quot; when you <strong>Resolve</strong> their instances. In that case, you will need to <strong>Release</strong> them in order for the <strong>Garbage Collector</strong> to be able to reclaim them. In other words, you have to <strong>Release</strong> what you explicitly <strong>Resolved</strong>.\r<br />\n<br />\nRegarding the <strong>ClearChildViews</strong> attribute, if this attribute is correctly set and you remove a view that has a nested region, Prism should automatically remove the views from that nested region. Therefore, it won't invoke the view's navigation methods. If you need to check this, you could subscribe to the <strong>CollectionChanged</strong> event of the region views collection or verify that it is empty after you remove the view containing the nested region. \r<br />\n<br />\nRegards,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a> <br />\n",
+    "PostedDate": "2013-07-25T12:11:01.423-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1073341",
+    "ThreadId": "451055",
+    "Html": "My understanding of Windsor is that you must release what you explicitly resolve, but you don't have to worry about releasing (say) a transient that was instantiated during dependency injection, for example. \r<br />\n<br />\nHow does this notion fit in with Prism navigation? Prism presumably instantiates a view during region navigation (and the view in turn has its view-model DI'd via the constructor), but all this is happening &quot;under the covers&quot;, so do I need to worry about releasing transient views/view-models when they are finished with, and if so how/where would I do this?<br />\n",
+    "PostedDate": "2013-07-26T00:17:45.727-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1073585",
+    "ThreadId": "451055",
+    "Html": "Hi,\r<br />\n<br />\nAs you correctly pointed out, in <strong>Castle Windsor</strong> you only have to worry about releasing what you explicitly resolved. This means that you can be sure that, if you do this and you don't have any strong reference to your &quot;transient&quot; view/viewmodel, the view/viewmodel will be eventually reclaimed by the <strong>Garbage Collector</strong>.\r<br />\n<br />\nRegarding <strong>Prism navigation</strong>, after verifying that region exists and the view is able to navigate, it creates a new instance of the view/viewmodel using the <strong>ServiceLocator</strong>, adds it to the region, and then activates it. The <strong>Service Locator</strong> will use your container to create said instances. In order to do this, the <strong>Service Locator</strong> needs to have a location provider that it could use to delegate the creation logic to the container. Assuming you have an adapter in your <strong>Windsor</strong> container configured for the <strong>Service Locator</strong>, you should check how it retrieves the instances from the container so that you can be sure if you need to explicitly release your views/viewmodels.\r<br />\n<br />\nHope this helps,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a> <br />\n",
+    "PostedDate": "2013-07-26T10:06:51.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

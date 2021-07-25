@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "147955",
+    "ThreadId": "44453",
+    "Html": "I changed the references in my project to drop 9, and the shell was empty.<br>\r\n<br>\r\nI verified: the DirectoryModuleCatalog returns 0 items.<br>\r\n<br>\r\nJust come back to Drop 8 dll and everything is ok.<br>\r\n<br>\r\nMarcos \r\n",
+    "PostedDate": "2009-01-17T09:56:26.793-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "147991",
+    "ThreadId": "44453",
+    "Html": "Marcos,<br>\r\n<br>\r\nAre your module setting the StartupLoaded paremter of the ModuleAttribute by any chance?&nbsp; If you are, anywhere you have StartupLoaded = true (or StartupLoaded = false) can you try setting it to OnDemand=false (or OnDemand=true).<br>\r\nWe recently introduced the OnDemand attribute and are moving away from the StartupLoaded attribute.&nbsp; StartupLoaded should still work, but perhaps we missed something.<br>\r\n<br>\r\nThanks,<br>\r\n<br>\r\n-b \r\n",
+    "PostedDate": "2009-01-17T13:56:40.6-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "148022",
+    "ThreadId": "44453",
+    "Html": "You were right:  I change StartupLoaded=true for OnDemand=false and it's working.  StartapLoaded doesn' work.<br>\r\n<br>\r\nBy the way,  can you please show me where and how I load the modules I need when they are marked as OnDemand=true?<br>\r\n<br>\r\nThanks in advance,<br>\r\n<br>\r\nMarcos\r\n",
+    "PostedDate": "2009-01-17T18:13:04.427-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "148324",
+    "ThreadId": "44453",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Hi Marcos,</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span><span style=\"font-family:calibri\">Perhaps you might find useful the following topic in the documentation and quickstarts to load modules on demand. These are from the </span><a href=\"http://www.codeplex.com/CompositeWPF/Release/ProjectReleases.aspx?ReleaseId=21912\"><span style=\"color:#0000ff;font-family:calibri\">latest Prism-v2 drop</span></a><span style=\"font-family:calibri\">:</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt 36pt\"><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><span style=\"font-family:calibri\"><b>How to: Load Modules On Demand</b> (documentation topic).</span>\r\n<p style=\"margin:0cm 0cm 0pt 36pt\"><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><span style=\"font-family:calibri\"><b>RemoteModuleLoading </b>quickstart, in the <b>$Drop9$\\Quickstarts\\Modularity\\RemoteModuleLoading</b> folder, which uses the <b>ModuleCatalog.xaml</b> file to define how to load modules (DefaultViewY has the code to load the module on demand).</span>\r\n<p style=\"margin:0cm 0cm 0pt 36pt\"><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><span style=\"font-family:calibri\"><b>StaticModuleLoading </b>quickstart, in the <b>$Drop9$\\Quickstarts\\Modularity\\StaticModuleLoading</b> folder, which defines how to load modules via code (DefaultViewB has the code to load the module on demand).</span>\r\n<p style=\"margin:0cm 0cm 0pt 36pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-family:calibri\">Please let me know if this helps.</span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0cm 0cm 0pt -0.6pt\"><span style=\"font-family:calibri\">Damian Schenkelman</span></p>\r\n<span style=\"font-size:11pt;font-family:'calibri','sans-serif'\"><a href=\"http://blogs.southworks.net/dschenkelman\"><span style=\"color:#0000ff\">http://blogs.southworks.net/dschenkelman</span></a></span></span></p>\r\n</span></p>\r\n</span></p>\r\n",
+    "PostedDate": "2009-01-19T05:49:01.213-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "148789",
+    "ThreadId": "44453",
+    "Html": "<p>Hi Damian,</p>\r\n<p>Thanks for your answer.  I still can't found where to put the code in the boostrapper with DirectoryModuleCatalog.  Here is my bootstrapper:<br>\r\npublic class Bootstrapper : UnityBootstrapper<br>\r\n    {<br>\r\n        protected override IModuleCatalog GetModuleCatalog()<br>\r\n        {<br>\r\n            return new DirectoryModuleCatalog() { ModulePath = @&quot;.\\Modules&quot; };<br>\r\n        }</p>\r\n<p>        protected override void ConfigureContainer()<br>\r\n        {<br>\r\n            Container.RegisterType&lt;IShell, Shell&gt;(new ContainerControlledLifetimeManager());<br>\r\n            base.ConfigureContainer();<br>\r\n        }</p>\r\n<p>        protected override DependencyObject CreateShell()<br>\r\n        {<br>\r\n            ShellPresenter presenter = Container.Resolve&lt;ShellPresenter&gt;();<br>\r\n            IShell view = presenter.View;<br>\r\n            view.ShowView();<br>\r\n            <br>\r\n            return view as DependencyObject;</p>\r\n<p>        }<br>\r\n    }<br>\r\n<br>\r\nWhere I load de modules I need ?  Thanks in advance;<br>\r\n<br>\r\nMarcos</p>\r\n",
+    "PostedDate": "2009-01-20T09:30:56.89-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "148838",
+    "ThreadId": "44453",
+    "Html": "<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Hi Marcos,</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">To load a module on demand using the <b>DirectoryModuleCatalog</b> class you do not need to add any extra code in the <b>Boostrapper</b> class (you need to be sure that all modules assemblies are located in the <b>$SolutionPath$\\bin\\Debug\\Modules</b> folder). </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Generally, the code that loads a module on demand is executed in response to an event, like the user clicking in a button.</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">You need to add the following code to the class in charge of handling the event raised to load the module:</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.25in\"><span><span style=\"font-family:calibri\">1.</span><span style=\"font:7pt 'times new roman'\">       </span></span><span style=\"font-family:calibri\">Get a reference to the Module Manager.</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'courier new'\">private readonly IModuleManager moduleManager;</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'courier new'\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'courier new'\">// Constructor.</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'courier new'\">public MyClass(IModuleManager moduleManager)</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'courier new'\">{</span></p>\r\n<p style=\"margin:0in 0in 0pt 1in\"><span style=\"font-size:10pt;font-family:'courier new'\">this.moduleManager = moduleManager;</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'courier new'\">}</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt 0.25in\"><span><span style=\"font-family:calibri\">2.</span><span style=\"font:7pt 'times new roman'\">       </span></span><span style=\"font-family:calibri\">When you want to load a module, execute the <b>LoadModule</b> method of the Module Manager passing the module name (which is set through the ModuleName property of the ModuleAttribute) as a parameter.</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'courier new'\">// The user clicks in a button.</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'courier new'\">private void OnLoadModuleCClick(object sender, RoutedEventArgs e)</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'courier new'\">{</span></p>\r\n<p style=\"margin:0in 0in 0pt 1in\"><span style=\"font-size:10pt;font-family:'courier new'\">this.moduleManager.LoadModule(&quot;MyOnDemandModule&quot;);</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'courier new'\">}</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">For more information related to this you can check the following:</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.25in\"><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><span style=\"font-family:calibri\">The <b>DirectoryLookupModularity Quickstart</b> located in the <b>$Prism v2 – Drop 9 Path$\\Quickstarts\\Modularity\\DirectoryLookupModularity</b> folder.</span>\r\n<p style=\"margin:0in 0in 0pt 0.25in\"><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><span style=\"font-family:calibri\">The <b>Development Activities  -&gt; How to: Load Modules On Demand</b> topic in the documentation.</span>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Please let me know if this helps.</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Mariano Converti</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><a href=\"http://blogs.southworks.net/mconverti\"><span style=\"font-family:calibri\">http://blogs.southworks.net/mconverti</span></a> </p>\r\n</span></p>\r\n</span></p>\r\n",
+    "PostedDate": "2009-01-20T11:26:39.543-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "148857",
+    "ThreadId": "44453",
+    "Html": "Hi Mariano,<br>\r\n<br>\r\nThanks for the help.  My problem is to load the modules I need in the bootstrapper.  That let me to reuse the shell with different subsystems, without having different directories with lot of common components.<br>\r\n<br>\r\nHow can I get the reference to the <span style=\"font-family:courier new;font-size:13px\">moduleManager</span> in the bootstrapper?<br>\r\n<br>\r\nMarcos\r\n",
+    "PostedDate": "2009-01-20T11:55:59.593-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

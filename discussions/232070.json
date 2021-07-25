@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "511524",
+    "ThreadId": "232070",
+    "Html": "\r\n<p>Hi all,</p>\r\n<p>I am building WPF application with Prism 2.2 &#43; one DLL from Expression Blend SDK System.Windows.Interactivity.dll.</p>\r\n<p>In my bootstrap I have configured to load modules from same directory of EXE file</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>\t\t<span style=\"color:blue\">protected</span> <span style=\"color:blue\">override</span> IModuleCatalog GetModuleCatalog() {\r\n\t\t\t<span style=\"color:blue\">var</span> catalog = <span style=\"color:blue\">new</span> DirectoryModuleCatalog() { ModulePath = <span style=\"color:#a31515\">@&quot;./&quot;</span> };\r\n\t\t\t<span style=\"color:blue\">return</span> catalog;\r\n\t\t}\r\n</pre>\r\n</div>\r\n<p>In my satellite projects System.Windows.Interactivity.dll is referenced, thus this DLL is also copied to same directory of EXE and all modules.</p>\r\n<p>When I run the application Prism 2.2 throws exception</p>\r\n<p>System.TypeLoadException was unhandled<br>\r\n&nbsp; Message=GenericArguments[0], 'System.Windows.FrameworkElement', on 'System.Windows.Interactivity.Behavior`1[T]' violates the constraint of type parameter 'T'.<br>\r\n&nbsp; Source=mscorlib<br>\r\n&nbsp; TypeName=&quot;&quot;<br>\r\n&nbsp; StackTrace:<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Reflection.RuntimeAssembly.GetExportedTypes(RuntimeAssembly assembly, ObjectHandleOnStack retTypes)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Reflection.RuntimeAssembly.GetExportedTypes()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Microsoft.Practices.Composite.Modularity.DirectoryModuleCatalog.InnerModuleInfoLoader.&lt;&gt;c__DisplayClass2b.&lt;GetNotAllreadyLoadedModuleInfos&gt;b__27(FileInfo file)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Linq.Enumerable.&lt;SelectManyIterator&gt;d__14`2.MoveNext()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Linq.Buffer`1..ctor(IEnumerable`1 source)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Linq.Enumerable.ToArray[TSource](IEnumerable`1 source)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Microsoft.Practices.Composite.Modularity.DirectoryModuleCatalog.InnerModuleInfoLoader.GetModuleInfos(String path)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Microsoft.Practices.Composite.Modularity.DirectoryModuleCatalog.InnerModuleInfoLoader.GetModuleInfos(String path)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Microsoft.Practices.Composite.Modularity.DirectoryModuleCatalog.InnerLoad()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Microsoft.Practices.Composite.Modularity.ModuleCatalog.Load()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Microsoft.Practices.Composite.Modularity.ModuleCatalog.Initialize()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Microsoft.Practices.Composite.Modularity.ModuleManager.Run()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Microsoft.Practices.Composite.UnityExtensions.UnityBootstrapper.InitializeModules()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Microsoft.Practices.Composite.UnityExtensions.UnityBootstrapper.Run(Boolean runWithDefaultConfiguration)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Microsoft.Practices.Composite.UnityExtensions.UnityBootstrapper.Run()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at HardySoft.Clinic.App..ctor() in D:\\Projects\\HardyTest\\HardyTest.Shell\\app.xaml.cs:line 15<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at HardySoft.Clinic.App.Main() in D:\\Projects\\HardyTest\\HardyTest.Shell\\obj\\x86\\Debug\\App.g.cs:line 49<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.AppDomain._nExecuteAssembly(RuntimeAssembly assembly, String[] args)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.AppDomain.ExecuteAssembly(String assemblyFile, Evidence assemblySecurity, String[] args)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Microsoft.VisualStudio.HostingProcess.HostProc.RunUsersAssembly()<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Threading.ThreadHelper.ThreadStart_Context(Object state)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean ignoreSyncCtx)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Threading.ThreadHelper.ThreadStart()<br>\r\n&nbsp; InnerException:</p>\r\n<p>The file which throws exception is Prism 2.2\\CAL\\Desktop\\Composite\\Modularity\\DirectoryModuleCatalog.Desktop.cs in function InnerLoad at line of</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">this</span>.Items.AddRange(loader.GetModuleInfos(<span style=\"color:blue\">this</span>.ModulePath)); </pre>\r\n<pre>Any clue how to solve the problem?</pre>\r\n<pre>Thanks</pre>\r\n<pre>Hardy</pre>\r\n</div>\r\n",
+    "PostedDate": "2010-10-23T09:02:00.497-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "512988",
+    "ThreadId": "232070",
+    "Html": "\r\n<p>Hi Hardy,</p>\r\n<p>I checked this and found no issues when referencing the System.Windows.Interactivity assembly in a module using the DirectoryModuleCatalog class. So, I think that this might be related with the usage of System.Windows.Interactivity.Behavior&lt;T&gt; in your\r\n module.</p>\r\n<p>Based on the message you are passing a non supported type in the creation of a behavior. Please, take into account that you must assign an type that derives from DependencyObject.</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n",
+    "PostedDate": "2010-10-26T14:26:57.097-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "513057",
+    "ThreadId": "232070",
+    "Html": "\r\n<p>Hi Fernado,</p>\r\n<p>I physically copyied System.Windows.Interactivity.dll to the same directory of my modules. I am not sure when you refer to &quot;when referencing the System.Windows.Interactivity assembly&quot;, do you mean you reference to the GAC or local DLL?</p>\r\n<p>Thanks</p>\r\n<p>Hardy</p>\r\n",
+    "PostedDate": "2010-10-26T16:48:58.637-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "513974",
+    "ThreadId": "232070",
+    "Html": "\r\n<p>Hi Hardy,</p>\r\n<p>I copied the System.Windows.Interactivity assembly in the same directory of the module and found no issues.\r\n<br>\r\n<br>\r\nPlease, take into account the following text from the MSDN documentation: <em>The directory catalog will scan the contents of a directory, locating classes that implement\r\n<a id=\"x_ctl00_MTCS_main_ctl18_ctl00_ctl00\" href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.composite.modularity.imodule.aspx\">\r\nIModule</a>...</em><br>\r\n<br>\r\nIf you continue experiencing this in your scenario, could you share a repro sample? For example you could use\r\n<a href=\"http://explore.live.com/windows-live-skydrive\">Windows Live SkyDrive</a>.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n",
+    "PostedDate": "2010-10-28T07:10:29.013-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "899360",
+    "ThreadId": "232070",
+    "Html": "<p>Hi Hardy,</p>\r\n<p>were you able to resolve this? I'm having the same issue with v 4.1 of Prism.</p>\r\n<p>Initially using&nbsp;<span>System.Windows.Interactivity.Behavior&lt;TextBox&gt; and even forced TextBox to DependencyObject but still getting the same error.</span></p>\r\n<p>&nbsp;</p>\r\n<p>Thanks,</p>\r\n<p><span>JP</span></p>",
+    "PostedDate": "2012-08-14T17:48:50.18-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "899675",
+    "ThreadId": "232070",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>So far, I couldn't reproduce the error mentioned in this thread, I tried defining a\r\n<strong>Behavior </strong>in a <strong>TextBox </strong>like you suggested, but didn't face any issues.</p>\r\n<p>On the other hand, based on my understanding&nbsp; in order to use interactions in\r\n<strong>Prism</strong>, you need to add a reference to the<strong> System.Windows.Interactivity</strong> assembly in both the\r\n<strong>Shell </strong>and the <strong>Module </strong>projects to avoid errors like this: &quot;<em>Could not load file or assembly 'System.Windows.Interactivity</em>&quot;. Perhaps this could be related to your problem.</p>\r\n<p>If this is not your case it would be helpful if you could provide us with more information about your scenario and the error you are receiving.</p>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-08-15T13:04:58.553-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "913375",
+    "ThreadId": "232070",
+    "Html": "<p>Hi,</p>\r\n<p>I faced the same issues, This is because of there's a few version, I don't know when I got those a few version of \"﻿﻿﻿﻿System.Windows.Interactivity\"</p>\r\n<p>Just change to new version then solved.</p>",
+    "PostedDate": "2012-09-16T19:28:37.3-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

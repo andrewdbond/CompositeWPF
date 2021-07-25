@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "83065",
+    "ThreadId": "24784",
+    "Html": "\r\nCould anyone map out the direction for the prism project in terms of Reference implementations.<br />I have taken the release today, but wondered which direction it might go in say the next 2 months.<br /><br />For example will the navigation aspects be covered soon, (i.e. covering say a similar aspect as the UIP 2.0 application block)<br /><br />Will there be something in the Reference Implementation for traditional detail windows in terms of MVP as much as anything, and what about aspects of command pattern implementation for menus or routed events.<br /><br />There are probably some larger fish to fry than the ones I am interested in here, but just wondered!<br />",
+    "PostedDate": "2008-03-26T13:45:16.703-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "84330",
+    "ThreadId": "24784",
+    "Html": "\r\nHI cabarch<br /><br />The major areas we are pushing on going forward is around cross-module eventing. We'll be doing a bunch of work around using WPF's command infrastructure and some kind of cross-module event broker. The other big fish to fry is around module loading. In the RI currently we're using a static loaded model. We're going to do a bunch of quickstarts that illustrate dynamic module loading both Eclipse style (no config) and config driven. We're also looking at module loading on demand. As far as the completeness of the RI we're getting close, but after that our work is not done. We'll be going through several cycles of refactoring, cleaning things up and making them more consistent. Looking at common patterns and seeing if the is library code that emmerges. We'll also be doing a bunch of work around additional quickstarts on different topics.<br />",
+    "PostedDate": "2008-04-01T15:32:37.597-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "84383",
+    "ThreadId": "24784",
+    "Html": "<div class=\"quote\" style=\"border: dotted .1em #aaa; border-left: none; border-right: none; font-style: italic; margin: 1em 0em 2.5em 3em;padding: .2em;\"><br />gblock wrote:<br />The major areas we are pushing on going forward is around cross-module eventing. We'll be doing a bunch of work around using WPF's command infrastructure and some kind of cross-module event broker. The other big fish to fry is around module loading. In the RI currently we're using a static loaded model. We're going to do a bunch of quickstarts that illustrate dynamic module loading both Eclipse style (no config) and config driven. We're also looking at module loading on demand. As far as the completeness of the RI we're getting close, but after that our work is not done. We'll be going through several cycles of refactoring, cleaning things up and making them more consistent. Looking at common patterns and seeing if the is library code that emmerges. We'll also be doing a bunch of work around additional quickstarts on different topics.<br /><br /></div><b>Good news</b>.  As it stands now, it's not very useful having to rely upon static, hard-coded references (both regions and DI-injected interfaces must be known in the current release).  I'm looking forward to dynamic module loading at run-time.  Also, I would suggest only requiring the IModule interface be present in external modules.  Let the module developer decide if they want to use a presenter or other various services.  Keep the number of required, known interfaces to a minimum to ensure it stays light-weight.<br /><br />One thing I changed in my local copy of the source was I created a generic, abstract Region base class:<br /><br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\npublic abstract class Region&lt;T&gt; : IRegion where T : FrameworkElement\r\n{\r\n    public T Control { get; set; }\r\n \r\n    public Region() { }\r\n    public Region(T control)\r\n    {\r\n        Control = control;\r\n    }\r\n \r\n    #region IRegion\r\n \r\n    public abstract void Add(UIElement view);\r\n \r\n    public abstract IList&lt;UIElement&gt; Views { get; }\r\n \r\n    #endregion\r\n}\r\n</pre><br />If the concept of a Region ever evolves, you have a place to put the common code now.  This also allows you to remove the need for the \"Wrapped\" control in the implementation region class.<br /><br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\npublic class PanelRegion : Region&lt;Panel&gt;\r\n{\r\n    public PanelRegion(Panel control) : base(control) { }\r\n \r\n    #region IRegion Members\r\n \r\n    public override void Add(UIElement view)\r\n    {\r\n        Control.Children.Add(view);\r\n    }\r\n \r\n    public override IList&lt;UIElement&gt; Views\r\n    {\r\n        get { throw new NotImplementedException(); }\r\n    }\r\n \r\n    #endregion\r\n}\r\n</pre><br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\npublic class ItemsControlRegion : Region&lt;ItemsControl&gt;\r\n{\r\n    public ItemsControlRegion(ItemsControl control) : base(control) { }\r\n \r\n    #region IRegion Members\r\n \r\n    public override void Add(UIElement view)\r\n    {\r\n        Control.Items.Add(view);\r\n        IMetadataInfoProvider metadaInfoProviderView = view as IMetadataInfoProvider;\r\n        if (metadaInfoProviderView != null)\r\n        {\r\n            DependencyObject itemContainer = Control.ItemContainerGenerator.ContainerFromItem(view);\r\n            if (itemContainer == null)\r\n            {\r\n                itemContainer = view;\r\n            }\r\n            IMetadataInfo metadataInfo = metadaInfoProviderView.GetMetadataInfo();\r\n            itemContainer.SetValue(HeaderedContentControl.HeaderProperty, metadataInfo);\r\n        }\r\n \r\n        Control.SetValue(Selector.SelectedItemProperty, view);\r\n    }\r\n \r\n    public override IList&lt;UIElement&gt; Views\r\n    {\r\n        get\r\n        {\r\n            List&lt;UIElement&gt; views = new List&lt;UIElement&gt;(Control.Items.Count);\r\n            foreach (UIElement item in Control.Items)\r\n            {\r\n                views.Add(item);\r\n            }\r\n            return views;\r\n        }\r\n    }\r\n \r\n    #endregion\r\n}\r\n</pre>",
+    "PostedDate": "2008-04-01T21:35:48.193-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "85839",
+    "ThreadId": "24784",
+    "Html": "<br /><div class=\"quote\" style=\"border: dotted .1em #aaa; border-left: none; border-right: none; font-style: italic; margin: 1em 0em 2.5em 3em;padding: .2em;\"><br />gblock wrote:<br />The major areas we are pushing on going forward is around cross-module eventing. We'll be doing a bunch of work around using WPF's command infrastructure and some kind of cross-module event broker. ...... We'll also be doing a bunch of work around additional quickstarts on different topics.<br /><br /></div><br />Thanks for the info, sorry for the delay <a href=\"http://www.codeplex.com/prism/Wiki/View.aspx?title=don%27t%20seem%20to%20be%20getting%20email%20reply%20alerts\">don't seem to be getting email reply alerts</a>, Anyway, can't wait till the RI's get past the first round, why do all of these implementations have to start with \"Eclipse like\" anything... Its a shame a simple non DI, non module loading on the fly application cannot be produced first,<br /> Remember those Fitch &amp; Mather RI's (mid 90's), they helped so many people get going with multi layered apps. Consider the IT budget in organisations where early proof of reproducing an app <a href=\"http://www.codeplex.com/prism/Wiki/View.aspx?title=with%20a%20well%20known%20application%20requirement%20set\">with a well known application requirement set</a> in this new world...well we don't need to consider DI and module loading on the fly. Its much less academic than that.;-) Or even the Solutions provider with a limite budget, who just needs to upgrade his succesful VB6 app, to a new world with a longer supportable future.<br /><br />Not expecting to change your plans really, but maybe something to consider!<br />",
+    "PostedDate": "2008-04-09T08:24:14.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "86066",
+    "ThreadId": "24784",
+    "Html": "<br /><div class=\"quote\" style=\"border: dotted .1em #aaa; border-left: none; border-right: none; font-style: italic; margin: 1em 0em 2.5em 3em;padding: .2em;\"><br />gblock wrote:<br />HI cabarch<br /><br />The major areas we are pushing on going forward is around cross-module eventing. We'll be doing a bunch of work around using WPF's command infrastructure and some kind of cross-module event broker. The other big fish to fry is around module loading. In the RI currently we're using a static loaded model. We're going to do a bunch of quickstarts that illustrate dynamic module loading both Eclipse style (no config) and config driven. We're also looking at module loading on demand. As far as the completeness of the RI we're getting close, but after that our work is not done. We'll be going through several cycles of refactoring, cleaning things up and making them more consistent. Looking at common patterns and seeing if the is library code that emmerges. We'll also be doing a bunch of work around additional quickstarts on different topics.<br /><br /></div><br />Glenn, on my wishlist for eventing would be two models.  The first would be similar to the one that CAB uses i.e. attributes to wire the pub sub eventing up.<br /><br />But, that doesnt work well if one needs to dynamically create and tear down subscriptions and publications. In other applications, I have had to dynamically create subjects and programmatically wire subscriptions based upon run time data, or actions.  So please make sure that any pub sub eventing mechanism also has a \"run time\" interface in addition to a \"build up\" interface.<br /><br />And as far as naming conventions for subscription subjects, it would be nice to have a dot notation for naming.  ie. a.b.c.  And then be able to subscribe to a.* or a.b.*.  This allows a producer to create speciallized messages, and a consumer to subscribe to the generic msg. <br /><br />Prism Looks good so far and I am looking forward to future drops.<br />Paul<br /><br /><br />",
+    "PostedDate": "2008-04-10T08:17:46.923-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "87133",
+    "ThreadId": "24784",
+    "Html": "\r\nBy the way, is it possible for Prism team implement cross-module event broker as re-usable application block built over unity just to have an ability to use it outside Prism?<br />",
+    "PostedDate": "2008-04-16T07:53:14.193-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "87306",
+    "ThreadId": "24784",
+    "Html": "\r\n@Leonid, @pmont<br /><br />Our first goal is to have an event broker service that is explicitly called, does not rely on attributes and does not depend on depenency injection (though the service itself is likely injected). This type of broker is not dependent on any specific type of contain implementation. The problem with attributes, is it binds you to a specfic container, and in prism our goal is to specifically NOT do that. <br /><br />As to using EB outside of \"Prism\", we are planning that you will be able to pull \"EB\" into your existing apps without having to use any other parts of \"Prism'. It will probably not live in a separate dedicated assembly, however whatever assembly it is in, you will be able to directly reference it and use by itself.<br />",
+    "PostedDate": "2008-04-17T02:03:44.997-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "87317",
+    "ThreadId": "24784",
+    "Html": "\r\nOh! Event Broker which doesn't depend on dependency injection sounds very well. Does it rely on ICommand implementations (DelegateCommand etc) that you already have in the last drops? Is there any chance that we would be able to see the first \"EB\" try in the upcoming drop?<br />",
+    "PostedDate": "2008-04-17T02:54:30.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "87751",
+    "ThreadId": "24784",
+    "Html": "<br /><div class=\"quote\" style=\"border: dotted .1em #aaa; border-left: none; border-right: none; font-style: italic; margin: 1em 0em 2.5em 3em;padding: .2em;\"><br />gblock wrote:<br />@Leonid, @pmont<br /><br />Our first goal is to have an event broker service that is explicitly called, does not rely on attributes and does not depend on depenency injection (though the service itself is likely injected). This type of broker is not dependent on any specific type of contain implementation. The problem with attributes, is it binds you to a specfic container, and in prism our goal is to specifically NOT do that. <br /><br />As to using EB outside of \"Prism\", we are planning that you will be able to pull \"EB\" into your existing apps without having to use any other parts of \"Prism'. It will probably not live in a separate dedicated assembly, however whatever assembly it is in, you will be able to directly reference it and use by itself.<br /><br /></div><br />Sounds Good!!   <br /><br />I have no problem using it that way.  My only other request was to make sure that the \"subject\"  has some way of deliniating groupings of messages and providing wildcards.  I used the example of a subject like \"a.b.c\" so that some code could listen for \"a.b.c\" or a.b.wildcard or \"a.wildcard\" and still receive the message.  This has proved to be very useful in a system wide pub-sub like Tibco's Rendevous.   Things like monitors can listen for groups of messages without having to specifically subscribe to hundreds of different message subjects.  Same in a dynamic system, where one part needs to be able to listen to message subjects that it may never know about till run time.  If the system uses a subect naming convention, i.e a.b.c, a new component can be built and plugged in that publishes an a.b.c.d message that a listener of a.b.splat can receive.  ( a '*' wasnt shoinwg up when I posted, so I edited it to be either 'wildcard' or 'splat' )<br /><br />The other questions about the eventing then end up being things like the thread of execution for the listener ( UI, or not ), are the listeners pinged in a sequential synchronous manner, or are they async, does the pubilisher return before the all fo the senders receive their messages ( async ), or is it sync to the publisher.  Such a simple thing conceptually (Pub-Sub) ends up being a bear to implement properly. &lt;grin&gt;<br /><br />I understand that you are not building an inter-process messaging system, but the same principles apply in an pluggable intra-process situation IMO.<br /><br />Thanks again, and keep up the good work.<br />pmont<br />",
+    "PostedDate": "2008-04-19T06:25:43.453-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "87787",
+    "ThreadId": "24784",
+    "Html": "\r\nThanks @pmont. We've discussed the idea of having \"Topics\" which is something that was illustrated in our original spikes. A \"Topic\" is a filter that I use to route the messages to the write listener. We didn't consider the wild-card idea though it sounds interesting. Actually at this point we're starting with a basic approach without even a topic. <br /><br />How important is this topic-level filtering. Can you give us some real scenarios in your app?<br />",
+    "PostedDate": "2008-04-19T11:26:13.363-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "87849",
+    "ThreadId": "24784",
+    "Html": "<br /><div class=\"quote\" style=\"border: dotted .1em #aaa; border-left: none; border-right: none; font-style: italic; margin: 1em 0em 2.5em 3em;padding: .2em;\"><br />gblock wrote:<br />Thanks @pmont. We've discussed the idea of having \"Topics\" which is something that was illustrated in our original spikes. A \"Topic\" is a filter that I use to route the messages to the write listener. We didn't consider the wild-card idea though it sounds interesting. Actually at this point we're starting with a basic approach without even a topic. <br /><br />How important is this topic-level filtering. Can you give us some real scenarios in your app?<br /><br /></div><br />I started a new discussion \"Event topics and wildcards\" instead of having it buried at the end of this discussion.<br />",
+    "PostedDate": "2008-04-20T04:37:12.853-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

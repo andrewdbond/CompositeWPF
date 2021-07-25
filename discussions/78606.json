@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "269140",
+    "ThreadId": "78606",
+    "Html": "<p>Hi There,</p>\r\n<p>I'm trying to dynamically load a module. By going through the MSDN documents, there are two ways to achieve this, and both need to add some code to Bootstrapper:</p>\r\n<p>either (Using the Directory Lookup Module Enumerator)</p>\r\n<p><span style=\"color:blue\">protected</span> override IModuleEnumerator GetModuleEnumerator()<br>{<br>&nbsp;&nbsp;&nbsp; <span style=\"color:blue\">return</span> <span style=\"color:blue\">new</span> DirectoryLookupModuleEnumerator(@<span style=\"color:maroon\"><span style=\"color:maroon\">&quot;.\\Modules&quot;</span></span>);<br>}</p>\r\n<p>or (Using the Configuration Module Enumerator)</p>\r\n<p><span style=\"color:blue\">protected</span> override IModuleEnumerator GetModuleEnumerator()<br>{<br>&nbsp;&nbsp;&nbsp; ConfigurationStore store = <span style=\"color:blue\">new</span> ConfigurationStore();<br>&nbsp;&nbsp;&nbsp; <span style=\"color:blue\">return</span> <span style=\"color:blue\">new</span> ConfigurationModuleEnumerator(store);<br>}</p>\r\n<p>However, I also need to statically load some other modules. Therefore, I have the following in my Bootstrapper:</p>\r\n<p><span style=\"color:blue\">protected</span> override IModuleEnumerator GetModuleEnumerator()<br>{<br>&nbsp;&nbsp;&nbsp; <span style=\"color:blue\">return</span> <span style=\"color:blue\">new</span> StaticModuleEnumerator().AddModule(typeof(MyModule));<br>}</p>\r\n<p>How&nbsp;to combine the static and dynamic module loading?</p>\r\n<p>Thanks,</p>\r\n<p>Jie</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-18T17:17:42.273-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "270031",
+    "ThreadId": "78606",
+    "Html": "<p id=4eaa2c50-d137-012c-fa41-12313b030e01>Hi Jie,</p>\r\n<p id=4eaa3d90-d137-012c-fa42-12313b030e01>Is there a particular reason why you need to load some modules statically and the others dynamically? In Prism there is not out of the box way to get this done.</p>\r\n<p id=4eaa5580-d137-012c-fa43-12313b030e01>The difference between static and dynamic module loading is that <em>&ldquo;when you load a module dynamically, the Shell does not contain a reference to the module's assembly; instead, modules are dynamically discovered when the application starts&rdquo; </em>(from <a href=\"http://msdn.microsoft.com/en-us/library/cc707834.aspx\">this article</a>).</p>\r\n<p id=4eaa74c0-d137-012c-fa44-12313b030e01>If you load all modules dynamically you would be gaining the benefit of not having any reference to them from the Shell project. Take into account that <em>&ldquo;dynamic module loading requires a module's discovering and loading process to be executed on startup that may result in reduced startup performance compared to static module loading. In cases where decoupling modules from the Shell is not a requirement, you should consider static module loading&rdquo; </em>(also from the article above)<em>.</em></p>\r\n<p id=4eaa9e50-d137-012c-fa45-12313b030e01>Please let me know if this helps.</p>\r\n<p id=4eaac5a0-d137-012c-fa46-12313b030e01>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-22T12:45:24.697-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "273464",
+    "ThreadId": "78606",
+    "Html": "<p>I understood the pros and cons of the two methods, but didn't know there is no easy way to use both at the same time.</p>\r\n<p>The reason of considering this scenario is to explore alternatives for unit tests with Composite WPF. For example, to statically load product modules, and&nbsp;dynamically load unit&nbsp;test&nbsp;modules, which could minimize the coupling between product code and unit test code, if complete decoupling is not achievable.</p>\r\n<p>Thanks for your reply!</p>\r\n<p>Jie</p>",
+    "PostedDate": "2010-01-05T12:43:24.903-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

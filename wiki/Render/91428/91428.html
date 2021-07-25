@@ -1,0 +1,118 @@
+<div class="wikidoc"><h1>Summary of what&#39;s new in this drop</h1><ul><li><a href="#RegionManager">RegionManagerService no longer exposes AddViewToRegion</a></li>
+<li><a href="#SlidingRegion">Added a sliding region to the shell which displays the watch list</a></li>
+<li><a href="#WatchList">Add to Watchlist functionality now works. A custom AddWatchCommand command uses a WatchListService to add the new item</a></li></ul>
+<a name="RegionManager"></a>
+<h2>RegionManager</h2>In the prior build the <b>RegionManagerService</b> was responsible for adding views to regions, which was redundant with the <b>IRegion.Add</b> method. We&#39;ve removed <b>AddViewToRegion</b> method and now directly call <b>Add</b> on the region itself, as can be seen in the example below.<br /><br /><pre>
+WatchListViewPresenter.cs
+
+        public void ShowViews()
+        {
+            ...
+            IRegion region = regionManagerService.GetRegion(&quot;CollapsibleSideRegion&quot;);
+            region.Add((UIElement)View);
+        }
+</pre><br /><img src="http://download-codeplex.sec.s-msft.com/Download?ProjectName=CompositeWPF&DownloadId=30698" alt="regions.jpg" title="regions.jpg" /><br /><a name="SlidingRegion"></a>
+<h2>Shell sliding region</h2><img src="http://download-codeplex.sec.s-msft.com/Download?ProjectName=CompositeWPF&DownloadId=30699" alt="sideregion.jpg" title="sideregion.jpg" /><br />In the previous build, the watchListRegion was an embedded &lt;Grid&gt; element at a fixed location which would show whenever the vertical &quot;WatchList&quot; tab was hovered over. The previous functionality was buggy, and the Watchlist would not auto hide properly when it was unpinned. We&#39;ve now changed he watchListRegion to be a collapsible region which slides out to display the watchlist. <br /><br /><b>Sliding region walkthrough</b>
+<ol><li>Launch the application.</li>
+<li>Move your mouse over the &quot;Watchlist&quot; tab. The side region will appear.</li>
+<li>Push the pushpin to pin the region.</li></ol>
+<br />We&#39;ve added a SlidingTemplate as a static resource which includes the functionality. The template uses triggers to handle showing the list when it is hovered over, and for auto-hiding. Triggers also handle the pinning of the region. This template is then applied to a TabControl that is registered as a &quot;CollapsibleSideRegion&quot;. <br /><br /><pre>
+Shell.xaml - Sliding Template definition
+
+    &lt;Window.Resources&gt;
+        &lt;Image x:Key=&quot;PinCheckedContent&quot; Source=&quot;images/pinIconDocked.gif&quot; /&gt;
+        &lt;Image x:Key=&quot;PinUncheckedContent&quot; Source=&quot;images/pinIconNonDocked.gif&quot; /&gt;
+        &lt;ControlTemplate x:Key=&quot;SlidingTemplate&quot; TargetType=&quot;{x:Type TabControl}&quot;&gt;
+        ...
+</pre><br /><br /><pre>
+Shell.xaml - CollapsibleRegion definition 
+        ...
+        &lt;TabControl Name=&quot;CollapsibleRegion&quot; Grid.Row=&quot;1&quot; Grid.Column=&quot;1&quot; prism:RegionManager.Region=&quot;CollapsibleSideRegion&quot; 
+        Template=&quot;{StaticResource SlidingTemplate}&quot; ItemContainerStyle=&quot;{StaticResource HeaderStyle}&quot;/&gt;
+    &lt;/Grid&gt;
+&lt;/Window&gt;
+</pre><br /><a name="WatchList"></a>
+<h2>Watchlist</h2><table><tr><td><img src="http://download-codeplex.sec.s-msft.com/Download?ProjectName=CompositeWPF&DownloadId=30697" alt="AddToWatchList.jpg" title="AddToWatchList.jpg" /></td><td><img src="http://download-codeplex.sec.s-msft.com/Download?ProjectName=CompositeWPF&DownloadId=30700" alt="Watchlist.jpg" title="Watchlist.jpg" /></td></tr></table><br /><br />In this release we&#39;ve wired up the <b>Add to Watch List</b> and <b>Remove</b> functionality. Essentially what the &quot;Add to Watch List&quot; button does, is allow a trader to add a Symbol to the watch list so they can keep track of it. Items can be added to the list whether it is visible or not.<br /><br /><b>Watch List walkthrough</b><br /><br /><u>Adding to the watch list</u>
+<ol><li>Launch the application.</li>
+<li>Enter <b>Fund0</b> into the textboxt next to &quot;Add To Watchlist&quot;.</li>
+<li>Press the button.</li>
+<li>Move your mouse over the &quot;Watch List&quot; tab. <b>Fund0</b> should be present.</li></ol>
+<u>Removing items from the watch list</u>
+<ol><li>Press the pushpin for pinning the Watchlist.</li>
+<li>Right click on <b>Fund0</b>.</li>
+<li>Click the Remove. <b>Fund0</b> should be removed.</li></ol>
+The challenge we faced around the watch list was related to commanding. WPF provides built in commanding support which allows a human designer to wire up the UI to invoke functionality. The out-of-the-box method of implementing WPF commands is to use <b>RoutedCommand</b>s. Routed commands can be handled by either the <b>UIElement</b> that has the focus or any of it&#39;s parent elements in the visual tree through a <b>&lt;CommandBinding&gt;</b>. The logic for handling the command resides in the code behind where the binding appears.<br /><br />In a Composite WPF Application, the challenge is that the handler of the command will normally exist in a separate module than the invoker. This is the case for the <b>AddToWatchList</b> control which exists in <b>Shell module</b> while the <b>WatchList module</b> contains the handler. We&#39;ve been looking into several different approaches for how to handle this kind of commanding, the first being a more explicit wiring, and the second being a more generic and framework-like. In this case we chose the explicit approach.<br /><br />A visual of how this works can be seen below.<br /><br /><img src="http://download-codeplex.sec.s-msft.com/Download?ProjectName=CompositeWPF&DownloadId=30701" alt="watchlistflow.jpg" title="watchlistflow.jpg" /><br /><br />The <b>AddWatchControl</b> invokes a static <b>AddWatchCommand</b> that resides in <b>WatchListModuleCommands</b> class. This command exposes a <b>SetFiredCallback</b> method which accepts a <b>Fired</b> callback (delegate) that is invoked whenever the command is executed.<br /><br /><pre>
+AddWatchCommand.cs 
+
+        private Fired firedCallback;
+
+        public void SetFiredCallback(Fired callback)
+        {
+             ...
+        }
+
+        ...
+
+        public void Execute(object parameter)
+        {
+            if (firedCallback != null)
+            {
+                firedCallback(parameter!=null ? parameter.ToString() : null);
+            }
+        }
+</pre><br /><br />We&#39;ve created a <b>WatchListService</b> to handle the command execution. That service implements the <i>Observer</i> pattern and listens for when the command is executed.<br /><pre>
+WatchListService.cs
+
+        public WatchListService(IMarketFeedService marketFeedService)
+        {
+            this.marketFeedService = marketFeedService;
+            WatchItems = new ObservableCollection&lt;string&gt;();
+            WatchListModuleCommands.AddWatchCommand.SetFiredCallback(OnFiredCallback);
+        }
+</pre><br /><br />The <b>WatchListService</b> is also a <i>Mediator</i> between the command and the WatchListViewPresenter. Whenever the callback is fired, the <b>Watchlist</b> then adds a new watch item to its watch items&#39; <b>ObservableCollection</b>. <br /><br /><pre>
+WatchListService.cs
+        private void OnFiredCallback(string tickerSymbol)
+        {
+            if (!String.IsNullOrEmpty(tickerSymbol))
+            {
+                string upperCasedTrimmedSymbol = tickerSymbol.ToUpperInvariant().Trim();
+                if (!WatchItems.Contains(upperCasedTrimmedSymbol))
+                {
+                    if (marketFeedService.SymbolExists(upperCasedTrimmedSymbol))
+                    {
+                        WatchItems.Add(upperCasedTrimmedSymbol);
+                    }
+                }
+            }
+        }
+</pre><br /><br /><b>WatchItems</b> are exposed to the <b>WatchListPresenter</b> which retrieves it through the <b>RetrieveWatchList</b> method off of the <b>WatchListService</b> that was injected into it.<br /><br /><pre>
+        public WatchListViewPresenter(IWatchListView view, IRegionManagerService regionManagerService,
+            IWatchListService watchListService, IMarketFeedService marketFeedService)
+        {
+            View = view;
+
+            this.regionManagerService = regionManagerService;
+            this.marketFeedService = marketFeedService;
+            this.watchList = watchListService.RetrieveWatchList();
+            InitializeEvents();
+        }
+</pre><br /><br />When the <b>WatchListViewPresenter</b>&#39;s <b>ShowViews</b> method is called, it populates calls <b>PopulateWatchItemsList</b> which populates a <b>watchItems</b> collection. This collection is the <i>PresentationModel</i> for the <b>WatchListView</b>.  The The Presenter also subscribes to the CollectionChanged event so that it can receive notifications if any new items that are added by the WatchListService.<br /><br /><pre>
+WatchListViewPresenter.cs
+       public void ShowViews()
+        {
+            watchList.CollectionChanged += delegate { PopulateWatchItemsList(watchList); };
+            PopulateWatchItemsList(watchList);
+            IRegion region = regionManagerService.GetRegion(&quot;CollapsibleSideRegion&quot;);
+            region.Add((UIElement)View);
+        }
+
+        private void PopulateWatchItemsList(ObservableCollection&lt;string&gt; watchItemsList)
+        {
+            ObservableCollection&lt;WatchItem&gt; watchItems = new ObservableCollection&lt;WatchItem&gt;();
+            foreach (string tickerSymbol in watchItemsList)
+            {
+                 ...
+            }
+            View.SetWatchListItems(watchItems);
+        }
+</pre><br /><br />Whever new items are added (or removed), the list is repopulated.<br /><br />Using this approach facilitates wiring up a WPF command to a module in a loosely-coupled fashion. This just one of several ways for doing cross-module command handling. We will continue to refine and explore this method. <br /><br />Your <a href="http://www.codeplex.com/Prism/Thread/List.aspx">feedback</a> is invited as always. </div><div class="ClearBoth"></div>

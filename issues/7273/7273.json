@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "I would like to propose that we change the behavior of MefServiceLocatorAdapter.DoGetInstance to use .First() instead of .Single()\nThe reason is that many IoC containers allow you to have multiple types implementing the same interface and have rules about how they will decide which type to give back. \nThrowing an exception will cause extra pain for people switching to Mef.\n \nThanks",
+    "LastUpdatedDate": "2013-02-21T18:38:28.51-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-09-22T06:12:15.247-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Behavior or MefServiceLocatorAdapter",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 2,
+    "Id": 7273
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nBased on my understanding, this is currently by design as it can be seen in the following test of the Prism Library Source Code:\r\n\r\nShouldThrowActivationExceptionWhenMoreThanOneInstanceAvailble\r\n\r\nWhen applying the aforementioned changes in the Prism library, this test will fail.\r\n\r\nIn my opinion, for cases where multiple types implementing the same Interface are exported, you could benefit from the MefServiceLocatorAdapter.DoGetAllInstances method to retrieve the list of resolved instances that implement the requested type and apply your custom logic to filter the desired ones, according to your needs. As returning the First element might not always be the desired behavior.\r\n\r\nAnother way could be to export each type with a specific contract name.\r\n\r\nRegards,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami﻿",
+      "PostedDate": "2012-02-01T10:46:59.557-08:00",
+      "Id": 156316
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1277813",
+    "ThreadId": "554186",
+    "Html": "I was hoping to center the shell (main window) by overriding InitializeShell() with some lines like\r<br />\n<br />\nApplication.Current.MainWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;\r<br />\nApplication.Current.MainWindow.Show();\r<br />\n<br />\nHowever, there is no effect on moving the main window. I checked the XAML file, no property was set to prevent the main window from being moved.\r<br />\n<br />\nDoes everyone knows what I need to do for moving the main window?\r<br />\n<br />\nThanks,<br />\n",
+    "PostedDate": "2014-07-25T11:48:02.35-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1289747",
+    "ThreadId": "554186",
+    "Html": "I do not think this is a prism problem. I would use an attached behavior and viewmodel pair to resolve this problem.\r<br />\nThe behavior could bind to an attached property that is based on an event that would indicate when the window is to be re-positioned.\r<br />\n<br />\nYou could also do the same with window class that inherits from Window but does evaluate its DataContext Changed event to\r<br />\nreact on a Move Window event that could be triggered by the viewmodel. I am talking about something like this:\r<br />\n<br />\n<a href=\"https://fsc.codeplex.com/SourceControl/latest#InplaceEditBoxLib/Views/EditBox.xaml.cs\" rel=\"nofollow\">https://fsc.codeplex.com/SourceControl/latest#InplaceEditBoxLib/Views/EditBox.xaml.cs</a>\r<br />\n<br />\nI know this control is not a Window but it implements the pattern that I am referring to. It evaluates the DataContextChanged\r<br />\nevent and filters an interface out of the viewmodel if one was attached:\r<br />\n<br />\n<a href=\"https://fsc.codeplex.com/SourceControl/latest#InplaceEditBoxLib/Interfaces/IEditBox.cs\" rel=\"nofollow\">https://fsc.codeplex.com/SourceControl/latest#InplaceEditBoxLib/Interfaces/IEditBox.cs</a>\r<br />\n<br />\nThe interface contains a events that are fired by the viewmodel:\r<br />\n<a href=\"https://fsc.codeplex.com/SourceControl/latest#InplaceEditBoxLib/Events/EditEvent.cs\" rel=\"nofollow\">https://fsc.codeplex.com/SourceControl/latest#InplaceEditBoxLib/Events/EditEvent.cs</a>\r<br />\n<br />\nHope this helps.<br />\n",
+    "PostedDate": "2014-08-13T10:11:46.103-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1290583",
+    "ThreadId": "554186",
+    "Html": "First, thanks so much for your reply.<br />\n<br />\nYes, it is not a prism problem. It is so odd that it was WindowState=&quot;Maximized&quot; ResizeMode=&quot;CanMinimize&quot; in my project XAML file that prevents me from resizing and moving my main window. The main window is just a shell which holds many user controls that in turn bound with a view model.<br />\n<br />\nI never thought about these attributes have such effect on resizing and reposition. I tried to change style with different setters, all my efforts failed. By trial and error,<br />\nI delete WindowState=&quot;Maximized&quot; ResizeMode=&quot;CanMinimize&quot; from my project XAML, then I got what I wanted---moving the main window, centering it.<br />\n<br />\nCould Anyone explain why WindowState=&quot;Maximized&quot; ResizeMode=&quot;CanMinimize&quot; in my project XAML can prevent me from resizing and moving my main window?<br />\n",
+    "PostedDate": "2014-08-15T12:53:49.06-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

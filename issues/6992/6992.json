@@ -1,0 +1,56 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Please see Prism 4.0 CTP - August 2010 at http://compositewpf.codeplex.com/releases/view/49963",
+    "ClosedDate": "2010-08-02T13:58:03.1-07:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "Hi all, \nthe following situation seems like a dead end. only one of my regions is being populated. the region being populated is the last region in the shell xaml's\nif i change the order of the regions in the xaml other modules appear correspondingly in that last region registered. \n \ni tried using the RegionManager in the module initialization but only to find that the Regions collection is empty. \n \nplease advice",
+    "LastUpdatedDate": "2013-05-16T05:28:51.193-07:00",
+    "PlannedForRelease": "Prism 4.0 CTP - August 2010",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-07-15T01:23:06.787-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Drop 4 - Only last region is being populated",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 3,
+    "Id": 6992
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897968,
+      "FileName": "PrismMefPOC_v4.0.rar",
+      "DownloadUrl": ".\\897968"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "To solve this problem i do this:\r\n\r\nadd this line:\r\n[PartCreationPolicy(CreationPolicy.NonShared)]\r\n\r\nbefore the class declaration in the following files (part of the Composite.MefExtensions.Desktop project):\r\n\r\nSource\\CAL\\Desktop\\Composite.MefExtensions\\Regions\\Behaviors\\MefAutoPopulateRegionBehavior.cs\r\nSource\\CAL\\Desktop\\Composite.MefExtensions\\Regions\\Behaviors\\MefBindRegionContextToDependencyObjectBehavior.cs\r\nSource\\CAL\\Desktop\\Composite.MefExtensions\\Regions\\Behaviors\\MefDelayedRegionCreationBehavior.cs\r\nSource\\CAL\\Desktop\\Composite.MefExtensions\\Regions\\Behaviors\\MefRegionActiveAwareBehavior.cs\r\nSource\\CAL\\Desktop\\Composite.MefExtensions\\Regions\\Behaviors\\MefRegionManagerRegistrationBehavior.cs\r\nSource\\CAL\\Desktop\\Composite.MefExtensions\\Regions\\Behaviors\\MefSelectorItemsSourceSyncBehavior.cs\r\nSource\\CAL\\Desktop\\Composite.MefExtensions\\Regions\\Behaviors\\MefSyncRegionContextWithHostBehavior.cs\r\n\r\n\r\nThe result will look like this (example):\r\n\r\n...\r\n    [Export(typeof(AutoPopulateRegionBehavior))]\r\n    [PartCreationPolicy(CreationPolicy.NonShared)]\r\n    public class MefAutoPopulateRegionBehavior : AutoPopulateRegionBehavior\r\n    {\r\n...\r\n\r\n\r\nWith this changes now all my regions are loaded.\r\n\r\n\r\nBye",
+      "PostedDate": "2010-07-15T15:16:30.943-07:00",
+      "Id": 156267
+    },
+    {
+      "Message": "Thank you very much TiagoFigueiredo, it worked\r\n\r\nIt seems to solve the problem. now the question asked is \"why isn't this the default/ will it be as part of the next drop?\"\r\n\r\n",
+      "PostedDate": "2010-07-17T23:57:27.993-07:00",
+      "Id": 156268
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "644398",
+    "ThreadId": "265739",
+    "Html": "\r\n<p>I'm having an interesing problem with CAL and the event aggregator.&nbsp; I am attempting to publish an event when the app is deactivated or activated (application.activated and application.deactivated).&nbsp; Some of my modules have popup boxes that a I\r\n want to hide when the application loses focus.</p>\r\n<p>this is a small code sample below</p>\r\n<p><strong>app.xaml.cs</strong></p>\r\n<p>&nbsp;&nbsp;&nbsp; protected override void OnStartup(StartupEventArgs e)<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eventAggregator.GetEvent&lt;AppDeactivatedEvent&gt;().Subscribe(RunIt);</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Deactivated &#43;= (s, a) =&gt; eventAggregator.GetEvent&lt;AppDeactivatedEvent&gt;().Publish(EmptyPayload.Empty);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Deactivated &#43;= (s, a) =&gt; Console.WriteLine(&quot;Deactivated - in app.xaml&quot;);\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Activated &#43;= (s, a) =&gt; eventAggregator.GetEvent&lt;AppActivatedEvent&gt;().Publish(EmptyPayload.Empty);</p>\r\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnStartup(e);<br>\r\n&nbsp;&nbsp;&nbsp; }</p>\r\n<p><strong>Module.cs</strong></p>\r\n<p>&nbsp;&nbsp;&nbsp; ea.GetEvent&lt;AppActivatedEvent&gt;().Subscribe(presenter.AppDeactivated);</p>\r\n<p><strong>presenter</strong></p>\r\n<p>&nbsp;&nbsp;&nbsp; public void AppDeactivated(EmptyPayload empty)<br>\r\n&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(&quot;App Deactivated - Module&quot;);<br>\r\n&nbsp;&nbsp;&nbsp; }</p>\r\n<p><br>\r\nWhat happens is that when the app loses focus I get the following in the console<br>\r\nDeactivated - in app.xaml<br>\r\nWhen the App regains focus I get the below<br>\r\nApp Deactivated - Module</p>\r\n<p>Any ideas on why the event aggregator would wait until the app regains focus for the event to fire.&nbsp;</p>\r\n<p>Thanks</p>\r\n<p>&nbsp;</p>\r\n<p><br>\r\n&nbsp;</p>\r\n",
+    "PostedDate": "2011-07-19T08:12:27.35-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "644501",
+    "ThreadId": "265739",
+    "Html": "<p>Hi,</p>\r\n<p>You could try changing the subscription in your module to subscribe from a background thread instead of from the UI thread. That might be the reason why this is happening.</p>\r\n<p>If that doesn't work, it would be helpful if you could provide us with a repro sample portraying this behavior, so that we can help you identify the cause of this problem.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-19T10:12:39.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "645804",
+    "ThreadId": "265739",
+    "Html": "<p>Turns out I had a typo.&nbsp;</p>\r\n<p>ea.GetEvent&lt;AppActivatedEvent&gt;().Subscribe(presenter.AppDeactivated);</p>\r\n<p>wrong event, oops, thanks though</p>",
+    "PostedDate": "2011-07-21T14:13:52.873-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

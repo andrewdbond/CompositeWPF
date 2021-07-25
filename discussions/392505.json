@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "902055",
+    "ThreadId": "392505",
+    "Html": "\r\n<p>Hello,</p>\r\n<p>I have a shell which has a few items on there that I set for each module, such as screen title, some color changes, I want to be able to set those values from the module itself.&nbsp;</p>\r\n<p>Let's say for example, I have a border and if I go to Module A, I want that brush to be RED (for example), and if I go to Module B, I want the brush to be YELLOW.&nbsp;&nbsp;</p>\r\n<p>I have properties ann the MainViewModel, but how can I set those at run time from each module on the main shell.</p>\r\n",
+    "PostedDate": "2012-08-21T10:50:52.513-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "902067",
+    "ThreadId": "392505",
+    "Html": "<p>I tried to use the RegionContext to pass a single property, I will need to pass a complex object eventually.&nbsp;</p>\r\n<p>My Region in xaml looks like</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>&lt;ContentControl Prism:RegionManager.RegionName=\"{x:Static regions:RegionNames.MainRegion}\"\r\nPrism:RegionManager.RegionContext=\"{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=DataContext.WindowTitle, Mode=TwoWay}\"\r\n</pre>\r\n</div>\r\n<pre>In my Constructor for the view model, I tried both, but the value still comes back null period.</pre>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>\r\n<span style=\"color: blue;\">var</span> xxx = regionManager.Regions[RegionNames.MainRegion].Context;\r\n<span style=\"color: blue;\">var</span> xx = RegionContext.GetObservableContext(<span style=\"color: blue;\">this</span>).Value;\r\n\r\nHope this helps in giving me an answer on what I am doing wrong.\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2012-08-21T11:39:12.4-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "902077",
+    "ThreadId": "392505",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding of your scenario, I believe you could take advantage of the communication capabilities provided by <strong>Prism</strong>. In my opinion, using the <strong>RegionContext </strong>doesn't seem to be a suitable approach for this scenario (as the <strong>RegionContext </strong>is designed to be used as a communication line between views contained in the same region.) Instead, I believe you could find the <strong>EventAggregator </strong>or a <strong>Shared Service</strong> more useful.</p>\r\n<p>For example, your Shell's view model could subscribe to an event in the <strong>EventAggregator </strong>to know when the corresponding properties (like for example the <strong>Brush</strong> of a <strong>Border</strong>) should be changed. The new value could be included in the object passed as a payload of the event. Then, when those properties need to be changed (for example, when you navigate to a view of the \"Module A\") you can publish that event through the <strong>EventAggregator </strong>(for example, in the <strong>NavigatedTo </strong>method of the view model of the aforementioned view) to notify the Shell that the property should be changed.</p>\r\n<p>You can find more information about the <strong>EventAggregator </strong>and <strong>Shared Services</strong> in the following chapter of the <strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28v=pandp.40%29\">Chapter 9 - Communication Between Loosely Coupled Components</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2012-08-21T12:09:56.027-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

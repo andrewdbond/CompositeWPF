@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "419268",
+    "ThreadId": "205261",
+    "Html": "<p>Can anyone shed some light on the key differences b/w the options for loading the module catalog in the bootstrapper?&nbsp; Specifically the 3 methods below (are there others?):</p>\r\n<p>&nbsp;&nbsp;&nbsp; return new ConfigurationModuleCatalog();&nbsp; //load modules from configuration file</p>\r\n<p>&nbsp;&nbsp;&nbsp; return new ModuleCatalog().AddModule(typeof(MyModule)); //manually load modules</p>\r\n<p>&nbsp;&nbsp;&nbsp; return new DirectoryLookupModuleEnumerator(@&quot;.\\Modules&quot;);&nbsp; //load from directory</p>\r\n<p>I understand the basic difference of where the modules are coming from and how they are loaded, but what are the advantages/disadvantages b/w them?&nbsp; Is there much difference other than how</p>\r\n<p>you choose to structure your modules?</p>\r\n<p>Thanks.</p>\r\n<p><span style=\"font-family:;color:#008000;font-size:x-small\"><span style=\"font-family:;color:#008000;font-size:x-small\">\r\n<p>&nbsp;</p>\r\n</span></span></p>",
+    "PostedDate": "2010-03-17T08:57:12.923-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "419414",
+    "ThreadId": "205261",
+    "Html": "<p id=d53fd460-1434-012d-eaa1-1231390c9cb1>Hi,</p>\r\n<p id=d53fe640-1434-012d-eaa2-1231390c9cb1>The main difference between having  the <a href=\"http://msdn.microsoft.com/en-us/library/dd490831.aspx\">modules  declared in code</a>, <a href=\"http://msdn.microsoft.com/en-us/library/dd458892.aspx\">loading from a  directory</a> and <a href=\"http://msdn.microsoft.com/en-us/library/dd458908.aspx\">loading from a  configuration file</a> is that, with the latter one, there is no need to rebuild  your solution to deploy different modules (the first two depend on the code,  either to add directly to <strong>ModulesCatalog</strong> or for attributes).</p>\r\n<p id=d5400390-1434-012d-eaa3-1231390c9cb1>If you use Directory or Configuration  module loading your Shell project does not need to have a reference to every  other module (which is not the case if you declare modules in code).</p>\r\n<p id=d54023d0-1434-012d-eaa4-1231390c9cb1>Some other benefits to each module  loading approach are explained in <a href=\"http://msdn.microsoft.com/en-us/library/dd458911.aspx\">this  document</a>.</p>\r\n<p id=d54044c0-1434-012d-eaa5-1231390c9cb1>It is also possible to load modules  from XAML in WPF. Some time ago I <a href=\"http://blogs.southworks.net/dschenkelman/2009/08/09/how-to-populate-the-module-catalog-from-xaml-in-a-wpf-application-using-the-composite-application-guidance-for-wpf-silverlight-prism-v2/\">blogged  about it</a>, as Prism does not provide a QS that shows this scenario.</p>\r\n<p id=d5406d30-1434-012d-eaa6-1231390c9cb1>Please let me know if this helps.</p>\r\n<p id=d5409600-1434-012d-eaa7-1231390c9cb1>Damian Schenkelman <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-03-17T13:57:18.117-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "448373",
+    "ThreadId": "205261",
+    "Html": "<p>Hi Damian,</p>\r\n<p>I read the article of yours and find it to be interesting. I was just wondering if I can use it for my requirement which is as below -&nbsp;</p>\r\n<p>I have a pre-defined set of modules which needs to be loaded based on the user logging in. So if the user &quot;Mike&quot; is logging in, I will have to load some set of modules based on his credentials or if the user &quot;John&quot; logs in he needs to be provided with a different set of modules. So I was thinking to maintain separate XAML files(one each based on the requirement) which will have the definitions for the modules to be loaded. In such case, I will have a single Shell which will be catering two different applications. Is this possible?&nbsp;Do I need to get the respective credentials in the GetModuleCatalog method to decide which module catalog to be loaded?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks in advance.</p>",
+    "PostedDate": "2010-05-27T13:42:49.297-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "450233",
+    "ThreadId": "205261",
+    "Html": "<p id=27a5e110-4fd9-012d-97b5-1231390f0921>Hi,</p>\r\n<p>The scenario you are describing is possible. You could show a Login screen before loading the shell (as explained on <a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=58292\">this thread</a>), and based on the credentials provided there, you could decide which module catalog to load in the <strong>GetModuleCatalog</strong> method.</p>\r\n<p id=27a60140-4fd9-012d-97b7-1231390f0921>I hope you find this helpful.</p>\r\n<p id=27a61350-4fd9-012d-97b8-1231390f0921>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-06-01T12:47:55.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

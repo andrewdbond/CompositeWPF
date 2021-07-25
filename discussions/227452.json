@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "494400",
+    "ThreadId": "227452",
+    "Html": "<p>Hi</p>\r\n<p>&nbsp;</p>\r\n<p>I'm wondering if&nbsp;anyone here are using Erwin van der Valk's prism extensions (<a href=\"http://blogs.msdn.com/b/erwinvandervalk/archive/2009/03/02/how-to-build-an-outlook-style-application.aspx\">http://blogs.msdn.com/b/erwinvandervalk/archive/2009/03/02/how-to-build-an-outlook-style-application.aspx</a>)&nbsp;for creating Outlook style applications? It seems Erwin is not responding to comments to the blog post anymore, so my hope is that someone in this forum is able to help.</p>\r\n<p>Now, while I am not using all of the ideas he has come up with, I especially like the idea he has about doing viewmodel first development. His design implies that you bind viewmodels to regions, instead of the normal Prism approach of binding views to regions, and this is where my problem lies.</p>\r\n<p>Normally you can tell Prism to use the same instance of a view with a certain region, but with Erwin's code, you register the viewmodel with a region:</p>\r\n<p>RegionManager.RegisterViewWithRegion(&quot;MyRegionName&quot;, () =&gt; myViewModel) // Specific vm instance</p>\r\n<p>RegionManager.RegisterViewWithRegion(&quot;MyRegionName&quot;, typeof(MyViewModel)) // New vm instance each time the region is activated</p>\r\n<p>We use the concept keeping instance of a viewmodel a lot, so that we don't have to re-intialize the vm each time, and restore its state.</p>\r\n<p>However, we sometimes also need to remember the view's state, so that e.g. when the user switches back and forth between tabs, the application remembers list selections, un-commited text box entries etc.</p>\r\n<p>Is there a way of also caching the view along with the viewmodel? E.g. would it be possible to cache the entire VisualizingRegion from Erwin's concept, instead of just the viewmodel. Or is there a an entirely different approach I should consider instead.</p>\r\n<div id=\"_mcePaste\" style=\"width:1px;height:1px;overflow:hidden;top:0px;left:-10000px\">﻿</div>\r\n<p>&nbsp;</p>\r\n<p>I hope someone is able to point me in the right direction</p>",
+    "PostedDate": "2010-09-16T04:42:43.553-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "495154",
+    "ThreadId": "227452",
+    "Html": "<p>Hi lillebak,</p>\r\n<p>I have not used Erwin&rsquo;s extensions, but most prism Quickstarts store the V and VM state until they are explicitly removed from their regions.</p>\r\n<p>In general, each VM is associated with a V, whether you use a viewmodel first or a view first approach. This is how prism regions work, as views are not disposed until they are removed from the regions.</p>\r\n<p>So, a possible approach might be to add a reference to your view in your viewmodel. Therefore, as long as your VM keeps a reference to its V, the V will be kept alive. &nbsp;</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-17T11:53:20.947-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1005622",
+    "ThreadId": "434219",
+    "Html": "Hi everyone,\r<br />\n<br />\nI have question on passed data to viewmodel.\r<br />\n<br />\nI have controller base abstract class who provides virtual generic method:<br />\n<pre><code>        protected virtual void ActivateView&lt;T&gt;(string regionname, string viewname, object viewModelData = null)\n        {\n            var _view = this.RegionManager.Regions[regionname].GetView(viewname);\n            if (_view == null)\n            {\n                _view = this.Container.Resolve&lt;T&gt;(viewname);\n                this.RegionManager.Regions[regionname].Add(_view, viewname);\n            }\n// Before Activate View in region I must do it something to pass data to viewmodel :(\n            this.RegionManager.Regions[regionname].Activate(_view);\n        }</code></pre>\n\nIt is based class (methods) for all controllers who activates views in regions in my app.\r<br />\nViewModel to active view is connected via a Dependency:<br />\n<pre><code>        public MyView()\n        {\n            InitializeComponent();\n        }\n\n        [Dependency]\n        public ViewModel View_Model\n        {\n            get { return (View_Model)this.DataContext; }\n            set { this.DataContext = value; }\n        }</code></pre>\n\nIt works very fine but problem is when I will passed data to viemodel (who is related with view who is activated in region) via ActivateView&lt;T&gt;(...) method. In list of parameters is something like &quot;object viewModelData&quot; - this is it what I want pass to viewmodel linked with activated view.\r<br />\n<br />\nI have not idea how do it :( Maybe somebody did have similar problem - please help me :)\r<br />\n<br />\nKind Regards,\r<br />\n<br />\nKri$\r<br />\n<br />\nP.S. Sorry form my language still I learn it :)<br />\n",
+    "PostedDate": "2013-02-23T03:28:49.857-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1006441",
+    "ThreadId": "434219",
+    "Html": "Hi,<br />\n<br />\nBased on the code snippets you provided, I believe that a possible solution for your problem could be, before activating the view, passing the <strong>viewModelData</strong> parameter to a <strong>SetViewModelData</strong> method (which will modify your view model data) from your view model like this:<br />\n<pre><code>_view.View_Model.SetViewModelData(viewModelData);</code></pre>\n\nThis should work since you have a direct reference to your view after you resolve it from the container, so you should be able to access all its classes and methods. If this approach is not possible in your scenario, it would be helpful if you can provide us with more information about how you manage those views and view models.<br />\n<br />\nPlease let me know if this helps,<br />\n<br />\nFederico Martinez <br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-02-25T09:35:59.293-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

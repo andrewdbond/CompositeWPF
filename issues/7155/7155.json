@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Issue closed as the exception message has been updated to the text proposed by Michael.\r\nThank you for your feedback.",
+    "ClosedDate": "2011-02-16T08:46:47.16-08:00",
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "After upgrading my project to the latest release, I started receiving error messages like this when loading a module (this one is actually from the ModularityWithMef quickstart, repro instructions below):\n \n\"The composition remains unchanged. The changes were rejected because of the following error(s): The composition produced multiple composition errors, with 10 root causes. The root causes are provided below. Review the CompositionException.Errors property for more detailed information.\n \n1) Change in exports prevented by non-recomposable import 'Microsoft.Practices.Prism.MefExtensions.Modularity.MefModuleManager.MefXapModuleTypeLoader (ContractName=\"Microsoft.Practices.Prism.MefExtensions.Modularity.MefXapModuleTypeLoader\")' on part 'Microsoft.Practices.Prism.MefExtensions.Modularity.MefModuleManager'.\n \n...\"\n \nI've tracked it down to the fact that my projects have Copy Local set to True on all the Prism/MEF references. When my Shell loads, everything loads correctly. The moment I load a module with the module manager, when the module loading is finished I receive the above error message.\n \nThis can be reproduced easily:\n \nIn the ModularityWithMef quickstart sample, change the following references in ModuleB to Copy Local = True:\n* Microsoft.Practices.Prism\n* Microsoft.Practices.Prism.MefExtensions\n \nWhen ModuleB loads, you'll get the above error.\n \nIn the previous drop of Prism, this doesn't happen. You can take the same quickstart sample and change the same references, and it'll work fine.\n \nIt makes sense for Copy Local to be False on shared libraries so the XAPs aren't larger than they need to be, however since this is the default value when you browse to a DLL to add a reference, anyone using modularity will encounter this issue. And it's not an easy issue to track down.",
+    "LastUpdatedDate": "2013-05-16T05:28:50.023-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-08-23T11:04:25.04-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Silverlight Modularity with MEF Behavior Change - exception",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 8,
+    "Id": 7155
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Note that the example above is simple. If you forget to set Copy Local = False on your MEF assemblies you can get an error listing 15 or more issues like the one above. ",
+      "PostedDate": "2010-09-16T12:31:27.83-07:00",
+      "Id": 156291
+    },
+    {
+      "Message": "The behavior changed due to a change to the way we integrated MEF into Prism that was recommended to us by Glenn Block. I have updated the exception text to the following (which still needs to go through edit, so it may change a little).  The change should be in drop #9 when it is available. Let me know if this is not sufficient.  Thanks\r\n\r\nMicrosoft.Practices.Prism.Modularity.ModuleTypeLoadingException was unhandled by user code\r\n  Message=Failed to load type for module ModuleB. \r\n\r\nIf this error occurred when using MEF in a Silverlight application, please ensure that the CopyLocal property of the reference to the MefExtensions assembly is set to true in the main application/shell and false in all other assemblies. \r\n\r\nError was: The composition remains unchanged. The changes were rejected because of the following error(s): The composition produced multiple composition errors, with 12 root causes. \r\n. . .",
+      "PostedDate": "2010-09-24T10:37:47.037-07:00",
+      "Id": 156292
+    }
+  ]
+}

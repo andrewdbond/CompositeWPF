@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": null,
+    "Description": "When you set `ViewModelLocator.AutoWireViewModel=\"True\"` in xaml you get the error \"Your views must implement IView\" even when your view already has IView set.\r\n\r\nThis can be seen in the BasicMVVMQuickstart_Desktop project in the MainWindow.xaml\r\n\r\n![Image](http://i.imgur.com/7Ou8o53.png)\r\n\r\nThis does not prevent you from building nor does it give a error at runtime.\r\n\r\n\r\nThe source of the issue is from ViewModelLocator.AutoWireViewModelChanged\r\n\r\n        private static void AutoWireViewModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)\r\n        {\r\n            var view = d as IView;\r\n\r\n            if (view == null)\r\n            {\r\n                // TODO: Improve exception\r\n                throw new Exception(\"Your views must implement IView\");\r\n            }\r\n\r\n            ViewModelLocationProvider.AutoWireViewModelChanged(view);\r\n        }\r\n\r\nthe casting `d as IView` returns null.\r\n\r\nIt appears that the code behind is not processed during design time when the attached property is evaluated. So if you have `public partial class MyClass: UserControl, IView` and you do `d.GetType()` inside AutoWireViewModelChanged you will not get the type `MyClass` but `UserControl` instead and therefor the interface IView will not be found.\r\n\r\n",
+    "LastUpdatedDate": "2015-08-02T15:47:05.207-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Unassigned",
+      "Severity": 0,
+      "Id": 0
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2015-03-09T07:52:25.323-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ViewModelLocator.AutoWireViewModel says view must implment IView when it already does.",
+    "Type": {
+      "Name": "Unassigned",
+      "Id": 5
+    },
+    "VoteCount": 6,
+    "Id": 10729
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

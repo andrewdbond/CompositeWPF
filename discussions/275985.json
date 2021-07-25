@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "684590",
+    "ThreadId": "275985",
+    "Html": "\r\n<p>Hi there,</p>\r\n<p>I have a NavigationView that is found and injected into Shell automatically like this:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>[PartCreationPolicy(CreationPolicy.Shared)]\r\n[ViewExport(RegionName = Constants.NavRegion)]\r\n<span style=\"color:blue\">public</span> <span style=\"color:blue\">partial</span> <span style=\"color:blue\">class</span> NavigationView : UserControl\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>&nbsp;</p>\r\n<p>The NavigationView has another Region that also needs to be populated:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">ContentControl</span> <span style=\"color:red\">regions:RegionManager.RegionName</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">BlackPanelRegion</span><span style=\"color:black\">&quot;</span> <span style=\"color:blue\">/&gt;</span>\r\n        \r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>In my NavigationController class I do the following to populate the BlackPanel Region inside the NavigationView.&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<pre><div style=\"color:black; background-color:white\"><pre><span style=\"color:blue\">var</span> blackPanelViewModel = BlackPanelViewModelFactory.CreateExport().Value;\r\n<span style=\"color:blue\">var</span> blackPanelView = <span style=\"color:blue\">new</span> BlackPanelView(blackPanelViewModel) { Name = Constants.BlackPanelRegion };\r\n<span style=\"color:blue\">var</span> scopedRegionManager = _regionManager.Regions[Constants.NavRegion].RegionManager;\r\nscopedRegionManager.Regions[Constants.BlackPanelRegion].Add(blackPanelView, Constants.BlackPanelRegion);\r\n</pre>\r\n</div>\r\n<br></pre>\r\n<p>This works fine. But I find it limiting that I have to do it myself. &nbsp;How can I populate the BlackPanelView inside the NavigationView automatically, without being forced to inject it myself?</p>\r\n<p>Many Thanks,<br>\r\nHouman&nbsp;</p>\r\n",
+    "PostedDate": "2011-10-15T01:40:35.42-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "685201",
+    "ThreadId": "275985",
+    "Html": "<p>Hi,</p>\r\n<p>You could try using the view discovery approach, which allows you to avoid adding views to regions programmatically. This approach sets up a relationship in the <strong>RegionViewRegistry </strong>between a region's name and the type of a view. This way when a region is created, a behavior looks for all the <strong>ViewTypes</strong> associated with the region and automatically instantiates and loads the corresponding views. Therefore you could try registering your view like this:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">this</span>.regionManager.RegisterViewWithRegion(Constants.BlackPanelRegion, <span style=\"color: blue;\">typeof</span>(blackPanelView)); \r\n</pre>\r\n</div>\r\nYou might find more information about view discovery approach in the Prism documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098(v=PandP.40).aspx#sec37\">Composing the User Interface: Displaying Views in a Region When the Region Loads </a></li>\r\n</ul>\r\n<p>I hope you find this helpful.</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a>﻿</p>",
+    "PostedDate": "2011-10-17T07:45:14.143-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

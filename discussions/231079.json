@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "507994",
+    "ThreadId": "231079",
+    "Html": "<p>This is for WPF.</p>\r\n<p>I have so many thoughts and ideas swimming around my head that I think this answer might be simple but I just can't put it all together at the moment so I'm sorry if I'm asking a stupid question.&nbsp; I want to simulate a Modal Window through the use of a covering partial opacity rectangle and usecontrol.&nbsp; I have my Shell window which houses a Tab control as a Region and I want to have another region....&quot;ModalRegion&quot; that would have the covering rectangle and contentcontrol.&nbsp; I then have a &quot;screen conductor&quot; that handles requests to add views to regions and it does not know about my ShellViewModel.&nbsp; I want to be able to do a modalRegion.Add(dialogView) and at that point have the covering rectangle and dialog become visible.&nbsp; Then on removing the view from the modal region the rectangle would get hidden.&nbsp; I know how to do all this if my ShellViewModel was handling the requests but I'm struggling with doing it all via region.adds and somehow triggering the showing of the covering rectangle in the ShellView based on a view being added to the modalregion.</p>\r\n<p>Looking for functionality similar to Silverlight ChildWindow using regions.</p>",
+    "PostedDate": "2010-10-15T13:20:59.52-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509637",
+    "ThreadId": "231079",
+    "Html": "<p>Hi,</p>\r\n<p>In the Stock Trader RI there is an implementation of this (one for Silverligth and other for WPF). The main difference between these two implementations is the control that they are displaying.</p>\r\n<p>The Reference Implementation uses the RegionPopupBehavior for managing this and it is creating the PopupDialogActivationBehavior (Silverlight) and the WindowsDialogActivationBehavior (WPF). Therefore, you could to create your own implementation of DialogActivationBehavior for achieving your scenario.</p>\r\n<p>For more information on this topic, you could take a look at the following code files:</p>\r\n<ul>\r\n<li><strong>StockTraderRI_Desktop</strong>\\StockTraderRI.Infrastructure\\Behaviors\\<strong>RegionPopupBehavior.cs</strong></li>\r\n<li><strong>StockTraderRI</strong>\\StockTraderRI.Infrastructure\\Behaviors\\<strong>PopupDialogActivationBehavior.cs</strong></li>\r\n<li><strong>StockTraderRI_Desktop</strong>\\StockTraderRI.Infrastructure\\Behaviors\\<strong>WindowsDialogActivationBehavior.cs</strong></li>\r\n</ul>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-19T15:06:25.523-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

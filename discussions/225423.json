@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "486873",
+    "ThreadId": "225423",
+    "Html": "<p>Unfortunately the documentation chapter on Navigation is just a placeholder at the moment, but I'm looking for guidance on the best way to integrate PRISM modular application functionality with the Silverlight Navigation framework to best stupport browser navigation buttons, deep linking etc.</p>\r\n<p>I believe the best approach would be to amend the Silverlight Navigation Framework shell &quot;Frame&quot; with the RegionManager attached property and to write a RegionAdapter for the Navigation:Frame class.&nbsp; Is this the best way to proceed?&nbsp; Although writing region adapters is fairly straightforwards I would have thought. given the importance of the Silverlight Navigation Framework, this region adapter should be delivered &quot;Out of the box&quot; the same way the three existing region adapters are delivered.</p>\r\n<p>Is there a better way to integrate PRISM modularity with the navigation framework, or am I likely to hit any issues if I follow the RegionAdapter approach outlined above?</p>",
+    "PostedDate": "2010-08-31T05:07:34.203-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "487170",
+    "ThreadId": "225423",
+    "Html": "<p id=d820f810-9735-012d-abea-12313b10155a>I posted in the wrong thread.</p>\r\n<p>Sorry for the inconveniences</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-08-31T12:54:45.747-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "491831",
+    "ThreadId": "225423",
+    "Html": "<p>I&rsquo;m also wondering if someone could give an opinion&nbsp;what is &ldquo;the proper&rdquo; way to implement a navigation functionality within prism</p>\r\n<p>Regards, Boris</p>",
+    "PostedDate": "2010-09-10T08:23:02.223-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "491858",
+    "ThreadId": "225423",
+    "Html": "<p>We are actually working on this now.&nbsp; The latest drop has a navigation quickstart that is region based, but we are doing work to ensure that the region based navigation can work with the built in Silverlight navigation.</p>\r\n<p>Give us another few weeks and we should have the rough parts figured out and have&nbsp;some docs that should help.</p>\r\n<p>Are there any specific scenarios you would really want to see around this?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-09-10T08:53:19.393-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "494205",
+    "ThreadId": "225423",
+    "Html": "<p>Hi, we are working on this at the moment too.</p>\r\n<p>&nbsp;We haven&rsquo;t been able to find enough guidance on the navigation aspects so any information would be greatly appreciated! Here is a rough outline of our scenario and our current implementation:</p>\r\n<p>We have the following view types</p>\r\n<ol>\r\n<li><strong>PageView </strong>&ndash; navigable page view (e.g. can be accessed by typing a Uri and supports record navigation like /AccountModule/AccountDetails/SmithCo, where AccountModule is a friendly module/groupname, AccountDetails is the page view name, and SmithCo is the record identifier (usually an int))</li>\r\n<li><strong>View </strong>&ndash; normal view as in prism, can be used in region, child window etc etc.</li>\r\n<li><strong>PrintView </strong>&ndash; navigable, a view that is optimized for print output (usually we pair this with the PageView and uses the same ViewModel)</li>\r\n<li><strong>ReportView </strong>&ndash; navigable, usually a &ldquo;multipage view&rdquo; which we append headers and footers to the print output.</li>\r\n</ol>\r\n<p>At the present time we have implemented the following, but would like to replace with Prism bits if possible:</p>\r\n<ol>\r\n<li>Views are exported via a ViewExportAttribute which contains some custom metadata (group name, view name, view type, view model type, user roles)&nbsp; e.g.&nbsp;</li>\r\n</ol>\r\n<div style=\"color:black;background-color:white\">\r\n<pre>[ExportView(LocalResources.AccountGroupName, LocalResources.AccountDetailsName, <span style=\"color:blue\">typeof</span>(IAccoutDetailsVM), ViewType.PageView, UserRoles.Planner | UserRoles.ParaPlanner)]\r\n</pre>\r\n</div>\r\n<ol>\r\n<li>We&rsquo;ve implemented a custom PageViewControllerService to track active PageViews and our IsDirty/IsBusy/HasErrors properties, The PageViewControllerService supports navigating away from a PageView and then returning (kinda MDI style) however, this isn&rsquo;t the default option. The default is that on a navigation attempt the user is prompted to Save, Cancel, Discard if any (editable) views on the screen are dirty.</li>\r\n<li>We&rsquo;ve implemented a custom content loader which handles the navigation using the standard navigation framework. <ol>\r\n<li>It performs a check on the users&rsquo; roles to ensure they CanNavigate to the requested page</li>\r\n<li>Performs a check to see if the PageView exists &ndash; displays a custom error page if it doesn&rsquo;t </li>\r\n<li>Invokes the service to prompt the user if the page is dirty, either cancels the navigation, instructs the current viewmodel to save (editable VMs implement ISaveable), or simply navigates (discarding changes)</li>\r\n<li>parses the Uri and looks up a view registry (with our custom metadata) then wires the ViewModel to the view (via a view factory)</li>\r\n<li>Returns the constructed PageView (or the in memory PageView)</li>\r\n</ol></li>\r\n</ol>\r\n<p>There isn&rsquo;t a great deal of code involved but there are a few aspects we are not happy with. We&rsquo;ve used this solution as a temporary measure and we are actively looking for a permanent solution.</p>\r\n<p>Not sure how common this scenario is but it&rsquo;s something we&rsquo;ve faced in a couple of projects now. We are big fans of Prism and any guidance/how-to&rsquo;s would be fantasatic</p>\r\n<p>Thanks!</p>",
+    "PostedDate": "2010-09-15T18:50:48.433-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "496019",
+    "ThreadId": "225423",
+    "Html": "<p>Hello,</p>\r\n<p>I just want to mention that this topic is a very important for us in our project. We are using PRISM drop 6 and we really need to have the navigation framework nicely integrated. So we will wait for any improvement on this.</p>\r\n<p>Thanks michaelpuleio, fantivero.</p>",
+    "PostedDate": "2010-09-20T07:16:29.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "496252",
+    "ThreadId": "225423",
+    "Html": "<p>Hi Again,</p>\r\n<p>I&rsquo;ve spent a few hours with Drop7 (+a few mins with Drop 8) and the Navigation framework its shaping up nicely! A couple of comments/questions</p>\r\n<ol>\r\n<li>How do we integrate/sync the browser&rsquo;s nav and journal with Prism&rsquo;s Navigation framework? (I may be missing something really obvious here</li>\r\n<li><span style=\"color:black;font-size:10pt\">At present it isn't&nbsp;possible to have 2 views with the same Name (but in different namespaces) (e.g. 2 modules with a ModuleSummaryView in each) at present when navigating the LocatorNavigationTargetHandler.GetTargetView (drop7) assesses candidates based on the Type.Name and selects FirstOrDefault(), which is understandable. Is it possible to have the framework navigate to say something like /ModuleName/ModuleSummaryView (or even just GetType().FullName)? </span></li>\r\n</ol>\r\n<p><span style=\"color:black;font-size:10pt\">If the plan is to have these Uri&rsquo;s exposed externally (i.e in the Browser's location bar) Perhaps have something along the lines of a UriMapper? Which should help with deeper navigation structures,&nbsp;for example /Level1/Level1.1/ViewName?query=2 etc (we also Localise our nav items where possible)</span></p>\r\n<p>Thanks again for your efforts</p>",
+    "PostedDate": "2010-09-20T16:48:00.99-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "497016",
+    "ThreadId": "225423",
+    "Html": "<p>Hi,</p>\r\n<p>Thanks for all your feedback. I will copy this as a work-item, so the team  will be notified&nbsp;about all your feedback.</p>\r\n<p>Please take into account that the last Monday a <a href=\"../releases/view/52647\">new drop (8) of  Prism</a> was released. You can find some of the navigation updates below:</p>\r\n<ul>\r\n<li>Chapter 7 - Navigation documentation updated.</li>\r\n<li>Navigation API in Regions updated</li>\r\n<li>State-Based Navigation and&nbsp;View-Switching Navigation QuickStarts updated. </li>\r\n</ul>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-09-22T07:38:28.087-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "497017",
+    "ThreadId": "225423",
+    "Html": "This discussion has been copied to a work item. Click <a href=\"http://compositewpf.codeplex.com/workitem/7275\">here</a> to go to the work item and continue the discussion.",
+    "PostedDate": "2010-09-22T07:39:30.61-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "497111",
+    "ThreadId": "225423",
+    "Html": "<p><span style=\"color:black;font-size:10pt\">The current plan for Prism v4 is to not have full support for Silverlight integration &quot;in the box&quot;.&nbsp; We wanted to include this in v4, but in the time we have left for this release, we had to make some tough trade-offs and this did not make the cut line.&nbsp;</span></p>\r\n<p><span style=\"color:black;font-size:10pt\">We did do quite a bit of work to prove out that the current navigation system can be extended to work seamlessly (or as close to it as possible)&nbsp;with the Silverlight Navigation framework and Karl will be writing a number of blog posts describing how this to create an extension to Prism that will tie into Silverlight Navigation.&nbsp;This should give you a solid foundation to work from and cover the scenarios you mentioned. </span></p>\r\n<p><span style=\"color:black;font-size:10pt\">I hope that helps even if it is not ideal.</span></p>",
+    "PostedDate": "2010-09-22T10:54:45.367-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "537198",
+    "ThreadId": "225423",
+    "Html": "\r\n<p>Could you please provide a link to the above blog you mentioned? I'm having a bit of trouble with the sl navigation and prism 4 region navigation. The Loaded event of the very first view that gets loaded in the region seems to get called once again when\r\n navigating away. This happens only on the first time. Thereon this behavior is not there and navigation seems to work fine. Its just the first time.</p>\r\n",
+    "PostedDate": "2010-12-17T02:36:25.437-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

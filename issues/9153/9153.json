@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Addressed in Prism 5.0",
+    "ClosedDate": "2014-05-01T10:42:52.437-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "There is a class Notification that is used as base class for InteractionRequest<T> where T : Notification.\n \nThis class should rather be an interface, or at least make the T type constraint of InteractionRequest to accept an INotification interface.\nSince there is no multi-inheritance, in order to make the confirmation inherit from NotificationObject (if you want to display complex data in the modal window, such as wizard or \"select new item type\" etc.), since Notification is a class you have to re-implement IInteractionRequest, Notification and Confirmation to make it work.\n \nPerhaps it should be splitted so that should be 4 types: INotification, Notification:INotification, IConfirmation:INotification, Confirmation:IConfirmation.\n \nThis will allow implementing any of the desired behaviors under any circumstance.\n \nThanks",
+    "LastUpdatedDate": "2014-05-01T10:42:52.437-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-02-02T20:41:31.74-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "'Notification' really should be an interface",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 5,
+    "Id": 9153
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nAfter reviewing the code of the Prism.Interactivity project of the Prism library, it seems that this suggestion could be implemented without breaking any existing functionality in the library as: \r\n\r\n- The Notification and Confirmation classes are never instantiated by any class inside the the Prism library (without taking into account the unit tests.)\r\n- The only required change in the Notification and Confirmation classes to be declared interfaces would be to remove the \"public\" access modifier from their properties.\r\n\r\nTherefore, I believe you should be able to refactor this project to have an INotification and IConfirmation interfaces and a Notification and Confirmation classes without problems.\r\n\r\nWe are leaving this work item open as a suggestion to the team, so that they can analyze the proposed changes for a future release.\r\n\r\nRegards,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2012-03-21T13:57:26.35-07:00",
+      "Id": 156574
+    }
+  ]
+}

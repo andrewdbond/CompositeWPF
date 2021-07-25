@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1067468",
+    "ThreadId": "449792",
+    "Html": "<pre><code>&lt;telerik:RadTabControl x:Name=&quot;QuoteViewTab&quot;\n                       prism:RegionManager.RegionName=&quot;QuoteTabRegion&quot; \n                       DropDownDisplayMode=&quot;Visible&quot; \n                       VerticalAlignment=&quot;Stretch&quot; \n                       Style=&quot;{StaticResource TabControlStyle}&quot;&gt;\n\n&lt;/telerik:RadTabControl&gt;</code></pre>\n\nuser can load different quotes in different tabs in this tabcontrol. if selected quote already exist in the tabs then that tab will be selected otherwise new tab will be created be region\r<br />\n<br />\nQuoteView also implements IConfirmNavigationRequest.<br />\n<pre><code>bool INavigationAware.IsNavigationTarget(NavigationContext navigationContext)\n{\n    if (this.Quote.Id == navigationContext.Parameters[&quot;id&quot;])\n    {\n        return true;\n    }\n    return false;\n}</code></pre>\n\nnow when i load different views in main region IsNavigationTarget of TabView is called properly along with nevigated from and nevigated to but when i try to load quotes in tab region all three functions are called first time and after that whatever quote is selected it will show already loaded quote.\r<br />\n<br />\nthats how i load quoteview in QuoteTabRegion<br />\n<pre><code> _container.RegisterType&lt;object, QuoteView&gt;(typeof(QuoteView).FullName);\n _regionManager.Regions[&quot;QuoteTabRegion&quot;].RequestNavigate(new Uri(typeof(QuoteView).FullName + parameters.ToString(), UriKind.Relative));</code></pre>\n\n",
+    "PostedDate": "2013-07-12T03:40:16.673-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1067574",
+    "ThreadId": "449792",
+    "Html": "Hi,\r<br />\n<br />\nIt would be helpful if you could provide us with more details regarding your implementation, for example:<br />\n<ul>\n<li>The <strong>OnNavigatedTo</strong> and <strong>OnNavigatedFrom</strong> methods of the view / view model.</li>\n<li>How you are setting the <strong><em>id</em></strong> of each view / view model.</li>\n<li>\nThe content of the <strong><em>parameters</em></strong> variable used to create the <strong>Uri</strong> when you invoke the navigation request.<br />\n</li>\n</ul>\nAlso, I find the condition of your <strong>IsNavigationTarget</strong> method strange. When requesting a parameter from the <strong>NavigationContext</strong> you will receive a string, however you are comparing it using the <strong>==</strong> operator. Please check if this condition is behaving as you expect.\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-07-12T09:30:30.69-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1067708",
+    "ThreadId": "449792",
+    "Html": "Hi DCherubini,<br />\n<ul>\n<li>The OnNavigatedTo and OnNavigatedFrom methods are empty for now as i want to test prism nevigation first and then write my code inside these functions</li>\n<li>view and view model doesnot have any id.</li>\n<li>Quote.Id is also a string field so there is no issue in comparing them</li>\n</ul>\n",
+    "PostedDate": "2013-07-12T14:10:04.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1068621",
+    "ThreadId": "449792",
+    "Html": "Hi,\r<br />\n<br />\nIt would be useful if you could provide us with a repro-sample application portraying this so that we can analyze it and help you find the cause behind this behavior that you are experiencing in your application.\r<br />\n<br />\nThanks,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-07-15T12:37:09.367-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

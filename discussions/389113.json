@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "891594",
+    "ThreadId": "389113",
+    "Html": "\r\n<p>Hi to all friends out there.</p>\r\n<p>I have view in my region defined in shell.My view load perfectly fine and i need to change view on user action in that Region.</p>\r\n<p>When i am tring to remove it by using remove method of regionManager it is giving error</p>\r\n<p>&quot;<strong>The region does not contain the specified view.</strong><br>\r\n<strong>Parameter name: view</strong>&quot;</p>\r\n<p>I added my view in this view to shell in this way.</p>\r\n<p>_region.RegisterViewWithRegion(&quot;RegionA&quot;, typeof(ChartAView));</p>\r\n<p>I am able to remove view by using IViewsCollection like this way:</p>\r\n<p>&nbsp; IViewsCollection regionlist= _region.Regions[&quot;RegionA&quot;].Views;<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var item in regionlist)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _region.Regions[&quot;RegionA&quot;].Remove(item);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // }</p>\r\n<p>By this view gets remove.</p>\r\n<p>So my question is that by this method it remove all views in this region.How i can remove particular View in that REGION and why it give error when i use remove method mentioned above.</p>\r\n<p>Thanks in advance.</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2012-07-26T03:59:21.757-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "891673",
+    "ThreadId": "389113",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Take into account that when using the <strong>View Discovery</strong> approach to add views to a region like shown above, you do not have explicit control over these views. For cases when you need a programmatic control or you need to remove a specific view\r\n from a region like you mentioned, <strong>View Injection</strong> is the recommended approach.</p>\r\n<p>You can find more information about this in the following chapter of the <strong>\r\nPrism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28v=pandp.40%29\">Chapter 7: Composing the User Interface</a>\r\n</li></ul>\r\n<p>For example, as mentioned in this chapter when using this approach you could add a view with a specific view name like this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>IRegion region = regionManager.Regions[<span style=\"color:#a31515\">&quot;RegionA&quot;</span>];\n\n<span style=\"color:blue\">var</span> myChartAView= container.Resolve&lt;ChartAView&gt;();\n\nregion.Add(myChartAView, <span style=\"color:#a31515\">&quot;myChartAViewName&quot;</span>);\n</pre>\r\n</div>\r\n<p>And once you added the view using a specific <strong>viewName</strong>, you can retrieve it from the region and remove it like this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> myView = region.GetView(<span style=\"color:#a31515\">&quot;myChartAViewName&quot;</span>);\n\nregion.Remove(myView);\n</pre>\r\n</div>\r\n<p>I hope you find this helpful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-07-26T06:33:00.813-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

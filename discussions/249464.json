@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "579585",
+    "ThreadId": "249464",
+    "Html": "<p>Hi,</p>\n<p>I am using the architecture like in the Outlook-Style-App descibed here: <a href=\"http://mansoormehmood.blogspot.com/2010/06/how-to-build-outlook-style-application.html\">http://mansoormehmood.blogspot.com/2010/06/how-to-build-outlook-style-application.html</a></p>\n<p>I use it with Prism V4</p>\n<p>I have now determined, that there will be a MemoryLeak. For example when you start the app and click the button for a new mail and then close the window, the NewEMailViewModel and the NewEMailUseCase still exists in the memory. I am searching for the reason  for several hours, but don't find it. Now I hope someone there can help me.</p>\n<p>Thanks.</p>\n<p>You can download my OutlookStyleApp ported to Prism V4 from <a href=\"http://dl.dropbox.com/u/4701983/OutlookStyleApp.rar\"> http://dl.dropbox.com/u/4701983/OutlookStyleApp.rar</a><br />Here can you find a Printscreen of the Graph of NewEmailUseCase, after the NewEmail-Window is closed (and the UseCase should also be close/ended):<br /><a href=\"http://dl.dropbox.com/u/4701983/path1.png\">NewEmailUseCase</a><br />And here a picture of the graph in the same sitution of NewEmailViewModel:<br /><a href=\"http://dl.dropbox.com/u/4701983/path2.png\">NewEmailViewModel</a></p>\n<p>Best Regards, Thomas</p>",
+    "PostedDate": "2011-03-12T16:58:54.917-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "580188",
+    "ThreadId": "249464",
+    "Html": "<p>Hi Thomas,</p>\r\n<p>We've tried to reproduce the memory leak you're reporting with your sample and were unable to do so.</p>\r\n<p>We've added some dummy data to both the <strong>ViewModel</strong> and the <strong>UseCase</strong> (see code below), and found that, when the memory grew bigger, the Garbage Collector released the memory:</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>dummyData = <span style=\"color: blue;\">new</span> <span style=\"color: blue;\">byte</span>[209715200];\r\n<span style=\"color: blue;\">for</span> (<span style=\"color: blue;\">int</span> i = 0; i &lt; dummyData.Length; i++)\r\n{\r\ndummyData[i] = 0;\r\n}\r\n</pre>\r\n</div>\r\n</p>\r\n<p>If you find a situation in which this doesn't happen, it would be helpful if you could share your results with us, so that we can help you further debug the application to find out the possible leak.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-03-14T12:15:38.253-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "581001",
+    "ThreadId": "249464",
+    "Html": "<p>Hi Miguel</p>\r\n<p>Did you receive my Message?</p>\r\n<p>Best Regards, Thomas</p>",
+    "PostedDate": "2011-03-15T14:27:25.187-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "582135",
+    "ThreadId": "249464",
+    "Html": "<p>Hi Thomas, I didn&acute;t receive any message. Could you post again your question, here?</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-03-17T08:27:01.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "611619",
+    "ThreadId": "249464",
+    "Html": "<p>Hi Thomas,</p>\r\n<p>I am having memory leaks issue in my prism application as well, however, I would like to know the took used for memory management, which one are you using to produce the images in your dropbox?<a href=\"http://dl.dropbox.com/u/4701983/path1.png\"> NewEmailUseCase</a> , I am looking exactly at some tool like this.</p>\r\n<p>Thanks</p>\r\n<p>YH.</p>",
+    "PostedDate": "2011-05-12T05:50:47.15-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "611639",
+    "ThreadId": "249464",
+    "Html": "<p>Hi YH</p>\r\n<p>I have used dotTrace from JetBrains (http://www.jetbrains.com/profiler/)</p>\r\n<p>Can you inform me, when you find your issues? - Perhaps we can do something together? - You can add me to skype (Skype-Name: t.kehl).</p>\r\n<p>Thomas</p>",
+    "PostedDate": "2011-05-12T06:14:37.563-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "686057",
+    "ThreadId": "249464",
+    "Html": "<p>What fixes did you guys make for this? Profiling with Red Gate memory profiler, i see that NewEmailToolbarViewModel seems to have a memory leak.</p>",
+    "PostedDate": "2011-10-18T15:32:08.14-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

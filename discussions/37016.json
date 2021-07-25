@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "122815",
+    "ThreadId": "37016",
+    "Html": "Hi, I'm trying to extract an image from a module using Pack URI syntax e.g.&nbsp;image.Source = new BitmapImage(new Uri(&quot;/HelloWorld;component/Clock.ico&quot;, UriKind.Relative));<br>\r\n<br>\r\nThis works correctly when HelloWorld.dll and MyApp.exe are in the same folder, but when HelloWorld.dll is located at /bin/debug/Modules/HelloWorld.dll it doesn't work.<br>\r\n<br>\r\nMSDN docs say format for Pack URI is:&nbsp;AssemblyShortName[;Version][;PublicKey];component/Path.<br>\r\nIs there any way to say that the AssemblyShortName is in a subfolder?<br>\r\n<br>\r\nThanks.<br>\r\n",
+    "PostedDate": "2008-10-03T18:22:45.253-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "123280",
+    "ThreadId": "37016",
+    "Html": "I have found a solution, with some minor updates to the CAL : )<br>\r\n<br>\r\nTo IModule interface added<br>\r\n<span style=\"font-size:13px;color:#2b91af\"><span style=\"font-size:13px;color:#2b91af\">&nbsp;Image </span></span><span style=\"font-size:13px\">GetModuleImage();\r\n<p>\r\n<p>&nbsp;</p>\r\n</span>\r\n<p>and to IModuleLoader interface added<br>\r\n<span style=\"font-size:13px;color:#2b91af\"><span style=\"font-size:13px;color:#2b91af\">&nbsp;IModule </span></span><span style=\"font-size:13px\">GetModule(</span><span style=\"font-size:13px;color:#2b91af\"><span style=\"font-size:13px;color:#2b91af\">ModuleInfo</span></span><span style=\"font-size:13px\"> moduleInfo);</span><br>\r\n<br>\r\nThe GetModuleImage method uses the pack uri syntax to create an image.<br>\r\nThe GetModule&nbsp;method allows me to&nbsp;call from my shell into the module to get the image.</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2008-10-06T13:14:31.15-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

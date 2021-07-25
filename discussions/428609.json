@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "983378",
+    "ThreadId": "428609",
+    "Html": "\r\n<p>I have a view and corresponding view model for adding or editing a customer. If I click the Add new customer button, unity wires me up a nice shiny new CustomerView and passes in my datacontext and view model. I save my customer and now want to view another,\r\n existing customer record, from my datagrid. I have a command that accepts the selectedItem (Customer) from the datagrid and I now want to pass this in to my CustomerView as a parameter, that is declared in my Constructor for the View Model. How do I tell Unity\r\n that I now want to build my View and view model with my Client parameter and then navigate to the view?</p>\r\n<p>Thanks.</p>\r\n",
+    "PostedDate": "2013-01-05T11:55:26.257-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "983749",
+    "ThreadId": "428609",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Have you tried using <strong>Overrides </strong>when resolving your instances, this way\r\n<strong>Unity </strong>allows you to specify constructor parameter or parameters, which could be useful to pass the selected item.</p>\r\n<p>For more information about this you could check the following <strong>MSDN </strong>\r\narticle:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff660920%28v=pandp.20%29.aspx\">Resolving Objects by Using Overrides</a>\r\n</li></ul>\r\n<p>Also, I believe you could find the following thread interesting where a related discussion is addressed:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/390476\">ParameterOverride in WPF/PRISM/MVVM</a>\r\n</li></ul>\r\n<p>I hope you find this helpful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2013-01-07T05:58:30.893-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "983760",
+    "ThreadId": "428609",
+    "Html": "\r\n<p><span>Hi Aadami</span></p>\r\n<p><span>I finally got to display&nbsp;a saved record using the ParameterOverride as you suggest, however, if I load a customer then navigate back to main and select a different customer to view, I see the ViewModel created as expected with my newly selected customer,\r\n but view still displays first selected customer, is there a way for me to instruct Prism/Unity to create me a new viewModel each time the view is navigated to?</span></p>\r\n<p><span>_unityContainer</span><span>.</span><span>RegisterInstance</span><span>(</span><span>_unityContainer</span><span>.</span><span>Resolve</span><span>&lt;</span><span>ICustomerViewViewModel</span><span>&gt;(</span><span>new</span><span>\r\n</span><span>ParameterOverride</span><span>(</span><span class=\"str\">&quot;customer&quot;</span><span>,</span><span> customer</span><span>)));</span><span><br>\r\n_regionManager</span><span>.</span><span>RegisterViewWithRegion</span><span>(</span><span class=\"str\">&quot;MainRegion&quot;</span><span>,</span><span>\r\n</span><span>typeof</span><span>(</span><span>CustomerView</span><span>));</span><span><br>\r\n_regionManager</span><span>.</span><span>RequestNavigate</span><span>(</span><span class=\"str\">&quot;MainRegion&quot;</span><span>,</span><span>\r\n</span><span class=\"str\">&quot;CustomerView&quot;</span><span>);</span></p>\r\n<p><span>Cheers for advice.</span></p>\r\n",
+    "PostedDate": "2013-01-07T06:37:39.923-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "983834",
+    "ThreadId": "428609",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding the behavior you are experiencing is caused by the fact that when you navigate to a view using the\r\n<strong>RequestNavigate </strong>method of the <strong>Prism</strong>'s navigation API, the navigated view will be determined based on the existing view's type\r\n<strong>Name </strong>or <strong>FullName </strong>in the specified region, and if no candidates are found a new instance of this view will be resolved from the container. In which case if you navigate to a view type that has more than one instance registered\r\n in that region only the first candidate found will be navigated to. This may be the reason why the first selected customer is displayed in your case.</p>\r\n<p>For scenarios where you need to navigate to existing views or create a new one if this doesn't exist in your region, you could benefit of the\r\n<strong>IsNavigationTarget</strong> method in the <strong>INavigationAware </strong>\r\ninterface. This method will be called during navigation on all views / view models (implementing this interface) in the region that are of the same type as the requested view. However, this may require passing a parameter, for example a customer id, during\r\n the navigation request in order to identify the correct view and return <strong>\r\ntrue </strong>or <strong>false </strong>in the <strong>IsNavigationTarget </strong>\r\nmethod accordingly.</p>\r\n<p>For detailed information on this approaches you could check the following chapter of the\r\n<strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40).aspx#sec9\">Chapter 8: Navigation, View and View Model Participation in Navigation</a>\r\n</li></ul>\r\n<p>In my opinion if you are using the <strong>Prism</strong>'s navigation API, you could also benefit of the\r\n<strong>INavigationAware</strong>, <strong>OnNavigatedTo </strong>method to initialize newly displayed views, as for example you could use it to pass a parameter with the selected customer id, and provide the logic to set the corresponding values to the views'\r\n view models inside this method, instead of using <strong>Overrides </strong>to resolve your types.</p>\r\n<p>Instead, if you want to manually create the instance of your views by using the\r\n<strong>ParameterOverride </strong>option, I believe using the view injection approach instead of navigation (as suggested in the above related thread (<a href=\"http://compositewpf.codeplex.com/discussions/390476\">ParameterOverride in WPF/PRISM/MVVM</a>)) might\r\n be a more suitable approach to handle these views.</p>\r\n<p>I hope this helps,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2013-01-07T10:20:09.07-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "983854",
+    "ThreadId": "428609",
+    "Html": "\r\n<p>Really appreciate your assistance Aadami.</p>\r\n<p>I have tried the &quot;view Injection&quot; approach you mention in your post and I have created my ClientView with populated ViewModel with the following code:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> clientView = _unityContainer.Resolve&lt;IClientView&gt;(<span style=\"color:blue\">new</span> ParameterOverride(<span style=\"color:#a31515\">&quot;client&quot;</span>, client).OnType&lt;ClientViewViewModel&gt;());&nbsp;</pre>\r\n<pre>_regionManager.Regions[<span style=\"color:#a31515\">&quot;MainRegion&quot;</span>].Add(clientView);</pre>\r\n<pre><br></pre>\r\n</div>\r\n<p></p>\r\n<p>I can see the view added to the MainRegion if I inspect the _regionManager.Regions[&quot;MainRegion&quot;].Views collection but the view is not shown, have I missed a step?</p>\r\n<p>Thanks again for help</p>\r\n",
+    "PostedDate": "2013-01-07T11:31:28.083-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "983856",
+    "ThreadId": "428609",
+    "Html": "\r\n<p>OK, added the RequestNavigate to ClientView after adding and spot on. Thanks for the help sir, dug me out of a right hole, no doubt another one round the corner but this one I'm clear of... Thank you.</p>\r\n",
+    "PostedDate": "2013-01-07T11:44:27.127-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "983875",
+    "ThreadId": "428609",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Just to add a quick note, based on my understanding, activating the view after adding it to the region should make it visible for you. You can do this by adding the following line after adding the\r\n<strong>clientView </strong>to the <strong>MainRegion</strong>:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>_regionManager.Regions[<span style=\"color:#a31515\">&quot;MainRegion&quot;</span>].Activate(clientView);\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>In my opinion, this is better than activating it through a <strong>RequestNavigate</strong>, as in some cases it may not activate the view you just added (like explained above.)</p>\r\n<p>Regards,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n",
+    "PostedDate": "2013-01-07T12:51:09.313-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "984144",
+    "ThreadId": "428609",
+    "Html": "\r\n<p>Cheers Damien, and Aadami. Top top help.</p>\r\n",
+    "PostedDate": "2013-01-08T09:45:44.817-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

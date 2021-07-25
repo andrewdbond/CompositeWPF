@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "939902",
+    "ThreadId": "402769",
+    "Html": "\r\n<p>I am using TabControl&nbsp;in&nbsp;a Prism region&nbsp;like this:</p>\r\n<p><span style=\"color:blue\"><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">UserControl ... &gt;</span></span></p>\r\n<p><span style=\"color:blue\"><span style=\"color:#a31515\"><span style=\"color:blue\"><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">ListBox ... /&gt;</span></span></span></span></p>\r\n<p><span style=\"color:blue\"><span style=\"color:#a31515\">&nbsp;</span>&lt;</span><span style=\"color:#a31515\">TabControl</span>\r\n<span style=\"color:red\">prism:RegionManager.RegionName</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">TabRegion</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">&gt;</span><br>\r\n&nbsp;&nbsp;&nbsp; <span style=\"color:green\">&lt;!-- The views that were declared in XAML are removed --&gt;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\r\n<br>\r\n<span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">TabControl</span><span style=\"color:blue\">&gt;</span></p>\r\n<p><span style=\"color:blue\"><span style=\"color:blue\"><span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">UserControl&gt;</span></span></span></p>\r\n<p>Each tab is a UserControl with a viewmodel associated with it. Everything works fine (I can add new tab using RegisterViewWithRegion, tab headers are&nbsp;shown correctly, etc.)</p>\r\n<p>In the same view I have a ListBox. <strong>The question </strong>is how to pass the selected item in the ListBox to the viewmodel of each tab?</p>\r\n<p>Thanks a lot.</p>\r\n",
+    "PostedDate": "2012-11-11T08:02:12.853-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "940320",
+    "ThreadId": "402769",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>In my opinion a possible approach to achieve this kind of scenarios could be by benefiting of the\r\n<strong>RegionContext </strong>attached property provided with the region manager, which will allow you to share to share context from a parent view that hosts a region to its child views. This way, you could set the region context property of your\r\n<em>&quot;TabRegion&quot;</em> with the <strong>SelectedItem </strong>value of your <strong>\r\nListBox </strong>control to pass it to the views in the region, for example like this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>(...)\n<span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">TabControl</span> <span style=\"color:red\">prism:RegionManager.RegionName</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">TabRegion</span><span style=\"color:black\">&quot;</span>  <span style=\"color:red\">prism:RegionManager.RegionContext</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">{Binding ElementName=myListBox,Path=SelectedItem}</span><span style=\"color:black\">&quot;</span> <span style=\"color:blue\">/&gt;</span>\n(...)\n</pre>\r\n</div>\r\n<p>For more detailed information about this approach and other possible approaches to communicate between views, I recommend you to check the following sections of the documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098(v=pandp.40).aspx#sec41\">7: Composing the User Interface,&nbsp; Sharing Data Between Multiple Regions</a>\r\n</li><li><a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28v=pandp.40%29.aspx\">9: Communicating Between Loosely Coupled Components</a>\r\n</li></ul>\r\n<p>Also, you could find an useful example that portrays this approach in the <a href=\"http://msdn.microsoft.com/en-us/library/ff921174(v=pandp.40).aspx\">\r\nUI Composition QuickStart </a>provided with <strong>Prism</strong>.&nbsp; <br>\r\n<br>\r\nI hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-11-12T07:20:40.923-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "940672",
+    "ThreadId": "402769",
+    "Html": "\r\n<p>It works! Thank you aadami.</p>\r\n",
+    "PostedDate": "2012-11-12T18:37:10.53-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

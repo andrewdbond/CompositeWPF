@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1244290",
+    "ThreadId": "545070",
+    "Html": "I've got a view/view-model (let's call it the &quot;parent&quot;) that retrieves data in its OnNavigatedTo method. This view contains several regions of its own - these regions' views are always the same, so they are registered during application startup using the &quot;regionManager.RegisterViewWithRegion(...)&quot; syntax.\r<br />\n<br />\nAfter retrieving the data and performing some calculations on it, the parent VM publishes an event aggregator message to say that the data is ready. The &quot;child&quot; VMs subscribe to this event from within their constructors, and it's in these event handlers where I extract the data that gets bound to their views.\r<br />\n<br />\nFor the last 12 months this approach has been working fine, but the application has recently been dealing with some larger data sets and I'm starting to find that (intermittently) the parent VM's OnNavigatedTo completes before the child views/VMs have been instantiated, resulting in &quot;empty&quot; child views (because the parent publishes the EA message before the child VMs constructors have been called, so there are no subscribers).\r<br />\n<br />\nI had assumed Prism would do stuff like this sequentially, i.e. when navigating to the parent view/VM it would call its OnNavigatedTo <em>before</em> starting navigation of the child regions? Or is some of this happening on b/g threads, meaning there is no guarantee to the order in which Prism navigation does stuff?\r<br />\n<br />\nIf this is the case, what are my options? Could I simply get rid of the &quot;RegisterViewWithRegion&quot; startup code, and instead populate the child regions from within the parent VMs OnNavigatedTo, using &quot;regionManager.RequestNavigate(...)&quot;?<br />\n",
+    "PostedDate": "2014-05-12T03:40:47.293-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1244505",
+    "ThreadId": "545070",
+    "Html": "Hi,\r<br />\n<br />\nFirst, I would like to say that based on my understanding <strong>Navigation</strong> is performed on each <strong>Region</strong> independently. Therefore, it would not be a concrete sequential execution between <strong>Navigation</strong> on different <strong>Regions</strong>.\r<br />\n<br />\nThen, I believe the approach you suggest would work correctly, but it does not seem to be pretty elegant.\r<br />\nHowever, another approach you could perform would be similar to the following thread's solution:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"https://compositewpf.codeplex.com/discussions/531707\" rel=\"nofollow\">Module initialization problem</a><br />\n</li>\n</ul>\nBasically, Registration and initializing of <strong>Views/ViewModels</strong> should be implemented on <strong>Modules</strong> Initialization process. Then, in order to be sure that every <strong>View</strong> would be already instantiated, you could raise a <strong><em>InitializationComplete</em></strong> <strong>Event</strong> at the end of <strong><em>Bootstrapper's run()</em></strong> method, which would be the trigger for parents <strong>ViewModels</strong> to <em>Publish()</em> the <strong>EventAggregator Message</strong> for their child <strong>Views</strong>. You may find detailed information in the above linked discussion thread.\r<br />\n<br />\nI hope this helped,\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky.\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-05-12T11:32:15.373-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1244687",
+    "ThreadId": "545070",
+    "Html": "My application doesn't use modules or MEF, so I don't think the proposed solution is relevant. Mine is a self-contained application with all views/VMs &quot;living&quot; in the main WPF project. I do still have an application &quot;bootstrapper&quot; where I register everything with the IoC container (including the views/VMs), and in its InitializeShell() method is where I use regionManager.RegisterViewWithRegion() to register the &quot;child&quot; views with the corresponding regions in the &quot;parent&quot; view.\r<br />\n<br />\nAll of the views in question are singletons, so I guess another option could be to force them to instantiate in (say) InitializeShell(), ensuring that they've subscribed to the event in their constructors? Still not particularly elegant though.\r<br />\n<br />\nThanks again<br />\n",
+    "PostedDate": "2014-05-13T00:24:40.213-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1244897",
+    "ThreadId": "545070",
+    "Html": "Hi andyste,\r<br />\n<br />\nRegarding your elegant concern, you could create a <strong><em>Registration</em></strong> class which would perform the process of <strong><em>Regions and Views Registration</em></strong> as it would occur on an <strong>IModule</strong> implemtened class. This way, you would only call this class from the <strong>BootStrapper</strong> to properly handle registration instead of having <strong><em>Regions</em></strong> Registering methods directly on <strong><em>InitializeShell()</em></strong>.\r<br />\n<br />\nHowever, an elegant design solution with <strong>Bootstrapper</strong> would correlate the use of at least one <strong>Module</strong> in order to separate the <strong><em>core Project</em></strong> with the concrete implementation and logic of <strong>Views</strong> and <strong>ViewModels</strong>. You may see some examples of <strong>One-Module</strong> and <strong>Bootstrapper</strong> solution on the <strong>Commanding and UI Composition QuickStarts</strong>.\r<br />\n<br />\nFind more information about <strong><em>Modular Applications</em></strong> in the following <strong>MSDN Prism Guide</strong> chapter:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg405479(v=pandp.40).aspx#sec1\" rel=\"nofollow\">Benefits of Building Modular Applications</a><br />\n</li>\n</ul>\nI hope this helped you,\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-05-13T09:29:54.603-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "115759",
+    "ThreadId": "34858",
+    "Html": "<p>Hello, <br>\r\n<br>\r\nI'm new so please be gentle ... I'm following the &quot;<span id=nsrTitle>Composite Application Guidance for WPF Hands-On Lab&quot; ...&nbsp;<br>\r\n</span><br>\r\nOn step 7 in the Bootstrapper section, I'm instructed to:&nbsp;<br>\r\n&quot;Open the file App.xaml and remove the attribute <b>StartupUri</b>. Because you are manually instantiating the Shell window in your bootstrapper, this attribute is not required &quot;<br>\r\n<br>\r\nWhen I do this, my app will launch (as I see it in the TaskManager) but, the window is not 'Shown' .... <br>\r\n<br>\r\nWhen debugging the application, I step into the InitializeComponent() method call in my Shell.New() subroutine ... eventually arriving at the&nbsp; RegionManager.OnSetRegionNameCallback method where this line of code returns a null:&nbsp;<span style=\"font-size:13px\">\r\n<p>&nbsp;</p>\r\n<p>IRegionManager regionManager = element.GetValue(RegionManagerProperty) </p>\r\n</span></p>\r\n<p><span style=\"font-size:13px;color:#0000ff\"><span style=\"font-size:13px;color:#0000ff\">as</span></span><span style=\"font-size:13px\"> IRegionManager;\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n</span></p>\r\n<p>It seems I'm unable to get the RegionManagerProperty value .... and things go pear shaped at that point .... <br>\r\n<br>\r\nThis is a vb.net WPF project .... can I use vb.net with this CompositeWPF guidance?<br>\r\n<br>\r\n</p>\r\n",
+    "PostedDate": "2008-09-03T11:37:18.037-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "115775",
+    "ThreadId": "34858",
+    "Html": "Found the problem .... <br>\r\n<br>\r\nIn a VB.Net WPF project (created from the Visual Studio template) ... the 'App.xaml' and related class are named 'Application' .... thus throwing off things a bit ... <br>\r\n<br>\r\nThis of course begs a few questions but ... for now, I'll keep plugging ...\r\n",
+    "PostedDate": "2008-09-03T12:19:26.563-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "118528",
+    "ThreadId": "34858",
+    "Html": "I don't exactly understand what you are doing in the InitializeComponent method. <br>\r\n<br>\r\nBut as far as I can see now, you should indeed get a null reference when you try to get the region manager at that point. This is because of the fact that the bootstrapper will let you create a new shell window and attach the region manager to the window at a later moment. Because the InitializeComponent method call is part of the constructor it will not yet have the region manager.<br>\r\n<br>\r\nWhat also puzzles me is how you solved it, but I'm glad you did :)<br>\r\n",
+    "PostedDate": "2008-09-15T04:14:18.147-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

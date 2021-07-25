@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "450462",
+    "ThreadId": "214684",
+    "Html": "<p>I am confused about how to use this. I see in the documentation that I the code such as the following could be used:<span style=\"color:green\"></span></p>\r\n<pre>  Logger.Write(message, category.ToString(), (<span style=\"color:blue\">int</span>)priority); <br><br>or<br><br>  logger.Log(&quot;Creating Unity container&quot;, Category.Debug, Priority.Low);<br><br>But what's not clear to me is where does the logger write to? In the applications such as the quickstarts then I can't see where any output destination is set.<br><br>Thanks in advance<br><br></pre>",
+    "PostedDate": "2010-06-02T01:27:04.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "455319",
+    "ThreadId": "214684",
+    "Html": "<p>Hi Richard,</p>\r\n<p>Prism logs through a logger that&nbsp;implements&nbsp;<strong>ILoggerFacade</strong>.  When the <strong>UnityBootstrapper</strong> creates a <strong>TextLogger </strong>(which is an implementation of ILoggerFacade), it provides no  parameters to its constructor by default, so the <strong>TextLogger </strong>will log into the console output. You can access the console output in  VS2010&nbsp;by clicking View&nbsp;&ndash;&gt; Output.&nbsp;You can find the <strong>TextLogger.cs </strong>file inside the <strong>Logging&nbsp;</strong>folder in  the&nbsp;<strong>Composite.Desktop </strong>project.</p>\r\n<p>If you would like to specify a <strong>TextLogger</strong> that writes to  another place (i.e. a <strong>TextWriter)</strong>, you could override the  <strong>LoggerFacade </strong>property in your application&rsquo;s  <strong>Bootstrapper </strong>to return an instance of your custom logger. You  can find more information about this in <a href=\"http://msdn.microsoft.com/en-us/library/ff650626.aspx\">this  article</a>.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-06-14T10:58:32.92-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "262989",
+    "ThreadId": "76921",
+    "Html": "<p>Hi,</p>\r\n<p>&nbsp;I am trying to figure out how to hook up commands declared in my view to my view model.&nbsp;&nbsp;</p>\r\n<p>&nbsp;I have a ProductCollectionView.Xaml, which has</p>\r\n<p><span style=\"color:#0000ff;font-size:x-small\"><span style=\"color:#0000ff;font-size:x-small\">\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>&lt;Button Content=<span style=\"color:#A31515\">&quot;Refresh&quot;</span> Command=<span style=\"color:#A31515\">&quot;{Binding Path=RefreshCommand}&quot;</span>/&gt;\r\n\r\n</pre>\r\n</div>\r\n</span></span></p>\r\n<p><span style=\"color:#0000ff\">In the ProductCollectionViewModel.cs I have</span></p>\r\n<p><span style=\"color:#0000ff;font-size:x-small\"><span style=\"color:#0000ff;font-size:x-small\">\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span> ProductCollectionViewModel : ViewModelBase \r\n{\r\n     <span style=\"color:Blue\">private</span> ICommand RefreshCommand { <span style=\"color:Blue\">get</span>; <span style=\"color:Blue\">set</span>; }\r\n \r\n<span style=\"color:Blue\">public</span> ProductCollectionViewModel(IProductDataService dataService, IEventAggregator eventAggregator)\r\n <span style=\"color:Blue\">base</span>()\r\n{\r\n      <span style=\"color:Blue\">this</span>.RefreshCommand = <span style=\"color:Blue\">new</span> DelegateCommand&lt;<span style=\"color:Blue\">string</span>&gt;(<span style=\"color:Blue\">this</span>.Refresh);\r\n}\r\n\r\n<span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> Refresh(<span style=\"color:Blue\">string</span>  vm) \r\n{\r\n   <span style=\"color:Blue\">int</span> productID = 1; \r\n   ProductSelected(<span style=\"color:Blue\">this</span>, <span style=\"color:Blue\">new</span> DataEventArgs&lt;<span style=\"color:Blue\">int</span>&gt;(productID));\r\n} \r\n\r\n</pre>\r\n</div>\r\n<p>How do I hook up the RefreshCommand to execure the Refresh method in the ProductCollectionViewModel?</p>\r\n<p>thanks,</p>\r\n&lt;font size=&quot;2&quot; color=&quot;#0000ff&quot;&gt;&lt;font size=&quot;2&quot; color=&quot;#0000ff&quot;&gt;\r\n<p>Arun</p>\r\n&lt;/font&gt;&lt;/font&gt;</span>&lt;font size=&quot;2&quot; color=&quot;#0000ff&quot;&gt;\r\n<p>&nbsp;</p>\r\n&lt;/font&gt;</span></p>\r\n<p><span id=\"_marker\">&nbsp;</span></p>",
+    "PostedDate": "2009-12-02T17:35:00.747-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "263007",
+    "ThreadId": "76921",
+    "Html": "<p>I think your problem is that you're declaring the RefreshCommand property as private, try making it public as below:</p>\r\n<pre style=\"font-size:1em;font-family:Consolas, 'Courier New', Courier, monospace\"><span style=\"color:blue\">public </span>ICommand RefreshCommand { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">set</span>; }</pre>\r\n<pre style=\"font-size:1em;font-family:Consolas, 'Courier New', Courier, monospace\"></pre>",
+    "PostedDate": "2009-12-02T19:04:32.917-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "263019",
+    "ThreadId": "76921",
+    "Html": "<p>Hi,</p>\r\n<p>Thanks for pointing that out.&nbsp; I had overlooked that.&nbsp; Could you tell me or point me to a link that explains how the view knows to route the event&nbsp;to the&nbsp;viewmodel ?</p>\r\n<p>Arun</p>",
+    "PostedDate": "2009-12-02T20:28:10.757-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "263045",
+    "ThreadId": "76921",
+    "Html": "<p>I'm not sure of a link off the top of my head, but generally I set the datacontext of the view to the viewmodel.</p>\r\n<p>So that when you bind to the command in your view (<span style=\"font-family:Consolas, 'Courier New', Courier, monospace;color:#a31515;white-space:pre\">Binding Path=RefreshCommand<span style=\"color:#000000;font-family:'Segoe UI', 'Microsoft Sans Serif', Arial, Geneva, sans-serif;white-space:normal\">), and with the datacontext set to your viewmodel, it will look for the &quot;RefreshCommand&quot; property in your viewmodel.</span></span></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-12-02T23:36:27.703-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "263053",
+    "ThreadId": "76921",
+    "Html": "<p>Oh ok. makes sense</p>\r\n<p>Thanks</p>\r\n<p>Arun</p>",
+    "PostedDate": "2009-12-03T00:11:59.63-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "270845",
+    "ThreadId": "76921",
+    "Html": "<p>EDIT: I've added&nbsp; a simplified example of exposing the view model methods directly:&nbsp; <a href=\"http://www.treukhov.com/commandadapter.zip\">download</a></p>\r\n<p>&nbsp;</p>\r\n<p>There is a harder but somehow more beautiful way(IMHO) on doing this in convention over configuration style: As you know Reflection.Emit namespace allows you to create specialized class instances at runtime via CLR, so you can implement a generic factory that will create ICommand from your ViewModel methods using Reflection:</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span> CommandAdapterFactory&lt;T&gt; <span style=\"color:Blue\">where</span> T: ViewModelBase<br>{<br><br>                Object  CreateCommandAdapter(){ some CLR magic to create class<span style=\"color:Blue\">&nbsp;</span> with ICommand props}<br><br>}<br></pre>\r\n</div>\r\n<p>So your regular code will look like this:</p>\r\n<p>Binding path will change to Commands.&lt;MethodName&gt;</p>\r\n<p><span style=\"color:#0000ff;font-size:x-small\"><span style=\"color:#0000ff;font-size:x-small\">\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>&lt;Button Content=<span style=\"color:#a31515\">&quot;Refresh&quot;</span> Command=<span style=\"color:#a31515\">&quot;{Binding Path=Commands.Refresh}&quot;</span>/&gt;  </pre>\r\n</div>\r\n</span></span></p>\r\n<p>&nbsp;</p>\r\n<pre><span style=\"color:Blue\">public</span> <span style=\"color:Blue\">class</span> ProductCollectionViewModel : ViewModelBase <br>{<br>     <span style=\"color:Blue\">private</span> Object Commands {get;set;} //we'll bind commands to this adapter <br> <br><span style=\"color:Blue\">public</span> ProductCollectionViewModel(IProductDataService dataService, IEventAggregator eventAggregator)<br> <span style=\"color:Blue\">base</span>()<br>{<br>     Commands = CommandAdapterFactory&lt;ProductCollectionViewModel&gt;();//we use factory to create specialized command adapter<br>}<br><br>[MyCommandAttribute]//attribute showing to your factory that it's a command<br><span style=\"color:Blue\">private</span> <span style=\"color:Blue\">void</span> Refresh(<span style=\"color:Blue\">string</span>  vm) <br>{<br>   <span style=\"color:Blue\">int</span> productID = 1; <br>   ProductSelected(<span style=\"color:Blue\">this</span>, <span style=\"color:Blue\">new</span> DataEventArgs&lt;<span style=\"color:Blue\">int</span>&gt;(productID));<br>} <br>}<br></pre>\r\n<p><span style=\"color:#0000ff;font-size:x-small\"><span style=\"color:#0000ff;font-size:x-small\"> </span></span></p>",
+    "PostedDate": "2009-12-26T09:04:07.487-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1225360",
+    "ThreadId": "539771",
+    "Html": "I've read some very old threads on the subject without much hope.  I am ready to start porting my applications from WPF to Windows Store.  It appears that MEF 2 is alive and well, so I'll be using that for my IOC.  However, I'm about to dump my considerable investment in Prism down the toilet.  I love dynamically constructing visual regions from view models but it doesn't appear to me that there's any future in Prism.<br />\n<br />\nWould someone kindly report on the viability of Prism for building Metro interfaces.  What have the P&amp;P people been doing since 2012?<br />\n",
+    "PostedDate": "2014-03-21T13:36:59.83-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1226737",
+    "ThreadId": "539771",
+    "Html": "DRAirey1,\r<br />\n<br />\nThere is a version of Prism for Windows Store apps that supports MVVM plus more that is available at <a href=\"http://aka.ms/prism-winrt-doc\" rel=\"nofollow\">http://aka.ms/prism-winrt-doc</a>. Below I provide a brief description of the release. We are about to publish an update to <a href=\"https://compositewpf.codeplex.com/releases/view/117297\" rel=\"nofollow\">Prism</a> that will allow you to share view models between platforms. We will update the Prism for Windows Runtime code base to use the PCL version of the MVVM code later this spring. \r<br />\n<br />\nPrism for Windows Runtime does not support regions or modularity because Windows Store apps are meant to be smaller and task based. All assemblies must be identified in the APPX when the app is published to the store so there is not an option to add or update an assembly without republishing the entire APPX. \r<br />\n<br />\nIn the AdventureWorks Shopper RI we demonstrate UI composition using a hierarchy of view models. An example of this is the <em>CheckoutHubPageViewModel</em> which contains the following child view models: <br />\n<ul>\n<li><em>ShippingAddressViewModel</em></li>\n<li><em>BillingAddressViewModel</em></li>\n<li>\n<em>PaymentMethodViewModel</em><br />\n</li>\n</ul>\n<strong>Prism for the Windows Runtime Description</strong><br />\n<ul>\n<li>\nThis guide helps developers who want to create a Windows Store business app using C#, XAML, the Windows Runtime, and development patterns such as Model-View-ViewModel and event aggregation. The guide comes with source code for Prism for the Windows Runtime, source code for the AdventureWorks Shopper product catalog and shopping cart reference implementation, and documentation. The documentation provides guidance on how to implement MVVM with navigation and app lifecycle management, validation, manage application data, implement controls, accessible and localizable pages, touch, search, tiles, and tile notifications. It also provides guidance on testing your app and tuning its performance<br />\n</li>\n</ul>\nLet me know if this helps and if there is more information I can provide. I'm also interested in hearing more about your requirements for Windows Store apps so we can consider it for our next update of Prism for Windows Runtime.\r<br />\n<br />\nThanks.\r<br />\n<br />\nBlaine Wastell<br />\n",
+    "PostedDate": "2014-03-25T18:05:21.7-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1228622",
+    "ThreadId": "539771",
+    "Html": "Blaine,\r<br />\n<br />\nI posted a much longer reply which seems to have been expunged somehow.  My point is that I am trying to figure out a strategy for both my mobile applications and my enterprise applications.  Like every other engineering who's looking into the future, I want to maximize the amount of code that I can share between them.  I have been following all the Best Practices guidelines I can because I felt that they were solid engineering concepts.  However, all the investment I made in loosely couple modules seems to have been misplaced.  I realize this is not the P&amp;P groups fault, but I'm left wondering if there's a place for Prism going forward.  If WindowsRT is the future of Windows, then I need to seriously examine the presumption of composite applications as a Best Practice.\r<br />\n<br />\nAny thoughts you have on the subject would be welcome.  I suspect the P&amp;P group is wrestling with the same issues.\r<br />\n<br />\nDon<br />\n",
+    "PostedDate": "2014-03-31T07:50:15.44-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "The following code throws an exception:\n \n// Create a view with a subregion/subview\nvar viewWithSubView = new ViewWithSubView();\nvar subRegionManager = new RegionManager();\nRegionManager.SetRegionManager(viewWithSubView, subRegionManager);\nvar subRegion = subRegionManager.Regions[\"TheSubRegion\"];\nvar subView = new View();\nsubRegion.Add(subView);\n \n// Add the parent view to a region in the main window\nregionManager.Regions[\"MainRegion\"].Add(viewWithSubView);\n \n// Try to access the subregion again\nvar sameSubRegion = subRegionManager.Regions[\"TheSubRegion\"]; // throws!\n \nThis last line confusingly throws an exception that says the region \"TheSubRegion\" is already registered:\n \nAn exception occurred while trying to create region objects. \n        - The most likely causing exception was: 'System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.ArgumentException: Region with the given name is already registered: WorkflowToolRegionNames.Current\n       at Microsoft.Practices.Prism.Regions.RegionManager.RegionCollection.Add(IRegion region)\n       at Microsoft.Practices.Prism.Regions.Behaviors.RegionManagerRegistrationBehavior.TryRegisterRegion()\n       at Microsoft.Practices.Prism.Regions.Behaviors.RegionManagerRegistrationBehavior.OnUpdatingRegions(Object sender, EventArgs e)\n       --- End of inner exception stack trace ---\n       at System.RuntimeMethodHandle._InvokeMethodFast(IRuntimeMethodInfo method, Object target, Object[] arguments, SignatureStruct& sig, MethodAttributes methodAttributes, RuntimeType typeOwner)\n       at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture, Boolean skipVisibilityChecks)\n       at System.Delegate.DynamicInvokeImpl(Object[] args)\n       at Microsoft.Practices.Prism.Events.WeakDelegatesManager.Raise(Object[] args)\n       at Microsoft.Practices.Prism.Regions.RegionManager.UpdateRegions()'.\n        But also check the InnerExceptions for more detail or call .GetRootException(). \n    Microsoft.Practices.Prism.Regions.UpdateRegionsException:\n    An exception occurred while trying to create region objects. \n        - The most likely causing exception was: 'System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.ArgumentException: Region with the given name is already registered: WorkflowToolRegionNames.Current\n       at Microsoft.Practices.Prism.Regions.RegionManager.RegionCollection.Add(IRegion region)\n       at Microsoft.Practices.Prism.Regions.Behaviors.RegionManagerRegistrationBehavior.TryRegisterRegion()\n       at Microsoft.Practices.Prism.Regions.Behaviors.RegionManagerRegistrationBehavior.OnUpdatingRegions(Object sender, EventArgs e)\n       --- End of inner exception stack trace ---\n       at System.RuntimeMethodHandle._InvokeMethodFast(IRuntimeMethodInfo method, Object target, Object[] arguments, SignatureStruct& sig, MethodAttributes methodAttributes, RuntimeType typeOwner)\n       at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture, Boolean skipVisibilityChecks)\n       at System.Delegate.DynamicInvokeImpl(Object[] args)\n       at Microsoft.Practices.Prism.Events.WeakDelegatesManager.Raise(Object[] args)\n       at Microsoft.Practices.Prism.Regions.RegionManager.UpdateRegions()'.\n        But also check the InnerExceptions for more detail or call .GetRootException(). \n       at Microsoft.Practices.Prism.Regions.RegionManager.UpdateRegions()\n       at Microsoft.Practices.Prism.Regions.RegionManager.RegionCollection.get_Item(String regionName)\n       at ... [our code]\n       \n    Source: Microsoft.Practices.Prism\n    Inner: [\n        System.ArgumentException:\n        Region with the given name is already registered: TheSubRegion\n           at Microsoft.Practices.Prism.Regions.RegionManager.RegionCollection.Add(IRegion region)\n       at Microsoft.Practices.Prism.Regions.Behaviors.RegionManagerRegistrationBehavior.TryRegisterRegion()\n       at Microsoft.Practices.Prism.Regions.Behaviors.RegionManagerRegistrationBehavior.OnUpdatingRegions(Object sender, EventArgs e)\n \n        Source:     Microsoft.Practices.Prism\n    ]\n    Data: [\n    ]\n \n(Prism 4.1, altough this problem existed at least since CAL 2.2)",
+    "LastUpdatedDate": "2013-02-21T18:38:00.823-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2012-03-30T01:15:05.51-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Exception in regionMgr.Regions[\"X\"]: \"Region with the given name is already registered: X\"",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 3,
+    "Id": 9272
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "We can only work around this by patching Prism!\r\n\r\nIn Prism.Regions.Region, in addition to:\r\n        \r\n    public virtual IRegionManager Add(object view, string viewName, bool createRegionManagerScope)\r\n    {\r\n        IRegionManager manager = createRegionManagerScope ? this.RegionManager.CreateRegionManager() : this.RegionManager;\r\n        this.InnerAdd(view, viewName, manager);\r\n        return manager;\r\n    }\r\n\r\nwe add something like:\r\n\r\n    public virtual IRegionManager AddUsingItsOwnRegionManager(object view)\r\n    {\r\n        IRegionManager manager = null;\r\n        DependencyObject dependencyObject = view as DependencyObject;\r\n        if (dependencyObject != null)\r\n        {\r\n            manager = Regions.RegionManager.GetRegionManager(dependencyObject);\r\n        }\r\n        this.InnerAdd(view, null, manager ?? this.RegionManager.CreateRegionManager());\r\n        return manager;\r\n    }\r\n    \r\nthen in the example we use that new method:\r\n    regionManager.Regions[\"MainRegion\"].AddUsingItsOwnRegionManager(viewWithSubView);",
+      "PostedDate": "2012-03-30T01:16:36.197-07:00",
+      "Id": 156597
+    },
+    {
+      "Message": "Hi,\r\n\r\nWe have been able to reproduce the aforementioned scenario and we could apply the fix proposed by the user rumzeus succesfully. \r\n\r\nAlso, we found that this problem might be related to the one mentioned in this other work item:\r\n\r\nUpdateRegionsException when adding/removing a view with a scoped region manager\r\nhttp://compositewpf.codeplex.com/workitem/7381\r\n\r\nAs mentioned by the user MarkGodwin in this work item the cause seems to be a recursion back into the TryRegisterRegion (via UpdateRegions). Which ends in the re-entry into TryRegisterRegion method that adds the view to the region. \r\n\r\nSo far, we couldn't think of another way to change this behavior without modifying the Prism source code like mentioned, as the the InnerAdd method in the Region class is defined as private.\r\n\r\nAs a side note, in this particular scenario we could also avoid the exception by re setting the corresponding region manager to the view after adding this view to the \"MainRegion\". Although this is far from ideal and we haven't test it in more scenarios, for this particular case it could be a quick fix:\r\n\r\n(...)\r\n\r\n// Add the parent view to a region in the main window\r\nregionManager.Regions[\"MainRegion\"].Add(viewWithSubView);\r\n\r\nRegionManager.SetRegionManager(viewWithSubView, subRegionManager);\r\n\r\n// Try to access the subregion again\r\nvar sameSubRegion = subRegionManager.Regions[\"TheSubRegion\"];\r\n\r\n(...)\r\n\r\nThanks for the feedback.\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2012-04-13T10:52:36.52-07:00",
+      "Id": 156598
+    }
+  ]
+}

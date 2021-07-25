@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Hi,\r\n\r\nI'm closing this work item, as it seems that the problem described isn't an issue in Prism, and we were also unable to reproduce the undesired behavior mentioned in it.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+    "ClosedDate": "2011-11-04T06:27:36.747-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "OVERVIEW:\n \nThe Subscribe() method of this class is documented as creating WeakReferences by default or when specified as keepSubscriberReferenceAlive=false in the overloads that include that parameter.\n \n \nDETAILS:\n \nThis behavior is only correctly observed when a filter delegate is supplied. In all other cases (and all overloads of the Subscribe() method), a strong reference is created - regardless of the documented default and regardless of any supplied value for the keepSubscriberReferenceAlive parameter.\n \nThe source of this bug can be found in the following overload of this method:\n \n  CompositePresentationEvent<TPayload>.Subscribe(Action<TPayload> action, ThreadOption threadOption, bool keepSubscriberReferenceAlive, Predicate<TPayload> filter)\n \nIn this method, the \"filter\" parameter is inspected. If the filter is not null, then processing continues correctly. However, if this parameter is null then a new pass-through delegate (always returns true) is created and used for the filter. The bug is that the DelegateReference object that is created from this pass-through delegate has the keepReferenceAlive parameter hard-coded to the value \"true\". This value should not be hard-coded, and instead the incoming parameter keepSubscriberReferenceAlive should be passed.\n \n \nWORKAROUND:\n \nThere is a simple workaround for this issue. When registering a subscription, you should always use the verbose overload stated above, and always supply a filter delegate. Never pass \"null\" for the filter parameter. If the subscription should not be filtered, then a pass-through filter delegate should be used when a weak event reference is desired (the typical scenario):\n \n    EventAggregator.GetEvent<MyEvent>().Subscribe(MyHandler, ThreadOption.PublisherThread, false, (dummy) => true);\n \nThere is NO workaround for the following abbreviated overloads, and these should not be used until the underlying bug has been patched:\n \n    CompositePresentationEvent<TPayload>.Subscribe(Action<TPayload> action)\n    CompositePresentationEvent<TPayload>.Subscribe(Action<TPayload> action, ThreadOption threadOption)\n    CompositePresentationEvent<TPayload>.Subscribe(Action<TPayload> action, bool keepSubscriberReferenceAlive)\n    CompositePresentationEvent<TPayload>.Subscribe(Action<TPayload> action, ThreadOption threadOption, bool keepSubscriberReferenceAlive)",
+    "LastUpdatedDate": "2013-05-16T05:28:55.907-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-09-16T13:50:10.123-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Bug in CompositePresentationEvent<>.Subscribe() prevents weak event references",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 23,
+    "Id": 4925
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nWe were unable to reproduce the behavior you’re mentioning. The decision to keep a subscription alive is based on both the action and the filter being available, so if either is a weak reference that is collected it would then remove the subscription. This can be seen in the following tests from the CompositePresentationEventFixture.cs fixture from the Prism.Desktop.Test project:\r\n\r\n•\tShouldNotExecuteOnGarbageCollectedDelegateReferenceWhenNotKeepAlive()\r\n•\tShouldNotExecuteOnGarbageCollectedFilterReferenceWhenNotKeepAlive()\r\n\r\nMore specifically, as seen in the ShouldNotExecuteOnGarbageCollectedDelegateReferenceWhenNotKeepAlive() test, a weak reference to the subscriber is held, and even if no filter is provided, the subscriber is garbage collected when there are no strong references to it.\r\n\r\nIf you have reproduced the issue you’re mentioning in a sample application, it could be helpful if you could provide it to us. \r\n\r\nThanks.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2010-12-21T12:43:58.92-08:00",
+      "Id": 156180
+    }
+  ]
+}

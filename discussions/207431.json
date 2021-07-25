@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "424123",
+    "ThreadId": "207431",
+    "Html": "<p>I cannot get interception to work with Prism v2 (Oct 2009). I am trying to intercept the Setter for any Public Properties and then fire the PropertyChanged event if the property has changed. I can see that the code gets executed (by stepping through with the debugger or adding a debug point). However, the WPF Window controls that are bound to these properties do not get updated. If I subscribe to these events and print to the console, I can print out the property change notifications.</p>\r\n<p>So, if the View has a textbox, which updates the property on the ViewModel, then the property in the ViewModel gets updated. However, if a button on the view (implemented as a DelegateCommand) causes the property to get updated, then the textbox (TwoWay Binding Mode) that is bound to that Property is not updated even though the event is triggered and the console has printed out the information about which property was updated. Has anyone encountered this issue?</p>\r\n<p>I have a sample app that I can upload somewhere if anyone would care to look at it or has encountered this issue. I could upload it to rapidshare if needed. Thanks in advance.</p>",
+    "PostedDate": "2010-03-26T08:28:28.783-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "424365",
+    "ThreadId": "207431",
+    "Html": "<p>Hi</p>\r\n<p>Very strange your problem. It is better if you can&nbsp;provide a little bit code. I never encounterer this problem with textBox.</p>\r\n<p>Please upload some code.</p>\r\n<p>Thanks</p>\r\n<p>Blochaou Francois.</p>",
+    "PostedDate": "2010-03-26T21:58:48.13-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "424430",
+    "ThreadId": "207431",
+    "Html": "<p>Here is the <a title=\"sample WPF App\" href=\"http://bobbychopra.files.wordpress.com/2010/03/interceptionwpfsample-zip.pdf\">sample WPF Application</a> that I have written. Wordpress doesn't allow uploads of zip files, so I renamed it to have a pdf extension (rename the file to have a zip extension). Please let me know what I am doing wrong. Thanks in advance.&nbsp;</p>",
+    "PostedDate": "2010-03-27T06:33:42.48-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "424724",
+    "ThreadId": "207431",
+    "Html": "<p>It seems like the problem exists with the TransparentProxyInterceptor. The program works if I change it from TransparentProxyInterceptor to making those properties virtual and declaring a VirtualMethodInterceptor i.e. from</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>_container.RegisterType&lt;SampleViewModel&gt;()\r\n        .Configure&lt;Interception&gt;()\r\n        .SetDefaultInterceptorFor&lt;SampleViewModel&gt;(<span style=\"color:Blue\">new</span> TransparentProxyInterceptor())\r\n        .AddPolicy(<span style=\"color:#A31515\">&quot;NotifyPropertyChanged&quot;</span>)\r\n        .AddMatchingRule(<span style=\"color:Blue\">new</span> PropertyMatchingRule(<span style=\"color:#A31515\">&quot;*&quot;</span>, PropertyMatchingOption.Set))\r\n        .AddCallHandler(<span style=\"color:Blue\">typeof</span>(NotifyPropertyChangedCallHandler));\r\n</pre>\r\n</div>\r\n<p>to</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>_container.RegisterType&lt;SampleViewModel&gt;()\r\n    .Configure&lt;Interception&gt;()\r\n    .SetDefaultInterceptorFor&lt;SampleViewModel&gt;(<span style=\"color:Blue\">new</span> VirtualMethodInterceptor())\r\n    .AddPolicy(<span style=\"color:#A31515\">&quot;NotifyPropertyChanged&quot;</span>)\r\n    .AddMatchingRule(<span style=\"color:Blue\">new</span> PropertyMatchingRule(<span style=\"color:#A31515\">&quot;*&quot;</span>, PropertyMatchingOption.Set))\r\n    .AddCallHandler(<span style=\"color:Blue\">typeof</span>(NotifyPropertyChangedCallHandler));</pre>\r\n<pre></pre>\r\n</div>\r\n<p>I don't know why. Any idea?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-03-28T16:34:09.647-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "428410",
+    "ThreadId": "207431",
+    "Html": "<p id=759a6030-249c-012d-3bcf-12313d013db1>Hi,</p>\r\n<p id=759a6880-249c-012d-3bd0-12313d013db1>As this question appears to  be related to Unity specifically (<a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.unity.interceptionextension.transparentproxyinterceptor.aspx\">TransparentProxyInterceptor</a>),  you might be interested in asking this question in the <a href=\"http://unity.codeplex.com/Thread/List.aspx\">Unity forums</a> were you might get a more specific answer.</p>\r\n<p id=759a7130-249c-012d-3bd1-12313d013db1>Please let me know if this  helps.</p>\r\n<p id=759a79c0-249c-012d-3bd2-12313d013db1>Damian Schenkelman <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-04-07T11:03:06.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "648303",
+    "ThreadId": "266725",
+    "Html": "\r\n<p>I'm implementing a WPF class library (dll) for a Win app. When this WPF is started, I need to pass some object references from the host Win app into WPF bootstrapper. How can I do this and register this object reference in the container so it can be injected\r\n to other modules? I've read the documentation but all it talk about is how to register a service (through)&nbsp;inside WPF. But in my case, this is not from WPF itself but passed in from the host and it some time is just a static class.</p>\r\n<p>Thanks!</p>\r\n",
+    "PostedDate": "2011-07-27T07:26:54.857-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "648401",
+    "ThreadId": "266725",
+    "Html": "<p>Hi,</p>\r\n<p>You could define a constructor in your <strong>Bootstsrapper </strong>class (which most likely inherits from <strong>MefBootstrapper </strong>or <strong>UnityBootstrapper</strong>), which accepts an instance of that service and stores it in a private field, and override its <strong>ConfigureContainer </strong>method to register it in the container.</p>\r\n<p>Then, in the <strong>Application_Startup</strong> method in the <strong>App</strong> class located inside the <strong>App.xaml.cs </strong>file, you could instantiate your bootstrapper (passing your service as a parameter) and call it's <strong>Run </strong>method, just like you regularily do in a Prism application.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-27T10:25:36.99-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "648647",
+    "ThreadId": "266725",
+    "Html": "<p>Thanks. That's helpful.</p>\r\n<p>Follow up question, &nbsp;</p>\r\n<p>1. when I register this object reference, do I have to do it through interface, i.e. the class of the object reference has to implement interface? From code example, looks like it always has to have an interface.&nbsp;</p>\r\n<p>2. Should I use RegisterType or RegisterInstance?</p>\r\n<p>&nbsp;</p>\r\n<p>Thanks.</p>",
+    "PostedDate": "2011-07-27T15:56:41.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "649057",
+    "ThreadId": "266725",
+    "Html": "<p>Hi,<br /> <br /> The recommended approach when using shared services is to register the types or objects using interfaces. This way, the different components of you application (in this case the service and the components that will use it) will be loosely coupled, allowing  you to mock the dependencies on the service in a unit test scenario or to change said service with another one without having to modify the dependent components. Of course, to do this the service should implement an interface.<br /> <br /> Based on my understanding of your scenario, you should use the <strong>RegisterInstance </strong>method to register the service as a singleton. By doing this, when resolving the dependencies, the container will return always the same instance that you registered instead of trying to create a new one each time the dependencies are resolved.<br /> <br /> This is because the whole purpose of my previous answer was to allow you to register a specific instance of a service (created before initializing the WPF application) into the container. If you wish to make the container return a new instance of the service  each time you call the <strong>Resolve </strong>method, then you should abandon the workaround I&rsquo;ve proposed in that answer.<br /> <br /> You can find more information about the differences between <strong>RegisterType </strong> and <strong>RegisterInstace </strong>in the following articles:</p>\n<ul>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921140%28PandP.40%29.aspx#sec4\">Chapter 3: Managing Dependencies Between Components</a> </li>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff660923%28PandP.20%29.aspx\">Registering Types and Type Mappings</a> </li>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff660894%28PandP.20%29.aspx\">Creating Instance Registrations</a> </li>\n</ul>\n<p><br /> I hope you find this useful.</p>\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-28T09:38:42.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "649288",
+    "ThreadId": "266725",
+    "Html": "<p>Your understanding was correct. I need to register the object instance for the whole lifetime. The links you posted made it clear. But the RegisterInstance if for UnityContainer, how to do it for MEF? Use attributes on the instance?</p>",
+    "PostedDate": "2011-07-28T17:24:44.32-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "649632",
+    "ThreadId": "266725",
+    "Html": "<p>Hi,</p>\r\n<p>To register an instance of an object as a singleton when using MEF you can use the <strong>ComposeExportedValue</strong> method, as shown in the <strong>ConfigureContainer</strong> method of the <strong>QuickStartBootstrapper</strong> class in the <strong>Modularity with Mef QuickStart</strong>:</p>\r\n<p><span style=\"font-size: 10pt;\" lang=\"EN-US\"></span></p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> <span style=\"color: blue;\">void</span> ConfigureContainer()\r\n\r\n{\r\n\r\n    <span style=\"color: blue;\">base</span>.ConfigureContainer();\r\n\r\n    <span style=\"color: blue;\">this</span>.Container.ComposeExportedValue&lt;CallbackLogger&gt;(<span style=\"color: blue;\">this</span>.callbackLogger);\r\n\r\n}\r\n</pre>\r\n</div>\r\n<p><span style=\"font-size: 10pt;\" lang=\"EN-US\"></span></p>\r\n<p>For more information about this you can check the section <a href=\"http://msdn.microsoft.com/en-us/library/ff921140%28v=PandP.40%29.aspx#sec6\">Registering Types With MEF</a> of <a href=\"http://msdn.microsoft.com/en-us/library/ff921140%28v=PandP.40%29.aspx\">Chapter 3: Managing Dependencies Between Components</a>.</p>\r\n<p>Also, you should note that types exported inside your application using attributes with MEF are declared as singleton instances by default. If you want to control whether they are declared as a shared or a non-shared export, you can use the <strong>PartCreationPolicyAttribute</strong>.</p>\r\n<p><strong>&nbsp;</strong>I hope you find this useful.</p>\r\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-29T10:01:09.153-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

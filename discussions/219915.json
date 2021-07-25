@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "469055",
+    "ThreadId": "219915",
+    "Html": "I have several modules set to InitializationMode OnDemand. From my understanding they will be downloaded and loaded on demand.\r\nIs there a way to set a module to InitializationMode OnDemand but have them downloaded automatically when the bootstrapper runs ?\r\nI want them to be available on the client but not initialized\r\n\r\nThanks",
+    "PostedDate": "2010-07-19T08:24:00.15-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "469121",
+    "ThreadId": "219915",
+    "Html": "<p>The download and initalization were intentionally tied together in previos versions of Prism.&nbsp; This allowed things to be a bit simpler both from an external usage perspective (less concepts to learn and keep track of), and for simplicity in the implementation.&nbsp; We did consider the scenario, but had not recieved many requests for it, so it has been quite low on the priority list.</p>\r\n<p>I would like some more information on your scenario and what the challenges you are running into&nbsp;that make this a necessary feature for you.&nbsp; Would you mind sharing a bit more about what you are trying to do and the motivations behind it? It may help us better understand the needs for this so we can prioritize it appropriately.</p>\r\n<p>In the short run, there are two things I can think of that could enable this now:</p>\r\n<ul>\r\n<li>Have a XAP that contains a module that is initialized at application startup.&nbsp; In that XAP, add the other, on demand modules.&nbsp;&nbsp;This is ugly, and depending on the scenario and the size and number of modules involved, could cause more&nbsp;problems than it solves.</li>\r\n<li>Introduce a delayed initialization concept in your app.&nbsp;&nbsp;During the Prism provided module initialization, do the bare minimum, and have your module subscribe to a service that does on demand inialization when you request it.&nbsp; Again, not completely straight forward, but it should work.</li>\r\n</ul>\r\n<p>I hope that helps,</p>\r\n<p>Michael Puleio</p>",
+    "PostedDate": "2010-07-19T10:39:38.02-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "469209",
+    "ThreadId": "219915",
+    "Html": "<p>I'll try and describe our scenario.</p>\r\n<p>We're developing a very large Silverlight enterprise application. Currently the application consists about 10 modules and this is very likely to grow in the near future. All modules should be available to the users once they pass through a login/authentication process.</p>\r\n<p>After the authentication process has been completed there are a bunch of&nbsp;state full&nbsp;services/managers that need to be initialized before the other modules load (these services vary depending on the user that has been authenticated). This is because these modules depend on these services. So basically what we did was to set all modules (except for the authentication module) to on demand initialization. Once the user has been authenticated we load all the services, and when these services have been initialized we load all the modules via the module manager manually. However this results with an odd delay since all the modules are being downloaded from the server at this point.</p>\r\n<p>As for your solutions, well the first one I think the R&amp;D department would execute me if I even suggested it :-)</p>\r\n<p>The second one is a little more practical but it would require quite a bit of work to our infrastructure.</p>\r\n<p>Anyways, thanks for your help.</p>",
+    "PostedDate": "2010-07-19T13:10:53.91-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "469793",
+    "ThreadId": "219915",
+    "Html": "<p>Thanks for the info on the scenario.&nbsp; I'll take this back to the rest of&nbsp;the team.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-07-20T09:54:40.077-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

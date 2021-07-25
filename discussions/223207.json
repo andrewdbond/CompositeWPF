@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "479090",
+    "ThreadId": "223207",
+    "Html": "<p>I am trying to extend&nbsp;ModuleInfo so I can store more metadata against a module, such as icon, title, desctiption etc. I have extended ModuleInfo accordingly...</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">namespace</span> Business.Apps.Dashboard.Modules\r\n{\r\n    <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;summary&gt;</span>\r\n    <span style=\"color:gray\">///</span><span style=\"color:green\"> </span>\r\n    <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;/summary&gt;</span>\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> WidgetInfo : ModuleInfo\r\n    {\r\n        <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;summary&gt;</span>\r\n        <span style=\"color:gray\">///</span><span style=\"color:green\"> Gets or sets the icon URI.</span>\r\n        <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;/summary&gt;</span>\r\n        <span style=\"color:gray\">///</span> <span style=\"color:gray\">&lt;value&gt;</span><span style=\"color:green\">The icon URI.&lt;/value&gt;</span>\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">string</span> IconUri { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">set</span>; }\r\n\r\n    }\r\n}\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>however whenever the ModuleCatalog tries to read my config from XAML, it throws a XAMLParseException...</p>\r\n<p><em>The type 'WidgetInfo' was not found because 'clr-namespace:Business.Apps.Dashboard.Modules' is an unknown namespace.&nbsp;</em></p>\r\n<p>Any ideas what this is?</p>\r\n<p>The root tag for my module catalog looks like this...</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">Modularity</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">ModuleCatalog</span> <span style=\"color:red\">xmlns</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">http://schemas.microsoft.com/winfx/2006/xaml/presentation</span><span style=\"color:black\">&quot;</span>\r\n                          <span style=\"color:red\">xmlns:x</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">http://schemas.microsoft.com/winfx/2006/xaml</span><span style=\"color:black\">&quot;</span> \r\n                          <span style=\"color:red\">xmlns:Modularity</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">clr-namespace:Microsoft.Practices.Composite.Modularity;assembly=Microsoft.Practices.Composite</span><span style=\"color:black\">&quot;</span> \r\n                          <span style=\"color:red\">xmlns:local</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">clr-namespace:IE.Business.Apps.Dashboard.Modules</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">&gt;</span>\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-08-11T06:30:30.1-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "480347",
+    "ThreadId": "223207",
+    "Html": "<p>Hi,</p>\r\n<p>Based on the namespace and the ModuleCatalog.xaml you shared, the problem seems to be the namespace specified, since the project name and namespace are different. I tried using the following xaml and it worked:</p>\r\n<pre><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">Modularity</span><span style=\"color:blue\">:</span><span style=\"color:#a31515\">ModuleCatalog </span><span style=\"color:red\">xmlns</span><span style=\"color:blue\">=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot; \r\n                          </span><span style=\"color:red\">xmlns</span><span style=\"color:blue\">:</span><span style=\"color:red\">x</span><span style=\"color:blue\">=&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot; \r\n                          </span><span style=\"color:red\">xmlns</span><span style=\"color:blue\">:</span><span style=\"color:red\">sys</span><span style=\"color:blue\">=&quot;clr-namespace:System;assembly=mscorlib&quot; \r\n                          </span><span style=\"color:red\">xmlns</span><span style=\"color:blue\">:</span><span style=\"color:red\">Modularity</span><span style=\"color:blue\">=&quot;clr-namespace:Microsoft.Practices.Composite.Modularity;assembly=Microsoft.Practices.Composite&quot;\r\n                          </span><strong><span style=\"color:red\">xmlns</span><span style=\"color:blue\">:</span><span style=\"color:red\">local</span></strong><span style=\"color:blue\"><strong>=&quot;clr-namespace:Business.Apps.Dashboard.Modules;assembly=IE.Business.Apps.Dashboard.Modules&quot;</strong> &gt;\r\n</span></pre>\r\n<p>Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-08-13T12:13:38.143-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "480365",
+    "ThreadId": "223207",
+    "Html": "<p>Thats it - thanks. It would appear you have to specify the assembly regardless.</p>",
+    "PostedDate": "2010-08-13T12:50:46.77-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "545575",
+    "ThreadId": "223207",
+    "Html": "\r\n<p>@mcampster I am trying to incorporate icon and title information for my modules as well. Would you mind posting some more code to show how you are achieving this in your app?</p>\r\n",
+    "PostedDate": "2011-01-07T11:18:20.977-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

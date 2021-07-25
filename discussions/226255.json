@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "489875",
+    "ThreadId": "226255",
+    "Html": "<p>Hi, i'm new to Prism, so i'm still learning how to use it properly</p>\r\n<p>i'm writing an application with a structure similar to this one:</p>\r\n<ul>\r\n<li>Main Silverlight Client Project: it's only purpose is to download Xap files (with xaml catalog), load assemblies and manage regions. (doesn't reference any other assembly in my solution)</li>\r\n<li>Grouped Interface Libraries: a certain number of Silverlight Class Libraries. Each group of functionalities is identified by it's own class library.</li>\r\n<li>Grouped Implementation Libraries: for every Interface Library, there're multiple implementations, each one in it's own project and each one exported, with MEF, as interface.</li>\r\n<li>Grouped Interface Modules: only used to download one of the Class Libraries&nbsp;containing a group of interfaces</li>\r\n<li>Grouped Implementation Modules: used to download one of the ﻿Class Libraries containing an implementation. every module has&nbsp;a viewmodel that consume the interface implementation. every module Depends On the module containing the interface.</li>\r\n</ul>\r\n<p>so, when i want to load a functionality, i've to download&nbsp;the interface that corresponds to that functionality and load&nbsp;the assembly, then i can download one of the implementations (one is enough, but i could get more of them), load it and register the view with the region manager.</p>\r\n<p>as soon as i start downloading an implementation module, prism starts downloading the required interface module, because of the DependsOn parameter.</p>\r\n<p>if the implementation module's download is finished before the interface's one, the application throw a ModuleTypeLoadingException, because, i think, MEF is trying to export a class that require an interface that is in an assembly that isn't already available (DependsOn only defers the call to&nbsp;the Module constructor and to&nbsp;the IModule Initialize method)</p>\r\n<p>i'm not sure if this is the correct approach but i want to do is:</p>\r\n<ul>\r\n<li>&nbsp;keeping everything out of the main silverlight application</li>\r\n<li>group funcionality by shared interfaces</li>\r\n</ul>\r\n<p>here is a sample application</p>\r\n<p>﻿﻿﻿<a href=\"http://rapidshare.com/files/417527440/PrismTest03.zip\">http://rapidshare.com/files/417527440/PrismTest03.zip</a></p>",
+    "PostedDate": "2010-09-06T17:40:20.313-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "490345",
+    "ThreadId": "226255",
+    "Html": "<p>Hi,</p>\r\n<p>Thanks for reporting that. There are no similar issues reported yet, so I will copy this as a work-item. This way the prism product team is notified and the community could vote this.</p>\r\n<p>As for&nbsp;your approach, it seems to be a possible one. But the only thing that you could review if it is really necessary to create a module for the interfaces. As the interfaces assemblies are required&nbsp;from the&nbsp;functionality assemblies (you have to&nbsp;implement them&nbsp;in the concrete classes),&nbsp;I&rsquo;m not sure if they should be decoupled. In other words, I would recommend to you the usage of strong references in this particular case.</p>\r\n<p>In&nbsp;your sample application,&nbsp;there are&nbsp;strong references&nbsp;between functionality&nbsp;and the interfaces assemblies. So, it seems not necessary to&nbsp;depend&nbsp;on an&nbsp;interface module if you have CopyLocal=True&nbsp;on&nbsp;references to the interface&rsquo;s assembly.</p>\r\n<p>For more information you could take a look at the following quickstart of the <a href=\"http://compositewpf.codeplex.com/releases/view/50749\">latest drop</a>:</p>\r\n<ul>\r\n<li><strong>ModularityWithMEF</strong>, you can find this at <strong>&lt;PrismInstallationDirectory&gt;\\Quickstarts\\Modularity\\[Desktop|Silverlight]</strong> </li>\r\n</ul>\r\n<p>Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-09-07T13:06:38.787-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "490346",
+    "ThreadId": "226255",
+    "Html": "This discussion has been copied to a work item. Click <a href=\"http://compositewpf.codeplex.com/workitem/7224\">here</a> to go to the work item and continue the discussion.",
+    "PostedDate": "2010-09-07T13:07:54.057-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

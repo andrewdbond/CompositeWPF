@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "476103",
+    "ThreadId": "222360",
+    "Html": "In my shell's view model I have a list of objects that will represent a list of menu options. I populate this list when the ViewModel is created by looping through the modules in the module catalog : foreach (var itm in _moduleCatalog.Modules)\r\n\r\nThe problem that I'm having is that I need to reference the actual Module. I need it because my Module contains a property that points to it's main View object and I need access to that View. When I loop through the Modules list I only receive the ModuleInfo class type instead of the actual one I need. How can I do this?",
+    "PostedDate": "2010-08-03T12:45:53.333-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "476281",
+    "ThreadId": "222360",
+    "Html": "<div id=\"_mcePaste\" style=\"width:1px;height:1px;overflow:hidden;top:0px;left:-10000px\">﻿</div>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:#000000\">Create an helper function like that</span></pre>\r\n<pre><span style=\"color:blue\">private</span> T TryResolve&lt;T&gt;(String name)\r\n\t\t{\r\n\t\t\t<span style=\"color:blue\">try</span>\r\n\t\t\t{\r\n\t\t\t\t<span style=\"color:blue\">return</span> _container.Resolve&lt;T&gt;(name);\r\n\t\t\t}\r\n\t\t\t<span style=\"color:blue\">catch</span>\r\n\t\t\t{\r\n\t\t\t\t<span style=\"color:blue\">return</span> <span style=\"color:blue\">default</span>(T);\r\n\t\t\t}\r\n\t\t}\r\n</pre>\r\n<pre>And resolve your module instance like</pre>\r\n<pre><span style=\"font-family:Courier New;font-size:x-small\"><span style=\"font-family:Courier New;font-size:x-small\"><div style=\"color:black;background-color:white\"><pre>IModule module = TryResolve&lt;IModule&gt;(e.ModuleInfo.ModuleName)\r\n</pre>\r\n</div>\r\n</span></span></pre>\r\n</div>",
+    "PostedDate": "2010-08-03T23:18:10.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "476437",
+    "ThreadId": "222360",
+    "Html": "That sounds like it might work but this line: &quot;IModule module = TryResolve&lt;IModule&gt;(e.ModuleInfo.ModuleName)&quot; raises an exception that says IModule is an interface and cannot be constructed. ",
+    "PostedDate": "2010-08-04T06:59:17.96-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "476458",
+    "ThreadId": "222360",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>programmeranalyst wrote:</strong><br>That sounds like it might work but this line: &quot;IModule module = TryResolve&lt;IModule&gt;(e.ModuleInfo.ModuleName)&quot; raises an exception that says IModule is an interface and cannot be constructed. </blockquote><p></p>\r\n\r\nI found a work around thanks to slouge's help. First I get module info so I can get a reference to the type name. Then, I set that to a type and pass it into the resolve method:\r\n\r\n[code]\r\n\r\nobject module;\r\nModuleInfo modInfo = _moduleCatalog.Modules.FirstOrDefault(f =&gt; f.ModuleName == moduleName); \r\n\r\nif (modInfo != null)\r\n{                                                \r\n    Type t = Type.GetType(modInfo.ModuleType);\r\n\r\n    module = _container.Resolve(t);\r\n}\r\n\r\n[/code]",
+    "PostedDate": "2010-08-04T07:40:57.117-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "486505",
+    "ThreadId": "222360",
+    "Html": "<p>I tried programmeranalyst's code, but it is creating a new instance of the module. I want to get the instance of the module specified by the ModuleInfo; I don't want to create a new instance. Anyone know how to do this? I don't see why it's so difficult to get a list of the loaded IModules. Maybe that's something we're not supposed to be doing?</p>",
+    "PostedDate": "2010-08-30T10:09:44.793-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "492150",
+    "ThreadId": "222360",
+    "Html": "<p>Put in Intialize method</p>\r\n<p>public void Initialize()<br>&nbsp;&nbsp;{<br>&nbsp;&nbsp;&nbsp;_container.RegisterInstance&lt;IModule&gt;(&quot;NameOfYourModule&quot;, this);<br>&nbsp;&nbsp;}</p>\r\n<p>&nbsp;</p>\r\n<p>and use the method showed in my first post</p>",
+    "PostedDate": "2010-09-11T03:59:08.187-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

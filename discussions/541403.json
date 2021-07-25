@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1231055",
+    "ThreadId": "541403",
+    "Html": "I'm coming down the home stretch of converting my substantial WPF application into Prism and I've just hit a major wall.  Where is the access to the navigation stack?  WPF and Silverlight have a concept of RemoveBackEntry which is critical in any real-life application.  Let's say I've just navigated to:<br />\n<br />\npack://application:,,,;/Customers?path=\\Customer\\JohnSmith<br />\n<br />\nWhich is a maintenance page for customers.  Now I change the name to 'JohnSmythe'.  The URI that I used to navigate to this page is no longer useful and will actually corrupt the navigation because we can't find this resource any more (because the name has changed).  Unfortunately, it's still on the navigation stack.<br />\n<br />\nSo where is the 'RemoveBackEntry' function and/or access to the journal stack?  You can't possibly build a real-life application without being able to remove entries that have been made obsolete.<br />\n",
+    "PostedDate": "2014-04-06T17:26:54.743-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1231066",
+    "ThreadId": "541403",
+    "Html": "OK.  Since they don't allow these posts to be deleted, I'll answer my own question.  I'm not sure why they left the 'RemoveBackEntry' feature out of the default library, but they have made it rather trivial to override the existing classes.  I was able to basically just cut and paste the 'default' version of the RegionNavigationJournal and as long as I gave it an 'IRegionNavigationJournal' alias, the navigation system was able to find it and us it.  I simply exposed the Back stack and I was in business.\r<br />\n<br />\nAgain, this is a basic feature.  I greatly appreciate the 'lean and mean' consideration, but any real-life application is going to need to examine the forward and backward stacks and remove at least the most recent entry on the back stack.  I'd like to hear what the design consideration was to make it private.<br />\n",
+    "PostedDate": "2014-04-06T18:08:56.737-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1231438",
+    "ThreadId": "541403",
+    "Html": "Hi Don,\r<br />\n<br />\nThank you for replying the solution you could accomplish. Instead of removing your initial question, it is much better to reply and post your solution because your work would be helpful for users that may go through the same or similar problem.\r<br />\n<br />\nI think the right anwswer regarding your design question would only be done by the <em>P&amp;P Team</em>. However, based on my understanding I would think that default apps would not need to remove a specific <strong><em>View</em></strong> manually. Furthermore, you would be adding the related responsibility to someone that would not be appropiate.\r<br />\n<br />\nRegarding the scenario you described, I am afraid I don't completely understand how you would change the View name with the <strong>Application</strong> running. Any available <strong><em>View</em></strong> that you would be able to Navigate to would have been already loaded and registered in a specific <strong><em>Region</em></strong>. That is why I don't see the problem you mentioned. Plus, I understand that if a <strong><em>View</em></strong> source name is modified, then a rebuild would be needed. Please, let me know if there is something that I missunderstood.\r<br />\n<br />\nMaybe you could find helpful the <strong>Navigation</strong> chapter on <strong>MSDN Prism's</strong> Guide:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40).aspx#sec6\" rel=\"nofollow\">View-Based Navigation</a><br />\n</li>\n</ul>\nI hope I could provide some better understanding about the <strong><em>Region/Navigation</em></strong> <strong>Prism</strong> design.\r<br />\nRegards,\r<br />\nGabriel Ostrowsky.\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-04-07T10:29:20.437-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

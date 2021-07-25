@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "1207418",
+    "ThreadId": "531546",
+    "Html": "I am trying to build up an array of objects, but when I use container.resolve&lt;&gt;(), it always uses the same instance, so I end up getting an array where the last object added is the same reference as all the other elements.<br />\n<pre><code>            ITCardGACCVM gacc1 = basecontainer.Resolve&lt;ITCardGACCVM&gt;();\n            gacc1.GaccName = &quot;NameOne&quot;;\n            GaccList.Add(gacc1);\n\n           ITCardGACCVM gacc2 = basecontainer.Resolve&lt;ITCardGACCVM&gt;();\n            gacc2 .GaccName = &quot;NameTwo&quot;;\n            GaccList.Add(gacc2 );\n\n //Both elements in GaccList are the same reference, and have the name &quot;NameTwo&quot;\n</code></pre>\n\nHow can i use prism to generate a NEW COPY of a class? Thanks!<br />\n",
+    "PostedDate": "2014-02-12T09:31:46.027-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1207468",
+    "ThreadId": "531546",
+    "Html": "Hi Mathius,\r<br />\n<br />\nYou need to be careful on which <strong>BootStrapper</strong> are you using as the resolving default behaviour may change. For example, the default behavior of <strong>Unity</strong> returns a new instance each time, while <strong>MEF</strong> returns the same instance that is registered as <strong><em>Singleton</em></strong> by default.\r<br />\n<br />\nHaving said that, I imagine that you would be using <strong>MEF BootStrapper</strong>. In that case, you should set a <strong>PartCreationPolicy</strong> attribute as &quot;<strong><em>NonShared</em></strong>&quot; above the object class declaration in order to resolve a new instance each time from the container.\r<br />\n<br />\nYou may find useful the following links related to <strong>PartCreationPolicy</strong> attribute:<br />\n<h1></h1>\n<ul>\n<li><a href=\"http://msdn.microsoft.com/en-us/library/system.componentmodel.composition.creationpolicy(v=vs.110).aspx\" rel=\"nofollow\">CreationPolicy Enumeration</a></li>\n<li>\n<a href=\"https://mef.codeplex.com/wikipage?title=Parts%20Lifetime\" rel=\"nofollow\">MEF Documentation</a><br />\n</li>\n</ul>\nI hope this helps,\r<br />\nRegards.\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-02-12T11:08:23.573-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1207504",
+    "ThreadId": "531546",
+    "Html": "Weird. I am actually using the Unity boot strapper. Why would it be doing that then by default and how would I change it?<br />\n",
+    "PostedDate": "2014-02-12T12:15:11.337-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1207875",
+    "ThreadId": "531546",
+    "Html": "Hi mathius,<br />\n<ol>\n<li>I wasn't really expecting that you were using <strong>Unity</strong>. Singleton type registration in <strong>Unity</strong> is achieved by explicitly setting a parameter of <strong><em>new ContainerControlledLifetimeManager()</em></strong> to the <strong><em>RegisterType()</em></strong> method. Are you registering the types without any parameter? In the following site you may find more detailed information regarding how object's lifetime works with <strong>Unity</strong>:</li>\n</ol>\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/ff660872%28v=pandp.20%29.aspx\" rel=\"nofollow\">Understanding Lifetime Managers</a><br />\n</li>\n</ul>\nIf you might have a sample that you could share with this behavior you described I would be glad to try solving the issue and report you back with the results.\r<br />\n<br />\nRegards.\r<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-02-13T05:21:59.11-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1207966",
+    "ThreadId": "531546",
+    "Html": "All of my types are registered as follows<br />\n<pre><code> this.container.RegisterType&lt;IFAAVM, FAAVM&gt;(new ContainerControlledLifetimeManager());</code></pre>\n\nSo that explains why it was happening that way. Thank you very much! I was just mimicking the tutorials while learning, so that got me into trouble a little.<br />\n",
+    "PostedDate": "2014-02-13T08:14:18.9-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

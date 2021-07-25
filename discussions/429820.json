@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "987751",
+    "ThreadId": "429820",
+    "Html": "\r\n<table>\r\n<tbody>\r\n<tr>\r\n<td>\r\n<div>\r\n<div><strong>&nbsp;</strong></div>\r\n</div>\r\n</td>\r\n<td>\r\n<div>\r\n<div>\r\n<p>I need to add TabItems dynamically at run time to TabControl, I found some information in&nbsp;the&nbsp;web&nbsp;but it is very brief and i need some detailed steps. thanks in advance</p>\r\n</div>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n",
+    "PostedDate": "2013-01-16T11:53:29.25-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "987768",
+    "ThreadId": "429820",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I am not aware of the requirements of your scenario or why you want to compose the\r\n<strong>UI </strong>through the use of the <strong>EventAggregator</strong>, but based on my understanding, in\r\n<strong>Prism </strong>the dynamic composition of the <strong>UI </strong>is usually done through\r\n<strong>Regions</strong>. For example, you could define your <strong>TabControl </strong>\r\nas a <strong>Region </strong>doing something like this:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">TabControl</span> <span style=\"color:red\">cal:RegionManager.RegionName</span><span style=\"color:blue\">=</span><span style=\"color:black\">&quot;</span><span style=\"color:blue\">TabRegion</span><span style=\"color:black\">&quot;</span> <span style=\"color:blue\">/&gt;</span>\r\n</pre>\r\n</div>\r\n<p>Then, in any part of your application, you can dynamically add a <strong>TabItem\r\n</strong>to the <strong>TabControl </strong>using one of the <strong>UI </strong>\r\ncomposition approaches of <strong>Prism</strong>, for example:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">this</span>._regionManager.Regions[<span style=\"color:#a31515\">&quot;TabRegion&quot;</span>].Add( tabItem );\r\n</pre>\r\n</div>\r\n<p>You can find more information about <strong>Regions </strong>in the following chapter of the\r\n<strong>Prism </strong>documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28v=pandp.40%29.aspx\">Chapter 7 - Composing The User Interface</a>\r\n</li></ul>\r\n<p>&nbsp;</p>\r\n<p>On the other hand, if you need to involve the <strong>EventAggregator </strong>\r\nin the process of composing the <strong>UI</strong>, you might find the following thread interesting:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/298092\">ContentControl Direct View Binding&nbsp;</a>\r\n</li></ul>\r\n<p>At the end of the aforementioned thread, you can find a sample application that portrays the usage of events to change the\r\n<strong>UI </strong>at run-time. This sample uses a <strong>ContentControl</strong>, but could be adapted for a\r\n<strong>TabControl </strong>easily.</p>\r\n<p>I hope this helps,</p>\r\n<p>Damian Cherubini<br>\r\n<a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n<ul>\r\n</ul>\r\n",
+    "PostedDate": "2013-01-16T12:33:24.423-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "987920",
+    "ThreadId": "429820",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>i have an event that is triggered from view in Module_A that should cause another view in same module or another Module_B to be displayed on TaobControl on the Shell Window in Module_C in a new TabItem. So i cannot do this simply like you explained.</p>\r\n",
+    "PostedDate": "2013-01-16T21:57:39.553-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "988124",
+    "ThreadId": "429820",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>In my opinion there is not only one way to achieve this kind of scenarios and which approach you take will depend mostly on your personal preferences and the requirements of your scenario, for example as a possible approach you could use both\r\n<strong>EventAggregation </strong>and regions to achieve this, this way you could subscribe to the triggered event in\r\n<strong>Module_A</strong>, either in same <strong>Module_A</strong> or <strong>Module_B</strong> depending on your needs, and then in each of the handlers for this event, you could use one of the UI composition approaches like the one mentioned above, in order\r\n to add the corresponding view in each of these modules to the region defined in the\r\n<strong>TabControl </strong>in <strong>Module_C</strong>.</p>\r\n<p>Or for example, I believe another possibility could be: in the handler of the event triggered from view in\r\n<strong>Module_A</strong> you could inject the required view to the region defined in the\r\n<strong>TabControl </strong>in <strong>Module_C,</strong> but in order to inject the correct view, for example in this unique handler you could have some logic to decide which view will be injected in this region. For example if you need to display the view\r\n that is contained in <strong>Module_B</strong>, you could export this view to the corresponding dependency injection container in this module by using an specific contract, in order to allow you to retrieve it in the\r\n<strong>Module_A</strong> event handler through the container if needed.<strong></strong></p>\r\n<p>On the other hand, if your concern is related on how to publish and subscribe to events using the\r\n<strong>EventAggregator</strong>, I believe you could find the <a href=\"http://msdn.microsoft.com/en-us/library/ff921122(v=pandp.40).aspx#sec8\">\r\nEvent Aggregation</a> section handy, as it portrays several code snippets and detailed information on how to implement this communication approach.<br>\r\n<br>\r\nPlease let us know if this makes sense for your scenario,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2013-01-17T05:49:46.653-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

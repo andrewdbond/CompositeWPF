@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "84885",
+    "ThreadId": "25317",
+    "Html": "\r\nFirst, should it be renamed CompositeCommand?<br /><br />Second, I'd love so see more LINQ action :)<br /><br />Instead of:<br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\npublic bool CanExecute(object parameter)\r\n{\r\n  bool hasEnabledCommandsThatShouldBeExecuted = false;\r\n \r\n  foreach (var command in registeredCommands)\r\n  {\r\n    if (ShouldExecute(command))\r\n    {\r\n      if (!command.CanExecute(parameter))\r\n      {\r\n        return false;\r\n      }\r\n \r\n      hasEnabledCommandsThatShouldBeExecuted = true;\r\n    }\r\n  }\r\n  return hasEnabledCommandsThatShouldBeExecuted;\r\n}\r\n</pre><br />LINQ allows:<br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\npublic bool CanExecute(object parameter)\r\n{\r\n  return registeredCommands\r\n    .Where(ShouldExecute)\r\n    .TakeWhile(command =&gt; command.CanExecute(parameter))\r\n    .Any();\r\n}\r\n</pre><br />Do you really want to know which one I prefer ? ;)<br />",
+    "PostedDate": "2008-04-03T15:11:22.193-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "85010",
+    "ThreadId": "25317",
+    "Html": "\r\nThey're actually not semantically the same:<br /><br />The verbose version stops checking at the first command that can't be executed and immediately returns false.<br />The Linq version returns true if there are <b>any</b> that can and should execute<br /><br />The Linq version seems more logically correct; it seems like the verbose version has a bug:<br />- If there are <b>any</b> commands that can't execute, then return false to CanExecute even though there may be 10 other commands that <b>can</b> execute.<br />",
+    "PostedDate": "2008-04-04T07:56:13.98-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "85023",
+    "ThreadId": "25317",
+    "Html": "\r\nLet's split the Linq version into pieces:<br /><br /><ul><li>It will iterate all those commands that Should Execute and STOP as soon as it meets one that CAN'T execute. AFAIK, that's the semantic of TakeWhile</li><li>Any will return whether there is any element yielded. That is determined by the TakeWhile which might yield nothing if the first command cannot be executed.</li></ul><br />I don't see the bug on the explicit version and I don't see how they are different.<br /><br />Can you elaborate?<br /><br />Thanks<br />",
+    "PostedDate": "2008-04-04T08:32:23.97-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "85027",
+    "ThreadId": "25317",
+    "Html": "\r\nAh I see your point. You're saying that CanExecute should return true if any command SHOULD execute and CAN execute.<br /><br />Depends what really was the intent of this method but my the bool variable name, looks like you're right.<br /><br />So the LINQ version should probably be:<br /><br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\npublic bool CanExecute(object parameter)\r\n{\r\n  return registeredCommands\r\n    .Where(ShouldExecute)\r\n    .Any(command =&gt; command.CanExecute(parameter));\r\n}\r\n</pre>",
+    "PostedDate": "2008-04-04T08:39:24.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "85029",
+    "ThreadId": "25317",
+    "Html": "\r\nBeing new to Linq I'm curious as to whether or not it is semantically the same?<br /><br />Doesn't the TakeWhile operator only yield while it is true?   Then the Any() would return the boolean value of the operation resulting in a false being returned the first time a false is encountered?<br /><br />Edited:  on the assumption that the first iteration returned false.   <br /><br />",
+    "PostedDate": "2008-04-04T08:43:53.617-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "85044",
+    "ThreadId": "25317",
+    "Html": "\r\nBTW, enjoying your LINQ messages; really raises an eyebrow on the power of LINQ.   I didn't catch your reponse until after I wrote mine but was curious...<br /><br />Understanding that by naming convention RTaylor is correct, how would you make them semantically match?  e.g., return false if any of the CanExecutes return false?<br /><br />",
+    "PostedDate": "2008-04-04T09:09:09.193-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "85055",
+    "ThreadId": "25317",
+    "Html": "\r\nTo be more concrete, say there are 2 commands in registeredCommands; the first one will return <i>true</i> to CanExecute, and the second will return <i>false</i> - and that they both \"ShouldExecute\".<br /><br />In the verbose/explicit/imperative version:<br /><ul><li>hasEnabledCommandsThatShouldBeExecuted is <i>false</i> by default</li><li>on the first iteration, hasEnabledCommandsThatShouldBeExecuted is set to <i>true</i></li><li>on the second iteration, it falls into the inner-most if-statement and immediately returns <i>false</i>; ignoring the fact that we, in fact, just found one that CanExecute on the previous iteration</li><li>this method will return <i>false</i> if <b>any</b> registeredCommands <i>cannot</i> execute</li></ul><br />In the original succinct/Linqified/declarative version :<br /><ul><li>the result of Any() will be <i>true</i> as long as there is at least one command that CanExecute before any commands that cannot</li><li>if the commands are reversed so that the first one returns <i>false</i>, then TakeWhile is short-circuited on the first iteration and Any() will return <i>false</i></li><li>the behaviour of this version depends on the order of the commands</li></ul><br />In the modified Linq version:<br /><ul><li>the result of Any() will be <i>true</i> as long as <b>any</b> of the commands CanExecute</li></ul><br />Without understanding the actual requirements of the method, the original imperative version seems very odd to me and the modified Linq version seems the most logical.<br />",
+    "PostedDate": "2008-04-04T10:22:48.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "85067",
+    "ThreadId": "25317",
+    "Html": "<br /><div class=\"quote\" style=\"border: dotted .1em #aaa; border-left: none; border-right: none; font-style: italic; margin: 1em 0em 2.5em 3em;padding: .2em;\"><br />RTaylor wrote:<br />Without understanding the actual requirements of the method, the original imperative version seems very odd to me and the modified Linq version seems the most logical.<br /><br /></div><br />Your instincts seemed to be correct - I changed only one value in the Unit test (IsActive = false) below and the test fail.  I plugged in francois_tanguay's LINQ code and the Unit Test passed.<br /><br /><b>Prism.Tests\\Commands\\ActiveAwareMultiDispatchCommandFixture.cs</b><br /><pre style=\"background-color:#ECECEC; border:dashed .1em #3E62A6; font-family:Consolas, Courier New, Courier, Monospace; font-size:1em; margin-top:0; padding:.5em; height:auto; overflow:auto; overflow-x:auto; overflow-y:auto;\">\r\n        [TestMethod]\r\n        public void ActiveAwareDispatchCommandShouldIgnoreInActiveCommandsInCanExecuteVote()\r\n        {\r\n            ActiveAwareMultiDispatchCommand activeAwareCommand = new ActiveAwareMultiDispatchCommand();\r\n            MockActiveAwareCommand commandOne = new MockActiveAwareCommand() {IsActive = true, IsValid = false};\r\n            MockActiveAwareCommand commandTwo = new MockActiveAwareCommand() { IsActive = true, IsValid = true};\r\n \r\n            activeAwareCommand.RegisterCommand(commandOne);\r\n            activeAwareCommand.RegisterCommand(commandTwo);\r\n \r\n            Assert.IsTrue(activeAwareCommand.CanExecute(null));\r\n        }\r\n</pre><br />Edited:  I just ran the entire test suite and two other test fail so I guess \"without understanding the actual requirements of the method\"......<br />",
+    "PostedDate": "2008-04-04T11:30:42.763-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "86424",
+    "ThreadId": "25317",
+    "Html": "\r\nThanks Francois<br /><br />We actually had several folks suggest it should be CompositeCommand, and we are renaming it. As to using LINQ, I will forward this on to the team.<br /><br />Thanks<br />Glenn<br />",
+    "PostedDate": "2008-04-11T19:19:05.41-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

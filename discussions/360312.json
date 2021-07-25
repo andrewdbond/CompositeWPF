@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "851539",
+    "ThreadId": "360312",
+    "Html": "\r\n<p>If you go to</p>\r\n<p><a href=\"https://skydrive.live.com/#cid=A53184DCECF800FE&id=A53184DCECF800FE%21125\">https://skydrive.live.com/#cid=A53184DCECF800FE&amp;id=A53184DCECF800FE%21125</a></p>\r\n<p>and download ChildViewClosing you will see my example.</p>\r\n<p>&nbsp;</p>\r\n<p>My issue is closing a child view when parent view closes. I have a left region, a right region and a region within a view called inrightregion. I navigate to my EditView in the rightregion, which has the inrightregion, I then navigate to the DetailView in\r\n the inrightregion. I deactivate the editview.</p>\r\n<p>I then try to go to the EditView again but it still has the DetailView within? Why hasn't this been destroyed?</p>\r\n",
+    "PostedDate": "2012-06-20T07:07:49.377-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "852091",
+    "ThreadId": "360312",
+    "Html": "\r\n<p>Hi James,</p>\r\n<p>I check your sample, and based on my understanding this behavior is caused because you are only deactivating the &quot;<strong>EditView</strong>&quot; from the region and not removing it.</p>\r\n<p>As you can find in the following section (<a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28v=pandp.40%29#sec9\">View and View Model Participation in Navigation</a>) of the\r\n<strong>Prism </strong>documentation, if you need to remove the view from the region when its deactivated, you could achieve this by implementing the\r\n<strong>IRegionMemberLifetime </strong>interface, for example in your &quot;<strong>EditViewModel</strong>&quot;, and returning\r\n<strong>false </strong>in the <strong>KeepAlive </strong>property. This way, your view will be removed from your region when it is deactivated, and as you are using the\r\n<strong>ClearChildViews </strong>attached property, your child view should be removed with it.</p>\r\n<p>The other option you could try is just removing the view instead of deactivating it, for example your\r\n<strong>&quot;Close&quot; </strong>method could look like this:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> Close()\n        {\n            IRegion region = _regionManager.Regions[RegionNames.RightRegion];\n\n            <span style=\"color:green\">// region.Deactivate(region.ActiveViews.ElementAt(0));</span>\n\n            region.Remove(region.ActiveViews.ElementAt(0));\n        }\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>I hope you find this handy,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2012-06-21T05:54:38.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

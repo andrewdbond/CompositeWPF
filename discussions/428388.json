@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "982684",
+    "ThreadId": "428388",
+    "Html": "\r\n<p>Hi,&nbsp;</p>\r\n<p>I have a scenario in which I need to verify if a control is loaded in one of the region specified in another control.&nbsp;</p>\r\n<p>for eg:</p>\r\n<p>Tab Control has a main region and I need access to one of the region in tab items to verify if a view is loaded.&nbsp;</p>\r\n<p>how do I achieve this? please help</p>\r\n",
+    "PostedDate": "2013-01-03T07:38:53.957-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "982797",
+    "ThreadId": "428388",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>As far as I know in <strong>Prism </strong>there is not direct functionality as out of the box to achieve this kind of scenario. As how to achieve it will depend on how your application is structured and how loosely coupled your components are.</p>\r\n<p>In my opinion the main challenge will be to obtain the corresponding <strong>RegionManager</strong> where the specified region is registered. For example if your are using scoped regions this may not be straightforward. As a possibility, I believe you could\r\n retrieve the view from the main region where the specified region is defined. This could be achieved for example using the\r\n<strong>Region.GetView</strong> method in the main region assuming the view was registered using an specific\r\n<strong>viewName</strong>. And then the <strong>RegionManager.GetRegionManager</strong> method would become handy to obtain the corresponding region manager that was attached to this view. Although, this wont be required if you stored a reference to this\r\n<strong>RegionManager </strong>for example in a shared service or the corresponding view model.</p>\r\n<p>Once you obtain the corresponding <strong>RegionManager</strong>, then you could iterate through the views collection of the specified region to check if the control exists in this region or not.<br>\r\n<br>\r\nI hope this helps,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br>\r\nhttp://blogs.southworks.net/aadami</a></p>\r\n",
+    "PostedDate": "2013-01-03T13:00:35.247-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "994745",
+    "ThreadId": "428388",
+    "Html": "Hi Agustin, \r<br />\n<br />\nthank you for the response. and sorry for the delay. \r<br />\nI didn't get any notification for this thread at all. but yes. i had figured out your first approach suggested.\r<br />\nhowever you have mentioned about shared services storing reference to region manager. can you throw some light on this?\r<br />\n<br />\nyes. i'm using scopedregion managers for the views. and still the code is bit buggy.\r<br />\n<br />\nhope to hear from you soon<br />\n",
+    "PostedDate": "2013-01-31T08:16:59.56-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "995161",
+    "ThreadId": "428388",
+    "Html": "Hi,<br />\n<br />\nRegarding the approach using a <strong>shared service</strong> , what I meant was to have a way to centralize where these <strong>scoped region managers</strong> could be stored and accessed from. For example, this service could expose a key value pair <strong>Dictionary</strong> with the specific <strong>viewName</strong> as the key which could be used to identity the specific view and the corresponding <strong>scoped region manager</strong> as the value. <br />\n<br />\nHowever, take into account that when following this approach you may have to add the additional logic to add and remove  these key value pairs in sync with your existing views and a way to identity each of this views, which may result in additional complexity.<br />\n<br />\nRegards,<br />\n<br />\nAgustin Adami<br />\n<a href=\"http://blogs.southworks.net/aadami\" rel=\"nofollow\">http://blogs.southworks.net/aadami</a><br />\n",
+    "PostedDate": "2013-02-01T05:38:35.267-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "995231",
+    "ThreadId": "428388",
+    "Html": "Thanks Agustin \r<br />\n<br />\nQuite a nice approach to start with. I have a way to differential each views (using business object). \r<br />\nwill try this approach.  intriguing. \r<br />\n<br />\nKavya<br />\n",
+    "PostedDate": "2013-02-01T07:20:36.453-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

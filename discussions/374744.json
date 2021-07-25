@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "874836",
+    "ThreadId": "374744",
+    "Html": "\r\n<table>\r\n<tbody>\r\n<tr>\r\n<td>\r\n<div><a title=\"This question shows research effort; it is useful and clear (click again to undo)\"></a></div>\r\n</td>\r\n<td>\r\n<div>\r\n<div>\r\n<p>I am using <strong>PRISM 4.1 with UNITY </strong>for my application. I want to display a nice splash screen which will be a xaml window that will show a progress bar. Once all modules are loaded (one of the modules does lengthy database access operation\r\n on startup) splash screen should clode and shell is shown. I <strong>cannot find\r\n</strong>any sample for this, all samples online use in-built SplashScreen which just points to\r\n<strong>static image</strong>. I want my splash screen to be xaml not just a static image or animated gif.</p>\r\n</div>\r\n</div>\r\n</td>\r\n</tr>\r\n</tbody>\r\n</table>\r\n",
+    "PostedDate": "2012-07-18T15:52:46.497-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "876979",
+    "ThreadId": "374744",
+    "Html": "\r\n<p>I did it in Prism 4.0 by modifying App.xaml.cs like so:</p>\r\n<div style=\"background-color:white; color:black\">\r\n<pre>        <span style=\"color:blue\">private</span> <span style=\"color:blue\">static</span> <span style=\"color:blue\">void</span> RunInDebugMode()\r\n        {\r\n            Thread oThread = <span style=\"color:blue\">new</span> Thread(<span style=\"color:blue\">new</span> ThreadStart(splash));\r\n            oThread.SetApartmentState(ApartmentState.STA);\r\n            oThread.Start();\r\n\r\n            MEBootstrapper bootstrapper = <span style=\"color:blue\">new</span> MEBootstrapper();\r\n            bootstrapper.Run();\r\n        }\r\n\r\n        <span style=\"color:blue\">private</span> <span style=\"color:blue\">static</span> <span style=\"color:blue\">void</span> RunInReleaseMode()\r\n        {\r\n            AppDomain.CurrentDomain.UnhandledException &#43;= AppDomainUnhandledException;\r\n            <span style=\"color:blue\">try</span>\r\n            {\r\n                Thread oThread = <span style=\"color:blue\">new</span> Thread(<span style=\"color:blue\">new</span> ThreadStart(splash));\r\n                oThread.SetApartmentState(ApartmentState.STA);\r\n                oThread.Start();\r\n\r\n                MEBootstrapper bootstrapper = <span style=\"color:blue\">new</span> MEBootstrapper();\r\n                bootstrapper.Run();\r\n            }\r\n            <span style=\"color:blue\">catch</span> (Exception ex)\r\n            {\r\n                HandleException(ex);\r\n            }\r\n        }\r\n\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">static</span> <span style=\"color:blue\">void</span> splash()\r\n        {\r\n            Splash ss = <span style=\"color:blue\">new</span> Splash();\r\n            ss.ShowDialog();\r\n        }\r\n\r\n</pre>\r\n</div>\r\n<p>Where Splash is a XAML window</p>\r\n",
+    "PostedDate": "2012-07-19T08:22:11.66-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

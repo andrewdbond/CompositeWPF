@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "235484",
+    "ThreadId": "69210",
+    "Html": "<p>Hi guys,</p>\r\n<p>Is it possible to use Silverlight 3 assembly caching with Prism Dynamic modules in following scenario:</p>\r\n<p>Let's assume that I have dynamic module B, which depends on Silverlight.Windows.Data.Controls.</p>\r\n<p>I want&nbsp; cached zip package with Silverlight.Windows.Data.Controls to be downloaded only before module B is requested. Is it possible now?</p>\r\n<p>Thanks,</p>\r\n<p>Alexey Zakharov.</p>",
+    "PostedDate": "2009-09-17T00:59:34.137-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "236252",
+    "ThreadId": "69210",
+    "Html": "<p id=785a17d0-85f0-012c-b474-12313b00d991>Hi Alexander,</p>\r\n<p id=785a2a90-85f0-012c-b475-12313b00d991>From the <a href=\"http://msdn.microsoft.com/en-us/library/dd833069(VS.95).aspx\">Silverlight 3 Assembly Caching documentation</a>:<em> &ldquo;When a user first visits your Web page, the Silverlight plug-in downloads the application package and all required external parts. These files are added to the browser cache so that they can be reused on subsequent visits.&rdquo;</em> If you want to load a particular assembly just when <strong>ModuleB</strong> is <a href=\"http://msdn.microsoft.com/en-us/library/dd458932.aspx\">loaded on demand</a>, you simply have to remove any reference you have to that assembly in the Shell project and only keep it in ModuleB. Take into account that if other modules use this assembly, you would be duplicating the size it occupies whereas having it in the Shell avoids this.</p>\r\n<p id=785a54d0-85f0-012c-b476-12313b00d991>It might still be a good idea to make the <strong>Silverlight.Windows.Data.Controls </strong>assembly and similar ones to be downloaded with Silverlight 3 cache. As those libraries will rarely change (opposed to those on your production code), end users will take less time downloading the application, as some of the assemblies it requires will be cached on their browser (more on the SL3 documentation article above).</p>\r\n<p id=785a85c0-85f0-012c-b477-12313b00d991>Please let me know if this helps.</p>\r\n<p id=785ab1e0-85f0-012c-b478-12313b00d991>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-09-18T14:49:22.32-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

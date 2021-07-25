@@ -1,0 +1,162 @@
+[
+  {
+    "Id": "1353576",
+    "ThreadId": "581235",
+    "Html": "Hello Community,\r<br />\n<br />\nI am checking out the Prism 5.0 Code, and I am seeing that DefaultDispatcher and IDispatcherFacade are now obsolete, but there isn't any guidance on how to use the preferred way in the obsolete marking.  Can someone please point me in the direction to use the preferred method instead?\r<br />\n<br />\nThank you,\r<br />\nMichael<br />\n",
+    "PostedDate": "2015-02-17T17:33:00.727-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1353577",
+    "ThreadId": "581235",
+    "Html": "Nevermind.  4 classes are marked w/ Obsolete.  I only checked 3, but of course the 4th one has the message to use PubSubEvents instead... after I post this, of course. :p<br />\n",
+    "PostedDate": "2015-02-17T17:36:36.113-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2015-02-17T17:36:43.743-08:00"
+  },
+  {
+    "Id": "1353782",
+    "ThreadId": "581235",
+    "Html": "Hi Michael,\r<br />\nJust to give a little background the reason this change was made was because using Dispatcher immediately couples you into the specific XAML platform (WPF, Silverlight, WinRT each have one, but tied to their own platform libraries). With PubSubEvents we dropped down the the SynchronizationContext - which the Dispatcher is just a thin facade on top of - so that the code could be put in a PCL and be used across platforms while still supporting the ThreadOption.UIThread option when subscribing.\r<br />\n<br />\nOther than a name change on the event type and a change of references, PubSubEvents is 100% functionally equivalent to the obsolete CompositePresentationEvents - just more portable and thus can be used by both Prism for WPF and Prism for WinRT.\r<br />\n<br />\nHope that helps.\r<br />\nBrian<br />\n",
+    "PostedDate": "2015-02-18T11:03:21.433-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1353783",
+    "ThreadId": "581235",
+    "Html": "Great... thank you Brian for the background and context!  I am actually looking at it to use for Xamarin.Forms, so unfortunately the PCL that is in 5.0 is insufficient at this point.  I am looking to seriously modify my fork of Prism to make it work w/ Xamarin.Forms, however. :)\r<br />\n<br />\nI am not sure if there is already work being done on this already.  Not that it really matters... I intend on starting in the next week at the latest... but it would be nice from a scheduling/conflict perspective to know if the Prism team is planning on starting 6.0 anytime soon and/or if they plan on enabling Xamarin.Forms support and/or if the team is even still together at this point, LOL!\r<br />\n<br />\nThanks again for your kind assistance. :)\r<br />\n-Michael<br />\n",
+    "PostedDate": "2015-02-18T11:08:36.357-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1353797",
+    "ThreadId": "581235",
+    "Html": "There is nothing that we are doing in there that should be incompatible with Xamarin, just was not built with that as a build target in the PCL. I would recommend pulling down the source from <a href=\"http://github.com/prismlibrary\" rel=\"nofollow\">http://github.com/prismlibrary</a>, add that target in the project settings, build it and try it out.<br />\n",
+    "PostedDate": "2015-02-18T12:09:42.277-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1353799",
+    "ThreadId": "581235",
+    "Html": "Hey that's good to know.  I actually forked it last night and was taking a look at it a bit.  Although... I did that from CodePlex and not github.  This is the first time I have heard of Prism being on Github... was there an announcement made somewhere?  It seems as if these two repos would be synced. :P  or at least a little more obvious on CodePlex's page. :P\r<br />\n<br />\nThank you again for your assistance!<br />\n",
+    "PostedDate": "2015-02-18T12:14:02.707-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1353816",
+    "ThreadId": "581235",
+    "Html": "Sorry, slipped there. You can use the one from CodePlex, it is still the official one at the moment. The Github one is a fork, more information on that coming soon. No differences in the code of PubSubEvents for now.<br />\n",
+    "PostedDate": "2015-02-18T14:29:53.147-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1353925",
+    "ThreadId": "581235",
+    "Html": "Hah!  OK... sounds good Brian.  Really glad to see you on GitHub.  Thanks again. :D<br />\n",
+    "PostedDate": "2015-02-19T02:09:05.063-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1354002",
+    "ThreadId": "581235",
+    "Html": "Just so you are aware, I have successfully ported the ViewModelLocator and DelegateCommand over to Xamarin.Forms.  I haven't checked this into the GitHub repository just yet, as more work is needed there.  Also Unity and PubSubEvents work just fine in Xamarin.Forms as-is.  Just retarget the projects and recompile them.<br />\n",
+    "PostedDate": "2015-02-19T06:51:36.823-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1354004",
+    "ThreadId": "581235",
+    "Html": "YUS!  Maybe make a new branch and check it in? :D :D :D<br />\n",
+    "PostedDate": "2015-02-19T06:53:33.373-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1354005",
+    "ThreadId": "581235",
+    "Html": "I've also updated this thread title since we've gone <em>Slightly</em> OT. :)<br />\n",
+    "PostedDate": "2015-02-19T06:54:20.89-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1354652",
+    "ThreadId": "581235",
+    "Html": "Xamarin.Forms support for ViewModelLocator has been checked-in to GitHub.  Try it out and let me know how it works for you.<br />\n<br />\nOh, and IView is no longer needed.  If you use it, it will be ignored.<br />\n",
+    "PostedDate": "2015-02-21T16:46:05.29-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1354659",
+    "ThreadId": "581235",
+    "Html": "Wow!  I was half-joking and was totally not expecting THAT! :)  That is great news.  FWIW, I am working on a Xamarin.Forms Renderer for WPF, currently.  I basically took the Windows Phone rendering system and have had my way with it. :)<br />\n<br />\nOnce I am done with that I will be looking into Prism and your work and will most definitely be providing feedback.  If interested, you can follow my project at the following link.  It is very much a work in progress... in fact, I just updated the readme to reflect that very fact, LOL! <br />\n<br />\n<a href=\"https://github.com/DragonSpark/Framework/tree/Multiversal\" rel=\"nofollow\">https://github.com/DragonSpark/Framework/tree/Multiversal</a><br />\n<br />\nThanks again, Brian!<br />\n",
+    "PostedDate": "2015-02-21T18:43:17.563-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1354660",
+    "ThreadId": "581235",
+    "Html": "OK... I see now what you mean.  Yeah the MVVM is a really small library.  To be honest I am not really happy with the direction of 5.0.  I myself asked for a separate assembly that could be shared with all applications (not just client ones), and it seems like it was taken to the extreme.  I don't think I have ever seen a project with a &quot;shared&quot; assembly with only 1 class in it, save some hack project I downloaded from CodeProject or something. :/  That has to be breaking a FxCop of some sort. :P\r<br />\n<br />\nIt would be nice to see if we could re-organize the projects some.  This is something I am thinking of doing in a fork, myself.\r<br />\n<br />\nMy suggestion/vote would be:\r<br />\nPCLS:\r<br />\nPrism.Core (Has all the shared code.  You could use this in the server tier if you wanted to -- and I want to, LOL!)\r<br />\nPrism.Application (Has all the composition/mvvm/modularity)\r<br />\nPrism.Unity\r<br />\nPrism.Mef\r<br />\n<br />\nThen:\r<br />\nPrism.Windows\r<br />\nPrism.iOS\r<br />\nPrism.Droid\r<br />\n<br />\nThose should be pretty self-explanatory. :)\r<br />\n<br />\nFWIW, here's the issue.  It took over 2 years to happen. :P\r<br />\n<a href=\"https://compositewpf.codeplex.com/workitem/9118\" rel=\"nofollow\">https://compositewpf.codeplex.com/workitem/9118</a><br />\n",
+    "PostedDate": "2015-02-21T19:00:57.757-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1354699",
+    "ThreadId": "581235",
+    "Html": "Hi Michael,\r<br />\nA class library with 1 type in it would definitely violate most people's guidelines. In this case it was done because:<br />\n<ul>\n<li>the team wanted to put as much of the common MVVM functionality in the PCL as possible to be cross platform</li>\n<li>\nBut the ViewModelLocator hookup is designed using an attached property. And attached property declaration requires the use of the DependencyProperty type, so there is no way to do that in a PCL. Thus they had to have a platform specific library (Mvvm.Desktop) with the dependency property declaration only in there.<br />\n</li>\n</ul>\nAre there other things about the direction of 5.0 you were unhappy with? Specifics would be helpful to guide our thinking on future releases.\r<br />\nThanks\r<br />\nBrian N<br />\n",
+    "PostedDate": "2015-02-22T06:19:35.91-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1354705",
+    "ThreadId": "581235",
+    "Html": "I just realized there are two different Brians I am talking to. :)  Haha...\r<br />\n<br />\nI am glad to hear that you hear my feedback. I believe the assembly structure that I outlined above would address the platform-specific challenges that you mention (while also getting rid of the single-class assembly).\r<br />\n<br />\nAs far as anything else about 5.0... that is really about it without actually getting into the code.  Since it looks like it's basically 4.1 restructured, that should be OK.  I really REALLY enjoyed 4.1 w/ Silverlight 5, so that is pretty much what I am expecting w/ porting to Xamarin.Forms.  The obsolete classes as the OT points out looks about right to me.\r<br />\n<br />\nThe only (debatable) outstanding issue I can think of at this point with Prism is the term &quot;bootstrapper.&quot;  Not a fan of this and as you can see in my framework I am extending it with a more modern/friendlier/descriptive term of &quot;Setup&quot; (I have also used Launcher in the past, but obviously I think Setup is more appropriate).\r<br />\n<br />\nI will have more feedback for you once I get into the code.<br />\n",
+    "PostedDate": "2015-02-22T06:53:07.13-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1354715",
+    "ThreadId": "581235",
+    "Html": "So basically, this is what I kind of seeing happening if we to look at changing up the assemblies (which I agree, there are too many, but done for valid reasons).\r<br />\n<br />\nPrism<br />\n<ul>\n<li>Prism.SharedInterfaces</li>\n<li>\nPrism.Mvvm<br />\n</li>\n</ul>\nPrism.Desktop (references Prism)<br />\n<ul>\n<li>\nHas all the modularity and composition<br />\n</li>\n</ul>\nPrism.Desktop.Unity<br />\n<ul>\n<li>\nrenaming Prism.UnityExentions<br />\n</li>\n</ul>\nPrism.Desktop.Mef<br />\n<ul>\n<li>\nrenaming Prism.MefExtentions<br />\n</li>\n</ul>\nPrism.Windows\r<br />\nPrism.Forms\r<br />\nPrism.iOS (ViewModel locator may not make sense)\r<br />\nPrism.Android (ViewModel locator may not make sense)\r<br />\nPrism.Phone\r<br />\n<br />\nKeep in mind, that not every platform has the concept of modularity or composition, and/or does not support it.  For example, mobile apps don't support this concept, instead a navigation framework would be needed.  Also, we can't combine the Unity and MEF assemblies since that would limit the extensibility aspect of prism.  Not everyone likes Unity of MEF, so we can't lock that down.\r<br />\n<br />\nBasically all this does is get rid of the Prism.SharedInterfaces, and automatically brings ViewModelLocator into your Prism apps, whether you want to use it or not.  The original thought was that VML was only there is you wanted it, so you didn't have to bring it in if you didn't want to.  With this change we are forcing you to have that dependency, even if you don't use it.  What are your thoughts about that?<br />\n",
+    "PostedDate": "2015-02-22T07:33:07.123-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1354717",
+    "ThreadId": "581235",
+    "Html": "I do appreciate you asking my input on this.  Very much appreciated.\r<br />\n<br />\nI would first have to challenge you what you mean by modularity/composition not being needed on other platforms.  Can you provide me more context on what you mean by this?  It is my opinion that all platforms can use it... it's just a matter of if they are or not. :)  Based off my extensive experience w/ Prism 4.1 (I really made it cook), you can really use it anywhere.  Now, for mobile I would definitely say that it would be a limited version of it... but the idea is that we'd be using a single MVVM framework/code base across all platforms.  Just my opinion, of course.\r<br />\n<br />\nI am in agreement 100% of keeping MEF and Unity separate.  They are listed that way in my suggested list, actually. :)  Also, do keep in mind that Unity and MEF are available in PCLs, and can be used with Xamarin.Forms.  I honestly wouldn't even be talking to you if that wasn't the case. :P\r<br />\n<br />\nAs far as I am concerned, the VML should live in Prism.Windows, unless you can think of a clever way of separating it out as an adapter/interface.  I would have to look into it more to be sure.\r<br />\n<br />\nFinally, I would also recommend staying away from names such as &quot;Mvvm&quot; and &quot;SharedInterfaces&quot; for assembly names.  It seems/feels kind of wonky to name an assembly after a pattern/notion, and also having the word &quot;interfaces&quot; in a namespace is sort of stating the obvious.  For Mvvm, I'd use &quot;ViewModel&quot; (or ComponentModel ... something along those lines), and for SharedInterfaces, I'd use Core, Common, or something like that.  That's just me though. :)<br />\n",
+    "PostedDate": "2015-02-22T07:49:25.057-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1354720",
+    "ThreadId": "581235",
+    "Html": "Can I suggest this might be better to take this discussion to the issues area on github.com/prismlibrary/prism.wpf since we are talking about what we might do with the code that evolves there?<br />\n",
+    "PostedDate": "2015-02-22T08:05:52.567-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1354721",
+    "ThreadId": "581235",
+    "Html": "Good idea... done. :)<br />\n<a href=\"https://github.com/PrismLibrary/Prism.Wpf/issues/1\" rel=\"nofollow\">https://github.com/PrismLibrary/Prism.Wpf/issues/1</a><br />\n<br />\nI thought of doing that earlier... but unfortunately there's no &quot;root&quot; Prism project. :(  EntLib suffers from this, too... it would be nice to have something that captures everything, or has a &quot;general&quot; category...<br />\n",
+    "PostedDate": "2015-02-22T08:09:23.09-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

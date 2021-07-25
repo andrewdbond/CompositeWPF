@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "620705",
+    "ThreadId": "259635",
+    "Html": "<p>Hello.</p>\n<p>I'm really new in Prism and how to create modular applications.</p>\n<p>I'm using WPF with Prism 4.0 and MEF. In a view a user can select modules. Each module is in a separate DLL and all of them in the same directory.&nbsp;</p>\n<p>Each module also implements an interface which i export. With ImportMany i get an array of this interface in the shell.</p>\n<p>When the user click on an OK-Button i want to load these modules. To do that, i create a new ModulCatalog and return this catalog with eventaggregation to my Shell.</p>\n<p>Now, the shell should load these modules.</p>\n<p>My problem is, i dont't get the modules loaded. I know i could set the InitializationMode of the modules onDemand and load all modules in the bootstrapper. But in this case i have to many values in the imported interface-array.</p>\n<p>I only wan't to import the values of the loaded modules.</p>\n<p>I have the following code so far.</p>\n<p>&nbsp;</p>\n<div style=\"color: black; background-color: white;\">\n<pre>[Export]<br /><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> Shell : Window, IPartImportsSatisfiedNotification<br />{<br />        [Import]<br />        IModuleManager ModuleManager { <span style=\"color: blue;\">get</span>; <span style=\"color: blue;\">set</span>; }<br /><br />        [Import]<br />        IModuleCatalog ModuleCatalog { <span style=\"color: blue;\">get</span>; <span style=\"color: blue;\">set</span>; }<br /><br />        <span style=\"color: green;\">//Holds some information of the loaded modules</span><br />        [ImportMany(<span style=\"color: blue;\">typeof</span>(IViewNames), AllowRecomposition=<span style=\"color: blue;\">true</span>)]<br />        IViewNames[] ViewNames { <span style=\"color: blue;\">get</span>; <span style=\"color: blue;\">set</span>; }<br /><br /><span style=\"color: green;\">//Some other code....</span><br /><br />        <span style=\"color: blue;\">private</span> <span style=\"color: blue;\">void</span> InvokeNavigationView(ModuleSelectionReadyPayload _payload)<br />        {<br />            <span style=\"color: green;\">//The modules i want to load</span><br />            IModuleCatalog catalog = _payload.ModuleConfigCatalog;<br /><br />            <span style=\"color: green;\">//Add each Modul to the ModuleCatalog created in the Bootstrapper</span><br />            <span style=\"color: blue;\">foreach</span> (ModuleInfo item <span style=\"color: blue;\">in</span> catalog.Modules)<br />            {<br />                ModuleCatalog.AddModule(item);<br />            }<br />            <span style=\"color: green;\">//Load the Modules</span><br />            ModuleManager.Run();<br />        }<br />}<br /></pre>\n</div>\n<p>&nbsp;</p>\n<p>But ModuleManager.Run() throws an exception</p>\n<p>There is currently no moduleTypeLoader in the ModuleManager that can retrieve the specified module.</p>\n<p>I have no idea how to create such a moduletypeloader. Why the modulemanager doesn't use the typeloaders it already has?</p>\n<p>Is there any possibility to get the modules loaded???</p>\n<p>&nbsp;</p>\n<p>Thanks a lot</p>\n<p>and sorry for my bad english.</p>",
+    "PostedDate": "2011-05-31T04:00:34.937-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "620919",
+    "ThreadId": "259635",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding of your scenario, you could load on demand your modules from the shell with only the name of the module. You just need to decorate your modules with the appropriate attributes (setting <strong>InitializationMode</strong> to <em>OnDemand</em>). You shouldn&rsquo;t call the ModuleManager&rsquo;s Run method since this is done by the MefBootstrapper.</p>\r\n<p>You can read the following chapters of Prism Documentation in order to fulfill your scenario accordingly:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430868(PandP.40).aspx\">Chapter 2: Initializing Prism Applications</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921140(PandP.40).aspx\">Chapter 3: Managing Dependencies Between Components</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg405479(PandP.40).aspx\">Chapter 4: Modular Application Development</a>&nbsp;</li>\r\n</ul>\r\n<p>You also might find handy the following QuickStarts provided with Prism:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff921068(PandP.40).aspx\">Modularity QuickStarts for WPF</a> (MEF)</li>\r\n</ul>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>",
+    "PostedDate": "2011-05-31T10:33:46.957-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "620939",
+    "ThreadId": "259635",
+    "Html": "<p>Thanks for your answer.</p>\r\n<p>I'm familar with the Prism Developer Guide and the Quickstarts. Perhaps i didn't describe my problem exactly enough.</p>\r\n<p>Loading modules on startup works fine. <br />In my application user should be able to configure modules. Each module has it's own functionality and more than one view (one for the desktop application and one to configure the module). But not every module is needed. So the user can select the required modules. After selecting the user confirm his choice. Now the application should load the selected modules and creates for each module a button in the navigation-area. By clicking on one of the button the configuration-view should be shown in the main content region of the application. Loading modules and display views in regions is no problem, but rather getting a list of the selected modules and create a list with buttons injecting views.</p>\r\n<p>Because i have no information how many modules will be added and the name of the views, i decided to implement an interface.</p>\r\n<p>&nbsp;</p>\r\n<pre><div style=\"color: black; background-color: white;\"><pre>    <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">interface</span> IViewNames\r\n    {\r\n        <span style=\"color: blue;\">string</span> ConfigViewName();\r\n        <span style=\"color: blue;\">string</span> DesktopViewName();\r\n        <span style=\"color: blue;\">string</span> ButtonName();\r\n    }\r\n</pre>\r\n</div>\r\nEach module implement this interface and has an export attribute <br />\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>[Export(<span style=\"color: blue;\">typeof</span>(IViewNames))]\r\n[ModuleExport(<span style=\"color: blue;\">typeof</span>(MyModule), InitializationMode = InitializationMode.OnDemand)]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> MyModule : IModule, IViewNames\r\n{\r\n<span style=\"color: green;\">     //Some code</span>\r\n}<br /><br />In the shell i import this with import many. So i can iterate throug the array and create a button. <br />But how can i say to my application that i only want to import the selected modules? <br /></pre>\r\n</div>\r\n<br /></pre>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-31T11:23:16.31-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "620957",
+    "ThreadId": "259635",
+    "Html": "<p>Hi,</p>\n<p>In order to achieve the scenario you're mentioning, you could create a view in your shell in which the user could select which modules to load, and when the selection is done, you could indicate the ModuleManager to load the selected modules, via the <strong>ModuleManager.LoadModules </strong>method.<strong><br /> </strong></p>\n<p>Then, in order to show the buttons based on the modules that are loaded, you could have two approaches: you could add the button as a view from the module itself into a region, or you could subscribe to the <strong>ModuleManager.LoadModuleCompleted</strong> event and create a button in the handler for that event.</p>\n<p>Note that the aforementioned event indicates that a module has been loaded. In order load certain modules on demand, you should set their <strong>InitializationMode </strong>to <strong>OnDemand</strong>, and call the <strong> ModuleManager.LoadModules</strong> method passing the name of the module, for each of the modules that you wish to load. Therefore, you shouldn't modify the <strong>ModuleCatalog</strong>, nor call the <strong>ModuleManager.Run</strong> method<strong>. </strong>It's worth mentioning that, even if you decorate a module with the <strong>ModuleExport</strong> attribute, if its <strong>InitializationMode </strong>is set to <strong>OnDemand</strong>, it won't be loaded until you call the <strong>ModuleManager.LoadModules</strong> method.<strong><br /></strong></p>\n<p>Also, note that, as one of the goals of modularity is to have loosely coupled components, you shouldn't import them directly in your shell.</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-05-31T11:52:30.657-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "620982",
+    "ThreadId": "259635",
+    "Html": "<p>I tried to load the selected Modules via the ModuleManager.LoadModule method. But it throws an exception: <em>There is currently no moduleTypeLoader in the ModuleManager that can retrieve the specified module.</em></p>\n<p>If i understand the ModuleManager correctly, it only loads&nbsp; Modules if they are already in the ModuleCatalog. Right? (This stands in the msdn library:<em> Initializes the module on the <a href=\"http://msdn.microsoft.com/en-us/library/microsoft.practices.composite.modularity.modulecatalog.aspx\"> ModuleCatalog</a> with the name <span class=\"parameter\">moduleName</span>.)</em></p>\n<p>So i have to put the Modules in the ModuleCatalog. This requiries a ModuleInfo. Right?<em></em></p>\n<p>So how can i retrieve the necessary information when i only have the name of the DLL-File?<em><br /></em></p>",
+    "PostedDate": "2011-05-31T12:27:53.447-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "621396",
+    "ThreadId": "259635",
+    "Html": "<p>Hi Steve,</p>\r\n<p>The <strong>ModuleCatalog</strong> holds references to <strong>ModuleInfo</strong> instances that provide the necessary information about a module. There are many ways, however, of adding <strong>ModuleInfo </strong>instances to the <strong>ModuleCatalog</strong>. For example, if you use a <strong>DirectoryModuleCatalog</strong>, Prism automatically populates the <strong>ModuleCatalog</strong> with <strong>ModuleInfo</strong> instances based on the dll files present in a specified directory (more information <a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28PandP.40%29.aspx#sec40\">here</a>). You can also use a configuration file, providing the assembly file and the module type (as described <a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28PandP.40%29.aspx#sec21\">here</a>), or add them in code, if you have a reference to your modules from the shell (as described <a href=\"http://msdn.microsoft.com/en-us/library/gg405479(PandP.40).aspx#sec39\">here</a>).</p>\r\n<p>Take into account that regardless of the mechanism you use to populate the <strong>ModuleCatalog</strong>, you can specify that your modules will be loaded on demand, thus enabling you to use the <strong>ModuleManager </strong>to decide when those modules are to be loaded, only passing the Module's name to it.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-06-01T07:07:36.473-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "621718",
+    "ThreadId": "259635",
+    "Html": "<blockquote style=\"border: solid .1em #ccc; font-style: italic; margin: .25em 1em 0 1em; padding: 0 .25em 0 .25em;\"><strong>GuidoMaliandi wrote:</strong>\r\n<p>Take into account that regardless of the mechanism you use to populate the <strong> ModuleCatalog</strong>, you can specify that your modules will be loaded on demand, thus enabling you to use the <strong>ModuleManager </strong>to decide when those modules are to be loaded, only passing the Module's name to it.</p>\r\n</blockquote>\r\n<p>Ok. I have create the ModuleCatalog via Directory and initialize all Modules OnDemand at first. All modules have an Export [Export(typeof(IClass))]. In the Shell i import this via [ImportMany(typof(IClass))]. The problem is, that i only want to import the IClass from the modules which are intitialized. But the ImportMany in the Shell returns all IClasses regardless of the state of the module. Is this the normal approach of Prism or did i something wrong?</p>",
+    "PostedDate": "2011-06-01T15:28:23.707-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "622173",
+    "ThreadId": "259635",
+    "Html": "<p>Hi Steve,</p>\r\n<p>It would be helpful if you could provide us with a repro sample, so that we can help you dig further into your scenario.</p>\r\n<p>Thanks,</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-06-02T13:31:48.227-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "623695",
+    "ThreadId": "259635",
+    "Html": "<p>Thank you for your suggestions Guido.</p>\r\n<p>I think i have found a solution that solves my problem.</p>\r\n<p>I will load Modules via AggregateCatalog.Catalogs.Add(new AssemblyCatalog(@\"MyModule.dll\")). So i can load Modules during runtime and get the Imports from the initialized Modules only.</p>",
+    "PostedDate": "2011-06-06T12:44:41.09-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

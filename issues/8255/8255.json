@@ -1,0 +1,65 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 5,
+    "Custom": "",
+    "Description": "* The region names shouldn't be \"region names\" but rather \"region keys\". the key should be anything from any struct type to a string, Type, or other primitive types (I think other complex types can be error prone cuz no one will be able to tell when it should be GCed - to consider, also complex types might be a little more work in order to share between modules, but interfaces could do); So to summarize this request, the whole region names system should be generic. GetRegion<TKey>(TKey regionKey), we could even use body-types as a generic-type argument that will be used to identify region, for views, view-types should be used.\n \n* There should be a way to request-navigate to views in a strongly-typed manner, will be very useful in non-enterprise applications where you can afford to provide the view type. For instance, IRegionManager.RequestNavigate<TRegionName, TView>(RegionNames.MainRegion) (RegionName is an enum in this case) will register the view type, resolve and navigate to the view, and register the view using the view-type as it's key in the region. so from now IRegion.GetView wouldn't take a string but should be generic and parameterless: GetView<TView>();\n \n* Related to above, the IRegionCollection should be generic too: IRegionCollection<TRegionKey> and IViewsCollection will also be generic.\n \n* Another aspect I often encounter is having a multi-shell application. I understand that a Shell should be only single but I have 4 types of shells that have different layouts and regions. The workaround is to declare the regions in lower-level controls, but that's lacking clearity.\n \nI know the keying (above suggestions) might be a little problematic where you want to keep everything decoupled, but in some scenarios, a string is not the right approach.\n \nSo even if you've decided not to use the use-generic-type-argument-as-region/view-key attitude (I'm crying...), please at least make the key for region or view more relaxed it shouldn't be based only on strings, it should support enums, ints, and other primitive types.\n \nConsider that in WPF (and also in SL5), it would make more sense to assign a region names using an enum:\n \n<ContentControl prism:...RegionKey=\"{x:Static local:MemberTypesEnum, Member=MainRegionKey}\" />\n \nPlease vote and share your thoughts",
+    "LastUpdatedDate": "2013-02-21T18:38:13.49-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-05-16T14:29:23.783-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Please improve keying of regions and views in the navigation system",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8255
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "What's the advantage here? I understand the argument that you have a discrete list of values and that changing them or mispelling something causes compilation issues, but you can just as easily use a set of constants for this ({x:Static my:Regions.MainRegion}). If you really feel like you need to use strong types for this, override .ToString(), create ValueConverters, etc. There is very little value in letting any type be a key in this scenario. I can't think of a reason a string would be inappropriate.",
+      "PostedDate": "2011-05-19T17:37:55.537-07:00",
+      "Id": 156457
+    },
+    {
+      "Message": "1) You must admit that enums are much better and clearer than consts\r\n2) Some times you'll want to use other objects, not strings, you'll then always have to convert it ToString. ToString sucks in xaml, you need a converter for it\r\n3) Grouping consts is much more difficult than grouping enums\r\n4) All the above apply for region keys, for view keys it's much more compelling",
+      "PostedDate": "2011-05-23T07:47:39.44-07:00",
+      "Id": 156458
+    },
+    {
+      "Message": "1. I don't see why enums are \"better\" or \"clearer\" than consts?\r\n2. To use any old object, these objects would have to implement some comparison method or at least override .Equals. I don't see how this is any easier than overriding .ToString(), not to mention the added complexity behind the region manager and the possible performance impacts thereof.\r\n3. What is \"grouping\" of enums? I don't see how this is relevant, but I don't have a clear definition of \"grouping\". If you are talking about the fact that enum values are grouped under an enum, that's certainly true, however your example code \"RegionNames.MainRegion\" could just as easily be a static class with a static string constant, rather than an enum.\r\n4. I agree that something has to be done to fix Navigation in prism. Having to create a named registration in the Container just to support navigation by name seems a little... off, but I don't necessarily think that key indexing by any ol' object is the answer to that issue.\r\n\r\nIn summary, I think this is a solution looking for a problem. It's interesting to think about, but the added complexity and the number of edge cases is significant enough for it to not provide value, in my mind.  ",
+      "PostedDate": "2011-05-23T09:16:05.773-07:00",
+      "Id": 156459
+    },
+    {
+      "Message": "Hi anderson and thanks for your interesting comments.\r\n\r\nMy post includes several suggestions not necessarily related to each other.\r\nWhat mostly sucks is that you have to register views (even when you're talking about concrete types!).\r\nAlso, when the view is resolved during RequestNavigate passing the view Uri, it won't be added with its name, meaning that myRegion.GetView(typeof(InboxView).Name) will return null whilst myRegion.Views.Single(v=> v.GetType().Name == typeof(InboxView).Name) will return the view (BTW. this also demonstrates the requirement of keys instead of strings), maybe this should be generic as said above, at least with views  region.RequestNavigate() - region.GetView() - region.RemoveView() etc. + extensions for region manager specifying which region we're talking about.\r\n\r\nThanks again",
+      "PostedDate": "2011-05-23T09:42:16.823-07:00",
+      "Id": 156460
+    },
+    {
+      "Message": "This solution seems to presuppose that there will only ever be one instance of a type of view in a region. This isn't the case. It also presupposes that when navigating, you will always have access to the type of the view, which for a View implemented in Module A and navigated to in Module B, isn't appropriate either.\r\n\r\nI agree that there is something about the current solution that doesn't sit well, but I don't think the suggestions you've provided have significant improvement over the current solution, especially considering the design goals of the RegionManager being type agnostic and capable of being utilized across Modules.",
+      "PostedDate": "2011-05-23T11:15:03.627-07:00",
+      "Id": 156461
+    }
+  ]
+}

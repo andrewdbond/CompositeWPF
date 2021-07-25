@@ -1,0 +1,81 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Fixed in Prism v4 Drop 7",
+    "ClosedDate": "2010-09-15T15:03:25.51-07:00",
+    "CommentCount": 7,
+    "Custom": "",
+    "Description": "I'm using Silverlight 4 and the Prism change set 42969.\nWhen using ButtonBase.Command and binding to Prism's DelegateCommand<T>, then RaiseCanExecuteChanged() does not work correctly.\nI.e. the buttons do not become enabled/disabled, when the command's CanExecute changes.\n \nExample (see attached project files):\n \n1) Click on the button \"toggle enabled\".\n   This toggles the \"enabled\" state of the command, plus calls GC.Collect().\n   Note that I'm explicitely calling the GC just speed up the effect. I'm not sure, but think the issue has something to do with lost references.\n   \n2) The buttons in the yellow box do not change their enabled state accordingly to the commands. Note that when the command is in an enabled state, the buttons still work, but they just seem to have lost their ability go become enabled/disabled.\n \n3) Click on the buttons of the green box: they are still responsive and change their enabled state.\n \n- The yellow box uses ButtonBase.Command to wire up the bindings.  \n \n- The green box uses Prism's attached Click.Command properties to wire up the bindings. Note that the scenario works fine this way.\n \n- The scenario works fine when using the RelayCommand<T> (MVVM Light Toolkit) instead of DelegateCommand<T>.\n \nRegards,\nKasimier",
+    "LastUpdatedDate": "2013-05-16T05:28:53.693-07:00",
+    "PlannedForRelease": "Prism v4 - Drop 7",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Medium",
+      "Severity": 100,
+      "Id": 2
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-05-03T14:32:25.123-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Issue with ButtonBase.Command and Prism's DelegateCommand",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 13,
+    "Id": 6551
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897967,
+      "FileName": "Cmd01.zip",
+      "DownloadUrl": ".\\897967"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Looks like it's a huge problem. We've been using the feature of disabling the buttons which are binded on delegate commands and after the migration on Prism 2.2 Release we big part of our functional has became broken.\r\n\r\nI'm wondering why this issue has got Impact - Low and there are no assigned Release. Really strange. The issue is very important.",
+      "PostedDate": "2010-07-13T04:09:38.18-07:00",
+      "Id": 156228
+    },
+    {
+      "Message": "I found the same problem today. ",
+      "PostedDate": "2010-07-13T14:12:25.77-07:00",
+      "Id": 156229
+    },
+    {
+      "Message": "I've been fighting with this problem the majority of the morning. It appears to be due to the WeakReferences used by the DelegateCommand. At this point I haven't been able to identify why the references are being lost, but by the time I reach the point where I am calling RaiseCanExecuteChanged() drilling into the command instance shows the weak event handler was registered but is no longer alive. From what I can tell the Weak Event Pattern is supposed to be followed for ICommand implementations, but in this case it doesn't appear to be working correctly.",
+      "PostedDate": "2010-07-14T12:53:45.41-07:00",
+      "Id": 156230
+    },
+    {
+      "Message": "The problem is not in Prism but in Silverlight ButtonBase.  ButtonBase does a new EventHandler() on the stack and passes it to the CanExecuteChanged event in the DelegateCommand.  DelegateCommand makes a WeakReference to this EventHandler, so nobody ends up with a strong reference.   So random garbage collection and data binding breaks.\r\n\r\nThe DelegateCommand comments event explicitly states that it is the caller's responsiblity to maintain a strong reference to the EventHandler.   Note that WPF does not have this issue as they create a private backing field for the EventHandler within ButtonBase.\r\n\r\nOur solution was to clone the DelegateCommand source and create a new class the does not use WeakReferences.  Not optimal and perhaps even bad.",
+      "PostedDate": "2010-08-11T08:10:19.08-07:00",
+      "Id": 156231
+    },
+    {
+      "Message": "All this issue is important and we're looking to address it in the next drop of Prism 4.\r\n\r\nSome background:\r\n\r\nPrior to SL4, there was no Command property for ButtonBase so we based our Click.Command attached property on the expectations of the WPF Command parameters.  This exepectation is that CanExecuteChanged handlers are weakly held.    \r\n\r\nWith the introduction of Command properties in SL4, it has a slightly different expectation resulting in this issue.  We're planning to change DelegateCommand to not hold on to subscribers weakly in SL (but will still do so in WPF) to better matched this expectation.\r\n\r\n",
+      "PostedDate": "2010-08-25T17:54:26.01-07:00",
+      "Id": 156232
+    },
+    {
+      "Message": "This is claimed to be fixed.  I've got the PRISM v4 from Nov 2010 and it seems like I'm still having this issue.  What gives?",
+      "PostedDate": "2011-08-02T11:27:57.493-07:00",
+      "Id": 156233
+    },
+    {
+      "Message": "Hi,\r\n\r\nWe downloaded the sample provided by Kasimier, and updated it to use the Prism v4 November 2010 release. After doing so, we verified that the issue was not present anymore.\r\n\r\nIt would be helpful if you could provide us with a repro sample application that demonstrates this problem in Prism v4, so that we can help you find the cause for it.\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-08-04T06:08:24.637-07:00",
+      "Id": 156234
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 0,
+    "Custom": "",
+    "Description": "Notice that when the collection change it only does something if validated and the method it calls only does something if not validated - so nothing can ever happen.  I think this is a cut and paste bug and should read to set Validated to false when the collection changes, then call EnsureCatalogValidated.\n \nIt might be worth walking through the validation sequence to determine what the expected behavior is when the catalog changes.\n \n \n \n        /// <summary>\n        /// Ensures that the catalog is validated.\n        /// </summary>\n        protected virtual void EnsureCatalogValidated()\n        {\n            if (!this.Validated)\n            {\n                this.Validate();\n            }\n        }\n \n        private void ItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)\n        {\n            if (this.Validated)\n            {\n                this.EnsureCatalogValidated();\n            }\n        }",
+    "LastUpdatedDate": "2013-02-21T18:38:12.77-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-06-16T13:26:46.217-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "ModuleCatalog validation logic problem",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8372
+  },
+  "FileAttachments": [],
+  "Comments": []
+}

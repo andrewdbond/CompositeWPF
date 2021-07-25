@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "418954",
+    "ThreadId": "205181",
+    "Html": "<p>As part of our build process, the module's AssemblyInfo - AssemblyVersion value changes. Whenever this happens I am forced to manually update my xaml catalog.</p>\r\n<p>Here is a snippet from my Module Catalog xaml file:</p>\r\n<p>&lt;m:ModuleInfo Ref=&quot;somenamespace.Tree.xap&quot;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ModuleName=&quot;somenamespace.Tree&quot; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ModuleType=&quot;somenamespace.TreeModule, somenamespace.Tree, Version=2.1.3727.00&quot;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializationMode=&quot;WhenAvailable&quot; &gt;</p>\r\n<p>&lt;/m:ModuleInfo&gt;</p>\r\n<p>Is it possible to somehow ignore the module version? Or use some kind of wild-card to specify that incremental versions can be resolved...something like Version=2.1.*.*</p>\r\n<p>My other option would be to add a build task that updates the xaml catalog whenever the module is built.</p>\r\n<p>Any suggestions are welcome :)</p>",
+    "PostedDate": "2010-03-16T17:17:11.16-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "419890",
+    "ThreadId": "205181",
+    "Html": "<p id=94c58d70-14be-012d-7a45-12313d016ce1>Hi,</p>\r\n<p id=94c5a850-14be-012d-7a46-12313d016ce1>There is no way to ignore  module version, as the <strong>ModuleInitializer </strong>requires an <a href=\"http://msdn.microsoft.com/en-us/library/system.type.assemblyqualifiedname.aspx\">Assembly  Qualified Name</a>, which must contain a version number.</p>\r\n<p id=94c5e1d0-14be-012d-7a47-12313d016ce1>You could follow the build  task approach.</p>\r\n<p id=94c605c0-14be-012d-7a48-12313d016ce1>I hope you find this  helpful.</p>\r\n<p id=94c62000-14be-012d-7a49-12313d016ce1>Guido Leandro Maliandi <br><a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2010-03-18T11:01:40.187-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

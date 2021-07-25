@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "675719",
+    "ThreadId": "273575",
+    "Html": "\r\n<p>Good Day,</p>\r\n<p>I would like to find out if it is possible to share events between different clients.<br>\r\nI would like to update all clients when some something of importance happens.<br>\r\nIn my example the hotel booking system, rooms can be booked by many booking agents<br>\r\nas well as online clients. When a room is booked I would like to then update other users<br>\r\nviewmodel and inform them about the change.</p>\r\n<p>My other alternative is to constantly at regular intervals poll the Database and reguest changes.<br>\r\nI just think if it was possible in some way to rather use the event aggregator, this would indeed save a lot<br>\r\nof wasted bandwidth.</p>\r\n<p>Thanks</p>\r\n<p>&nbsp;</p>\r\n<p>Louis</p>\r\n",
+    "PostedDate": "2011-09-23T01:18:49.767-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "675867",
+    "ThreadId": "273575",
+    "Html": "<p>Hi,</p>\r\n<p>The guidance Prism provides is about building <strong>client side</strong> applications; therefore, components such as the<strong> Event Aggregator</strong>, whose purpose is to achieve communication between components that are loosely coupled, are intented to be used within a single \"<strong>composite</strong>\" application. A composite application is an application composed of different, independent modules, that are loosely coupled from each other, but can be easily and seamlessly integrated into the overall application. This implies that such components reside in the same solution.</p>\r\n<p>So, it's not possible to use the <strong>event aggregator </strong>to communicate between different clients, placed on different machines, out of the box.</p>\r\n<p>In order to achieve the scenario you're mentioning, you could follow an approach like the one that you mentioned (polling the database), or a similar one, but necessarily involving a server component (e.g. a web service), which is out of the scope of a Prism application.</p>\r\n<p>You might find the following threads useful, where you might find some information about using web services (such as <strong>WCF </strong>services) in the context of a Prism application:</p>\r\n<ul>\r\n<li>&nbsp;&nbsp;&nbsp;&nbsp; <a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=243611\">simple wcf in prismv4</a></li>\r\n<li>&nbsp;&nbsp;&nbsp;&nbsp; <a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=241013\">How to create the optimal infrastructure?</a></li>\r\n<li>&nbsp;&nbsp;&nbsp;&nbsp; <a href=\"http://compositewpf.codeplex.com/discussions/245929\">WCF service call Async</a></li>\r\n</ul>\r\n<p>As for how to implement this notification mechanism in the server side, you might find better support in the <a href=\"http://servicefactory.codeplex.com/\">Web Service Software Factory</a> and the <a href=\"http://social.msdn.microsoft.com/Forums/en/wcf/threads/\">WCF</a> forums, for example.﻿</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-09-23T07:49:59.87-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "676176",
+    "ThreadId": "273575",
+    "Html": "<p>I think one of the best choices will be to use HTTP Polling.</p>\r\n<p><a href=\"http://www.devproconnections.com/article/silverlight-40/using-http-polling-duplex-in-silverlight-applications\">http://www.devproconnections.com/article/silverlight-40/using-http-polling-duplex-in-silverlight-applications</a></p>\r\n<p>Technically, you can write service that uses HTTP Polling and import EventAggregator into that service. When event comes in from server - publish event via EventAggregator and you in business. All other PRISM stuff will work like a charm.</p>",
+    "PostedDate": "2011-09-24T08:26:31.237-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "676385",
+    "ThreadId": "273575",
+    "Html": "\r\n<div>\r\n<p>Hi Guys,</p>\r\n<p></p>\r\n<p>Thanks for the replies. That is good to know. I did solve this problem by taking one of my socket servers</p>\r\n<p>out the cupboard and making some small changes to it. Put in two instances of it, one for messages and one acting</p>\r\n<p>as a policy server. This work great for me.</p>\r\n<p></p>\r\n<p>Thanks</p>\r\n<p></p>\r\n<p>Louis</p>\r\n</div>\r\n",
+    "PostedDate": "2011-09-25T09:48:39.233-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

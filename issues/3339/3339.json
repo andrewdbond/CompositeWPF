@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "In this method where you solve dependencies for load order, you are using an interim dictionary of module info items.  When populating this dictionary, you key it with the ModuleName, when really you should use ModuleType to qualify for duplicates.\n \nSome times modules legitimately may have the same name, but not the same full name, in which case, they are not really a duplicate module of course.  Currently its throwing an inaccurate error, saying duplicate module, when its really not.",
+    "LastUpdatedDate": "2013-02-21T18:38:53.907-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2008-10-28T18:45:51.203-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Use 'ModuleType' instead of 'ModuleName' in ModuleLoader.GetModulesLoadOrder",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 3,
+    "Id": 3339
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nI have been analyzing this scenario in Prism v4 and this functionality mainly remains.\r\n\r\nBased on my understanding, the scenario where this might cause a problem could be when discovering modules with the \"Discovering Modules in a Directory\" approach as if you register them using other approaches you could easily define different module names to avoid this problem. For example when \"Registering Modules Using a Configuration File\" (e.g. by modifying the modules name in the app.config file) or when \"Registering Modules Using a XAML File\".\r\n\r\nIn my opinion this is currently by design, as you can find in the Validate method implementation of the ModuleCatalog class, one of the validation requirements is to makes sure all modules have an unique name. \r\n\r\nAlso, I believe this change will impact on the way the modules are currently loaded, adding more complexity to it as more information will be required to define the specific module assembly required in each case. Also this will impact on the way the dependencies of the modules are retrieved, as currently this is also done using the modules names.\r\n\r\nWe are leaving this work item open as a suggestion to the Prism team, so that they can analyze the proposed changes to be considered in a future release.\r\n\r\nThanks,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami  ",
+      "PostedDate": "2012-03-22T09:34:21.54-07:00",
+      "Id": 156052
+    }
+  ]
+}

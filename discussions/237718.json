@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "533321",
+    "ThreadId": "237718",
+    "Html": "\r\n<p>Until now I've used Silverlight Application Execution Services (AES) for any client-side services (eg Logging, Dialog Management) with MEF metadata for modularity and region placement. I'm now moving into an environment where use of PRISM is mandated.</p>\r\n<p>Unfortunately PRISM makes no mention at all of AES.</p>\r\n<p>I like the AES approach of service configuration through App.xaml but PRISM seems to preclude use of these. It relies on the bootstrapper&nbsp;class to do two different things (a) initialise the container needed to support direct injection and (b) set the\r\n root visual. An AES needs&nbsp;(a) to have been done (so concrete service implementations it wraps can be injected) but (b) to not have been done&nbsp;(because services start up before the Application_Startup code executes.&nbsp;&nbsp;&nbsp;</p>\r\n<p>I thought that maybe an AES could create the container such that the bootstrapper ConfigureContainer method could somehow retrieve that container that an already-running AES has initialized rather than call base.ConfigureContainer, but I suspect this will\r\n break the underlying PRISM code which assumes it has created the container and has complete control of it.</p>\r\n<p>Should I just give up on the idea of using Silverlight AES with PRISM? Was it deliberately avoided from the documentation because there was a realisation the two wouldn't play well together?</p>\r\n",
+    "PostedDate": "2010-12-09T03:05:20.17-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533532",
+    "ThreadId": "237718",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>There is no guidance on Prism regarding the services that you are mentioning, nor there are any known issues about them.</p>\r\n<p>In case you need to use those kind of services, you should make some changes to your application's bootstrapper. The approach you are mentioning seems valid, but you should take into account that the\r\n<strong>ConfigureContainer </strong>method in the <strong>MefBootstrapper </strong>\r\nregisters some core services that could be needed throughout your Prism application. You can find more information about this in\r\n<a href=\"http://msdn.microsoft.com/en-us/library/gg430868%28PandP.40%29.aspx\">this chapter</a> from the Prism MSDN documentation, under the section &quot;Creating and Configuring the Container in the MefBootstrapper&quot;.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-09T10:17:26.827-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "535095",
+    "ThreadId": "237718",
+    "Html": "\r\n<p>Thanks Guido.</p>\r\n<p>Since AES services start up before the Application &quot;Startup&quot; event which is where the bootstrapper is started&nbsp;(and the Unity container configured) I think using them with PRISM is likely to create more problems than it solves. You can see part of the\r\n sort of issues likely to arise with the PRISM logger used in the MVVM &quot;Modularity Quickstart&quot; where the Bootstrapper&nbsp;needs a concrete&nbsp;instance of&nbsp;the CallbackLogger class before the ConfigureContainer method is called and any IoC container is\r\n available.&nbsp;The ConfigureContainer method in that quickstart&nbsp;has to use Resolve with the specific instance that has already been created rather than use RegisterType because of the timings of the bootstrapper.</p>\r\n<p>I am going to use just one AES - an &quot;ApplicationConfigurationManager&quot; whose sole job is to keep the App.xaml.cs code clean in making run-time parameters globally available. So for logging (which in the quickstart is &quot;all or nothing&quot; which is not granular\r\n enough in my view) a TraceLevel=xxxxx querystring/initParams parameter is&nbsp;&quot;read&quot; by the ApplicationConfigurationManager and used to control the&nbsp;level of logging that takes place client-side and also to instantiate either an EmptyLogger&nbsp;(if TraceLevel=None\r\n or unspecified) or a CallbackLogger (for any other value)&nbsp;in the container that&nbsp;resolves&nbsp;IMyLogger to the appropriate class.&nbsp;The&nbsp;ApplicationConfigurationManager &quot;TraceLevel&quot; parameter can also be used to determine if the Shell needs\r\n to &quot;on demand&quot; load a &quot;LogViewer&quot; module that displays all captured log entries to the requested level so I think this is a nice use of AES with PRISM. Any other services should just use the PRISM container.</p>\r\n<p>Ian</p>\r\n",
+    "PostedDate": "2010-12-13T09:27:11.597-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "535130",
+    "ThreadId": "237718",
+    "Html": "\r\n<p>Hi Ian,</p>\r\n<p>Thank you for sharing your insights with the rest of the community, as you might help users experiencing a similar scenario.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-13T11:02:42.74-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

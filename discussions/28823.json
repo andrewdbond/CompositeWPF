@@ -1,0 +1,10 @@
+[
+  {
+    "Id": "96090",
+    "ThreadId": "28823",
+    "Html": "Has anybody considered the best approach when writing unit tests for the ViewModelComposition spike that has been introduced to the prism drops?<br>\r\n<br>\r\nThe issue I came across is that to register a DataTemplate resource we use the pack URI syntax. This requires you to create a Uri with,<br>\r\n<br>\r\nnew Uri(&quot;pack://application:,,,/ViewModelComposition.Modules.Employees;component/Views/EmployeesDetailsView/EmployeeDetailsViewResourceDictionary.xaml&quot;);\r\n<p> When running the executable application, WPF is initialized and there are no problems. Unfortunately when executing unit tests, WPF is not initialized and the .Net Uri parser does not know about the pack syntax (you get a UriFormatException). Try creating a new unit test that creates a pack uri as above! As far as I can tell, the initialization actually happens in the PackUriHelper static constructor. Since PackUriHelper is a static class and all methods expect to take a pack Uri, the only way for me to force the static constructor to run is to call a method with a different Uri scheme, and catch the exception.<br>\r\n<br>\r\nMy current solution is to register a generic uri parser myself at the start of every test that would require it (code below). This seems a bit of a hack? Any guidance on a better method?<br>\r\n<br>\r\nif (!UriParser.IsKnownScheme(&quot;pack&quot;))<br>\r\n    UriParser.Register(new GenericUriParser(GenericUriParserOptions.GenericAuthority), &quot;pack&quot;, -1);</p>\r\n",
+    "PostedDate": "2008-06-01T13:41:18.713-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

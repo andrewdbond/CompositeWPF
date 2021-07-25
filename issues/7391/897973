@@ -1,0 +1,63 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace PrismAdornerIssue7391
+{
+    /// <summary>
+    /// Interaction logic for ThirdPartyControl.xaml
+    /// </summary>
+    public partial class ThirdPartyControl : UserControl
+    {
+        public ThirdPartyControl()
+        {
+            InitializeComponent();
+        }
+
+        public object NonAdornerContent
+        {
+            get { return nonAdornerContentControl.Content; }
+            set { nonAdornerContentControl.Content = value; }
+        }
+
+        public Control AdornerContent
+        {
+            set
+            {
+                adornerContentControl.Content = value;
+                ControlAdorner adorner = new ControlAdorner(adornerContentControl);
+                
+                AdornerLayer adornerLayer = AdornerLayer.GetAdornerLayer(adornerContentControl);
+                adornerLayer.Add(adorner);
+            }
+        }
+
+        class ControlAdorner : Adorner
+        {       
+            public ControlAdorner(UIElement adornedElement)
+                : base(adornedElement) { }
+
+            protected override Size MeasureOverride(Size constraint)
+            {
+                this.AdornedElement.Measure(constraint);
+                return this.AdornedElement.DesiredSize;
+            }
+
+            protected override Size ArrangeOverride(Size finalSize)
+            {
+                this.AdornedElement.Arrange(new Rect(new Point(0, 0), finalSize));
+                return new Size(this.AdornedElement.RenderSize.Height, this.AdornedElement.RenderSize.Width);
+            }
+        }
+    }
+}

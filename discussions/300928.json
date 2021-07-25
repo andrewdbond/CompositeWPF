@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "749910",
+    "ThreadId": "300928",
+    "Html": "\r\n<p>We are working on a new application that uses C#, WPF4, Prism4 and MEF.&nbsp; The application comprises a main shell window which defines a grid with some splitters and&nbsp;five regions, and a number of separate modules that contribute UI functionality\r\n in to the various regions through view discovery and view injection.&nbsp; All standard stuff, nothing exotic.&nbsp; The application is very basic and&nbsp;everything works fine, i.e. the modules correctly contribute their views in to the shell's regions at\r\n run time.</p>\r\n<p>We also have a requirement to host the same shell (and UI from the contributing&nbsp;modules) in to a large legacy MFC application we have.&nbsp; Here's where we're having problems.&nbsp; The WPF/MFC interop code (using HwndSource) seems to be working fine,\r\n as evidenced by the fact that the shell gets displayed correctly as a child of the parent MFC CView and has basic functionality like a grid splitter that is defined in the shell itself.&nbsp; However, none of the regions in the shell are being populated with&nbsp;views\r\n defined in the Prism modules. &nbsp;Debugging shows that the modules are indeed&nbsp;being loaded, however, the&nbsp;IRegionManager instance that gets injected in to each module contains zero regions for the module to add its views in to.&nbsp; It's as if\r\n Prism is not aware that the shell defines any regions at all, consequently, attempts to add views in to these &quot;non-existent&quot; regions fail.</p>\r\n<p>We derived a new custom bootstrapper class that our MFC code calls the Run() method on.&nbsp; This bootstrapper class is identical to its equivalent in the standalone application (which works fine), the only difference is that we no longer override the InitializeShell()\r\n method, we just rely on the base class implementation.&nbsp; Typically this method is overridden to set the Application.Current.MainWindow to the shell and then show the shell, however, in our case there is no current application because we're hosted inside\r\n an MFC app.&nbsp; Various attempts at overriding the Bootstrapper's run functionality to yield control back to the MFC app to display the shell at the appropriate time have failed (failed in the sense that the shell's regions are still unpopulated, but the\r\n shell&nbsp;still displays).</p>\r\n<p>Any advice on how to host a Prism-enabled shell with regions in an MFC CView and have the MFC application initiate the bootstrapping process would be appreciated.&nbsp; Thanks.</p>\r\n",
+    "PostedDate": "2012-02-09T13:49:45.803-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "753611",
+    "ThreadId": "300928",
+    "Html": "<p>Hi,</p>\r\n<p>Based on my understanding, Prism does not support this scenarios from out of the box.</p>\r\n<p>On the other hand, I believe you could find the following thread interesting, where a Prism application hosted inside a regular window sample is proposed:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/discussions/269149\">WPF UserControl Shell</a> </li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2012-02-10T10:34:17.583-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "760726",
+    "ThreadId": "300928",
+    "Html": "<p>Agustin,</p>\r\n<p>Thank you for your quick reply and the sample you referenced.&nbsp;&nbsp;I had tried out something somewhat similar to prove out&nbsp;that a shell implemented as a user control and&nbsp;defined in a class library can be hosted in a separate application's main window.</p>\r\n<p>Of course what makes my situation different is the fact that I'm trying to host the usercontrol shell in an MFC application.&nbsp; This means that I cannot set Application.Current.MainWindow because there is no .NET application, only an MFC one, and apparently this is critical to get Prism to identify the regions defined in the shell.</p>\r\n<p>You mentioned that Prism does not support this scenario \"out of the box\".&nbsp; Does this imply that with some specific customization that it is possible to make this work in an MFC application?&nbsp; If so, would you mind giving me some direction on how to achieve it?</p>\r\n<p>Thanks again for your help,<br />Paul</p>",
+    "PostedDate": "2012-02-13T07:31:05.713-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "763955",
+    "ThreadId": "300928",
+    "Html": "<p>Okay, I figured it out.&nbsp; Painstakingly stepping through the Prism code, I came across a method on the RegionManager called&nbsp;OnSetRegionNameCallback().&nbsp; This method conditionally calls CreateRegion()&nbsp;based on the result of another method call, IsInDesignMode().&nbsp; If we are *not* in design mode, a region is created, otherwise no region is created.&nbsp; Closer examination of IsInDesignMode revealed that three separate tests are made to determine if we are in \"design mode\" or not, and if any of them are true, it is considered that we are in design mode.&nbsp; One of these checks was if Application.Current == null.&nbsp; Of course, in the context of an MFC application, Application.Current is indeed null, so the determination (erroneously) was that we were in design mode, and therefore no regions were ever created.</p>\r\n<p>Once I realized this, further internet searches showed a number of other people have run in to the same problem.&nbsp; Indeed, there is even an issue logged&nbsp;in the Prism section of&nbsp;CodePlex (<a href=\"http://compositewpf.codeplex.com/workitem/3552\">work item #3552</a>) relating to this exact issue dating back to January 2009.&nbsp; Contributors to this work item also suggests a work around of creating a dummy application just to pass the \"are we in design mode?\" check.&nbsp; Please reference the work item for more details.&nbsp; I implemented a similar workaround and was then able to successfully host my Prism-enabled shell and its contributing modules in an MFC CView in an MFC application.</p>\r\n<p>Thank you to those who blazed this trail before me and identified and proposed a workaround.&nbsp; You have saved me a lot of time!</p>",
+    "PostedDate": "2012-02-14T09:36:08.767-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

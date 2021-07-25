@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1125907",
+    "ThreadId": "470280",
+    "Html": "Hi,\r<br />\n<br />\nI have discovered an issue when attempting to register regions while using PRISM without an Application.Current set. This occurs when launching a WPF window through COM from an unmanaged application and as far as I can tell there is no way to set the Application.Current without launching a whole new application.\r<br />\n<br />\nThe reason this not being set causes issues is because the check to determine whether you are in design mode checks the Application.Current is not null which was apparently done to compensate for a known issue in &quot;Cider&quot;.\r<br />\n<br />\nThe following code snippet shows the area which i am referring to:<br />\n<pre><code>private static bool IsInDesignMode(DependencyObject element)\n{\n    // Due to a known issue in Cider, GetIsInDesignMode attached property value is not enough to know if it's in design mode.\n    return DesignerProperties.GetIsInDesignMode(element) || Application.Current == null || Application.Current.GetType() == typeof(Application);\n}</code></pre>\n\nIf you rely on GetIsInDesignMode only then Regions can register. Our current solution for this is to modify the library and rebuild it, however this is not ideal.\r<br />\n<br />\nCan anyone think of a better solution to this that doesn't involve launching a whole new application, or modifying the PRISM libraries.<br />\n",
+    "PostedDate": "2013-11-18T01:24:18.957-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1126018",
+    "ThreadId": "470280",
+    "Html": "Hi,\r<br />\n<br />\nThis is a known bug in <strong>Prism</strong> since version 2, which has been reported in the following work items:<br />\n<h1></h1>\n<ul>\n<li><a href=\"http://compositewpf.codeplex.com/workitem/3552\" rel=\"nofollow\">Region manager in V2 fails to recognize non-WPF applications</a></li>\n<li>\n<a href=\"http://compositewpf.codeplex.com/workitem/8703\" rel=\"nofollow\">RegionManager::IsInDesignMode</a><br />\n</li>\n</ul>\nIn them you can find different workarounds proposed by the community, including ones that do not require to modify the library.\r<br />\nAlso, you can vote or post in the aforementioned work items (preferably in the one with the most votes) so that the team could take this problem into account for future releases.\r<br />\n<br />\nThanks,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-11-18T06:32:27.633-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

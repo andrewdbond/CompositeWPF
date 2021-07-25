@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "143916",
+    "ThreadId": "43299",
+    "Html": "I need to modify some Shell properties from a modue, for instance the title.<br>\r\n<br>\r\nI created a service <span style=\"text-decoration:underline\">in the shell</span>, like<br>\r\n<br>\r\nprivate IShell shell<br>\r\npublic UIService(IShell Shell)<br>\r\n{<br>\r\n    shell = Shell;<br>\r\n}<br>\r\n<br>\r\npublic void SetTitle(sring Title)<br>\r\n{<br>\r\n    Shell _shell = shell as Shell;<br>\r\n    _shell.lblTitle.Content = Title;<br>\r\n}<br>\r\n<br>\r\nThen in my Bootstrapper I register my service:<br>\r\n<br>\r\nprotected override DependencyObject CreateShell()<br>\r\n{<br>\r\n    Container.RegisterType&lt;IShell, Shell&gt;();<br>\r\n    Container.RegisterType&lt;IUIService, UIService&gt;(new ContainerControllerLifetimeManager());<br>\r\n    Container.Resolve&lt;UIService&gt;();<br>\r\n    <br>\r\n    ShellPresenter presenter = Container.Resolve&lt;ShellPresenter&gt;();<br>\r\n    IShell view = presenter.View;<br>\r\n    view.ShowView();<br>\r\n    return view as DependencyObject;<br>\r\n}<br>\r\n<br>\r\nEverything works, but I cant use IUIService in the module, I get an error in the module initializer.<br>\r\nSome help, please.<br>\r\n<br>\r\nMarcos<br>\r\n",
+    "PostedDate": "2009-01-01T17:04:50.677-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "143919",
+    "ThreadId": "43299",
+    "Html": "I'd be curious if Resolve&lt;IUIService&gt;(), versus UIService; would eliminate your error...   <br>\r\n    <br>\r\nContainer.RegisterType&lt;IUIService, UIService&gt;(new ContainerControllerLifetimeManager());<br>\r\nContainer.Resolve&lt;UIService&gt;();\r\n",
+    "PostedDate": "2009-01-01T17:49:55.377-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "143958",
+    "ThreadId": "43299",
+    "Html": "No, Bill, It's exactly the same.\r\n",
+    "PostedDate": "2009-01-02T00:33:46.987-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "143977",
+    "ThreadId": "43299",
+    "Html": "Can you share the error?  \r\n",
+    "PostedDate": "2009-01-02T04:32:43.983-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "143982",
+    "ThreadId": "43299",
+    "Html": "When I try to resolve a class <br>\r\n<br>\r\n     CommonToolbarPresenter commonToolbarPresenter = container.Resolve&lt;CommonToolbarPresenter&gt;();<br>\r\n     IRegion commonToolbarRegion = regionManager.Regions[RegionNames.CommonToolbarRegion];<br>\r\n    commonToolbarRegion.Add(commonToolbarPresenter.view);<br>\r\n<br>\r\nthat has a variable <br>\r\n    <span style=\"font-size:13px;color:#0000ff\">private</span><span style=\"font-size:13px\"> </span><span style=\"font-size:13px;color:#2b91af\">IUIService</span><span style=\"font-size:13px\"> UIService;<br>\r\n</span><br>\r\nand a initializer like<br>\r\n<p>public CommonToolbarPresenter(CommonToolbarView View, IUIService uiService)<br>\r\n{<br>\r\n     view = View;<br>\r\n     UIService = uiService;</p>\r\n<p>}</p>\r\nI get the following error:<br>\r\n<br>\r\n<br>\r\nResolution of the dependency failed, type = &quot;W2.Affaires.CommonToolbarPresenter&quot;, name = &quot;&quot;. Exception message is: The current build operation (build key Build Key[W2.Affaires.CommonToolbarPresenter, null]) failed: The parameter uiService could not be resolved when attempting to call constructor W2.Affaires.CommonToolbarPresenter(W2.Affaires.CommonToolbarView View, W2.Shell.IUIService uiService). (Strategy type BuildPlanStrategy, index 3)\r\n",
+    "PostedDate": "2009-01-02T05:14:08.993-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "143996",
+    "ThreadId": "43299",
+    "Html": "<p>Nothing obvious jumps out at me.  Perhaps I could persuade you to go a different route?<br>\r\n<br>\r\nDemo I scraped together for you resides <a href=\"http://www.global-webnet.net/ShellAccess.zip\">HERE</a><br>\r\n<br>\r\n<strong>ModuleA.cs</strong> contains the following:</p>\r\n<div style=\"font-size:10pt;background:white;color:black;font-family:courier new\">\r\n<p style=\"margin:0px\"><span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> Initialize()</p>\r\n<p style=\"margin:0px\">{</p>\r\n<p style=\"margin:0px\">    <span style=\"color:#2b91af\">UIEventArgs</span> args = <span style=\"color:blue\">new</span> <span style=\"color:#2b91af\">UIEventArgs</span> {ShellTitle=<span style=\"color:#a31515\">&quot;Hello World&quot;</span>};</p>\r\n<p style=\"margin:0px\">    aggregator.GetEvent&lt;<span style=\"color:#2b91af\">UIEvent</span>&gt;().Publish(args);</p>\r\n<p style=\"margin:0px\">}</p>\r\n</div>\r\n<p><strong>ShellPresenter.cs</strong> contains the following:<br>\r\n<br>\r\n<span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> <span style=\"color:#2b91af\">ShellPresenter</span></p>\r\n<div style=\"font-size:10pt;background:white;color:black;font-family:courier new\">\r\n<p style=\"margin:0px\">{</p>\r\n<p style=\"margin:0px\">    <span style=\"color:blue\">public</span> <span style=\"color:#2b91af\">IShell</span> View { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">set</span>; }</p>\r\n<p style=\"margin:0px\"> </p>\r\n<p style=\"margin:0px\">    <span style=\"color:blue\">public</span> ShellPresenter(<span style=\"color:#2b91af\">IUnityContainer</span> container,</p>\r\n<p style=\"margin:0px\">        <span style=\"color:#2b91af\">IShell</span> view, <span style=\"color:#2b91af\">IEventAggregator</span> aggregator)</p>\r\n<p style=\"margin:0px\">    {</p>\r\n<p style=\"margin:0px\">        View = view;</p>\r\n<p style=\"margin:0px\">        View.Model = container.Resolve&lt;<span style=\"color:#2b91af\">IShellPresentationModel</span>&gt;();</p>\r\n<p style=\"margin:0px\">        aggregator.GetEvent&lt;<span style=\"color:#2b91af\">UIEvent</span>&gt;().Subscribe(UIEventHandler);</p>\r\n<p style=\"margin:0px\">    }</p>\r\n<p style=\"margin:0px\"> </p>\r\n<p style=\"margin:0px\">    <span style=\"color:blue\">private</span> <span style=\"color:blue\">void</span> UIEventHandler(<span style=\"color:#2b91af\">UIEventArgs</span> e)</p>\r\n<p style=\"margin:0px\">    {</p>\r\n<p style=\"margin:0px\">        View.Model.ShellTitle = e.ShellTitle;</p>\r\n<p style=\"margin:0px\">    }</p>\r\n<p style=\"margin:0px\">}</p>\r\n</div>\r\n<p><strong>Shell.xaml</strong> contains the following:<br>\r\n</p>\r\n<div style=\"font-size:10pt;background:white;color:black;font-family:courier new\">\r\n<p style=\"margin:0px\"><span style=\"color:blue\">&lt;</span><span style=\"color:#a31515\">Window</span><span style=\"color:blue\"> </span><span style=\"color:red\">x:Class</span><span style=\"color:blue\">=</span>&quot;<span style=\"color:blue\">ShellAccess.Shell</span>&quot;</p>\r\n<p style=\"margin:0px\"><span style=\"color:blue\">    </span><span style=\"color:red\">xmlns</span><span style=\"color:blue\">=</span>&quot;<span style=\"color:blue\">http://schemas.microsoft.com/winfx/2006/xaml/presentation</span>&quot;</p>\r\n<p style=\"margin:0px\"><span style=\"color:blue\">    </span><span style=\"color:red\">xmlns:x</span><span style=\"color:blue\">=</span>&quot;<span style=\"color:blue\">http://schemas.microsoft.com/winfx/2006/xaml</span>&quot;</p>\r\n<p style=\"margin:0px\"><span style=\"color:blue\">    </span><span style=\"color:red\">Title</span><span style=\"color:blue\">=</span>&quot;<span style=\"color:blue\">{Binding ShellTitle}</span>&quot;<span style=\"color:blue\"> </span><span style=\"color:red\">Height</span><span style=\"color:blue\">=</span>&quot;<span style=\"color:blue\">300</span>&quot;<span style=\"color:blue\"> </span><span style=\"color:red\">Width</span><span style=\"color:blue\">=</span>&quot;<span style=\"color:blue\">300</span>&quot;<span style=\"color:blue\">&gt;</span></p>\r\n<p style=\"margin:0px\"><span style=\"color:blue\">  &lt;</span><span style=\"color:#a31515\">Grid</span><span style=\"color:blue\">&gt;</span></p>\r\n<p style=\"margin:0px\"> </p>\r\n<p style=\"margin:0px\"><span style=\"color:blue\">  &lt;/</span><span style=\"color:#a31515\">Grid</span><span style=\"color:blue\">&gt;</span></p>\r\n<p style=\"margin:0px\"><span style=\"color:blue\">&lt;/</span><span style=\"color:#a31515\">Window</span><span style=\"color:blue\">&gt;</span></p>\r\n</div>\r\n<p>&lt;!--EndFragment--&gt;<br>\r\n&lt;!--EndFragment--&gt;</p>\r\n",
+    "PostedDate": "2009-01-02T06:35:21.647-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "144001",
+    "ThreadId": "43299",
+    "Html": "It's a good workaround.  Thanks a lot, Bill\r\n",
+    "PostedDate": "2009-01-02T06:53:03.16-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "144006",
+    "ThreadId": "43299",
+    "Html": "<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Hi Marcos,</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\">Looking at your code, it seems that you are creating the Shell twice:</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span><span style=\"font-family:calibri\">1.</span><span style=\"font:7pt 'times new roman'\">       </span></span><span style=\"font-family:calibri\">When you resolve the <b>UIService</b> class, the Shell is injected in the constructor through the container creating an instance of the Shell.</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span><span style=\"font-family:calibri\">2.</span><span style=\"font:7pt 'times new roman'\">       </span></span><span style=\"font-family:calibri\">When you resolve the <b>ShellPresenter</b>, another instance of the Shell is created by the container and injected in the View property of the class.</span></p>\r\n<p style=\"margin:0in 0in 0pt -0.6pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt -0.6pt\"><span style=\"font-family:calibri\">If this is the cause of your error, you could do the following to avoid creating the Shell twice:</span></p>\r\n<p style=\"margin:0in 0in 0pt 35.4pt\"><span style=\"font-family:symbol\">·<span style=\"font:7pt 'times new roman'\">         </span><span style=\"font-family:calibri\">Register the Shell as a singleton. In this way the container always injects the same instance:</span>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt 71.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">// <b>Note: </b>The ConfigureContainer method is the place where you typically write code to register services in the Bootstrapper class.</span></p>\r\n<p style=\"margin:0in 0in 0pt 71.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">protected override void ConfigureContainer()</span></p>\r\n<p style=\"margin:0in 0in 0pt 71.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">{</span></p>\r\n<p style=\"margin:0in 0in 0pt 107.4pt\"><b><span style=\"font-size:10pt;color:#31849b;font-family:'courier new'\">Container.RegisterType&lt;IShell, Shell&gt;(new ContainerControlledLifetimeManager());</span></b></p>\r\n<p style=\"margin:0in 0in 0pt 107.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">Container.RegisterType&lt;IUIService, UIService&gt;(new ContainerControlledLifetimeManager());</span></p>\r\n<p style=\"margin:0in 0in 0pt 107.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt 107.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">base.ConfigureContainer();</span></p>\r\n<p style=\"margin:0in 0in 0pt 71.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">}</span></p>\r\n<p style=\"margin:0in 0in 0pt 71.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt 71.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">protected override DependencyObject CreateShell()</span></p>\r\n<p style=\"margin:0in 0in 0pt 71.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">{</span></p>\r\n<p style=\"margin:0in 0in 0pt 107.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">ShellPresenter presenter = Container.Resolve&lt;ShellPresenter&gt;();</span></p>\r\n<p style=\"margin:0in 0in 0pt 107.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt 107.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">IShell view = presenter.View;</span></p>\r\n<p style=\"margin:0in 0in 0pt 107.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">view.ShowView();</span></p>\r\n<p style=\"margin:0in 0in 0pt 107.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt 107.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">return view as DependencyObject;</span></p>\r\n<p style=\"margin:0in 0in 0pt 71.4pt\"><span style=\"font-size:10pt;font-family:'courier new'\">}</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt -0.6pt\"><span style=\"font-family:calibri\">Hope it helps.</span></p>\r\n<p style=\"margin:0in 0in 0pt -0.6pt\"><span style=\"font-family:calibri\"> </span></p>\r\n<p style=\"margin:0in 0in 0pt -0.6pt\"><span style=\"font-family:calibri\">Mariano Converti</span></p>\r\n<p style=\"margin:0in 0in 0pt -0.6pt\"><a href=\"http://blogs.southworks.net/mconverti\"><span style=\"font-family:calibri\">http://blogs.southworks.net/mconverti</span></a></p>\r\n</span></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2009-01-02T07:41:17.31-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "144010",
+    "ThreadId": "43299",
+    "Html": "<span id=UniqueID1230912397138>Hi Mariano,<br>\r\n<br>\r\nI follow your advice but I'm still getting the same error.</span>\r\n",
+    "PostedDate": "2009-01-02T08:09:30.363-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,106 @@
+[
+  {
+    "Id": "261295",
+    "ThreadId": "76453",
+    "Html": "<p>Hi,</p>\r\n<p>&nbsp;</p>\r\n<p>I am trying to install the October 09 release but am having an issue. &nbsp;When I run it it just tells me it is extracting Source.zip but doesn;t tell me or ask me where and I have tried searching for known files but I can;t find anything. &nbsp;I haven;t installed it before so this should be a fresh install.</p>\r\n<p>Has anyone experience this issue and resolved it?</p>\r\n<p>&nbsp;</p>\r\n<p>James.</p>",
+    "PostedDate": "2009-11-28T04:32:41.11-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "261855",
+    "ThreadId": "76453",
+    "Html": "<p id=ca6446f0-bfe2-012c-0189-12313b030466>Hi James,</p>\r\n<p id=ca644f90-bfe2-012c-018a-12313b030466>The Prism October 2009 self extractable file shows an extracting message before letting you choose the directory where the files should be placed. Afterwards it lets you choose a directory and when you select the directory it copies the files to it.</p>\r\n<p id=ca645d70-bfe2-012c-018b-12313b030466>Since its release, I have used it with no problems in the following operating systems:</p>\r\n<ul>\r\n<li>Windows 7</li>\r\n<li>Windows Vista</li>\r\n<li>Windows Server 2008 </li>\r\n</ul>\r\n<p id=ca646b80-bfe2-012c-018c-12313b030466>To workaround this you could try the following:</p>\r\n<ol>\r\n<li>Change the extension of the CompositeApplicationGuidance-Oct2009.exe file to <strong>.zip</strong>.</li>\r\n<li>Open or extract the files in the .zip file. You should find a file named <strong>Source.zip.</strong></li>\r\n<li>Extract the <strong>Source.zip </strong>file in the location desired.</li>\r\n</ol>\r\n<p id=ca647a30-bfe2-012c-018d-12313b030466>Please let me know if this helps.</p>\r\n<p id=ca648d80-bfe2-012c-018e-12313b030466>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-11-30T05:34:01.777-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "277472",
+    "ThreadId": "76453",
+    "Html": "<p>Hi,</p>\r\n<p>&nbsp;</p>\r\n<p>Sorry for the VERY late reply. &nbsp;I have since got a new machine (Windows 7) and I am experiencing the exact same issue. &nbsp;I &quot;unblocked&quot; the downloaded file incase that made a difference but to no avail. &nbsp;I managed to open the file in WinRar and noticed what the install uses a VBS file. &nbsp;For security reasons VBS extensions are disassociated&nbsp;on out corporate machines hence why it never asked for a destination folder.</p>\r\n<p>Thanks for your help</p>\r\n<p>James.</p>",
+    "PostedDate": "2010-01-14T23:20:09.317-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "468047",
+    "ThreadId": "76453",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>kouphax wrote:</strong><br>\r\n<p>Hi,</p>\r\n<p>&nbsp;</p>\r\n<p>Sorry for the VERY late reply. &nbsp;I have since got a new machine (Windows 7) and I am experiencing the exact same issue. &nbsp;I &quot;unblocked&quot; the downloaded file incase that made a difference but to no avail. &nbsp;I managed to open the file in WinRar and noticed what the install uses a VBS file. &nbsp;For security reasons VBS extensions are disassociated&nbsp;on out corporate machines hence why it never asked for a destination folder.</p>\r\n<p>Thanks for your help</p>\r\n<p>James.</p>\r\n</blockquote>\r\n<p>Have exactly the same issue on Windows 7 - with both the 2.2 release and also the PRISM 4 drops.</p>\r\n<p>Craig.</p>",
+    "PostedDate": "2010-07-15T21:11:10.63-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "468287",
+    "ThreadId": "76453",
+    "Html": "<p>The self extracting zips we use internally run a VBS script.&nbsp;If VBS is disabled, then it can't run.&nbsp; In the short term, I'd use the above suggestion or run things on a computer that is not locked down and use a usb drive or email to transfer the results over.</p>\r\n<p>I will look at what the script is doing and see if we can replace it with a batch script instead, but I can't make any promises.</p>\r\n<p>Of course, depending on a number of factors, the deployment mechanism may change from a self-extracting exe to an MSI or something else before we ship the final version.</p>\r\n<p>Thanks for the feedback,</p>\r\n<p>Michael Puleio</p>",
+    "PostedDate": "2010-07-16T10:14:41.41-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "468427",
+    "ThreadId": "76453",
+    "Html": "<p id=384c0020-732c-012d-5b7d-1231390b9201>Hi guys,</p>\r\n<p id=384c12b0-732c-012d-5b7e-1231390b9201>In addtion to the Michael's answer, I think that something similar to this has been tracked in the <a href=\"http://compositewpf.codeplex.com/wikipage?title=Known Issues / Fixes\">KB as known issue</a> some weeks ago. Basically, this problem occurs when a non-default shell handler is enabled for zip files that does not support a folder view of the content, for example PKZip.</p>\r\n<p id=384c2dc0-732c-012d-5b7f-1231390b9201>Therefore you could check <a href=\"http://compositewpf.codeplex.com/wikipage?title=Setup issues with Prism v2.2/v4.0 when a non-default program is used to open zip files\">this article</a> in the KB for finding a workaround.</p>\r\n<p id=384c4f70-732c-012d-5b80-1231390b9201>Please let me know if this helps.</p>\r\n<p id=384c7070-732c-012d-5b81-1231390b9201>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-07-16T21:27:50.71-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "523307",
+    "ThreadId": "76453",
+    "Html": "\r\n<p>hi, &nbsp;we tried the work around suggested but it doesn't work for our team. &nbsp;Possible to post simple compressed version of the releases? &nbsp;Re-naming the exe to zip used to work in older version but with 4.0 we can't install the app. &nbsp;We\r\n are using windows xp in our team. &nbsp;Thanks.</p>\r\n",
+    "PostedDate": "2010-11-17T08:22:33.297-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "523413",
+    "ThreadId": "76453",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I installed Prism 4 in XP SP2 (x86) and found no issues. In my box, I am using\r\n<strong>Compressed (zipped) Folders </strong>to open these files. You can see how my folder options are configured below:</p>\r\n<p><img src=\"http://pqht8w.bay.livefilestore.com/y1p4Vn971x0lK5X3fsH9VbGuW3TZ82rwtd8AR762a7HuAzLoXlCGhp06MCeR9lwDXuNdMhItvNt1nyzfP8XnCgkWaDsn2867Ihb/filetypes.PNG?psid=1\" alt=\"\"></p>\r\n<p>Have you tried to install this in a different machine? Could you please share you configuration environment?</p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-17T11:45:00.057-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "523945",
+    "ThreadId": "76453",
+    "Html": "\r\n<p>we are running xp sp3.&nbsp; we do have pkzip installed and i've tried the above solution but did not work.&nbsp; We have a team of about 6 and it didn't work for 2 other dev also.&nbsp; Oddly installation doesn't give an exception but it skips option to\r\n select the folder to unzip to and the installation ends with successful completion message.</p>\r\n",
+    "PostedDate": "2010-11-18T11:18:11.063-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "523971",
+    "ThreadId": "76453",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Based on my understanding, you have installed pkzip in your box. You tried to configure\r\n<strong>Compressed (zipped) Folder</strong> as the default handler instead of a PKZip, but you are not able to install Prism 4 though.<br>\r\n<br>\r\nThat said, I think that you can find the following forum thread and post interesting:</p>\r\n<ul>\r\n<li><a href=\"http://social.msdn.microsoft.com/forums/en-US/windowsdesktopsearchhelp/thread/717e95e4-ab20-46cd-b806-d2064ad01587\">Windows Zip Utility</a>\r\n</li><li><a href=\"http://weblogs.asp.net/whaggard/archive/2005/02/10/370790.aspx\">Re-associating Compressed Folders with .zip files</a>.\r\n</li></ul>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-18T12:07:24.617-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "523996",
+    "ThreadId": "76453",
+    "Html": "\r\n<p>Will try the above and let you know.&nbsp; just a suggestion, we are trying to promote prism to wider audience but doesn't give a positive first impression when the installation is not straight forward.&nbsp; fyi, we work for a very large corporation and\r\n lot of corps like ours probably are using tools such as pkzip.&nbsp;&nbsp; Wondering if you thought about either another alternative to current installation or changing it?&nbsp; Thanks for the quick replies.</p>\r\n",
+    "PostedDate": "2010-11-18T12:38:59.077-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "524007",
+    "ThreadId": "76453",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>Thanks for your feedback. I will copy this as a work-item, so the product team will be notified. Additionally, I think that you can find the following work-item interesting, since the product team is currently working on this:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/workitem/7535\"><span id=\"x_TitleLabel\">NuGet package</span></a>\r\n</li></ul>\r\n<p>If you need more information about <strong>NuGet</strong>, you could take a look at the following codeplex site:\r\n<a href=\"http://nuget.codeplex.com/\">http://nuget.codeplex.com/</a></p>\r\n<p>Thanks again.</p>\r\n<p>Fernando Antivero <br>\r\n<a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-11-18T12:50:50.37-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "524009",
+    "ThreadId": "76453",
+    "Html": "This discussion has been copied to a work item. Click <a href=\"http://compositewpf.codeplex.com/workitem/7560\">here</a> to go to the work item and continue the discussion.",
+    "PostedDate": "2010-11-18T12:51:38.973-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

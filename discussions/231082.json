@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "508041",
+    "ThreadId": "231082",
+    "Html": "<p>Environment: Prism 4 drop 9, WPF, .NET 4.0, AvalonDock&nbsp;&nbsp;1.3.3571</p>\r\n<p>Summary: Using Prism regions within a floating Avalondock window causes exception when view is switched from another view.</p>\r\n<p>Details:</p>\r\n<p>1. I basically have the visual studio templates to create solutions/projects.&nbsp;</p>\r\n<p>&nbsp;&nbsp; see here:&nbsp;<a href=\"http://navajocoder.com/downloads/temp/templates.png\">http://navajocoder.com/downloads/temp/templates.png</a></p>\r\n<p>2. In the &quot;quick start solution&quot;, the template already creates 2 modules and the shell. In one of the views there is a button that switches another region from view1 to view2.</p>\r\n<p>&nbsp;&nbsp;private void DisplayView( string viewName )<span> </span>{</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp;IRegion mainRegion = _regionManager.Regions[ RegionNames.MainRegion ];</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp;object view = mainRegion.GetView( viewName );</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp;...</p>\r\n<p>3. In the xaml code I am using AvalonDock:</p>\r\n<p>...</p>\r\n<p>&lt;dock:ResizingPanel Orientation=&quot;Vertical&quot;&gt;</p>\r\n<p>&nbsp;&nbsp; &lt;dock:DockablePane Margin=&quot;0&quot;&gt;</p>\r\n<p>&nbsp;&nbsp; &nbsp; &nbsp;&lt;dock:DockableContent x:Name=&quot;three&quot; Title=&quot;Main region&quot;&gt;<span> </span></p>\r\n<p><span>&nbsp;</span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &lt;ContentControl x:Name=&quot;MainRegion&quot; prismrgn:RegionManager.RegionName=&quot;MainRegion&quot; /&gt;<span> </span></p>\r\n<p><span>&nbsp;</span>&nbsp;&nbsp; &nbsp; &nbsp;&lt;/dock:DockableContent&gt;<span> </span></p>\r\n<p>&nbsp;&nbsp; &lt;/dock:DockablePane&gt;<span> </span></p>\r\n<p>&lt;/dock:ResizingPanel&gt;</p>\r\n<p>...</p>\r\n<p>4. When the main region is a floating window, then trying to switch the view from another view via button click causes this exception:</p>\r\n<p>&nbsp;&nbsp; System.Collections.Generic.KeyNotFoundException was unhandled&nbsp;&nbsp;</p>\r\n<p>&nbsp;&nbsp; Message=The region manager does not contain the MainRegion region.&nbsp;&nbsp;</p>\r\n<p>&nbsp;&nbsp; Source=Microsoft.Practices.Prism</p>\r\n<p>&nbsp;</p>\r\n<p>5. More screenshots:</p>\r\n<p>&nbsp;&nbsp; a. float window:&nbsp;<a href=\"http://navajocoder.com/downloads/temp/floatdock1.png\">http://navajocoder.com/downloads/temp/floatdock1.png</a></p>\r\n<p>&nbsp;&nbsp; b. switch from a different view causes:&nbsp;<a href=\"http://navajocoder.com/downloads/temp/floatdock2.png\">http://navajocoder.com/downloads/temp/floatdock2.png</a></p>\r\n<p>&nbsp;</p>\r\n<p>Has anyone run into this? It seems the RegionManager loses track of the region when the window is in float mode.</p>",
+    "PostedDate": "2010-10-15T14:31:04.927-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "509440",
+    "ThreadId": "231082",
+    "Html": "<p>Hi,<br><br>I am not aware how the Avalon control works, but it seems to be related with this, since you can switch between view1 and view2, but you can't do that when the content is floating.</p>\r\n<p>I think that you can find interesting the following forum threads:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=155523\"><span>AvalonDock for CompositeWPF VS2010.NET4</span></a></li>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=74159\"><span>Composite WPF and AvalonDock</span></a></li>\r\n</ul>\r\n<p>On the other hand, a possible issue has been reported for a user when a user control makes use of Adorners, you could read more about this here.<br><br>If you consider this an issue in the Prism Library, you could create a work-item for this. This way the product team will be notified.</p>\r\n<p>Fernando Antivero    <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-19T08:28:05.443-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "512970",
+    "ThreadId": "231082",
+    "Html": "\r\n<p>Thanks for the response! I will look into it.</p>\r\n",
+    "PostedDate": "2010-10-26T13:43:47.907-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "925459",
+    "ThreadId": "231082",
+    "Html": "<p>&nbsp;</p>\r\n<p>Check the implemantion of PRISM &nbsp;that uses MEF + Avalon Dock + elysium + WPF ...&nbsp;<a href=\"http://central.codeplex.com/\">http://central.codeplex.com/</a></p>",
+    "PostedDate": "2012-10-11T11:59:04.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

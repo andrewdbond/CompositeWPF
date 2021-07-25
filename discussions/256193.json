@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "606641",
+    "ThreadId": "256193",
+    "Html": "\r\n<p>I'm using Prism4 and in one of my modules I'm trying to register a view with a region and also handle its button clicked event (which is published when user clicks on a button on the view).</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> MyModule : IModule\r\n{\r\n    <span style=\"color:blue\">private</span> <span style=\"color:blue\">readonly</span> IUnityContainer container;\r\n    <span style=\"color:blue\">private</span> <span style=\"color:blue\">readonly</span> IRegionManager regionManager;\r\n    <span style=\"color:blue\">private</span> <span style=\"color:blue\">readonly</span> IEventAggregator eventAggregator;\r\n\r\n    <span style=\"color:blue\">public</span> MyModule(IUnityContainer container, IRegionManager regionManager, IEventAggregator eventAggregator)\r\n    {\r\n        <span style=\"color:blue\">this</span>.container     = container;\r\n        <span style=\"color:blue\">this</span>.regionManager = regionManager;\r\n        <span style=\"color:blue\">this</span>.eventAggregator = eventAggregator;\r\n\r\n        eventAggregator.GetEvent&lt;ViewAButtonClicked&gt;().Subscribe(ViewAButtonClicked);\r\n    }\r\n\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> Initialize()\r\n    {\r\n        <span style=\"color:blue\">this</span>.regionManager.RegisterViewWithRegion(<span style=\"color:#a31515\">&quot;MainRegion&quot;</span>, <span style=\"color:blue\">typeof</span>(ViewA));\r\n\r\n        <span style=\"color:green\">// this 2nd overload would work fine</span>\r\n        <span style=\"color:green\">//this.regionManager.RegisterViewWithRegion(&quot;MainRegion&quot;, () =&gt; this.container.Resolve&lt;ViewA&gt;());            </span>\r\n    }\r\n\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> ViewAButtonClicked()\r\n    {\r\n       <span style=\"color:green\">// some handling code </span>\r\n       <span style=\"color:green\">// does *NOT* execute if using the 1st RegisterViewWithRegion overload</span>\r\n       <span style=\"color:green\">// executes if using the 2nd RegisterViewWithRegion overload</span>\r\n    }\r\n}</pre>\r\n</div>\r\n<p></p>\r\n<p>The above code works fine up except that it does not execute the ViewAButtonClicked method.</p>\r\n<p>If I switched to use the other overload (commented out in code above) then everything works as expected, the ButtonClicked method runs.</p>\r\n<p>The descriptions from msdn are very similar and I'm not sure why it's giving me the different behavior described above. Why does one work and one doesn't when it comes to handling the button click event?</p>\r\n<p style=\"padding-left:30px\">RegisterViewWithRegion(IRegionManager, String, Func&lt;(Of &lt;(Object&gt;)&gt;)): Associate a view with a region, using a delegate to resolve a concreate instance of the ? view. When the region get's displayed, this delelgate will\r\n be called and the result will be added to the views collection of the region.</p>\r\n<p style=\"padding-left:30px\">RegisterViewWithRegion(IRegionManager, String, Type): Associate a view with a region, by registering a type. When the region get's displayed this type will be resolved using the ServiceLocator into a concrete instance. The instance\r\n will be added to the Views collection of the region.</p>\r\n",
+    "PostedDate": "2011-05-03T12:48:52.453-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "606683",
+    "ThreadId": "256193",
+    "Html": "<p>Hi,</p>\r\n<p>You could try to set the <strong>keepSubscriberReference</strong> alive parameter to true on the <strong>Subscribe</strong> method, when you specify that a strong reference should be maintained between your event and its subscriber. Therefore, you will grant that the subscriber won't be garbage collected until you manually unsubscribe to that event.</p>\r\n<p>In your case, since your subscriber is the <strong>MyModule</strong>, that's the one that won't be garbage collected until you've unsubscribed from the event.</p>\r\n<p>On the other hand, a weak event subscription won't hold a strong reference to the Subscriber, hence it will be active as long as the subscriber is kept alive. For example, if you subscribe to an event from within your <strong>MyModule</strong>, if you don't have any other references to it, that instance will eventually be garbage collected. Note that it's usual to have the <strong>IModule</strong> be garbage collected.</p>\r\n<p>Please let me know if this information helps you.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-05-03T13:56:03.567-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "606726",
+    "ThreadId": "256193",
+    "Html": "<p>Thanks so much mbronzovic, setting&nbsp;<strong>keepSubscriberReference</strong>&nbsp;to true fixed it and now I can use either overloads. I'm still a little confused as to why the 1st overload would require such a parameter and the 2nd overload doesn't, is it because the 2nd overload (the one using the delegate) somehow prevents ModuleA from garbage collected? If so how?</p>\n<p>Another question: which overload/convention is better/preferable?</p>",
+    "PostedDate": "2011-05-03T15:11:28.033-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "607135",
+    "ThreadId": "256193",
+    "Html": "<p>Hi,</p>\n<p>When you call the&nbsp;<strong>RegisterViewWithRegion(string regionName, Type viewType) </strong>overload, the service locator is used to obtain an instance of the view type, and then the <strong>RegisterViewWithRegion(string regionName, Func&lt;object&gt; getContentDelegate)</strong> overload is called, the <strong>getContentDelegate </strong>pointing to a method that uses the service locator to retrieve the instance of the view type specified (as defined before). The region name, along with the <strong>getContentDelegate</strong> are stored in a ListDictionary, which are then used to create the view when the region specified is added to the visual tree.</p>\n<p>In the example you've mentioned, the delegate you're specifying contains a reference to a field of your <strong>MyModule</strong> class, which is therefore kept alive. If you used the second overload like this:</p>\n<pre><pre><span style=\"color: blue;\">this</span>.regionManager.RegisterViewWithRegion(<span style=\"color: #a31515;\">\"MainRegion\"</span>, () =&gt; ServiceLocator.Current.GetInstance&lt;ViewA&gt;());\n</pre>\n</pre>\n<p>Your module wouldn't be kept alive.</p>\n<p>However, you should take into account that the usual is to have your module class be garbage collected, and instead, subscribe to events and perform additional operations in a controller class, such as a ViewModel or a service.</p>\n<p>As for which overload to use, the decision depends entirely on your personal preference and which one suits better your specific case.</p>\n<p>I hope you find this helpful.</p>\n<p>Guido Leandro Maliandi<br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-05-04T07:28:46.163-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "607145",
+    "ThreadId": "256193",
+    "Html": "<p>Thank you GuidoMaliandi! What you explained makes perfect sense. I also tried the overload with ServiceLocator as specified and confirmed that the module isn't kept alive that way either.</p>\n<p>I will take your advice and move the subscription in my viewmodel or service instead.</p>",
+    "PostedDate": "2011-05-04T07:37:13.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

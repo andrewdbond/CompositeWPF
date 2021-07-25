@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1112427",
+    "ThreadId": "463649",
+    "Html": "Hi\r<br />\n<br />\nWhen we use Prism regions,the module/ViewModels do not know about the underling control.All the handling is done in Region adapter and Region behavior.How can we handle control specific events and inform the ViewModels.\r<br />\n<br />\nI was wondering to handle control specific events in Region behavior and publish them using EventAggregator.Is this the right approach for handling region control specific events?\r<br />\n<br />\nThanks<br />\n",
+    "PostedDate": "2013-10-26T08:01:51.257-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1112607",
+    "ThreadId": "463649",
+    "Html": "Hi,\r<br />\n<br />\nI think you can still avoid event aggregators here. Reason being in the adapter/behavior you will have access to the view and consequently you can access the view model (datacontext). May be you can put your function to be invoked in a viewmodelbase class, which you can invoke here.\r<br />\n<br />\nHope this helps. May be if you provide a more elaborate explanation of what you are trying to do, like what is your host control etc, then I could help you further.\r<br />\n<br />\nCheers!\r<br />\nGanesh<br />\n",
+    "PostedDate": "2013-10-27T01:01:35.187-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1113169",
+    "ThreadId": "463649",
+    "Html": "For example,you have navigation bar.You want to handle navigation bar sepcific events and then update the GUI.<br />\n",
+    "PostedDate": "2013-10-28T09:25:54.49-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1116525",
+    "ThreadId": "463649",
+    "Html": "Hi tahirali_csc1,\r<br />\n<br />\nBased on my understanding you would want to navigate through <strong>Views</strong> on a different <strong>Region</strong> which would be triggered from the <strong><em>Navigation bar's region Behavior</em></strong>.\r<br />\n<br />\nTherefore, you could get the <strong>RegionManager</strong> inside <strong>NavigationBar Region Behavior</strong>, and then call <strong><em>RequestNavigate()</em></strong> on the specific region. This way you would achieve navigation on a different region without trouble.\r<br />\n<br />\nIf you then may need to configure or receive any parameters on each ViewModel when they get activated, you could make the <strong>ViewModels</strong> implement <strong>INavigationAware</strong>, and then set on the <strong><em>OnNavigatedTo()</em></strong> method the proper configuration needed.\r<br />\n<br />\nYou may find more information about <strong>Navigation</strong> on the following <strong>Prism</strong> Guide chapter:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40).aspx\" rel=\"nofollow\">Navigation</a><br />\n</li>\n</ul>\nI hope this helps,\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"http://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">http://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2013-11-01T07:15:15.41-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

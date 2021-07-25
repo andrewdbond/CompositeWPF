@@ -1,0 +1,90 @@
+[
+  {
+    "Id": "602167",
+    "ThreadId": "255110",
+    "Html": "<p>I have some questions:</p>\n<p>1) I'd like to know what is the best way to recreate views whenever they are requested(MEF is used). I suppose it could be implemented by doing the following:</p>\n<ul>\n<li>using view injection</li>\n<li>getting the view to be injected by requesting&nbsp; ExportFactory&lt;ViewType&gt; property(it's done everytime when the view is requested)</li>\n<li>applying attribute [RegionMemberLifetime(KeepAlive = false]</li>\n</ul>\n<p>Are there some better ways to it?</p>\n<p>2) Let there are two modules. Every module registers some view in the same region. The first region is immediately loaded(and its view is immediately displayed ), other - on demand.</p>\n<p>&nbsp;When I navigate to the second view from the first view and then try to go back by using NavigationContext.NavigationService.Journal.GoBack(), it doesn't work.</p>\n<p>And I can't understand why?</p>\n<p>Thanks in advance.</p>\n<p>&nbsp;</p>",
+    "PostedDate": "2011-04-24T11:26:44.42-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602298",
+    "ThreadId": "255110",
+    "Html": "<p>Andrew,</p>\r\n<p>You could probably try adding the PartCreationPolicy for your view and set it to NonShared. That way the view will be created each time you request it.</p>\r\n<p>Cheers.</p>\r\n<p>Ganesh</p>",
+    "PostedDate": "2011-04-24T23:59:31.49-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602349",
+    "ThreadId": "255110",
+    "Html": "<p>Thanks for reply.</p>\n<p>Using &nbsp;[<span style=\"color: #2b91af;\">PartCreationPolicy</span>(<span style=\"color: #2b91af;\">CreationPolicy</span>.NonShared)] was the first thing I tried, but it didn't work(if I set the breakpoint in the ctor, it is hit only once).</p>\n<p>What wrong might I have done ?</p>\n<p>And what about the 2nd question? ;)</p>\n<p>&nbsp;</p>",
+    "PostedDate": "2011-04-25T03:23:25.197-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602363",
+    "ThreadId": "255110",
+    "Html": "<p>Are you implementing INavigationAware on your view model? If yes then try this in the OnNavigatedFrom</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> OnNavigatedFrom(NavigationContext navigationContext)\r\n{\r\n    <span style=\"color: blue;\">var</span> region = _regionManager.Regions[<span style=\"color: #a31515;\">\"MyRegion\"</span>];\r\n    <span style=\"color: blue;\">if</span> (region <span style=\"color: blue;\">is</span> SingleActiveRegion)\r\n    {\r\n        <span style=\"color: blue;\">var</span> activeView = region.ActiveViews.SingleOrDefault();\r\n        <span style=\"color: blue;\">if</span> (activeView != <span style=\"color: blue;\">null</span>) region.Deactivate(activeView);\r\n    }\r\n}\r\n\r\n</pre>\r\n</div>\r\n<p>You could put this logic&nbsp;in a viewmodel base or something and call it on the OnNavigatedFrom. This apparently is by design and doing the above solves the problem. Let me know if this helped.</p>\r\n<p>Cheers,</p>\r\n<p>Ganesh</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-04-25T04:25:25.35-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602386",
+    "ThreadId": "255110",
+    "Html": "<p>It didn't help...</p>\r\n<p>It's my Module class</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><div style=\"color: black; background-color: white;\"><pre>[ModuleExport(<span style=\"color: blue;\">typeof</span>(ModuleInitializer))]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> ModuleInitializer : IModule\r\n{\r\n        <span style=\"color: blue;\">private</span> <span style=\"color: blue;\">readonly</span> IRegionManager _regionManager;\r\n\r\n        [ImportingConstructor]\r\n        <span style=\"color: blue;\">public</span> ModuleInitializer(IRegionManager regionManager)\r\n        {\r\n            _regionManager = regionManager;\r\n        }\r\n       \r\n        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> Initialize()\r\n        {\r\n            _regionManager.RegisterViewWithRegion(<span style=\"color: #a31515;\">\"MainRegion\"</span>, <span style=\"color: blue;\">typeof</span> (View));            \r\n        }   \r\n }<br /><br />&nbsp;</pre>\r\n</div>\r\nand the view:<br />\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>[Export]\r\n[PartCreationPolicy(CreationPolicy.NonShared)]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> View : UserControl\r\n{\r\n        [ImportingConstructor]\r\n        <span style=\"color: blue;\">public</span> View(ViewModel viewModel)\r\n        {\r\n            InitializeComponent();\r\n            DataContext = viewModel;\r\n        }          \r\n}\r\n</pre>\r\n</div>\r\n<br /><br />viewmodel:<br /><br />\r\n<div style=\"color: black; background-color: white;\">\r\n<pre> [Export]\r\n [PartCreationPolicy(CreationPolicy.NonShared)]\r\n <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> ViewModelB : NotificationObject, INavigationAware, \r\n {\r\n        <span style=\"color: blue;\">private</span> <span style=\"color: blue;\">readonly</span> IRegionManager _regionManager;\r\n      \r\n        <span style=\"color: blue;\">public</span> ViewModel()\r\n        {\r\n           \r\n        }\r\n\r\n        <span style=\"color: blue;\">#region</span> Implementation of INavigationAware\r\n        ....\r\n        <span style=\"color: blue;\">#endregion</span>\r\n}<br /><br />Maybe, there is something wrong with the code? <br /></pre>\r\n</div>\r\n<br /></pre>\r\n</div>\r\n</p>\r\n<p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>\r\n</pre>\r\n</div>\r\n</p>",
+    "PostedDate": "2011-04-25T05:37:38.29-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602391",
+    "ThreadId": "255110",
+    "Html": "<div><span style=\"font-family: Arial; color: #000080; font-size: x-small;\">Did you put the code I gave in you inavigationaware implementation? That solution works with me. With one difference being I don't do a registerviewwithregion. I use the region.requestnavigate to load modules in my region. <br /></span></div>\n<p>&nbsp;</p>\n<div>\n<hr size=\"2\" />\n<span style=\"font-family: Tahoma; font-size: x-small;\"><strong>From</strong>: Andrew123 &lt;notifications@codeplex.com&gt; <br /><strong>To</strong>: Shivshankar, Ganesh (IT/IN) <br /><strong>Sent</strong>: Mon Apr 25 18:07:48 2011<br /><strong>Subject</strong>: Re: What is the best way to recreate views? [CompositeWPF:255110] <br /></span></div>\n<p>From: Andrew123</p>\n<div id=\"x_x_ThreadNotificationPostBody\">\n<p>It didn't help...</p>\n<p>It's my Module class</p>\n<p>&nbsp;</p>\n<div style=\"background-color: white; color: black;\">\n<pre><div style=\"background-color: white; color: black;\"><pre>[ModuleExport(<span style=\"color: blue;\">typeof</span>(ModuleInitializer))]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> ModuleInitializer : IModule\r\n{\r\n        <span style=\"color: blue;\">private</span> <span style=\"color: blue;\">readonly</span> IRegionManager _regionManager;\r\n\r\n        [ImportingConstructor]\r\n        <span style=\"color: blue;\">public</span> ModuleInitializer(IRegionManager regionManager)\r\n        {\r\n            _regionManager = regionManager;\r\n        }\r\n       \r\n        <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">void</span> Initialize()\r\n        {\r\n            _regionManager.RegisterViewWithRegion(<span style=\"color: #a31515;\">\"MainRegion\"</span>, <span style=\"color: blue;\">typeof</span> (View));            \r\n        }   \r\n }<br /><br /> </pre>\n</div>\nand the view:<br />\n<div style=\"background-color: white; color: black;\">\n<pre>[Export]\r\n[PartCreationPolicy(CreationPolicy.NonShared)]\r\n<span style=\"color: blue;\">public</span> <span style=\"color: blue;\">partial</span> <span style=\"color: blue;\">class</span> View : UserControl\r\n{\r\n        [ImportingConstructor]\r\n        <span style=\"color: blue;\">public</span> View(ViewModel viewModel)\r\n        {\r\n            InitializeComponent();\r\n            DataContext = viewModel;\r\n        }          \r\n}\r\n</pre>\n</div>\n<br /><br />viewmodel:<br /><br />\n<div style=\"background-color: white; color: black;\">\n<pre> [Export]\r\n [PartCreationPolicy(CreationPolicy.NonShared)]\r\n <span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> ViewModelB : NotificationObject, INavigationAware, \r\n {\r\n        <span style=\"color: blue;\">private</span> <span style=\"color: blue;\">readonly</span> IRegionManager _regionManager;\r\n      \r\n        <span style=\"color: blue;\">public</span> ViewModel()\r\n        {\r\n           \r\n        }\r\n\r\n        <span style=\"color: blue;\">#region</span> Implementation of INavigationAware\r\n        ....\r\n        <span style=\"color: blue;\">#endregion</span>\r\n}<br /><br />Maybe, there is something wrong with the code? <br /></pre>\n</div>\n<br /></pre>\n</div>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<div style=\"background-color: white; color: black;\"></div>\n<p>&nbsp;</p>\n</div>",
+    "PostedDate": "2011-04-25T05:52:28.373-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602449",
+    "ThreadId": "255110",
+    "Html": "<p>At long last, I've found what was wrong!</p>\r\n<p>Earlier, I thought that views had to be registered in a region using view injection or discovery even if navigation is implemented using RequestNavigate approach. :)</p>\r\n<p>After I took _regionManager.RegisterViewWithRegion(\"MainRegion\", typeof(View)) away, and invoking _regionManager.RequestNavigate(\"MainRegion\", \"View\"), I got error 'Cannot create navigation target 'View''. Then I decided to use the full type name of the view in&nbsp;RequestNavigate and finally I got it working!!!</p>\r\n<p>But now I can't understand why navigation worked earlier when invoking RequestNavigate with short name of the view, that is,&nbsp;_regionManager.RequestNavigate(\"MainRegion\", \"View\") &nbsp;( \"View\" wasn't the export's contract) ?</p>",
+    "PostedDate": "2011-04-25T08:39:59.903-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602453",
+    "ThreadId": "255110",
+    "Html": "<p>Glad you could resolve it.</p>\r\n<p>With RegisterViewWithRegion you are giving the type to it.&nbsp;It needs a contract name when using RequestNavigate.</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre>[Export(<span style=\"color: #a31515;\">\"MyView\"</span>)]\r\n</pre>\r\n</div>\r\n<p>By default it takes the type name as the export name if contract is not specified. You can check that by just injection the AggregateCatalog in your view and inspecting the Parts property in it.</p>\r\n<p>Did you have to put the logic I&nbsp;gave in the OnNavigatedTo method?</p>",
+    "PostedDate": "2011-04-25T08:50:08.893-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602472",
+    "ThreadId": "255110",
+    "Html": "<p>You're right - when using&nbsp;RegisterViewWithRegion , the contract name is simply the short name of the view(I thought the contract name was the full name of the view, hence I was suprised why it worked).</p>\n<p>So, now everything is ok.</p>\n<p>As for putting the additional logic into OnNavigatedFrom method, it's apparently unnecessary for now.</p>\n<p>Thanks again for your very valuable replies and answers!!!</p>\n<p>&nbsp;</p>",
+    "PostedDate": "2011-04-25T09:35:28.67-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "602674",
+    "ThreadId": "255110",
+    "Html": "<p>Glad I could help !</p>",
+    "PostedDate": "2011-04-25T20:02:18.157-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "920672",
+    "ThreadId": "255110",
+    "Html": "<p>Also get the \"Cannot Create Navigation Target\" NavigationResult .. after wasting a good part of my day, seems INavigationAware Constructor would not allow parameter.&nbsp;</p>\r\n<p>After removing the parameter in the constructor it works as expected.&nbsp;</p>",
+    "PostedDate": "2012-10-02T09:09:16.837-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

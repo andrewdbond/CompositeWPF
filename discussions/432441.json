@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "998353",
+    "ThreadId": "432441",
+    "Html": "Hi List,\r<br />\nin my ShellView and ShellViewModel i would like to define a InteractrionRequest toehter with the according Xaml.\r<br />\nReason: no code dublication for every popup in my Application.\r<br />\nThe neeed UserControls are inserted in the popup like thei\r<br />\n&lt; Contend = myUserControl\r<br />\nWhat do you think about this and how to comunicate from Module to ShellViewModel to raise the Interaction and get resuöls back.\r<br />\n<br />\nThanks\r<br />\nPeter<br />\n",
+    "PostedDate": "2013-02-07T23:32:05.743-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "998643",
+    "ThreadId": "432441",
+    "Html": "Hi,<br />\n<br />\nI believe you could benefit from the <strong>IInteractionRequest</strong> interface and the <strong>InteractionRequest&lt;T&gt;</strong> class provided by <strong>Prism</strong>. As this will let you preserve a clean separation between the view model and the view. This way the view model could encapsulate the presentation logic and let the view handle the visual aspects of the interaction. As you may find the <strong>Raise</strong> method of this class allows you to initiate the interaction and to specify a context object and a callback method that is called after the interaction completes where you could retrieve the different results.<br />\n<br />\nAlso, this approach benefits of Microsoft Expression Blend Behaviors that supports the concept of triggers and actions, that are used in the view to bind to this interface and subscribe to the event that it exposes.<br />\n<br />\nAs you may find in <strong>Silverlight</strong> by default, a <strong>NotificationChildWindow</strong> or <strong>ConfirmationChildWindow</strong> is displayed based on the context object passed. But you can override this behavior by specifying a pop-up window using the <strong>ChildWindow</strong> property of the <strong>PopupChildWindowAction</strong> class in order to display your custom window. <br />\n<br />\nFor more detailed information about this approach, I recommend you to check the following resources:<br />\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg405494%28v=pandp.40%29.aspx#sec12\" rel=\"nofollow\">Chapter 6: Advanced MVVM Scenarios, Using Interaction Request Objects</a><br />\n</li>\n<li>\n<a href=\"http://briannoyes.net/2010/11/15/PromptingTheUserFromAViewModelndashPrism4Gems.aspx\" rel=\"nofollow\">Prompting the User From a View Model–Prism 4 Gems</a><br />\n</li>\n</ul>\nI hope you find this helpful,<br />\n<br />\nAgustin Adami<br />\n<a href=\"http://blogs.southworks.net/aadami\" rel=\"nofollow\">http://blogs.southworks.net/aadami</a><br />\n",
+    "PostedDate": "2013-02-08T09:28:01.22-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "999427",
+    "ThreadId": "432441",
+    "Html": "Hi Augustin,\r<br />\n<br />\nand thanks a lot.\r<br />\nWhat i'm looking for is a 'SharedService' or stuff like this to make ShellView-ShellViewModel handle all the stuff of Confirmation/Notification for my Application.\r<br />\nLet's say in any of my ViewModles i want to call something like this:\r<br />\n<br />\nInteractionService (myView,myViewModel,callback);\r<br />\n<br />\nand have all the plumbing stuff and the Xaml in ShellView and SheelViewModel otherwise i have to polute all my Views with different Xamls to handle Confirmation-Notification's\r<br />\n<br />\nHope this make thinks clear\r<br />\nThanks\r<br />\nPeter<br />\n",
+    "PostedDate": "2013-02-10T23:24:41.72-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1000429",
+    "ThreadId": "432441",
+    "Html": "Hi,\r<br />\ni got it to work.\r<br />\nI make use of EventAggregator and fire an Event with (View,ViewModel,Action), the ShellViewModel catches this Events and show's the View's using InteractionTequest.\r<br />\n<br />\nThanks\r<br />\nPeter<br />\n",
+    "PostedDate": "2013-02-12T23:32:53.56-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

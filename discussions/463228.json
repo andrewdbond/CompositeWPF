@@ -1,0 +1,82 @@
+[
+  {
+    "Id": "1110898",
+    "ThreadId": "463228",
+    "Html": "How to instantiate an Application specific Service/Object (like mapping service) during the application startup using container.GetExportedValues&lt;&gt;( ) or another method in MefBoostrapper  and in which method should this code reside.\r<br />\nThanks in advance<br />\n",
+    "PostedDate": "2013-10-22T23:44:08.593-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111030",
+    "ThreadId": "463228",
+    "Html": "Yes. I would do that. Would rather use Container.GetExportedValue&lt;&gt;() if you are expecting just 1 value.<br />\n",
+    "PostedDate": "2013-10-23T06:08:26.787-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111190",
+    "ThreadId": "463228",
+    "Html": "Hi jivara,\r<br />\n<br />\nBefore you instantiate a specific service, you would need to register it to the container. In order to do this, you would declare an export attribute on the service to register the assembly on the bootstrapper. You may achieve this with the following implementation:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n[Export(<span style=\"color:Blue;\">typeof</span>(IMyService))]\n<span style=\"color:Blue;\">public</span> <span style=\"color:Blue;\">class</span> MyService : IMyService\n{\n...\n}\r\n</pre></div><div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">public</span> <span style=\"color:Blue;\">partial</span> <span style=\"color:Blue;\">class</span> MyBootstrapper : MefBootstrapper\n{\n    <span style=\"color:Blue;\">protected</span> <span style=\"color:Blue;\">override</span> <span style=\"color:Blue;\">void</span> ConfigureAggregateCatalog()\n    {\n           <span style=\"color:Blue;\">this</span>.AggregateCatalog.Catalogs.Add(<span style=\"color:Blue;\">new</span> AssemblyCatalog(<span style=\"color:Blue;\">typeof</span>(IMyService).Assembly));\n    }\n...\n}\r\n</pre></div>Then, you could instantiate the service inside a module <em>initialize()</em> method for example, by calling it from the <strong><em>container</em></strong> or the <strong><em>ServiceLocator</em></strong>, which could be injected in the constructor.\r<br />\n<br />\n<br />\nI hope this helps,\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2013-10-23T11:10:20.76-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111238",
+    "ThreadId": "463228",
+    "Html": "Hi Gabriel,\r<br />\nThanks for your helpful answer, but i'm seeking something else. The point is that I was searching for using AutoMapper as a shared service, then I found one good solution which need to put the following code in the application startup (MefBootstrapper in my case) in order to fetch all instances of that interface in the container and call the CreateMappings method on them:<br />\n<pre><code> var mappings = this.Container.GetExportedValues&lt;IMappingCreator&gt;();\n            foreach (IMappingCreator mc in mappings)\n            {\n                mc.CreateMappings();\n            }</code></pre>\n\nif I put this code in each module IModule implementation I have to repeat same code for each module plus there are some views displayed at startup using view discovery approach which need mapping of data and in this case mapping is not working. So I need to add the above code in MefBootstrapper  but I don't know where\r<br />\nThanks<br />\n",
+    "PostedDate": "2013-10-23T13:02:06.793-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111391",
+    "ThreadId": "463228",
+    "Html": "You could put your implementations of IMappingCreator in a single assembly and put them in a folder. And then you can use the DirectoryCatalog to load the dlls from the directory into the AggregateCatalog. So your mapping implementations will be something like<br />\n<pre><code>[Export(typeof(IMappingCreator))]\npublic class Mapper1 : IMappingCreator {}\n\n[Export(typeof(IMappingCreator))]\npublic class Mapper2 : IMappingCreator {}</code></pre>\n\nSay you put them in a directory called Mappers under your bin folder, then you can load these into the AggregateCatalog like below<br />\n<pre><code>AggregateCatalog.Catalogs.Add(new DirectoryCatalog(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), &quot;Mappers&quot;)));</code></pre>\n\nAnd then you can do what you have mentioned above in the bootstrapper.<br />\n",
+    "PostedDate": "2013-10-23T22:57:49.95-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111560",
+    "ThreadId": "463228",
+    "Html": "Hi gan_s,\r<br />\nI have a class in each Module that implements IMappingCreator interface so I don't have to add a new project for mapping. so the question still persisting where to put the aforementioned code in the MefBootStrapper  and how to initialize it before the module are intitialized because modules depend on it\r<br />\nThanks.<br />\n",
+    "PostedDate": "2013-10-24T05:40:43.03-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111586",
+    "ThreadId": "463228",
+    "Html": "Hi jivara,\r<br />\n<br />\nDoes your shell/main project have a reference to your modules?<br />\n",
+    "PostedDate": "2013-10-24T06:09:35.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111618",
+    "ThreadId": "463228",
+    "Html": "Hi gan_s\r<br />\nYes the Shell has references to the module and they are added to the catalog in ConfigureAggregateCatalog() method. Something else I want to make clear that previously I put the creation of mapping classes in the initialize() method of each module but I had to duplicate  code between modules and the views that were discovered and displayed during startup was missing the mapping. <br />\n",
+    "PostedDate": "2013-10-24T06:49:06.497-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111664",
+    "ThreadId": "463228",
+    "Html": "Hi Jivara,\r<br />\n<br />\nBased on the <strong>Mef Bootstrapper's</strong> <em>run()</em> implementation, I believe you could initialize the mapping services inside the <strong><em>CreateShell()</em></strong> method, right before creating the <strong>Shell View</strong>. Taking into account that <strong>Module</strong> Initialization comes after <strong>Shell</strong> creation in the <strong>Bootstrapper</strong>, you would have created every mapping for any <strong>View</strong> without needing to create them on each module's <em>initialize()</em> method again.\r<br />\n<br />\nThe aforemention approach would look like the following implementation. By the time the <strong><em>CreateShell()</em></strong> method is called, the <strong><em>Container</em></strong> would have already got created:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n<span style=\"color:Blue;\">protected</span> <span style=\"color:Blue;\">override</span> DependencyObject CreateShell()\n{\n      <span style=\"color:Blue;\">var</span> mappings = <span style=\"color:Blue;\">this</span>.Container.GetExportedValues&lt;IMappingCreator&gt;();\n      <span style=\"color:Blue;\">foreach</span> (IMappingCreator mc <span style=\"color:Blue;\">in</span> mappings)\n      {\n           mc.CreateMappings();\n      }\n      <span style=\"color:Blue;\">return</span> <span style=\"color:Blue;\">this</span>.Container.GetExportedValue&lt;Shell&gt;();\n}\r\n</pre></div>I hope this helped you,\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"http://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">http://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2013-10-24T07:54:08.96-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1111693",
+    "ThreadId": "463228",
+    "Html": "Hi Gabriel ,\r<br />\nYou know what? it's exactly the same solution I came up with, but I thought there is a standard approach for such cases for example a built in method called by bootstrapper that can be overridden to contain application specific code required in such cases.\r<br />\nThanks for your help<br />\n",
+    "PostedDate": "2013-10-24T08:46:46.683-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1005675",
+    "ThreadId": "434240",
+    "Html": "Hi friends out there.<br />\n In my WPF application i am facing very strange problem which i was not facing in silverlight.I am adding view and add view in region.<br />\n<br />\nbelow is my code<br />\n<br />\n IViewsCollection viewcoll = regionmgr.Regions[&quot;contentRegion&quot;].Views;<br />\n<pre><code>        foreach (var item in viewcoll)\n        {\n            if (item.GetType().Name!=&quot;PatientRegistration&quot;)\n            {\n                regionmgr.Regions[&quot;contentRegion&quot;].Remove(item);\n            }\n\n        }\n        regionmgr.RegisterViewWithRegion(&quot;contentRegion&quot;, typeof(PatientRegistraton));\n</code></pre>\n\nCode pass with no exception . but it neither remove or show the register view in WPF application.<br />\n<br />\nPlease help me and let me know  where i am wrong.<br />\nThanks in advance.<br />\n",
+    "PostedDate": "2013-02-23T08:50:34.44-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1006448",
+    "ThreadId": "434240",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding, <strong>foreach statements</strong> should not modify the collection which is being iterated, since that could end up in an unexpected behaviour. For that reason, I think that a possible solution could be copying the views from viewcoll to another collection and then use that copied collection to iterate instead of viewcoll.\r<br />\n<br />\nFinally, you should use the <strong>Activate</strong> method from the <strong>regionmgr</strong> instead of <strong>RegisterViewWithRegion</strong> with your <strong>PatientRegistration</strong> view (if the view is present in the region), or the <strong>Add</strong> method if you need to inject a new <strong>PatientRegistration</strong> view:<br />\n<pre><code>if (viewcoll.Count == 0)\n{\n      regionmgr.Regions[&quot;contentRegion&quot;].Add(ServiceLocator.Current.GetInstance&lt;PatientRegistration&gt;());\n}\n\nregionmgr.Regions[&quot;contentRegion&quot;].Activate(viewcoll.FirstOrDefault());\n</code></pre>\n\nI hope you find this useful,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-02-25T09:55:53.847-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

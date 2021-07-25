@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "532264",
+    "ThreadId": "237431",
+    "Html": "\r\n<div style=\"color:black; background-color:white\">\r\n<pre>Hi Guys,</pre>\r\n</div>\r\n<p>Whats the problem with the method GetView in my App.</p>\r\n<p>thats my View:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>    [Export]\r\n    [PartCreationPolicy(CreationPolicy.Shared)]\r\n    [RegionMemberLifetime(KeepAlive = <span style=\"color:blue\">true</span>)]\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">partial</span> <span style=\"color:blue\">class</span> PosVendaToolbar : UserControl\r\n    { ... }\r\n</pre>\r\n</div>\r\n<p>Thats my module Initialization:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>  [ModuleExport(<span style=\"color:blue\">typeof</span>(ModulePosVenda),\r\n        InitializationMode = InitializationMode.OnDemand,\r\n        DependsOnModuleNames = <span style=\"color:blue\">new</span>[] { <span style=\"color:#a31515\">&quot;ModuleShared&quot;</span> })]\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> ModulePosVenda : IModule\r\n    {\r\n\r\n        [Import]\r\n        <span style=\"color:blue\">public</span> IRegionManager RegionManager;\r\n\r\n        <span style=\"color:blue\">public</span> ModulePosVenda()\r\n        {  }\r\n\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> Initialize()\r\n        {\r\n            <span style=\"color:blue\">var</span> posVendaToolbarView = ServiceLocator.Current.GetInstance&lt;PosVendaToolbar&gt;();\r\n            RegionManager.Regions[RegionNames.MainButtonsRegion].Add(posVendaToolbarView, <span style=\"color:#a31515\">&quot;PosVendaToolbarView &quot;</span>, <span style=\"color:blue\">false</span>);\r\n            RegionManager.Regions[RegionNames.MainButtonsRegion].Activate(posVendaToolbarView);\r\n        }\r\n    }\r\n</pre>\r\n<pre>I have another module with the same configuration.</pre>\r\n<pre>At my shell, i have 2 buttons, to change the modules,</pre>\r\n<pre><div style=\"color:black; background-color:white\"><pre><span style=\"color:green\">// Button 1 Click to call Module 1:</span>\r\n                <span style=\"color:blue\">var</span> posVendaToolbarView = _regionManager.Regions[RegionNames.MainButtonsRegion].GetView(<span style=\"color:#a31515\">&quot;PosVendaToolbarView&quot;</span>);\r\n                _regionManager.Regions[RegionNames.MainButtonsRegion].Activate(posVendaToolbarView);\r\n            \r\n\r\n<span style=\"color:green\">// Button 2 Click to call Module 2:</span>\r\n                <span style=\"color:blue\">var</span> vendasToolbarView = _regionManager.Regions[RegionNames.MainButtonsRegion].GetView(<span style=\"color:#a31515\">&quot;VendasToolbarView&quot;</span>);\r\n                _regionManager.Regions[RegionNames.MainButtonsRegion].Activate(vendasToolbarView);\r\n            \r\n\r\n</pre>\r\n<pre>if i hit button 1, its ok.. its load the view in the region, if i hit button 2, its ok.. its load the view in the region, but if i hit back the button 1, the GetView method return null, so i canto load the view again.</pre>\r\n<pre>the RegionManager.Region[xxx].Views have 2 view (thats corret).</pre>\r\n<pre>What am i doing wrong?</pre>\r\n</div>\r\n</pre>\r\n</div>\r\n",
+    "PostedDate": "2010-12-07T06:18:03.2-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "532364",
+    "ThreadId": "237431",
+    "Html": "\r\n<p>When do you load VendasToolbarView into the regionmanager?&nbsp; I am assuming that these are also 2 completely different modules?</p>\r\n",
+    "PostedDate": "2010-12-07T09:02:27.2-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "532373",
+    "ThreadId": "237431",
+    "Html": "\r\n<p>i just didnt post the other module that loads the vendatoolbar (its a big post), but its the same as PosVendaModule:</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>[ModuleExport(<span style=\"color:blue\">typeof</span>(ModuleVendas),\r\n        InitializationMode = InitializationMode.OnDemand,\r\n        DependsOnModuleNames = <span style=\"color:blue\">new</span>[] { <span style=\"color:#a31515\">&quot;ModuleShared&quot;</span> })]\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> ModuleVendas : IModule\r\n    {\r\n\r\n        [Import]\r\n        <span style=\"color:blue\">public</span> IRegionManager RegionManager;\r\n\r\n        <span style=\"color:blue\">public</span> ModuleVendas()\r\n        {  }\r\n\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> Initialize()\r\n        {\r\n            <span style=\"color:blue\">var</span> vendasToolbarView = ServiceLocator.Current.GetInstance&lt;VendasToolbar&gt;();\r\n            RegionManager.Regions[RegionNames.MainButtonsRegion].Add(vendasToolbarView, <span style=\"color:#a31515\">&quot;VendasToolbarView &quot;</span>, <span style=\"color:blue\">false</span>);\r\n            RegionManager.Regions[RegionNames.MainButtonsRegion].Activate(vendasToolbarView);\r\n        }\r\n    }\r\n\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>The main problem here is, my region.Views, have 2 views, but i cant find them with the Method GetView. I Am doing something wrong?</p>\r\n",
+    "PostedDate": "2010-12-07T09:15:38.62-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "532672",
+    "ThreadId": "237431",
+    "Html": "\r\n<p>I don't see any error in code other than it could be the second Toolbar View is getting GC'd, not totally sure.</p>\r\n",
+    "PostedDate": "2010-12-07T21:52:47.383-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "532802",
+    "ThreadId": "237431",
+    "Html": "\r\n<p>How can i solve that problem?</p>\r\n<p>The ReiongManager.Region[xxx].Views, have exactaly 2 Views, But i cant get then passing the viewName (GetView(&quot;ViewName&quot;)), the the view is in the region, if i use the method ,FirstOrDefault() or LastOrDefault() i can get the 2 view in the region.</p>\r\n<p>this is the best way to Get the View with a Name? is there another way to do that?</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-08T04:02:56.973-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533913",
+    "ThreadId": "237431",
+    "Html": "\r\n<p>Hi Luciano,</p>\r\n<p>The way you're obtaining your views is valid, but that's not the expected way to get a view if you wish to be aware of its name.</p>\r\n<p>From the code that you've posted, it doesn't look like you've done something wrong. If you continue experiencing issues with the\r\n<strong>GetView</strong> method, it could be useful if you could provide a Repro sample, so that we can help you further with this scenario.</p>\r\n<p>Thanks.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-10T07:13:10.223-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533969",
+    "ThreadId": "237431",
+    "Html": "\r\n<p>the problem is that your sample its little big, and have acess to some Data Serice Via wcf. i dont think i can provide a Repro Sample.</p>\r\n<p>But i Changed the GetView with RegionManager.RequestNavigate(...), and its working now.</p>\r\n<p>Thx,</p>\r\n<p>&nbsp;</p>\r\n",
+    "PostedDate": "2010-12-10T08:44:03.013-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "533976",
+    "ThreadId": "237431",
+    "Html": "\r\n<p>Luciano,</p>\r\n<p>Thank you for sharing your findings with the rest of the community, as other users might be interested in similar scenarios.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-12-10T08:50:59.94-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "138604",
+    "ThreadId": "41768",
+    "Html": "Hello All,<br>\r\n<br>\r\nIs there any Microsoft.Practices.ObjectBuilder2.dll for Silverlight? I found only Microsoft.Practices.Unity.dll in drop 7. Initially, it was Microsoft.Practices.Unity.Silverlight.dll but the name has been changed for good. <br>\r\n<br>\r\nI'm planning to use this code below in Silverlight Module. <br>\r\n<br>\r\ncontainer.RegisterType&lt;ICustomerDetails, CustomerDetails&gt;(new ContainerControlledLifetimeManager());<br>\r\n<br>\r\nI'm getting the following error at this line above. <br>\r\n<br>\r\nError&nbsp;&nbsp; &nbsp;1&nbsp;&nbsp; &nbsp;The type 'Microsoft.Practices.ObjectBuilder2.IRequiresRecovery' is defined in an assembly that is not referenced. You must add a reference to assembly 'Microsoft.Practices.ObjectBuilder2, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35'.&nbsp;&nbsp; &nbsp;C:\\Michael Sync\\CompositeWPF\\V2 Drop 7\\Prismv2D7Sample\\CALApplication.Shell\\CALApplication.Modules.CustomerModule\\CustomerModule.cs&nbsp;&nbsp; &nbsp;32&nbsp;&nbsp; &nbsp;13&nbsp;&nbsp; &nbsp;CALApplication.Modules.CustomerModule.Desktop<br>\r\n<br>\r\nAny idea?? <br>\r\n<br>\r\n<br>\r\n\r\n",
+    "PostedDate": "2008-12-08T07:21:26.283-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138633",
+    "ThreadId": "41768",
+    "Html": "The Microsoft.Practices.Unity.Silverlight.dll resides in the LIB\\Silverlight\\Unity folder - once you add a reference to this you'll be good to go :)<br>\r\n",
+    "PostedDate": "2008-12-08T08:52:00.51-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138792",
+    "ThreadId": "41768",
+    "Html": "&gt;&gt;Microsoft.Practices.Unity.Silverlight.dll<br>\r\n<br>\r\nThere is no dll with that name in Drop 7. But I have double-checked that folder and there is only one dll called <strong>Microsoft.Practices.Unity.dll</strong> under <strong>Source.zip\\LIB\\Silverlight\\Unity</strong>.<br>\r\n<br>\r\nAnd&nbsp; I have added that dll in my project tooo. I'm still getting the error as I'm keeping &quot;ContainerControlledLifetimeManager&quot; in my code. <br>\r\n<br>\r\nAm I missing something? \r\n",
+    "PostedDate": "2008-12-08T16:25:10.913-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138802",
+    "ThreadId": "41768",
+    "Html": "Nope, I don't see where you are doing anything wrong... I added Microsoft.Practices.Unity (you are correct - there is no .Microsoft.Practices.Unity.Silverlight) to my project and configured a singleton (ContainerControlledLifetimeManager) and received the same results you are - I'm looking into it....\r\n",
+    "PostedDate": "2008-12-08T16:54:33.913-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138807",
+    "ThreadId": "41768",
+    "Html": "Looks like a problem with PrismV7 Michael, it's missing the Microsoft.Practices.Unity.Silverlight.dll.  If you'll take the one from PrismV6  (\\LIB\\Silverlight\\Unity) and set a reference to it you'll be okay.   Looks like the Desktop version is sitting in the LIB\\Silverlight\\Unity folder - it has a dependency on ObjectBuilder2 which resides in the \\LIB\\Desktop\\Unity folder.\r\n",
+    "PostedDate": "2008-12-08T17:08:09.94-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "138959",
+    "ThreadId": "41768",
+    "Html": "Great! Thanks a lot, Bill<br>\r\n",
+    "PostedDate": "2008-12-09T07:45:56.973-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

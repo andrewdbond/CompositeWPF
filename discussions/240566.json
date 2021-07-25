@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "544293",
+    "ThreadId": "240566",
+    "Html": "\r\n<p><span lang=\"EN-GB\" style=\"font-size:10pt; color:black\">I want to create a shell that can host views of different applications.</span></p>\r\n<p><span lang=\"EN-GB\" style=\"font-size:10pt; color:black\">We also want the ability to add two tabs for entity Order with two different orders (same view)</span></p>\r\n<p><span lang=\"EN-GB\" style=\"font-size:10pt; color:black\">I can add a Tab &#43; ContentControl to the Tabs collection but how to dynamically add a region (name like &quot;Order 1&quot; and &quot;Order 2&quot;).</span></p>\r\n<p><span lang=\"EN-GB\" style=\"font-size:10pt; color:black\">After this I can register a view with this new region.</span></p>\r\n",
+    "PostedDate": "2011-01-05T06:12:00.08-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "544328",
+    "ThreadId": "240566",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>As the RegionManager.RegionName attached property is a DependencyProperty, you could bind its value to a property in your ViewModel, or to any other property that could help you achieve your scenario.</p>\r\n<p>After the regions have been created, you could add views to them normally. Take into account that there can't be two regions with the same name in a single region manager, but you can have regions with the same name in scoped region managers. You can read\r\n more about this in <a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28PandP.40%29.aspx\">\r\nthis chapter</a> from the Prism MSDN documentation (specifically in the &quot;Creating Multiple Instances of a Region&quot; section).</p>\r\n<p>On a different note, as explained in <a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=206952\">\r\nthis thread</a>, it's not possible to load modules (and the views and services that belong to them) into separate AppDomains out of the box. You can, however, host views that come from different assemblies in your shell.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2011-01-05T06:58:04.617-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "544697",
+    "ThreadId": "240566",
+    "Html": "\r\n<p>Guido,</p>\r\n<p>Thanks for your reply.</p>\r\n<p>I have an other question about adding the DependencyProperty to a ContentControl in code (C#)</p>\r\n<p>What do I have to do after creating a new ContentControl to add a region to that ContentControl?</p>\r\n<p>I hope you can help me.</p>\r\n<p>Regards Rob</p>\r\n",
+    "PostedDate": "2011-01-06T01:21:30.837-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "544796",
+    "ThreadId": "240566",
+    "Html": "\r\n<p>Hi Bob,</p>\r\n<p>Once a Control with the <strong>RegionManager.RegionName </strong>set is loaded into the visual tree, its corresponding region is created and registered automatically. There are two behaviors responsible for this:</p>\r\n<p><strong>DelayedRegionCreationBehavior</strong>: <em>&quot;Behavior that creates a new IRegion, when the control that will host the IRegion is added to the VisualTree. This behavior will use the RegionAdapterMappings class to find the right type of adapter to\r\n create the region. After the region is created, this behavior will detach.&quot;</em></p>\r\n<p><strong>RegionManagerRegistrationBehavior</strong>: <em>&quot;Subscribes to a static event from the RegionManager in order to register the target IRegion</em><em> in a IRegionManager when one is available on the host control by walking up the tree and finding</em><em>\r\n a control whose RegionManager.RegionManagerProperty property is not null.&quot;</em></p>\r\n<p>After doing so, you can start adding views to the regions following any of the approaches mentioned in the\r\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921098%28PandP.40%29.aspx\">UI Composition</a> or\r\n<a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28PandP.40%29.aspx\">Navigation\r\n</a>chapters.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2011-01-06T06:33:41.38-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

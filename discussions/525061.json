@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1196160",
+    "ThreadId": "525061",
+    "Html": "Hi there,\r<br />\n<br />\nI have been looking at wpf with prism as I need to expand my knowledge as I'm only doing vb.net window forms.\r<br />\n<br />\nI have the stock trader demo in vb and I'm getting a error in the\r<br />\nOrdersController. StartOrder(ByVal tickerSymbol As String, ByVal transactionType As TransactionType)\r<br />\n<br />\nThe error is &quot;The region does not contain the specified view.&quot;\r<br />\n<br />\nAddHandler orderCompositeViewModel.CloseViewRequested, Sub()<br />\n<pre><code>                                                                   OrderModels.Remove(orderCompositeViewModel)\n                                                                   commandProxy.SubmitAllOrdersCommand.UnregisterCommand(orderCompositeViewModel.SubmitCommand)\n                                                                   commandProxy.CancelAllOrdersCommand.UnregisterCommand(orderCompositeViewModel.CancelCommand)\n                                                                   commandProxy.SubmitOrderCommand.UnregisterCommand(orderCompositeViewModel.SubmitCommand)\n                                                                   commandProxy.CancelOrderCommand.UnregisterCommand(orderCompositeViewModel.CancelCommand)\n                                                                   ordersRegion.Remove(orderCompositeViewModel) 'errors out on this line\n                                                                   If ordersRegion.Views.Count() = 0 Then\n                                                                       Me.RemoveOrdersView()\n                                                                   End If\n\n                                                               End Sub</code></pre>\n\nordersRegion.Add(orderCompositeViewModel)\r<br />\nOrderModels.Add(orderCompositeViewModel)\r<br />\n<br />\nalso I need to remove the handler.\r<br />\n<br />\nCan someone help with this please.\r<br />\n<br />\nPQSIK<br />\n",
+    "PostedDate": "2014-01-24T13:15:06.523-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1201351",
+    "ThreadId": "525061",
+    "Html": "Hi,\r<br />\n<br />\nI have just download the VB version of the Stock Trader RI and could run the <strong>StockTraderRI_Desktop</strong> solution without any issues.\r<br />\nHave you made any modifications to the solution that could have generated this exception?\r<br />\n<br />\nBasically, the exception you are recieving appears when you are trying to remove an element from a region but that element is not present in the region's collection.\r<br />\nThis problem can appear when:<br />\n<ul>\n<li>The element was removed from the region before this handler is executed.</li>\n<li>The element was never injected in the region.</li>\n<li>\nThe element (in this case the OrderCompositeViewModel) implements the IRegionMemberLifetime interface. In this case, the view should be removed using the Deactivate method instead of the Remove method.<br />\n</li>\n</ul>\nI hope this helps,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2014-01-31T07:38:18.58-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "503116",
+    "ThreadId": "229847",
+    "Html": "<p>Hi,</p>\r\n<p>I've downloaded Prism4 drop8. Take AnimatedTabControl with its dependencies from StockTrader RI and put into my app. It works fine. And it's really cool!</p>\r\n<p>But then I've noticed very high cpu usage in idle time in my app. I saw 25% on a machine with X800XL Radeon, 50% on a machine with some poor intel GPU. I've checked RI example and saw no such behavior in it. If I replace AnimatedTabControl with TabControl then CPU usage goes.</p>\r\n<p>I understand that the question is hardly related to Prism and that AnimatedTabControl is just an example for RI app. That's clear, but may somebody have an idea what can I to check.</p>\r\n<p>In Process Explorer I see a thread which consume all CPU is &quot;wpfgfx_v0400.dll!MILQueryInterface&quot;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-06T11:10:37.883-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "503866",
+    "ThreadId": "229847",
+    "Html": "<p>Hi,</p>\r\n<p>Thanks for reporting that. I think that you  can find interesting the following links:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/aa969767.aspx\">WPF  Performance Suite</a></li>\r\n<li>\r\n<h5><a href=\"http://blogs.msdn.com/b/goto100/archive/2008/10/31/wpf-performance-issues-then-maybe-this-tool-can-help.aspx\">WPF  Performance issues? Then maybe this tool can help&hellip;</a></h5>\r\n</li>\r\n</ul>\r\n<h5>On the other hand, Storyboard, AnimationTimeline&nbsp;and AnimationClock allows  you to indicate the HandoffBehavior and in some cases it might cause a performance  issue. For more information on how to avoid performance issues, you could take a  look at the following documentation section:</h5>\r\n<ul>\r\n<li>\r\n<h5><a href=\"http://msdn.microsoft.com/en-us/library/system.windows.media.animation.handoffbehavior.aspx\">HandoffBehavior</a>,  see the <em>Remarks</em> section</h5>\r\n</li>\r\n</ul>\r\n<p>If you have more questions about performance issues in WPF, you could also use the <a href=\"http://social.msdn.microsoft.com/forums/en/wpf/threads/\">WPF forum</a>.</p>\r\n<ul>\r\n</ul>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero&nbsp;<br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-07T12:21:28.217-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "503936",
+    "ThreadId": "229847",
+    "Html": "<p>Hi, thanks for your help!</p>\r\n<p>Yeah, I went WPFPerf path. I found out that all CPU was eaten by wpf render thread because of high rate of dirty rectangels per second.</p>\r\n<p>Digging depper I found an animation with Visibility &quot;Hidden&quot;. When I changed it to &quot;Colapsed&quot; CPU consuming goes away.</p>",
+    "PostedDate": "2010-10-07T14:44:23.81-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "504221",
+    "ThreadId": "229847",
+    "Html": "<p>Hi,</p>\r\n<p>Nice to see that you found it and thanks for sharing this with the rest of the community, since it might help other users with a similar scenario.</p>\r\n<p>Let us know if you any other question.</p>\r\n<p>Fernando Antivero&nbsp;<br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-08T05:48:28.56-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "217414",
+    "ThreadId": "63947",
+    "Html": "<p>Hi All,</p>\r\n<p>I have a Chart View with a View Model attached to it. The view model has nothing but a collection of Date Time &amp; Value pair. Now what i want to do is use this same view to show two charts one showing Total Visitors and other showing Total Page Hits.</p>\r\n<p>Now my question : Is it possible in PRISM to have the same view registered at two places and having independent view models at run time. How do i achieve this. I need to inform the Vew model which data source to connect. Say when the view is for Total Visitors it should initialize the View Model from Visitors source table and when the view is for Total Page Hits the view model should be initialized with the Page Source table.</p>\r\n<p>I am not able to figure out how to add the same view to different region and have the same view model populated with different data?</p>\r\n<p>Thanks &amp; Regards,</p>\r\n<p>Yusuf Nazami</p>",
+    "PostedDate": "2009-07-29T19:22:16.58-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "217651",
+    "ThreadId": "63947",
+    "Html": "<p>Hi Yusuf,</p>\r\n<p>&nbsp;Yes, this is possible in Prism, but you have to create two different instances of the same view. As the views will be created and added by the same module to both regions an approach similar to this can be taken (this is simplified just to show this situation):</p>\r\n<p><span style=\"font-size:10pt\" lang=EN-US>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre><span style=\"color:Green\">//Initialize method of the module </span>\r\n\r\n<span style=\"color:Blue\">public</span> <span style=\"color:Blue\">void</span> Initialize()\r\n\r\n{\r\n\r\nChartViewModel totalVisitorsModel = container.Resolve&lt;ChartViewModel&gt;();\r\n\r\ntotalVisitorsModel.SetDataSource(&hellip;);\r\n\r\n<span style=\"color:Blue\">this</span>.regionManager.Regions[<span style=\"color:#A31515\">&quot;VisitorsRegion&quot;</span>].Add(totalVisitorsModel.View);\r\n\r\n \r\n\r\nChartViewModel totalPageHitsModel = container.Resolve&lt;ChartViewModel&gt;();\r\n\r\ntotalPageHitsModel.SetDataSource(&hellip;);\r\n\r\n<span style=\"color:Blue\">this</span>.regionManager.Regions[<span style=\"color:#A31515\">&quot;PageHitsRegion&quot;</span>].Add(totalPageHitsModel.View);\r\n\r\n}\r\n\r\n</pre>\r\n</div>\r\n</span></p>\r\n<p>You have two different view models (two different views), each with their own DataSource which is the goal.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p>Damian Schenkelman<br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2009-07-30T09:24:43.497-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

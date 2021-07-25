@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "638375",
+    "ThreadId": "264167",
+    "Html": "\r\n<p>My prism application needs to export a method which utilizes a member variable of its encompassing class.&nbsp; This led me to the following question, which seems to be fundamental to MEF.</p>\r\n<p>Does method/property exports actual create an instance of the class when the corresponding import is satisfied. If not what happens if the method utilizes a private member variable of the class. Basically it is looking like method/property exports must adhere\r\n to the rules of a static method/property.&nbsp; All examples I have ever seen of exported method seem to be completely self contained, so it would seem they should just be declared static.</p>\r\n<p>Thanks,</p>\r\n",
+    "PostedDate": "2011-07-06T13:56:56.86-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "639490",
+    "ThreadId": "264167",
+    "Html": "<p>Hi,</p>\r\n<p>We've performed some tests that verified that, when you export a method, the class in which that method is contained must be initialized in order for the method to be exported.</p>\r\n<p>The class can be initialized once, or each time the export is retrieved, depending on the value of the <strong>PartCreationPolicy </strong>attribute set on the class containing that method (regardless of whether that class is itself exported or not).</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-08T08:05:52.143-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "639628",
+    "ThreadId": "264167",
+    "Html": "<p>Thanks a bunch for the help, I believe this is not a commonly known fact (I searched everywhere).&nbsp; To bring closure to this topic I would like to ask a few details:</p>\n<p>1)&nbsp; Your response indicates the class is instantiated automatically (Assume no class [Export]) when an import occurs on one of its methods.&nbsp; When this occurs no handle will exist to the class or non-exported methods/properties.&nbsp; Basically I was trying to  confirm an entire class is instantiated yet only the export method can ever be accessed?</p>\n<p>2)&nbsp; So I might help myself/others what debugging technique did you use to figure out when/if class containing the exported method was being instantiated/referenced by MEF?</p>\n<p>Thanks Again,</p>",
+    "PostedDate": "2011-07-08T12:05:10.17-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "641264",
+    "ThreadId": "264167",
+    "Html": "<p>Hi,</p>\r\n<p>From what we've found when creating the sample to verify this, the class cannot be accessed, since it has not been exported. However, you could make your method return the property you wish to access, or the instance of the class it belongs (by making it return 'this'). Note that this is probably not the recommended practice, as it would be better to export the property or the whole class in such cases.</p>\r\n<p>As for the way we've used to confirm this, we've created a class, and exported only a method of it. That method simply printed a message to the logger, which indicated that it was called. We've also added a default constructor to that class, and made the constructor print a message to the logger, indicating that the class had been instantiated. Then, we confirmed this by checking the logs, where the message indicating that the class had been constructed appeared prior to the message indicating that the method had been called.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-07-12T11:59:01.15-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

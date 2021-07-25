@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "567913",
+    "ThreadId": "246488",
+    "Html": "\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>Hi,<br><br>in my project i want to display some views (using PRISM with MEF).<br>They are registered via ViewExport with contract name and region to display.<br><br>    [ViewExport(<span style=\"color:#a31515\">&quot;GridView&quot;</span>, RegionName = <span style=\"color:#a31515\">&quot;Content&quot;</span>)]\r\n    [PartCreationPolicy(CreationPolicy.NonShared)]\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">partial</span> <span style=\"color:blue\">class</span> GridView : UserControl\r\n    {\r\n        [ImportingConstructor]\r\n        <span style=\"color:blue\">public</span> GridView()\r\n        {<span style=\"color:#a31515\">&nbsp;</span>\r\n            InitializeComponent();\r\n        }\r\n\r\n        [Import]\r\n        GridViewModel ViewModel\r\n        {\r\n            <span style=\"color:blue\">get</span>\r\n            {\r\n                <span style=\"color:blue\">return</span> <span style=\"color:blue\">this</span>.DataContext <span style=\"color:blue\">as</span> GridViewModel;\r\n            }\r\n\r\n            <span style=\"color:blue\">set</span>\r\n            {\r\n                <span style=\"color:blue\">this</span>.DataContext = value;\r\n            }\r\n        }\r\n    }\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>As i want to deciede when to show a view i don`t use AutoPopulateExportedViewsBehavior.</p>\r\n<p>Now on loading a Module a single view should be activated.</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>    [Module(ModuleName=<span style=\"color:#a31515\">&quot;Module A&quot;</span>)]\r\n    [ModuleExport(<span style=\"color:blue\">typeof</span>(ModuleA), InitializationMode=InitializationMode.WhenAvailable)]\r\n    <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> ModuleA : IModule\r\n    {\r\n        [Import]\r\n        ILoggerFacade logger;\r\n\r\n        [Import]\r\n        IRegionManager regionManager;\r\n\r\n        <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> Initialize()\r\n        {\r\n            <span style=\"color:blue\">this</span>.logger.Log(<span style=\"color:#a31515\">&quot;Module A initialized.&quot;</span>, Category.Info, Priority.Low);\r\n\r\n            IRegion r = <span style=\"color:blue\">this</span>.regionManager.Regions[<span style=\"color:#a31515\">&quot;Content&quot;</span>];\r\n            <span style=\"color:blue\">object</span> view = r.GetView(<span style=\"color:#a31515\">&quot;GridView&quot;</span>);\r\n\r\n            r.Activate(view);\r\n        }\r\n    }\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>The problem is, that GetView doesn`t return a view (always null).</p>\r\n<p>It looks like all the registered views are present but without contract name. Hope you can help me to figure out how to get this working.</p>\r\n<p>Thanks in advance</p>\r\n<p>&nbsp;</p>\r\n<p>-ralf</p>\r\n",
+    "PostedDate": "2011-02-17T07:25:13.303-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "567992",
+    "ThreadId": "246488",
+    "Html": "<p id=\"593a7f20-1ce8-012e-22cd-12313d051248\">Hi Ralf,</p>\r\n<p id=\"593a8700-1ce8-012e-22ce-12313d051248\">Take into account that if you decide to decorate your views with the <strong>ViewExport</strong> attribute, you need to use the <strong>AutoPopulateExportedViewsBehavior</strong> which is responsible for inject those views into the specified region at the time they are created.</p>\r\n<p id=\"593a8700-1ce8-012e-22ce-12313d051248\">As the <strong>ViewExportAttribute </strong>attribute inherits from <strong>ExportAttribute</strong>, a view decorated with it will be exported in MEF, regardless of whether the <strong>AutoPopulateExportedViewsBehavior </strong>is attached to your regions. However, if you don't attach that behavior to your regions, the views decorated with the attribute won't be added to the region specified at the time it is created.</p>\r\n<p id=\"593a9060-1ce8-012e-22cf-12313d051248\">On the other hand, if you need to have explicit programmatic control of when your views are added to your reginos, it could be easier to use view injection.</p>\r\n<p id=\"593a9ad0-1ce8-012e-22d0-12313d051248\">Please let me know if this information helps you.</p>\r\n<p id=\"593aa580-1ce8-012e-22d1-12313d051248\">Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-02-17T09:40:10.41-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "568353",
+    "ThreadId": "246488",
+    "Html": "<p>Hi Miguel,</p>\r\n<p>thank you very much! I will give ExportAttribute a try!</p>\r\n<p>Seems like this will work!</p>\r\n<p>Ralf</p>",
+    "PostedDate": "2011-02-17T22:55:09.03-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,66 @@
+[
+  {
+    "Id": "280041",
+    "ThreadId": "81572",
+    "Html": "<p>When i am using &quot;Reduce XAP Size&quot; on some Modules (both referencing third party assemblies with extmap.xml) the referenced assemblies were outsourced to .zip. But when prism now downloads these modules via XAPModuleTypeLoader these external parts were ignored and my module raises an exception (type xyz not found).</p>\r\n<p>How have a moduletypeloader to be written, that loads the external parts but only when needed?? Is there a simple way or should i wrote a ModuleTypeLoader that caches infos about downloaded external parts?</p>\r\n<p>Please help.</p>",
+    "PostedDate": "2010-01-21T07:01:09.39-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "281815",
+    "ThreadId": "81572",
+    "Html": "<p id=bb381c50-e9c5-012c-bdfb-1231390c8061>Hi,</p>\r\n<p id=bb382630-e9c5-012c-bdfc-1231390c8061>As you said, when you <a href=\"http://msdn.microsoft.com/en-us/library/dd833069(VS.95).aspx\">use Application Library Caching</a>, the cached assemblies are removed from the .xap file and placed in a separate .zip file (as the link provided before explains). As the <strong>XapModuleTypeLoader</strong> only gets the assemblies present in the .xap files (check the GetParts method), only the assemblies you place in them will be loaded.</p>\r\n<p id=bb383640-e9c5-012c-bdfd-1231390c8061>Creating a type loader that checks whether the external parts have already been downloaded and download them if they haven&rsquo;t would be a good approach (and also a useful contribution to the community).</p>\r\n<p id=bb3848c0-e9c5-012c-bdfe-1231390c8061>One of the other things you could use to reduce the size of .xap files is explained in <a href=\"http://msdn.microsoft.com/en-us/library/dd458937.aspx\">this article</a>.</p>\r\n<p id=d178c4e0-ec40-012c-6c5b-1231390b4061>Remember that Prism 2.0 was created targeting Silverlight 2.0, and then refreshed for 3.0 due to very few high priority bugs. The feature you are talking about is newer than 2.0, so make sure to create an item in the <a href=\"http://compositewpf.codeplex.com/WorkItem/List.aspx\">Issue Tracker</a>, so other people can vote for it. The team will take these suggestions into account for the future versions of Prism.</p>\r\n<p id=bb387790-e9c5-012c-be00-1231390c8061>Please let me know if this helps.</p>\r\n<p id=bb3890c0-e9c5-012c-be01-1231390c8061>Damian Schenkelman <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-01-26T04:55:44.32-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "281965",
+    "ThreadId": "81572",
+    "Html": "<p>Hi,</p>\r\n<p>i have written such a typeloader that is loading extension parts. If it is interesting for the community i can post or mail the code and perhaps a working sample.</p>\r\n<p><br>Greets, Peter</p>",
+    "PostedDate": "2010-01-26T11:27:51.907-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "286548",
+    "ThreadId": "81572",
+    "Html": "<p>Hmm, i have a small zip-file with my small prism.extensions.modularity implementation which can load external parts. but how can i post it here?</p>",
+    "PostedDate": "2010-02-06T01:58:59.19-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "288505",
+    "ThreadId": "81572",
+    "Html": "<p id=94ba5ff0-f8bf-012c-99f8-1231390c3851 style=\"margin-top:1em;margin-right:0px;margin-bottom:1em;margin-left:0px;text-align:justify;padding:0px\">Hi Peter,</p>\r\n<p id=94ba6c50-f8bf-012c-99f9-1231390c3851 style=\"margin-top:1em;margin-right:0px;margin-bottom:1em;margin-left:0px;text-align:justify;padding:0px\">There is no specific way to post the sample solution in this site. Some possibilities to share this with the community are:</p>\r\n<ul style=\"margin-top:0px;margin-right:0px;margin-bottom:0px;margin-left:10px;padding:0px\">\r\n<li style=\"margin-top:7px;margin-right:0px;margin-bottom:0px;margin-left:0px;list-style-image:none;list-style-position:inside;list-style-type:disc;padding:0px\"><a style=\"padding:0px;margin:0px\" href=\"http://compositewpfcontrib.codeplex.com/SourceControl/UploadPatch.aspx\">Go through the necessary steps</a>&nbsp;to submit this to&nbsp;<a style=\"padding:0px;margin:0px\" href=\"http://www.codeplex.com/CompositeWPFContrib\">Prism contrib</a>.</li>\r\n<li style=\"margin-top:7px;margin-right:0px;margin-bottom:0px;margin-left:0px;list-style-image:none;list-style-position:inside;list-style-type:disc;padding:0px\">Blog about it in a personal blog.</li>\r\n<li style=\"margin-top:7px;margin-right:0px;margin-bottom:0px;margin-left:0px;list-style-image:none;list-style-position:inside;list-style-type:disc;padding:0px\">Upload it to a&nbsp;<a style=\"padding:0px;margin:0px\" href=\"https://wolof.southworksinc.com/fiyianswers/stories/skydrive.live.com/\">skydrive</a>.</li>\r\n</ul>\r\n<p id=94ba7840-f8bf-012c-99fa-1231390c3851 style=\"margin-top:1em;margin-right:0px;margin-bottom:1em;margin-left:0px;text-align:justify;padding:0px\">Please let me know if this helps.</p>\r\n<p id=94ba8730-f8bf-012c-99fb-1231390c3851 style=\"margin-top:1em;margin-right:0px;margin-bottom:1em;margin-left:0px;text-align:justify;padding:0px\">Damian Schenkelman&nbsp;<br style=\"padding:0px;margin:0px\"><a style=\"padding:0px;margin:0px\" href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-02-10T15:30:46.753-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "416222",
+    "ThreadId": "81572",
+    "Html": "<p>Hi, i make a Skydrive-Account.<br><br>Now i uploaded the sources there. I hope that works....<br><br><a href=\"http://cid-ff64b0f49e2a717a.skydrive.live.com/browse.aspx/.Public\">http://cid-ff64b0f49e2a717a.skydrive.live.com/browse.aspx/.Public</a></p>\r\n<p>Peter</p>",
+    "PostedDate": "2010-03-09T22:40:18.517-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "473680",
+    "ThreadId": "81572",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>petat wrote:</strong><br>\r\n<p>Hi, i make a Skydrive-Account.<br><br>Now i uploaded the sources there. I hope that works....<br><br><a href=\"http://cid-ff64b0f49e2a717a.skydrive.live.com/browse.aspx/.Public\">http://cid-ff64b0f49e2a717a.skydrive.live.com/browse.aspx/.Public</a></p>\r\n<p>Peter</p>\r\n</blockquote>\r\n<p>Hi Peter</p>\r\n<p>It doesn't seemed to be there. &nbsp;Could you upload this again?</p>\r\n<p>Thanks</p>\r\n<p>Kevin</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-07-28T06:37:23.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "473802",
+    "ThreadId": "81572",
+    "Html": "<p>You may want to talk to the coordinators of the Prism Contrib project as a place to make this publically available.</p>\r\n<p>&nbsp;<a></a><a href=\"http://compositewpfcontrib.codeplex.com/\">http://compositewpfcontrib.codeplex.com/</a></p>\r\n<p>It is a project run by the community to develop additions to Prism and take contributions.&nbsp;</p>\r\n<p>Good luck,</p>\r\n<p>Michael Puleio</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-07-28T10:53:15.78-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

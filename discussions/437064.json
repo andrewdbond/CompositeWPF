@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "1017092",
+    "ThreadId": "437064",
+    "Html": "I developed an application in VS2010 with multiple modules.\r<br />\n<br />\nIf I run the application within Visual Studio all works fine, both in Debuag and Release mode.\r<br />\nThe problem arise when I launch the application directly from the bin directory: in this case if I run the exe in bin\\Debug all works fine, while if I run the exe in bin\\Release all the views in some modules does not open correctely (the grafic interface is not shown, but I do not get any exception).\r<br />\nThe behaviour is really strange since I get this result only for Release and only for some modules.\r<br />\n<br />\nDoes anyone have an idea where to look for the problem?\r<br />\n<br />\nThank you\r<br />\nMassimo<br />\n",
+    "PostedDate": "2013-03-18T07:58:36.873-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1017169",
+    "ThreadId": "437064",
+    "Html": "Hi,\r<br />\n<br />\nAs far as I know, your application exe should run correctly from the bin folder if you manage to run it without problems in Release Mode in Visual Studio. I tried to reproduce your issue with no success at all. Therefore, it would be helpful if you provide us with more information about your application, like:<br />\n<ul>\n<li>Which version of Prism do you use?</li>\n<li>Which version of Visual Studio and .NET Framework are you working with?</li>\n<li>Which container did you choose (MEF, Unity)?</li>\n<li>\nWhich method do you use to load Modules (on demand, .config file, from a directory, etc.)?<br />\n</li>\n</ul>\nRegards,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-03-18T09:43:14.063-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1017219",
+    "ThreadId": "437064",
+    "Html": "Hi Federico,\r<br />\nthank you for you reply.\r<br />\nI'm using Prism 4.1 in Visual Studio 2010 Ultimate (version 10.0.40219.1 SP1) with .NET 4.0. As a container I use Unity.\r<br />\nI add all the module to the ModuleCatalog in the bootstrapper with InitializationMode = When Available.\r<br />\nModules info are stored in a databse table and the module dll are put in the same direcotry as the executables (bin\\Debug or bin\\Release) and load from there.\r<br />\nI tried to remove one of the faulty module dll and the application give me an exception at start up.  With all the modules dll in place the application starts up correctly, but then it seems that the view are not displyed in the regions (I use a tabbed region).\r<br />\nWhat it is really strange is that this happens only running the application from bin\\release and only for certain modules, whose difference from the others I'm not able to cacth.\r<br />\n<br />\nRegards\r<br />\nMassimo Landi<br />\n",
+    "PostedDate": "2013-03-18T10:46:27.923-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1017889",
+    "ThreadId": "437064",
+    "Html": "Hi,\r<br />\n<br />\nAs far as I know, there are no previous reports from users about not being able to run the application from the <strong>Release</strong> folder. As a quick test, I tried this with the <strong>Modularity QuickStart</strong>, which loads modules using several approaches and it worked correctly, so it doesn't seem to be a bug in Prism.\r<br />\n<br />\nBased on your description, it seems that your application looks for the module files correctly (that is why it throws an exception when you remove a module dll), so there might a problem during the initialization of the modules. As a starting approach, you could temporally modify the modules to log or show an message when they finish their initialization logic (for example, at the end of the <strong>Initialize</strong> method) to check that the modules are being initialized. Also, you can subscribe to the <strong>LoadModuleCompleted</strong> event to check if a module has been correctly loaded or not:<br />\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28v=pandp.40%29.aspx#sec37\" rel=\"nofollow\">Chapter 4 - Modular Application Development - Detecting When a Module Has Been Loaded</a><br />\n</li>\n</ul>\nAnother point that might be worth checking are the <strong>Regions</strong> to ensure if the views are being correctly injected or not.\r<br />\n<br />\nOn a different note, you mentioned that you are obtaining the <strong>ModuleInfo</strong> of each module from a database. Are you using a custom <strong>ModuleCatalog</strong> / <strong>ModuleTypeLoader</strong> to load the modules using the database directly or are you using the default implementations and simply passing the <strong>ModuleInfos</strong> obtained from the database? If you are using a custom implementation your problem might be related to it.\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-03-19T13:20:41.803-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1018752",
+    "ThreadId": "437064",
+    "Html": "Hi Damian,\r<br />\nthank you for your reply.\r<br />\nI do not receive any excpetion in all the process of navigaion toward the view and both inserting try-catch in nitialization logic (Initialize method) and using LoadModuleCompleted gave no result.\r<br />\nI'm using databse just to store information that I pass to ModuleInfos and I use standard methods.\r<br />\nOne thing I have noted is that if, in bin\\Release I replace the dll of the faulty module with the dll compiled in bin\\Debug all works fine!\r<br />\nCould it be possible that, for some reason I ignore, the way I navigate to the view:<br />\n<pre><code>regionManager.Regions[RegionNames.ContentRegion].RequestNavigate(selectedCommand.ViewTypeFullName, np)</code></pre>\n\nis not able to locate the view when compiled in release mode? \r<br />\nNOTE: the np parameter in RequestNavigate is used with an extension that allow me to pass parameters when navigating.\r<br />\n<br />\nReagrds\r<br />\nMassimo Landi<br />\n",
+    "PostedDate": "2013-03-21T03:22:41.417-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1019112",
+    "ThreadId": "437064",
+    "Html": "Hi Massimo,<br />\n<br />\nBased on your findings, I believe we could say that your application is correctly loading and initializing the modules and this problem might not be related with them.<br />\n<br />\nThe next &quot;suspect&quot; we could analyze is the <strong>UI Composition</strong> logic of the application: if the modules are being loading correctly but the views are not being shown, there might be a problem when injecting the views in the regions. Now that you mention that you are using <strong>Navigation</strong>, I believe that it's important to note that <strong>Prism's Navigation API</strong> automatically swallows any exceptions that might arise during the navigation process. As a result, if an exception is thrown in a <strong>RequestNavigate</strong> the view is not injected in the region, but the application doesn't crash. In order to find if an exception is being thrown during a <strong>Navigation Request</strong>, you can either subscribe to the <strong>NavigationFailed</strong> event of the <strong>RegionNavigationService</strong> or pass a callback to the <strong>RequestNavigate</strong> method. You can find more information about this in the following chapter of the <strong>Prism</strong> documentation:<br />\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg430861%28v=pandp.40%29.aspx\" rel=\"nofollow\">Chapter 8 - Navigation</a><br />\n</li>\n</ul>\nAs to why this is happening when building in <strong>Release</strong> and not in <strong>Debug</strong> , my guest is that it might be related to a timing issue. Based on my understanding, when building in <strong>Release Mode</strong>, the compiler optimizes the code in order to improve the performance and therefore, it might be possible that a hidden timing issue in the application could appear as result of the performance improvement. An example of a timing issue, if the <strong>ContentRegion</strong> is not created before the <strong>Navigation Request</strong> is invoked, it will fail.<br />\n<br />\nIf this does not help in finding the cause of the problem, it could be useful if you could provide us with a repro-sample application that we could analyze in deep so that we can help you further with this.<br />\n<br />\nFinally, as a quick test, try to build your application in a different computer just to check if this is not something generated by your <strong>Visual Studio</strong> installation.<br />\n<br />\nI hope this helps,<br />\n<br />\nDamian Cherubini<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-03-21T12:23:09.577-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

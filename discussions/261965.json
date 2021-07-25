@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "629892",
+    "ThreadId": "261965",
+    "Html": "<p>As ViewA is fetching stuff from a database I want to give the user some feedback on how this is going by editing some text in ViewB.</p>\n<p>I publish the event in ViewA like this;</p>\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var payload = new StatusBarMessagePayload();<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; payload.String1 = message;<br /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _eventAggregator.GetEvent&lt;StatusBarMessageEvent&gt;().Publish(payload);</p>\n<p>I call this 8 times, with the message changing each time (ie \"step 1 of 8\",\"step 2 of 8\",\"step 3 of 8\" ... \"step 4 of 8\"), like this;</p>\n<p>GetFromDB();</p>\n<p>SendMessage();</p>\n<p>GetFromDB();</p>\n<p>SendMessage();</p>\n<p>GetFromDB();</p>\n<p>SendMessage();</p>\n<p>(each pair 8 times)</p>\n<p>&nbsp;</p>\n<p>and handle it with this code (in ViewB);</p>\n<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._eventAggregator.GetEvent&lt;StatusBarMessageEvent&gt;().Subscribe(Handle_Message, ThreadOption.UIThread, true);</p>\n<p>and</p>\n<p>tb1.Text = payload.String1;</p>\n<p>ViewB handles the event all 8 times, but tb1 is only updating once (the last time).</p>\n<p>What am I doing wrong?</p>\n<p>thank all</p>",
+    "PostedDate": "2011-06-19T21:55:23.387-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "630779",
+    "ThreadId": "261965",
+    "Html": "<p>Hi,</p>\r\n<p>If you application is under an MVVM architecture, one possible reason for this behavior could be that your view model doesn&rsquo;t implement the<strong> INotifyPropertyChanged </strong>interface. Also, if your view models implements <strong>INotifyPropertyChanged</strong>, you need to call the RaisePropertyChange event in order to update the values of your bind controls.</p>\r\n<p>In case you continue experiencing this behavior, it could be helpful if you could provide us with your repro sample (for example, uploading to <a href=\"http://skydrive.live.com/\">SkyDrive</a>) of your solution, so that we can help you find out the cause.</p>\r\n<p>I hope you find this information useful.</p>\r\n<p>Thanks,</p>\r\n<p>Miguel Bronzovic<br /><a href=\"http://blogs.southworks.net/mbronzovic\">http://blogs.southworks.net/mbronzovic</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-06-21T14:04:04.65-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "640778",
+    "ThreadId": "261965",
+    "Html": "<p>We are having almost EXACTLY the same issue.&nbsp; Did you ever figure anything out on this topic?&nbsp; We suspect the problem lies somehow with the synchronous nature of the callbacks and the fact that we're listening on the UI Thread in order to update the UI with the status message.&nbsp; But obviously we're not sure because we haven't gotten it working either.</p>\r\n<p>Any progress on this?</p>\r\n<p>Thanks in advance.</p>",
+    "PostedDate": "2011-07-11T18:06:32.01-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "93265",
+    "ThreadId": "27947",
+    "Html": "I'm just starting to upgrade my code to the latest drop and I've run in to a snag with Panel based controls and making them regions.&nbsp; The release notes say...<br>\r\n<br>\r\n<span id=\"ctl00_ctl00_Content_TabContentPanel_Content_wikiSourceLabel\">Region\r\nadapters are classes that know how to manage the content of a\r\nparticular WPF control, and they bind the content of WPF container\r\ncontrols to the views that a <strong>SimpleRegion</strong> instance holds. New region adapters were introduced: <strong>ContentControlRegionAdapter</strong> and <strong>ItemsControlRegionAdapter</strong>. The <strong>ContentControlRegionAdapter</strong> manages <strong>ContentControl</strong> controls, and the <strong>ItemsControlRegionAdapter</strong> manages <strong>ItemsControl</strong> controls.<br>\r\n<br>\r\nHowever, a Panel is neither a ContentControl nor an ItemsControl.&nbsp; So with the remove of the PanelRegion, you've taken away the ability to make any Panel derived object a region.&nbsp; Was this intentional?&nbsp; An oversight?&nbsp; An error?&nbsp; Do you intend for us to have to write out own IRegion and IRegionAdapters everytime we need a region based on a Panel?<br>\r\n<br>\r\nThanks for any feedback.<br>\r\n</span>\r\n",
+    "PostedDate": "2008-05-18T13:22:29.697-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "93539",
+    "ThreadId": "27947",
+    "Html": "I have just come across the exact same issue. I am attempting to write my own RegionAdapter, the problem being their is no assignable Content/Children/Whatever property. I would love to know what the official stance is on this.<br>\r\n",
+    "PostedDate": "2008-05-19T20:36:49.487-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "93678",
+    "ThreadId": "27947",
+    "Html": "Ditto here.  I started switching my Panels over to ItemsControls and for the most part everything is ok (in my scenario).  But I'm having weird layout issues with the ItemsControls, they aren't behaving like Panels which is to be expected.\r\n",
+    "PostedDate": "2008-05-20T08:47:04.477-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "94258",
+    "ThreadId": "27947",
+    "Html": "The idea behind the removal, is that you could use panels as a layout detail of an ItemsControl, but can still always use ItemsControl as the UI element for the region. So for example, if you'd like to use a WrapPanel as a region, you could use the following markup:<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsControl prism:RegionManager.RegionName=&quot;MainToolbarRegion&quot;&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsControl.ItemsPanel&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ItemsPanelTemplate&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;<strong>WrapPanel </strong>/&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsPanelTemplate&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsControl.ItemsPanel&gt;<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/ItemsControl&gt;<br>\r\n<br>\r\nWith this approach, do you reckon there might be scenarios where this is not enough and where an out-of-the-box PanelRegionAdapter would still be needed?<br>\r\n<br>\r\nThanks,<br>\r\nJulian Dominguez<br>\r\n",
+    "PostedDate": "2008-05-22T15:11:14.147-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "94267",
+    "ThreadId": "27947",
+    "Html": "Yes,&nbsp; I'm extending a third party control to be a region.&nbsp; The control is based on a panel.&nbsp; I'm not actually setting things up in the XAML markup so I can't do the above, and the control takes a collection of things based on a panel.<br>\r\n<br>\r\nNot that writing a PanelRegion was hard, but the above solution just doesn't seem obvious to me, and unless it is called out in the documentation, there's no way I would ever figure that out and would end up writing&nbsp; my own region.<br>\r\n",
+    "PostedDate": "2008-05-22T16:54:23.88-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "94444",
+    "ThreadId": "27947",
+    "Html": "I also think this is unclear and that a PanelRegion should be included in the framework. The ItemsControl solution suggested for using a Panel region is inelegant and a hack, IMO.<br>\r\n<br>\r\nThe way I am currently getting around the change is by using :<br>\r\n<blockquote><span style=\"font-family:courier new\">&lt;ContentControl prism:RegionManager.RegionName=&quot;{x:Static infrastructure:RegionNames.Toolbar}&quot;/&gt;</span><br>\r\n</blockquote><span style=\"font-family:segoe ui\">And inserting a UserControl based View into the region. Almost all of my regions will be Panel based.</span><br>\r\n<br>\r\n",
+    "PostedDate": "2008-05-23T11:28:28.927-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "545406",
+    "ThreadId": "240842",
+    "Html": "\r\n<p>Hi, i met this problem</p>\r\n<p>I have a shell with 2 regions : the MainRegion and the DetailRegion :</p>\r\n<p>&lt;ItemsControl x:Name=&quot;MainRegion&quot; Regions:RegionManager.RegionName=&quot;MainRegion&quot; Background=&quot;AliceBlue&quot;&gt;<br>\r\n&lt;/ItemsControl&gt;<br>\r\n&lt;ItemsControl x:Name=&quot;DetailRegion&quot; Regions:RegionManager.RegionName=&quot;DetailRegion&quot; Background=&quot;Azure&quot;&gt;<br>\r\n&lt;/ItemsControl&gt;</p>\r\n<p>I have 2 modules : ModuleA et ModuleB loaded in the Catalog :</p>\r\n<p>ModuleCatalog catalog = new ModuleCatalog();<br>\r\ncatalog.AddModule(typeof(ModuleA.ModuleA));<br>\r\ncatalog.AddModule(typeof(ModuleB.ModuleB));</p>\r\n<p>The Initialize() of the ModuleA register the ModuleAView to the MainRegion <br>\r\nvoid IModule.Initialize()<br>\r\n{<br>\r\n&nbsp;&nbsp; _container.RegisterType&lt;ICompanyService, CompanyService&gt;();<br>\r\n&nbsp;&nbsp; _regionManager.RegisterViewWithRegion(&quot;MainRegion&quot;, typeof(ModuleAView));<br>\r\n} &nbsp;</p>\r\n<p>This ModuleAView shows a list of data binded to the ModuleAViewModel<br>\r\nThe selectedItem of that list is binded to a property SelectedItem of the ModuleAViewModel :<br>\r\nSelectedItem=&quot;{Binding SelectedCompany}&rdquo;&nbsp;</p>\r\n<p>Once an item is selected the property &ldquo;SelectedCompany&rdquo; is raised. It&rsquo;s ok.</p>\r\n<p>NOW&hellip; the questions is:</p>\r\n<p>I would like to show the detail of this selectedItem in the DetailRegion, <br>\r\nBut the <span style=\"text-decoration:underline\">ModuleAViewModel don&rsquo;t have any reference of the RegionManager\r\n</span>in order to push data selected with the view to the DetailRegion.</p>\r\n<p><br>\r\nHow can we do ?<br>\r\nCAG-Quickstart uses the Controller, a kind of superclass that manage all of this.<br>\r\nIs this only way to do ?</p>\r\n<p>thanks.</p>\r\n",
+    "PostedDate": "2011-01-07T07:08:49.283-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "545448",
+    "ThreadId": "240842",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>You can also obtain a reference to the Region Manager in your ViewModel through\r\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921140%28PandP.40%29.aspx\">dependency injection</a>. For example, if you're using MEF and you'd like to achieve constructor injection in your ViewModel, you could have something like this:</p>\r\n<p>&nbsp;</p>\r\n<p>[Export]<br>\r\n</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> ModuleAViewModel\r\n{\r\n(...)\r\n<span style=\"color:blue\">private</span> IRegionManager regionManager;\r\n\r\n  [ImportingConstructor]\r\n  <span style=\"color:blue\">public</span> ModuleAViewModel(IRegionManager regionManager)\r\n  {\r\n    <span style=\"color:blue\">this</span>.regionManager=regionManager;\r\n  }\r\n(...)\r\n}\r\n</pre>\r\n</div>\r\n<p></p>\r\n<p>Take into account that, in order for your ViewModel to obtain a reference to the Region Manager, it must be composed by MEF, so you should do something like this in your view:</p>\r\n<p></p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre>[Export]\r\n<span style=\"color:blue\">public</span> <span style=\"color:blue\">partial</span> <span style=\"color:blue\">class</span> ModuleAView : UserControl\r\n{\r\n(...)\r\n  [ImportingConstructor]\r\n  <span style=\"color:blue\">public</span> ModuleAView(ModuleAViewModel viewModel)\r\n  {\r\n    InitializeComponent();\r\n    <span style=\"color:blue\">this</span>.DataContext = viewModel;\r\n  }\r\n(...)\r\n}\r\n</pre>\r\n</div>\r\nI hope you find this helpful.\r\n<p></p>\r\n<p>Guido Leandro Maliandi<br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2011-01-07T08:24:54.813-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "545468",
+    "ThreadId": "240842",
+    "Html": "\r\n<p>Well you could use a controller or you could use IEventAggregator and publish as the payload of the event to the DetailsViewModel.&nbsp; In my app, I actually figured out that I needed a combination of the 2, IEventAggregator and a Controller.&nbsp; At one\r\n point I was doing alot of the initial work in the module file, realized later that a controller was ideal for the work being done.</p>\r\n<p>So 2 events I do... 1 new flight event (raised from mainmenu) and edit flight event (raised from a datagrid context menu).&nbsp; The only thing I am passing though is the integer of the flight id,&nbsp; in the case of the new flight I pass 0, so my payload\r\n for the CompositePresentationEvent&lt;T&gt; is int.</p>\r\n<p>The one thing that I am using though is the RegionManager in my viewmodels, it is primarily needed for the Context.&nbsp; Allows me to get the passed value.</p>\r\n",
+    "PostedDate": "2011-01-07T08:48:03.267-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

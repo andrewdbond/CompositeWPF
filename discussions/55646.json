@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "187918",
+    "ThreadId": "55646",
+    "Html": "I am going through the DefiningModulesInCode quickstart (<a href=\"http://msdn.microsoft.com/en-us/library/dd490828.aspx\">http://msdn.microsoft.com/en-us/library/dd490828.aspx</a>) and get a number of errors (42, actually - could <em>this</em> be the answer??) ;-)<br>\r\n<br>\r\nAt any rate, things start to go wrong with the following Warning:<br>\r\nWarning 1 The file 'Mocks\\Modules\\RemoteModules.xap' could not be added to the project.  Cannot add a link to the file C:\\Development\\Silverlight\\CAL\\Silverlight\\Composite.Tests\\Mocks\\Modules\\RemoteModules.xap. This file is within the project directory tree. Composite.Silverlight.Tests<br>\r\n<br>\r\nThen I get 42 errors that all follow the same pattern:<br>\r\nError 2 Source file 'C:\\Development\\Silverlight\\CAL\\Desktop\\Composite.Presentation.Tests\\Regions\\Behaviors\\SyncRegionContextWithHostBehaviorFixture.cs' could not be opened ('Unspecified error ') Composite.Presentation.Desktop.Tests<br>\r\n<br>\r\n<br>\r\nIs anyone else having these problems?  The files all exist and the linker has been downloaded and installed as well.<br>\r\n<br>\r\nAny wisdom on this would be greatly appreciated.<br>\r\n",
+    "PostedDate": "2009-05-07T16:30:16.347-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "188307",
+    "ThreadId": "55646",
+    "Html": "<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-size:small\"><span style=\"font-family:Calibri\">Hi, </span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-size:small;font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-size:small\"><span style=\"font-family:Calibri\">The warning about the <strong>RemoteModules.xap</strong> file you mention is normal and harmless. It appears in all quickstarts as a warning but it shouldn't affect compilation and running the application.</span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-size:small;font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-size:small\"><span style=\"font-family:Calibri\">I tried to reproduce the error you mentioned and got exactly the same compilation error when I removed the reading permissions over the files (the ones in the <strong>InstallationDir\\CAL\\Desktop\\Composite.Presentation.Tests\\ </strong>subfolders) . The strange thing is that for this error to appear you should have reading permissions over the project file (<strong>Composite.Presentation.Desktop.Tests.csproj</strong>),<span style=\"color:#1f497d\"> </span>but not over the code files. Otherwise the error would be different.</span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"font-size:10pt;font-family:'Courier New'\" lang=EN-US>&nbsp;</span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-size:small\"><span style=\"font-family:Calibri\">Hope it helps!</span></span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-size:small;font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0cm 0cm 0pt\"><span style=\"\" lang=EN-US><span style=\"font-size:small\"><span style=\"font-family:Calibri\">Matias Bonaventura</span></span></span></p>\r\n<p><span style=\"font-size:11pt;font-family:'Calibri','sans-serif'\"><a href=\"http://blogs.southworks.net/matiasb\">http://blogs.southworks.net/matiasb</a></span></p>",
+    "PostedDate": "2009-05-08T14:20:14.993-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "188412",
+    "ThreadId": "55646",
+    "Html": "<p>I dont think you&nbsp;have VS2008 testing support installed. There are two things you could do -</p>\r\n<p>Install testing support via VS 2008 setup.</p>\r\n<p>OR remove all testing projects from this solution.&nbsp; This should help you in getting started as you would be able to compile and run this quick start.</p>",
+    "PostedDate": "2009-05-09T03:42:21.827-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "189433",
+    "ThreadId": "55646",
+    "Html": "<p>Thanks Matias and Winrunner for replying.&nbsp; And apologies for the dilatory response.</p>\r\n<p>Just a clarification:&nbsp; I am receiving 42 errors - not warnings.</p>\r\n<p>I first checked properties in <em>InstallationDir</em><strong>\\CAL\\Desktop\\Composite.Presentation.Tests\\</strong> and the child directories and Read Only is unset.&nbsp; So, this was not the cause.</p>\r\n<p>I then checked to ensure I had Team Developer and Tester Tools - and I do indeed have Performance Tools, Code Analysis Tools and Testing Tools installed.</p>\r\n<p>Finally, I tried unloading the following six projects and now the solution compiles.</p>\r\n<p><span style=\"text-decoration:underline\">Desktop</span>:<br>Composite.Desktop.Tests<br>Composite.Presentation.Desktop.Tests<br>Composite.UnityExtensions.Desktop.Tests</p>\r\n<p><span style=\"text-decoration:underline\">Silverlight</span>:<br>Composite.Silverlight.Tests<br>Composite.Presentation.Silverlight.Tests<br>Composite.UnityExtensions.Silverlight.Tests</p>\r\n<p>While this is more of a band-aid than anything else I can at least run the solution.&nbsp; If anyone has any wisdom on why this occurs even though I have Testing Tools installed I would greatly appreciate hearing it.</p>\r\n<p>&nbsp;</p>\r\n<p>All the best,</p>\r\n<p>&nbsp;</p>\r\n<p>- Rich</p>",
+    "PostedDate": "2009-05-12T11:32:34.597-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "232598",
+    "ThreadId": "55646",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>Tournesol143 wrote:</strong><br>\r\n<p>Thanks Matias and Winrunner for replying.&nbsp; And apologies for the dilatory response.</p>\r\n<p>Just a clarification:&nbsp; I am receiving 42 errors - not warnings</p>\r\n</blockquote>\r\n<p>&nbsp;This happens when the xap files cannot be build.</p>\r\n<p>There's a batch file which will executed during build:</p>\r\n<p>CAL\\Silverlight\\Composite.Tests\\Mocks\\Modules\\createXap.bat</p>\r\n<p>Because I have no script module attached to the .vbs extension, the builds fails.</p>\r\n<p>So I added the following option to the three lines (31-33) after &quot;REM Add the 2 DLLs and the manifest to a Zip file&quot;:</p>\r\n<p>cscript&nbsp; <strong>/E:vbscript</strong> /nologo AddToZip.vbs &quot;%CD%\\RemoteModules.temp.zip&quot; &quot;%CD%\\AppManifest.xaml&quot;</p>\r\n<p>It's compiling now.</p>\r\n<p>-Eric</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-09T02:34:08.503-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

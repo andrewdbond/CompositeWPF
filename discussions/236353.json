@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "528129",
+    "ThreadId": "236353",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>i'm using PRISM for my SL project. Everything was okay until today i started getting the following error</p>\r\n<p>Resolution of the dependency failed, type = &quot;PwC.SMART.UI.Silverlight.Modules.Navigation.ImportAndExport.ImportExportSearchFacilityView&quot;, name = &quot;(none)&quot;.<br>\r\nException occurred while: while resolving.<br>\r\nException is: InvalidOperationException - The current type, Microsoft.Practices.Composite.Events.IEventAggregator, is an interface and cannot be constructed. Are you missing a type mapping?<br>\r\n-----------------------------------------------<br>\r\nAt the time of the exception, the container was:</p>\r\n<p>&nbsp; Resolving PwC.SMART.UI.Silverlight.Modules.Navigation.ImportAndExport.ImportExportSearchFacilityView,(none)<br>\r\n&nbsp; Resolving parameter &quot;eventAggregator&quot; of constructor PwC.SMART.UI.Silverlight.Modules.Navigation.ImportAndExport.ImportExportSearchFacilityView(Microsoft.Practices.Composite.Events.IEventAggregator eventAggregator)<br>\r\n&nbsp;&nbsp;&nbsp; Resolving Microsoft.Practices.Composite.Events.IEventAggregator,(none)</p>\r\n<p>I have views(both usercontrols and child windows) in this module and other modules which are working perfectly. I'm getting error for this particular view.</p>\r\n<p>Regards,</p>\r\n<p>Saheer</p>\r\n",
+    "PostedDate": "2010-11-29T03:07:22.97-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "528346",
+    "ThreadId": "236353",
+    "Html": "\r\n<p>Hi Saheer,</p>\r\n<p>Based on my understanding, your issue is caused because the <strong>IEventAggregator\r\n</strong>type mapping isn't in place when you try to resolve it. In order for the Unity Container to resolve an IEventAggregator, a type mapping to a concrete type (the EventAggregator concrete class, in this case) is needed, since an interface by itself cannot\r\n be constructed.</p>\r\n<p>The mapping might not be there because:</p>\r\n<ul>\r\n<li>You're trying to resolve the IEventAggregator before the UnityBootstrapper has registered the type mapping, or\r\n</li><li>you're not using the same instance fo the Unity Container that has been used to register the type mapping.\r\n</li></ul>\r\n<p>If you continue experiencing the same situation, it would be useful if you could provide more information about your view, and when and how it is created.</p>\r\n<p>I hope you find this helpful,</p>\r\n<p>Guido Leandro Maliandi <br>\r\n<a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>\r\n",
+    "PostedDate": "2010-11-29T08:48:11.893-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

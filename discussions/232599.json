@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "513749",
+    "ThreadId": "232599",
+    "Html": "\r\n<p>I have a pretty basic looking &quot;explorer style&quot; application that I'm building in Silverlight 4 with Prism (v4 Drop 10) and MEF. The navigation style that I'm trying to support is kind of like the experience in &quot;Sql Server Management Studio&quot;.</p>\r\n<p><img src=\"http://imgur.com/x6pGZ.png\" alt=\"\">&nbsp;</p>\r\n<p>So, I have 4 major regions: &quot;Shell.Header&quot;, &quot;Shell.Navigator&quot;, &quot;Shell.Tabs&quot; and &quot;Shell.Footer&quot;.&nbsp;<span style=\"font-size:13.2px\">The Shell.Navigator region is on the left and it contains a view with a TreeView. The Shell.Tabs region is the main region\r\n where all the navigation shows up. There is one view that gets put into Shell.Tabs which contains it's own region named &quot;Navigator.Details&quot;. Whenever you click a TreeView item, my NavigatorViewModel requests navigation to show something in the &quot;Navigator.Details&quot;\r\n region.</span></p>\r\n<p>That all works fine. However, views that show up in the &quot;Navigator.Details&quot; region may contain datagrid lists of entities that may be edited (MyItemsListView). When a user edits an item from the list, I want to open a new Item Editor view in a new tab and\r\n activate the tab. When they save the item that is being edited, I want the original datagrid back in the &quot;detail view&quot; to be reloaded automatically. Previously (before navigation) I was able to get a reference to Item Editor views that I opened because I was\r\n using my own method of locating views instead of navigation.</p>\r\n<p>How can I get a reference to the resulting view from a call to RequestNavigate?</p>\r\n<p>I basically need to track the activity of all Item Editor view/viewmodels that are instantiated by MyItemsListView in order to refresh the MyItemsListView editable items automatically.</p>\r\n<p>Here's kinda what I wanted to do (this is pseudo-pseudo-code):</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black; background-color:white\">\r\n<pre><span style=\"color:blue\">var</span> navigatedToView = TabsRegionReference.RequestNavigate(...);\r\n\r\nnavigatedToView.GetViewModel&lt;IEditorVM&gt;().EditCompleted &#43;= (s,e) =&gt; ReloadEditedItem(e.ItemKey);\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>The Prism navigation API doesn't seem to support this at all right now. I can't even get the resulting view via the navigation callback. Any suggestions on a different way of achieving this? Should I just NOT use RequestNavigate from MyItemsListView when\r\n opening an Item Editor tab?&nbsp;</p>\r\n",
+    "PostedDate": "2010-10-27T21:37:03.257-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "513750",
+    "ThreadId": "232599",
+    "Html": "\r\n<p>I guess one answer would be to use the EventAggregator to get my EditCompleted event...correct?</p>\r\n",
+    "PostedDate": "2010-10-27T21:41:22.28-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "514192",
+    "ThreadId": "232599",
+    "Html": "\r\n<p>Hi,</p>\r\n<p>I think that you could use EventAggregator to notify your views if they are in different modules. If the views are in the same module you can also use .Net events.</p>\r\n<p>Additionally, you can find interesting the concept of Journal implemented in Prism. For more information about this you could take a look at the following documentation section in Prism4.chm:\r\n<strong>View-Switching Navigation Quickstart</strong>.</p>\r\n<p>You could obtain an instance of you Journal using the following code (pseudo-code):</p>\r\n<pre><span style=\"color:blue\">this</span>.RegionManager.RequestNavigate(<span style=\"color:#a31515\">&quot;DetailsRegion&quot;</span>, <span style=\"color:#a31515\">&quot;/ItemsEditorView&quot;</span>, (NavigationResult result) =&gt; <br>            { <br>                result.Context.NavigationService.Journal<br>            });<br></pre>\r\n<p>On the other hand, if you want to check the active views in an specific region, you could use the following code (pseudo-code):</p>\r\n<pre><span style=\"color:blue\">this</span>.RegionManager.Regions[RegionNames.DetailsRegion].ActiveViews</pre>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero</p>\r\n<p><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n",
+    "PostedDate": "2010-10-28T12:48:36.63-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

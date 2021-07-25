@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "426358",
+    "ThreadId": "208029",
+    "Html": "<p>Hi,</p>\r\n<p>I have got some concerns about Prism and architecture, specially about the Infrastructure and what should be written in it. This is not not crystal clear to me.</p>\r\n<p>What exactly should be written in the Infrastructure?</p>\r\n<ul>\r\n<li>&nbsp;shared model (business model)</li>\r\n<li>shared events</li>\r\n<li>exceptions&nbsp;</li>\r\n<li>...</li>\r\n</ul>\r\n<p>Should the business code of the application be in the Infrastructure? or should it be in another assembly referenced by the Infrastructure?</p>\r\n<p>What if I want (or need) to share the Infrastructure across applications in a solution? (Only one infrastructure shared by all the applications)</p>\r\n<p>Should the business model be in the Infrastructure (this could dramatically increase the size of the infrastructure) or should each application have its own and be referenced by the infrastructure? (in order to keep this the tiniest possible).</p>\r\n<p>Is it a good idea that the infrastructure depends on other assemblies that contain business model?</p>\r\n<p>&nbsp;</p>\r\n<p>Any help would be appreciated!</p>\r\n<p>Thx,</p>\r\n<p>toto.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-04-01T01:59:45.117-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "427555",
+    "ThreadId": "208029",
+    "Html": "<p id=66894f60-230e-012d-08bf-12313d013db1>Hi Toto,</p>\r\n<p id=668963a0-230e-012d-08c0-12313d013db1>There is no stone writing  about what should be included in the <strong>Infrastructure</strong> project. As you said, business entities, event aggregator events,  exceptions and interfaces to services are commonly placed in the <strong>Infrastructure </strong>project of each application if they are used by at least  two different modules. Different applications usually have different <strong>Infrastructure</strong> projects as each of them requires other shared components.</p>\r\n<p id=668985c0-230e-012d-08c1-12313d013db1>A possible approach to  increase code reuse is, as you suggested, have each of those parts  separated in different assemblies, and depending on the application each  <strong>Infrastructure</strong> project can vary the projects that it  references. The problem about having many applications use the exact  same Infrastructure project is that they might end with an assembly that  is much larger than it would need to be.</p>\r\n<p id=6689b280-230e-012d-08c2-12313d013db1>Something to consider when  adding components to the <strong>Infrastructure </strong>project is  always keeping your modules decoupled.</p>\r\n<p id=6689e1b0-230e-012d-08c3-12313d013db1>Please let me know if this  helps.</p>\r\n<p id=668a0cc0-230e-012d-08c4-12313d013db1>Damian  Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>",
+    "PostedDate": "2010-04-05T11:37:54.703-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

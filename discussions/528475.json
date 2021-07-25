@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1201128",
+    "ThreadId": "528475",
+    "Html": "Not sure if this is a Prism or .NET Framework question, hopefully someone may enlighten me anyway:\r<br />\n<br />\nI have a wpf application (.net 4.5) which used Prism (4.1) and MEF.\r<br />\nA MEF container is configured in the Bootstrapper (derived from MEFBootstrapper).\r<br />\nMainView (Shell) has no ViewModel, but a Region is defined.\r<br />\n<br />\nA Module (decorated with ModuleExport) is initialized and the Region and its ViewModel is &quot;resolved&quot; by Region.RequestNavigate(string regionName, string ViewModelExport).\r<br />\n<br />\nThe region View imports the ViewModel etc. and everything works fine.\r<br />\nNow, in the ViewModel I decorate a property with Import and the type (public class with default constructor) is decorated with Export.\r<br />\n<br />\nAll the types mentioned are defined (currently) in the same assembly which is used to make an AssemblyCatalog etc. in the Bootstrapper.\r<br />\n<br />\nThe imported property of the ViewModel is always null and I don't understand why.<br />\n",
+    "PostedDate": "2014-01-30T14:59:04.353-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1201319",
+    "ThreadId": "528475",
+    "Html": "Hi Eager,\r<br />\n<br />\nIt would be helpful if you could provide us with a small sample solution which would show the problem you are facing. Therefore, we would be able to give you better support for this scenario.\r<br />\n<br />\nHowever, as a workaround, you would be able to import the property to the <strong>ViewModel</strong> by passing it as an argument on the constructor. You would need to decorate the <strong>ViewModel</strong> constructor with &quot;<strong>[ImportConstructor]</strong>&quot;, in order to get the container resolve every constructor parameter.\r<br />\n<br />\nRegards,\r<br />\n<br />\nGabriel Ostrowsky\r<br />\n<a href=\"https://blogs.southworks.net/gostrowsky\" rel=\"nofollow\">https://blogs.southworks.net/gostrowsky</a><br />\n",
+    "PostedDate": "2014-01-31T06:13:30.897-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": "2014-01-31T07:03:35.873-08:00"
+  },
+  {
+    "Id": "1201340",
+    "ThreadId": "528475",
+    "Html": "Hi and thanks\r<br />\nMeanwhile I realized that an imported property is still null (or rather it's type's default value) during the objects construction.\r<br />\nI changed to ImportConstructor, exactly as you mentioned and now it works :)\r<br />\n<br />\nI think I can understand that it is difficult/impossible for MEF to set the property during construction, but prior to user code, at least with reflection.\r<br />\nHowever, if possible, it would be nice if this &quot;limitation&quot; could be removed...<br />\n",
+    "PostedDate": "2014-01-31T07:03:29.243-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

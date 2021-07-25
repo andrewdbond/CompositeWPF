@@ -1,0 +1,51 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Fixed in Prism 5.0",
+    "ClosedDate": "2014-05-01T11:17:12.65-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "There is an issue with the IsInDesignMode method not detecting that our application is actually running and that we are not in \"design mode\".\n \nThe issue comes in because our application is not a standalone application and the call to Application.Current is null in the following line of code,\n            return DesignerProperties.GetIsInDesignMode(element) || Application.Current == null\n                   || Application.Current.GetType() == typeof(Application);\n \nWe have a workaround that implements a DesignModeChecker class that we utilize in some of our other projects. The IsInDesignMode method becomes a call to the new class,\n            return DesignModeChecker.InDesignMode;\n \nI have attached the new class for reference.\n \nCan we get a better (or use the approach we used) method for determining \"design mode\"?\nCan this be in the next release?",
+    "LastUpdatedDate": "2014-05-01T11:17:12.65-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-09-20T15:20:44.357-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "RegionManager::IsInDesignMode",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8703
+  },
+  "FileAttachments": [
+    {
+      "FileId": 897989,
+      "FileName": "DesignModeChecker.cs",
+      "DownloadUrl": ".\\897989"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nBased on our understanding, the IsInDesignMode method checks for the current application due to a known issue in Cider with Silverlight 3, where the DesignerProperties.GetIsInDesignMode method doesn’t work correctly. You can find more information about this in the following blog post by David Anson: http://blogs.msdn.com/b/delay/archive/2009/02/26/designerproperties-getisindesignmode-forrealz-how-to-reliably-detect-silverlight-design-mode-in-blend-and-visual-studio.aspx . \r\n\r\nWe have tested the DesignerProperties.GetIsInDesignMode method in Silvelight 4 and it seems to be working correctly, so you could modify the implementation of the IsInDesignMode method of the RegionManager (like mentioned in this work item by Michael Puleio: http://compositewpf.codeplex.com/workitem/7102) with this:\r\n\r\nprivate static bool IsInDesignMode(DependencyObject element)\r\n{ \r\n      return DesignerProperties.GetIsInDesignMode(element);\r\n}\r\n\r\nAlso, if this implementation presents an undesired behavior in your application, you could check the following blog post where a different implementation to detect if the application is in design mode is proposed: http://geekswithblogs.net/lbugnion/archive/2009/09/05/detecting-design-time-mode-in-wpf-and-silverlight.aspx .\r\n\r\nI hope you find this useful,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini\r\n",
+      "PostedDate": "2011-12-01T12:45:21.593-08:00",
+      "Id": 156512
+    }
+  ]
+}

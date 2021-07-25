@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "1008365",
+    "ThreadId": "434904",
+    "Html": "Sometimes i need to pass two or more parameters between modules when using EventAggregator.\r<br />\nIs it possible? If not possible what is the alternative?\r<br />\nTanks in advance.<br />\n",
+    "PostedDate": "2013-02-28T10:28:04-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1008444",
+    "ThreadId": "434904",
+    "Html": "Hi,\r<br />\n<br />\nAs far as I know, when publishing an event you can only pass one parameter of the same type as the event's payload. For example, if you define a <strong>MyEvent</strong> doing something like this:<br />\n<pre><code>public class MyEvent : CompositePresentationEvent&lt; MyParameterClass &gt;</code></pre>\n\nIt means you can pass an object of type <strong>MyParameterClass</strong> when publishing the event.\r<br />\n<br />\nHowever, this gives you a lot of flexibility as the <strong>MyParameterClass</strong> could be as simple or as complex as you want. Taking this into account, a possible approach to pass several parameters could be encapsulate those parameters in a single one used to contain them:<br />\n<pre><code>parameters.Parameter1 = parameter1;\nparameters.Parameter2 = parameter2;\neventAggregator.GetEvent&lt;MyEvent&gt;().Publish(parameters);</code></pre>\n\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-02-28T12:46:46.8-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1008604",
+    "ThreadId": "434904",
+    "Html": "Hi Damian,\r<br />\nThanks Damian i applied this approach and it is working ok. but is it better to use class or struct as payload? or no difference?\r<br />\nThanks<br />\n",
+    "PostedDate": "2013-02-28T21:04:27.807-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1008958",
+    "ThreadId": "434904",
+    "Html": "Hi,\r<br />\n<br />\nI'm not aware of any &quot;rule&quot; that says you cannot use a <strong>struct</strong> as the payload type for a <strong>CompositionEvent</strong> , but the usual approach is to use a <strong>class</strong> . Although it's true that in some cases using a <strong>struct</strong> can report a better performance than using a <strong>class</strong> , I believe this can only be observed when managing large collections of data, so it doesn't seem to me that a <strong>struct</strong> would provide you any benefit over a <strong>class</strong> in this scenario.\r<br />\n<br />\nIn my opinion, I would use a <strong>class</strong> as to keep the concordance with the rest of events you might have in your application.\r<br />\n<br />\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-03-01T09:53:56.337-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "Id": "699522",
+    "ThreadId": "279807",
+    "Html": "\r\n<p>Hi List,</p>\r\n<p>what i try to do:</p>\r\n<p>Use the prism:interactionrequest to show a UserControl with the related ViewModel as a Modal Dialog.</p>\r\n<p>All what i can find are examples of Confirmation and Notification.</p>\r\n<p>Any idea?</p>\r\n<p>Thanks</p>\r\n<p>Peter</p>\r\n",
+    "PostedDate": "2011-11-17T04:44:49.597-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "699702",
+    "ThreadId": "279807",
+    "Html": "<p>Hi Peter,</p>\r\n<p>As a possible approach to achieve this you could create a <strong>Child Window </strong>control that would be your modal dialog and extend the <strong>PopupChildWindowAction </strong>provided by Prism to implement you own custom logic about how information from the view is going to be sent to the <strong>Child Window </strong>control.</p>\r\n<p>The implementation details of this depends mostly of your personal preferences and the requirements of your scenario. As an example, you could extend the <strong>PopupChildWindowAction </strong>doing something like this:</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">public</span> <span style=\"color: blue;\">class</span> CustomPopupChildWindowAction : PopupChildWindowAction\r\n{\r\n      <span style=\"color: blue;\">protected</span> <span style=\"color: blue;\">override</span> ChildWindow GetChildWindow(Notification notification)\r\n      {\r\n           <span style=\"color: blue;\">var</span> dataContextAsINotification = <span style=\"color: blue;\">this</span>.ChildWindow.DataContext <span style=\"color: blue;\">as</span> Notification;\r\n\r\n           <span style=\"color: blue;\">if</span> (dataContextAsINotification == <span style=\"color: blue;\">null</span>)\r\n           {\r\n               <span style=\"color: blue;\">this</span>.ChildWindow.DataContext = notification;\r\n           }\r\n           <span style=\"color: blue;\">else</span>\r\n           {\r\n               dataContextAsINotification.Content = notification.Content;\r\n               dataContextAsINotification.Title = notification.Title;\r\n           }\r\n\r\n           <span style=\"color: blue;\">return</span> <span style=\"color: blue;\">this</span>.ChildWindow;\r\n      }\r\n}\r\n</pre>\r\n</div>\r\n<p>Where, if the view model of the <strong>Child Window </strong>control inherits from <strong>Notification</strong>, its <strong>Content </strong>and <strong>Title </strong>properties are set. If not, the <strong>Notification </strong>object it self is set as the data context of the <strong>Child Window </strong>control. Also, in this example we assume that the <strong>Child Window </strong>control has a constructor without parameters where the view model is obtained though the <strong>Service Locator</strong>.</p>\r\n<p>Then you can use this <strong>Child Window </strong>control in you view doing something like this:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color: black; background-color: white;\">\r\n<pre><span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">prism</span><span style=\"color: blue;\">:</span><span style=\"color: #a31515;\">InteractionRequestTrigger</span> <span style=\"color: red;\">SourceObject</span><span style=\"color: blue;\">=</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">{Binding SubmitErrorInteractionRequest}</span><span style=\"color: black;\">\"</span><span style=\"color: blue;\">&gt;</span>\r\n    <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">local</span><span style=\"color: blue;\">:</span><span style=\"color: #a31515;\">CustomPopupChildWindowAction</span><span style=\"color: blue;\">&gt;</span>\r\n        <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">local</span><span style=\"color: blue;\">:</span><span style=\"color: #a31515;\">CustomPopupChildWindowAction.ChildWindow</span><span style=\"color: blue;\">&gt;</span>\r\n            <span style=\"color: blue;\">&lt;</span><span style=\"color: #a31515;\">local</span><span style=\"color: blue;\">:</span><span style=\"color: #a31515;\">MyChildWindow</span><span style=\"color: blue;\">&gt;</span><span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">local</span><span style=\"color: blue;\">:</span><span style=\"color: #a31515;\">MyChildWindow</span><span style=\"color: blue;\">&gt;</span>\r\n        <span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">local</span><span style=\"color: blue;\">:</span><span style=\"color: #a31515;\">CustomPopupChildWindowAction.ChildWindow</span><span style=\"color: blue;\">&gt;</span>\r\n    <span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">local</span><span style=\"color: blue;\">:</span><span style=\"color: #a31515;\">CustomPopupChildWindowAction</span><span style=\"color: blue;\">&gt;</span>\r\n<span style=\"color: blue;\">&lt;/</span><span style=\"color: #a31515;\">prism</span><span style=\"color: blue;\">:</span><span style=\"color: #a31515;\">InteractionRequestTrigger</span><span style=\"color: blue;\">&gt;</span>\r\n</pre>\r\n</div>\r\n<p>Also, as an alternative approach that doesn't involve interaction requests, you might find the <strong>WindowDialogActivationBehavior </strong>and <strong>PopupDialogActivactionBehavior </strong>include in the <strong>Stock Trader RI</strong> useful.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-11-17T09:52:33.987-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "699836",
+    "ThreadId": "279807",
+    "Html": "<p>Hi and thanks a lot for the answer.</p>\r\n<p>But, i think i'm to stupid to understand them.</p>\r\n<p>My i ask you for a&nbsp; small sample where the childwindow hold for exampe only a ListView...</p>\r\n<p>Thnks in advance</p>\r\n<p>Peter</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-11-17T13:29:04.343-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "700306",
+    "ThreadId": "279807",
+    "Html": "<p>Hi Peter,</p>\r\n<p>You can find a sample (based on the <strong>Hello World QuickStart</strong>) uploaded in the following link with the name <strong><span class=\"filename\" title=\"CustomPopupChildWindowAction.zip\" dir=\"ltr\">CustomPopupChildWindowAction:</span></strong></p>\r\n<ul>\r\n<li><a href=\"https://skydrive.live.com/?cid=99307b6105bc060d&amp;sc=documents&amp;uc=1&amp;id=99307B6105BC060D%21107#\"><span class=\"filename\" title=\"CustomPopupChildWindowAction.zip\" dir=\"ltr\">CustomPopupChildWindowAction in Skydrive</span></a></li>\r\n</ul>\r\n<p><span class=\"filename\" title=\"CustomPopupChildWindowAction.zip\" dir=\"ltr\">In the sample, the <strong>HelloWorldView </strong>has a button with a binding to a command in its view model, which simply raises an <strong>interaction request</strong>. This view has an interaction trigger which uses the </span><strong>CustomPopupChildWindowAction </strong>(which you can find in the <strong>Infrastructure </strong>project) to show the <strong>CustomDialog </strong>child window as a modal dialog.</p>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-11-18T09:30:52.96-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "700356",
+    "ThreadId": "279807",
+    "Html": "<p>Thanks a lot,</p>\n<p>the example give me the light *g*</p>\n<p>Many Thanks</p>\n<p>Peter</p>",
+    "PostedDate": "2011-11-18T11:30:04.09-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027927",
+    "ThreadId": "279807",
+    "Html": "@DCherubini, <strong>First of all : Thanks a lot for your work.</strong> I am still in your steps and i find it so great. \r<br />\n<br />\nFor me your sample PopupWindowAction for WPF works just fine.\r<br />\nBut i am trying to make working the sample CustomPopupChildWindowAction for Silverlight\r<br />\nwith Prism v4.1 and Silverlight 5.0\r<br />\nand In HelloWorldModule\\Views\\HelloWorldView.xaml i get an error :<br />\n<pre><code>&lt;i:Interaction.Triggers&gt;\n    &lt;prism:InteractionRequestTrigger&gt;&lt;/prism:InteractionRequestTrigger&gt;\n&lt;/i:Interaction.Triggers&gt;\n</code></pre>\n\nSays :\r<br />\n<br />\nA value type of &quot;InteractionRequestTrigger&quot; cannot be added to a collection or a dictionnary of type &quot;TriggerCollection&quot;.\r<br />\n<br />\nWell if you have an idea ... I will digg ...\r<br />\n<br />\nI am still asking myself WHY wpf and silverlight frameworks seams are so identical and if so different.\r<br />\n<br />\nRegards<br />\n",
+    "PostedDate": "2013-04-09T08:36:40.027-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1027952",
+    "ThreadId": "279807",
+    "Html": "<strong>Mabyre wrote:</strong><br />\nOk I get my mistake, i did not install Blend for Silverlight Grrrrrrr !<br />\nMy blog in french <a href=\"http://csharppointnet.blogspot.fr/\" rel=\"nofollow\">C# .NET Blog</a><br />\n",
+    "PostedDate": "2013-04-09T09:27:52.213-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

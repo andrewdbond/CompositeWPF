@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1021192",
+    "ThreadId": "438022",
+    "Html": "How to invoke view of another module from a view of one module in Prism?\r<br />\n<br />\nHi all, I need to invoke a view of another module from a view of one module, for example, I have two mdi windows which contain different views from two modules. one has a grid that lists all orders, when user click one item of it, another mdi winodw that contains the order detail view from another module will display. how to make thisin Prism? \r<br />\n<br />\nCould some help me?<br />\n",
+    "PostedDate": "2013-03-26T05:36:18.03-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1021325",
+    "ThreadId": "438022",
+    "Html": "Hi,\r<br />\n<br />\nBased on my understanding, modules can't communicate directly between them. So in my opinion, in order to accomplish this task you have two possible options:\r<br />\n<br />\n<strong>1 -</strong> Use <strong>Navigation</strong>. This way, you could call the <strong>RequestNavigate</strong> method from the region manager to show a view from a another module like this:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\nregionManager.RequestNavigate(<span style=\"color:#A31515;\">&quot;MainRegion&quot;</span>, <span style=\"color:Blue;\">new</span> Uri(<span style=\"color:#A31515;\">&quot;YourView&quot;</span>, UriKind.Relative));\r\n</pre></div>Note that you only need to know both the region and the view names to navigate, so you <strong>don't require to have an explicit reference between the modules</strong>. Also, remember that in order to be able to navigate to a view in a region, that <strong>view should be registered in the container</strong> accordingly.\r<br />\n<br />\nLike this in <strong>Unity</strong>:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\ncontainer.RegisterType&lt;<span style=\"color:Blue;\">object</span>,YourView&gt;(<span style=\"color:#A31515;\">&quot;YourView&quot;</span>);\r\n</pre></div>Or like this in <strong>MEF</strong>:<br />\n<div style=\"color:Black;background-color:White;\"><pre>\r\n[Export(<span style=\"color:#A31515;\">&quot;YourView&quot;</span>)]\n<span style=\"color:Blue;\">public</span> <span style=\"color:Blue;\">partial</span> <span style=\"color:Blue;\">class</span> YourView : UserControl\r\n</pre></div><strong>2 -</strong> Inject <strong>EventAggregator</strong> to your <strong>ViewModels</strong> and use <strong>Publish</strong> and <strong>Subscribe</strong> methods to communicate between the modules.\r<br />\n<br />\nFor more information on <strong>Navigation</strong> and <strong>communicating between loosely coupled components</strong>, you can visit the following sections of the <strong>Prism</strong> documentation:<br />\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/gg430861(v=pandp.40).aspx#sec8\" rel=\"nofollow\">Chapter 8: Navigation - Basic Region Navigation</a><br />\n</li>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921122(v=pandp.40).aspx#sec8\" rel=\"nofollow\">Chapter 9: Communicating Between Loosely Coupled Components - Event Aggregation</a><br />\n</li>\n</ul>\nHope this helps,\r<br />\n<br />\nFederico Martinez \r<br />\n<a href=\"http://blogs.southworks.net/fmartinez\" rel=\"nofollow\">http://blogs.southworks.net/fmartinez</a><br />\n",
+    "PostedDate": "2013-03-26T09:56:56.987-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1021538",
+    "ThreadId": "438022",
+    "Html": "Thanks Federico.<br />\n",
+    "PostedDate": "2013-03-26T19:53:32.437-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "We recently ran into a problem with our application navigation - if we went to page X, then to another page, and tried to go back to page X again, it would throw an exception: \"View already exists in region.\"  I tracked the problem down by looking at the code in RegionNavigationContentLoader.LoadContent:\n \nvar acceptingCandidates =\n                candidates.Where(\n                    v =>\n                    {\n                        var navigationAware = v as INavigationAware;\n                        if (navigationAware != null && !navigationAware.IsNavigationTarget(navigationContext))\n                        {\n                            return false;  // Why not return navigationAware.IsNavigationTarget(navigationContext) ???\n                        }\n \n                        var frameworkElement = v as FrameworkElement;\n                        if (frameworkElement == null)\n                        {\n                            return true;\n                        }\n \n                        navigationAware = frameworkElement.DataContext as INavigationAware;\n                        return navigationAware == null || navigationAware.IsNavigationTarget(navigationContext);\n                    });\n \nIf the view AND the view model both implement INavigationAware, and the view returns \"true\", it is ignored and instead the value returned by the view model is used.  This is a problem because we have implemented INavigationAware in our view model base class (default return is \"false\"), but occasionally we need the view to control navigation instead of the view model.  However, the implementation in the loader forces us to choose one or the other for all cases.\n \nI guess I don't understand why the view would take precedence only if it returned \"false\"?  If the view implements INavigationAware, it would imply the intent for the view to control navigation, regardless of the return value...",
+    "LastUpdatedDate": "2013-02-21T18:38:07.033-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-10-18T07:32:17.353-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "RegionNavigationContentLoader.LoadContent precedence ignores IsNavigationTarget=true for Views if ViewModel also implements INavigationAware",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8832
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nThank you for reporting this. You might also find the following blog post by Agustin Adami useful, which explains another possible cause for your problem (in case you're defining your view with a contract name that is different to its type name):\r\nhttp://blogs.southworks.net/aadami/2011/10/14/matching-contract-names-and-view-names-in-prism-region-navigation/\r\n\r\nLet me know if that helps you solve the problem.\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-10-20T09:26:57.867-07:00",
+      "Id": 156529
+    }
+  ]
+}

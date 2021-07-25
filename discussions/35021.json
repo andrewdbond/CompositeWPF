@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "116391",
+    "ThreadId": "35021",
+    "Html": "What consideration should I be aware of when implementing InjectionMethod? I understand what is in the documentation:<br>\r\n<br>\r\n<p><strong>When to Use Method Call Injection<br>\r\n</strong><br>\r\nYou should consider using method call injection in the following situations:</p>\r\n<p>You want to instantiate dependent objects automatically when your instantiate the parent object. <br>\r\nYou want a simple approach that makes it easy to see in the code what the dependencies are for each class. <br>\r\nThe parent object requires a large number of constructors that forward to each other, making debugging and maintenance difficult. <br>\r\nThe parent object constructors require a large number of parameters, especially if they are of similar types and the only way to identify them is by position. <br>\r\nYou want to hide the dependent objects by not exposing them as properties. <br>\r\nYou want to control which objects are injected by editing the code of the dependent object instead of the parent object or application. <br>\r\n<br>\r\nHere's my simple sample:<br>\r\n</p>\r\n<p>//Bootstrapper<br>\r\nprotected override void ConfigureContainer()<br>\r\n{<br>\r\n&nbsp; base.ConfigureContainer();</p>\r\n<p>&nbsp; Container.Resolve&lt;Sample&gt;();<br>\r\n}</p>\r\n<p>// Sample Class<br>\r\npublic class Sample<br>\r\n{<br>\r\n&nbsp;public void GetInjectedValue(IRegionManager manager)<br>\r\n&nbsp;{<br>\r\n&nbsp;&nbsp; string message = &quot;My value is of type {0}&quot;;<br>\r\n&nbsp;&nbsp; MessageBox.Show(string.Format(message, manager.GetType()));<br>\r\n&nbsp;}<br>\r\n}</p>\r\n<p><br>\r\nMy&nbsp;GetInjectedValue in the Sample class does not fire.: why?<br>\r\n<br>\r\nThanks in advance,<br>\r\n<br>\r\nAndres Olivares</p>\r\n",
+    "PostedDate": "2008-09-05T11:18:45.477-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "116904",
+    "ThreadId": "35021",
+    "Html": "<p style=\"margin:0in 0in 0pt\"><span><span style=\"font-family:Calibri\">Hi</span></span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span><span style=\"font-family:Calibri\">You must apply the <b>[InjectionMethod]</b> attribute to your <b>GetInjectedValue</b> method so it is called when the Unity container performs the injection.</span></span></p>\r\n<p style=\"margin:0in 0in 0pt\"><b><span style=\"font-size:10pt;font-family:'Courier New'\">&nbsp;</span></b></p>\r\n<p style=\"margin:0in 0in 0pt\"><b><span style=\"font-size:10pt;font-family:'Courier New'\">using Microsoft.Practices.Unity;</span></b></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-size:10pt;font-family:'Courier New'\">public class Sample</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-size:10pt;font-family:'Courier New'\">{</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><b><span style=\"font-size:10pt;font-family:'Courier New'\">[InjectionMethod]</span></b> </p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'Courier New'\">public void GetInjectedValue(IRegionManager manager)</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'Courier New'\">{</span></p>\r\n<p style=\"margin:0in 0in 0pt 1in\"><span style=\"font-size:10pt;font-family:'Courier New'\">string message = &quot;My value is of type {0}&quot;;</span></p>\r\n<p style=\"margin:0in 0in 0pt 1in\"><span style=\"font-size:10pt;font-family:'Courier New'\">MessageBox.Show(string.Format(message, manager.GetType()));</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'Courier New'\">}</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-size:10pt;font-family:'Courier New'\">}</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span><span style=\"font-family:Calibri\">Another approach is to receive all the class dependencies in the constructor. In this case it is not necessary to add an attribute to the constructor, because it will be automatically injected.</span></span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-size:10pt;font-family:'Courier New'\">&nbsp;</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-size:10pt;font-family:'Courier New'\">public class Sample</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-size:10pt;font-family:'Courier New'\">{</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><b><span style=\"font-size:10pt;font-family:'Courier New'\">public Sample(IRegionManager manager)</span></b></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'Courier New'\">{</span></p>\r\n<p style=\"margin:0in 0in 0pt 1in\"><span style=\"font-size:10pt;font-family:'Courier New'\">string message = &quot;My value is of type {0}&quot;;</span></p>\r\n<p style=\"margin:0in 0in 0pt 1in\"><span style=\"font-size:10pt;font-family:'Courier New'\">MessageBox.Show(string.Format(message, manager.GetType()));</span></p>\r\n<p style=\"margin:0in 0in 0pt 0.5in\"><span style=\"font-size:10pt;font-family:'Courier New'\">}</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-size:10pt;font-family:'Courier New'\">}</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span><span style=\"font-family:Calibri\">Please, let me know if it helps.</span></span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"color:#1f497d\"><span style=\"font-family:Calibri\">&nbsp;</span></span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span><span style=\"font-family:Calibri\">Mariano Converti</span></span></p>\r\n<span style=\"font-size:11pt;font-family:'Calibri','sans-serif'\"><a href=\"http://blogs.southworks.net/mconverti\">http://blogs.southworks.net/mconverti</a></span>\r\n",
+    "PostedDate": "2008-09-08T08:50:09.317-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "117610",
+    "ThreadId": "35021",
+    "Html": "mconverti,<br>\r\n<br>\r\nThanks.\r\n",
+    "PostedDate": "2008-09-10T10:57:27.74-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "119208",
+    "ThreadId": "35021",
+    "Html": "When you say &quot;<span><span style=\"font-family:Calibri\">In this case it is not necessary to add an attribute to the constructor, because it will be <strong>automatically </strong>injected.&quot;, what does automatically actually mean?&nbsp; Does it mean that when one attempts to create an instance of class Sample, they do not have to pass an instance of IRegionManager into the constructor?&nbsp;&nbsp; Compiler will not allow that.<br>\r\n<br>\r\n<br>\r\n<br>\r\n</span></span>\r\n",
+    "PostedDate": "2008-09-17T12:34:44.133-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "119226",
+    "ThreadId": "35021",
+    "Html": "<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:Calibri\">Hi,</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:Calibri\">&nbsp;</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:Calibri\">To get the dependencies injected via de the constructor of the class, you must create the instance with the container, as follows:</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-size:10pt;color:#4bacc6;font-family:'Courier New'\">Sample</span><span style=\"font-size:10pt;font-family:'Courier New'\"> mySample = _container.Resolve&lt;<span style=\"color:#4bacc6\">Sample</span>&gt;();</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span style=\"font-family:Calibri\">&nbsp;</span></p>\r\n<p style=\"margin:0in 0in 0pt\"><span><span style=\"font-family:Calibri\">Ignacio Baumann Fonay</span></span></p>\r\n<p style=\"margin:0in 0in 0pt -0.6pt\"><a href=\"http://blogs.southworks.net/ibaumann/\"><span><span style=\"font-family:Calibri\">http://blogs.southworks.net/ibaumann/</span></span></a> </p>\r\n",
+    "PostedDate": "2008-09-17T13:37:27.56-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "119334",
+    "ThreadId": "35021",
+    "Html": "makaveli_0000,<br>\r\n<br>\r\nCorrect,&nbsp;<span><span style=\"font-family:Calibri\">Ignacio Baumann</span></span>. To elaborate further, object resolution constructs your object with the proper constructor based on its construction policies/strategies and scans your object to inject property dependencies, as well as call&nbsp;injection methods. At design time your object can have as many constructors as it needs to have. The constructors&nbsp;that rely on dependent objects that will be registered at that time will be injected by the container.<br>\r\n<br>\r\nAs&nbsp;<span><span style=\"font-family:Calibri\">Ignacio Baumann pointed out, construction of the Sample object, in the example above, would invoke the constructor with dependencies. When the Sample instance is created it would contain an instance of RegionManager as a parameter of its constructor. Looking further into the UnityBootstrapper code, you'll find code something like:<br>\r\n<br>\r\ncontainer.RegisterTypeIfMissing&lt;IRegionManager, RegionManager&gt;();<br>\r\n<br>\r\nTo learn more about all this, grab the&nbsp;documentation:<br>\r\n<br>\r\nComposite Application Guidance<br>\r\n</span></span><span><span style=\"font-family:Calibri\"><a href=\"http://www.codeplex.com/CompositeWPF/Release/ProjectReleases.aspx?ReleaseId=14982\">http://www.codeplex.com/CompositeWPF/Release/ProjectReleases.aspx?ReleaseId=14982</a><br>\r\n<br>\r\nUnity<br>\r\n<a href=\"http://www.codeplex.com/unity/Release/ProjectReleases.aspx?ReleaseId=13598\">http://www.codeplex.com/unity/Release/ProjectReleases.aspx?ReleaseId=13598</a><br>\r\n<br>\r\nHope this helps,<br>\r\n<br>\r\nAndres Olivares<br>\r\n</span></span>\r\n",
+    "PostedDate": "2008-09-18T03:01:08.277-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

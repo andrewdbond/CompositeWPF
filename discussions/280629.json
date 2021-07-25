@@ -1,0 +1,50 @@
+[
+  {
+    "Id": "702559",
+    "ThreadId": "280629",
+    "Html": "<p>from a repo before registering</p>\n<p>&nbsp;</p>\n<p>also how about updating modules before loading - either auto or on demand / user consent ?</p>\n<p>&nbsp;</p>",
+    "PostedDate": "2011-11-23T12:37:46.447-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "702910",
+    "ThreadId": "280629",
+    "Html": "<p>Hi,</p>\r\n<p>You might find the following section from the Modularity Chapter in the Prism MSDN documentation useful to your purposes:</p>\r\n<p><a href=\"http://msdn.microsoft.com/en-us/library/gg405479%28PandP.40%29.aspx#sec34\">Downloading Remote Modules in the Background</a></p>\r\n<p>The aforementioned section, however, is targeted at Silverlight. For WPF applications, the scenario of remote module downloading is not supported out of the box. Below you will find an explanation of the way Prism loads modules, which might be useful in case you want to create an extension that supports downloading remote modules in WPF applications.</p>\r\n<p>Once a module has been loaded into the module catalog, it is represented through a <strong>ModuleInfo </strong>instance. This instance, however, does not contain the bytes of the module's assembly, but rather a description of the module: it's name (<strong>ModuleName</strong>), the type of the class implementing IModule inside the project (<strong>ModuleType</strong>), the initialization mode (<strong>InitializationMode</strong>), the state (<strong>State</strong>), dependent modules (<strong>DependsOn</strong>), and a reference to the location of the module's assembly (<strong>Ref</strong>). The latter will be of interest to us in regards to where to download the module from.</p>\r\n<p>When you indicate that you wish to load a module, a module type loader (which must implement the <strong>IModuleTypeLoader</strong> interface) retrieves the assembly from the <strong>Ref </strong>property of the <strong>ModuleInfo</strong>, loads it in memory, and then creates a new instance of the class that implements <strong>IModule</strong> in your project (i.e. the one described in the <strong>ModuleType</strong> property), and calls its <strong>Initialize</strong> method.</p>\r\n<p>The Silverlight Prism Library provides a <strong>XapModuleTypeLoader </strong>(or <strong>MefXapModuleTypeLoader</strong>, in case you're using MEF), which uses a <strong>FileDownloader </strong>to download the XAP package containing your module(s). The <strong>FileDownloader </strong>is basically a wrapper for the <strong>WebClient</strong> class in Silverlight.</p>\r\n<p>The WPF Prism Library, on the other hand, provides a <strong>FileModuleTypeLoader</strong> <strong></strong>(or <strong>MefFileModuleTypeLoader</strong>, in case you're using MEF), which simply retrieves your module's assembly from the directory specified in the <strong>Ref</strong> property. The value of the <strong>Ref </strong>property must look like this <em>\"file://c:/MyProject/Modules/MyModule.dll\" </em>in order for this type loader to retrieve it correctly. To do this, the <strong>FileModuleTypeLoader (Prism.Desktop/Modularity/FileModuleTypeLoader.Desktop.cs) </strong>relies on an <strong>AssemblyResolver (Prism.Desktop/Modularity/AssemblyResolver.Desktop.cs)</strong>, which provides a <strong>LoadAssemblyFrom</strong> method that loads in memory the assembly in the path specified.</p>\r\n<p>One possible approach you could follow would be to create a WPF file downloader (which could be named&nbsp;<strong>WPFFileDownloader</strong>) that uses a <strong>WebClient </strong>to download your assembly from a remote location and store it on a folder (which could be named <strong>AlreadyDownloadedModules</strong>). Then you could create a custom module type loader (which could be named <strong>WPFRemoteFileModuleTypeLoader</strong>) which uses this <strong>WPFFileDownloader</strong> to retrieve the assembly (if it's not already present in the <strong>AlreadyDownloadedModules </strong>folder), and then use the <strong>AssemblyResolver</strong> to load it in memory. You can reuse most of the code in the <strong>FileModuleTypeLoader/MefFileModuleTypeLoader </strong>class to avoid writing it yourself; basically you should modify the <strong>LoadModuleType</strong> method to use remote loading, and modify the <strong>CanLoadModuleType</strong> method to indicate that this module loader can load <strong>ModuleInfo</strong>'s whose <strong>Ref</strong> property points to a remote Uri.</p>\r\n<p>This should make the remote loading optional; which could be an interesting opportunity to reuse the <strong>WPFFileDownloader</strong> on a separate component whose only responsibility is to prompt for updates and update the modules in the <strong>AlreadyDownloadedModules</strong> folder if necessary.</p>\r\n<p>Once you have created your custom module loader, you should create a custom <strong>ModuleManager</strong> that simply inherits from the default one, but overriding its <strong>ModuleTypeLoaders</strong> property to include the <strong>WPFRemoteFileModuleTypeLoader</strong> in the list. Then you should add your custom <strong>ModuleManager </strong>to the container (exporting it with the <strong>IModuleManager </strong>interface as the contract type) so that it replaces the default one.</p>\r\n<p>I hope you find this helpful.</p>\r\n<p>Guido Leandro Maliandi <br /> <a href=\"http://blogs.southworks.net/gmaliandi\">http://blogs.southworks.net/gmaliandi</a></p>",
+    "PostedDate": "2011-11-24T05:03:54.27-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "715041",
+    "ThreadId": "280629",
+    "Html": "<p>Thanks Guido</p>\r\n<p>Is there any extensibility point to get the list of modules to load from a web service, based on params such as user, machine etc ?</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2011-12-20T12:23:21.8-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "715563",
+    "ThreadId": "280629",
+    "Html": "<p>Hi,</p>\r\n<p>The implementations details for this functionality will depend mostly of your personal preferences and the requirements of your scenario.</p>\r\n<p>As far as I know, <strong>Prism does not provide this functionality out of the box</strong>. However, you might find the following blog post by Guido Maliandi useful:</p>\r\n<ul>\r\n<li><a href=\"http://blogs.southworks.net/gmaliandi/2011/10/authentication-and-role-based-authorization-in-prism-v4/\">Authentication and role based authorization in Prism v4</a></li>\r\n</ul>\r\n<p>In the aforementioned blog post, the sample application provided uses a service (the <strong>IAuthorizationService</strong>) to obtain a list of modules depending of a parameter (the role of the user) and then, load the modules specified in this list through the Prism's <strong>ModuleManager</strong>. This approach might be similar to the functionality you are describing.</p>\r\n<p>Also, you might find more information about extending Prism in the following chapter of the documentation:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430866(PandP.40).aspx#sec19\">Appendix E: Extending Prism - Modules in MSDN</a></li>\r\n</ul>\r\n<p>I hope you find this useful,</p>\r\n<p>Damian Cherubini<br /> <a href=\"http://blogs.southworks.net/dcherubini\">http://blogs.southworks.net/dcherubini</a></p>",
+    "PostedDate": "2011-12-21T09:26:11.513-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "716254",
+    "ThreadId": "280629",
+    "Html": "<p>Thanks Damian, that is great, will look into it</p>\r\n<p>on another note, any idea on when is BootStrapper.Container initialized ?</p>",
+    "PostedDate": "2011-12-22T12:08:40.063-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "716683",
+    "ThreadId": "280629",
+    "Html": "<p>Hi,</p>\r\n<p>You might find that Creating and Configuring the Container is a stage of the bootstrapping process, which is called by the <strong>Bootstrapper.Run</strong> method.<br />For more information regarding the sequence followed in the bootstrapping process and how a Prism application initializes, you might find the following chapter of the Prism documentation at MSDN useful:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/gg430868(v=PandP.40).aspx\">Chapter 2: Initializing Prism Applications</a></li>\r\n</ul>\r\n<p>Regards,</p>\r\n<p>Agustin Adami<a href=\"http://blogs.southworks.net/aadami\"><br /> http://blogs.southworks.net/aadami</a></p>",
+    "PostedDate": "2011-12-23T09:10:32.62-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

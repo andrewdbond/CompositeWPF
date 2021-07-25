@@ -1,0 +1,70 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "We added this capability in Prism 5.0 for WPF.",
+    "ClosedDate": "2014-05-01T11:20:18.887-07:00",
+    "CommentCount": 6,
+    "Custom": "",
+    "Description": "Hello,\n \nCould you please support Event to Command in Prism? There are a few numbers of MVVM frameworks that support EventToCommand. Even we can copy the code or repeat the same thing in our own way, It would be the best if we have official support from Prism Framework. \n \nOne suggestion that I like to suggest for implementing Event to Command is that VM should have the reference to control. For example: If I'm using third-party control in View, but my view model shouldn't aware of that third-party control. The max scope of this third-party control should be only in View and attached property (not in ViewModel). \n \nWe will need a lot of tricks when it comes to usability. WPF strong binding is great and what Prism supports so far is also very good for developing WPF/Silverlight business application. But there are some scenarios that we need events (this is where Event to Command comes into picture.), setting focus or handling mouse or etc. \n \nThanks,\nMichael Sync",
+    "LastUpdatedDate": "2014-05-01T11:20:18.887-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-11-23T18:49:57.217-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Event to Command",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 26,
+    "Id": 5495
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Very compelling.",
+      "PostedDate": "2012-01-09T04:25:11.773-08:00",
+      "Id": 156191
+    },
+    {
+      "Message": "Hi,\r\n \r\nFor those interested in this subject, you might find useful to know that in order to achieve event-to-command functionality, it’s possible to use Expression Blend’s EventTrigger and InvokeCommandAction like this:\r\n \r\n     \r\n          \r\n               \r\n                    \r\n               \r\n          \r\n       \r\n \r\nHowever, Blend’s built-in InvokeCommandAction does not update the enabled state of the control if the ICommand changes it, which might be useful in certain scenarios. To support this kind of scenarios, since Prism 4.1 release (http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=28950), a custom InvokeCommandAction is provided, which can be used in the same way as Blend’s, but it also updates the control's enabled state appropriately:\r\n\r\n     \r\n          \r\n               \r\n                    \r\n\r\n               \r\n          \r\n       \r\n \r\nRegards,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami ",
+      "PostedDate": "2012-03-08T10:58:49.347-08:00",
+      "Id": 156192
+    },
+    {
+      "Message": "Very useful.\r\nIs it possible to pass to \"MyCommand\" a sort of EventArgs argument, to allow the command to know which key has been pressed?",
+      "PostedDate": "2012-06-03T08:46:49.35-07:00",
+      "Id": 156193
+    },
+    {
+      "Message": "Hi,\r\n\r\nBased on my understanding, currently the InvokeCommandAction provided with Prism, uses the CommandParameter specified in the CommandParameterProperty for command invocation, this can be seen in the following lines of the InvokeCommandAction class:\r\n\r\n// This parameter is ignored; the CommandParameter specified in the CommandParameterProperty is used for command invocation.\r\nprotected override void Invoke(object unusedParameter)\r\n(...)\r\n\r\nHence, if you need to retrieve the EventArgs and pass them to the command through the CommandParameter property, I believe you might find the following blog post useful:\r\n\r\nSilverlight Commands Hacks: Passing EventArgs as CommandParameter to DelegateCommand triggered by EventTrigger\r\nhttp://weblogs.asp.net/alexeyzakharov/archive/2010/03/24/silverlight-commands-hacks-passing-eventargs-as-commandparameter-to-delegatecommand-triggered-by-eventtrigger.aspx\r\n\r\nI hope you find this handy,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami ",
+      "PostedDate": "2012-06-05T09:51:14.987-07:00",
+      "Id": 156194
+    },
+    {
+      "Message": "MVVM LightTool KIt EventToCommand behavior, bind any event of any UI element to an ICommand, for example on the ViewModel, directly in XAML. This makes using Commands much easier, without writing code behind. One can even get the EventArgs of the fired event directly in the ViewModel to handle it. Please include this cool feature in PRISM, else developrs have to write a lot of code to handle these scenarios.\r\n",
+      "PostedDate": "2012-07-20T02:20:22.337-07:00",
+      "Id": 156195
+    },
+    {
+      "Message": "Hi,\r\n\r\nFor those interested in using the Prism's InvokeCommandAction, take into account that this implementation is located in the Microsoft.Practices.Prism.Interactivity assembly and a reference to this assembly will have to be added to the corresponding project and Xaml file in order to use it (e.g xmlns:prism=\"clr-namespace:Microsoft.Practices.Prism.Interactivity;assembly=Microsoft.Practices.Prism.Interactivity\").\r\n\r\nNote, that currently this is not mentioned in the Prism's documentation.\r\n\r\nRegards,\r\n\r\nAgustin Adamihttp://blogs.southworks.net/aadami ",
+      "PostedDate": "2012-10-23T09:46:48.61-07:00",
+      "Id": 156196
+    }
+  ]
+}

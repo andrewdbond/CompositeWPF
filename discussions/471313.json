@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "1129611",
+    "ThreadId": "471313",
+    "Html": "First project using Prism...\r<br />\nFirst real project in WPF...\r<br />\n<br />\nWhere should I put my singleton services?\r<br />\nI have an infrastructure project (interfaces, regionNames, etc.) and we also put the implementation of some interfaces in this infrastructure projects. Essentially singletons services available to all modules.\r<br />\n<br />\nIt works if those singletons are used in modules, since the bootstrapper register those services...\r<br />\nBut what about other objects in the infrastructure if they need a singleton's instance? cannot be tested without bootsrapper registration? I could possibly add a typical GetInstance() fct and use it... but am I wrong?\r<br />\n<br />\nI'm now thinking about creating a Common assembly different from the infrastructure. A prism module...\r<br />\n<br />\nSomething to declare??<br />\n",
+    "PostedDate": "2013-11-27T07:30:21.7-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1129682",
+    "ThreadId": "471313",
+    "Html": "Hi mt_x,\r<br />\n<br />\nBased on my understanding, services are meant to be used on cross-module communications.\r<br />\nI think you could find helpful the following <strong>MSDN Prism</strong> chapter at <strong><em>SharedServices</em></strong> section:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921122%28PandP.40%29.aspx#sec4\" rel=\"nofollow\">9: Communicating Between Loosely Couple Components</a><br />\n</li>\n</ul>\nFurthermore, you can see the StockTrader Reference Implementation documentation for Common assembly configuration details:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://msdn.microsoft.com/en-us/library/ff921074(v=pandp.40).aspx#sec18\" rel=\"nofollow\">StockTraderRI</a><br />\n</li>\n</ul>\nI hope you find this useful,\r<br />\n<br />\nGabriel Ostrowsky\r<br />\nhttps//blogs.southworks.net/gostrowsky<br />\n",
+    "PostedDate": "2013-11-27T10:10:34.543-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1132067",
+    "ThreadId": "471313",
+    "Html": "Hi mt_x,\r<br />\nAs per my understanding from your post you are trying to use single instance of service object in different modules. If this is that case  than i think you can achieve this by \r<br />\nregistering service in unity container and get that service  by using service locator class  in your different modules.\r<br />\n<br />\nHoping this will help you.\r<br />\n<br />\nPankaj Goswami<br />\n",
+    "PostedDate": "2013-12-05T02:40:03.27-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "Id": "486914",
+    "ThreadId": "225439",
+    "Html": "<p>Hi guys</p>\r\n<p>I have two views that is registered to two different parts of the shell via the region manager. These two views need to share the same viewmodel. How can I go about achieving this, without newing up to&nbsp;different&nbsp;instance of the same viewmodel?</p>\r\n<p>Thanks in advance.</p>",
+    "PostedDate": "2010-08-31T06:00:33.897-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "487022",
+    "ThreadId": "225439",
+    "Html": "<p>Hi,</p>\r\n<p>Based on our understanding you need to assign the same instance of a particular ViewModel&nbsp;to different views. It is possible to achieve by using the Lifetime Managers of Unity. For more information about this topic you could take a look at the following documentation section on MSDN:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ff648098.aspx\">Using Lifetime Managers</a></li>\r\n</ul>\r\n<p>In other&nbsp;words,&nbsp;it consists on resolving a registered instance in your container, which has the singleton behavior. Some time ago, other user has asked a pretty similar question to this, so you could check this:</p>\r\n<ul>\r\n<li><a href=\"http://compositewpf.codeplex.com/Thread/View.aspx?ThreadId=214863\">using same region multiple times &amp; changing selected item with mvvm globally</a></li>\r\n</ul>\r\n<p>Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-08-31T08:12:39.97-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "487040",
+    "ThreadId": "225439",
+    "Html": "<p>Hi&nbsp;</p>\r\n<p>I am amware of the &quot;RegisterType&lt;T&gt;&quot; method in the IUnityContainer. Is there an equivalent export part in the MEF Extension package of the&nbsp;Prism 4.0 CTP - August 2010 that will allow me to implement that same type of functionality?</p>\r\n<p>Thanks.</p>",
+    "PostedDate": "2010-08-31T08:31:08.417-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "487073",
+    "ThreadId": "225439",
+    "Html": "<p>Hi,</p>\r\n<p>In MEF it is possible to&nbsp;export a part&nbsp;with singleton behavior by using creation policies. In this case, it might help to achieve this scenario the usage of the following creation policy, as it is shown below:<strong>&nbsp;</strong></p>\r\n<p><strong>[PartCreationPolicy(CreationPolicy.Shared)]<br></strong>[Export(<span style=\"color:blue\">typeof</span>(IYourViewModel))]<br><span style=\"color:blue\">public</span>YourViewModel()<br>{<br>&nbsp;&nbsp;&nbsp; ...<br>}<br>...<br><strong>[Import()]<br></strong><span style=\"color:blue\">public</span>YourViewModel sharedViewModel { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">set</span>; }</p>\r\n<p>If your viewmodel should not be imported unless it will be shared, you could guarantee this using the following argument in your import:</p>\r\n<pre><strong>[Import(RequiredCreationPolicy = CreationPolicy.Shared)]</strong></pre>\r\n<p><a href=\"http://11011.net/software/vspaste\"></a></p>\r\n<p>For more information about creation policies, you could take a&nbsp;look at the following links:</p>\r\n<ul>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/library/ee155691.aspx#creation_policies\">Attributed Programming Model Overview</a></li>\r\n<li><a href=\"http://msdn.microsoft.com/en-us/magazine/ee291628.aspx\">Building Composable Apps in .NET 4 with the Managed Extensibility Framework</a>, see the <em>Controlling Part Creation Policy</em>&nbsp;section</li>\r\n</ul>\r\n<p>Please let me know if this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-08-31T09:32:43.067-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "487077",
+    "ThreadId": "225439",
+    "Html": "<p>Please see post below:&nbsp;</p>",
+    "PostedDate": "2010-08-31T09:46:27.553-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "487358",
+    "ThreadId": "225439",
+    "Html": "<p>Hi, it still didnt work</p>\r\n<p>I tried that, but it sill creates multiple instances (no singleton) of the view model. Here is a break down of what Im doing to better explain my&nbsp;conundrum:</p>\r\n<p>&nbsp;</p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:green\">      //Initialize the module when available. Register TWO or more views for each module</span>\r\n      <span style=\"color:blue\">public</span> <span style=\"color:blue\">void</span> Initialize()\r\n      {</pre>\r\n<pre>         <span style=\"color:blue\">this</span>.regionManager.RegisterViewWithRegion(<span style=\"color:#a31515\">&quot;RegionMain&quot;</span>, <span style=\"color:blue\">typeof</span>(View.CategoryView));\r\n         <span style=\"color:blue\">this</span>.regionManager.RegisterViewWithRegion(<span style=\"color:#a31515\">&quot;RegionEditor&quot;</span>, <span style=\"color:blue\">typeof</span>(View.CategoryEditor));\r\n      }\r\n</pre>\r\n</div>\r\n<p>&nbsp;</p>\r\n<p>Then in view, I bind the DataContext to the the viewmodel via the MEF Import / Export Attribute<br><br></p>\r\n<div style=\"color:black;background-color:white\">\r\n<pre><span style=\"color:green\">// **** User Control View *******/</span>\r\n[Import(RequiredCreationPolicy = CreationPolicy.Shared)]\r\n<span style=\"color:blue\">public</span> ICategoryViewModel CategoryViewModel { <span style=\"color:blue\">get</span>; <span style=\"color:blue\">set</span>; }\r\n\r\n\r\n<span style=\"color:green\">//**** ViewModel**********/</span>\r\n [PartCreationPolicy(System.ComponentModel.Composition.CreationPolicy.Shared)]\r\n   [Export(<span style=\"color:blue\">typeof</span>(ICategoryViewModel))]\r\n   <span style=\"color:blue\">public</span> <span style=\"color:blue\">class</span> CategoryViewModel : BaseViewModel, ICategoryViewModel {</pre>\r\n<pre><br></pre>\r\n</div>\r\n<p>In the constructor of the ViewModel, I do a async ria service call to fetch the categories. This should surely only do one call for both views because of the CreationPolicy.Shared (Singleton) attribute&nbsp;, but I actually get three calls made, not even two! Here is the call stack</p>\r\n<pre>Call 1: Microsoft.Practices.Composite.MefExtensions!Microsoft.Practices.Composite.MefExtensions.<strong>MefServiceLocatorAdapter</strong>.DoGetInstance(System.Type serviceType = {System.RuntimeType}, string key = null)\r\nCall 2: Category!Category.View.CategoryView.CategoryView() Line 35\tC#\r\nCall 3: Category!Category.View.CategoryEditor.CategoryEditor() Line 28\tC#</pre>\r\n<p>So I guess, it once for when the module is&nbsp;initialized, once for the CategoryView and once for the CategoryEditor.</p>\r\n<p>Thank you in advance</p>",
+    "PostedDate": "2010-08-31T22:11:35.743-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "487619",
+    "ThreadId": "225439",
+    "Html": "<p>Any ideas?</p>",
+    "PostedDate": "2010-09-01T07:45:50.38-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "489082",
+    "ThreadId": "225439",
+    "Html": "<p>Hi,</p>\r\n<p>I&nbsp;created a simple sample around this topic&nbsp;and it worked. You could&nbsp;download  it from <a href=\"http://cid-60a74023ee1812bd.office.live.com/self.aspx/.Public/MEFCreationPolicySample.zip\">here</a>.</p>\r\n<p>If you continue experiencing this problem, you could share either any  additional information or your sample&nbsp;to clarify this scenario.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p id=45ae3120-98cd-012d-d94e-12313b100c33>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-09-03T14:41:36.55-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "489149",
+    "ThreadId": "225439",
+    "Html": "<blockquote style=\"border:solid .1em #ccc;font-style:italic;margin:.25em 1em 0 1em;padding:0 .25em 0 .25em\"><strong>fantivero wrote:</strong><br>\r\n<p>Hi,</p>\r\n<p>I&nbsp;created a simple sample around this topic&nbsp;and it worked. You could&nbsp;download  it from <a href=\"http://cid-60a74023ee1812bd.office.live.com/self.aspx/.Public/MEFCreationPolicySample.zip\">here</a>.</p>\r\n<p>If you continue experiencing this problem, you could share either any  additional information or your sample&nbsp;to clarify this scenario.</p>\r\n<p>Please let me know if this helps.</p>\r\n<p id=45ae3120-98cd-012d-d94e-12313b100c33>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n</blockquote>\r\n<p>Thank you for your help, but not to worry. I eventually did fix the problem/bug.</p>",
+    "PostedDate": "2010-09-03T20:52:05.98-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

@@ -1,0 +1,60 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Fixed in Prism 5.0.",
+    "ClosedDate": "2014-05-01T11:25:26.213-07:00",
+    "CommentCount": 4,
+    "Custom": "",
+    "Description": "In the recent change of Prism (V2) you've changed how the Region Manager detects that it's running in a Design Mode or not. This has ultimatly broke all my Prism plug-ins that were hosted by non-WPF applications. One of the examples of hosts for such plug-ins is an Office AddIn.\n \nIt took me about 6 hours to track down this problem and, to my amazement, I've found the place where it broke:\n \nprivate static bool RegionManager::IsInDesignMode(DependencyObject element)\n{\n     // Due to a known issue in Cider, GetIsInDesignMode attached property value is not enough to know if it's in design mode.\n     return DesignerProperties.GetIsInDesignMode(element) || Application.Current == null\n            || Application.Current.GetType() == typeof(Application);\n}\n \nThe reason is that for the non-WPF application the Application.Current is NULL !!!\n \n======\nHere is the solution, I've found, for my problem, but, I think, the check in RegionManager::IsInDesignMode has to be fixed:\n \n1. Create an empty class that will inherit from System.Windows.Applicatoin. (Name doesn't matter):\n \npublic class MyApp : Application\n{\n}\n \n2. At the point of entry to a plug-in execute the following code:\n \nif (System.Windows.Application.Current == null)\n{\n   // create the Application object\n   new MyApp();\n}\n \n--> This is it - now you have an Application.Current not null and it's not equal to typeof(Application)\n \nIf, by any chance you'd like to merge your application resources - do this:\n \n   // merge in your application resources\n   System.Windows.Application.Current.Resources.MergedDictionaries.Add(\n      System.Windows.Application.LoadComponent(\n      new Uri(\"MyLibrary;component/Resources/MyResourceDictionary.xaml\",\n      UriKind.Relative)) as ResourceDictionary);\n \nFor more information check DR.WPF's article (http://www.drwpf.com/blog/Home/tabid/36/EntryID/10/Default.aspx) that beautifuly explains the reasons and workarounds for the problem, described above.",
+    "LastUpdatedDate": "2014-05-01T11:25:26.213-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2009-01-05T10:41:39.907-08:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "Region manager in V2 fails to recognize non-WPF applications",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 6,
+    "Id": 3552
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Same problem for me, actually I comment the IsInDesignMode function but your solution is more interesting :).\r\nThanks.",
+      "PostedDate": "2010-01-06T04:06:50.21-08:00",
+      "Id": 156076
+    },
+    {
+      "Message": "Same problem for me, actually I comment the IsInDesignMode function but your solution is more interesting :).\r\nThanks.",
+      "PostedDate": "2010-01-06T04:06:56.523-08:00",
+      "Id": 156077
+    },
+    {
+      "Message": "Hi,\r\n\r\nBased on our understanding, the IsInDesignMode method checks for the current application due to a known issue in Cider with Silverlight 3, where the DesignerProperties.GetIsInDesignMode method doesn’t work correctly. You can find more information about this in the following blog post by David Anson: http://blogs.msdn.com/b/delay/archive/2009/02/26/designerproperties-getisindesignmode-forrealz-how-to-reliably-detect-silverlight-design-mode-in-blend-and-visual-studio.aspx . \r\n\r\nWe have tested the DesignerProperties.GetIsInDesignMode method in Silvelight 4 and it seems to be working correctly, so you could modify the implementation of the IsInDesignMode method of the RegionManager (like mentioned in this work item by Michael Puleio: http://compositewpf.codeplex.com/workitem/7102) with this:\r\n\r\nprivate static bool IsInDesignMode(DependencyObject element)\r\n{ \r\n      return DesignerProperties.GetIsInDesignMode(element);\r\n}\r\n\r\nAlso, if this implementation presents an undesired behavior in your application, you could check the following blog post where a different implementation to detect if the application is in design mode is proposed: http://geekswithblogs.net/lbugnion/archive/2009/09/05/detecting-design-time-mode-in-wpf-and-silverlight.aspx .\r\n\r\nI hope you find this useful,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini\r\n",
+      "PostedDate": "2011-12-01T12:40:18.33-08:00",
+      "Id": 156078
+    },
+    {
+      "Message": "This bug should be fixed.\r\nAnyone migrating a Windows Forms app to use Prism with WPF might be put off using Prism.\r\nI only discovered this article after working out what the problem was.\r\nkeywords: Prism regions collection empty, region not added, region not populated\r\n",
+      "PostedDate": "2012-08-08T21:28:13.123-07:00",
+      "Id": 156079
+    }
+  ]
+}

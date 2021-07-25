@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "457781",
+    "ThreadId": "216676",
+    "Html": "<p>I'm rather confused with the code in the MefBootstrapper below:</p>\r\n<p>this.Logger.Log(&quot;Creating module catalog.&quot;, Category.Debug, Priority.Low);<br>this.CreateModuleCatalog();</p>\r\n<p>this.Logger.Log(&quot;Configuring module catalog.&quot;, Category.Debug, Priority.Low);<br>this.ConfigureModuleCatalog();</p>\r\n<p>this.Logger.Log(&quot;Creating catalog for MEF&quot;, Category.Debug, Priority.Low);<br>this.CreateAggregateCatalog();</p>\r\n<p>this.Logger.Log(&quot;Configuring catalog for MEF&quot;, Category.Debug, Priority.Low)<br>this.ConfigureAggregateCatalog();</p>\r\n<p>It looks to me like the first call is creating and configuring a catalog based on a configuration file and the second a standard aggregate catalog. If that's the case then why the confusing names? Are these both not just different types of &quot;module catalogs&quot;? Can I not add module information to the catalog the aggregate way?</p>\r\n<p>I took out the calls to the Module catalog and also the line further down &quot;this.Container.ComposeExportedValue&lt;IModuleCatalog&gt;(this.ModuleCatalog);&quot;&nbsp; Now the code seems to get upset as there is no IModuleCatalog.</p>\r\n<p>So .. maybe I'm completely messed up but how can I use the MefBootstrapper when I don't want to use a configuration file to store part of my module information?</p>\r\n<p>Richard</p>",
+    "PostedDate": "2010-06-20T11:40:01.687-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "508013",
+    "ThreadId": "216676",
+    "Html": "<p id=fa798350-8eef-012d-5019-12313b101d25>Hi Richard,</p>\r\n<p id=50f7ab80-b9ea-012d-5fb0-123139180331>Sorry for the delayed response. When using MEF, a <strong>ConfigurationModuleCatalog</strong> must be created to be able to determine which modules should be loaded  through configuration files. This is shown in the following code from  the <strong>Bootstrapper</strong> of the Modularity Quickstart with MEF (<a href=\"../releases/view/47253\">Prism v4 Drop 2</a>):</p>\r\n<p id=50f7cfc0-b9ea-012d-5fb1-123139180331>protected override void CreateModuleCatalog()    <br>{     <br>&nbsp;&nbsp;&nbsp; // Module C is referenced by this project and in the configuration     <br>&nbsp;&nbsp;&nbsp; // Module E only referenced in the configuration     <br>&nbsp;&nbsp;&nbsp; this.ModuleCatalog = new ConfigurationModuleCatalog();     <br>}</p>\r\n<p id=50f7fb80-b9ea-012d-5fb2-123139180331>As you can see in <a href=\"http://compositewpf.codeplex.com/releases/view/53942\">Prism v4 Drop 10</a>, the <strong>CreateModuleCatalog</strong> method (in the <strong>QuickStartBootstrapper </strong>of the Modularity Quickstart with MEF) has a comment that says &ldquo;<em>when using MEF, the existing Prism ModuleCatalog is still the place to configure modules via configuration files&rdquo;. </em>This  implies that it is possible to achieve Prism&rsquo;s module loading  approaches with MEF through the use of MEF Catalogs except for  configuring modules through configuration files.</p>\r\n<p id=50f830b0-b9ea-012d-5fb3-123139180331>If you don&rsquo;t need to use a configuration file to determine which modules should be loaded, there is no need to create the <strong>ConfigurationModuleCatalog.</strong></p>\r\n<p id=fa79b810-8eef-012d-501b-12313b101d25>Fernando Antivero    <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>",
+    "PostedDate": "2010-10-15T13:35:06.867-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

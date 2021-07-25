@@ -1,0 +1,26 @@
+[
+  {
+    "Id": "504849",
+    "ThreadId": "230281",
+    "Html": "<p>The StockTrader-RI sample was using a ModuleCatalog and [ModuleExport] in alpha-Drop-8, but no longer is in beta-Drop-9, which makes me wonder what the value of Module and ModuleCatalog are in a MEF-ized world.</p>\r\n<p>The ModularityWithMef and RegionNavigation samples in Drop-9 are MEF-ized, but still use Module and ModuleCatalog. That is apparently only necessary because these Silverlight apps are broken up into multiple XAP files that get downloaded dynamically.</p>\r\n<p>Assuming I'm using MEF and Silverlight, is that multi-XAP case the only place Module makes sense?</p>\r\n<p>Thanks,<br>SLEverywhere</p>",
+    "PostedDate": "2010-10-09T14:32:35.167-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "506198",
+    "ThreadId": "230281",
+    "Html": "<p>Hi,</p>\r\n<p>In Prism drop 9,&nbsp;the StockTrader RI does not&nbsp;setup the Module Catalog as in  previous versions, since&nbsp;it&nbsp;uses the AggregateCatalog. &nbsp;</p>\r\n<p>Therefore, modules are intentionally left empty, since views, services and  other types are&nbsp;exported using declarative attributes.</p>\r\n<p>But in the MefBootstrapper is still exporting the ModuleCatalog, so you could  make of use of this if necessary. For example&nbsp; the Silverlight  ModularityQuickstartWithMEF is using ModuleCatalog as you mentioned. On the  other hand, if you need to use View Injection because you need a particular  programmatic control, you could also export a module.</p>\r\n<p>Additionally, if you have an scenario where it is necessary to configure your  catalog by configuration file, you need to use ConfigurationModuleCatalog. From  the QuickstartBootstrapper.cs (code line 121) in the  ModularityQuickstartWithMEF:</p>\r\n<p><em>When using MEF, the existing Prism ModuleCatalog is still the place to  configure modules via configuration files.</em></p>\r\n<p>Hope this helps.</p>\r\n<p>Fernando Antivero <br><a href=\"http://blogs.southworks.net/fantivero\">http://blogs.southworks.net/fantivero</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2010-10-12T12:06:49.05-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "507374",
+    "ThreadId": "230281",
+    "Html": "<p>Yes, thanks Fernando.</p>",
+    "PostedDate": "2010-10-14T12:45:18.51-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

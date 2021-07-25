@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "1131259",
+    "ThreadId": "471783",
+    "Html": "Hello\r<br />\n<br />\nUsing Prism, Unity and WCF, I have the following simple login scenario.\r<br />\nI define a LoginModule containing three elements : a LoginView, a LoginViewModel, and a LoginService.\r<br />\nWhat is different from all the other examples I have found is that :<br />\n<ul>\n<li>server url is not known on startup (no app.config wcf definition)</li>\n<li>\nserver url may change (user disconnects, changes server address, and reconnects)<br />\n</li>\n</ul>\nI face two major problems in LoginModule :<br />\n<ul>\n<li>I can't register LoginView, because it depends on LoginViewModel, which needs LoginService . But LoginService can't be registered at that time, because server address is unknown.</li>\n<li>\nWhen LoginService is initialized with an address, how to change the underlying channel, LoginService beeing registered using WCF ChannelFactory and Unity ?<br />\n</li>\n</ul>\nI have tried many things using LifetimeManager and proxy, but no success at the moment.\r<br />\n<br />\nAny help would be appreciated.<br />\n",
+    "PostedDate": "2013-12-03T07:12:39.553-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "1131360",
+    "ThreadId": "471783",
+    "Html": "Hi,\r<br />\n<br />\nBased on your description I am assuming the user needs to enter the authentication server's address along with the login and password in the <strong>LoginView</strong>.\r<br />\n<br />\nIn that case a possible approach to be able to maintain the chain of dependencies is to inject in the view model a <strong>LoginServiceProxy</strong> instead of the real <strong>WCF Service</strong> that connects to the server. Like this, the <strong>LoginServiceProxy</strong> could be constructed and injected by Unity in an &quot;uninitialized&quot; state.  When the user enters his credentials along with the server's address the view model could pass that information to the proxy service that will be in charge of initializing the real WCF Service and authenticating against the server.\r<br />\n<br />\nHow to configure and set-up the real WCF Service to connect to the corresponding server is more of a WCF-specific topic; therefore I believe you might find better support for that part in the Windows Communication Forums forums:<br />\n<h1></h1>\n<ul>\n<li>\n<a href=\"http://social.msdn.microsoft.com/Forums/vstudio/en-US/home?forum=wcf\" rel=\"nofollow\">Windows Communication Forums in Social MSDN</a><br />\n</li>\n</ul>\nRegards,\r<br />\n<br />\nDamian Cherubini\r<br />\n<a href=\"http://blogs.southworks.net/dcherubini\" rel=\"nofollow\">http://blogs.southworks.net/dcherubini</a><br />\n",
+    "PostedDate": "2013-12-03T11:55:03.767-08:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

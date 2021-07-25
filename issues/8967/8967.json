@@ -1,0 +1,71 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 5,
+    "Custom": "",
+    "Description": "Hi,\ni found a problem with the Unsubscribe method on the eventaggregator.\n \nI have a class that looks like the one below.  It represent a 3D Model that is shown to the user.\n \nThis class get instanciated around 5000 time and get disposed when the user want to redraw.\n \n \nThe problem is that everytime that i dispose of my object, the process take longer and longer depending on how many time i've refresh my objects.\nGetting rid of the strong reference fix the problem.\n \nAm i using the Unsubscribe method wrong? I did follow microsoft pattern.\n(Youll find below a test method that reproduce the creation/dispose loop)\n \nPublic Class test\n    Implements IDisposable\n    Private eventAggregator As IEventAggregator\n \n    Public Sub New()\n        eventAggregator = ServiceLocator.Current.GetInstance(Of IEventAggregator)()\n \n \n        eventAggregator.GetEvent(Of RedrawAttributeSetVisualRequestEvent)().Subscribe(AddressOf RefreshModel, ThreadOption.UIThread, True)\n \n    End Sub\n \nPrivate Sub RefreshModel()\n \n    End Sub\n \n#Region \"IDisposable Support\"\n    Private disposedValue As Boolean ' To detect redundant calls\n \n    ' IDisposable\n    Protected Overridable Sub Dispose(ByVal disposing As Boolean)\n        If Not Me.disposedValue Then\n            If disposing Then\n                eventAggregator.GetEvent(Of RedrawAttributeSetVisualRequestEvent)().Unsubscribe(AddressOf RefreshModel)\n            End If\n \n        End If\n        Me.disposedValue = True\n    End Sub\n \n    ' This code added by Visual Basic to correctly implement the disposable pattern.\n    Public Sub Dispose() Implements IDisposable.Dispose\n        ' Do not change this code.  Put cleanup code in Dispose(ByVal disposing As Boolean) above.\n        Dispose(True)\n        GC.SuppressFinalize(Me)\n    End Sub\n#End Region\n \nEnd Class\n \n \n Public Sub testMethod()\n        While True\n \n            Dim objects = New List(Of TestObject)\n \n \n            For i = 1 To 1000\n                objects.Add(New TestObject)\n            Next\n \n \n            Dim start = Now\n \n \n            For Each obj In objects\n                obj.Dispose()\n            Next\n \n            Console.WriteLine(\"Objects Dispose Time: \" & Now.Subtract(start).TotalSeconds)\n        End While\n    End Sub",
+    "LastUpdatedDate": "2013-02-21T18:38:05.493-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2011-11-29T12:34:47.853-08:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "EventAggregator Memory leak?",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 8967
+  },
+  "FileAttachments": [
+    {
+      "FileId": 898000,
+      "FileName": "EventAggregatorBug.zip",
+      "DownloadUrl": ".\\898000"
+    }
+  ],
+  "Comments": [
+    {
+      "Message": "Hi,\r\n\r\nIt would be useful if you could provide us with a repro-sample application portraying this problem, so we can analyze it and find the causes behind it.\r\n\r\nThanks,\r\n\r\nDamian Cherubini\r\nhttp://blogs.southworks.net/dcherubini",
+      "PostedDate": "2011-12-05T12:24:57.693-08:00",
+      "Id": 156555
+    },
+    {
+      "Message": "Sure thing.\r\n\r\nI've attached the project that reproduce the problem.\r\n\r\nI hope it helps!\r\n\r\nYou'll see that the dispose time of an object increase very rapidly:\r\nObjects Dispose Time: 0.1570157\r\nObjects Dispose Time: 0.2960296\r\nObjects Dispose Time: 0.4340434\r\nObjects Dispose Time: 0.5760576\r\nObjects Dispose Time: 0.7090709\r\nObjects Dispose Time: 0.8510851\r\nObjects Dispose Time: 0.9890989\r\nObjects Dispose Time: 1.1331133\r\nObjects Dispose Time: 1.2621262\r\nObjects Dispose Time: 1.4161416\r\nObjects Dispose Time: 1.5461546\r\nObjects Dispose Time: 1.790179\r\nObjects Dispose Time: 1.8851885\r\nObjects Dispose Time: 1.950195\r\nObjects Dispose Time: 2.0852085\r\nObjects Dispose Time: 2.2212221\r\nObjects Dispose Time: 2.3642364\r\nObjects Dispose Time: 2.5062506\r\nObjects Dispose Time: 2.6332633\r\nObjects Dispose Time: 2.7982798\r\nObjects Dispose Time: 2.9232923\r\nObjects Dispose Time: 3.0623062\r\nObjects Dispose Time: 3.190319\r\nObjects Dispose Time: 3.3213321\r\n....",
+      "PostedDate": "2011-12-06T15:54:01.123-08:00",
+      "Id": 156556
+    },
+    {
+      "Message": "Hi,\r\n\r\nYou might try Unsubscribing your Events with a subscription token, which is supplied as a return value from the Subscribe method. Also you can find that this approach can be seen in the VB EventAggregation Quickstart (http://www.microsoft.com/download/en/details.aspx?id=16800).\r\n\r\nAn example of this based on your TestObject Class could be like in the following code snippet:\r\n\r\nPublic Class TestObject\r\n    Implements IDisposable\r\n    Private eventAggregator As IEventAggregator\r\n    \r\n    Private subscriptionToken As SubscriptionToken\r\n    \r\n    Public Sub New(ByVal eAggr As IEventAggregator)\r\n        Me.eventAggregator = eAggr\r\n\r\n        Me.subscriptionToken = eventAggregator.GetEvent(Of SomeEvent)().Subscribe(AddressOf RefreshModel, ThreadOption.UIThread, True)\r\n    End Sub\r\n\r\n    Private Sub RefreshModel()\r\n\r\n    End Sub\r\n\r\n#Region \"IDisposable Support\"\r\n    Private disposedValue As Boolean ' To detect redundant calls\r\n\r\n    ' IDisposable\r\n    Protected Overridable Sub Dispose(ByVal disposing As Boolean)\r\n        If Not Me.disposedValue Then\r\n            If disposing Then\r\n            \r\n\t\t'Here I change the way to Unsubscribe the event\r\n                eventAggregator.GetEvent(Of SomeEvent)().Unsubscribe(Me.subscriptionToken)\r\n            End If\r\n\r\n        End If\r\n        Me.disposedValue = True\r\n    End Sub\r\n\r\n    ' This code added by Visual Basic to correctly implement the disposable pattern.\r\n    Public Sub Dispose() Implements IDisposable.Dispose\r\n        ' Do not change this code. Put cleanup code in Dispose(ByVal disposing As Boolean) above.\r\n        Dispose(True)\r\n        GC.SuppressFinalize(Me)\r\n    End Sub\r\n#End Region\r\n\r\nEnd Class\r\n\r\nI hope you find this useful\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2011-12-13T12:06:51.12-08:00",
+      "Id": 156557
+    },
+    {
+      "Message": "You are right that using a Subscription Token fix the problem. \r\n\r\nBut i still beleive that my previous approach should, normaly, work without having this issue.\r\n\r\nIf i take a look at this doc: http://msdn.microsoft.com/en-us/library/ff921131(v=pandp.20).aspx\r\n\r\nIt state that a possible way to subscribe/unsubscribe that be done by doing:\r\n\r\n// This subscription will run the callback delegate in the UI \r\n// thread and will keep the subscriber reference alive.\r\nfundAddedEvent.Subscribe(FundAddedEventHandler, ThreadOption.UIThread, true);\r\n\r\n// This line removes the subscription whose callback delegate is \r\n// FundAddedEventHandler.\r\nfundAddedEvent.Unsubscribe(FundAddedEventHandler);\r\n\r\nOnce again i fixed my problem, but if this can be fixed in future version i beleive it can save other people some time ;)\r\n\r\nThanks for you reply aadami",
+      "PostedDate": "2011-12-13T12:47:32.57-08:00",
+      "Id": 156558
+    },
+    {
+      "Message": "Hi,\r\n\r\nAfter analyzing this problem a little further, I found that the reason of this behavior is that when using the AddressOf Operator in the Subscribe and Unsubscribe methods different values are passed. Hence, when the Unsubscribe method searches for the matching subscriber in the Subscriptions list no matches are found, leaving the subscription alive. This can be seen in the following method of CompositePresentationEvent class:\r\n\r\npublic virtual void Unsubscribe(Action subscriber)\r\n        {\r\n            lock (Subscriptions)\r\n            {\r\n\t\t//When comparing evt.Action == subscriber no matches are found\r\n                IEventSubscription eventSubscription = Subscriptions.Cast>().FirstOrDefault(evt => evt.Action == subscriber);\r\n                if (eventSubscription != null)\r\n                {\r\n                    Subscriptions.Remove(eventSubscription);\r\n                }\r\n            }\r\n        }\r\n\r\nSo far, we could check that this error only appears when Subscribing Using Strong References in visual basic and not in C#.\r\nAs mentioned before, as an alternative, the subscription can be removed by using the subscriptionToken.\r\n\r\nRegards,\r\n\r\nAgustin Adami\r\nhttp://blogs.southworks.net/aadami",
+      "PostedDate": "2012-08-23T13:39:13.003-07:00",
+      "Id": 156559
+    }
+  ]
+}

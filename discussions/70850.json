@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "241432",
+    "ThreadId": "70850",
+    "Html": "<p>I am new to Prism and am wanting to build a user control in Silverlight and then reuse that control in a WPF application.&nbsp; I tried this and ran into issues with both using Project Linker and just trying the Add Existing as Link command.&nbsp; After further research, I found that the Project Linker explicitly excludes .xaml files.&nbsp; Does anybody know how to get around this, or if there is a way of sharing .xaml files between Silverlight and WPF?&nbsp; I really would prefer to avoid duplicating the code from a maintenance standpoint.</p>\r\n<p>You can find a sample solution at <a href=\"http://rapidshare.com/files/287881880/CompositeTesting.rar.html\">http://rapidshare.com/files/287881880/CompositeTesting.rar.html</a>&nbsp;with the build issues I'm running into.</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-02T11:37:33.213-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "241518",
+    "ThreadId": "70850",
+    "Html": "<p id=865e3810-91cd-012c-1dba-12313b0024d1>Hi</p>\r\n<p id=865e43c0-91cd-012c-1dbb-12313b0024d1>A possible way to get XAML files included in the linked project is the following (take into account that this is not always a good approach as XAML can be shared across WPF and Silverlight in few occasions):</p>\r\n<ol>\r\n<li>Link two projects together.</li>\r\n<li>Close you solution.</li>\r\n<li>Open the Target Project using Notepad (or any other text editor). You will find a line like this:     <br>&lt;UserProperties ProjectLinkReference=&quot;a7dc4c1c-bfe1-4820-a821-1b7e37e3e0d0&quot; ProjectLinkerExcludeFilter=&quot;\\\\wpf;\\\\silverlight;\\.wpf;\\.silverlight;\\.xaml&quot; /&gt;</li>\r\n<li>Remove the &ldquo;\\.xaml&rdquo; filter. The outcome should be &lt;UserProperties ProjectLinkReference=&quot;a7dc4c1c-bfe1-4820-a821-1b7e37e3e0d0&quot; ProjectLinkerExcludeFilter=&quot;\\\\wpf;\\\\silverlight;\\.wpf;\\.silverlight&quot; /&gt;</li>\r\n</ol>\r\n<p id=865e52b0-91cd-012c-1dbc-12313b0024d1>Now your projects will add project links to XAML files. You should have <a href=\"../Wiki/View.aspx?title=Project Linker: Issue when opening a solution from Windows Explorer\">this issue</a> in mind when using project linker.</p>\r\n<p id=865e72f0-91cd-012c-1dbd-12313b0024d1>Please let me know if this helps.</p>\r\n<p id=865e8ae0-91cd-012c-1dbe-12313b0024d1>Damian Schenkelman    <br><a href=\"http://blogs.southworks.net/dschenkelman\">http://blogs.southworks.net/dschenkelman</a></p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-10-02T15:07:37.723-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

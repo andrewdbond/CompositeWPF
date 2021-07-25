@@ -1,0 +1,45 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "Please see Prism 4.0 CTP - August 2010 at http://compositewpf.codeplex.com/releases/view/49963",
+    "ClosedDate": "2010-08-02T14:20:04.357-07:00",
+    "CommentCount": 1,
+    "Custom": "",
+    "Description": "On localized Systems the following CAL Test failes, because he assumes english language of the .NET Framework. \nSo please modify him like:\n \n[TestMethod]\npublic void ShouldThrowActivationExceptionWhenMoreThanOneInstanceAvailble()\n{\n  object myInstance = new object();\n  object myInstance2 = new object();\n \n  CompositionContainer compositionContainer = new CompositionContainer();\n  compositionContainer.ComposeExportedValue<object>(myInstance);\n  compositionContainer.ComposeExportedValue<object>(myInstance2);\n \n  IServiceLocator containerAdapter = new MefServiceLocatorAdapter(compositionContainer);\n  try\n  {\n    containerAdapter.GetInstance(typeof(object));\n    Assert.Fail(\"Expected exception not thrown.\");\n  }\n  catch (ActivationException ex)\n  {\n    Assert.AreEqual(typeof(InvalidOperationException), ex.InnerException.GetType());\n    Assert.IsTrue(\n      ex.InnerException is InvalidOperationException &&\n      ex.InnerException.TargetSite.Name == \"Single\");\n    //ex.InnerException.Message.Contains(\"Sequence contains more than one element\"));\n  }\n \nciao Frank\n \n(by the way its great to see PRISM 4.0 grow - good direction)",
+    "LastUpdatedDate": "2013-05-16T05:28:52.403-07:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-07-02T01:37:36.093-07:00",
+    "Status": {
+      "Name": "Closed",
+      "Id": 4
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "One CAL-Test failes on localized systems",
+    "Type": {
+      "Name": "Issue",
+      "Id": 3
+    },
+    "VoteCount": 1,
+    "Id": 6932
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "Thanks, these test were fixed.  ",
+      "PostedDate": "2010-08-02T14:17:24.143-07:00",
+      "Id": 156250
+    }
+  ]
+}

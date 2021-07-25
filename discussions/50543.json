@@ -1,0 +1,34 @@
+[
+  {
+    "Id": "169446",
+    "ThreadId": "50543",
+    "Html": "Hello, <br>\r\n<br>\r\nI am trying to use Prims but I get the following Error messag:<br>\r\n<br>\r\n<strong>Resolution of the dependency failed, type = &quot;RiaCrm.EditRecord.EditRecordView&quot;, name = &quot;&quot;. Exception message is: The current build operation (build key Build Key[RiaCrm.EditRecord.EditRecordView, null]) failed: The parameter viewModel could not be resolved when attempting to call constructor RiaCrm.EditRecord.EditRecordView(RiaCrm.EditRecord.EditRecordViewModel viewModel). (Strategy type BuildPlanStrategy, index 3)</strong><br>\r\n<br>\r\nAnd it seems like the error is caused by this guy: <br>\r\n-----<br>\r\n<em>eventAggregator.GetEvent&lt;DynamicEntityGridSelecteIndexChanged&gt;().Subscribe(OnDynEntityGridSelectionChanged);</em><br>\r\n-----<br>\r\n<br>\r\nThe line of code is located in the consturctor:<br>\r\n-----<br>\r\n<em>public EditRecordViewModel(IEventAggregator eventAggregator)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.RegisteredPicklists = new Dictionary&lt;string, CrmPicklistControl&gt;();<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //this._metadatalayer = metadatalayer;<br>\r\n<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eventAggregator.GetEvent&lt;DynamicEntityGridSelecteIndexChanged&gt;().Subscribe(OnDynEntityGridSelectionChanged);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</em><br>\r\n-----<br>\r\n<br>\r\nThe error message is throw in the <strong>UnityServiceLocatorAdapter</strong> class in the following method':<br>\r\n-----<br>\r\n&nbsp;<em>protected override object DoGetInstance(Type serviceType, string key)<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _unityContainer.Resolve(serviceType, key);<br>\r\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</em><br>\r\n-----<br>\r\n<br>\r\nI dont understand the errormessage.... why do i need to register my View? I already implemented an different module (with not eventAggregation) and it works without the registartion of the view...<br>\r\n<br>\r\n<br>\r\n<br>\r\n<br>\r\n",
+    "PostedDate": "2009-03-18T08:13:30.003-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "169458",
+    "ThreadId": "50543",
+    "Html": "Dammit...<br>\r\nmy callback method <em>OnDynEntityGridSelectionChanged</em> was private and not public.....<br>\r\n<br>\r\nSorry for the unnecessary post.<br>\r\n",
+    "PostedDate": "2009-03-18T08:46:58.463-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218658",
+    "ThreadId": "50543",
+    "Html": "<p>The post is by no means unnecessary. The error message is unintuitive and one could waste a lot of time looking for the reason of such a silly problem.</p>",
+    "PostedDate": "2009-08-03T01:01:16.52-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "218874",
+    "ThreadId": "50543",
+    "Html": "<p>Ditto, I remember chasing my tail on this one also...&nbsp; &quot;We&quot; only get fooled by this once but perhaps your post will help the next guy...</p>",
+    "PostedDate": "2009-08-03T10:21:38.083-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

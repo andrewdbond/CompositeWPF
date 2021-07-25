@@ -1,0 +1,42 @@
+[
+  {
+    "Id": "237949",
+    "ThreadId": "69890",
+    "Html": "<p>I'm working with prism on a silverlight project and I'm wondering what is the best way to get at the Dispatcher from within a View Model class?</p>\r\n<p>I'm looking for a best practices approach.&nbsp;</p>\r\n<p>Many thanks,</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-23T11:07:25.75-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "237965",
+    "ThreadId": "69890",
+    "Html": "<p>Hi,</p>\r\n<p>I am also looking for the best way as well, but I have been grabbing it in the bootstrapper CreateShell then adding it to my unity containers.&nbsp;I then can resolve it within my VMs.</p>\r\n<p>Marcus</p>\r\n<p><span style=\"font-size:small\">&lt;font size=&quot;3&quot;&gt;\r\n<p>&nbsp;</p>\r\n&lt;/font&gt;</span>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>\r\n</p>",
+    "PostedDate": "2009-09-23T11:41:23.253-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "238089",
+    "ThreadId": "69890",
+    "Html": "<p>Thanks Marcus, I had a service returning my Dispatcher, but I think I will do what you are doing, then in my ViewModel base class, set it when needed as below.&nbsp; I was not sure if prism had something built in to access the Dispatcher.</p>\r\n<div style=\"color:Black;background-color:White\">\r\n<pre>       <span style=\"color:Blue\">private</span> Dispatcher _dispatcher;\r\n\r\n        <span style=\"color:Blue\">protected</span> Dispatcher Dispatcher\r\n        {\r\n            <span style=\"color:Blue\">get</span> \r\n            {\r\n                <span style=\"color:Blue\">if</span> (<span style=\"color:Blue\">this</span>._dispatcher == <span style=\"color:Blue\">null</span>)\r\n                {\r\n                    <span style=\"color:Blue\">this</span>._dispatcher = ServiceLocator.Current.GetInstance&lt;System.Windows.Threading.Dispatcher&gt;();\r\n                }\r\n\r\n                <span style=\"color:Blue\">return</span> _dispatcher; \r\n            }\r\n        } \r\n</pre>\r\n</div>\r\n<p>Thanks,<br>Todd</p>\r\n<p>&nbsp;</p>\r\n<p>&nbsp;</p>",
+    "PostedDate": "2009-09-23T17:54:20.717-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "238177",
+    "ThreadId": "69890",
+    "Html": "<p>Todd,</p>\r\n<p>Cool if you find a better way let me know.</p>\r\n<p>Marcus</p>",
+    "PostedDate": "2009-09-24T01:14:49.9-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  },
+  {
+    "Id": "238254",
+    "ThreadId": "69890",
+    "Html": "<p>It may be helpful for you to look at <a href=\"http://kentb.blogspot.com/2009/04/mvvm-infrastructure-viewmodel.html\">this post of mine</a>, which shows how I get access to the Dispatcher from my VMs.</p>\r\n<p>Best,<br>Kent</p>",
+    "PostedDate": "2009-09-24T04:14:17.823-07:00",
+    "UserRole": null,
+    "MarkedAsAnswerDate": null
+  }
+]

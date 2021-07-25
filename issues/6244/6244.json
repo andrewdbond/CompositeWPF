@@ -1,0 +1,50 @@
+{
+  "WorkItem": {
+    "AffectedComponent": {
+      "Name": "",
+      "DisplayName": ""
+    },
+    "ClosedComment": "",
+    "ClosedDate": null,
+    "CommentCount": 2,
+    "Custom": "",
+    "Description": "The generic implemention of EA (e.g. EventAggregator.GetEvent<TEvent>.Subscribe(Action<TContext>)) is great for most scenarios.\n \nHowever, sometimes I am given an instance of an event at run-time, and I need to subscribe to it. Obviously this implies that I do not know the event type at compile time.\n \nIt's easy to add an EventAggregator.GetEvent(Type eventType) method. That's the simple part.\n \nThe difficult part is in calling Event<>.Subscribe(Action<TContext>). If I don't know the type of event at compile time, then I definitely don't know the type of context =)\n \nSo, the solution I've come up with so far:\n \n1. Add EventAggregator.GetEvent(Type eventType) to get the event without generic parameters\n2. Build an expression of type Action<TContext> using reflection\n3. Subscribe to event using reflection (i.e. calling Subscribe method) and passing Expression.Compile as the parameter.\n \nThis works if KeepAlive is true.\n \nIt does not work if KeepAlive is false. The problem is in DelegateReference.TryGetDelegate. In such cases, _weakReference.Target returns {System.Runtime.CompilerServices.ExecutionScope}, and _method is something like {Void lambda_method(System.Runtime.CompilerServices.ExecutionScope, [the TContext type])}.\n \nAny ideas how we can support KeepAlive = false for such cases?\n \nThanks!",
+    "LastUpdatedDate": "2013-02-21T18:38:39.663-08:00",
+    "PlannedForRelease": "",
+    "ReleaseVisibleToPublic": false,
+    "Priority": {
+      "Name": "Low",
+      "Severity": 50,
+      "Id": 1
+    },
+    "ProjectName": "CompositeWPF",
+    "ReportedDate": "2010-03-27T07:01:26.197-07:00",
+    "Status": {
+      "Name": "Proposed",
+      "Id": 1
+    },
+    "ReasonClosed": {
+      "Name": "Unassigned"
+    },
+    "Summary": "EventAggregator: Subscribe without generic parameters",
+    "Type": {
+      "Name": "Feature",
+      "Id": 1
+    },
+    "VoteCount": 2,
+    "Id": 6244
+  },
+  "FileAttachments": [],
+  "Comments": [
+    {
+      "Message": "I think if they would simplify the EventAggregator so that there doesn't have to be a CompositePresentationEvent at all, and everything should be maintained from the IEventAggegator itself, that would be great, please take a look: http://compositewpf.codeplex.com/workitem/8241",
+      "PostedDate": "2011-05-11T17:18:23.947-07:00",
+      "Id": 156223
+    },
+    {
+      "Message": "Hi,\r\n\r\nHere are some resources about this, which were present in some comments by the user weitzhandler in a work item referring to the same subject, which I recently closed to centralize the discussion on the subject in this one:\r\nhttp://blogs.microsoft.co.il/blogs/shimmy/archive/2011/04/09/eventaggregator-shortener.aspx \r\nhttp://neverindoubtnet.blogspot.com/2009/07/simplify-prism-event-aggregator.html\r\nhttp://codepaste.net/uf9isv\r\n\r\nThanks,\r\n\r\nGuido Leandro Maliandi\r\nhttp://blogs.southworks.net/gmaliandi",
+      "PostedDate": "2011-09-29T08:02:31.56-07:00",
+      "Id": 156224
+    }
+  ]
+}
